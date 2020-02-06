@@ -38708,9 +38708,8 @@
     var CMS_FEATURE = 'cms';
     /** @type {?} */
     var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
-    // TODO(issue:6027) - fix the const value to `[Cms] Component Entity`
     /** @type {?} */
-    var COMPONENT_ENTITY = '[Cms[ Component Entity';
+    var COMPONENT_ENTITY = '[Cms] Component Entity';
     /**
      * @record
      */
@@ -38786,8 +38785,6 @@
         /** @type {?} */
         CmsState.prototype.page;
         /** @type {?} */
-        CmsState.prototype.component;
-        /** @type {?} */
         CmsState.prototype.components;
         /** @type {?} */
         CmsState.prototype.navigation;
@@ -38803,16 +38800,13 @@
     var LOAD_CMS_COMPONENT_FAIL = '[Cms] Load Component Fail';
     /** @type {?} */
     var LOAD_CMS_COMPONENT_SUCCESS = '[Cms] Load Component Success';
-    // TODO(issue:6027) - rename the const to `CMS_GET_COMPONENT_FROM_PAGE`
     /** @type {?} */
-    var CMS_GET_COMPONENET_FROM_PAGE = '[Cms] Get Component from Page';
+    var CMS_GET_COMPONENT_FROM_PAGE = '[Cms] Get Component from Page';
     var LoadCmsComponent = /** @class */ (function (_super) {
         __extends(LoadCmsComponent, _super);
-        // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
-        function LoadCmsComponent(payload, pageContext) {
-            var _this = _super.call(this, COMPONENT_ENTITY, payload) || this;
+        function LoadCmsComponent(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid) || this;
             _this.payload = payload;
-            _this.pageContext = pageContext;
             _this.type = LOAD_CMS_COMPONENT;
             return _this;
         }
@@ -38823,16 +38817,12 @@
         LoadCmsComponent.prototype.type;
         /** @type {?} */
         LoadCmsComponent.prototype.payload;
-        /** @type {?} */
-        LoadCmsComponent.prototype.pageContext;
     }
     var LoadCmsComponentFail = /** @class */ (function (_super) {
         __extends(LoadCmsComponentFail, _super);
-        // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
-        function LoadCmsComponentFail(uid, payload, pageContext) {
-            var _this = _super.call(this, COMPONENT_ENTITY, uid, payload) || this;
+        function LoadCmsComponentFail(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid, payload.error) || this;
             _this.payload = payload;
-            _this.pageContext = pageContext;
             _this.type = LOAD_CMS_COMPONENT_FAIL;
             return _this;
         }
@@ -38843,8 +38833,6 @@
         LoadCmsComponentFail.prototype.type;
         /** @type {?} */
         LoadCmsComponentFail.prototype.payload;
-        /** @type {?} */
-        LoadCmsComponentFail.prototype.pageContext;
     }
     /**
      * @template T
@@ -38854,11 +38842,9 @@
      */
     LoadCmsComponentSuccess = /** @class */ (function (_super) {
         __extends(LoadCmsComponentSuccess, _super);
-        // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
-        function LoadCmsComponentSuccess(payload, uid, pageContext) {
-            var _this = _super.call(this, COMPONENT_ENTITY, uid || payload.uid || '') || this;
+        function LoadCmsComponentSuccess(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid || payload.component.uid || '') || this;
             _this.payload = payload;
-            _this.pageContext = pageContext;
             _this.type = LOAD_CMS_COMPONENT_SUCCESS;
             return _this;
         }
@@ -38869,8 +38855,6 @@
         LoadCmsComponentSuccess.prototype.type;
         /** @type {?} */
         LoadCmsComponentSuccess.prototype.payload;
-        /** @type {?} */
-        LoadCmsComponentSuccess.prototype.pageContext;
     }
     /**
      * @template T
@@ -38880,16 +38864,14 @@
      */
     CmsGetComponentFromPage = /** @class */ (function (_super) {
         __extends(CmsGetComponentFromPage, _super);
-        // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
-        function CmsGetComponentFromPage(payload, pageContext) {
-            var _this = _super.call(this, COMPONENT_ENTITY, payload.map((/**
+        function CmsGetComponentFromPage(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, [].concat(payload).map((/**
              * @param {?} cmp
              * @return {?}
              */
-            function (cmp) { return cmp.uid; }))) || this;
+            function (cmp) { return cmp.component.uid; }))) || this;
             _this.payload = payload;
-            _this.pageContext = pageContext;
-            _this.type = CMS_GET_COMPONENET_FROM_PAGE;
+            _this.type = CMS_GET_COMPONENT_FROM_PAGE;
             return _this;
         }
         return CmsGetComponentFromPage;
@@ -38899,8 +38881,6 @@
         CmsGetComponentFromPage.prototype.type;
         /** @type {?} */
         CmsGetComponentFromPage.prototype.payload;
-        /** @type {?} */
-        CmsGetComponentFromPage.prototype.pageContext;
     }
 
     /**
@@ -39057,7 +39037,7 @@
         LOAD_CMS_COMPONENT: LOAD_CMS_COMPONENT,
         LOAD_CMS_COMPONENT_FAIL: LOAD_CMS_COMPONENT_FAIL,
         LOAD_CMS_COMPONENT_SUCCESS: LOAD_CMS_COMPONENT_SUCCESS,
-        CMS_GET_COMPONENET_FROM_PAGE: CMS_GET_COMPONENET_FROM_PAGE,
+        CMS_GET_COMPONENT_FROM_PAGE: CMS_GET_COMPONENT_FROM_PAGE,
         LoadCmsComponent: LoadCmsComponent,
         LoadCmsComponentFail: LoadCmsComponentFail,
         LoadCmsComponentSuccess: LoadCmsComponentSuccess,
@@ -39096,98 +39076,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    // TODO(issue:6027) - delete this method
-    /**
-     * @deprecated as of 2.0, this method will be removed.
-     * @type {?}
-     */
-    var getComponentEntitiesSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) {
-        return Object.keys(state.entities).reduce((/**
-         * @param {?} acc
-         * @param {?} cur
-         * @return {?}
-         */
-        function (acc, cur) {
-            acc[cur] = state.entities[cur].value;
-            return acc;
-        }), {});
-    });
-    var ɵ0$x = getComponentEntitiesSelector;
-    // TODO(issue:6027) - delete this method
-    var ɵ1$p = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.component; };
-    /**
-     * @deprecated as of 2.0, this method will be removed in favour of `getComponentsState`
-     * @type {?}
-     */
-    var getComponentState = store.createSelector(getCmsState, (ɵ1$p));
-    // TODO(issue:6027) - delete this method
-    /**
-     * @deprecated as of 2.0, this method will be removed.
-     * @type {?}
-     */
-    var getComponentEntities = store.createSelector(getComponentState, getComponentEntitiesSelector);
-    // TODO(issue:6027) - delete this method
-    /**
-     * @deprecated as of 2.0, this method will be removed in favour of `componentsLoaderStateSelectorFactory`
-     * @type {?}
-     */
-    var componentStateSelectorFactory = (/**
-     * @param {?} uid
-     * @return {?}
-     */
-    function (uid) {
-        return store.createSelector(getComponentState, (/**
-         * @param {?} entities
-         * @return {?}
-         */
-        function (entities) {
-            // the whole component entities are empty
-            if (Object.keys(entities.entities).length === 0) {
-                return undefined;
-            }
-            else {
-                return entityStateSelector(entities, uid);
-            }
-        }));
-    });
-    // TODO(issue:6027) - delete this method
-    /**
-     * @deprecated as of 2.0, this method will be removed in favour of `componentsSelectorFactory`
-     * @type {?}
-     */
-    var componentSelectorFactory = (/**
-     * @param {?} uid
-     * @return {?}
-     */
-    function (uid) {
-        return store.createSelector(componentStateSelectorFactory(uid), (/**
-         * @param {?} state
-         * @return {?}
-         */
-        function (state) {
-            if (state) {
-                return loaderValueSelector(state);
-            }
-            else {
-                return undefined;
-            }
-        }));
-    });
-    var ɵ2$i = /**
+    var ɵ0$x = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.components; };
     /** @type {?} */
-    var getComponentsState = store.createSelector(getCmsState, (ɵ2$i));
+    var getComponentsState = store.createSelector(getCmsState, (ɵ0$x));
     /** @type {?} */
     var componentsContextSelectorFactory = (/**
      * @param {?} uid
@@ -39337,7 +39232,7 @@
         }
         return { entities: {} };
     });
-    var ɵ1$q = getIndexByType;
+    var ɵ1$p = getIndexByType;
     /** @type {?} */
     var getPageComponentTypesSelector = (/**
      * @param {?} page
@@ -39376,7 +39271,7 @@
         }
         return Array.from(componentTypes);
     });
-    var ɵ2$j = getPageComponentTypesSelector;
+    var ɵ2$i = getPageComponentTypesSelector;
     var ɵ3$a = /**
      * @param {?} state
      * @return {?}
@@ -39482,10 +39377,6 @@
      */
 
     var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
-        getComponentState: getComponentState,
-        getComponentEntities: getComponentEntities,
-        componentStateSelectorFactory: componentStateSelectorFactory,
-        componentSelectorFactory: componentSelectorFactory,
         getComponentsState: getComponentsState,
         componentsContextSelectorFactory: componentsContextSelectorFactory,
         componentsLoaderStateSelectorFactory: componentsLoaderStateSelectorFactory,
@@ -39710,12 +39601,12 @@
                     ? serializePageContext(nextContext, true) === context
                     : false;
                 if (!attemptedLoad && !couldBeLoadedWithPageData) {
-                    _this.store.dispatch(new LoadCmsComponent(uid, pageContext));
+                    _this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
                 }
             })));
             /** @type {?} */
             var component$ = (/** @type {?} */ (this.store.pipe(store.select(componentsSelectorFactory(uid, context)), 
-            // TODO(issue:6027) - this `filter` should be removed.
+            // TODO(issue:6431) - this `filter` should be removed.
             // The reason for removal: with `filter` in place, when moving to a page that has restrictions, the component data will still emit the previous value.
             // Removing it causes some components to fail, because they are not checking
             // if the data is actually there. I noticed these that this component is failing, but there are possibly more:
@@ -39861,7 +39752,7 @@
          * @return {?}
          */
         function (uid, pageContext) {
-            this.store.dispatch(new LoadCmsComponent(uid, pageContext));
+            this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
         };
         /**
          * Given pageContext, return the CMS page data
@@ -43062,7 +42953,7 @@
     function (state) {
         return state.deliveryMode;
     });
-    var ɵ1$r = getDeliveryModeSelector;
+    var ɵ1$q = getDeliveryModeSelector;
     /** @type {?} */
     var getPaymentDetailsSelector = (/**
      * @param {?} state
@@ -43071,7 +42962,7 @@
     function (state) {
         return state.paymentDetails;
     });
-    var ɵ2$k = getPaymentDetailsSelector;
+    var ɵ2$j = getPaymentDetailsSelector;
     /** @type {?} */
     var getOrderDetailsSelector = (/**
      * @param {?} state
@@ -43224,7 +43115,7 @@
     var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$C));
     /** @type {?} */
     var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$s = /**
+    var ɵ1$r = /**
      * @param {?} entites
      * @return {?}
      */
@@ -43236,7 +43127,7 @@
         function (code) { return entites[code]; }));
     };
     /** @type {?} */
-    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$s));
+    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$r));
 
     /**
      * @fileoverview added by tsickle
@@ -45622,6 +45513,660 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @template T
+     * @param {?=} time
+     * @param {?=} scheduler
+     * @return {?}
+     */
+    function bufferDebounceTime(time, scheduler) {
+        if (time === void 0) { time = 0; }
+        return (/**
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            /** @type {?} */
+            var bufferedValues = [];
+            return source.pipe(operators.tap((/**
+             * @param {?} value
+             * @return {?}
+             */
+            function (value) { return bufferedValues.push(value); })), operators.debounceTime(time, scheduler), operators.map((/**
+             * @return {?}
+             */
+            function () { return bufferedValues; })), operators.tap((/**
+             * @return {?}
+             */
+            function () { return (bufferedValues = []); })));
+        });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Service that provides access to CMS structure from a static
+     * configuration or configuration file. This class uses static
+     * configuration is designed in async fashion so that configurations
+     * can be loaded from a file or stream.
+     *
+     * The intent of the `CmsStructureConfigService` however is to provide
+     * fast loading pages and default cms structure for commodity commerce.
+     * @abstract
+     */
+    var CmsStructureConfigService = /** @class */ (function () {
+        function CmsStructureConfigService(cmsDataConfig) {
+            this.cmsDataConfig = cmsDataConfig;
+        }
+        /**
+         * Merge the cms structure to the pageStructure. The page structure
+         * can either hold complete page structures or global structures that
+         * might apply to all pages (such has header coponents).
+         */
+        /**
+         * Merge the cms structure to the pageStructure. The page structure
+         * can either hold complete page structures or global structures that
+         * might apply to all pages (such has header coponents).
+         * @param {?} pageId
+         * @param {?} pageStructure
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.mergePageStructure = /**
+         * Merge the cms structure to the pageStructure. The page structure
+         * can either hold complete page structures or global structures that
+         * might apply to all pages (such has header coponents).
+         * @param {?} pageId
+         * @param {?} pageStructure
+         * @return {?}
+         */
+        function (pageId, pageStructure) {
+            var _this = this;
+            return this.mergePage(pageId, pageStructure).pipe(operators.switchMap((/**
+             * @param {?} page
+             * @return {?}
+             */
+            function (page) { return _this.mergeSlots(page); })));
+        };
+        /**
+         *
+         * Returns boolean observable to indicate whether the page should not be
+         * loaded from the backend. This is useful for pages which are comoditized
+         * and follow best practice.
+         *
+         * By default, configurable pages are driven by static configuration,
+         * in order to allow for fast loading pages (preventing network delays).
+         */
+        /**
+         *
+         * Returns boolean observable to indicate whether the page should not be
+         * loaded from the backend. This is useful for pages which are comoditized
+         * and follow best practice.
+         *
+         * By default, configurable pages are driven by static configuration,
+         * in order to allow for fast loading pages (preventing network delays).
+         * @param {?} pageId
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.shouldIgnoreBackend = /**
+         *
+         * Returns boolean observable to indicate whether the page should not be
+         * loaded from the backend. This is useful for pages which are comoditized
+         * and follow best practice.
+         *
+         * By default, configurable pages are driven by static configuration,
+         * in order to allow for fast loading pages (preventing network delays).
+         * @param {?} pageId
+         * @return {?}
+         */
+        function (pageId) {
+            return this.getPageFromConfig(pageId).pipe(operators.map((/**
+             * @param {?} page
+             * @return {?}
+             */
+            function (page) { return !!page && !!page.ignoreBackend; })));
+        };
+        /**
+         * returns an Observable component data from the static configuration.
+         */
+        /**
+         * returns an Observable component data from the static configuration.
+         * @param {?} componentId
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.getComponentFromConfig = /**
+         * returns an Observable component data from the static configuration.
+         * @param {?} componentId
+         * @return {?}
+         */
+        function (componentId) {
+            return rxjs.of(this.getComponentById(componentId));
+        };
+        /**
+         * returns an Observable components data from the static configuration.
+         */
+        /**
+         * returns an Observable components data from the static configuration.
+         * @param {?} ids
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.getComponentsFromConfig = /**
+         * returns an Observable components data from the static configuration.
+         * @param {?} ids
+         * @return {?}
+         */
+        function (ids) {
+            var _this = this;
+            return rxjs.of(ids.map((/**
+             * @param {?} id
+             * @return {?}
+             */
+            function (id) { return _this.getComponentById(id); })));
+        };
+        /**
+         * returns an observable with the `PageConfig`.
+         */
+        /**
+         * returns an observable with the `PageConfig`.
+         * @protected
+         * @param {?} pageId
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.getPageFromConfig = /**
+         * returns an observable with the `PageConfig`.
+         * @protected
+         * @param {?} pageId
+         * @return {?}
+         */
+        function (pageId) {
+            return rxjs.of(this.cmsDataConfig.cmsStructure && this.cmsDataConfig.cmsStructure.pages
+                ? this.cmsDataConfig.cmsStructure.pages.find((/**
+                 * @param {?} p
+                 * @return {?}
+                 */
+                function (p) { return p.pageId === pageId; }))
+                : null);
+        };
+        /**
+         * Merge page data from the configuration into the given structure, if any.
+         * If the given page structure is empty, a page is created and the page slots are
+         * are merged into the page.
+         */
+        /**
+         * Merge page data from the configuration into the given structure, if any.
+         * If the given page structure is empty, a page is created and the page slots are
+         * are merged into the page.
+         * @protected
+         * @param {?} pageId
+         * @param {?} pageStructure
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.mergePage = /**
+         * Merge page data from the configuration into the given structure, if any.
+         * If the given page structure is empty, a page is created and the page slots are
+         * are merged into the page.
+         * @protected
+         * @param {?} pageId
+         * @param {?} pageStructure
+         * @return {?}
+         */
+        function (pageId, pageStructure) {
+            var _this = this;
+            return this.getPageFromConfig(pageId).pipe(operators.switchMap((/**
+             * @param {?} page
+             * @return {?}
+             */
+            function (page) {
+                if (page) {
+                    // serialize page data
+                    if (!pageStructure.page) {
+                        pageStructure.page = __assign({}, page);
+                        pageStructure.page.slots = {};
+                    }
+                    if (!pageStructure.page.slots) {
+                        pageStructure.page.slots = {};
+                    }
+                    return _this.mergeSlots(pageStructure, page.slots);
+                }
+                else {
+                    return rxjs.of(pageStructure);
+                }
+            })));
+        };
+        /**
+         * Adds any pre-configured slots for pages that do not use them.
+         * If pages have a slot for the given position, the configiuration
+         * is ingored. Even if the slot does not have inner structure (such as
+         * components), so that the cms structure is able to override the (static)
+         * configuration.
+         */
+        /**
+         * Adds any pre-configured slots for pages that do not use them.
+         * If pages have a slot for the given position, the configiuration
+         * is ingored. Even if the slot does not have inner structure (such as
+         * components), so that the cms structure is able to override the (static)
+         * configuration.
+         * @protected
+         * @param {?} pageStructure
+         * @param {?=} slots
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.mergeSlots = /**
+         * Adds any pre-configured slots for pages that do not use them.
+         * If pages have a slot for the given position, the configiuration
+         * is ingored. Even if the slot does not have inner structure (such as
+         * components), so that the cms structure is able to override the (static)
+         * configuration.
+         * @protected
+         * @param {?} pageStructure
+         * @param {?=} slots
+         * @return {?}
+         */
+        function (pageStructure, slots) {
+            var e_1, _a, e_2, _b;
+            // if no slots have been given, we use the global configured slots
+            if (!slots &&
+                this.cmsDataConfig.cmsStructure &&
+                this.cmsDataConfig.cmsStructure.slots) {
+                slots = this.cmsDataConfig.cmsStructure.slots;
+            }
+            if (!slots) {
+                return rxjs.of(pageStructure);
+            }
+            try {
+                for (var _c = __values(Object.keys(slots)), _d = _c.next(); !_d.done; _d = _c.next()) {
+                    var position = _d.value;
+                    if (!Object.keys(pageStructure.page.slots).includes(position)) {
+                        // the global slot isn't yet part of the page structure
+                        pageStructure.page.slots[position] = {};
+                        try {
+                            for (var _e = (e_2 = void 0, __values(this.getComponentsByPosition(slots, position))), _f = _e.next(); !_f.done; _f = _e.next()) {
+                                var component = _f.value;
+                                if (!pageStructure.page.slots[position].components) {
+                                    pageStructure.page.slots[position].components = [];
+                                }
+                                pageStructure.page.slots[position].components.push({
+                                    uid: component.uid,
+                                    flexType: component.flexType,
+                                    typeCode: component.typeCode,
+                                });
+                                if (!pageStructure.components) {
+                                    pageStructure.components = [];
+                                }
+                                pageStructure.components.push(component);
+                            }
+                        }
+                        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                        finally {
+                            try {
+                                if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
+                            }
+                            finally { if (e_2) throw e_2.error; }
+                        }
+                    }
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            return rxjs.of(pageStructure);
+        };
+        /**
+         * @protected
+         * @param {?} slots
+         * @param {?} position
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.getComponentsByPosition = /**
+         * @protected
+         * @param {?} slots
+         * @param {?} position
+         * @return {?}
+         */
+        function (slots, position) {
+            var e_3, _a;
+            /** @type {?} */
+            var components = [];
+            if (slots[position] && slots[position].componentIds) {
+                try {
+                    for (var _b = __values(slots[position].componentIds), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var componentId = _c.value;
+                        if (this.cmsDataConfig.cmsStructure &&
+                            this.cmsDataConfig.cmsStructure.components) {
+                            /** @type {?} */
+                            var component = this.cmsDataConfig.cmsStructure.components[componentId];
+                            if (component) {
+                                components.push(__assign({ uid: componentId }, component));
+                            }
+                        }
+                    }
+                }
+                catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                    }
+                    finally { if (e_3) throw e_3.error; }
+                }
+            }
+            return components;
+        };
+        /**
+         * @protected
+         * @param {?} componentId
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.getComponentById = /**
+         * @protected
+         * @param {?} componentId
+         * @return {?}
+         */
+        function (componentId) {
+            return this.cmsDataConfig.cmsStructure &&
+                this.cmsDataConfig.cmsStructure.components
+                ? this.cmsDataConfig.cmsStructure.components[componentId]
+                : undefined;
+        };
+        CmsStructureConfigService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CmsStructureConfigService.ctorParameters = function () { return [
+            { type: CmsStructureConfig }
+        ]; };
+        /** @nocollapse */ CmsStructureConfigService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(core.ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
+        return CmsStructureConfigService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CmsStructureConfigService.prototype.cmsDataConfig;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CmsComponentConnector = /** @class */ (function () {
+        function CmsComponentConnector(cmsStructureConfigService, adapter, config) {
+            this.cmsStructureConfigService = cmsStructureConfigService;
+            this.adapter = adapter;
+            this.config = config;
+        }
+        /**
+         * @template T
+         * @param {?} id
+         * @param {?} pageContext
+         * @return {?}
+         */
+        CmsComponentConnector.prototype.get = /**
+         * @template T
+         * @param {?} id
+         * @param {?} pageContext
+         * @return {?}
+         */
+        function (id, pageContext) {
+            var _this = this;
+            return this.cmsStructureConfigService
+                .getComponentFromConfig(id)
+                .pipe(operators.switchMap((/**
+             * @param {?} configuredComponent
+             * @return {?}
+             */
+            function (configuredComponent) {
+                return configuredComponent
+                    ? rxjs.of(configuredComponent)
+                    : _this.adapter.load(id, pageContext);
+            })));
+        };
+        /**
+         * @param {?} ids
+         * @param {?} pageContext
+         * @return {?}
+         */
+        CmsComponentConnector.prototype.getList = /**
+         * @param {?} ids
+         * @param {?} pageContext
+         * @return {?}
+         */
+        function (ids, pageContext) {
+            var _this = this;
+            return this.cmsStructureConfigService.getComponentsFromConfig(ids).pipe(operators.switchMap((/**
+             * @param {?} configuredComponents
+             * @return {?}
+             */
+            function (configuredComponents) {
+                // check if we have some components that are not loaded from configuration
+                /** @type {?} */
+                var missingIds = configuredComponents.reduce((/**
+                 * @param {?} acc
+                 * @param {?} component
+                 * @param {?} index
+                 * @return {?}
+                 */
+                function (acc, component, index) {
+                    if (component === undefined) {
+                        acc.push(ids[index]);
+                    }
+                    return acc;
+                }), []);
+                if (missingIds.length > 0) {
+                    return (_this.config.backend.occ.legacy
+                        ? _this.adapter.findComponentsByIdsLegacy(missingIds, pageContext)
+                        : _this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(operators.map((/**
+                     * @param {?} loadedComponents
+                     * @return {?}
+                     */
+                    function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); })));
+                }
+                else {
+                    return rxjs.of(configuredComponents);
+                }
+            })));
+        };
+        CmsComponentConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CmsComponentConnector.ctorParameters = function () { return [
+            { type: CmsStructureConfigService },
+            { type: CmsComponentAdapter },
+            { type: OccConfig }
+        ]; };
+        /** @nocollapse */ CmsComponentConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(core.ɵɵinject(CmsStructureConfigService), core.ɵɵinject(CmsComponentAdapter), core.ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
+        return CmsComponentConnector;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CmsComponentConnector.prototype.cmsStructureConfigService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        CmsComponentConnector.prototype.adapter;
+        /**
+         * @type {?}
+         * @protected
+         */
+        CmsComponentConnector.prototype.config;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ComponentsEffects = /** @class */ (function () {
+        function ComponentsEffects(actions$, cmsComponentLoader, featureConfigService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.cmsComponentLoader = cmsComponentLoader;
+            this.featureConfigService = featureConfigService;
+            this.contextChange$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
+            this.loadComponent$ = effects$d.createEffect((/**
+             * @return {?}
+             */
+            function () { return (/**
+             * @param {?=} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
+                return _this.actions$.pipe(effects$d.ofType(LOAD_CMS_COMPONENT), operators.groupBy((/**
+                 * @param {?} actions
+                 * @return {?}
+                 */
+                function (actions) { return serializePageContext(actions.payload.pageContext); })), operators.mergeMap((/**
+                 * @param {?} actionGroup
+                 * @return {?}
+                 */
+                function (actionGroup) {
+                    return actionGroup.pipe(bufferDebounceTime(debounce, scheduler), operators.mergeMap((/**
+                     * @param {?} actions
+                     * @return {?}
+                     */
+                    function (actions) {
+                        return _this.loadComponentsEffect(actions.map((/**
+                         * @param {?} action
+                         * @return {?}
+                         */
+                        function (action) { return action.payload.uid; })), actions[0].payload.pageContext);
+                    })));
+                })), withdrawOn(_this.contextChange$));
+            }); }));
+        }
+        /**
+         * @private
+         * @param {?} componentUids
+         * @param {?} pageContext
+         * @return {?}
+         */
+        ComponentsEffects.prototype.loadComponentsEffect = /**
+         * @private
+         * @param {?} componentUids
+         * @param {?} pageContext
+         * @return {?}
+         */
+        function (componentUids, pageContext) {
+            var _this = this;
+            // TODO: remove, deprecated behavior since 1.4
+            if (!this.featureConfigService.isLevel('1.4')) {
+                return rxjs.merge.apply(void 0, __spread(componentUids.map((/**
+                 * @param {?} uid
+                 * @return {?}
+                 */
+                function (uid) {
+                    return _this.cmsComponentLoader.get(uid, pageContext).pipe(operators.map((/**
+                     * @param {?} component
+                     * @return {?}
+                     */
+                    function (component) {
+                        return new LoadCmsComponentSuccess({
+                            component: component,
+                            uid: component.uid,
+                            pageContext: pageContext,
+                        });
+                    })), operators.catchError((/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        return rxjs.of(new LoadCmsComponentFail({
+                            uid: uid,
+                            error: makeErrorSerializable(error),
+                            pageContext: pageContext,
+                        }));
+                    })));
+                }))));
+            }
+            // END OF (TODO: remove, deprecated behavior since 1.4)
+            return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(operators.switchMap((/**
+             * @param {?} components
+             * @return {?}
+             */
+            function (components) {
+                return rxjs.from(components.map((/**
+                 * @param {?} component
+                 * @return {?}
+                 */
+                function (component) {
+                    return new LoadCmsComponentSuccess({
+                        component: component,
+                        uid: component.uid,
+                        pageContext: pageContext,
+                    });
+                })));
+            })), operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) {
+                return rxjs.from(componentUids.map((/**
+                 * @param {?} uid
+                 * @return {?}
+                 */
+                function (uid) {
+                    return new LoadCmsComponentFail({
+                        uid: uid,
+                        error: makeErrorSerializable(error),
+                        pageContext: pageContext,
+                    });
+                })));
+            })));
+        };
+        ComponentsEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ComponentsEffects.ctorParameters = function () { return [
+            { type: effects$d.Actions },
+            { type: CmsComponentConnector },
+            { type: FeatureConfigService }
+        ]; };
+        return ComponentsEffects;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        ComponentsEffects.prototype.contextChange$;
+        /** @type {?} */
+        ComponentsEffects.prototype.loadComponent$;
+        /**
+         * @type {?}
+         * @private
+         */
+        ComponentsEffects.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        ComponentsEffects.prototype.cmsComponentLoader;
+        /**
+         * @type {?}
+         * @private
+         */
+        ComponentsEffects.prototype.featureConfigService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UrlMatcherFactoryService = /** @class */ (function () {
         function UrlMatcherFactoryService(globService) {
             this.globService = globService;
@@ -47137,350 +47682,147 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * Service that provides access to CMS structure from a static
-     * configuration or configuration file. This class uses static
-     * configuration is designed in async fashion so that configurations
-     * can be loaded from a file or stream.
-     *
-     * The intent of the `CmsStructureConfigService` however is to provide
-     * fast loading pages and default cms structure for commodity commerce.
-     * @abstract
-     */
-    var CmsStructureConfigService = /** @class */ (function () {
-        function CmsStructureConfigService(cmsDataConfig) {
-            this.cmsDataConfig = cmsDataConfig;
-        }
-        /**
-         * Merge the cms structure to the pageStructure. The page structure
-         * can either hold complete page structures or global structures that
-         * might apply to all pages (such has header coponents).
-         */
-        /**
-         * Merge the cms structure to the pageStructure. The page structure
-         * can either hold complete page structures or global structures that
-         * might apply to all pages (such has header coponents).
-         * @param {?} pageId
-         * @param {?} pageStructure
-         * @return {?}
-         */
-        CmsStructureConfigService.prototype.mergePageStructure = /**
-         * Merge the cms structure to the pageStructure. The page structure
-         * can either hold complete page structures or global structures that
-         * might apply to all pages (such has header coponents).
-         * @param {?} pageId
-         * @param {?} pageStructure
-         * @return {?}
-         */
-        function (pageId, pageStructure) {
+    var NavigationEntryItemEffects = /** @class */ (function () {
+        function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
             var _this = this;
-            return this.mergePage(pageId, pageStructure).pipe(operators.switchMap((/**
-             * @param {?} page
+            this.actions$ = actions$;
+            this.cmsComponentConnector = cmsComponentConnector;
+            this.routingService = routingService;
+            this.loadNavigationItems$ = this.actions$.pipe(effects$d.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map((/**
+             * @param {?} action
              * @return {?}
              */
-            function (page) { return _this.mergeSlots(page); })));
-        };
-        /**
-         *
-         * Returns boolean observable to indicate whether the page should not be
-         * loaded from the backend. This is useful for pages which are comoditized
-         * and follow best practice.
-         *
-         * By default, configurable pages are driven by static configuration,
-         * in order to allow for fast loading pages (preventing network delays).
-         */
-        /**
-         *
-         * Returns boolean observable to indicate whether the page should not be
-         * loaded from the backend. This is useful for pages which are comoditized
-         * and follow best practice.
-         *
-         * By default, configurable pages are driven by static configuration,
-         * in order to allow for fast loading pages (preventing network delays).
-         * @param {?} pageId
-         * @return {?}
-         */
-        CmsStructureConfigService.prototype.shouldIgnoreBackend = /**
-         *
-         * Returns boolean observable to indicate whether the page should not be
-         * loaded from the backend. This is useful for pages which are comoditized
-         * and follow best practice.
-         *
-         * By default, configurable pages are driven by static configuration,
-         * in order to allow for fast loading pages (preventing network delays).
-         * @param {?} pageId
-         * @return {?}
-         */
-        function (pageId) {
-            return this.getPageFromConfig(pageId).pipe(operators.map((/**
-             * @param {?} page
+            function (action) { return action.payload; })), operators.map((/**
+             * @param {?} payload
              * @return {?}
              */
-            function (page) { return !!page && !!page.ignoreBackend; })));
-        };
-        /**
-         * returns an Observable component data from the static configuration.
-         */
-        /**
-         * returns an Observable component data from the static configuration.
-         * @param {?} componentId
-         * @return {?}
-         */
-        CmsStructureConfigService.prototype.getComponentFromConfig = /**
-         * returns an Observable component data from the static configuration.
-         * @param {?} componentId
-         * @return {?}
-         */
-        function (componentId) {
-            return rxjs.of(this.getComponentById(componentId));
-        };
-        /**
-         * returns an Observable components data from the static configuration.
-         */
-        /**
-         * returns an Observable components data from the static configuration.
-         * @param {?} ids
-         * @return {?}
-         */
-        CmsStructureConfigService.prototype.getComponentsFromConfig = /**
-         * returns an Observable components data from the static configuration.
-         * @param {?} ids
-         * @return {?}
-         */
-        function (ids) {
-            var _this = this;
-            return rxjs.of(ids.map((/**
-             * @param {?} id
+            function (payload) {
+                return {
+                    ids: _this.getIdListByItemType(payload.items),
+                    nodeId: payload.nodeId,
+                };
+            })), operators.mergeMap((/**
+             * @param {?} data
              * @return {?}
              */
-            function (id) { return _this.getComponentById(id); })));
-        };
-        /**
-         * returns an observable with the `PageConfig`.
-         */
-        /**
-         * returns an observable with the `PageConfig`.
-         * @protected
-         * @param {?} pageId
-         * @return {?}
-         */
-        CmsStructureConfigService.prototype.getPageFromConfig = /**
-         * returns an observable with the `PageConfig`.
-         * @protected
-         * @param {?} pageId
-         * @return {?}
-         */
-        function (pageId) {
-            return rxjs.of(this.cmsDataConfig.cmsStructure && this.cmsDataConfig.cmsStructure.pages
-                ? this.cmsDataConfig.cmsStructure.pages.find((/**
-                 * @param {?} p
-                 * @return {?}
-                 */
-                function (p) { return p.pageId === pageId; }))
-                : null);
-        };
-        /**
-         * Merge page data from the configuration into the given structure, if any.
-         * If the given page structure is empty, a page is created and the page slots are
-         * are merged into the page.
-         */
-        /**
-         * Merge page data from the configuration into the given structure, if any.
-         * If the given page structure is empty, a page is created and the page slots are
-         * are merged into the page.
-         * @protected
-         * @param {?} pageId
-         * @param {?} pageStructure
-         * @return {?}
-         */
-        CmsStructureConfigService.prototype.mergePage = /**
-         * Merge page data from the configuration into the given structure, if any.
-         * If the given page structure is empty, a page is created and the page slots are
-         * are merged into the page.
-         * @protected
-         * @param {?} pageId
-         * @param {?} pageStructure
-         * @return {?}
-         */
-        function (pageId, pageStructure) {
-            var _this = this;
-            return this.getPageFromConfig(pageId).pipe(operators.switchMap((/**
-             * @param {?} page
-             * @return {?}
-             */
-            function (page) {
-                if (page) {
-                    // serialize page data
-                    if (!pageStructure.page) {
-                        pageStructure.page = __assign({}, page);
-                        pageStructure.page.slots = {};
-                    }
-                    if (!pageStructure.page.slots) {
-                        pageStructure.page.slots = {};
-                    }
-                    return _this.mergeSlots(pageStructure, page.slots);
+            function (data) {
+                if (data.ids.componentIds.length > 0) {
+                    return _this.routingService.getRouterState().pipe(operators.filter((/**
+                     * @param {?} routerState
+                     * @return {?}
+                     */
+                    function (routerState) { return routerState !== undefined; })), operators.map((/**
+                     * @param {?} routerState
+                     * @return {?}
+                     */
+                    function (routerState) { return routerState.state.context; })), operators.take(1), operators.mergeMap((/**
+                     * @param {?} pageContext
+                     * @return {?}
+                     */
+                    function (pageContext) {
+                        // download all items in one request
+                        return _this.cmsComponentConnector
+                            .getList(data.ids.componentIds, pageContext)
+                            .pipe(operators.map((/**
+                         * @param {?} components
+                         * @return {?}
+                         */
+                        function (components) {
+                            return new LoadCmsNavigationItemsSuccess({
+                                nodeId: data.nodeId,
+                                components: components,
+                            });
+                        })), operators.catchError((/**
+                         * @param {?} error
+                         * @return {?}
+                         */
+                        function (error) {
+                            return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
+                        })));
+                    })));
+                }
+                else if (data.ids.pageIds.length > 0) {
+                    // TODO: future work
+                    // dispatch action to load cms page one by one
+                }
+                else if (data.ids.mediaIds.length > 0) {
+                    // TODO: future work
+                    // send request to get list of media
                 }
                 else {
-                    return rxjs.of(pageStructure);
+                    return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
                 }
             })));
-        };
+        }
+        // We only consider 3 item types: cms page, cms component, and media.
+        // We only consider 3 item types: cms page, cms component, and media.
         /**
-         * Adds any pre-configured slots for pages that do not use them.
-         * If pages have a slot for the given position, the configiuration
-         * is ingored. Even if the slot does not have inner structure (such as
-         * components), so that the cms structure is able to override the (static)
-         * configuration.
+         * @param {?} itemList
+         * @return {?}
          */
+        NavigationEntryItemEffects.prototype.getIdListByItemType = 
+        // We only consider 3 item types: cms page, cms component, and media.
         /**
-         * Adds any pre-configured slots for pages that do not use them.
-         * If pages have a slot for the given position, the configiuration
-         * is ingored. Even if the slot does not have inner structure (such as
-         * components), so that the cms structure is able to override the (static)
-         * configuration.
-         * @protected
-         * @param {?} pageStructure
-         * @param {?=} slots
+         * @param {?} itemList
          * @return {?}
          */
-        CmsStructureConfigService.prototype.mergeSlots = /**
-         * Adds any pre-configured slots for pages that do not use them.
-         * If pages have a slot for the given position, the configiuration
-         * is ingored. Even if the slot does not have inner structure (such as
-         * components), so that the cms structure is able to override the (static)
-         * configuration.
-         * @protected
-         * @param {?} pageStructure
-         * @param {?=} slots
-         * @return {?}
-         */
-        function (pageStructure, slots) {
-            var e_1, _a, e_2, _b;
-            // if no slots have been given, we use the global configured slots
-            if (!slots &&
-                this.cmsDataConfig.cmsStructure &&
-                this.cmsDataConfig.cmsStructure.slots) {
-                slots = this.cmsDataConfig.cmsStructure.slots;
-            }
-            if (!slots) {
-                return rxjs.of(pageStructure);
-            }
-            try {
-                for (var _c = __values(Object.keys(slots)), _d = _c.next(); !_d.done; _d = _c.next()) {
-                    var position = _d.value;
-                    if (!Object.keys(pageStructure.page.slots).includes(position)) {
-                        // the global slot isn't yet part of the page structure
-                        pageStructure.page.slots[position] = {};
-                        try {
-                            for (var _e = (e_2 = void 0, __values(this.getComponentsByPosition(slots, position))), _f = _e.next(); !_f.done; _f = _e.next()) {
-                                var component = _f.value;
-                                if (!pageStructure.page.slots[position].components) {
-                                    pageStructure.page.slots[position].components = [];
-                                }
-                                pageStructure.page.slots[position].components.push({
-                                    uid: component.uid,
-                                    flexType: component.flexType,
-                                    typeCode: component.typeCode,
-                                });
-                                if (!pageStructure.components) {
-                                    pageStructure.components = [];
-                                }
-                                pageStructure.components.push(component);
-                            }
-                        }
-                        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-                        finally {
-                            try {
-                                if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
-                            }
-                            finally { if (e_2) throw e_2.error; }
-                        }
-                    }
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
-            return rxjs.of(pageStructure);
-        };
-        /**
-         * @protected
-         * @param {?} slots
-         * @param {?} position
-         * @return {?}
-         */
-        CmsStructureConfigService.prototype.getComponentsByPosition = /**
-         * @protected
-         * @param {?} slots
-         * @param {?} position
-         * @return {?}
-         */
-        function (slots, position) {
-            var e_3, _a;
+        function (itemList) {
             /** @type {?} */
-            var components = [];
-            if (slots[position] && slots[position].componentIds) {
-                try {
-                    for (var _b = __values(slots[position].componentIds), _c = _b.next(); !_c.done; _c = _b.next()) {
-                        var componentId = _c.value;
-                        if (this.cmsDataConfig.cmsStructure &&
-                            this.cmsDataConfig.cmsStructure.components) {
-                            /** @type {?} */
-                            var component = this.cmsDataConfig.cmsStructure.components[componentId];
-                            if (component) {
-                                components.push(__assign({ uid: componentId }, component));
-                            }
-                        }
-                    }
+            var pageIds = [];
+            /** @type {?} */
+            var componentIds = [];
+            /** @type {?} */
+            var mediaIds = [];
+            itemList.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            function (item) {
+                if (item.superType === 'AbstractCMSComponent') {
+                    componentIds.push(item.id);
                 }
-                catch (e_3_1) { e_3 = { error: e_3_1 }; }
-                finally {
-                    try {
-                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-                    }
-                    finally { if (e_3) throw e_3.error; }
+                else if (item.superType === 'AbstractPage') {
+                    pageIds.push(item.id);
                 }
-            }
-            return components;
+                else if (item.superType === 'AbstractMedia') {
+                    mediaIds.push(item.id);
+                }
+            }));
+            return { pageIds: pageIds, componentIds: componentIds, mediaIds: mediaIds };
         };
-        /**
-         * @protected
-         * @param {?} componentId
-         * @return {?}
-         */
-        CmsStructureConfigService.prototype.getComponentById = /**
-         * @protected
-         * @param {?} componentId
-         * @return {?}
-         */
-        function (componentId) {
-            return this.cmsDataConfig.cmsStructure &&
-                this.cmsDataConfig.cmsStructure.components
-                ? this.cmsDataConfig.cmsStructure.components[componentId]
-                : undefined;
-        };
-        CmsStructureConfigService.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
+        NavigationEntryItemEffects.decorators = [
+            { type: core.Injectable }
         ];
         /** @nocollapse */
-        CmsStructureConfigService.ctorParameters = function () { return [
-            { type: CmsStructureConfig }
+        NavigationEntryItemEffects.ctorParameters = function () { return [
+            { type: effects$d.Actions },
+            { type: CmsComponentConnector },
+            { type: RoutingService }
         ]; };
-        /** @nocollapse */ CmsStructureConfigService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(core.ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
-        return CmsStructureConfigService;
+        __decorate([
+            effects$d.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
+        return NavigationEntryItemEffects;
     }());
     if (false) {
+        /** @type {?} */
+        NavigationEntryItemEffects.prototype.loadNavigationItems$;
         /**
          * @type {?}
-         * @protected
+         * @private
          */
-        CmsStructureConfigService.prototype.cmsDataConfig;
+        NavigationEntryItemEffects.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        NavigationEntryItemEffects.prototype.cmsComponentConnector;
+        /**
+         * @type {?}
+         * @private
+         */
+        NavigationEntryItemEffects.prototype.routingService;
     }
 
     /**
@@ -47658,7 +48000,14 @@
                     function (cmsStructure) {
                         /** @type {?} */
                         var actions = [
-                            new CmsGetComponentFromPage(cmsStructure.components, pageContext),
+                            new CmsGetComponentFromPage(cmsStructure.components.map((/**
+                             * @param {?} component
+                             * @return {?}
+                             */
+                            function (component) { return ({
+                                component: component,
+                                pageContext: pageContext,
+                            }); }))),
                             new LoadCmsPageDataSuccess(pageContext, cmsStructure.page),
                         ];
                         /** @type {?} */
@@ -47724,445 +48073,10 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @template T
-     * @param {?=} time
-     * @param {?=} scheduler
-     * @return {?}
-     */
-    function bufferDebounceTime(time, scheduler) {
-        if (time === void 0) { time = 0; }
-        return (/**
-         * @param {?} source
-         * @return {?}
-         */
-        function (source) {
-            /** @type {?} */
-            var bufferedValues = [];
-            return source.pipe(operators.tap((/**
-             * @param {?} value
-             * @return {?}
-             */
-            function (value) { return bufferedValues.push(value); })), operators.debounceTime(time, scheduler), operators.map((/**
-             * @return {?}
-             */
-            function () { return bufferedValues; })), operators.tap((/**
-             * @return {?}
-             */
-            function () { return (bufferedValues = []); })));
-        });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CmsComponentConnector = /** @class */ (function () {
-        function CmsComponentConnector(cmsStructureConfigService, adapter, config) {
-            this.cmsStructureConfigService = cmsStructureConfigService;
-            this.adapter = adapter;
-            this.config = config;
-        }
-        /**
-         * @template T
-         * @param {?} id
-         * @param {?} pageContext
-         * @return {?}
-         */
-        CmsComponentConnector.prototype.get = /**
-         * @template T
-         * @param {?} id
-         * @param {?} pageContext
-         * @return {?}
-         */
-        function (id, pageContext) {
-            var _this = this;
-            return this.cmsStructureConfigService
-                .getComponentFromConfig(id)
-                .pipe(operators.switchMap((/**
-             * @param {?} configuredComponent
-             * @return {?}
-             */
-            function (configuredComponent) {
-                return configuredComponent
-                    ? rxjs.of(configuredComponent)
-                    : _this.adapter.load(id, pageContext);
-            })));
-        };
-        /**
-         * @param {?} ids
-         * @param {?} pageContext
-         * @return {?}
-         */
-        CmsComponentConnector.prototype.getList = /**
-         * @param {?} ids
-         * @param {?} pageContext
-         * @return {?}
-         */
-        function (ids, pageContext) {
-            var _this = this;
-            return this.cmsStructureConfigService.getComponentsFromConfig(ids).pipe(operators.switchMap((/**
-             * @param {?} configuredComponents
-             * @return {?}
-             */
-            function (configuredComponents) {
-                // check if we have some components that are not loaded from configuration
-                /** @type {?} */
-                var missingIds = configuredComponents.reduce((/**
-                 * @param {?} acc
-                 * @param {?} component
-                 * @param {?} index
-                 * @return {?}
-                 */
-                function (acc, component, index) {
-                    if (component === undefined) {
-                        acc.push(ids[index]);
-                    }
-                    return acc;
-                }), []);
-                if (missingIds.length > 0) {
-                    return (_this.config.backend.occ.legacy
-                        ? _this.adapter.findComponentsByIdsLegacy(missingIds, pageContext)
-                        : _this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(operators.map((/**
-                     * @param {?} loadedComponents
-                     * @return {?}
-                     */
-                    function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); })));
-                }
-                else {
-                    return rxjs.of(configuredComponents);
-                }
-            })));
-        };
-        CmsComponentConnector.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        CmsComponentConnector.ctorParameters = function () { return [
-            { type: CmsStructureConfigService },
-            { type: CmsComponentAdapter },
-            { type: OccConfig }
-        ]; };
-        /** @nocollapse */ CmsComponentConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(core.ɵɵinject(CmsStructureConfigService), core.ɵɵinject(CmsComponentAdapter), core.ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
-        return CmsComponentConnector;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @protected
-         */
-        CmsComponentConnector.prototype.cmsStructureConfigService;
-        /**
-         * @type {?}
-         * @protected
-         */
-        CmsComponentConnector.prototype.adapter;
-        /**
-         * @type {?}
-         * @protected
-         */
-        CmsComponentConnector.prototype.config;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ComponentEffects = /** @class */ (function () {
-        function ComponentEffects(actions$, cmsComponentLoader, featureConfigService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.cmsComponentLoader = cmsComponentLoader;
-            this.featureConfigService = featureConfigService;
-            this.contextChange$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
-            this.loadComponent$ = effects$d.createEffect((/**
-             * @return {?}
-             */
-            function () { return (/**
-             * @param {?=} __0
-             * @return {?}
-             */
-            function (_a) {
-                var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-                return _this.actions$.pipe(effects$d.ofType(LOAD_CMS_COMPONENT), operators.groupBy((/**
-                 * @param {?} actions
-                 * @return {?}
-                 */
-                function (actions) { return serializePageContext(actions.pageContext); })), operators.mergeMap((/**
-                 * @param {?} actionGroup
-                 * @return {?}
-                 */
-                function (actionGroup) {
-                    return actionGroup.pipe(bufferDebounceTime(debounce, scheduler), operators.mergeMap((/**
-                     * @param {?} actions
-                     * @return {?}
-                     */
-                    function (actions) {
-                        return _this.loadComponentsEffect(actions.map((/**
-                         * @param {?} action
-                         * @return {?}
-                         */
-                        function (action) { return action.payload; })), actions[0].pageContext);
-                    })));
-                })), withdrawOn(_this.contextChange$));
-            }); }));
-        }
-        /**
-         * @private
-         * @param {?} componentUids
-         * @param {?} pageContext
-         * @return {?}
-         */
-        ComponentEffects.prototype.loadComponentsEffect = /**
-         * @private
-         * @param {?} componentUids
-         * @param {?} pageContext
-         * @return {?}
-         */
-        function (componentUids, pageContext) {
-            var _this = this;
-            // TODO: remove, deprecated behavior since 1.4
-            if (!this.featureConfigService.isLevel('1.4')) {
-                return rxjs.merge.apply(void 0, __spread(componentUids.map((/**
-                 * @param {?} componentUid
-                 * @return {?}
-                 */
-                function (componentUid) {
-                    return _this.cmsComponentLoader.get(componentUid, pageContext).pipe(operators.map((/**
-                     * @param {?} component
-                     * @return {?}
-                     */
-                    function (component) {
-                        return new LoadCmsComponentSuccess(component, component.uid, pageContext);
-                    })), operators.catchError((/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        return rxjs.of(new LoadCmsComponentFail(componentUid, makeErrorSerializable(error), pageContext));
-                    })));
-                }))));
-            }
-            // END OF (TODO: remove, deprecated behavior since 1.4)
-            return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(operators.switchMap((/**
-             * @param {?} components
-             * @return {?}
-             */
-            function (components) {
-                return rxjs.from(components.map((/**
-                 * @param {?} component
-                 * @return {?}
-                 */
-                function (component) {
-                    return new LoadCmsComponentSuccess(component, component.uid, pageContext);
-                })));
-            })), operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) {
-                return rxjs.from(componentUids.map((/**
-                 * @param {?} uid
-                 * @return {?}
-                 */
-                function (uid) {
-                    return new LoadCmsComponentFail(uid, makeErrorSerializable(error), pageContext);
-                })));
-            })));
-        };
-        ComponentEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ComponentEffects.ctorParameters = function () { return [
-            { type: effects$d.Actions },
-            { type: CmsComponentConnector },
-            { type: FeatureConfigService }
-        ]; };
-        return ComponentEffects;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        ComponentEffects.prototype.contextChange$;
-        /** @type {?} */
-        ComponentEffects.prototype.loadComponent$;
-        /**
-         * @type {?}
-         * @private
-         */
-        ComponentEffects.prototype.actions$;
-        /**
-         * @type {?}
-         * @private
-         */
-        ComponentEffects.prototype.cmsComponentLoader;
-        /**
-         * @type {?}
-         * @private
-         */
-        ComponentEffects.prototype.featureConfigService;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var NavigationEntryItemEffects = /** @class */ (function () {
-        function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.cmsComponentConnector = cmsComponentConnector;
-            this.routingService = routingService;
-            this.loadNavigationItems$ = this.actions$.pipe(effects$d.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.map((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return {
-                    ids: _this.getIdListByItemType(payload.items),
-                    nodeId: payload.nodeId,
-                };
-            })), operators.mergeMap((/**
-             * @param {?} data
-             * @return {?}
-             */
-            function (data) {
-                if (data.ids.componentIds.length > 0) {
-                    return _this.routingService.getRouterState().pipe(operators.filter((/**
-                     * @param {?} routerState
-                     * @return {?}
-                     */
-                    function (routerState) { return routerState !== undefined; })), operators.map((/**
-                     * @param {?} routerState
-                     * @return {?}
-                     */
-                    function (routerState) { return routerState.state.context; })), operators.take(1), operators.mergeMap((/**
-                     * @param {?} pageContext
-                     * @return {?}
-                     */
-                    function (pageContext) {
-                        // download all items in one request
-                        return _this.cmsComponentConnector
-                            .getList(data.ids.componentIds, pageContext)
-                            .pipe(operators.map((/**
-                         * @param {?} components
-                         * @return {?}
-                         */
-                        function (components) {
-                            return new LoadCmsNavigationItemsSuccess({
-                                nodeId: data.nodeId,
-                                components: components,
-                            });
-                        })), operators.catchError((/**
-                         * @param {?} error
-                         * @return {?}
-                         */
-                        function (error) {
-                            return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
-                        })));
-                    })));
-                }
-                else if (data.ids.pageIds.length > 0) {
-                    // TODO: future work
-                    // dispatch action to load cms page one by one
-                }
-                else if (data.ids.mediaIds.length > 0) {
-                    // TODO: future work
-                    // send request to get list of media
-                }
-                else {
-                    return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
-                }
-            })));
-        }
-        // We only consider 3 item types: cms page, cms component, and media.
-        // We only consider 3 item types: cms page, cms component, and media.
-        /**
-         * @param {?} itemList
-         * @return {?}
-         */
-        NavigationEntryItemEffects.prototype.getIdListByItemType = 
-        // We only consider 3 item types: cms page, cms component, and media.
-        /**
-         * @param {?} itemList
-         * @return {?}
-         */
-        function (itemList) {
-            /** @type {?} */
-            var pageIds = [];
-            /** @type {?} */
-            var componentIds = [];
-            /** @type {?} */
-            var mediaIds = [];
-            itemList.forEach((/**
-             * @param {?} item
-             * @return {?}
-             */
-            function (item) {
-                if (item.superType === 'AbstractCMSComponent') {
-                    componentIds.push(item.id);
-                }
-                else if (item.superType === 'AbstractPage') {
-                    pageIds.push(item.id);
-                }
-                else if (item.superType === 'AbstractMedia') {
-                    mediaIds.push(item.id);
-                }
-            }));
-            return { pageIds: pageIds, componentIds: componentIds, mediaIds: mediaIds };
-        };
-        NavigationEntryItemEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        NavigationEntryItemEffects.ctorParameters = function () { return [
-            { type: effects$d.Actions },
-            { type: CmsComponentConnector },
-            { type: RoutingService }
-        ]; };
-        __decorate([
-            effects$d.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
-        return NavigationEntryItemEffects;
-    }());
-    if (false) {
-        /** @type {?} */
-        NavigationEntryItemEffects.prototype.loadNavigationItems$;
-        /**
-         * @type {?}
-         * @private
-         */
-        NavigationEntryItemEffects.prototype.actions$;
-        /**
-         * @type {?}
-         * @private
-         */
-        NavigationEntryItemEffects.prototype.cmsComponentConnector;
-        /**
-         * @type {?}
-         * @private
-         */
-        NavigationEntryItemEffects.prototype.routingService;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
     var effects$8 = [
         PageEffects,
-        ComponentEffects,
+        ComponentsEffects,
         NavigationEntryItemEffects,
     ];
 
@@ -48186,7 +48100,7 @@
         switch (action.type) {
             case LOAD_CMS_COMPONENT_FAIL:
                 return false;
-            case CMS_GET_COMPONENET_FROM_PAGE:
+            case CMS_GET_COMPONENT_FROM_PAGE:
             case LOAD_CMS_COMPONENT_SUCCESS:
                 return true;
         }
@@ -48199,30 +48113,38 @@
      * @return {?}
      */
     function reducer$e(state, action) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         if (state === void 0) { state = initialState$e; }
         switch (action.type) {
             case LOAD_CMS_COMPONENT: {
                 /** @type {?} */
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 /** @type {?} */
-                var context = serializePageContext(action.pageContext, true);
+                var context = serializePageContext(action.payload.pageContext, true);
                 return __assign({}, state, { pageContext: __assign({}, state.pageContext, (_a = {}, _a[context] = pageContextReducer(state.pageContext[context], action), _a)) });
             }
             case LOAD_CMS_COMPONENT_FAIL: {
                 /** @type {?} */
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 /** @type {?} */
-                var context = serializePageContext(action.pageContext, true);
+                var context = serializePageContext(action.payload.pageContext, true);
                 return __assign({}, state, { pageContext: __assign({}, state.pageContext, (_b = {}, _b[context] = pageContextReducer(state.pageContext[context], action), _b)) });
             }
-            case CMS_GET_COMPONENET_FROM_PAGE:
             case LOAD_CMS_COMPONENT_SUCCESS: {
                 /** @type {?} */
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 /** @type {?} */
-                var context = serializePageContext(action.pageContext, true);
-                return __assign({}, state, { component: (/** @type {?} */ (action.payload)), pageContext: __assign({}, state.pageContext, (_c = {}, _c[context] = pageContextReducer(state.pageContext[context], action), _c)) });
+                var context = serializePageContext(action.payload.pageContext, true);
+                return __assign({}, state, { component: (/** @type {?} */ (action.payload.component)), pageContext: __assign({}, state.pageContext, (_c = {}, _c[context] = pageContextReducer(state.pageContext[context], action), _c)) });
+            }
+            case CMS_GET_COMPONENT_FROM_PAGE: {
+                /** @type {?} */
+                var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
+                if (!Array.isArray(action.payload)) {
+                    /** @type {?} */
+                    var context = serializePageContext(action.payload.pageContext, true);
+                    return __assign({}, state, { component: (/** @type {?} */ (action.payload.component)), pageContext: __assign({}, state.pageContext, (_d = {}, _d[context] = pageContextReducer(state.pageContext[context], action), _d)) });
+                }
             }
         }
         return state;
@@ -48343,11 +48265,6 @@
                     catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$h(PageType.CATALOG_PAGE)),
                 }),
             }),
-            /**
-             * @deprecated in favour of `components`. From 2.0, this will be removed.
-             */
-            // TODO(issue:6027) - remove this `component` slice
-            component: entityLoaderReducer(COMPONENT_ENTITY),
             components: entityReducer(COMPONENT_ENTITY, reducer$e),
             navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
         };
@@ -52081,7 +51998,7 @@
          */
         function (productState) { return loaderErrorSelector(productState); }));
     });
-    var ɵ1$t = /**
+    var ɵ1$s = /**
      * @param {?} details
      * @return {?}
      */
@@ -52089,7 +52006,7 @@
         return Object.keys(details.entities);
     };
     /** @type {?} */
-    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$t));
+    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$s));
 
     /**
      * @fileoverview added by tsickle
@@ -55213,20 +55130,20 @@
     function (storesState) { return storesState.findStores; };
     /** @type {?} */
     var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$J));
-    var ɵ1$u = /**
+    var ɵ1$t = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$u));
-    var ɵ2$l = /**
+    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$t));
+    var ɵ2$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$l));
+    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$k));
 
     /**
      * @fileoverview added by tsickle
@@ -55239,20 +55156,20 @@
     function (storesState) { return storesState.viewAllStores; };
     /** @type {?} */
     var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$K));
-    var ɵ1$v = /**
+    var ɵ1$u = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$v));
-    var ɵ2$m = /**
+    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$u));
+    var ɵ2$l = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$m));
+    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$l));
 
     /**
      * @fileoverview added by tsickle
@@ -62519,9 +62436,9 @@
     exports.ɵdq = clearCmsState;
     exports.ɵdr = metaReducers$4;
     exports.ɵds = effects$8;
-    exports.ɵdt = PageEffects;
-    exports.ɵdu = ComponentEffects;
-    exports.ɵdv = NavigationEntryItemEffects;
+    exports.ɵdt = ComponentsEffects;
+    exports.ɵdu = NavigationEntryItemEffects;
+    exports.ɵdv = PageEffects;
     exports.ɵdw = reducer$g;
     exports.ɵdx = reducer$h;
     exports.ɵdy = reducer$e;

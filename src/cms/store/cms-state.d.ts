@@ -5,11 +5,10 @@ import { NodeItem } from '../model/node-item.model';
 import { Page } from '../model/page.model';
 export declare const CMS_FEATURE = "cms";
 export declare const NAVIGATION_DETAIL_ENTITY = "[Cms] Navigation Entity";
-export declare const COMPONENT_ENTITY = "[Cms[ Component Entity";
+export declare const COMPONENT_ENTITY = "[Cms] Component Entity";
 export interface StateWithCms {
     [CMS_FEATURE]: CmsState;
 }
-export declare type ComponentState = EntityLoaderState<any>;
 export declare type ComponentsState = EntityState<ComponentsContext>;
 export interface ComponentsContext {
     component: CmsComponent;
@@ -67,7 +66,6 @@ export interface PageState {
 }
 export interface CmsState {
     page: PageState;
-    component: ComponentState;
     components: ComponentsState;
     navigation: EntityLoaderState<NodeItem>;
 }

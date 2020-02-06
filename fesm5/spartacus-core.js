@@ -38517,9 +38517,8 @@ if (false) {
 var CMS_FEATURE = 'cms';
 /** @type {?} */
 var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
-// TODO(issue:6027) - fix the const value to `[Cms] Component Entity`
 /** @type {?} */
-var COMPONENT_ENTITY = '[Cms[ Component Entity';
+var COMPONENT_ENTITY = '[Cms] Component Entity';
 /**
  * @record
  */
@@ -38595,8 +38594,6 @@ if (false) {
     /** @type {?} */
     CmsState.prototype.page;
     /** @type {?} */
-    CmsState.prototype.component;
-    /** @type {?} */
     CmsState.prototype.components;
     /** @type {?} */
     CmsState.prototype.navigation;
@@ -38612,16 +38609,13 @@ var LOAD_CMS_COMPONENT = '[Cms] Load Component';
 var LOAD_CMS_COMPONENT_FAIL = '[Cms] Load Component Fail';
 /** @type {?} */
 var LOAD_CMS_COMPONENT_SUCCESS = '[Cms] Load Component Success';
-// TODO(issue:6027) - rename the const to `CMS_GET_COMPONENT_FROM_PAGE`
 /** @type {?} */
-var CMS_GET_COMPONENET_FROM_PAGE = '[Cms] Get Component from Page';
+var CMS_GET_COMPONENT_FROM_PAGE = '[Cms] Get Component from Page';
 var LoadCmsComponent = /** @class */ (function (_super) {
     __extends(LoadCmsComponent, _super);
-    // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
-    function LoadCmsComponent(payload, pageContext) {
-        var _this = _super.call(this, COMPONENT_ENTITY, payload) || this;
+    function LoadCmsComponent(payload) {
+        var _this = _super.call(this, COMPONENT_ENTITY, payload.uid) || this;
         _this.payload = payload;
-        _this.pageContext = pageContext;
         _this.type = LOAD_CMS_COMPONENT;
         return _this;
     }
@@ -38632,16 +38626,12 @@ if (false) {
     LoadCmsComponent.prototype.type;
     /** @type {?} */
     LoadCmsComponent.prototype.payload;
-    /** @type {?} */
-    LoadCmsComponent.prototype.pageContext;
 }
 var LoadCmsComponentFail = /** @class */ (function (_super) {
     __extends(LoadCmsComponentFail, _super);
-    // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
-    function LoadCmsComponentFail(uid, payload, pageContext) {
-        var _this = _super.call(this, COMPONENT_ENTITY, uid, payload) || this;
+    function LoadCmsComponentFail(payload) {
+        var _this = _super.call(this, COMPONENT_ENTITY, payload.uid, payload.error) || this;
         _this.payload = payload;
-        _this.pageContext = pageContext;
         _this.type = LOAD_CMS_COMPONENT_FAIL;
         return _this;
     }
@@ -38652,8 +38642,6 @@ if (false) {
     LoadCmsComponentFail.prototype.type;
     /** @type {?} */
     LoadCmsComponentFail.prototype.payload;
-    /** @type {?} */
-    LoadCmsComponentFail.prototype.pageContext;
 }
 /**
  * @template T
@@ -38663,11 +38651,9 @@ var /**
  */
 LoadCmsComponentSuccess = /** @class */ (function (_super) {
     __extends(LoadCmsComponentSuccess, _super);
-    // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
-    function LoadCmsComponentSuccess(payload, uid, pageContext) {
-        var _this = _super.call(this, COMPONENT_ENTITY, uid || payload.uid || '') || this;
+    function LoadCmsComponentSuccess(payload) {
+        var _this = _super.call(this, COMPONENT_ENTITY, payload.uid || payload.component.uid || '') || this;
         _this.payload = payload;
-        _this.pageContext = pageContext;
         _this.type = LOAD_CMS_COMPONENT_SUCCESS;
         return _this;
     }
@@ -38678,8 +38664,6 @@ if (false) {
     LoadCmsComponentSuccess.prototype.type;
     /** @type {?} */
     LoadCmsComponentSuccess.prototype.payload;
-    /** @type {?} */
-    LoadCmsComponentSuccess.prototype.pageContext;
 }
 /**
  * @template T
@@ -38689,16 +38673,14 @@ var /**
  */
 CmsGetComponentFromPage = /** @class */ (function (_super) {
     __extends(CmsGetComponentFromPage, _super);
-    // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
-    function CmsGetComponentFromPage(payload, pageContext) {
-        var _this = _super.call(this, COMPONENT_ENTITY, payload.map((/**
+    function CmsGetComponentFromPage(payload) {
+        var _this = _super.call(this, COMPONENT_ENTITY, [].concat(payload).map((/**
          * @param {?} cmp
          * @return {?}
          */
-        function (cmp) { return cmp.uid; }))) || this;
+        function (cmp) { return cmp.component.uid; }))) || this;
         _this.payload = payload;
-        _this.pageContext = pageContext;
-        _this.type = CMS_GET_COMPONENET_FROM_PAGE;
+        _this.type = CMS_GET_COMPONENT_FROM_PAGE;
         return _this;
     }
     return CmsGetComponentFromPage;
@@ -38708,8 +38690,6 @@ if (false) {
     CmsGetComponentFromPage.prototype.type;
     /** @type {?} */
     CmsGetComponentFromPage.prototype.payload;
-    /** @type {?} */
-    CmsGetComponentFromPage.prototype.pageContext;
 }
 
 /**
@@ -38866,7 +38846,7 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
     LOAD_CMS_COMPONENT: LOAD_CMS_COMPONENT,
     LOAD_CMS_COMPONENT_FAIL: LOAD_CMS_COMPONENT_FAIL,
     LOAD_CMS_COMPONENT_SUCCESS: LOAD_CMS_COMPONENT_SUCCESS,
-    CMS_GET_COMPONENET_FROM_PAGE: CMS_GET_COMPONENET_FROM_PAGE,
+    CMS_GET_COMPONENT_FROM_PAGE: CMS_GET_COMPONENT_FROM_PAGE,
     LoadCmsComponent: LoadCmsComponent,
     LoadCmsComponentFail: LoadCmsComponentFail,
     LoadCmsComponentSuccess: LoadCmsComponentSuccess,
@@ -38905,98 +38885,13 @@ var getCmsState = createFeatureSelector(CMS_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-// TODO(issue:6027) - delete this method
-/**
- * @deprecated as of 2.0, this method will be removed.
- * @type {?}
- */
-var getComponentEntitiesSelector = (/**
- * @param {?} state
- * @return {?}
- */
-function (state) {
-    return Object.keys(state.entities).reduce((/**
-     * @param {?} acc
-     * @param {?} cur
-     * @return {?}
-     */
-    function (acc, cur) {
-        acc[cur] = state.entities[cur].value;
-        return acc;
-    }), {});
-});
-var ɵ0$x = getComponentEntitiesSelector;
-// TODO(issue:6027) - delete this method
-var ɵ1$p = /**
- * @param {?} state
- * @return {?}
- */
-function (state) { return state.component; };
-/**
- * @deprecated as of 2.0, this method will be removed in favour of `getComponentsState`
- * @type {?}
- */
-var getComponentState = createSelector(getCmsState, (ɵ1$p));
-// TODO(issue:6027) - delete this method
-/**
- * @deprecated as of 2.0, this method will be removed.
- * @type {?}
- */
-var getComponentEntities = createSelector(getComponentState, getComponentEntitiesSelector);
-// TODO(issue:6027) - delete this method
-/**
- * @deprecated as of 2.0, this method will be removed in favour of `componentsLoaderStateSelectorFactory`
- * @type {?}
- */
-var componentStateSelectorFactory = (/**
- * @param {?} uid
- * @return {?}
- */
-function (uid) {
-    return createSelector(getComponentState, (/**
-     * @param {?} entities
-     * @return {?}
-     */
-    function (entities) {
-        // the whole component entities are empty
-        if (Object.keys(entities.entities).length === 0) {
-            return undefined;
-        }
-        else {
-            return entityStateSelector(entities, uid);
-        }
-    }));
-});
-// TODO(issue:6027) - delete this method
-/**
- * @deprecated as of 2.0, this method will be removed in favour of `componentsSelectorFactory`
- * @type {?}
- */
-var componentSelectorFactory = (/**
- * @param {?} uid
- * @return {?}
- */
-function (uid) {
-    return createSelector(componentStateSelectorFactory(uid), (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) {
-        if (state) {
-            return loaderValueSelector(state);
-        }
-        else {
-            return undefined;
-        }
-    }));
-});
-var ɵ2$i = /**
+var ɵ0$x = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.components; };
 /** @type {?} */
-var getComponentsState = createSelector(getCmsState, (ɵ2$i));
+var getComponentsState = createSelector(getCmsState, (ɵ0$x));
 /** @type {?} */
 var componentsContextSelectorFactory = (/**
  * @param {?} uid
@@ -39146,7 +39041,7 @@ function (index, type) {
     }
     return { entities: {} };
 });
-var ɵ1$q = getIndexByType;
+var ɵ1$p = getIndexByType;
 /** @type {?} */
 var getPageComponentTypesSelector = (/**
  * @param {?} page
@@ -39185,7 +39080,7 @@ function (page) {
     }
     return Array.from(componentTypes);
 });
-var ɵ2$j = getPageComponentTypesSelector;
+var ɵ2$i = getPageComponentTypesSelector;
 var ɵ3$a = /**
  * @param {?} state
  * @return {?}
@@ -39291,10 +39186,6 @@ function (pageContext, position) {
  */
 
 var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
-    getComponentState: getComponentState,
-    getComponentEntities: getComponentEntities,
-    componentStateSelectorFactory: componentStateSelectorFactory,
-    componentSelectorFactory: componentSelectorFactory,
     getComponentsState: getComponentsState,
     componentsContextSelectorFactory: componentsContextSelectorFactory,
     componentsLoaderStateSelectorFactory: componentsLoaderStateSelectorFactory,
@@ -39519,12 +39410,12 @@ var CmsService = /** @class */ (function () {
                 ? serializePageContext(nextContext, true) === context
                 : false;
             if (!attemptedLoad && !couldBeLoadedWithPageData) {
-                _this.store.dispatch(new LoadCmsComponent(uid, pageContext));
+                _this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
             }
         })));
         /** @type {?} */
         var component$ = (/** @type {?} */ (this.store.pipe(select(componentsSelectorFactory(uid, context)), 
-        // TODO(issue:6027) - this `filter` should be removed.
+        // TODO(issue:6431) - this `filter` should be removed.
         // The reason for removal: with `filter` in place, when moving to a page that has restrictions, the component data will still emit the previous value.
         // Removing it causes some components to fail, because they are not checking
         // if the data is actually there. I noticed these that this component is failing, but there are possibly more:
@@ -39670,7 +39561,7 @@ var CmsService = /** @class */ (function () {
      * @return {?}
      */
     function (uid, pageContext) {
-        this.store.dispatch(new LoadCmsComponent(uid, pageContext));
+        this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
     };
     /**
      * Given pageContext, return the CMS page data
@@ -42871,7 +42762,7 @@ var getDeliveryModeSelector = (/**
 function (state) {
     return state.deliveryMode;
 });
-var ɵ1$r = getDeliveryModeSelector;
+var ɵ1$q = getDeliveryModeSelector;
 /** @type {?} */
 var getPaymentDetailsSelector = (/**
  * @param {?} state
@@ -42880,7 +42771,7 @@ var getPaymentDetailsSelector = (/**
 function (state) {
     return state.paymentDetails;
 });
-var ɵ2$k = getPaymentDetailsSelector;
+var ɵ2$j = getPaymentDetailsSelector;
 /** @type {?} */
 var getOrderDetailsSelector = (/**
  * @param {?} state
@@ -43033,7 +42924,7 @@ function (state) { return state.cardTypes; };
 var getCardTypesState = createSelector(getCheckoutState, (ɵ0$C));
 /** @type {?} */
 var getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-var ɵ1$s = /**
+var ɵ1$r = /**
  * @param {?} entites
  * @return {?}
  */
@@ -43045,7 +42936,7 @@ function (entites) {
     function (code) { return entites[code]; }));
 };
 /** @type {?} */
-var getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$s));
+var getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$r));
 
 /**
  * @fileoverview added by tsickle
@@ -45431,6 +45322,660 @@ var CmsPageTitleModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @template T
+ * @param {?=} time
+ * @param {?=} scheduler
+ * @return {?}
+ */
+function bufferDebounceTime(time, scheduler) {
+    if (time === void 0) { time = 0; }
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    function (source) {
+        /** @type {?} */
+        var bufferedValues = [];
+        return source.pipe(tap((/**
+         * @param {?} value
+         * @return {?}
+         */
+        function (value) { return bufferedValues.push(value); })), debounceTime(time, scheduler), map((/**
+         * @return {?}
+         */
+        function () { return bufferedValues; })), tap((/**
+         * @return {?}
+         */
+        function () { return (bufferedValues = []); })));
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Service that provides access to CMS structure from a static
+ * configuration or configuration file. This class uses static
+ * configuration is designed in async fashion so that configurations
+ * can be loaded from a file or stream.
+ *
+ * The intent of the `CmsStructureConfigService` however is to provide
+ * fast loading pages and default cms structure for commodity commerce.
+ * @abstract
+ */
+var CmsStructureConfigService = /** @class */ (function () {
+    function CmsStructureConfigService(cmsDataConfig) {
+        this.cmsDataConfig = cmsDataConfig;
+    }
+    /**
+     * Merge the cms structure to the pageStructure. The page structure
+     * can either hold complete page structures or global structures that
+     * might apply to all pages (such has header coponents).
+     */
+    /**
+     * Merge the cms structure to the pageStructure. The page structure
+     * can either hold complete page structures or global structures that
+     * might apply to all pages (such has header coponents).
+     * @param {?} pageId
+     * @param {?} pageStructure
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.mergePageStructure = /**
+     * Merge the cms structure to the pageStructure. The page structure
+     * can either hold complete page structures or global structures that
+     * might apply to all pages (such has header coponents).
+     * @param {?} pageId
+     * @param {?} pageStructure
+     * @return {?}
+     */
+    function (pageId, pageStructure) {
+        var _this = this;
+        return this.mergePage(pageId, pageStructure).pipe(switchMap((/**
+         * @param {?} page
+         * @return {?}
+         */
+        function (page) { return _this.mergeSlots(page); })));
+    };
+    /**
+     *
+     * Returns boolean observable to indicate whether the page should not be
+     * loaded from the backend. This is useful for pages which are comoditized
+     * and follow best practice.
+     *
+     * By default, configurable pages are driven by static configuration,
+     * in order to allow for fast loading pages (preventing network delays).
+     */
+    /**
+     *
+     * Returns boolean observable to indicate whether the page should not be
+     * loaded from the backend. This is useful for pages which are comoditized
+     * and follow best practice.
+     *
+     * By default, configurable pages are driven by static configuration,
+     * in order to allow for fast loading pages (preventing network delays).
+     * @param {?} pageId
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.shouldIgnoreBackend = /**
+     *
+     * Returns boolean observable to indicate whether the page should not be
+     * loaded from the backend. This is useful for pages which are comoditized
+     * and follow best practice.
+     *
+     * By default, configurable pages are driven by static configuration,
+     * in order to allow for fast loading pages (preventing network delays).
+     * @param {?} pageId
+     * @return {?}
+     */
+    function (pageId) {
+        return this.getPageFromConfig(pageId).pipe(map((/**
+         * @param {?} page
+         * @return {?}
+         */
+        function (page) { return !!page && !!page.ignoreBackend; })));
+    };
+    /**
+     * returns an Observable component data from the static configuration.
+     */
+    /**
+     * returns an Observable component data from the static configuration.
+     * @param {?} componentId
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.getComponentFromConfig = /**
+     * returns an Observable component data from the static configuration.
+     * @param {?} componentId
+     * @return {?}
+     */
+    function (componentId) {
+        return of(this.getComponentById(componentId));
+    };
+    /**
+     * returns an Observable components data from the static configuration.
+     */
+    /**
+     * returns an Observable components data from the static configuration.
+     * @param {?} ids
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.getComponentsFromConfig = /**
+     * returns an Observable components data from the static configuration.
+     * @param {?} ids
+     * @return {?}
+     */
+    function (ids) {
+        var _this = this;
+        return of(ids.map((/**
+         * @param {?} id
+         * @return {?}
+         */
+        function (id) { return _this.getComponentById(id); })));
+    };
+    /**
+     * returns an observable with the `PageConfig`.
+     */
+    /**
+     * returns an observable with the `PageConfig`.
+     * @protected
+     * @param {?} pageId
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.getPageFromConfig = /**
+     * returns an observable with the `PageConfig`.
+     * @protected
+     * @param {?} pageId
+     * @return {?}
+     */
+    function (pageId) {
+        return of(this.cmsDataConfig.cmsStructure && this.cmsDataConfig.cmsStructure.pages
+            ? this.cmsDataConfig.cmsStructure.pages.find((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) { return p.pageId === pageId; }))
+            : null);
+    };
+    /**
+     * Merge page data from the configuration into the given structure, if any.
+     * If the given page structure is empty, a page is created and the page slots are
+     * are merged into the page.
+     */
+    /**
+     * Merge page data from the configuration into the given structure, if any.
+     * If the given page structure is empty, a page is created and the page slots are
+     * are merged into the page.
+     * @protected
+     * @param {?} pageId
+     * @param {?} pageStructure
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.mergePage = /**
+     * Merge page data from the configuration into the given structure, if any.
+     * If the given page structure is empty, a page is created and the page slots are
+     * are merged into the page.
+     * @protected
+     * @param {?} pageId
+     * @param {?} pageStructure
+     * @return {?}
+     */
+    function (pageId, pageStructure) {
+        var _this = this;
+        return this.getPageFromConfig(pageId).pipe(switchMap((/**
+         * @param {?} page
+         * @return {?}
+         */
+        function (page) {
+            if (page) {
+                // serialize page data
+                if (!pageStructure.page) {
+                    pageStructure.page = __assign({}, page);
+                    pageStructure.page.slots = {};
+                }
+                if (!pageStructure.page.slots) {
+                    pageStructure.page.slots = {};
+                }
+                return _this.mergeSlots(pageStructure, page.slots);
+            }
+            else {
+                return of(pageStructure);
+            }
+        })));
+    };
+    /**
+     * Adds any pre-configured slots for pages that do not use them.
+     * If pages have a slot for the given position, the configiuration
+     * is ingored. Even if the slot does not have inner structure (such as
+     * components), so that the cms structure is able to override the (static)
+     * configuration.
+     */
+    /**
+     * Adds any pre-configured slots for pages that do not use them.
+     * If pages have a slot for the given position, the configiuration
+     * is ingored. Even if the slot does not have inner structure (such as
+     * components), so that the cms structure is able to override the (static)
+     * configuration.
+     * @protected
+     * @param {?} pageStructure
+     * @param {?=} slots
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.mergeSlots = /**
+     * Adds any pre-configured slots for pages that do not use them.
+     * If pages have a slot for the given position, the configiuration
+     * is ingored. Even if the slot does not have inner structure (such as
+     * components), so that the cms structure is able to override the (static)
+     * configuration.
+     * @protected
+     * @param {?} pageStructure
+     * @param {?=} slots
+     * @return {?}
+     */
+    function (pageStructure, slots) {
+        var e_1, _a, e_2, _b;
+        // if no slots have been given, we use the global configured slots
+        if (!slots &&
+            this.cmsDataConfig.cmsStructure &&
+            this.cmsDataConfig.cmsStructure.slots) {
+            slots = this.cmsDataConfig.cmsStructure.slots;
+        }
+        if (!slots) {
+            return of(pageStructure);
+        }
+        try {
+            for (var _c = __values(Object.keys(slots)), _d = _c.next(); !_d.done; _d = _c.next()) {
+                var position = _d.value;
+                if (!Object.keys(pageStructure.page.slots).includes(position)) {
+                    // the global slot isn't yet part of the page structure
+                    pageStructure.page.slots[position] = {};
+                    try {
+                        for (var _e = (e_2 = void 0, __values(this.getComponentsByPosition(slots, position))), _f = _e.next(); !_f.done; _f = _e.next()) {
+                            var component = _f.value;
+                            if (!pageStructure.page.slots[position].components) {
+                                pageStructure.page.slots[position].components = [];
+                            }
+                            pageStructure.page.slots[position].components.push({
+                                uid: component.uid,
+                                flexType: component.flexType,
+                                typeCode: component.typeCode,
+                            });
+                            if (!pageStructure.components) {
+                                pageStructure.components = [];
+                            }
+                            pageStructure.components.push(component);
+                        }
+                    }
+                    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                    finally {
+                        try {
+                            if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
+                        }
+                        finally { if (e_2) throw e_2.error; }
+                    }
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return of(pageStructure);
+    };
+    /**
+     * @protected
+     * @param {?} slots
+     * @param {?} position
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.getComponentsByPosition = /**
+     * @protected
+     * @param {?} slots
+     * @param {?} position
+     * @return {?}
+     */
+    function (slots, position) {
+        var e_3, _a;
+        /** @type {?} */
+        var components = [];
+        if (slots[position] && slots[position].componentIds) {
+            try {
+                for (var _b = __values(slots[position].componentIds), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var componentId = _c.value;
+                    if (this.cmsDataConfig.cmsStructure &&
+                        this.cmsDataConfig.cmsStructure.components) {
+                        /** @type {?} */
+                        var component = this.cmsDataConfig.cmsStructure.components[componentId];
+                        if (component) {
+                            components.push(__assign({ uid: componentId }, component));
+                        }
+                    }
+                }
+            }
+            catch (e_3_1) { e_3 = { error: e_3_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                }
+                finally { if (e_3) throw e_3.error; }
+            }
+        }
+        return components;
+    };
+    /**
+     * @protected
+     * @param {?} componentId
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.getComponentById = /**
+     * @protected
+     * @param {?} componentId
+     * @return {?}
+     */
+    function (componentId) {
+        return this.cmsDataConfig.cmsStructure &&
+            this.cmsDataConfig.cmsStructure.components
+            ? this.cmsDataConfig.cmsStructure.components[componentId]
+            : undefined;
+    };
+    CmsStructureConfigService.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    CmsStructureConfigService.ctorParameters = function () { return [
+        { type: CmsStructureConfig }
+    ]; };
+    /** @nocollapse */ CmsStructureConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
+    return CmsStructureConfigService;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsStructureConfigService.prototype.cmsDataConfig;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var CmsComponentConnector = /** @class */ (function () {
+    function CmsComponentConnector(cmsStructureConfigService, adapter, config) {
+        this.cmsStructureConfigService = cmsStructureConfigService;
+        this.adapter = adapter;
+        this.config = config;
+    }
+    /**
+     * @template T
+     * @param {?} id
+     * @param {?} pageContext
+     * @return {?}
+     */
+    CmsComponentConnector.prototype.get = /**
+     * @template T
+     * @param {?} id
+     * @param {?} pageContext
+     * @return {?}
+     */
+    function (id, pageContext) {
+        var _this = this;
+        return this.cmsStructureConfigService
+            .getComponentFromConfig(id)
+            .pipe(switchMap((/**
+         * @param {?} configuredComponent
+         * @return {?}
+         */
+        function (configuredComponent) {
+            return configuredComponent
+                ? of(configuredComponent)
+                : _this.adapter.load(id, pageContext);
+        })));
+    };
+    /**
+     * @param {?} ids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    CmsComponentConnector.prototype.getList = /**
+     * @param {?} ids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    function (ids, pageContext) {
+        var _this = this;
+        return this.cmsStructureConfigService.getComponentsFromConfig(ids).pipe(switchMap((/**
+         * @param {?} configuredComponents
+         * @return {?}
+         */
+        function (configuredComponents) {
+            // check if we have some components that are not loaded from configuration
+            /** @type {?} */
+            var missingIds = configuredComponents.reduce((/**
+             * @param {?} acc
+             * @param {?} component
+             * @param {?} index
+             * @return {?}
+             */
+            function (acc, component, index) {
+                if (component === undefined) {
+                    acc.push(ids[index]);
+                }
+                return acc;
+            }), []);
+            if (missingIds.length > 0) {
+                return (_this.config.backend.occ.legacy
+                    ? _this.adapter.findComponentsByIdsLegacy(missingIds, pageContext)
+                    : _this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(map((/**
+                 * @param {?} loadedComponents
+                 * @return {?}
+                 */
+                function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); })));
+            }
+            else {
+                return of(configuredComponents);
+            }
+        })));
+    };
+    CmsComponentConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    CmsComponentConnector.ctorParameters = function () { return [
+        { type: CmsStructureConfigService },
+        { type: CmsComponentAdapter },
+        { type: OccConfig }
+    ]; };
+    /** @nocollapse */ CmsComponentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(ɵɵinject(CmsStructureConfigService), ɵɵinject(CmsComponentAdapter), ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
+    return CmsComponentConnector;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.cmsStructureConfigService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.adapter;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.config;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ComponentsEffects = /** @class */ (function () {
+    function ComponentsEffects(actions$, cmsComponentLoader, featureConfigService) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.cmsComponentLoader = cmsComponentLoader;
+        this.featureConfigService = featureConfigService;
+        this.contextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
+        this.loadComponent$ = createEffect((/**
+         * @return {?}
+         */
+        function () { return (/**
+         * @param {?=} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
+            return _this.actions$.pipe(ofType(LOAD_CMS_COMPONENT), groupBy((/**
+             * @param {?} actions
+             * @return {?}
+             */
+            function (actions) { return serializePageContext(actions.payload.pageContext); })), mergeMap((/**
+             * @param {?} actionGroup
+             * @return {?}
+             */
+            function (actionGroup) {
+                return actionGroup.pipe(bufferDebounceTime(debounce, scheduler), mergeMap((/**
+                 * @param {?} actions
+                 * @return {?}
+                 */
+                function (actions) {
+                    return _this.loadComponentsEffect(actions.map((/**
+                     * @param {?} action
+                     * @return {?}
+                     */
+                    function (action) { return action.payload.uid; })), actions[0].payload.pageContext);
+                })));
+            })), withdrawOn(_this.contextChange$));
+        }); }));
+    }
+    /**
+     * @private
+     * @param {?} componentUids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    ComponentsEffects.prototype.loadComponentsEffect = /**
+     * @private
+     * @param {?} componentUids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    function (componentUids, pageContext) {
+        var _this = this;
+        // TODO: remove, deprecated behavior since 1.4
+        if (!this.featureConfigService.isLevel('1.4')) {
+            return merge.apply(void 0, __spread(componentUids.map((/**
+             * @param {?} uid
+             * @return {?}
+             */
+            function (uid) {
+                return _this.cmsComponentLoader.get(uid, pageContext).pipe(map((/**
+                 * @param {?} component
+                 * @return {?}
+                 */
+                function (component) {
+                    return new LoadCmsComponentSuccess({
+                        component: component,
+                        uid: component.uid,
+                        pageContext: pageContext,
+                    });
+                })), catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return of(new LoadCmsComponentFail({
+                        uid: uid,
+                        error: makeErrorSerializable(error),
+                        pageContext: pageContext,
+                    }));
+                })));
+            }))));
+        }
+        // END OF (TODO: remove, deprecated behavior since 1.4)
+        return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap((/**
+         * @param {?} components
+         * @return {?}
+         */
+        function (components) {
+            return from(components.map((/**
+             * @param {?} component
+             * @return {?}
+             */
+            function (component) {
+                return new LoadCmsComponentSuccess({
+                    component: component,
+                    uid: component.uid,
+                    pageContext: pageContext,
+                });
+            })));
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        function (error) {
+            return from(componentUids.map((/**
+             * @param {?} uid
+             * @return {?}
+             */
+            function (uid) {
+                return new LoadCmsComponentFail({
+                    uid: uid,
+                    error: makeErrorSerializable(error),
+                    pageContext: pageContext,
+                });
+            })));
+        })));
+    };
+    ComponentsEffects.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ComponentsEffects.ctorParameters = function () { return [
+        { type: Actions },
+        { type: CmsComponentConnector },
+        { type: FeatureConfigService }
+    ]; };
+    return ComponentsEffects;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentsEffects.prototype.contextChange$;
+    /** @type {?} */
+    ComponentsEffects.prototype.loadComponent$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentsEffects.prototype.cmsComponentLoader;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentsEffects.prototype.featureConfigService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var UrlMatcherFactoryService = /** @class */ (function () {
     function UrlMatcherFactoryService(globService) {
         this.globService = globService;
@@ -46946,350 +47491,147 @@ var RoutingModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * Service that provides access to CMS structure from a static
- * configuration or configuration file. This class uses static
- * configuration is designed in async fashion so that configurations
- * can be loaded from a file or stream.
- *
- * The intent of the `CmsStructureConfigService` however is to provide
- * fast loading pages and default cms structure for commodity commerce.
- * @abstract
- */
-var CmsStructureConfigService = /** @class */ (function () {
-    function CmsStructureConfigService(cmsDataConfig) {
-        this.cmsDataConfig = cmsDataConfig;
-    }
-    /**
-     * Merge the cms structure to the pageStructure. The page structure
-     * can either hold complete page structures or global structures that
-     * might apply to all pages (such has header coponents).
-     */
-    /**
-     * Merge the cms structure to the pageStructure. The page structure
-     * can either hold complete page structures or global structures that
-     * might apply to all pages (such has header coponents).
-     * @param {?} pageId
-     * @param {?} pageStructure
-     * @return {?}
-     */
-    CmsStructureConfigService.prototype.mergePageStructure = /**
-     * Merge the cms structure to the pageStructure. The page structure
-     * can either hold complete page structures or global structures that
-     * might apply to all pages (such has header coponents).
-     * @param {?} pageId
-     * @param {?} pageStructure
-     * @return {?}
-     */
-    function (pageId, pageStructure) {
+var NavigationEntryItemEffects = /** @class */ (function () {
+    function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
         var _this = this;
-        return this.mergePage(pageId, pageStructure).pipe(switchMap((/**
-         * @param {?} page
+        this.actions$ = actions$;
+        this.cmsComponentConnector = cmsComponentConnector;
+        this.routingService = routingService;
+        this.loadNavigationItems$ = this.actions$.pipe(ofType(LOAD_CMS_NAVIGATION_ITEMS), map((/**
+         * @param {?} action
          * @return {?}
          */
-        function (page) { return _this.mergeSlots(page); })));
-    };
-    /**
-     *
-     * Returns boolean observable to indicate whether the page should not be
-     * loaded from the backend. This is useful for pages which are comoditized
-     * and follow best practice.
-     *
-     * By default, configurable pages are driven by static configuration,
-     * in order to allow for fast loading pages (preventing network delays).
-     */
-    /**
-     *
-     * Returns boolean observable to indicate whether the page should not be
-     * loaded from the backend. This is useful for pages which are comoditized
-     * and follow best practice.
-     *
-     * By default, configurable pages are driven by static configuration,
-     * in order to allow for fast loading pages (preventing network delays).
-     * @param {?} pageId
-     * @return {?}
-     */
-    CmsStructureConfigService.prototype.shouldIgnoreBackend = /**
-     *
-     * Returns boolean observable to indicate whether the page should not be
-     * loaded from the backend. This is useful for pages which are comoditized
-     * and follow best practice.
-     *
-     * By default, configurable pages are driven by static configuration,
-     * in order to allow for fast loading pages (preventing network delays).
-     * @param {?} pageId
-     * @return {?}
-     */
-    function (pageId) {
-        return this.getPageFromConfig(pageId).pipe(map((/**
-         * @param {?} page
+        function (action) { return action.payload; })), map((/**
+         * @param {?} payload
          * @return {?}
          */
-        function (page) { return !!page && !!page.ignoreBackend; })));
-    };
-    /**
-     * returns an Observable component data from the static configuration.
-     */
-    /**
-     * returns an Observable component data from the static configuration.
-     * @param {?} componentId
-     * @return {?}
-     */
-    CmsStructureConfigService.prototype.getComponentFromConfig = /**
-     * returns an Observable component data from the static configuration.
-     * @param {?} componentId
-     * @return {?}
-     */
-    function (componentId) {
-        return of(this.getComponentById(componentId));
-    };
-    /**
-     * returns an Observable components data from the static configuration.
-     */
-    /**
-     * returns an Observable components data from the static configuration.
-     * @param {?} ids
-     * @return {?}
-     */
-    CmsStructureConfigService.prototype.getComponentsFromConfig = /**
-     * returns an Observable components data from the static configuration.
-     * @param {?} ids
-     * @return {?}
-     */
-    function (ids) {
-        var _this = this;
-        return of(ids.map((/**
-         * @param {?} id
+        function (payload) {
+            return {
+                ids: _this.getIdListByItemType(payload.items),
+                nodeId: payload.nodeId,
+            };
+        })), mergeMap((/**
+         * @param {?} data
          * @return {?}
          */
-        function (id) { return _this.getComponentById(id); })));
-    };
-    /**
-     * returns an observable with the `PageConfig`.
-     */
-    /**
-     * returns an observable with the `PageConfig`.
-     * @protected
-     * @param {?} pageId
-     * @return {?}
-     */
-    CmsStructureConfigService.prototype.getPageFromConfig = /**
-     * returns an observable with the `PageConfig`.
-     * @protected
-     * @param {?} pageId
-     * @return {?}
-     */
-    function (pageId) {
-        return of(this.cmsDataConfig.cmsStructure && this.cmsDataConfig.cmsStructure.pages
-            ? this.cmsDataConfig.cmsStructure.pages.find((/**
-             * @param {?} p
-             * @return {?}
-             */
-            function (p) { return p.pageId === pageId; }))
-            : null);
-    };
-    /**
-     * Merge page data from the configuration into the given structure, if any.
-     * If the given page structure is empty, a page is created and the page slots are
-     * are merged into the page.
-     */
-    /**
-     * Merge page data from the configuration into the given structure, if any.
-     * If the given page structure is empty, a page is created and the page slots are
-     * are merged into the page.
-     * @protected
-     * @param {?} pageId
-     * @param {?} pageStructure
-     * @return {?}
-     */
-    CmsStructureConfigService.prototype.mergePage = /**
-     * Merge page data from the configuration into the given structure, if any.
-     * If the given page structure is empty, a page is created and the page slots are
-     * are merged into the page.
-     * @protected
-     * @param {?} pageId
-     * @param {?} pageStructure
-     * @return {?}
-     */
-    function (pageId, pageStructure) {
-        var _this = this;
-        return this.getPageFromConfig(pageId).pipe(switchMap((/**
-         * @param {?} page
-         * @return {?}
-         */
-        function (page) {
-            if (page) {
-                // serialize page data
-                if (!pageStructure.page) {
-                    pageStructure.page = __assign({}, page);
-                    pageStructure.page.slots = {};
-                }
-                if (!pageStructure.page.slots) {
-                    pageStructure.page.slots = {};
-                }
-                return _this.mergeSlots(pageStructure, page.slots);
+        function (data) {
+            if (data.ids.componentIds.length > 0) {
+                return _this.routingService.getRouterState().pipe(filter((/**
+                 * @param {?} routerState
+                 * @return {?}
+                 */
+                function (routerState) { return routerState !== undefined; })), map((/**
+                 * @param {?} routerState
+                 * @return {?}
+                 */
+                function (routerState) { return routerState.state.context; })), take(1), mergeMap((/**
+                 * @param {?} pageContext
+                 * @return {?}
+                 */
+                function (pageContext) {
+                    // download all items in one request
+                    return _this.cmsComponentConnector
+                        .getList(data.ids.componentIds, pageContext)
+                        .pipe(map((/**
+                     * @param {?} components
+                     * @return {?}
+                     */
+                    function (components) {
+                        return new LoadCmsNavigationItemsSuccess({
+                            nodeId: data.nodeId,
+                            components: components,
+                        });
+                    })), catchError((/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        return of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
+                    })));
+                })));
+            }
+            else if (data.ids.pageIds.length > 0) {
+                // TODO: future work
+                // dispatch action to load cms page one by one
+            }
+            else if (data.ids.mediaIds.length > 0) {
+                // TODO: future work
+                // send request to get list of media
             }
             else {
-                return of(pageStructure);
+                return of(new LoadCmsNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
             }
         })));
-    };
+    }
+    // We only consider 3 item types: cms page, cms component, and media.
+    // We only consider 3 item types: cms page, cms component, and media.
     /**
-     * Adds any pre-configured slots for pages that do not use them.
-     * If pages have a slot for the given position, the configiuration
-     * is ingored. Even if the slot does not have inner structure (such as
-     * components), so that the cms structure is able to override the (static)
-     * configuration.
+     * @param {?} itemList
+     * @return {?}
      */
+    NavigationEntryItemEffects.prototype.getIdListByItemType = 
+    // We only consider 3 item types: cms page, cms component, and media.
     /**
-     * Adds any pre-configured slots for pages that do not use them.
-     * If pages have a slot for the given position, the configiuration
-     * is ingored. Even if the slot does not have inner structure (such as
-     * components), so that the cms structure is able to override the (static)
-     * configuration.
-     * @protected
-     * @param {?} pageStructure
-     * @param {?=} slots
+     * @param {?} itemList
      * @return {?}
      */
-    CmsStructureConfigService.prototype.mergeSlots = /**
-     * Adds any pre-configured slots for pages that do not use them.
-     * If pages have a slot for the given position, the configiuration
-     * is ingored. Even if the slot does not have inner structure (such as
-     * components), so that the cms structure is able to override the (static)
-     * configuration.
-     * @protected
-     * @param {?} pageStructure
-     * @param {?=} slots
-     * @return {?}
-     */
-    function (pageStructure, slots) {
-        var e_1, _a, e_2, _b;
-        // if no slots have been given, we use the global configured slots
-        if (!slots &&
-            this.cmsDataConfig.cmsStructure &&
-            this.cmsDataConfig.cmsStructure.slots) {
-            slots = this.cmsDataConfig.cmsStructure.slots;
-        }
-        if (!slots) {
-            return of(pageStructure);
-        }
-        try {
-            for (var _c = __values(Object.keys(slots)), _d = _c.next(); !_d.done; _d = _c.next()) {
-                var position = _d.value;
-                if (!Object.keys(pageStructure.page.slots).includes(position)) {
-                    // the global slot isn't yet part of the page structure
-                    pageStructure.page.slots[position] = {};
-                    try {
-                        for (var _e = (e_2 = void 0, __values(this.getComponentsByPosition(slots, position))), _f = _e.next(); !_f.done; _f = _e.next()) {
-                            var component = _f.value;
-                            if (!pageStructure.page.slots[position].components) {
-                                pageStructure.page.slots[position].components = [];
-                            }
-                            pageStructure.page.slots[position].components.push({
-                                uid: component.uid,
-                                flexType: component.flexType,
-                                typeCode: component.typeCode,
-                            });
-                            if (!pageStructure.components) {
-                                pageStructure.components = [];
-                            }
-                            pageStructure.components.push(component);
-                        }
-                    }
-                    catch (e_2_1) { e_2 = { error: e_2_1 }; }
-                    finally {
-                        try {
-                            if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
-                        }
-                        finally { if (e_2) throw e_2.error; }
-                    }
-                }
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return of(pageStructure);
-    };
-    /**
-     * @protected
-     * @param {?} slots
-     * @param {?} position
-     * @return {?}
-     */
-    CmsStructureConfigService.prototype.getComponentsByPosition = /**
-     * @protected
-     * @param {?} slots
-     * @param {?} position
-     * @return {?}
-     */
-    function (slots, position) {
-        var e_3, _a;
+    function (itemList) {
         /** @type {?} */
-        var components = [];
-        if (slots[position] && slots[position].componentIds) {
-            try {
-                for (var _b = __values(slots[position].componentIds), _c = _b.next(); !_c.done; _c = _b.next()) {
-                    var componentId = _c.value;
-                    if (this.cmsDataConfig.cmsStructure &&
-                        this.cmsDataConfig.cmsStructure.components) {
-                        /** @type {?} */
-                        var component = this.cmsDataConfig.cmsStructure.components[componentId];
-                        if (component) {
-                            components.push(__assign({ uid: componentId }, component));
-                        }
-                    }
-                }
+        var pageIds = [];
+        /** @type {?} */
+        var componentIds = [];
+        /** @type {?} */
+        var mediaIds = [];
+        itemList.forEach((/**
+         * @param {?} item
+         * @return {?}
+         */
+        function (item) {
+            if (item.superType === 'AbstractCMSComponent') {
+                componentIds.push(item.id);
             }
-            catch (e_3_1) { e_3 = { error: e_3_1 }; }
-            finally {
-                try {
-                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-                }
-                finally { if (e_3) throw e_3.error; }
+            else if (item.superType === 'AbstractPage') {
+                pageIds.push(item.id);
             }
-        }
-        return components;
+            else if (item.superType === 'AbstractMedia') {
+                mediaIds.push(item.id);
+            }
+        }));
+        return { pageIds: pageIds, componentIds: componentIds, mediaIds: mediaIds };
     };
-    /**
-     * @protected
-     * @param {?} componentId
-     * @return {?}
-     */
-    CmsStructureConfigService.prototype.getComponentById = /**
-     * @protected
-     * @param {?} componentId
-     * @return {?}
-     */
-    function (componentId) {
-        return this.cmsDataConfig.cmsStructure &&
-            this.cmsDataConfig.cmsStructure.components
-            ? this.cmsDataConfig.cmsStructure.components[componentId]
-            : undefined;
-    };
-    CmsStructureConfigService.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
+    NavigationEntryItemEffects.decorators = [
+        { type: Injectable }
     ];
     /** @nocollapse */
-    CmsStructureConfigService.ctorParameters = function () { return [
-        { type: CmsStructureConfig }
+    NavigationEntryItemEffects.ctorParameters = function () { return [
+        { type: Actions },
+        { type: CmsComponentConnector },
+        { type: RoutingService }
     ]; };
-    /** @nocollapse */ CmsStructureConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
-    return CmsStructureConfigService;
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
+    return NavigationEntryItemEffects;
 }());
 if (false) {
+    /** @type {?} */
+    NavigationEntryItemEffects.prototype.loadNavigationItems$;
     /**
      * @type {?}
-     * @protected
+     * @private
      */
-    CmsStructureConfigService.prototype.cmsDataConfig;
+    NavigationEntryItemEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    NavigationEntryItemEffects.prototype.cmsComponentConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    NavigationEntryItemEffects.prototype.routingService;
 }
 
 /**
@@ -47467,7 +47809,14 @@ var PageEffects = /** @class */ (function () {
                 function (cmsStructure) {
                     /** @type {?} */
                     var actions = [
-                        new CmsGetComponentFromPage(cmsStructure.components, pageContext),
+                        new CmsGetComponentFromPage(cmsStructure.components.map((/**
+                         * @param {?} component
+                         * @return {?}
+                         */
+                        function (component) { return ({
+                            component: component,
+                            pageContext: pageContext,
+                        }); }))),
                         new LoadCmsPageDataSuccess(pageContext, cmsStructure.page),
                     ];
                     /** @type {?} */
@@ -47533,445 +47882,10 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @template T
- * @param {?=} time
- * @param {?=} scheduler
- * @return {?}
- */
-function bufferDebounceTime(time, scheduler) {
-    if (time === void 0) { time = 0; }
-    return (/**
-     * @param {?} source
-     * @return {?}
-     */
-    function (source) {
-        /** @type {?} */
-        var bufferedValues = [];
-        return source.pipe(tap((/**
-         * @param {?} value
-         * @return {?}
-         */
-        function (value) { return bufferedValues.push(value); })), debounceTime(time, scheduler), map((/**
-         * @return {?}
-         */
-        function () { return bufferedValues; })), tap((/**
-         * @return {?}
-         */
-        function () { return (bufferedValues = []); })));
-    });
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var CmsComponentConnector = /** @class */ (function () {
-    function CmsComponentConnector(cmsStructureConfigService, adapter, config) {
-        this.cmsStructureConfigService = cmsStructureConfigService;
-        this.adapter = adapter;
-        this.config = config;
-    }
-    /**
-     * @template T
-     * @param {?} id
-     * @param {?} pageContext
-     * @return {?}
-     */
-    CmsComponentConnector.prototype.get = /**
-     * @template T
-     * @param {?} id
-     * @param {?} pageContext
-     * @return {?}
-     */
-    function (id, pageContext) {
-        var _this = this;
-        return this.cmsStructureConfigService
-            .getComponentFromConfig(id)
-            .pipe(switchMap((/**
-         * @param {?} configuredComponent
-         * @return {?}
-         */
-        function (configuredComponent) {
-            return configuredComponent
-                ? of(configuredComponent)
-                : _this.adapter.load(id, pageContext);
-        })));
-    };
-    /**
-     * @param {?} ids
-     * @param {?} pageContext
-     * @return {?}
-     */
-    CmsComponentConnector.prototype.getList = /**
-     * @param {?} ids
-     * @param {?} pageContext
-     * @return {?}
-     */
-    function (ids, pageContext) {
-        var _this = this;
-        return this.cmsStructureConfigService.getComponentsFromConfig(ids).pipe(switchMap((/**
-         * @param {?} configuredComponents
-         * @return {?}
-         */
-        function (configuredComponents) {
-            // check if we have some components that are not loaded from configuration
-            /** @type {?} */
-            var missingIds = configuredComponents.reduce((/**
-             * @param {?} acc
-             * @param {?} component
-             * @param {?} index
-             * @return {?}
-             */
-            function (acc, component, index) {
-                if (component === undefined) {
-                    acc.push(ids[index]);
-                }
-                return acc;
-            }), []);
-            if (missingIds.length > 0) {
-                return (_this.config.backend.occ.legacy
-                    ? _this.adapter.findComponentsByIdsLegacy(missingIds, pageContext)
-                    : _this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(map((/**
-                 * @param {?} loadedComponents
-                 * @return {?}
-                 */
-                function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); })));
-            }
-            else {
-                return of(configuredComponents);
-            }
-        })));
-    };
-    CmsComponentConnector.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    /** @nocollapse */
-    CmsComponentConnector.ctorParameters = function () { return [
-        { type: CmsStructureConfigService },
-        { type: CmsComponentAdapter },
-        { type: OccConfig }
-    ]; };
-    /** @nocollapse */ CmsComponentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(ɵɵinject(CmsStructureConfigService), ɵɵinject(CmsComponentAdapter), ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
-    return CmsComponentConnector;
-}());
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    CmsComponentConnector.prototype.cmsStructureConfigService;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CmsComponentConnector.prototype.adapter;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CmsComponentConnector.prototype.config;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var ComponentEffects = /** @class */ (function () {
-    function ComponentEffects(actions$, cmsComponentLoader, featureConfigService) {
-        var _this = this;
-        this.actions$ = actions$;
-        this.cmsComponentLoader = cmsComponentLoader;
-        this.featureConfigService = featureConfigService;
-        this.contextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
-        this.loadComponent$ = createEffect((/**
-         * @return {?}
-         */
-        function () { return (/**
-         * @param {?=} __0
-         * @return {?}
-         */
-        function (_a) {
-            var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-            return _this.actions$.pipe(ofType(LOAD_CMS_COMPONENT), groupBy((/**
-             * @param {?} actions
-             * @return {?}
-             */
-            function (actions) { return serializePageContext(actions.pageContext); })), mergeMap((/**
-             * @param {?} actionGroup
-             * @return {?}
-             */
-            function (actionGroup) {
-                return actionGroup.pipe(bufferDebounceTime(debounce, scheduler), mergeMap((/**
-                 * @param {?} actions
-                 * @return {?}
-                 */
-                function (actions) {
-                    return _this.loadComponentsEffect(actions.map((/**
-                     * @param {?} action
-                     * @return {?}
-                     */
-                    function (action) { return action.payload; })), actions[0].pageContext);
-                })));
-            })), withdrawOn(_this.contextChange$));
-        }); }));
-    }
-    /**
-     * @private
-     * @param {?} componentUids
-     * @param {?} pageContext
-     * @return {?}
-     */
-    ComponentEffects.prototype.loadComponentsEffect = /**
-     * @private
-     * @param {?} componentUids
-     * @param {?} pageContext
-     * @return {?}
-     */
-    function (componentUids, pageContext) {
-        var _this = this;
-        // TODO: remove, deprecated behavior since 1.4
-        if (!this.featureConfigService.isLevel('1.4')) {
-            return merge.apply(void 0, __spread(componentUids.map((/**
-             * @param {?} componentUid
-             * @return {?}
-             */
-            function (componentUid) {
-                return _this.cmsComponentLoader.get(componentUid, pageContext).pipe(map((/**
-                 * @param {?} component
-                 * @return {?}
-                 */
-                function (component) {
-                    return new LoadCmsComponentSuccess(component, component.uid, pageContext);
-                })), catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return of(new LoadCmsComponentFail(componentUid, makeErrorSerializable(error), pageContext));
-                })));
-            }))));
-        }
-        // END OF (TODO: remove, deprecated behavior since 1.4)
-        return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap((/**
-         * @param {?} components
-         * @return {?}
-         */
-        function (components) {
-            return from(components.map((/**
-             * @param {?} component
-             * @return {?}
-             */
-            function (component) {
-                return new LoadCmsComponentSuccess(component, component.uid, pageContext);
-            })));
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) {
-            return from(componentUids.map((/**
-             * @param {?} uid
-             * @return {?}
-             */
-            function (uid) {
-                return new LoadCmsComponentFail(uid, makeErrorSerializable(error), pageContext);
-            })));
-        })));
-    };
-    ComponentEffects.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    ComponentEffects.ctorParameters = function () { return [
-        { type: Actions },
-        { type: CmsComponentConnector },
-        { type: FeatureConfigService }
-    ]; };
-    return ComponentEffects;
-}());
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    ComponentEffects.prototype.contextChange$;
-    /** @type {?} */
-    ComponentEffects.prototype.loadComponent$;
-    /**
-     * @type {?}
-     * @private
-     */
-    ComponentEffects.prototype.actions$;
-    /**
-     * @type {?}
-     * @private
-     */
-    ComponentEffects.prototype.cmsComponentLoader;
-    /**
-     * @type {?}
-     * @private
-     */
-    ComponentEffects.prototype.featureConfigService;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var NavigationEntryItemEffects = /** @class */ (function () {
-    function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
-        var _this = this;
-        this.actions$ = actions$;
-        this.cmsComponentConnector = cmsComponentConnector;
-        this.routingService = routingService;
-        this.loadNavigationItems$ = this.actions$.pipe(ofType(LOAD_CMS_NAVIGATION_ITEMS), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) { return action.payload; })), map((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        function (payload) {
-            return {
-                ids: _this.getIdListByItemType(payload.items),
-                nodeId: payload.nodeId,
-            };
-        })), mergeMap((/**
-         * @param {?} data
-         * @return {?}
-         */
-        function (data) {
-            if (data.ids.componentIds.length > 0) {
-                return _this.routingService.getRouterState().pipe(filter((/**
-                 * @param {?} routerState
-                 * @return {?}
-                 */
-                function (routerState) { return routerState !== undefined; })), map((/**
-                 * @param {?} routerState
-                 * @return {?}
-                 */
-                function (routerState) { return routerState.state.context; })), take(1), mergeMap((/**
-                 * @param {?} pageContext
-                 * @return {?}
-                 */
-                function (pageContext) {
-                    // download all items in one request
-                    return _this.cmsComponentConnector
-                        .getList(data.ids.componentIds, pageContext)
-                        .pipe(map((/**
-                     * @param {?} components
-                     * @return {?}
-                     */
-                    function (components) {
-                        return new LoadCmsNavigationItemsSuccess({
-                            nodeId: data.nodeId,
-                            components: components,
-                        });
-                    })), catchError((/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        return of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
-                    })));
-                })));
-            }
-            else if (data.ids.pageIds.length > 0) {
-                // TODO: future work
-                // dispatch action to load cms page one by one
-            }
-            else if (data.ids.mediaIds.length > 0) {
-                // TODO: future work
-                // send request to get list of media
-            }
-            else {
-                return of(new LoadCmsNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
-            }
-        })));
-    }
-    // We only consider 3 item types: cms page, cms component, and media.
-    // We only consider 3 item types: cms page, cms component, and media.
-    /**
-     * @param {?} itemList
-     * @return {?}
-     */
-    NavigationEntryItemEffects.prototype.getIdListByItemType = 
-    // We only consider 3 item types: cms page, cms component, and media.
-    /**
-     * @param {?} itemList
-     * @return {?}
-     */
-    function (itemList) {
-        /** @type {?} */
-        var pageIds = [];
-        /** @type {?} */
-        var componentIds = [];
-        /** @type {?} */
-        var mediaIds = [];
-        itemList.forEach((/**
-         * @param {?} item
-         * @return {?}
-         */
-        function (item) {
-            if (item.superType === 'AbstractCMSComponent') {
-                componentIds.push(item.id);
-            }
-            else if (item.superType === 'AbstractPage') {
-                pageIds.push(item.id);
-            }
-            else if (item.superType === 'AbstractMedia') {
-                mediaIds.push(item.id);
-            }
-        }));
-        return { pageIds: pageIds, componentIds: componentIds, mediaIds: mediaIds };
-    };
-    NavigationEntryItemEffects.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    NavigationEntryItemEffects.ctorParameters = function () { return [
-        { type: Actions },
-        { type: CmsComponentConnector },
-        { type: RoutingService }
-    ]; };
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
-    return NavigationEntryItemEffects;
-}());
-if (false) {
-    /** @type {?} */
-    NavigationEntryItemEffects.prototype.loadNavigationItems$;
-    /**
-     * @type {?}
-     * @private
-     */
-    NavigationEntryItemEffects.prototype.actions$;
-    /**
-     * @type {?}
-     * @private
-     */
-    NavigationEntryItemEffects.prototype.cmsComponentConnector;
-    /**
-     * @type {?}
-     * @private
-     */
-    NavigationEntryItemEffects.prototype.routingService;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /** @type {?} */
 var effects$8 = [
     PageEffects,
-    ComponentEffects,
+    ComponentsEffects,
     NavigationEntryItemEffects,
 ];
 
@@ -47995,7 +47909,7 @@ function componentExistsReducer(state, action) {
     switch (action.type) {
         case LOAD_CMS_COMPONENT_FAIL:
             return false;
-        case CMS_GET_COMPONENET_FROM_PAGE:
+        case CMS_GET_COMPONENT_FROM_PAGE:
         case LOAD_CMS_COMPONENT_SUCCESS:
             return true;
     }
@@ -48008,30 +47922,38 @@ function componentExistsReducer(state, action) {
  * @return {?}
  */
 function reducer$e(state, action) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     if (state === void 0) { state = initialState$e; }
     switch (action.type) {
         case LOAD_CMS_COMPONENT: {
             /** @type {?} */
             var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
             /** @type {?} */
-            var context = serializePageContext(action.pageContext, true);
+            var context = serializePageContext(action.payload.pageContext, true);
             return __assign({}, state, { pageContext: __assign({}, state.pageContext, (_a = {}, _a[context] = pageContextReducer(state.pageContext[context], action), _a)) });
         }
         case LOAD_CMS_COMPONENT_FAIL: {
             /** @type {?} */
             var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
             /** @type {?} */
-            var context = serializePageContext(action.pageContext, true);
+            var context = serializePageContext(action.payload.pageContext, true);
             return __assign({}, state, { pageContext: __assign({}, state.pageContext, (_b = {}, _b[context] = pageContextReducer(state.pageContext[context], action), _b)) });
         }
-        case CMS_GET_COMPONENET_FROM_PAGE:
         case LOAD_CMS_COMPONENT_SUCCESS: {
             /** @type {?} */
             var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
             /** @type {?} */
-            var context = serializePageContext(action.pageContext, true);
-            return __assign({}, state, { component: (/** @type {?} */ (action.payload)), pageContext: __assign({}, state.pageContext, (_c = {}, _c[context] = pageContextReducer(state.pageContext[context], action), _c)) });
+            var context = serializePageContext(action.payload.pageContext, true);
+            return __assign({}, state, { component: (/** @type {?} */ (action.payload.component)), pageContext: __assign({}, state.pageContext, (_c = {}, _c[context] = pageContextReducer(state.pageContext[context], action), _c)) });
+        }
+        case CMS_GET_COMPONENT_FROM_PAGE: {
+            /** @type {?} */
+            var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
+            if (!Array.isArray(action.payload)) {
+                /** @type {?} */
+                var context = serializePageContext(action.payload.pageContext, true);
+                return __assign({}, state, { component: (/** @type {?} */ (action.payload.component)), pageContext: __assign({}, state.pageContext, (_d = {}, _d[context] = pageContextReducer(state.pageContext[context], action), _d)) });
+            }
         }
     }
     return state;
@@ -48152,11 +48074,6 @@ function getReducers$8() {
                 catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$h(PageType.CATALOG_PAGE)),
             }),
         }),
-        /**
-         * @deprecated in favour of `components`. From 2.0, this will be removed.
-         */
-        // TODO(issue:6027) - remove this `component` slice
-        component: entityLoaderReducer(COMPONENT_ENTITY),
         components: entityReducer(COMPONENT_ENTITY, reducer$e),
         navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
     };
@@ -51890,7 +51807,7 @@ function (code, scope) {
      */
     function (productState) { return loaderErrorSelector(productState); }));
 });
-var ɵ1$t = /**
+var ɵ1$s = /**
  * @param {?} details
  * @return {?}
  */
@@ -51898,7 +51815,7 @@ function (details) {
     return Object.keys(details.entities);
 };
 /** @type {?} */
-var getAllProductCodes = createSelector(getProductState, (ɵ1$t));
+var getAllProductCodes = createSelector(getProductState, (ɵ1$s));
 
 /**
  * @fileoverview added by tsickle
@@ -55022,20 +54939,20 @@ var ɵ0$J = /**
 function (storesState) { return storesState.findStores; };
 /** @type {?} */
 var getFindStoresState = createSelector(getStoreFinderState, (ɵ0$J));
-var ɵ1$u = /**
+var ɵ1$t = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderValueSelector(state); };
 /** @type {?} */
-var getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$u));
-var ɵ2$l = /**
+var getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$t));
+var ɵ2$k = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderLoadingSelector(state); };
 /** @type {?} */
-var getStoresLoading = createSelector(getFindStoresState, (ɵ2$l));
+var getStoresLoading = createSelector(getFindStoresState, (ɵ2$k));
 
 /**
  * @fileoverview added by tsickle
@@ -55048,20 +54965,20 @@ var ɵ0$K = /**
 function (storesState) { return storesState.viewAllStores; };
 /** @type {?} */
 var getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$K));
-var ɵ1$v = /**
+var ɵ1$u = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderValueSelector(state); };
 /** @type {?} */
-var getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$v));
-var ɵ2$m = /**
+var getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$u));
+var ɵ2$l = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderLoadingSelector(state); };
 /** @type {?} */
-var getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$m));
+var getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$l));
 
 /**
  * @fileoverview added by tsickle
@@ -61806,5 +61723,5 @@ var UserModule = /** @class */ (function () {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListEffects, WishListService, clearCartState, clearMultiCartState, configInitializerFactory, configurationFactory, contextServiceMapProvider, deprecatedContextServiceProviders as contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$5 as effects, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getMultiCartReducers, getReducers$5 as getReducers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, deprecatedInitSiteContextRoutesHandler as initSiteContextRoutesHandler, initialEntityState, initialLoaderState, initialProcessesState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$3 as metaReducers, multiCartMetaReducers, multiCartReducerProvider, multiCartReducerToken, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, deprecatedSiteContextParamsProviders as siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AnonymousConsentsInterceptor as ɵba, asmStoreConfigFactory as ɵbb, AsmStoreModule as ɵbc, getReducers$3 as ɵbd, reducerToken$3 as ɵbe, reducerProvider$3 as ɵbf, clearCustomerSupportAgentAsmState as ɵbg, metaReducers$2 as ɵbh, effects$3 as ɵbi, CustomerEffects as ɵbj, CustomerSupportAgentTokenEffects as ɵbk, UserAuthenticationTokenService as ɵbl, reducer$7 as ɵbm, defaultAsmConfig as ɵbn, interceptors$2 as ɵbo, CustomerSupportAgentAuthErrorInterceptor as ɵbp, CustomerSupportAgentErrorHandlingService as ɵbq, authStoreConfigFactory as ɵbr, AuthStoreModule as ɵbs, getReducers as ɵbt, reducerToken as ɵbu, reducerProvider as ɵbv, clearAuthState as ɵbw, metaReducers as ɵbx, effects as ɵby, ClientTokenEffect as ɵbz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵc, UserTokenEffects as ɵca, ClientAuthenticationTokenService as ɵcb, reducer as ɵcc, defaultAuthConfig as ɵcd, interceptors as ɵce, ClientTokenInterceptor as ɵcf, UserTokenInterceptor as ɵcg, AuthErrorInterceptor as ɵch, UserErrorHandlingService as ɵci, UrlParsingService as ɵcj, ClientErrorHandlingService as ɵck, TokenRevocationInterceptor as ɵcl, AuthServices as ɵcm, cartStoreConfigFactory as ɵcn, CartStoreModule as ɵco, SaveCartConnector as ɵcp, SaveCartAdapter as ɵcq, reducer$9 as ɵcr, multiCartStoreConfigFactory as ɵcs, MultiCartStoreModule as ɵct, MultiCartEffects as ɵcu, processesLoaderReducer as ɵcv, activeCartReducer as ɵcw, cartEntitiesReducer as ɵcx, wishListReducer as ɵcy, CartPageMetaResolver as ɵcz, initConfig as ɵd, CheckoutStoreModule as ɵda, getReducers$6 as ɵdb, reducerToken$6 as ɵdc, reducerProvider$6 as ɵdd, effects$6 as ɵde, AddressVerificationEffect as ɵdf, CardTypesEffects as ɵdg, CheckoutEffects as ɵdh, reducer$c as ɵdi, reducer$b as ɵdj, reducer$a as ɵdk, cmsStoreConfigFactory as ɵdl, CmsStoreModule as ɵdm, getReducers$8 as ɵdn, reducerToken$8 as ɵdo, reducerProvider$8 as ɵdp, clearCmsState as ɵdq, metaReducers$4 as ɵdr, effects$8 as ɵds, PageEffects as ɵdt, ComponentEffects as ɵdu, NavigationEntryItemEffects as ɵdv, reducer$g as ɵdw, reducer$h as ɵdx, reducer$e as ɵdy, reducer$f as ɵdz, initializeContext as ɵe, configValidatorFactory as ɵea, ConfigValidatorModule as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$4 as ɵed, reducerToken$4 as ɵee, reducerProvider$4 as ɵef, reducer$8 as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, InternalServerErrorHandler as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, clearKymaState as ɵeu, metaReducers$5 as ɵev, effects$9 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, contextServiceProviders as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$a as ɵfn, reducerToken$a as ɵfo, reducerProvider$a as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$b as ɵfs, reducerToken$b as ɵft, reducerProvider$b as ɵfu, clearProductsState as ɵfv, metaReducers$6 as ɵfw, effects$a as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, initSiteContextRoutesHandler as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$i as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$k as ɵgf, reducer$j as ɵgg, PageMetaResolver as ɵgh, ProductURLPipe as ɵgi, addExternalRoutesFactory as ɵgj, getReducers$7 as ɵgk, reducer$d as ɵgl, reducerToken$7 as ɵgm, reducerProvider$7 as ɵgn, CustomSerializer as ɵgo, effects$7 as ɵgp, RouterEffects as ɵgq, SiteContextParamsService as ɵgr, SiteContextUrlSerializer as ɵgs, SiteContextRoutesHandler as ɵgt, defaultSiteContextConfigFactory as ɵgu, siteContextStoreConfigFactory as ɵgv, SiteContextStoreModule as ɵgw, getReducers$1 as ɵgx, reducerToken$1 as ɵgy, reducerProvider$1 as ɵgz, siteContextParamsProviders as ɵh, effects$2 as ɵha, LanguagesEffects as ɵhb, CurrenciesEffects as ɵhc, BaseSiteEffects as ɵhd, reducer$3 as ɵhe, reducer$2 as ɵhf, reducer$1 as ɵhg, baseSiteConfigValidator as ɵhh, interceptors$4 as ɵhi, CmsTicketInterceptor as ɵhj, defaultStoreFinderConfig as ɵhk, StoreFinderStoreModule as ɵhl, getReducers$c as ɵhm, reducerToken$c as ɵhn, reducerProvider$c as ɵho, effects$b as ɵhp, FindStoresEffect as ɵhq, ViewAllStoresEffect as ɵhr, UserStoreModule as ɵhs, getReducers$d as ɵht, reducerToken$d as ɵhu, reducerProvider$d as ɵhv, clearUserState as ɵhw, metaReducers$8 as ɵhx, effects$c as ɵhy, BillingCountriesEffect as ɵhz, anonymousConsentsStoreConfigFactory as ɵi, ClearMiscsDataEffect as ɵia, ConsignmentTrackingEffects as ɵib, DeliveryCountriesEffects as ɵic, NotificationPreferenceEffects as ɵid, OrderDetailsEffect as ɵie, OrderReturnRequestEffect as ɵif, UserPaymentMethodsEffects as ɵig, RegionsEffects as ɵih, ResetPasswordEffects as ɵii, TitlesEffects as ɵij, UserAddressesEffects as ɵik, UserConsentsEffect as ɵil, UserDetailsEffects as ɵim, UserOrdersEffect as ɵin, UserRegisterEffects as ɵio, CustomerCouponEffects as ɵip, ProductInterestsEffect as ɵiq, ForgotPasswordEffects as ɵir, UpdateEmailEffects as ɵis, UpdatePasswordEffects as ɵit, UserNotificationPreferenceConnector as ɵiu, reducer$w as ɵiv, reducer$u as ɵiw, reducer$l as ɵix, reducer$v as ɵiy, reducer$q as ɵiz, AnonymousConsentsStoreModule as ɵj, reducer$x as ɵja, reducer$p as ɵjb, reducer$A as ɵjc, reducer$n as ɵjd, reducer$t as ɵje, reducer$r as ɵjf, reducer$s as ɵjg, reducer$m as ɵjh, reducer$y as ɵji, reducer$o as ɵjj, reducer$z as ɵjk, FindProductPageMetaResolver as ɵjl, PageMetaResolver as ɵjm, TRANSFER_STATE_META_REDUCER as ɵk, STORAGE_SYNC_META_REDUCER as ɵl, stateMetaReducers as ɵm, getStorageSyncReducer as ɵn, getTransferStateReducer as ɵo, getReducers$2 as ɵp, reducerToken$2 as ɵq, reducerProvider$2 as ɵr, clearAnonymousConsentTemplates as ɵs, metaReducers$1 as ɵt, effects$1 as ɵu, AnonymousConsentsEffects as ɵv, reducer$6 as ɵw, reducer$4 as ɵx, reducer$5 as ɵy, interceptors$1 as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListEffects, WishListService, clearCartState, clearMultiCartState, configInitializerFactory, configurationFactory, contextServiceMapProvider, deprecatedContextServiceProviders as contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$5 as effects, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getMultiCartReducers, getReducers$5 as getReducers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, deprecatedInitSiteContextRoutesHandler as initSiteContextRoutesHandler, initialEntityState, initialLoaderState, initialProcessesState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$3 as metaReducers, multiCartMetaReducers, multiCartReducerProvider, multiCartReducerToken, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, deprecatedSiteContextParamsProviders as siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AnonymousConsentsInterceptor as ɵba, asmStoreConfigFactory as ɵbb, AsmStoreModule as ɵbc, getReducers$3 as ɵbd, reducerToken$3 as ɵbe, reducerProvider$3 as ɵbf, clearCustomerSupportAgentAsmState as ɵbg, metaReducers$2 as ɵbh, effects$3 as ɵbi, CustomerEffects as ɵbj, CustomerSupportAgentTokenEffects as ɵbk, UserAuthenticationTokenService as ɵbl, reducer$7 as ɵbm, defaultAsmConfig as ɵbn, interceptors$2 as ɵbo, CustomerSupportAgentAuthErrorInterceptor as ɵbp, CustomerSupportAgentErrorHandlingService as ɵbq, authStoreConfigFactory as ɵbr, AuthStoreModule as ɵbs, getReducers as ɵbt, reducerToken as ɵbu, reducerProvider as ɵbv, clearAuthState as ɵbw, metaReducers as ɵbx, effects as ɵby, ClientTokenEffect as ɵbz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵc, UserTokenEffects as ɵca, ClientAuthenticationTokenService as ɵcb, reducer as ɵcc, defaultAuthConfig as ɵcd, interceptors as ɵce, ClientTokenInterceptor as ɵcf, UserTokenInterceptor as ɵcg, AuthErrorInterceptor as ɵch, UserErrorHandlingService as ɵci, UrlParsingService as ɵcj, ClientErrorHandlingService as ɵck, TokenRevocationInterceptor as ɵcl, AuthServices as ɵcm, cartStoreConfigFactory as ɵcn, CartStoreModule as ɵco, SaveCartConnector as ɵcp, SaveCartAdapter as ɵcq, reducer$9 as ɵcr, multiCartStoreConfigFactory as ɵcs, MultiCartStoreModule as ɵct, MultiCartEffects as ɵcu, processesLoaderReducer as ɵcv, activeCartReducer as ɵcw, cartEntitiesReducer as ɵcx, wishListReducer as ɵcy, CartPageMetaResolver as ɵcz, initConfig as ɵd, CheckoutStoreModule as ɵda, getReducers$6 as ɵdb, reducerToken$6 as ɵdc, reducerProvider$6 as ɵdd, effects$6 as ɵde, AddressVerificationEffect as ɵdf, CardTypesEffects as ɵdg, CheckoutEffects as ɵdh, reducer$c as ɵdi, reducer$b as ɵdj, reducer$a as ɵdk, cmsStoreConfigFactory as ɵdl, CmsStoreModule as ɵdm, getReducers$8 as ɵdn, reducerToken$8 as ɵdo, reducerProvider$8 as ɵdp, clearCmsState as ɵdq, metaReducers$4 as ɵdr, effects$8 as ɵds, ComponentsEffects as ɵdt, NavigationEntryItemEffects as ɵdu, PageEffects as ɵdv, reducer$g as ɵdw, reducer$h as ɵdx, reducer$e as ɵdy, reducer$f as ɵdz, initializeContext as ɵe, configValidatorFactory as ɵea, ConfigValidatorModule as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$4 as ɵed, reducerToken$4 as ɵee, reducerProvider$4 as ɵef, reducer$8 as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, InternalServerErrorHandler as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, clearKymaState as ɵeu, metaReducers$5 as ɵev, effects$9 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, contextServiceProviders as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$a as ɵfn, reducerToken$a as ɵfo, reducerProvider$a as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$b as ɵfs, reducerToken$b as ɵft, reducerProvider$b as ɵfu, clearProductsState as ɵfv, metaReducers$6 as ɵfw, effects$a as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, initSiteContextRoutesHandler as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$i as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$k as ɵgf, reducer$j as ɵgg, PageMetaResolver as ɵgh, ProductURLPipe as ɵgi, addExternalRoutesFactory as ɵgj, getReducers$7 as ɵgk, reducer$d as ɵgl, reducerToken$7 as ɵgm, reducerProvider$7 as ɵgn, CustomSerializer as ɵgo, effects$7 as ɵgp, RouterEffects as ɵgq, SiteContextParamsService as ɵgr, SiteContextUrlSerializer as ɵgs, SiteContextRoutesHandler as ɵgt, defaultSiteContextConfigFactory as ɵgu, siteContextStoreConfigFactory as ɵgv, SiteContextStoreModule as ɵgw, getReducers$1 as ɵgx, reducerToken$1 as ɵgy, reducerProvider$1 as ɵgz, siteContextParamsProviders as ɵh, effects$2 as ɵha, LanguagesEffects as ɵhb, CurrenciesEffects as ɵhc, BaseSiteEffects as ɵhd, reducer$3 as ɵhe, reducer$2 as ɵhf, reducer$1 as ɵhg, baseSiteConfigValidator as ɵhh, interceptors$4 as ɵhi, CmsTicketInterceptor as ɵhj, defaultStoreFinderConfig as ɵhk, StoreFinderStoreModule as ɵhl, getReducers$c as ɵhm, reducerToken$c as ɵhn, reducerProvider$c as ɵho, effects$b as ɵhp, FindStoresEffect as ɵhq, ViewAllStoresEffect as ɵhr, UserStoreModule as ɵhs, getReducers$d as ɵht, reducerToken$d as ɵhu, reducerProvider$d as ɵhv, clearUserState as ɵhw, metaReducers$8 as ɵhx, effects$c as ɵhy, BillingCountriesEffect as ɵhz, anonymousConsentsStoreConfigFactory as ɵi, ClearMiscsDataEffect as ɵia, ConsignmentTrackingEffects as ɵib, DeliveryCountriesEffects as ɵic, NotificationPreferenceEffects as ɵid, OrderDetailsEffect as ɵie, OrderReturnRequestEffect as ɵif, UserPaymentMethodsEffects as ɵig, RegionsEffects as ɵih, ResetPasswordEffects as ɵii, TitlesEffects as ɵij, UserAddressesEffects as ɵik, UserConsentsEffect as ɵil, UserDetailsEffects as ɵim, UserOrdersEffect as ɵin, UserRegisterEffects as ɵio, CustomerCouponEffects as ɵip, ProductInterestsEffect as ɵiq, ForgotPasswordEffects as ɵir, UpdateEmailEffects as ɵis, UpdatePasswordEffects as ɵit, UserNotificationPreferenceConnector as ɵiu, reducer$w as ɵiv, reducer$u as ɵiw, reducer$l as ɵix, reducer$v as ɵiy, reducer$q as ɵiz, AnonymousConsentsStoreModule as ɵj, reducer$x as ɵja, reducer$p as ɵjb, reducer$A as ɵjc, reducer$n as ɵjd, reducer$t as ɵje, reducer$r as ɵjf, reducer$s as ɵjg, reducer$m as ɵjh, reducer$y as ɵji, reducer$o as ɵjj, reducer$z as ɵjk, FindProductPageMetaResolver as ɵjl, PageMetaResolver as ɵjm, TRANSFER_STATE_META_REDUCER as ɵk, STORAGE_SYNC_META_REDUCER as ɵl, stateMetaReducers as ɵm, getStorageSyncReducer as ɵn, getTransferStateReducer as ɵo, getReducers$2 as ɵp, reducerToken$2 as ɵq, reducerProvider$2 as ɵr, clearAnonymousConsentTemplates as ɵs, metaReducers$1 as ɵt, effects$1 as ɵu, AnonymousConsentsEffects as ɵv, reducer$6 as ɵw, reducer$4 as ɵx, reducer$5 as ɵy, interceptors$1 as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

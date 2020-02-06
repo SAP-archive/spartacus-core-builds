@@ -58,10 +58,10 @@ export { getReducers as ɵdb, reducerProvider as ɵdd, reducerToken as ɵdc } fr
 export { PageMetaResolver as ɵgh } from './src/cms';
 export { PageMetaResolver as ɵjm } from './src/cms/page';
 export { CmsStoreModule as ɵdm, cmsStoreConfigFactory as ɵdl } from './src/cms/store/cms-store.module';
-export { ComponentEffects as ɵdu } from './src/cms/store/effects/component.effect';
+export { ComponentsEffects as ɵdt } from './src/cms/store/effects/components.effect';
 export { effects as ɵds } from './src/cms/store/effects/index';
-export { NavigationEntryItemEffects as ɵdv } from './src/cms/store/effects/navigation-entry-item.effect';
-export { PageEffects as ɵdt } from './src/cms/store/effects/page.effect';
+export { NavigationEntryItemEffects as ɵdu } from './src/cms/store/effects/navigation-entry-item.effect';
+export { PageEffects as ɵdv } from './src/cms/store/effects/page.effect';
 export { reducer as ɵdy } from './src/cms/store/reducers/components.reducer';
 export { clearCmsState as ɵdq, getReducers as ɵdn, metaReducers as ɵdr, reducerProvider as ɵdp, reducerToken as ɵdo } from './src/cms/store/reducers/index';
 export { reducer as ɵdz } from './src/cms/store/reducers/navigation-entry-item.reducer';

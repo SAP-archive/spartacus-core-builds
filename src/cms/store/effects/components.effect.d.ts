@@ -4,7 +4,7 @@ import { FeatureConfigService } from '../../../features-config/services/feature-
 import { CmsComponent } from '../../../model/cms.model';
 import { CmsComponentConnector } from '../../connectors/component/cms-component.connector';
 import { CmsActions } from '../actions/index';
-export declare class ComponentEffects {
+export declare class ComponentsEffects {
     private actions$;
     private cmsComponentLoader;
     private featureConfigService;
