@@ -41767,7 +41767,9 @@
                              * @return {?}
                              */
                             function (err) { return err.reason === 'notFound' || 'UnknownResourceError'; }));
-                            if (cartNotFoundErrors.length > 0) {
+                            if (cartNotFoundErrors.length > 0 &&
+                                payload.extraData &&
+                                payload.extraData.active) {
                                 // Clear cart is responsible for removing cart in `cart` store feature.
                                 // Remove cart does the same thing, but in `multi-cart` store feature.
                                 return rxjs.from([
