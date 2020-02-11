@@ -36626,6 +36626,31 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     *
+     * Withdraw from the source observable when notifier emits a value
+     *
+     * Withdraw will result in resubscribing to the source observable
+     * Operator is useful to kill ongoing emission transformation on notifier emission
+     *
+     * @template T
+     * @param {?} notifier
+     * @return {?}
+     */
+    function withdrawOn(notifier) {
+        return (/**
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
+        });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -40133,31 +40158,6 @@
          * @protected
          */
         CartPageMetaResolver.prototype.cms;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     *
-     * Withdraw from the source observable when notifier emits a value
-     *
-     * Withdraw will result in resubscribing to the source observable
-     * Operator is useful to kill ongoing emission transformation on notifier emission
-     *
-     * @template T
-     * @param {?} notifier
-     * @return {?}
-     */
-    function withdrawOn(notifier) {
-        return (/**
-         * @param {?} source
-         * @return {?}
-         */
-        function (source) {
-            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
-        });
     }
 
     /**
@@ -62363,6 +62363,7 @@
     exports.siteContextParamsProviders = deprecatedSiteContextParamsProviders;
     exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;
+    exports.withdrawOn = withdrawOn;
     exports.ɵa = TEST_CONFIG_COOKIE_NAME;
     exports.ɵb = configFromCookieFactory;
     exports.ɵba = AnonymousConsentsInterceptor;
