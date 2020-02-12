@@ -6,11 +6,13 @@ import { AuthService } from '../../auth/facade/auth.service';
 import { Observable } from 'rxjs';
 import { Cart } from '../../model/cart.model';
 import { OrderEntry } from '../../model/order.model';
+import { BaseSiteService } from '../../site-context/facade/base-site.service';
 export declare class SelectiveCartService {
     protected store: Store<StateWithMultiCart>;
     protected userService: UserService;
     protected authService: AuthService;
     protected multiCartService: MultiCartService;
+    protected baseSiteService: BaseSiteService;
     private customerId;
     private userId;
     private cartId;
@@ -19,7 +21,7 @@ export declare class SelectiveCartService {
     private readonly PREVIOUS_USER_ID_INITIAL_VALUE;
     private previousUserId;
     private cartSelector$;
-    constructor(store: Store<StateWithMultiCart>, userService: UserService, authService: AuthService, multiCartService: MultiCartService);
+    constructor(store: Store<StateWithMultiCart>, userService: UserService, authService: AuthService, multiCartService: MultiCartService, baseSiteService: BaseSiteService);
     getCart(): Observable<Cart>;
     getEntries(): Observable<OrderEntry[]>;
     getLoaded(): Observable<boolean>;

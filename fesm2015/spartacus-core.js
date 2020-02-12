@@ -33683,12 +33683,14 @@ class SelectiveCartService {
      * @param {?} userService
      * @param {?} authService
      * @param {?} multiCartService
+     * @param {?} baseSiteService
      */
-    constructor(store, userService, authService, multiCartService) {
+    constructor(store, userService, authService, multiCartService, baseSiteService) {
         this.store = store;
         this.userService = userService;
         this.authService = authService;
         this.multiCartService = multiCartService;
+        this.baseSiteService = baseSiteService;
         this.cartId$ = new BehaviorSubject(undefined);
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
@@ -33700,14 +33702,17 @@ class SelectiveCartService {
             this.cartId = cartId;
             return this.multiCartService.getCartEntity(cartId);
         })));
-        this.userService.get().subscribe((/**
-         * @param {?} user
+        combineLatest([
+            this.userService.get(),
+            this.baseSiteService.getActive(),
+        ]).subscribe((/**
+         * @param {?} __0
          * @return {?}
          */
-        user => {
-            if (user && user.customerId) {
+        ([user, activeBaseSite]) => {
+            if (user && user.customerId && activeBaseSite) {
                 this.customerId = user.customerId;
-                this.cartId$.next(`selectivecart${this.customerId}`);
+                this.cartId$.next(`selectivecart${activeBaseSite}${this.customerId}`);
             }
             else if (user && !user.customerId) {
                 this.cartId$.next(undefined);
@@ -33879,7 +33884,8 @@ SelectiveCartService.ctorParameters = () => [
     { type: Store },
     { type: UserService },
     { type: AuthService },
-    { type: MultiCartService }
+    { type: MultiCartService },
+    { type: BaseSiteService }
 ];
 if (false) {
     /**
@@ -33942,6 +33948,11 @@ if (false) {
      * @protected
      */
     SelectiveCartService.prototype.multiCartService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SelectiveCartService.prototype.baseSiteService;
 }
 
 /**
