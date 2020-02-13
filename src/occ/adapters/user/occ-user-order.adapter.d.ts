@@ -32,7 +32,7 @@ export declare class OccUserOrderAdapter implements UserOrderAdapter {
      * Remove issue: #4125
      */
     private legacyLoadHistory;
-    getConsignmentTracking(userId: string, orderCode: string, consignmentCode: string): Observable<ConsignmentTracking>;
+    getConsignmentTracking(orderCode: string, consignmentCode: string, userId?: string): Observable<ConsignmentTracking>;
     cancel(userId: string, orderCode: string, cancelRequestInput: CancellationRequestEntryInputList): Observable<{}>;
     createReturnRequest(userId: string, returnRequestInput: ReturnRequestEntryInputList): Observable<ReturnRequest>;
     loadReturnRequestList(userId: string, pageSize?: number, currentPage?: number, sort?: string): Observable<ReturnRequestList>;

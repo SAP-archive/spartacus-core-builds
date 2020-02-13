@@ -16559,18 +16559,19 @@ var OccUserOrderAdapter = /** @class */ (function () {
             .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
     };
     /**
-     * @param {?} userId
      * @param {?} orderCode
      * @param {?} consignmentCode
+     * @param {?=} userId
      * @return {?}
      */
     OccUserOrderAdapter.prototype.getConsignmentTracking = /**
-     * @param {?} userId
      * @param {?} orderCode
      * @param {?} consignmentCode
+     * @param {?=} userId
      * @return {?}
      */
-    function (userId, orderCode, consignmentCode) {
+    function (orderCode, consignmentCode, userId) {
+        if (userId === void 0) { userId = OCC_USER_ID_CURRENT; }
         /** @type {?} */
         var url = this.occEndpoints.getUrl('consignmentTracking', {
             userId: userId,
@@ -17279,12 +17280,12 @@ if (false) {
     /**
      * Abstract method used to get consignment tracking details
      * @abstract
-     * @param {?} userId
      * @param {?} orderCode an order code
      * @param {?} consignmentCode a consignment code
+     * @param {?=} userId user id related to order
      * @return {?}
      */
-    UserOrderAdapter.prototype.getConsignmentTracking = function (userId, orderCode, consignmentCode) { };
+    UserOrderAdapter.prototype.getConsignmentTracking = function (orderCode, consignmentCode, userId) { };
     /**
      * Abstract method used to create return request
      * @abstract
@@ -56381,19 +56382,19 @@ var UserOrderConnector = /** @class */ (function () {
         return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
     };
     /**
-     * @param {?} userId
      * @param {?} orderCode
      * @param {?} consignmentCode
+     * @param {?=} userId
      * @return {?}
      */
     UserOrderConnector.prototype.getConsignmentTracking = /**
-     * @param {?} userId
      * @param {?} orderCode
      * @param {?} consignmentCode
+     * @param {?=} userId
      * @return {?}
      */
-    function (userId, orderCode, consignmentCode) {
-        return this.adapter.getConsignmentTracking(userId, orderCode, consignmentCode);
+    function (orderCode, consignmentCode, userId) {
+        return this.adapter.getConsignmentTracking(orderCode, consignmentCode, userId);
     };
     /**
      * @param {?} userId
@@ -59510,7 +59511,7 @@ var ConsignmentTrackingEffects = /** @class */ (function () {
          */
         function (payload) {
             return _this.userOrderConnector
-                .getConsignmentTracking(payload.userId, payload.orderCode, payload.consignmentCode)
+                .getConsignmentTracking(payload.orderCode, payload.consignmentCode, payload.userId)
                 .pipe(map((/**
              * @param {?} tracking
              * @return {?}

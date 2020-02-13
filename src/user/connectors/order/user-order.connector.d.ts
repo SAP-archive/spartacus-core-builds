@@ -7,7 +7,7 @@ export declare class UserOrderConnector {
     constructor(adapter: UserOrderAdapter);
     get(userId: string, orderCode: string): Observable<Order>;
     getHistory(userId: string, pageSize?: number, currentPage?: number, sort?: string): Observable<OrderHistoryList>;
-    getConsignmentTracking(userId: string, orderCode: string, consignmentCode: string): Observable<ConsignmentTracking>;
+    getConsignmentTracking(orderCode: string, consignmentCode: string, userId?: string): Observable<ConsignmentTracking>;
     cancel(userId: string, orderCode: string, cancelRequestInput: CancellationRequestEntryInputList): Observable<{}>;
     return(userId: string, returnRequestInput: ReturnRequestEntryInputList): Observable<ReturnRequest>;
     getReturnRequestDetail(userId: string, returnRequestCode: string): Observable<ReturnRequest>;

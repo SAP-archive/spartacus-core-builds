@@ -22,8 +22,9 @@ export declare abstract class UserOrderAdapter {
      * Abstract method used to get consignment tracking details
      * @param orderCode an order code
      * @param consignmentCode a consignment code
+     * @param userId user id related to order
      */
-    abstract getConsignmentTracking(userId: string, orderCode: string, consignmentCode: string): Observable<ConsignmentTracking>;
+    abstract getConsignmentTracking(orderCode: string, consignmentCode: string, userId?: string): Observable<ConsignmentTracking>;
     /**
      * Abstract method used to create return request
      * @param userId The `userId` for given user

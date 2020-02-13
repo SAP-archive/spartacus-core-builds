@@ -14383,12 +14383,12 @@ class OccUserOrderAdapter {
             .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
     }
     /**
-     * @param {?} userId
      * @param {?} orderCode
      * @param {?} consignmentCode
+     * @param {?=} userId
      * @return {?}
      */
-    getConsignmentTracking(userId, orderCode, consignmentCode) {
+    getConsignmentTracking(orderCode, consignmentCode, userId = OCC_USER_ID_CURRENT) {
         /** @type {?} */
         const url = this.occEndpoints.getUrl('consignmentTracking', {
             userId,
@@ -14991,12 +14991,12 @@ if (false) {
     /**
      * Abstract method used to get consignment tracking details
      * @abstract
-     * @param {?} userId
      * @param {?} orderCode an order code
      * @param {?} consignmentCode a consignment code
+     * @param {?=} userId user id related to order
      * @return {?}
      */
-    UserOrderAdapter.prototype.getConsignmentTracking = function (userId, orderCode, consignmentCode) { };
+    UserOrderAdapter.prototype.getConsignmentTracking = function (orderCode, consignmentCode, userId) { };
     /**
      * Abstract method used to create return request
      * @abstract
@@ -49636,13 +49636,13 @@ class UserOrderConnector {
         return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
     }
     /**
-     * @param {?} userId
      * @param {?} orderCode
      * @param {?} consignmentCode
+     * @param {?=} userId
      * @return {?}
      */
-    getConsignmentTracking(userId, orderCode, consignmentCode) {
-        return this.adapter.getConsignmentTracking(userId, orderCode, consignmentCode);
+    getConsignmentTracking(orderCode, consignmentCode, userId) {
+        return this.adapter.getConsignmentTracking(orderCode, consignmentCode, userId);
     }
     /**
      * @param {?} userId
@@ -51849,7 +51849,7 @@ class ConsignmentTrackingEffects {
          */
         payload => {
             return this.userOrderConnector
-                .getConsignmentTracking(payload.userId, payload.orderCode, payload.consignmentCode)
+                .getConsignmentTracking(payload.orderCode, payload.consignmentCode, payload.userId)
                 .pipe(map((/**
              * @param {?} tracking
              * @return {?}
