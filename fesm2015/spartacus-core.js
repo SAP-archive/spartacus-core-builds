@@ -28692,6 +28692,7 @@ const GlobalMessageType = {
     MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
     MSG_TYPE_ERROR: '[GlobalMessage] Error',
     MSG_TYPE_INFO: '[GlobalMessage] Information',
+    MSG_TYPE_WARNING: '[GlobalMessage] Warning',
 };
 /**
  * @record
@@ -29756,6 +29757,9 @@ function defaultGlobalMessageConfigFactory() {
                 timeout: 3000,
             },
             [GlobalMessageType.MSG_TYPE_ERROR]: {
+                timeout: 7000,
+            },
+            [GlobalMessageType.MSG_TYPE_WARNING]: {
                 timeout: 7000,
             },
         },
@@ -46651,7 +46655,7 @@ class CategoryPageMetaResolver extends PageMetaResolver {
         const breadcrumbs = [];
         breadcrumbs.push({ label: label, link: '/' });
         for (const br of page.breadcrumbs) {
-            if (br.facetCode === 'category') {
+            if (br.facetCode === 'category' || br.facetCode === 'allCategories') {
                 breadcrumbs.push({
                     label: br.facetValueName,
                     link: `/c/${br.facetValueCode}`,

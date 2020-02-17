@@ -31919,6 +31919,7 @@ var GlobalMessageType = {
     MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
     MSG_TYPE_ERROR: '[GlobalMessage] Error',
     MSG_TYPE_INFO: '[GlobalMessage] Information',
+    MSG_TYPE_WARNING: '[GlobalMessage] Warning',
 };
 /**
  * @record
@@ -33095,6 +33096,9 @@ function defaultGlobalMessageConfigFactory() {
                 timeout: 3000,
             },
             _a[GlobalMessageType.MSG_TYPE_ERROR] = {
+                timeout: 7000,
+            },
+            _a[GlobalMessageType.MSG_TYPE_WARNING] = {
                 timeout: 7000,
             },
             _a),
@@ -52862,7 +52866,7 @@ var CategoryPageMetaResolver = /** @class */ (function (_super) {
         try {
             for (var _b = __values(page.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var br = _c.value;
-                if (br.facetCode === 'category') {
+                if (br.facetCode === 'category' || br.facetCode === 'allCategories') {
                     breadcrumbs.push({
                         label: br.facetValueName,
                         link: "/c/" + br.facetValueCode,
