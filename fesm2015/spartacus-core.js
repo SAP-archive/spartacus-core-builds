@@ -49992,7 +49992,7 @@ if (false) {
 class UserAddressService {
     /**
      * @param {?} store
-     * @param {?=} authService
+     * @param {?} authService
      */
     constructor(store, authService) {
         this.store = store;
