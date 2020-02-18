@@ -1,6 +1,6 @@
 import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, APP_INITIALIZER, Directive, TemplateRef, ViewContainerRef, Input, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
-import { __awaiter, __decorate, __metadata } from 'tslib';
+import { __awaiter, __decorate, __metadata, __rest } from 'tslib';
 import { BehaviorSubject, of, fromEvent, throwError, EMPTY, Observable, iif, combineLatest, forkJoin, Subscription, timer, queueScheduler, using, from, merge, defer } from 'rxjs';
 import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, switchMapTo, observeOn, groupBy, auditTime, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
@@ -7390,11 +7390,23 @@ if (false) {
     /** @type {?|undefined} */
     Facet.prototype.priority;
     /** @type {?|undefined} */
-    Facet.prototype.topValues;
-    /** @type {?|undefined} */
     Facet.prototype.values;
     /** @type {?|undefined} */
     Facet.prototype.visible;
+    /**
+     * Indicates the top values that will be shown instantly. The top values can be
+     * controlled by business users per facet.
+     * @type {?|undefined}
+     */
+    Facet.prototype.topValueCount;
+    /**
+     * The OCC backend has topValues with duplicated facet data.
+     * This is not used in the UI, but normalized in the `topValueCount` property.
+     *
+     * TODO: once we implement a dedicated UI model, we should remove the `topValues`.
+     * @type {?|undefined}
+     */
+    Facet.prototype.topValues;
 }
 /**
  * @record
@@ -11967,6 +11979,11 @@ class OccProductSearchPageNormalizer {
      */
     constructor(converterService) {
         this.converterService = converterService;
+        /**
+         * Specifies the minimal number of top values in case
+         * non have been setup by the business.
+         */
+        this.DEFAULT_TOP_VALUES = 6;
     }
     /**
      * @param {?} source
@@ -11975,6 +11992,7 @@ class OccProductSearchPageNormalizer {
      */
     convert(source, target = {}) {
         target = Object.assign({}, target, ((/** @type {?} */ (source))));
+        this.normalizeFacetValues(source, target);
         if (source.products) {
             target.products = source.products.map((/**
              * @param {?} product
@@ -11983,6 +12001,36 @@ class OccProductSearchPageNormalizer {
             product => this.converterService.convert(product, PRODUCT_NORMALIZER)));
         }
         return target;
+    }
+    /**
+     *
+     * In case there are so-called `topValues` given for the facet values,
+     * we replace the facet values by the topValues, simply because the
+     * values are obsolete.
+     *
+     * `topValues` is a feature in Adaptive Search which can limit a large
+     * amount of facet values to a small set (5 by default). As long as the backend
+     * provides all facet values AND topValues, we normalize the data to not bother
+     * the UI with this specific feature.
+     * @private
+     * @param {?} source
+     * @param {?} target
+     * @return {?}
+     */
+    normalizeFacetValues(source, target) {
+        if (target.facets) {
+            target.facets = source.facets.map((/**
+             * @param {?} facetSource
+             * @return {?}
+             */
+            (facetSource) => {
+                const { topValues } = facetSource, facetTarget = __rest(facetSource, ["topValues"]);
+                facetTarget.topValueCount = topValues
+                    ? topValues.length
+                    : this.DEFAULT_TOP_VALUES;
+                return facetTarget;
+            }));
+        }
     }
 }
 OccProductSearchPageNormalizer.decorators = [
@@ -11994,6 +12042,13 @@ OccProductSearchPageNormalizer.ctorParameters = () => [
 ];
 /** @nocollapse */ OccProductSearchPageNormalizer.ngInjectableDef = ɵɵdefineInjectable({ factory: function OccProductSearchPageNormalizer_Factory() { return new OccProductSearchPageNormalizer(ɵɵinject(ConverterService)); }, token: OccProductSearchPageNormalizer, providedIn: "root" });
 if (false) {
+    /**
+     * Specifies the minimal number of top values in case
+     * non have been setup by the business.
+     * @type {?}
+     * @protected
+     */
+    OccProductSearchPageNormalizer.prototype.DEFAULT_TOP_VALUES;
     /**
      * @type {?}
      * @private

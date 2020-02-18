@@ -1,4 +1,4 @@
-import { __values, __spread, __awaiter, __generator, __read, __extends, __assign, __decorate, __metadata } from 'tslib';
+import { __values, __spread, __awaiter, __generator, __read, __extends, __assign, __decorate, __metadata, __rest } from 'tslib';
 import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, APP_INITIALIZER, Directive, TemplateRef, ViewContainerRef, Input, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, getLocaleId, DatePipe } from '@angular/common';
 import { BehaviorSubject, of, fromEvent, throwError, EMPTY, Observable, iif, combineLatest, forkJoin, Subscription, timer, queueScheduler, using, from, merge, defer } from 'rxjs';
@@ -8191,11 +8191,23 @@ if (false) {
     /** @type {?|undefined} */
     Facet.prototype.priority;
     /** @type {?|undefined} */
-    Facet.prototype.topValues;
-    /** @type {?|undefined} */
     Facet.prototype.values;
     /** @type {?|undefined} */
     Facet.prototype.visible;
+    /**
+     * Indicates the top values that will be shown instantly. The top values can be
+     * controlled by business users per facet.
+     * @type {?|undefined}
+     */
+    Facet.prototype.topValueCount;
+    /**
+     * The OCC backend has topValues with duplicated facet data.
+     * This is not used in the UI, but normalized in the `topValueCount` property.
+     *
+     * TODO: once we implement a dedicated UI model, we should remove the `topValues`.
+     * @type {?|undefined}
+     */
+    Facet.prototype.topValues;
 }
 /**
  * @record
@@ -13753,6 +13765,11 @@ var ProductReferenceNormalizer = /** @class */ (function () {
 var OccProductSearchPageNormalizer = /** @class */ (function () {
     function OccProductSearchPageNormalizer(converterService) {
         this.converterService = converterService;
+        /**
+         * Specifies the minimal number of top values in case
+         * non have been setup by the business.
+         */
+        this.DEFAULT_TOP_VALUES = 6;
     }
     /**
      * @param {?} source
@@ -13768,6 +13785,7 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
         var _this = this;
         if (target === void 0) { target = {}; }
         target = __assign({}, target, ((/** @type {?} */ (source))));
+        this.normalizeFacetValues(source, target);
         if (source.products) {
             target.products = source.products.map((/**
              * @param {?} product
@@ -13778,6 +13796,63 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
             }));
         }
         return target;
+    };
+    /**
+     *
+     * In case there are so-called `topValues` given for the facet values,
+     * we replace the facet values by the topValues, simply because the
+     * values are obsolete.
+     *
+     * `topValues` is a feature in Adaptive Search which can limit a large
+     * amount of facet values to a small set (5 by default). As long as the backend
+     * provides all facet values AND topValues, we normalize the data to not bother
+     * the UI with this specific feature.
+     */
+    /**
+     *
+     * In case there are so-called `topValues` given for the facet values,
+     * we replace the facet values by the topValues, simply because the
+     * values are obsolete.
+     *
+     * `topValues` is a feature in Adaptive Search which can limit a large
+     * amount of facet values to a small set (5 by default). As long as the backend
+     * provides all facet values AND topValues, we normalize the data to not bother
+     * the UI with this specific feature.
+     * @private
+     * @param {?} source
+     * @param {?} target
+     * @return {?}
+     */
+    OccProductSearchPageNormalizer.prototype.normalizeFacetValues = /**
+     *
+     * In case there are so-called `topValues` given for the facet values,
+     * we replace the facet values by the topValues, simply because the
+     * values are obsolete.
+     *
+     * `topValues` is a feature in Adaptive Search which can limit a large
+     * amount of facet values to a small set (5 by default). As long as the backend
+     * provides all facet values AND topValues, we normalize the data to not bother
+     * the UI with this specific feature.
+     * @private
+     * @param {?} source
+     * @param {?} target
+     * @return {?}
+     */
+    function (source, target) {
+        var _this = this;
+        if (target.facets) {
+            target.facets = source.facets.map((/**
+             * @param {?} facetSource
+             * @return {?}
+             */
+            function (facetSource) {
+                var topValues = facetSource.topValues, facetTarget = __rest(facetSource, ["topValues"]);
+                facetTarget.topValueCount = topValues
+                    ? topValues.length
+                    : _this.DEFAULT_TOP_VALUES;
+                return facetTarget;
+            }));
+        }
     };
     OccProductSearchPageNormalizer.decorators = [
         { type: Injectable, args: [{ providedIn: 'root' },] }
@@ -13790,6 +13865,13 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
     return OccProductSearchPageNormalizer;
 }());
 if (false) {
+    /**
+     * Specifies the minimal number of top values in case
+     * non have been setup by the business.
+     * @type {?}
+     * @protected
+     */
+    OccProductSearchPageNormalizer.prototype.DEFAULT_TOP_VALUES;
     /**
      * @type {?}
      * @private
