@@ -44322,10 +44322,13 @@
                     return rxjs.of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE), operators.map((/**
+            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE), operators.mergeMap((/**
              * @return {?}
              */
-            function () { return new CheckoutClearMiscsData(); })));
+            function () { return [
+                new CheckoutClearMiscsData(),
+                new ResetLoadSupportedDeliveryModesProcess(),
+            ]; })));
             this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(effects$d.ofType(CURRENCY_CHANGE), operators.map((/**
              * @return {?}
              */

@@ -44131,10 +44131,13 @@ var CheckoutEffects = /** @class */ (function () {
                 return of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)));
             })));
         })), withdrawOn(this.contextChange$));
-        this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
+        this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), mergeMap((/**
          * @return {?}
          */
-        function () { return new CheckoutClearMiscsData(); })));
+        function () { return [
+            new CheckoutClearMiscsData(),
+            new ResetLoadSupportedDeliveryModesProcess(),
+        ]; })));
         this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE), map((/**
          * @return {?}
          */
