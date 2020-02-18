@@ -13785,7 +13785,7 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
         var _this = this;
         if (target === void 0) { target = {}; }
         target = __assign({}, target, ((/** @type {?} */ (source))));
-        this.normalizeFacetValues(source, target);
+        this.normalizeFacets(target);
         if (source.products) {
             target.products = source.products.map((/**
              * @param {?} product
@@ -13798,50 +13798,112 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
         return target;
     };
     /**
+     * @private
+     * @param {?} target
+     * @return {?}
+     */
+    OccProductSearchPageNormalizer.prototype.normalizeFacets = /**
+     * @private
+     * @param {?} target
+     * @return {?}
+     */
+    function (target) {
+        this.normalizeFacetValues(target);
+        this.normalizeUselessFacets(target);
+    };
+    /**
+     * The (current) backend returns facets with values that do not contribute
+     * to the facet navigation much, as the number in the result list will not get
+     * behaviour, see https://jira.hybris.com/browse/CS-427.
      *
-     * In case there are so-called `topValues` given for the facet values,
-     * we replace the facet values by the topValues, simply because the
-     * values are obsolete.
-     *
-     * `topValues` is a feature in Adaptive Search which can limit a large
-     * amount of facet values to a small set (5 by default). As long as the backend
-     * provides all facet values AND topValues, we normalize the data to not bother
-     * the UI with this specific feature.
+     * As long as this is not in place, we manually filter the facet from the list;
+     * any facet that does not have a count < the total results will be dropped from
+     * the facets.
      */
     /**
+     * The (current) backend returns facets with values that do not contribute
+     * to the facet navigation much, as the number in the result list will not get
+     * behaviour, see https://jira.hybris.com/browse/CS-427.
      *
+     * As long as this is not in place, we manually filter the facet from the list;
+     * any facet that does not have a count < the total results will be dropped from
+     * the facets.
+     * @private
+     * @param {?} target
+     * @return {?}
+     */
+    OccProductSearchPageNormalizer.prototype.normalizeUselessFacets = /**
+     * The (current) backend returns facets with values that do not contribute
+     * to the facet navigation much, as the number in the result list will not get
+     * behaviour, see https://jira.hybris.com/browse/CS-427.
+     *
+     * As long as this is not in place, we manually filter the facet from the list;
+     * any facet that does not have a count < the total results will be dropped from
+     * the facets.
+     * @private
+     * @param {?} target
+     * @return {?}
+     */
+    function (target) {
+        target.facets = target.facets.filter((/**
+         * @param {?} facet
+         * @return {?}
+         */
+        function (facet) {
+            return (!target.pagination ||
+                !target.pagination.totalResults ||
+                ((!facet.hasOwnProperty('visible') || facet.visible) &&
+                    facet.values &&
+                    facet.values.find((/**
+                     * @param {?} value
+                     * @return {?}
+                     */
+                    function (value) {
+                        return (value.selected || value.count < target.pagination.totalResults);
+                    }))));
+        }));
+    };
+    /*
      * In case there are so-called `topValues` given for the facet values,
-     * we replace the facet values by the topValues, simply because the
      * values are obsolete.
      *
      * `topValues` is a feature in Adaptive Search which can limit a large
      * amount of facet values to a small set (5 by default). As long as the backend
      * provides all facet values AND topValues, we normalize the data to not bother
      * the UI with this specific feature.
+     */
+    /*
+       * In case there are so-called `topValues` given for the facet values,
+       * values are obsolete.
+       *
+       * `topValues` is a feature in Adaptive Search which can limit a large
+       * amount of facet values to a small set (5 by default). As long as the backend
+       * provides all facet values AND topValues, we normalize the data to not bother
+       * the UI with this specific feature.
+       */
+    /**
      * @private
-     * @param {?} source
      * @param {?} target
      * @return {?}
      */
-    OccProductSearchPageNormalizer.prototype.normalizeFacetValues = /**
-     *
-     * In case there are so-called `topValues` given for the facet values,
-     * we replace the facet values by the topValues, simply because the
-     * values are obsolete.
-     *
-     * `topValues` is a feature in Adaptive Search which can limit a large
-     * amount of facet values to a small set (5 by default). As long as the backend
-     * provides all facet values AND topValues, we normalize the data to not bother
-     * the UI with this specific feature.
+    OccProductSearchPageNormalizer.prototype.normalizeFacetValues = /*
+       * In case there are so-called `topValues` given for the facet values,
+       * values are obsolete.
+       *
+       * `topValues` is a feature in Adaptive Search which can limit a large
+       * amount of facet values to a small set (5 by default). As long as the backend
+       * provides all facet values AND topValues, we normalize the data to not bother
+       * the UI with this specific feature.
+       */
+    /**
      * @private
-     * @param {?} source
      * @param {?} target
      * @return {?}
      */
-    function (source, target) {
+    function (target) {
         var _this = this;
         if (target.facets) {
-            target.facets = source.facets.map((/**
+            target.facets = target.facets.map((/**
              * @param {?} facetSource
              * @return {?}
              */

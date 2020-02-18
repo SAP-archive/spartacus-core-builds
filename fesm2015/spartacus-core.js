@@ -11992,7 +11992,7 @@ class OccProductSearchPageNormalizer {
      */
     convert(source, target = {}) {
         target = Object.assign({}, target, ((/** @type {?} */ (source))));
-        this.normalizeFacetValues(source, target);
+        this.normalizeFacets(target);
         if (source.products) {
             target.products = source.products.map((/**
              * @param {?} product
@@ -12003,23 +12003,62 @@ class OccProductSearchPageNormalizer {
         return target;
     }
     /**
-     *
-     * In case there are so-called `topValues` given for the facet values,
-     * we replace the facet values by the topValues, simply because the
-     * values are obsolete.
-     *
-     * `topValues` is a feature in Adaptive Search which can limit a large
-     * amount of facet values to a small set (5 by default). As long as the backend
-     * provides all facet values AND topValues, we normalize the data to not bother
-     * the UI with this specific feature.
      * @private
-     * @param {?} source
      * @param {?} target
      * @return {?}
      */
-    normalizeFacetValues(source, target) {
+    normalizeFacets(target) {
+        this.normalizeFacetValues(target);
+        this.normalizeUselessFacets(target);
+    }
+    /**
+     * The (current) backend returns facets with values that do not contribute
+     * to the facet navigation much, as the number in the result list will not get
+     * behaviour, see https://jira.hybris.com/browse/CS-427.
+     *
+     * As long as this is not in place, we manually filter the facet from the list;
+     * any facet that does not have a count < the total results will be dropped from
+     * the facets.
+     * @private
+     * @param {?} target
+     * @return {?}
+     */
+    normalizeUselessFacets(target) {
+        target.facets = target.facets.filter((/**
+         * @param {?} facet
+         * @return {?}
+         */
+        facet => {
+            return (!target.pagination ||
+                !target.pagination.totalResults ||
+                ((!facet.hasOwnProperty('visible') || facet.visible) &&
+                    facet.values &&
+                    facet.values.find((/**
+                     * @param {?} value
+                     * @return {?}
+                     */
+                    value => {
+                        return (value.selected || value.count < target.pagination.totalResults);
+                    }))));
+        }));
+    }
+    /*
+       * In case there are so-called `topValues` given for the facet values,
+       * values are obsolete.
+       *
+       * `topValues` is a feature in Adaptive Search which can limit a large
+       * amount of facet values to a small set (5 by default). As long as the backend
+       * provides all facet values AND topValues, we normalize the data to not bother
+       * the UI with this specific feature.
+       */
+    /**
+     * @private
+     * @param {?} target
+     * @return {?}
+     */
+    normalizeFacetValues(target) {
         if (target.facets) {
-            target.facets = source.facets.map((/**
+            target.facets = target.facets.map((/**
              * @param {?} facetSource
              * @return {?}
              */

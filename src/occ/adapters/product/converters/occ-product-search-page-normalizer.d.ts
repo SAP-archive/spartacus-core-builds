@@ -10,16 +10,16 @@ export declare class OccProductSearchPageNormalizer implements Converter<Occ.Pro
      */
     protected DEFAULT_TOP_VALUES: number;
     convert(source: Occ.ProductSearchPage, target?: ProductSearchPage): ProductSearchPage;
+    private normalizeFacets;
     /**
+     * The (current) backend returns facets with values that do not contribute
+     * to the facet navigation much, as the number in the result list will not get
+     * behaviour, see https://jira.hybris.com/browse/CS-427.
      *
-     * In case there are so-called `topValues` given for the facet values,
-     * we replace the facet values by the topValues, simply because the
-     * values are obsolete.
-     *
-     * `topValues` is a feature in Adaptive Search which can limit a large
-     * amount of facet values to a small set (5 by default). As long as the backend
-     * provides all facet values AND topValues, we normalize the data to not bother
-     * the UI with this specific feature.
+     * As long as this is not in place, we manually filter the facet from the list;
+     * any facet that does not have a count < the total results will be dropped from
+     * the facets.
      */
+    private normalizeUselessFacets;
     private normalizeFacetValues;
 }
