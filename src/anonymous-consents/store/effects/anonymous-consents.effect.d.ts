@@ -7,6 +7,7 @@ import { AnonymousConsentsConfig } from '../../config/anonymous-consents-config'
 import { AnonymousConsentTemplatesConnector } from '../../connectors/anonymous-consent-templates.connector';
 import { AnonymousConsentsService } from '../../facade/index';
 import { AnonymousConsentsActions } from '../actions/index';
+import * as ɵngcc0 from '@angular/core';
 export declare class AnonymousConsentsEffects {
     private actions$;
     private anonymousConsentTemplatesConnector;
@@ -18,4 +19,8 @@ export declare class AnonymousConsentsEffects {
     transferAnonymousConsentsToUser$: Observable<UserActions.TransferAnonymousConsent | Observable<never>>;
     giveRequiredConsentsToUser$: Observable<UserActions.GiveUserConsent | Observable<never>>;
     constructor(actions$: Actions, anonymousConsentTemplatesConnector: AnonymousConsentTemplatesConnector, authService: AuthService, anonymousConsentsConfig: AnonymousConsentsConfig, anonymousConsentService: AnonymousConsentsService, userConsentService: UserConsentService);
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AnonymousConsentsEffects>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<AnonymousConsentsEffects>;
 }
+
+//# sourceMappingURL=anonymous-consents.effect.d.ts.map

@@ -5,6 +5,7 @@ import { Address } from '../../../model/address.model';
 import { DeliveryMode } from '../../../model/order.model';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccCheckoutDeliveryAdapter implements CheckoutDeliveryAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -16,4 +17,8 @@ export declare class OccCheckoutDeliveryAdapter implements CheckoutDeliveryAdapt
     setMode(userId: string, cartId: string, deliveryModeId: string): Observable<any>;
     getMode(userId: string, cartId: string): Observable<any>;
     getSupportedModes(userId: string, cartId: string): Observable<DeliveryMode[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCheckoutDeliveryAdapter>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCheckoutDeliveryAdapter>;
 }
+
+//# sourceMappingURL=occ-checkout-delivery.adapter.d.ts.map

@@ -1,5 +1,6 @@
 import { UrlMatcher } from '@angular/router';
 import { GlobService } from '../../util/glob.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class UrlMatcherFactoryService {
     protected globService: GlobService;
     constructor(globService: GlobService);
@@ -25,4 +26,7 @@ export declare class UrlMatcherFactoryService {
      * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
      */
     getGlobUrlMatcher(globPatterns: string[]): UrlMatcher;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UrlMatcherFactoryService>;
 }
+
+//# sourceMappingURL=url-matcher-factory.service.d.ts.map

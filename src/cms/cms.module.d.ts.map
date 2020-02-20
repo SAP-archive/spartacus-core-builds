@@ -1,0 +1,1 @@
+{"version":3,"file":"cms.module.d.ts","sources":["/home/travis/build/SAP/cloud-commerce-spartacus-storefront/dist/core/src/cms/cms.module.d.ts"],"sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class CmsModule {\n    static forRoot(): ModuleWithProviders<CmsModule>;\n}\n"],"names":[],"mappings":"AAAA;;;;AACA;;;;AAEA;"}

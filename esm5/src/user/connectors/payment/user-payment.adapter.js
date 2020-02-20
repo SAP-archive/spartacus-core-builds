@@ -1,42 +1,7 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-var /**
- * @abstract
- */
-UserPaymentAdapter = /** @class */ (function () {
+var UserPaymentAdapter = /** @class */ (function () {
     function UserPaymentAdapter() {
     }
     return UserPaymentAdapter;
 }());
-/**
- * @abstract
- */
 export { UserPaymentAdapter };
-if (false) {
-    /**
-     * @abstract
-     * @param {?} userId
-     * @return {?}
-     */
-    UserPaymentAdapter.prototype.loadAll = function (userId) { };
-    /**
-     * @abstract
-     * @param {?} userId
-     * @param {?} paymentMethodID
-     * @return {?}
-     */
-    UserPaymentAdapter.prototype.delete = function (userId, paymentMethodID) { };
-    /**
-     * @abstract
-     * @param {?} userId
-     * @param {?} paymentMethodID
-     * @return {?}
-     */
-    UserPaymentAdapter.prototype.setDefault = function (userId, paymentMethodID) { };
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXNlci1wYXltZW50LmFkYXB0ZXIuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXNlci9jb25uZWN0b3JzL3BheW1lbnQvdXNlci1wYXltZW50LmFkYXB0ZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7OztBQUdBOzs7O0lBQUE7SUFNQSxDQUFDO0lBQUQseUJBQUM7QUFBRCxDQUFDLEFBTkQsSUFNQzs7Ozs7Ozs7Ozs7SUFMQyw2REFBK0Q7Ozs7Ozs7SUFFL0QsNkVBQXlFOzs7Ozs7O0lBRXpFLGlGQUE2RSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE9ic2VydmFibGUgfSBmcm9tICdyeGpzJztcbmltcG9ydCB7IFBheW1lbnREZXRhaWxzIH0gZnJvbSAnLi4vLi4vLi4vbW9kZWwvY2FydC5tb2RlbCc7XG5cbmV4cG9ydCBhYnN0cmFjdCBjbGFzcyBVc2VyUGF5bWVudEFkYXB0ZXIge1xuICBhYnN0cmFjdCBsb2FkQWxsKHVzZXJJZDogc3RyaW5nKTogT2JzZXJ2YWJsZTxQYXltZW50RGV0YWlsc1tdPjtcblxuICBhYnN0cmFjdCBkZWxldGUodXNlcklkOiBzdHJpbmcsIHBheW1lbnRNZXRob2RJRDogc3RyaW5nKTogT2JzZXJ2YWJsZTx7fT47XG5cbiAgYWJzdHJhY3Qgc2V0RGVmYXVsdCh1c2VySWQ6IHN0cmluZywgcGF5bWVudE1ldGhvZElEOiBzdHJpbmcpOiBPYnNlcnZhYmxlPHt9Pjtcbn1cbiJdfQ==
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXNlci1wYXltZW50LmFkYXB0ZXIuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXNlci9jb25uZWN0b3JzL3BheW1lbnQvdXNlci1wYXltZW50LmFkYXB0ZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBR0E7SUFBQTtJQU1BLENBQUM7SUFBRCx5QkFBQztBQUFELENBQUMsQUFORCxJQU1DIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnO1xuaW1wb3J0IHsgUGF5bWVudERldGFpbHMgfSBmcm9tICcuLi8uLi8uLi9tb2RlbC9jYXJ0Lm1vZGVsJztcblxuZXhwb3J0IGFic3RyYWN0IGNsYXNzIFVzZXJQYXltZW50QWRhcHRlciB7XG4gIGFic3RyYWN0IGxvYWRBbGwodXNlcklkOiBzdHJpbmcpOiBPYnNlcnZhYmxlPFBheW1lbnREZXRhaWxzW10+O1xuXG4gIGFic3RyYWN0IGRlbGV0ZSh1c2VySWQ6IHN0cmluZywgcGF5bWVudE1ldGhvZElEOiBzdHJpbmcpOiBPYnNlcnZhYmxlPHt9PjtcblxuICBhYnN0cmFjdCBzZXREZWZhdWx0KHVzZXJJZDogc3RyaW5nLCBwYXltZW50TWV0aG9kSUQ6IHN0cmluZyk6IE9ic2VydmFibGU8e30+O1xufVxuIl19

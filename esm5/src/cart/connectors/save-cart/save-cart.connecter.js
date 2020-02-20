@@ -1,7 +1,4 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
+import { __decorate } from "tslib";
 import { Injectable } from '@angular/core';
 import { SaveCartAdapter } from './save-cart.adapter';
 import * as i0 from "@angular/core";
@@ -10,41 +7,19 @@ var SaveCartConnector = /** @class */ (function () {
     function SaveCartConnector(adapter) {
         this.adapter = adapter;
     }
-    /**
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?=} saveCartName
-     * @param {?=} saveCartDescription
-     * @return {?}
-     */
-    SaveCartConnector.prototype.saveCart = /**
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?=} saveCartName
-     * @param {?=} saveCartDescription
-     * @return {?}
-     */
-    function (userId, cartId, saveCartName, saveCartDescription) {
+    SaveCartConnector.prototype.saveCart = function (userId, cartId, saveCartName, saveCartDescription) {
         return this.adapter.saveCart(userId, cartId, saveCartName, saveCartDescription);
     };
-    SaveCartConnector.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    /** @nocollapse */
     SaveCartConnector.ctorParameters = function () { return [
         { type: SaveCartAdapter }
     ]; };
-    /** @nocollapse */ SaveCartConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(i0.ɵɵinject(i1.SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
+    SaveCartConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(i0.ɵɵinject(i1.SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
+    SaveCartConnector = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], SaveCartConnector);
     return SaveCartConnector;
 }());
 export { SaveCartConnector };
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    SaveCartConnector.prototype.adapter;
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2F2ZS1jYXJ0LmNvbm5lY3Rlci5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9jYXJ0L2Nvbm5lY3RvcnMvc2F2ZS1jYXJ0L3NhdmUtY2FydC5jb25uZWN0ZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFHM0MsT0FBTyxFQUFFLGVBQWUsRUFBRSxNQUFNLHFCQUFxQixDQUFDOzs7QUFFdEQ7SUFJRSwyQkFBc0IsT0FBd0I7UUFBeEIsWUFBTyxHQUFQLE9BQU8sQ0FBaUI7SUFBRyxDQUFDOzs7Ozs7OztJQUUzQyxvQ0FBUTs7Ozs7OztJQUFmLFVBQ0UsTUFBYyxFQUNkLE1BQWMsRUFDZCxZQUFxQixFQUNyQixtQkFBNEI7UUFFNUIsT0FBTyxJQUFJLENBQUMsT0FBTyxDQUFDLFFBQVEsQ0FDMUIsTUFBTSxFQUNOLE1BQU0sRUFDTixZQUFZLEVBQ1osbUJBQW1CLENBQ3BCLENBQUM7SUFDSixDQUFDOztnQkFsQkYsVUFBVSxTQUFDO29CQUNWLFVBQVUsRUFBRSxNQUFNO2lCQUNuQjs7OztnQkFKUSxlQUFlOzs7NEJBSHhCO0NBd0JDLEFBbkJELElBbUJDO1NBaEJZLGlCQUFpQjs7Ozs7O0lBQ2hCLG9DQUFrQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IE9ic2VydmFibGUgfSBmcm9tICdyeGpzJztcbmltcG9ydCB7IFNhdmVDYXJ0UmVzdWx0IH0gZnJvbSAnLi4vLi4vLi4vbW9kZWwvY2FydC5tb2RlbCc7XG5pbXBvcnQgeyBTYXZlQ2FydEFkYXB0ZXIgfSBmcm9tICcuL3NhdmUtY2FydC5hZGFwdGVyJztcblxuQEluamVjdGFibGUoe1xuICBwcm92aWRlZEluOiAncm9vdCcsXG59KVxuZXhwb3J0IGNsYXNzIFNhdmVDYXJ0Q29ubmVjdG9yIHtcbiAgY29uc3RydWN0b3IocHJvdGVjdGVkIGFkYXB0ZXI6IFNhdmVDYXJ0QWRhcHRlcikge31cblxuICBwdWJsaWMgc2F2ZUNhcnQoXG4gICAgdXNlcklkOiBzdHJpbmcsXG4gICAgY2FydElkOiBzdHJpbmcsXG4gICAgc2F2ZUNhcnROYW1lPzogc3RyaW5nLFxuICAgIHNhdmVDYXJ0RGVzY3JpcHRpb24/OiBzdHJpbmdcbiAgKTogT2JzZXJ2YWJsZTxTYXZlQ2FydFJlc3VsdD4ge1xuICAgIHJldHVybiB0aGlzLmFkYXB0ZXIuc2F2ZUNhcnQoXG4gICAgICB1c2VySWQsXG4gICAgICBjYXJ0SWQsXG4gICAgICBzYXZlQ2FydE5hbWUsXG4gICAgICBzYXZlQ2FydERlc2NyaXB0aW9uXG4gICAgKTtcbiAgfVxufVxuIl19
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2F2ZS1jYXJ0LmNvbm5lY3Rlci5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9jYXJ0L2Nvbm5lY3RvcnMvc2F2ZS1jYXJ0L3NhdmUtY2FydC5jb25uZWN0ZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBLE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFHM0MsT0FBTyxFQUFFLGVBQWUsRUFBRSxNQUFNLHFCQUFxQixDQUFDOzs7QUFLdEQ7SUFDRSwyQkFBc0IsT0FBd0I7UUFBeEIsWUFBTyxHQUFQLE9BQU8sQ0FBaUI7SUFBRyxDQUFDO0lBRTNDLG9DQUFRLEdBQWYsVUFDRSxNQUFjLEVBQ2QsTUFBYyxFQUNkLFlBQXFCLEVBQ3JCLG1CQUE0QjtRQUU1QixPQUFPLElBQUksQ0FBQyxPQUFPLENBQUMsUUFBUSxDQUMxQixNQUFNLEVBQ04sTUFBTSxFQUNOLFlBQVksRUFDWixtQkFBbUIsQ0FDcEIsQ0FBQztJQUNKLENBQUM7O2dCQWQ4QixlQUFlOzs7SUFEbkMsaUJBQWlCO1FBSDdCLFVBQVUsQ0FBQztZQUNWLFVBQVUsRUFBRSxNQUFNO1NBQ25CLENBQUM7T0FDVyxpQkFBaUIsQ0FnQjdCOzRCQXhCRDtDQXdCQyxBQWhCRCxJQWdCQztTQWhCWSxpQkFBaUIiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBJbmplY3RhYmxlIH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5pbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBTYXZlQ2FydFJlc3VsdCB9IGZyb20gJy4uLy4uLy4uL21vZGVsL2NhcnQubW9kZWwnO1xuaW1wb3J0IHsgU2F2ZUNhcnRBZGFwdGVyIH0gZnJvbSAnLi9zYXZlLWNhcnQuYWRhcHRlcic7XG5cbkBJbmplY3RhYmxlKHtcbiAgcHJvdmlkZWRJbjogJ3Jvb3QnLFxufSlcbmV4cG9ydCBjbGFzcyBTYXZlQ2FydENvbm5lY3RvciB7XG4gIGNvbnN0cnVjdG9yKHByb3RlY3RlZCBhZGFwdGVyOiBTYXZlQ2FydEFkYXB0ZXIpIHt9XG5cbiAgcHVibGljIHNhdmVDYXJ0KFxuICAgIHVzZXJJZDogc3RyaW5nLFxuICAgIGNhcnRJZDogc3RyaW5nLFxuICAgIHNhdmVDYXJ0TmFtZT86IHN0cmluZyxcbiAgICBzYXZlQ2FydERlc2NyaXB0aW9uPzogc3RyaW5nXG4gICk6IE9ic2VydmFibGU8U2F2ZUNhcnRSZXN1bHQ+IHtcbiAgICByZXR1cm4gdGhpcy5hZGFwdGVyLnNhdmVDYXJ0KFxuICAgICAgdXNlcklkLFxuICAgICAgY2FydElkLFxuICAgICAgc2F2ZUNhcnROYW1lLFxuICAgICAgc2F2ZUNhcnREZXNjcmlwdGlvblxuICAgICk7XG4gIH1cbn1cbiJdfQ==

@@ -5,6 +5,7 @@ import { UserInterestsAdapter } from '../../../user/connectors/interests/user-in
 import { ProductInterestSearchResult, ProductInterestEntryRelation, NotificationType } from '../../../model/product-interest.model';
 import { OccConfig } from '../../config/occ-config';
 import { ConverterService } from '../../../util/converter.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccUserInterestsAdapter implements UserInterestsAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -14,4 +15,8 @@ export declare class OccUserInterestsAdapter implements UserInterestsAdapter {
     getInterests(userId: string, pageSize?: number, currentPage?: number, sort?: string, productCode?: string, notificationType?: NotificationType): Observable<ProductInterestSearchResult>;
     removeInterest(userId: string, item: ProductInterestEntryRelation): Observable<any[]>;
     addInterest(userId: string, productCode: string, notificationType: NotificationType): Observable<any>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserInterestsAdapter>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserInterestsAdapter>;
 }
+
+//# sourceMappingURL=occ-user-interests.adapter.d.ts.map

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { LoaderState } from '../../state/utils/loader/loader-state';
 import { ClientToken, UserToken } from '../models/token-types.model';
 import { StateWithAuth } from '../store/auth-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class AuthService {
     protected store: Store<StateWithAuth>;
     constructor(store: Store<StateWithAuth>);
@@ -55,4 +56,7 @@ export declare class AuthService {
      * Returns `true` if the user is logged in; and `false` if the user is anonymous.
      */
     isUserLoggedIn(): Observable<boolean>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthService>;
 }
+
+//# sourceMappingURL=auth.service.d.ts.map

@@ -4,6 +4,7 @@ import { CheckoutPaymentAdapter } from '../../../checkout/connectors/payment/che
 import { CardType, PaymentDetails } from '../../../model/cart.model';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccCheckoutPaymentAdapter implements CheckoutPaymentAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -20,4 +21,8 @@ export declare class OccCheckoutPaymentAdapter implements CheckoutPaymentAdapter
     private getParamsForPaymentProvider;
     private extractPaymentDetailsFromHtml;
     private convertToMap;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCheckoutPaymentAdapter>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCheckoutPaymentAdapter>;
 }
+
+//# sourceMappingURL=occ-checkout-payment.adapter.d.ts.map

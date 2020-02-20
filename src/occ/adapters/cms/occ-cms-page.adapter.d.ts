@@ -5,6 +5,7 @@ import { CmsStructureModel } from '../../../cms/model/page.model';
 import { PageContext } from '../../../routing';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccCmsPageAdapter implements CmsPageAdapter {
     private http;
     private occEndpoints;
@@ -14,4 +15,8 @@ export declare class OccCmsPageAdapter implements CmsPageAdapter {
     load(pageContext: PageContext, fields?: string): Observable<CmsStructureModel>;
     private getPagesEndpoint;
     private getPagesRequestParams;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsPageAdapter>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCmsPageAdapter>;
 }
+
+//# sourceMappingURL=occ-cms-page.adapter.d.ts.map

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { Cart } from '../../model/cart.model';
 import { OrderEntry } from '../../model/order.model';
 import { BaseSiteService } from '../../site-context/facade/base-site.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class SelectiveCartService {
     protected store: Store<StateWithMultiCart>;
     protected userService: UserService;
@@ -33,4 +34,8 @@ export declare class SelectiveCartService {
     private isEmpty;
     private isJustLoggedIn;
     private isLoggedIn;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SelectiveCartService>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<SelectiveCartService>;
 }
+
+//# sourceMappingURL=selective-cart.service.d.ts.map

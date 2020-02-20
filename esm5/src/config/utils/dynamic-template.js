@@ -1,27 +1,12 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-import * as tslib_1 from "tslib";
+import { __values } from "tslib";
 var DynamicTemplate = /** @class */ (function () {
     function DynamicTemplate() {
     }
-    /**
-     * @param {?} templateString
-     * @param {?} templateVariables
-     * @return {?}
-     */
-    DynamicTemplate.resolve = /**
-     * @param {?} templateString
-     * @param {?} templateVariables
-     * @return {?}
-     */
-    function (templateString, templateVariables) {
+    DynamicTemplate.resolve = function (templateString, templateVariables) {
         var e_1, _a;
         try {
-            for (var _b = tslib_1.__values(Object.keys(templateVariables)), _c = _b.next(); !_c.done; _c = _b.next()) {
+            for (var _b = __values(Object.keys(templateVariables)), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var variableLabel = _c.value;
-                /** @type {?} */
                 var placeholder = new RegExp('\\${' + variableLabel + '}', 'g');
                 templateString = templateString.replace(placeholder, templateVariables[variableLabel]);
             }
@@ -38,4 +23,4 @@ var DynamicTemplate = /** @class */ (function () {
     return DynamicTemplate;
 }());
 export { DynamicTemplate };
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZHluYW1pYy10ZW1wbGF0ZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9jb25maWcvdXRpbHMvZHluYW1pYy10ZW1wbGF0ZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7OztBQUFBO0lBQUE7SUFXQSxDQUFDOzs7Ozs7SUFWUSx1QkFBTzs7Ozs7SUFBZCxVQUFlLGNBQXNCLEVBQUUsaUJBQXlCOzs7WUFDOUQsS0FBNEIsSUFBQSxLQUFBLGlCQUFBLE1BQU0sQ0FBQyxJQUFJLENBQUMsaUJBQWlCLENBQUMsQ0FBQSxnQkFBQSw0QkFBRTtnQkFBdkQsSUFBTSxhQUFhLFdBQUE7O29CQUNoQixXQUFXLEdBQUcsSUFBSSxNQUFNLENBQUMsTUFBTSxHQUFHLGFBQWEsR0FBRyxHQUFHLEVBQUUsR0FBRyxDQUFDO2dCQUNqRSxjQUFjLEdBQUcsY0FBYyxDQUFDLE9BQU8sQ0FDckMsV0FBVyxFQUNYLGlCQUFpQixDQUFDLGFBQWEsQ0FBQyxDQUNqQyxDQUFDO2FBQ0g7Ozs7Ozs7OztRQUNELE9BQU8sY0FBYyxDQUFDO0lBQ3hCLENBQUM7SUFDSCxzQkFBQztBQUFELENBQUMsQUFYRCxJQVdDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGNsYXNzIER5bmFtaWNUZW1wbGF0ZSB7XG4gIHN0YXRpYyByZXNvbHZlKHRlbXBsYXRlU3RyaW5nOiBzdHJpbmcsIHRlbXBsYXRlVmFyaWFibGVzOiBPYmplY3QpIHtcbiAgICBmb3IgKGNvbnN0IHZhcmlhYmxlTGFiZWwgb2YgT2JqZWN0LmtleXModGVtcGxhdGVWYXJpYWJsZXMpKSB7XG4gICAgICBjb25zdCBwbGFjZWhvbGRlciA9IG5ldyBSZWdFeHAoJ1xcXFwkeycgKyB2YXJpYWJsZUxhYmVsICsgJ30nLCAnZycpO1xuICAgICAgdGVtcGxhdGVTdHJpbmcgPSB0ZW1wbGF0ZVN0cmluZy5yZXBsYWNlKFxuICAgICAgICBwbGFjZWhvbGRlcixcbiAgICAgICAgdGVtcGxhdGVWYXJpYWJsZXNbdmFyaWFibGVMYWJlbF1cbiAgICAgICk7XG4gICAgfVxuICAgIHJldHVybiB0ZW1wbGF0ZVN0cmluZztcbiAgfVxufVxuIl19
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZHluYW1pYy10ZW1wbGF0ZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9jb25maWcvdXRpbHMvZHluYW1pYy10ZW1wbGF0ZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7SUFBQTtJQVdBLENBQUM7SUFWUSx1QkFBTyxHQUFkLFVBQWUsY0FBc0IsRUFBRSxpQkFBeUI7OztZQUM5RCxLQUE0QixJQUFBLEtBQUEsU0FBQSxNQUFNLENBQUMsSUFBSSxDQUFDLGlCQUFpQixDQUFDLENBQUEsZ0JBQUEsNEJBQUU7Z0JBQXZELElBQU0sYUFBYSxXQUFBO2dCQUN0QixJQUFNLFdBQVcsR0FBRyxJQUFJLE1BQU0sQ0FBQyxNQUFNLEdBQUcsYUFBYSxHQUFHLEdBQUcsRUFBRSxHQUFHLENBQUMsQ0FBQztnQkFDbEUsY0FBYyxHQUFHLGNBQWMsQ0FBQyxPQUFPLENBQ3JDLFdBQVcsRUFDWCxpQkFBaUIsQ0FBQyxhQUFhLENBQUMsQ0FDakMsQ0FBQzthQUNIOzs7Ozs7Ozs7UUFDRCxPQUFPLGNBQWMsQ0FBQztJQUN4QixDQUFDO0lBQ0gsc0JBQUM7QUFBRCxDQUFDLEFBWEQsSUFXQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjbGFzcyBEeW5hbWljVGVtcGxhdGUge1xuICBzdGF0aWMgcmVzb2x2ZSh0ZW1wbGF0ZVN0cmluZzogc3RyaW5nLCB0ZW1wbGF0ZVZhcmlhYmxlczogT2JqZWN0KSB7XG4gICAgZm9yIChjb25zdCB2YXJpYWJsZUxhYmVsIG9mIE9iamVjdC5rZXlzKHRlbXBsYXRlVmFyaWFibGVzKSkge1xuICAgICAgY29uc3QgcGxhY2Vob2xkZXIgPSBuZXcgUmVnRXhwKCdcXFxcJHsnICsgdmFyaWFibGVMYWJlbCArICd9JywgJ2cnKTtcbiAgICAgIHRlbXBsYXRlU3RyaW5nID0gdGVtcGxhdGVTdHJpbmcucmVwbGFjZShcbiAgICAgICAgcGxhY2Vob2xkZXIsXG4gICAgICAgIHRlbXBsYXRlVmFyaWFibGVzW3ZhcmlhYmxlTGFiZWxdXG4gICAgICApO1xuICAgIH1cbiAgICByZXR1cm4gdGVtcGxhdGVTdHJpbmc7XG4gIH1cbn1cbiJdfQ==

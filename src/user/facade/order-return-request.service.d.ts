@@ -4,6 +4,7 @@ import { AuthService } from '../../auth/facade/auth.service';
 import { ReturnRequestList, ReturnRequestEntryInputList, ReturnRequest, ReturnRequestModification } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class OrderReturnRequestService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -64,4 +65,7 @@ export declare class OrderReturnRequestService {
      */
     resetCancelReturnRequestProcessState(): void;
     private withUserId;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OrderReturnRequestService>;
 }
+
+//# sourceMappingURL=order-return-request.service.d.ts.map

@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 /**
  * Provides support for CONFIG_INITIALIZERS
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ConfigInitializerService {
     protected config: any;
     protected initializerGuard: any;
@@ -10,7 +11,7 @@ export declare class ConfigInitializerService {
     /**
      * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
      */
-    readonly isStable: boolean;
+    get isStable(): boolean;
     /**
      * Recommended way to get config for code that can run before app will finish
      * initialization (APP_INITIALIZERS, selected service constructors)
@@ -50,4 +51,7 @@ export declare class ConfigInitializerService {
      * @param b ScopeB
      */
     protected scopesOverlap(a: string, b: string): boolean;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConfigInitializerService>;
 }
+
+//# sourceMappingURL=config-initializer.service.d.ts.map

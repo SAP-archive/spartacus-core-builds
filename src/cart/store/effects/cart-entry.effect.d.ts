@@ -10,6 +10,7 @@ import { CartActions } from '../actions/index';
  *
  * TODO(issue:#4507)
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CartEntryEffects {
     private actions$;
     private cartEntryConnector;
@@ -18,4 +19,8 @@ export declare class CartEntryEffects {
     removeEntry$: Observable<CartActions.CartRemoveEntrySuccess | CartActions.CartRemoveEntryFail | CartActions.CartProcessesDecrement | DeprecatedCartActions.LoadCart>;
     updateEntry$: Observable<CartActions.CartUpdateEntrySuccess | CartActions.CartUpdateEntryFail | CartActions.CartProcessesDecrement | DeprecatedCartActions.LoadCart>;
     constructor(actions$: Actions, cartEntryConnector: CartEntryConnector);
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartEntryEffects>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CartEntryEffects>;
 }
+
+//# sourceMappingURL=cart-entry.effect.d.ts.map

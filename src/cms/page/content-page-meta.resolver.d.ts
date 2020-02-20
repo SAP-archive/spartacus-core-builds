@@ -11,6 +11,7 @@ import { PageBreadcrumbResolver, PageTitleResolver } from './page.resolvers';
  *
  * The page title, and breadcrumbs are resolved in this implementation only.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ContentPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver {
     protected cms: CmsService;
     protected translation: TranslationService;
@@ -41,4 +42,7 @@ export declare class ContentPageMetaResolver extends PageMetaResolver implements
      * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveBreadcrumbs()` instead
      */
     resolveBreadcrumbs(_page: Page, breadcrumbLabel: string): Observable<any[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ContentPageMetaResolver>;
 }
+
+//# sourceMappingURL=content-page-meta.resolver.d.ts.map

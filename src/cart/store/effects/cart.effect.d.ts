@@ -13,6 +13,7 @@ import { StateWithMultiCart } from '../multi-cart-state';
  *
  * TODO(issue:#4507)
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CartEffects {
     private actions$;
     private cartConnector;
@@ -34,4 +35,8 @@ export declare class CartEffects {
      */
     constructor(actions$: Actions, cartConnector: CartConnector, cartData: CartDataService);
     private isMissingData;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartEffects>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CartEffects>;
 }
+
+//# sourceMappingURL=cart.effect.d.ts.map

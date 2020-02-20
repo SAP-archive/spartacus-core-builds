@@ -5,6 +5,7 @@ import { ConsignmentTracking } from '../../model/consignment-tracking.model';
 import { CancellationRequestEntryInputList, Order, OrderHistoryList } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserOrderService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService?: AuthService;
@@ -82,4 +83,7 @@ export declare class UserOrderService {
      *
      */
     private withUserId;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserOrderService>;
 }
+
+//# sourceMappingURL=user-order.service.d.ts.map

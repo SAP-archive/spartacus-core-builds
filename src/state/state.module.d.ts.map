@@ -1,0 +1,1 @@
+{"version":3,"file":"state.module.d.ts","sources":["/home/travis/build/SAP/cloud-commerce-spartacus-storefront/dist/core/src/state/state.module.d.ts"],"sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class StateModule {\n    static forRoot(): ModuleWithProviders<StateModule>;\n}\n"],"names":[],"mappings":"AAAA;;AACA;;;;AAEA;"}

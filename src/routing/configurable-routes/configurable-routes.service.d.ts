@@ -1,6 +1,7 @@
 import { Injector } from '@angular/core';
 import { UrlMatcherFactoryService } from '../services/url-matcher-factory.service';
 import { RoutingConfigService } from './routing-config.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class ConfigurableRoutesService {
     private injector;
     private routingConfigService;
@@ -17,4 +18,7 @@ export declare class ConfigurableRoutesService {
     private getRouteName;
     private getConfiguredPaths;
     private warn;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConfigurableRoutesService>;
 }
+
+//# sourceMappingURL=configurable-routes.service.d.ts.map

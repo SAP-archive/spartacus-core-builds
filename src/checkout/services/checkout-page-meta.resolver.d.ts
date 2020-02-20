@@ -12,6 +12,7 @@ import { Cart } from '../../model/cart.model';
  *
  * The page title and robots are resolved in this implementation only.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageRobotsResolver {
     protected cartService: CartService;
     protected translation: TranslationService;
@@ -32,4 +33,7 @@ export declare class CheckoutPageMetaResolver extends PageMetaResolver implement
      */
     resolveTitle(cart: Cart): Observable<string>;
     resolveRobots(): Observable<PageRobotsMeta[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutPageMetaResolver>;
 }
+
+//# sourceMappingURL=checkout-page-meta.resolver.d.ts.map

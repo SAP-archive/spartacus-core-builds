@@ -1,9 +1,5 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { ExternalRoutesConfig } from './external-routes-config';
-export { ExternalRoutesGuard } from './external-routes.guard';
-export { ExternalRoutesModule } from './external-routes.module';
-export { ExternalRoutesService } from './external-routes.service';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcm91dGluZy9leHRlcm5hbC1yb3V0ZXMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLHFDQUFjLDBCQUEwQixDQUFDO0FBQ3pDLG9DQUFjLHlCQUF5QixDQUFDO0FBQ3hDLHFDQUFjLDBCQUEwQixDQUFDO0FBQ3pDLHNDQUFjLDJCQUEyQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9leHRlcm5hbC1yb3V0ZXMtY29uZmlnJztcbmV4cG9ydCAqIGZyb20gJy4vZXh0ZXJuYWwtcm91dGVzLmd1YXJkJztcbmV4cG9ydCAqIGZyb20gJy4vZXh0ZXJuYWwtcm91dGVzLm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL2V4dGVybmFsLXJvdXRlcy5zZXJ2aWNlJztcbiJdfQ==
+export * from './external-routes-config';
+export * from './external-routes.guard';
+export * from './external-routes.module';
+export * from './external-routes.service';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcm91dGluZy9leHRlcm5hbC1yb3V0ZXMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsY0FBYywwQkFBMEIsQ0FBQztBQUN6QyxjQUFjLHlCQUF5QixDQUFDO0FBQ3hDLGNBQWMsMEJBQTBCLENBQUM7QUFDekMsY0FBYywyQkFBMkIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vZXh0ZXJuYWwtcm91dGVzLWNvbmZpZyc7XG5leHBvcnQgKiBmcm9tICcuL2V4dGVybmFsLXJvdXRlcy5ndWFyZCc7XG5leHBvcnQgKiBmcm9tICcuL2V4dGVybmFsLXJvdXRlcy5tb2R1bGUnO1xuZXhwb3J0ICogZnJvbSAnLi9leHRlcm5hbC1yb3V0ZXMuc2VydmljZSc7XG4iXX0=

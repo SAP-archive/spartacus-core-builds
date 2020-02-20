@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
 import { CustomerCouponSearchResult } from '../../model/customer-coupon.model';
+import * as ɵngcc0 from '@angular/core';
 export declare class CustomerCouponService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     constructor(store: Store<StateWithUser | StateWithProcess<void>>);
@@ -69,4 +70,7 @@ export declare class CustomerCouponService {
      * Returns the claim customer coupon notification process success flag
      */
     getClaimCustomerCouponResultSuccess(): Observable<boolean>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerCouponService>;
 }
+
+//# sourceMappingURL=customer-coupon.service.d.ts.map

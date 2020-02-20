@@ -5,6 +5,7 @@ import { TranslationService } from '../../i18n/translation.service';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { ProductSearchService } from '../../product/facade/product-search.service';
 import { AuthService } from '../../auth/facade/auth.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class FindProductPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver {
     protected routingService: RoutingService;
     protected productSearchService: ProductSearchService;
@@ -23,4 +24,7 @@ export declare class FindProductPageMetaResolver extends PageMetaResolver implem
     resolveBreadcrumbs(): Observable<any[]>;
     resolveTitle(): Observable<string>;
     getScore(page: Page): number;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<FindProductPageMetaResolver>;
 }
+
+//# sourceMappingURL=find-product-page-meta.resolver.d.ts.map

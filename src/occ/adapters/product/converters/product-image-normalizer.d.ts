@@ -3,6 +3,7 @@ import { Occ } from '../../../occ-models/occ.models';
 import { Converter } from '../../../../util/converter.service';
 import { Product } from '../../../../model/product.model';
 import { Images } from '../../../../model/image.model';
+import * as ɵngcc0 from '@angular/core';
 export declare class ProductImageNormalizer implements Converter<Occ.Product, Product> {
     protected config: OccConfig;
     constructor(config: OccConfig);
@@ -24,4 +25,7 @@ export declare class ProductImageNormalizer implements Converter<Occ.Product, Pr
      * if none provided.
      */
     private normalizeImageUrl;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductImageNormalizer>;
 }
+
+//# sourceMappingURL=product-image-normalizer.d.ts.map

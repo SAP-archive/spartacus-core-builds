@@ -3,6 +3,8 @@ import { ConfigValidator } from './config-validator/config-validator';
 /**
  * Global Configuration injection token, can be used to inject configuration to any part of the app
  */
+import * as ɵngcc0 from '@angular/core';
+import * as ɵngcc1 from '@angular/common';
 export declare const Config: InjectionToken<unknown>;
 /**
  * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
@@ -48,4 +50,8 @@ export declare class ConfigModule {
      * @param config
      */
     static forRoot(config?: any): ModuleWithProviders<ConfigModule>;
+    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<ConfigModule, never, [typeof ɵngcc1.CommonModule], never>;
+    static ɵinj: ɵngcc0.ɵɵInjectorDef<ConfigModule>;
 }
+
+//# sourceMappingURL=config.module.d.ts.map

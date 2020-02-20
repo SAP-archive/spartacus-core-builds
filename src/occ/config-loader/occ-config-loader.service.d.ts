@@ -5,6 +5,7 @@ import { SiteContextConfig } from '../../site-context/config/site-context-config
 import { OccLoadedConfig } from './occ-loaded-config';
 import { OccLoadedConfigConverter } from './occ-loaded-config-converter';
 import { OccSitesConfigLoader } from './occ-sites-config-loader';
+import * as ɵngcc0 from '@angular/core';
 export declare const EXTERNAL_CONFIG_TRANSFER_ID: StateKey<string>;
 export declare class OccConfigLoaderService {
     protected platform: any;
@@ -15,7 +16,7 @@ export declare class OccConfigLoaderService {
     protected transferState: TransferState;
     protected serverRequestUrl?: string;
     constructor(platform: any, document: any, config: any, sitesConfigLoader: OccSitesConfigLoader, converter: OccLoadedConfigConverter, transferState: TransferState, serverRequestUrl?: string);
-    private readonly currentUrl;
+    private get currentUrl();
     /**
      * Initializes the Spartacus config asynchronously basing on the external config
      */
@@ -40,4 +41,7 @@ export declare class OccConfigLoaderService {
     protected transfer(externalConfig: OccLoadedConfig): void;
     protected getConfigChunks(externalConfig: OccLoadedConfig): (I18nConfig | SiteContextConfig)[];
     private shouldReturnI18nChunk;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccConfigLoaderService>;
 }
+
+//# sourceMappingURL=occ-config-loader.service.d.ts.map

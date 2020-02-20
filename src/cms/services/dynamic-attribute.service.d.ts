@@ -1,4 +1,5 @@
 import { Renderer2 } from '@angular/core';
+import * as ɵngcc0 from '@angular/core';
 export declare class DynamicAttributeService {
     /**
      * Add dynamic attributes to DOM. These attributes are extracted from the properties of cms items received from backend.
@@ -9,4 +10,7 @@ export declare class DynamicAttributeService {
      * @param renderer
      */
     addDynamicAttributes(properties: any, element: Element, renderer: Renderer2): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<DynamicAttributeService>;
 }
+
+//# sourceMappingURL=dynamic-attribute.service.d.ts.map

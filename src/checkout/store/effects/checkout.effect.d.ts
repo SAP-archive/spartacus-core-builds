@@ -8,6 +8,7 @@ import { CheckoutConnector } from '../../connectors/checkout/checkout.connector'
 import { CheckoutDeliveryConnector } from '../../connectors/delivery/checkout-delivery.connector';
 import { CheckoutPaymentConnector } from '../../connectors/payment/checkout-payment.connector';
 import { CheckoutActions } from '../actions/index';
+import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutEffects {
     private actions$;
     private checkoutDeliveryConnector;
@@ -30,4 +31,8 @@ export declare class CheckoutEffects {
     clearCheckoutDeliveryAddress$: Observable<CheckoutActions.ClearCheckoutDeliveryAddressFail | CheckoutActions.ClearCheckoutDeliveryAddressSuccess>;
     clearCheckoutDeliveryMode$: Observable<CheckoutActions.ClearCheckoutDeliveryModeFail | CheckoutActions.ClearCheckoutDeliveryModeSuccess | CartActions.CartProcessesDecrement | CartActions.LoadCart>;
     constructor(actions$: Actions, checkoutDeliveryConnector: CheckoutDeliveryConnector, checkoutPaymentConnector: CheckoutPaymentConnector, checkoutConnector: CheckoutConnector);
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutEffects>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CheckoutEffects>;
 }
+
+//# sourceMappingURL=checkout.effect.d.ts.map

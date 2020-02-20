@@ -1,0 +1,1 @@
+{"version":3,"file":"i18n.module.d.ts","sources":["/home/travis/build/SAP/cloud-commerce-spartacus-storefront/dist/core/src/i18n/i18n.module.d.ts"],"sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class I18nModule {\n    static forRoot(): ModuleWithProviders<I18nModule>;\n}\n"],"names":[],"mappings":"AAAA;;;;AACA;;;;AAEA;"}

@@ -1,8 +1,4 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { UserOrderConnector } from './user-order.connector';
-export { UserOrderAdapter } from './user-order.adapter';
-export { ORDER_HISTORY_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, ORDER_RETURN_REQUEST_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURNS_NORMALIZER } from './converters';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXNlci9jb25uZWN0b3JzL29yZGVyL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSxtQ0FBYyx3QkFBd0IsQ0FBQztBQUN2QyxpQ0FBYyxzQkFBc0IsQ0FBQztBQUNyQyw0S0FBYyxjQUFjLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL3VzZXItb3JkZXIuY29ubmVjdG9yJztcbmV4cG9ydCAqIGZyb20gJy4vdXNlci1vcmRlci5hZGFwdGVyJztcbmV4cG9ydCAqIGZyb20gJy4vY29udmVydGVycyc7XG4iXX0=
+export * from './user-order.connector';
+export * from './user-order.adapter';
+export * from './converters';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXNlci9jb25uZWN0b3JzL29yZGVyL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLGNBQWMsd0JBQXdCLENBQUM7QUFDdkMsY0FBYyxzQkFBc0IsQ0FBQztBQUNyQyxjQUFjLGNBQWMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vdXNlci1vcmRlci5jb25uZWN0b3InO1xuZXhwb3J0ICogZnJvbSAnLi91c2VyLW9yZGVyLmFkYXB0ZXInO1xuZXhwb3J0ICogZnJvbSAnLi9jb252ZXJ0ZXJzJztcbiJdfQ==

@@ -1,52 +1,21 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
+import { __decorate } from "tslib";
 import { GlobalMessageService } from '../../facade/global-message.service';
 import { Injectable } from '@angular/core';
 import * as i0 from "@angular/core";
 import * as i1 from "../../facade/global-message.service";
-/**
- * @abstract
- */
-export class HttpErrorHandler {
-    /**
-     * @param {?} globalMessageService
-     */
+let HttpErrorHandler = class HttpErrorHandler {
     constructor(globalMessageService) {
         this.globalMessageService = globalMessageService;
     }
-}
-HttpErrorHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
+};
 HttpErrorHandler.ctorParameters = () => [
     { type: GlobalMessageService }
 ];
-/** @nocollapse */ HttpErrorHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
-if (false) {
-    /**
-     * The http response status number which is handled by this handler.
-     * Implementations can set the response status number, i.e. 404, so that
-     * the handler can be found by the error interceptor.
-     * @type {?}
-     */
-    HttpErrorHandler.prototype.responseStatus;
-    /**
-     * @type {?}
-     * @protected
-     */
-    HttpErrorHandler.prototype.globalMessageService;
-    /**
-     * Handles the error response for the respose status that is register for the handler
-     * @abstract
-     * @param {?} request
-     * @param {?} errorResponse
-     * @return {?}
-     */
-    HttpErrorHandler.prototype.handleError = function (request, errorResponse) { };
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaHR0cC1lcnJvci5oYW5kbGVyLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2dsb2JhbC1tZXNzYWdlL2h0dHAtaW50ZXJjZXB0b3JzL2hhbmRsZXJzL2h0dHAtZXJyb3IuaGFuZGxlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQ0EsT0FBTyxFQUFFLG9CQUFvQixFQUFFLE1BQU0scUNBQXFDLENBQUM7QUFDM0UsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLGVBQWUsQ0FBQzs7Ozs7O0FBSzNDLE1BQU0sT0FBZ0IsZ0JBQWdCOzs7O0lBQ3BDLFlBQXNCLG9CQUEwQztRQUExQyx5QkFBb0IsR0FBcEIsb0JBQW9CLENBQXNCO0lBQUcsQ0FBQzs7O1lBSnJFLFVBQVUsU0FBQztnQkFDVixVQUFVLEVBQUUsTUFBTTthQUNuQjs7OztZQUxRLG9CQUFvQjs7Ozs7Ozs7OztJQWMzQiwwQ0FBZ0M7Ozs7O0lBUHBCLGdEQUFvRDs7Ozs7Ozs7SUFjaEUsK0VBR1EiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBIdHRwRXJyb3JSZXNwb25zZSwgSHR0cFJlcXVlc3QgfSBmcm9tICdAYW5ndWxhci9jb21tb24vaHR0cCc7XG5pbXBvcnQgeyBHbG9iYWxNZXNzYWdlU2VydmljZSB9IGZyb20gJy4uLy4uL2ZhY2FkZS9nbG9iYWwtbWVzc2FnZS5zZXJ2aWNlJztcbmltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcblxuQEluamVjdGFibGUoe1xuICBwcm92aWRlZEluOiAncm9vdCcsXG59KVxuZXhwb3J0IGFic3RyYWN0IGNsYXNzIEh0dHBFcnJvckhhbmRsZXIge1xuICBjb25zdHJ1Y3Rvcihwcm90ZWN0ZWQgZ2xvYmFsTWVzc2FnZVNlcnZpY2U6IEdsb2JhbE1lc3NhZ2VTZXJ2aWNlKSB7fVxuXG4gIC8qKlxuICAgKiBUaGUgaHR0cCByZXNwb25zZSBzdGF0dXMgbnVtYmVyIHdoaWNoIGlzIGhhbmRsZWQgYnkgdGhpcyBoYW5kbGVyLlxuICAgKiBJbXBsZW1lbnRhdGlvbnMgY2FuIHNldCB0aGUgcmVzcG9uc2Ugc3RhdHVzIG51bWJlciwgaS5lLiA0MDQsIHNvIHRoYXRcbiAgICogdGhlIGhhbmRsZXIgY2FuIGJlIGZvdW5kIGJ5IHRoZSBlcnJvciBpbnRlcmNlcHRvci5cbiAgICovXG4gIGFic3RyYWN0IHJlc3BvbnNlU3RhdHVzOiBudW1iZXI7XG5cbiAgLyoqXG4gICAqIEhhbmRsZXMgdGhlIGVycm9yIHJlc3BvbnNlIGZvciB0aGUgcmVzcG9zZSBzdGF0dXMgdGhhdCBpcyByZWdpc3RlciBmb3IgdGhlIGhhbmRsZXJcbiAgICogQHBhcmFtIHsgSHR0cFJlcXVlc3Q8YW55PiB9IHJlcXVlc3QgOiBodHRwIHJlcXVlc3RcbiAgICogQHBhcmFtIHsgSHR0cEVycm9yUmVzcG9uc2UgfSBlcnJvclJlc3BvbnNlIDogSHR0cCBlcnJvciByZXNwb25zZVxuICAgKi9cbiAgYWJzdHJhY3QgaGFuZGxlRXJyb3IoXG4gICAgcmVxdWVzdDogSHR0cFJlcXVlc3Q8YW55PixcbiAgICBlcnJvclJlc3BvbnNlOiBIdHRwRXJyb3JSZXNwb25zZVxuICApOiB2b2lkO1xufVxuIl19
+HttpErrorHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+HttpErrorHandler = __decorate([
+    Injectable({
+        providedIn: 'root',
+    })
+], HttpErrorHandler);
+export { HttpErrorHandler };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaHR0cC1lcnJvci5oYW5kbGVyLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2dsb2JhbC1tZXNzYWdlL2h0dHAtaW50ZXJjZXB0b3JzL2hhbmRsZXJzL2h0dHAtZXJyb3IuaGFuZGxlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQ0EsT0FBTyxFQUFFLG9CQUFvQixFQUFFLE1BQU0scUNBQXFDLENBQUM7QUFDM0UsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLGVBQWUsQ0FBQzs7O0FBSzNDLElBQXNCLGdCQUFnQixHQUF0QyxNQUFzQixnQkFBZ0I7SUFDcEMsWUFBc0Isb0JBQTBDO1FBQTFDLHlCQUFvQixHQUFwQixvQkFBb0IsQ0FBc0I7SUFBRyxDQUFDO0NBa0JyRSxDQUFBOztZQWxCNkMsb0JBQW9COzs7QUFENUMsZ0JBQWdCO0lBSHJDLFVBQVUsQ0FBQztRQUNWLFVBQVUsRUFBRSxNQUFNO0tBQ25CLENBQUM7R0FDb0IsZ0JBQWdCLENBbUJyQztTQW5CcUIsZ0JBQWdCIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSHR0cEVycm9yUmVzcG9uc2UsIEh0dHBSZXF1ZXN0IH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uL2h0dHAnO1xuaW1wb3J0IHsgR2xvYmFsTWVzc2FnZVNlcnZpY2UgfSBmcm9tICcuLi8uLi9mYWNhZGUvZ2xvYmFsLW1lc3NhZ2Uuc2VydmljZSc7XG5pbXBvcnQgeyBJbmplY3RhYmxlIH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5cbkBJbmplY3RhYmxlKHtcbiAgcHJvdmlkZWRJbjogJ3Jvb3QnLFxufSlcbmV4cG9ydCBhYnN0cmFjdCBjbGFzcyBIdHRwRXJyb3JIYW5kbGVyIHtcbiAgY29uc3RydWN0b3IocHJvdGVjdGVkIGdsb2JhbE1lc3NhZ2VTZXJ2aWNlOiBHbG9iYWxNZXNzYWdlU2VydmljZSkge31cblxuICAvKipcbiAgICogVGhlIGh0dHAgcmVzcG9uc2Ugc3RhdHVzIG51bWJlciB3aGljaCBpcyBoYW5kbGVkIGJ5IHRoaXMgaGFuZGxlci5cbiAgICogSW1wbGVtZW50YXRpb25zIGNhbiBzZXQgdGhlIHJlc3BvbnNlIHN0YXR1cyBudW1iZXIsIGkuZS4gNDA0LCBzbyB0aGF0XG4gICAqIHRoZSBoYW5kbGVyIGNhbiBiZSBmb3VuZCBieSB0aGUgZXJyb3IgaW50ZXJjZXB0b3IuXG4gICAqL1xuICBhYnN0cmFjdCByZXNwb25zZVN0YXR1czogbnVtYmVyO1xuXG4gIC8qKlxuICAgKiBIYW5kbGVzIHRoZSBlcnJvciByZXNwb25zZSBmb3IgdGhlIHJlc3Bvc2Ugc3RhdHVzIHRoYXQgaXMgcmVnaXN0ZXIgZm9yIHRoZSBoYW5kbGVyXG4gICAqIEBwYXJhbSB7IEh0dHBSZXF1ZXN0PGFueT4gfSByZXF1ZXN0IDogaHR0cCByZXF1ZXN0XG4gICAqIEBwYXJhbSB7IEh0dHBFcnJvclJlc3BvbnNlIH0gZXJyb3JSZXNwb25zZSA6IEh0dHAgZXJyb3IgcmVzcG9uc2VcbiAgICovXG4gIGFic3RyYWN0IGhhbmRsZUVycm9yKFxuICAgIHJlcXVlc3Q6IEh0dHBSZXF1ZXN0PGFueT4sXG4gICAgZXJyb3JSZXNwb25zZTogSHR0cEVycm9yUmVzcG9uc2VcbiAgKTogdm9pZDtcbn1cbiJdfQ==

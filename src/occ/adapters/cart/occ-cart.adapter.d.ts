@@ -5,6 +5,7 @@ import { FeatureConfigService } from '../../../features-config/services/feature-
 import { Cart } from '../../../model/cart.model';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccCartAdapter implements CartAdapter {
     protected http: HttpClient;
     protected occEndpointsService: OccEndpointsService;
@@ -40,4 +41,8 @@ export declare class OccCartAdapter implements CartAdapter {
      */
     private legacyCreate;
     addEmail(userId: string, cartId: string, email: string): Observable<{}>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCartAdapter>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCartAdapter>;
 }
+
+//# sourceMappingURL=occ-cart.adapter.d.ts.map

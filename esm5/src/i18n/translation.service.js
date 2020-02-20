@@ -1,40 +1,7 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-var /**
- * @abstract
- */
-TranslationService = /** @class */ (function () {
+var TranslationService = /** @class */ (function () {
     function TranslationService() {
     }
     return TranslationService;
 }());
-/**
- * @abstract
- */
 export { TranslationService };
-if (false) {
-    /**
-     * Translates given key with options.
-     * If key is missing, it tries to load the chunk and emits a value when chunk is loaded.
-     * If key is missing after loaded chunk, a fallback value is emitted
-     *
-     * \@param key translation key
-     * \@param options values for interpolation in translation
-     * \@param whitespaceUntilLoaded if true, immediately emits a non-breaking space
-     * @type {?}
-     */
-    TranslationService.prototype.translate;
-    /**
-     * Loads chunks with translations
-     *
-     * \@param chunkNames array of chunk names to be loaded
-     * @type {?}
-     */
-    TranslationService.prototype.loadChunks;
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidHJhbnNsYXRpb24uc2VydmljZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9pMThuL3RyYW5zbGF0aW9uLnNlcnZpY2UudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7OztBQUVBOzs7O0lBQUE7SUFzQkEsQ0FBQztJQUFELHlCQUFDO0FBQUQsQ0FBQyxBQXRCRCxJQXNCQzs7Ozs7Ozs7Ozs7Ozs7OztJQVpDLHVDQUl3Qjs7Ozs7OztJQU94Qix3Q0FBNEQiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5cbmV4cG9ydCBhYnN0cmFjdCBjbGFzcyBUcmFuc2xhdGlvblNlcnZpY2Uge1xuICAvKipcbiAgICogVHJhbnNsYXRlcyBnaXZlbiBrZXkgd2l0aCBvcHRpb25zLlxuICAgKiBJZiBrZXkgaXMgbWlzc2luZywgaXQgdHJpZXMgdG8gbG9hZCB0aGUgY2h1bmsgYW5kIGVtaXRzIGEgdmFsdWUgd2hlbiBjaHVuayBpcyBsb2FkZWQuXG4gICAqIElmIGtleSBpcyBtaXNzaW5nIGFmdGVyIGxvYWRlZCBjaHVuaywgYSBmYWxsYmFjayB2YWx1ZSBpcyBlbWl0dGVkXG4gICAqXG4gICAqIEBwYXJhbSBrZXkgdHJhbnNsYXRpb24ga2V5XG4gICAqIEBwYXJhbSBvcHRpb25zIHZhbHVlcyBmb3IgaW50ZXJwb2xhdGlvbiBpbiB0cmFuc2xhdGlvblxuICAgKiBAcGFyYW0gd2hpdGVzcGFjZVVudGlsTG9hZGVkIGlmIHRydWUsIGltbWVkaWF0ZWx5IGVtaXRzIGEgbm9uLWJyZWFraW5nIHNwYWNlXG4gICAqL1xuICB0cmFuc2xhdGU6IChcbiAgICBrZXk6IHN0cmluZyxcbiAgICBvcHRpb25zPzogYW55LFxuICAgIHdoaXRlc3BhY2VVbnRpbExvYWRlZD86IGJvb2xlYW5cbiAgKSA9PiBPYnNlcnZhYmxlPHN0cmluZz47XG5cbiAgLyoqXG4gICAqIExvYWRzIGNodW5rcyB3aXRoIHRyYW5zbGF0aW9uc1xuICAgKlxuICAgKiBAcGFyYW0gY2h1bmtOYW1lcyBhcnJheSBvZiBjaHVuayBuYW1lcyB0byBiZSBsb2FkZWRcbiAgICovXG4gIGxvYWRDaHVua3M6IChjaHVua05hbWVzOiBzdHJpbmcgfCBzdHJpbmdbXSkgPT4gUHJvbWlzZTxhbnk+O1xufVxuIl19
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidHJhbnNsYXRpb24uc2VydmljZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9pMThuL3RyYW5zbGF0aW9uLnNlcnZpY2UudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBRUE7SUFBQTtJQXNCQSxDQUFDO0lBQUQseUJBQUM7QUFBRCxDQUFDLEFBdEJELElBc0JDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnO1xuXG5leHBvcnQgYWJzdHJhY3QgY2xhc3MgVHJhbnNsYXRpb25TZXJ2aWNlIHtcbiAgLyoqXG4gICAqIFRyYW5zbGF0ZXMgZ2l2ZW4ga2V5IHdpdGggb3B0aW9ucy5cbiAgICogSWYga2V5IGlzIG1pc3NpbmcsIGl0IHRyaWVzIHRvIGxvYWQgdGhlIGNodW5rIGFuZCBlbWl0cyBhIHZhbHVlIHdoZW4gY2h1bmsgaXMgbG9hZGVkLlxuICAgKiBJZiBrZXkgaXMgbWlzc2luZyBhZnRlciBsb2FkZWQgY2h1bmssIGEgZmFsbGJhY2sgdmFsdWUgaXMgZW1pdHRlZFxuICAgKlxuICAgKiBAcGFyYW0ga2V5IHRyYW5zbGF0aW9uIGtleVxuICAgKiBAcGFyYW0gb3B0aW9ucyB2YWx1ZXMgZm9yIGludGVycG9sYXRpb24gaW4gdHJhbnNsYXRpb25cbiAgICogQHBhcmFtIHdoaXRlc3BhY2VVbnRpbExvYWRlZCBpZiB0cnVlLCBpbW1lZGlhdGVseSBlbWl0cyBhIG5vbi1icmVha2luZyBzcGFjZVxuICAgKi9cbiAgdHJhbnNsYXRlOiAoXG4gICAga2V5OiBzdHJpbmcsXG4gICAgb3B0aW9ucz86IGFueSxcbiAgICB3aGl0ZXNwYWNlVW50aWxMb2FkZWQ/OiBib29sZWFuXG4gICkgPT4gT2JzZXJ2YWJsZTxzdHJpbmc+O1xuXG4gIC8qKlxuICAgKiBMb2FkcyBjaHVua3Mgd2l0aCB0cmFuc2xhdGlvbnNcbiAgICpcbiAgICogQHBhcmFtIGNodW5rTmFtZXMgYXJyYXkgb2YgY2h1bmsgbmFtZXMgdG8gYmUgbG9hZGVkXG4gICAqL1xuICBsb2FkQ2h1bmtzOiAoY2h1bmtOYW1lczogc3RyaW5nIHwgc3RyaW5nW10pID0+IFByb21pc2U8YW55Pjtcbn1cbiJdfQ==

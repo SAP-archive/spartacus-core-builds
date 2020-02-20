@@ -6,6 +6,7 @@ import { User } from '../../model/misc.model';
 import { OrderEntry } from '../../model/order.model';
 import { StateWithMultiCart } from '../store/multi-cart-state';
 import { MultiCartService } from './multi-cart.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class ActiveCartService {
     protected store: Store<StateWithMultiCart>;
     protected authService: AuthService;
@@ -96,4 +97,8 @@ export declare class ActiveCartService {
     private guestCartMerge;
     private isEmpty;
     private isJustLoggedIn;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ActiveCartService>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<ActiveCartService>;
 }
+
+//# sourceMappingURL=active-cart.service.d.ts.map

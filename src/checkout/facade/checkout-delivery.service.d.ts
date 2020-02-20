@@ -6,6 +6,7 @@ import { DeliveryMode } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { LoaderState } from '../../state/utils/loader/loader-state';
 import { StateWithCheckout } from '../store/checkout-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutDeliveryService {
     protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
     protected cartData: CartDataService;
@@ -99,4 +100,7 @@ export declare class CheckoutDeliveryService {
      */
     clearCheckoutDeliveryDetails(): void;
     protected actionAllowed(): boolean;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutDeliveryService>;
 }
+
+//# sourceMappingURL=checkout-delivery.service.d.ts.map

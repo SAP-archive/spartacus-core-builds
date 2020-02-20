@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { GlobalMessageService } from '../../facade/global-message.service';
+import * as ɵngcc0 from '@angular/core';
 export declare abstract class HttpErrorHandler {
     protected globalMessageService: GlobalMessageService;
     constructor(globalMessageService: GlobalMessageService);
@@ -15,4 +16,7 @@ export declare abstract class HttpErrorHandler {
      * @param { HttpErrorResponse } errorResponse : Http error response
      */
     abstract handleError(request: HttpRequest<any>, errorResponse: HttpErrorResponse): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<HttpErrorHandler>;
 }
+
+//# sourceMappingURL=http-error.handler.d.ts.map

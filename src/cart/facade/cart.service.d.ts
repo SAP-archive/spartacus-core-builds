@@ -13,6 +13,7 @@ import { CartDataService } from './cart-data.service';
  * From 1.4 version CartService uses ActiveCartService if it is available
  * Fixes and improvements will be only implemented in ActiveCartService
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CartService {
     protected store: Store<StateWithCart>;
     protected cartData: CartDataService;
@@ -55,4 +56,8 @@ export declare class CartService {
      */
     private guestCartMerge;
     addVoucher(voucherId: string): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartService>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CartService>;
 }
+
+//# sourceMappingURL=cart.service.d.ts.map

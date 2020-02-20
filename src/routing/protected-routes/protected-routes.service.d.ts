@@ -1,14 +1,15 @@
 import { RoutingConfig } from '../configurable-routes/config/routing-config';
+import * as ɵngcc0 from '@angular/core';
 export declare class ProtectedRoutesService {
     protected config: RoutingConfig;
     private nonProtectedPaths;
-    protected readonly routingConfig: RoutingConfig['routing'];
+    protected get routingConfig(): RoutingConfig['routing'];
     /**
      * Returns 'protected' property (boolean) from routing config
      *
      * @returns boolean
      */
-    readonly shouldProtect: boolean;
+    get shouldProtect(): boolean;
     constructor(config: RoutingConfig);
     /**
      * Tells if the url is protected
@@ -30,4 +31,7 @@ export declare class ProtectedRoutesService {
      * Splits the url by slashes
      */
     protected getSegments(url: string): string[];
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProtectedRoutesService>;
 }
+
+//# sourceMappingURL=protected-routes.service.d.ts.map

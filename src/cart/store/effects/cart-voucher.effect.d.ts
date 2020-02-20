@@ -10,6 +10,7 @@ import { CartActions } from '../actions/index';
  *
  * TODO(issue:#4507)
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CartVoucherEffects {
     private actions$;
     private cartVoucherConnector;
@@ -18,4 +19,8 @@ export declare class CartVoucherEffects {
     addCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.LoadCart | CartActions.CartProcessesDecrement>;
     removeCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.CartProcessesDecrement | CartActions.LoadCart>;
     private showGlobalMessage;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartVoucherEffects>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CartVoucherEffects>;
 }
+
+//# sourceMappingURL=cart-voucher.effect.d.ts.map

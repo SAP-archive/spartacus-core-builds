@@ -1,6 +1,7 @@
 import { UrlParsingService } from './url-parsing.service';
 import { UrlCommands } from './url-command';
 import { RoutingConfigService } from '../routing-config.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class SemanticPathService {
     protected routingConfigService: RoutingConfigService;
     protected urlParser: UrlParsingService;
@@ -28,4 +29,7 @@ export declare class SemanticPathService {
     private getParams;
     private getMappedParamName;
     private warn;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SemanticPathService>;
 }
+
+//# sourceMappingURL=semantic-path.service.d.ts.map

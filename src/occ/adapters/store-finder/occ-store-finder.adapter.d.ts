@@ -8,6 +8,7 @@ import { StoreFinderSearchConfig } from '../../../store-finder/model';
 import { ConverterService } from '../../../util/converter.service';
 import { Occ } from '../../occ-models/occ.models';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccStoreFinderAdapter implements StoreFinderAdapter {
     protected http: HttpClient;
     protected occEndpointsService: OccEndpointsService;
@@ -17,4 +18,8 @@ export declare class OccStoreFinderAdapter implements StoreFinderAdapter {
     loadCounts(): Observable<StoreCount[]>;
     load(storeId: string): Observable<PointOfService>;
     protected callOccFindStores(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint): Observable<Occ.StoreFinderSearchPage>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccStoreFinderAdapter>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccStoreFinderAdapter>;
 }
+
+//# sourceMappingURL=occ-store-finder.adapter.d.ts.map

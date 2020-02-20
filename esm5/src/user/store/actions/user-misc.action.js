@@ -1,8 +1,3 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
 export var CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
 var ClearUserMiscsData = /** @class */ (function () {
     function ClearUserMiscsData() {
@@ -11,8 +6,4 @@ var ClearUserMiscsData = /** @class */ (function () {
     return ClearUserMiscsData;
 }());
 export { ClearUserMiscsData };
-if (false) {
-    /** @type {?} */
-    ClearUserMiscsData.prototype.type;
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXNlci1taXNjLmFjdGlvbi5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy91c2VyL3N0b3JlL2FjdGlvbnMvdXNlci1taXNjLmFjdGlvbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7OztBQUNBLE1BQU0sS0FBTyxxQkFBcUIsR0FBRyw2QkFBNkI7QUFFbEU7SUFBQTtRQUNXLFNBQUksR0FBRyxxQkFBcUIsQ0FBQztJQUN4QyxDQUFDO0lBQUQseUJBQUM7QUFBRCxDQUFDLEFBRkQsSUFFQzs7OztJQURDLGtDQUFzQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEFjdGlvbiB9IGZyb20gJ0BuZ3J4L3N0b3JlJztcbmV4cG9ydCBjb25zdCBDTEVBUl9VU0VSX01JU0NTX0RBVEEgPSAnW1VzZXJdIENsZWFyIFVzZXIgTWlzYyBEYXRhJztcblxuZXhwb3J0IGNsYXNzIENsZWFyVXNlck1pc2NzRGF0YSBpbXBsZW1lbnRzIEFjdGlvbiB7XG4gIHJlYWRvbmx5IHR5cGUgPSBDTEVBUl9VU0VSX01JU0NTX0RBVEE7XG59XG4iXX0=
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXNlci1taXNjLmFjdGlvbi5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy91c2VyL3N0b3JlL2FjdGlvbnMvdXNlci1taXNjLmFjdGlvbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFDQSxNQUFNLENBQUMsSUFBTSxxQkFBcUIsR0FBRyw2QkFBNkIsQ0FBQztBQUVuRTtJQUFBO1FBQ1csU0FBSSxHQUFHLHFCQUFxQixDQUFDO0lBQ3hDLENBQUM7SUFBRCx5QkFBQztBQUFELENBQUMsQUFGRCxJQUVDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQWN0aW9uIH0gZnJvbSAnQG5ncngvc3RvcmUnO1xuZXhwb3J0IGNvbnN0IENMRUFSX1VTRVJfTUlTQ1NfREFUQSA9ICdbVXNlcl0gQ2xlYXIgVXNlciBNaXNjIERhdGEnO1xuXG5leHBvcnQgY2xhc3MgQ2xlYXJVc2VyTWlzY3NEYXRhIGltcGxlbWVudHMgQWN0aW9uIHtcbiAgcmVhZG9ubHkgdHlwZSA9IENMRUFSX1VTRVJfTUlTQ1NfREFUQTtcbn1cbiJdfQ==

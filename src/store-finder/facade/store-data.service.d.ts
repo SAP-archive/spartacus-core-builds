@@ -1,4 +1,5 @@
 import { PointOfService } from '../../model/point-of-service.model';
+import * as ɵngcc0 from '@angular/core';
 export declare class StoreDataService {
     readonly DECIMAL_BASE: 10;
     readonly weekDays: {
@@ -40,4 +41,8 @@ export declare class StoreDataService {
      * @returns payload describing the store's schedule for the given day.
      */
     protected getSchedule(location: PointOfService, date: Date): any;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<StoreDataService>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<StoreDataService>;
 }
+
+//# sourceMappingURL=store-data.service.d.ts.map

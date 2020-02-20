@@ -1,53 +1,38 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
+import { __decorate } from "tslib";
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { KymaActions } from '../store/actions/index';
 import { KymaSelectors } from '../store/selectors/index';
 import * as i0 from "@angular/core";
 import * as i1 from "@ngrx/store";
-export class KymaService {
-    /**
-     * @param {?} store
-     */
+let KymaService = class KymaService {
     constructor(store) {
         this.store = store;
     }
     /**
      * Authorizes using the Kyma OAuth client with scope `openid`.
      *
-     * @param {?} username a username
-     * @param {?} password a password
-     * @return {?}
+     * @param username a username
+     * @param password a password
      */
     authorizeOpenId(username, password) {
         this.store.dispatch(new KymaActions.LoadOpenIdToken({ username, password }));
     }
     /**
      * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
-     * @return {?}
      */
     getOpenIdToken() {
         return this.store.pipe(select(KymaSelectors.getOpenIdTokenValue));
     }
-}
-KymaService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
+};
 KymaService.ctorParameters = () => [
     { type: Store }
 ];
-/** @nocollapse */ KymaService.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(i0.ɵɵinject(i1.Store)); }, token: KymaService, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    KymaService.prototype.store;
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia3ltYS5zZXJ2aWNlLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2t5bWEvZmFjYWRlL2t5bWEuc2VydmljZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUMzQyxPQUFPLEVBQUUsTUFBTSxFQUFFLEtBQUssRUFBRSxNQUFNLGFBQWEsQ0FBQztBQUc1QyxPQUFPLEVBQUUsV0FBVyxFQUFFLE1BQU0sd0JBQXdCLENBQUM7QUFFckQsT0FBTyxFQUFFLGFBQWEsRUFBRSxNQUFNLDBCQUEwQixDQUFDOzs7QUFLekQsTUFBTSxPQUFPLFdBQVc7Ozs7SUFDdEIsWUFBc0IsS0FBMkI7UUFBM0IsVUFBSyxHQUFMLEtBQUssQ0FBc0I7SUFBRyxDQUFDOzs7Ozs7OztJQVFyRCxlQUFlLENBQUMsUUFBZ0IsRUFBRSxRQUFnQjtRQUNoRCxJQUFJLENBQUMsS0FBSyxDQUFDLFFBQVEsQ0FDakIsSUFBSSxXQUFXLENBQUMsZUFBZSxDQUFDLEVBQUUsUUFBUSxFQUFFLFFBQVEsRUFBRSxDQUFDLENBQ3hELENBQUM7SUFDSixDQUFDOzs7OztJQUtELGNBQWM7UUFDWixPQUFPLElBQUksQ0FBQyxLQUFLLENBQUMsSUFBSSxDQUFDLE1BQU0sQ0FBQyxhQUFhLENBQUMsbUJBQW1CLENBQUMsQ0FBQyxDQUFDO0lBQ3BFLENBQUM7OztZQXZCRixVQUFVLFNBQUM7Z0JBQ1YsVUFBVSxFQUFFLE1BQU07YUFDbkI7Ozs7WUFUZ0IsS0FBSzs7Ozs7Ozs7SUFXUiw0QkFBcUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBJbmplY3RhYmxlIH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5pbXBvcnQgeyBzZWxlY3QsIFN0b3JlIH0gZnJvbSAnQG5ncngvc3RvcmUnO1xuaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnO1xuaW1wb3J0IHsgT3BlbklkVG9rZW4gfSBmcm9tICcuLi9tb2RlbHMva3ltYS10b2tlbi10eXBlcy5tb2RlbCc7XG5pbXBvcnQgeyBLeW1hQWN0aW9ucyB9IGZyb20gJy4uL3N0b3JlL2FjdGlvbnMvaW5kZXgnO1xuaW1wb3J0IHsgU3RhdGVXaXRoS3ltYSB9IGZyb20gJy4uL3N0b3JlL2t5bWEtc3RhdGUnO1xuaW1wb3J0IHsgS3ltYVNlbGVjdG9ycyB9IGZyb20gJy4uL3N0b3JlL3NlbGVjdG9ycy9pbmRleCc7XG5cbkBJbmplY3RhYmxlKHtcbiAgcHJvdmlkZWRJbjogJ3Jvb3QnLFxufSlcbmV4cG9ydCBjbGFzcyBLeW1hU2VydmljZSB7XG4gIGNvbnN0cnVjdG9yKHByb3RlY3RlZCBzdG9yZTogU3RvcmU8U3RhdGVXaXRoS3ltYT4pIHt9XG5cbiAgLyoqXG4gICAqIEF1dGhvcml6ZXMgdXNpbmcgdGhlIEt5bWEgT0F1dGggY2xpZW50IHdpdGggc2NvcGUgYG9wZW5pZGAuXG4gICAqXG4gICAqIEBwYXJhbSB1c2VybmFtZSBhIHVzZXJuYW1lXG4gICAqIEBwYXJhbSBwYXNzd29yZCBhIHBhc3N3b3JkXG4gICAqL1xuICBhdXRob3JpemVPcGVuSWQodXNlcm5hbWU6IHN0cmluZywgcGFzc3dvcmQ6IHN0cmluZyk6IHZvaWQge1xuICAgIHRoaXMuc3RvcmUuZGlzcGF0Y2goXG4gICAgICBuZXcgS3ltYUFjdGlvbnMuTG9hZE9wZW5JZFRva2VuKHsgdXNlcm5hbWUsIHBhc3N3b3JkIH0pXG4gICAgKTtcbiAgfVxuXG4gIC8qKlxuICAgKiBSZXR1cm5zIHRoZSBgT3BlbklkVG9rZW5gLCB3aGljaCB3YXMgcHJldmlvdXNseSByZXRyaWV2ZWQgdXNpbmcgYGF1dGhvcml6ZU9wZW5JZGAgbWV0aG9kLlxuICAgKi9cbiAgZ2V0T3BlbklkVG9rZW4oKTogT2JzZXJ2YWJsZTxPcGVuSWRUb2tlbj4ge1xuICAgIHJldHVybiB0aGlzLnN0b3JlLnBpcGUoc2VsZWN0KEt5bWFTZWxlY3RvcnMuZ2V0T3BlbklkVG9rZW5WYWx1ZSkpO1xuICB9XG59XG4iXX0=
+KymaService.ɵprov = i0.ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(i0.ɵɵinject(i1.Store)); }, token: KymaService, providedIn: "root" });
+KymaService = __decorate([
+    Injectable({
+        providedIn: 'root',
+    })
+], KymaService);
+export { KymaService };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia3ltYS5zZXJ2aWNlLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2t5bWEvZmFjYWRlL2t5bWEuc2VydmljZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUMzQyxPQUFPLEVBQUUsTUFBTSxFQUFFLEtBQUssRUFBRSxNQUFNLGFBQWEsQ0FBQztBQUc1QyxPQUFPLEVBQUUsV0FBVyxFQUFFLE1BQU0sd0JBQXdCLENBQUM7QUFFckQsT0FBTyxFQUFFLGFBQWEsRUFBRSxNQUFNLDBCQUEwQixDQUFDOzs7QUFLekQsSUFBYSxXQUFXLEdBQXhCLE1BQWEsV0FBVztJQUN0QixZQUFzQixLQUEyQjtRQUEzQixVQUFLLEdBQUwsS0FBSyxDQUFzQjtJQUFHLENBQUM7SUFFckQ7Ozs7O09BS0c7SUFDSCxlQUFlLENBQUMsUUFBZ0IsRUFBRSxRQUFnQjtRQUNoRCxJQUFJLENBQUMsS0FBSyxDQUFDLFFBQVEsQ0FDakIsSUFBSSxXQUFXLENBQUMsZUFBZSxDQUFDLEVBQUUsUUFBUSxFQUFFLFFBQVEsRUFBRSxDQUFDLENBQ3hELENBQUM7SUFDSixDQUFDO0lBRUQ7O09BRUc7SUFDSCxjQUFjO1FBQ1osT0FBTyxJQUFJLENBQUMsS0FBSyxDQUFDLElBQUksQ0FBQyxNQUFNLENBQUMsYUFBYSxDQUFDLG1CQUFtQixDQUFDLENBQUMsQ0FBQztJQUNwRSxDQUFDO0NBQ0YsQ0FBQTs7WUFwQjhCLEtBQUs7OztBQUR2QixXQUFXO0lBSHZCLFVBQVUsQ0FBQztRQUNWLFVBQVUsRUFBRSxNQUFNO0tBQ25CLENBQUM7R0FDVyxXQUFXLENBcUJ2QjtTQXJCWSxXQUFXIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgc2VsZWN0LCBTdG9yZSB9IGZyb20gJ0BuZ3J4L3N0b3JlJztcbmltcG9ydCB7IE9ic2VydmFibGUgfSBmcm9tICdyeGpzJztcbmltcG9ydCB7IE9wZW5JZFRva2VuIH0gZnJvbSAnLi4vbW9kZWxzL2t5bWEtdG9rZW4tdHlwZXMubW9kZWwnO1xuaW1wb3J0IHsgS3ltYUFjdGlvbnMgfSBmcm9tICcuLi9zdG9yZS9hY3Rpb25zL2luZGV4JztcbmltcG9ydCB7IFN0YXRlV2l0aEt5bWEgfSBmcm9tICcuLi9zdG9yZS9reW1hLXN0YXRlJztcbmltcG9ydCB7IEt5bWFTZWxlY3RvcnMgfSBmcm9tICcuLi9zdG9yZS9zZWxlY3RvcnMvaW5kZXgnO1xuXG5ASW5qZWN0YWJsZSh7XG4gIHByb3ZpZGVkSW46ICdyb290Jyxcbn0pXG5leHBvcnQgY2xhc3MgS3ltYVNlcnZpY2Uge1xuICBjb25zdHJ1Y3Rvcihwcm90ZWN0ZWQgc3RvcmU6IFN0b3JlPFN0YXRlV2l0aEt5bWE+KSB7fVxuXG4gIC8qKlxuICAgKiBBdXRob3JpemVzIHVzaW5nIHRoZSBLeW1hIE9BdXRoIGNsaWVudCB3aXRoIHNjb3BlIGBvcGVuaWRgLlxuICAgKlxuICAgKiBAcGFyYW0gdXNlcm5hbWUgYSB1c2VybmFtZVxuICAgKiBAcGFyYW0gcGFzc3dvcmQgYSBwYXNzd29yZFxuICAgKi9cbiAgYXV0aG9yaXplT3BlbklkKHVzZXJuYW1lOiBzdHJpbmcsIHBhc3N3b3JkOiBzdHJpbmcpOiB2b2lkIHtcbiAgICB0aGlzLnN0b3JlLmRpc3BhdGNoKFxuICAgICAgbmV3IEt5bWFBY3Rpb25zLkxvYWRPcGVuSWRUb2tlbih7IHVzZXJuYW1lLCBwYXNzd29yZCB9KVxuICAgICk7XG4gIH1cblxuICAvKipcbiAgICogUmV0dXJucyB0aGUgYE9wZW5JZFRva2VuYCwgd2hpY2ggd2FzIHByZXZpb3VzbHkgcmV0cmlldmVkIHVzaW5nIGBhdXRob3JpemVPcGVuSWRgIG1ldGhvZC5cbiAgICovXG4gIGdldE9wZW5JZFRva2VuKCk6IE9ic2VydmFibGU8T3BlbklkVG9rZW4+IHtcbiAgICByZXR1cm4gdGhpcy5zdG9yZS5waXBlKHNlbGVjdChLeW1hU2VsZWN0b3JzLmdldE9wZW5JZFRva2VuVmFsdWUpKTtcbiAgfVxufVxuIl19

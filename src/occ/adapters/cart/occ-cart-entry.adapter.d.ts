@@ -5,6 +5,7 @@ import { FeatureConfigService } from '../../../features-config/services/feature-
 import { CartModification } from '../../../model/cart.model';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccCartEntryAdapter implements CartEntryAdapter {
     protected http: HttpClient;
     protected occEndpointsService: OccEndpointsService;
@@ -38,4 +39,8 @@ export declare class OccCartEntryAdapter implements CartEntryAdapter {
      * Remove issue: #4125
      */
     private legacyRemove;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCartEntryAdapter>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCartEntryAdapter>;
 }
+
+//# sourceMappingURL=occ-cart-entry.adapter.d.ts.map

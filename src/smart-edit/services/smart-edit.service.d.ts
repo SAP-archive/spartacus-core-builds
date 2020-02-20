@@ -4,6 +4,7 @@ import { Page } from '../../cms/model/page.model';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { BaseSiteService } from '../../site-context/facade/base-site.service';
 import { WindowRef } from '../../window/window-ref';
+import * as ɵngcc0 from '@angular/core';
 export declare class SmartEditService {
     protected cmsService: CmsService;
     protected routingService: RoutingService;
@@ -16,11 +17,14 @@ export declare class SmartEditService {
     private defaultPreviewProductCode;
     private defaultPreviewCategoryCode;
     constructor(cmsService: CmsService, routingService: RoutingService, baseSiteService: BaseSiteService, zone: NgZone, winRef: WindowRef);
-    readonly cmsTicketId: string;
+    get cmsTicketId(): string;
     protected getCmsTicket(): void;
     protected getDefaultPreviewCode(): void;
     protected addPageContract(): void;
     protected goToPreviewPage(cmsPage: Page): void;
     protected renderComponent(componentId: string, componentType?: string, parentId?: string): boolean;
     protected reprocessPage(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SmartEditService>;
 }
+
+//# sourceMappingURL=smart-edit.service.d.ts.map

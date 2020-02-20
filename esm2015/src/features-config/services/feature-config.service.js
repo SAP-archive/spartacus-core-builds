@@ -1,49 +1,28 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
+import { __decorate } from "tslib";
 import { Injectable } from '@angular/core';
 import { FeaturesConfig } from '../config/features-config';
 import { isFeatureEnabled, isFeatureLevel, } from '../utils/feature-config-utils';
 import * as i0 from "@angular/core";
 import * as i1 from "../config/features-config";
-export class FeatureConfigService {
-    /**
-     * @param {?} config
-     */
+let FeatureConfigService = class FeatureConfigService {
     constructor(config) {
         this.config = config;
     }
-    /**
-     * @param {?} version
-     * @return {?}
-     */
     isLevel(version) {
         return isFeatureLevel(this.config, version);
     }
-    /**
-     * @param {?} feature
-     * @return {?}
-     */
     isEnabled(feature) {
         return isFeatureEnabled(this.config, feature);
     }
-}
-FeatureConfigService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
+};
 FeatureConfigService.ctorParameters = () => [
     { type: FeaturesConfig }
 ];
-/** @nocollapse */ FeatureConfigService.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(i0.ɵɵinject(i1.FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    FeatureConfigService.prototype.config;
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZmVhdHVyZS1jb25maWcuc2VydmljZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9mZWF0dXJlcy1jb25maWcvc2VydmljZXMvZmVhdHVyZS1jb25maWcuc2VydmljZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUMzQyxPQUFPLEVBQUUsY0FBYyxFQUFFLE1BQU0sMkJBQTJCLENBQUM7QUFDM0QsT0FBTyxFQUNMLGdCQUFnQixFQUNoQixjQUFjLEdBQ2YsTUFBTSwrQkFBK0IsQ0FBQzs7O0FBS3ZDLE1BQU0sT0FBTyxvQkFBb0I7Ozs7SUFDL0IsWUFBc0IsTUFBc0I7UUFBdEIsV0FBTSxHQUFOLE1BQU0sQ0FBZ0I7SUFBRyxDQUFDOzs7OztJQUVoRCxPQUFPLENBQUMsT0FBZTtRQUNyQixPQUFPLGNBQWMsQ0FBQyxJQUFJLENBQUMsTUFBTSxFQUFFLE9BQU8sQ0FBQyxDQUFDO0lBQzlDLENBQUM7Ozs7O0lBRUQsU0FBUyxDQUFDLE9BQWU7UUFDdkIsT0FBTyxnQkFBZ0IsQ0FBQyxJQUFJLENBQUMsTUFBTSxFQUFFLE9BQU8sQ0FBQyxDQUFDO0lBQ2hELENBQUM7OztZQVpGLFVBQVUsU0FBQztnQkFDVixVQUFVLEVBQUUsTUFBTTthQUNuQjs7OztZQVJRLGNBQWM7Ozs7Ozs7O0lBVVQsc0NBQWdDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgRmVhdHVyZXNDb25maWcgfSBmcm9tICcuLi9jb25maWcvZmVhdHVyZXMtY29uZmlnJztcbmltcG9ydCB7XG4gIGlzRmVhdHVyZUVuYWJsZWQsXG4gIGlzRmVhdHVyZUxldmVsLFxufSBmcm9tICcuLi91dGlscy9mZWF0dXJlLWNvbmZpZy11dGlscyc7XG5cbkBJbmplY3RhYmxlKHtcbiAgcHJvdmlkZWRJbjogJ3Jvb3QnLFxufSlcbmV4cG9ydCBjbGFzcyBGZWF0dXJlQ29uZmlnU2VydmljZSB7XG4gIGNvbnN0cnVjdG9yKHByb3RlY3RlZCBjb25maWc6IEZlYXR1cmVzQ29uZmlnKSB7fVxuXG4gIGlzTGV2ZWwodmVyc2lvbjogc3RyaW5nKTogYm9vbGVhbiB7XG4gICAgcmV0dXJuIGlzRmVhdHVyZUxldmVsKHRoaXMuY29uZmlnLCB2ZXJzaW9uKTtcbiAgfVxuXG4gIGlzRW5hYmxlZChmZWF0dXJlOiBzdHJpbmcpIHtcbiAgICByZXR1cm4gaXNGZWF0dXJlRW5hYmxlZCh0aGlzLmNvbmZpZywgZmVhdHVyZSk7XG4gIH1cbn1cbiJdfQ==
+FeatureConfigService.ɵprov = i0.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(i0.ɵɵinject(i1.FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+FeatureConfigService = __decorate([
+    Injectable({
+        providedIn: 'root',
+    })
+], FeatureConfigService);
+export { FeatureConfigService };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZmVhdHVyZS1jb25maWcuc2VydmljZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9mZWF0dXJlcy1jb25maWcvc2VydmljZXMvZmVhdHVyZS1jb25maWcuc2VydmljZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUMzQyxPQUFPLEVBQUUsY0FBYyxFQUFFLE1BQU0sMkJBQTJCLENBQUM7QUFDM0QsT0FBTyxFQUNMLGdCQUFnQixFQUNoQixjQUFjLEdBQ2YsTUFBTSwrQkFBK0IsQ0FBQzs7O0FBS3ZDLElBQWEsb0JBQW9CLEdBQWpDLE1BQWEsb0JBQW9CO0lBQy9CLFlBQXNCLE1BQXNCO1FBQXRCLFdBQU0sR0FBTixNQUFNLENBQWdCO0lBQUcsQ0FBQztJQUVoRCxPQUFPLENBQUMsT0FBZTtRQUNyQixPQUFPLGNBQWMsQ0FBQyxJQUFJLENBQUMsTUFBTSxFQUFFLE9BQU8sQ0FBQyxDQUFDO0lBQzlDLENBQUM7SUFFRCxTQUFTLENBQUMsT0FBZTtRQUN2QixPQUFPLGdCQUFnQixDQUFDLElBQUksQ0FBQyxNQUFNLEVBQUUsT0FBTyxDQUFDLENBQUM7SUFDaEQsQ0FBQztDQUNGLENBQUE7O1lBVCtCLGNBQWM7OztBQURqQyxvQkFBb0I7SUFIaEMsVUFBVSxDQUFDO1FBQ1YsVUFBVSxFQUFFLE1BQU07S0FDbkIsQ0FBQztHQUNXLG9CQUFvQixDQVVoQztTQVZZLG9CQUFvQiIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IEZlYXR1cmVzQ29uZmlnIH0gZnJvbSAnLi4vY29uZmlnL2ZlYXR1cmVzLWNvbmZpZyc7XG5pbXBvcnQge1xuICBpc0ZlYXR1cmVFbmFibGVkLFxuICBpc0ZlYXR1cmVMZXZlbCxcbn0gZnJvbSAnLi4vdXRpbHMvZmVhdHVyZS1jb25maWctdXRpbHMnO1xuXG5ASW5qZWN0YWJsZSh7XG4gIHByb3ZpZGVkSW46ICdyb290Jyxcbn0pXG5leHBvcnQgY2xhc3MgRmVhdHVyZUNvbmZpZ1NlcnZpY2Uge1xuICBjb25zdHJ1Y3Rvcihwcm90ZWN0ZWQgY29uZmlnOiBGZWF0dXJlc0NvbmZpZykge31cblxuICBpc0xldmVsKHZlcnNpb246IHN0cmluZyk6IGJvb2xlYW4ge1xuICAgIHJldHVybiBpc0ZlYXR1cmVMZXZlbCh0aGlzLmNvbmZpZywgdmVyc2lvbik7XG4gIH1cblxuICBpc0VuYWJsZWQoZmVhdHVyZTogc3RyaW5nKSB7XG4gICAgcmV0dXJuIGlzRmVhdHVyZUVuYWJsZWQodGhpcy5jb25maWcsIGZlYXR1cmUpO1xuICB9XG59XG4iXX0=

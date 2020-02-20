@@ -10,6 +10,7 @@ import { ProductSearchService } from '../facade/product-search.service';
  *
  * Only the page title is resolved in the implemenation.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class SearchPageMetaResolver extends PageMetaResolver implements PageMetaResolver {
     protected routingService: RoutingService;
     protected productSearchService: ProductSearchService;
@@ -31,4 +32,7 @@ export declare class SearchPageMetaResolver extends PageMetaResolver implements 
      * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveTitle()` instead
      */
     resolveTitle(total: number, query: string): Observable<string>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SearchPageMetaResolver>;
 }
+
+//# sourceMappingURL=search-page-meta.resolver.d.ts.map

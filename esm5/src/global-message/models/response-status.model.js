@@ -1,25 +1,12 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {number} */
-var HttpResponseStatus = {
-    UNKNOWN: -1,
-    BAD_REQUEST: 400,
-    FORBIDDEN: 403,
-    NOT_FOUND: 404,
-    CONFLICT: 409,
-    BAD_GATEWAY: 502,
-    GATEWAY_TIMEOUT: 504,
-    INTERNAL_SERVER_ERROR: 500,
-};
-export { HttpResponseStatus };
-HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
-HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
-HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
-HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
-HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
-HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
-HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
-HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_ERROR';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVzcG9uc2Utc3RhdHVzLm1vZGVsLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2dsb2JhbC1tZXNzYWdlL21vZGVscy9yZXNwb25zZS1zdGF0dXMubW9kZWwudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7O0lBQ0UsV0FBWTtJQUNaLGdCQUFpQjtJQUNqQixjQUFlO0lBQ2YsY0FBZTtJQUNmLGFBQWM7SUFDZCxnQkFBaUI7SUFDakIsb0JBQXFCO0lBQ3JCLDBCQUEyQiIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBlbnVtIEh0dHBSZXNwb25zZVN0YXR1cyB7XG4gIFVOS05PV04gPSAtMSxcbiAgQkFEX1JFUVVFU1QgPSA0MDAsXG4gIEZPUkJJRERFTiA9IDQwMyxcbiAgTk9UX0ZPVU5EID0gNDA0LFxuICBDT05GTElDVCA9IDQwOSxcbiAgQkFEX0dBVEVXQVkgPSA1MDIsXG4gIEdBVEVXQVlfVElNRU9VVCA9IDUwNCxcbiAgSU5URVJOQUxfU0VSVkVSX0VSUk9SID0gNTAwLFxufVxuIl19
+export var HttpResponseStatus;
+(function (HttpResponseStatus) {
+    HttpResponseStatus[HttpResponseStatus["UNKNOWN"] = -1] = "UNKNOWN";
+    HttpResponseStatus[HttpResponseStatus["BAD_REQUEST"] = 400] = "BAD_REQUEST";
+    HttpResponseStatus[HttpResponseStatus["FORBIDDEN"] = 403] = "FORBIDDEN";
+    HttpResponseStatus[HttpResponseStatus["NOT_FOUND"] = 404] = "NOT_FOUND";
+    HttpResponseStatus[HttpResponseStatus["CONFLICT"] = 409] = "CONFLICT";
+    HttpResponseStatus[HttpResponseStatus["BAD_GATEWAY"] = 502] = "BAD_GATEWAY";
+    HttpResponseStatus[HttpResponseStatus["GATEWAY_TIMEOUT"] = 504] = "GATEWAY_TIMEOUT";
+    HttpResponseStatus[HttpResponseStatus["INTERNAL_SERVER_ERROR"] = 500] = "INTERNAL_SERVER_ERROR";
+})(HttpResponseStatus || (HttpResponseStatus = {}));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVzcG9uc2Utc3RhdHVzLm1vZGVsLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2dsb2JhbC1tZXNzYWdlL21vZGVscy9yZXNwb25zZS1zdGF0dXMubW9kZWwudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsTUFBTSxDQUFOLElBQVksa0JBU1g7QUFURCxXQUFZLGtCQUFrQjtJQUM1QixrRUFBWSxDQUFBO0lBQ1osMkVBQWlCLENBQUE7SUFDakIsdUVBQWUsQ0FBQTtJQUNmLHVFQUFlLENBQUE7SUFDZixxRUFBYyxDQUFBO0lBQ2QsMkVBQWlCLENBQUE7SUFDakIsbUZBQXFCLENBQUE7SUFDckIsK0ZBQTJCLENBQUE7QUFDN0IsQ0FBQyxFQVRXLGtCQUFrQixLQUFsQixrQkFBa0IsUUFTN0IiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgZW51bSBIdHRwUmVzcG9uc2VTdGF0dXMge1xuICBVTktOT1dOID0gLTEsXG4gIEJBRF9SRVFVRVNUID0gNDAwLFxuICBGT1JCSURERU4gPSA0MDMsXG4gIE5PVF9GT1VORCA9IDQwNCxcbiAgQ09ORkxJQ1QgPSA0MDksXG4gIEJBRF9HQVRFV0FZID0gNTAyLFxuICBHQVRFV0FZX1RJTUVPVVQgPSA1MDQsXG4gIElOVEVSTkFMX1NFUlZFUl9FUlJPUiA9IDUwMCxcbn1cbiJdfQ==

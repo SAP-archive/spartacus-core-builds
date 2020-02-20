@@ -3,6 +3,7 @@ import { BaseSite } from '../../model/misc.model';
 import { SiteContextConfig } from '../../site-context/config/site-context-config';
 import { JavaRegExpConverter } from './java-reg-exp-converter';
 import { OccLoadedConfig } from './occ-loaded-config';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccLoadedConfigConverter {
     private javaRegExpConverter;
     constructor(javaRegExpConverter: JavaRegExpConverter);
@@ -28,4 +29,7 @@ export declare class OccLoadedConfigConverter {
      */
     private moveToFirst;
     private getError;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccLoadedConfigConverter>;
 }
+
+//# sourceMappingURL=occ-loaded-config-converter.d.ts.map

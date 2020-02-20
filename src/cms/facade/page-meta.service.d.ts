@@ -3,6 +3,7 @@ import { FeatureConfigService } from '../../features-config/services/feature-con
 import { Page, PageMeta } from '../model/page.model';
 import { PageMetaResolver } from '../page/page-meta.resolver';
 import { CmsService } from './cms.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class PageMetaService {
     protected resolvers: PageMetaResolver[];
     protected cms: CmsService;
@@ -36,4 +37,7 @@ export declare class PageMetaService {
      * but custom match comparisors can be implemented.
      */
     protected getMetaResolver(page: Page): PageMetaResolver;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<PageMetaService>;
 }
+
+//# sourceMappingURL=page-meta.service.d.ts.map

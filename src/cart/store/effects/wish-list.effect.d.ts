@@ -13,6 +13,7 @@ import { StateWithMultiCart } from '../multi-cart-state';
  *
  * TODO(issue:#4507)
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class WishListEffects {
     private actions$;
     private cartConnector;
@@ -23,4 +24,8 @@ export declare class WishListEffects {
     loadWishList$: Observable<CartActions.LoadWishListSuccess | CartActions.CreateWishList | CartActions.LoadCartFail>;
     resetWishList$: Observable<CartActions.LoadWishListSuccess | CartActions.LoadCartFail>;
     constructor(actions$: Actions, cartConnector: CartConnector, saveCartConnector: SaveCartConnector, authService: AuthService, store: Store<StateWithMultiCart>);
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<WishListEffects>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<WishListEffects>;
 }
+
+//# sourceMappingURL=wish-list.effect.d.ts.map

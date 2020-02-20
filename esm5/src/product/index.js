@@ -1,13 +1,9 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER } from './connectors/index';
-export { ProductReferenceService, ProductReviewService, ProductSearchService, ProductService, SearchboxService } from './facade/index';
-export { ProductScope } from './model/index';
-export { ProductModule } from './product.module';
-export { CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, ProductLoadingService } from './services/index';
-export { ProductActions } from './store/actions/index';
-export { PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY } from './store/product-state';
-export { ProductSelectors } from './store/selectors/index';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcHJvZHVjdC9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsNldBQWMsb0JBQW9CLENBQUM7QUFDbkMsc0hBQWMsZ0JBQWdCLENBQUM7QUFDL0IsNkJBQWMsZUFBZSxDQUFDO0FBQzlCLDhCQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGlIQUFjLGtCQUFrQixDQUFDO0FBQ2pDLCtCQUFjLHVCQUF1QixDQUFDO0FBQ3RDLHVEQUFjLHVCQUF1QixDQUFDO0FBQ3RDLGlDQUFjLHlCQUF5QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9jb25uZWN0b3JzL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vZmFjYWRlL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWwvaW5kZXgnO1xuZXhwb3J0ICogZnJvbSAnLi9wcm9kdWN0Lm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL3NlcnZpY2VzL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vc3RvcmUvYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgKiBmcm9tICcuL3N0b3JlL3Byb2R1Y3Qtc3RhdGUnO1xuZXhwb3J0ICogZnJvbSAnLi9zdG9yZS9zZWxlY3RvcnMvaW5kZXgnO1xuIl19
+export * from './connectors/index';
+export * from './facade/index';
+export * from './model/index';
+export * from './product.module';
+export * from './services/index';
+export * from './store/actions/index';
+export * from './store/product-state';
+export * from './store/selectors/index';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcHJvZHVjdC9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxjQUFjLG9CQUFvQixDQUFDO0FBQ25DLGNBQWMsZ0JBQWdCLENBQUM7QUFDL0IsY0FBYyxlQUFlLENBQUM7QUFDOUIsY0FBYyxrQkFBa0IsQ0FBQztBQUNqQyxjQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGNBQWMsdUJBQXVCLENBQUM7QUFDdEMsY0FBYyx1QkFBdUIsQ0FBQztBQUN0QyxjQUFjLHlCQUF5QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9jb25uZWN0b3JzL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vZmFjYWRlL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWwvaW5kZXgnO1xuZXhwb3J0ICogZnJvbSAnLi9wcm9kdWN0Lm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL3NlcnZpY2VzL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vc3RvcmUvYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgKiBmcm9tICcuL3N0b3JlL3Byb2R1Y3Qtc3RhdGUnO1xuZXhwb3J0ICogZnJvbSAnLi9zdG9yZS9zZWxlY3RvcnMvaW5kZXgnO1xuIl19
