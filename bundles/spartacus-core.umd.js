@@ -13212,11 +13212,13 @@
          * Add one message into store
          * @param text: string | Translatable
          * @param type: GlobalMessageType object
+         * @param timeout: number
          */
-        GlobalMessageService.prototype.add = function (text, type) {
+        GlobalMessageService.prototype.add = function (text, type, timeout) {
             this.store.dispatch(new AddMessage({
                 text: typeof text === 'string' ? { raw: text } : text,
                 type: type,
+                timeout: timeout,
             }));
         };
         /**
@@ -13723,13 +13725,15 @@
                 }));
             }));
             this.hideAfterDelay$ = common.isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
-                ? this.actions$.pipe(effects$d.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap(function (type) {
-                    var config = _this.config.globalMessages[type];
-                    return _this.store.pipe(store.select(getGlobalMessageCountByType(type)), operators.take(1), operators.filter(function (count) {
-                        return config && config.timeout !== undefined && count && count > 0;
-                    }), operators.delay(config.timeout), operators.switchMap(function () {
+                ? this.actions$.pipe(effects$d.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.concatMap(function (message) {
+                    var config = _this.config.globalMessages[message.type];
+                    return _this.store.pipe(store.select(getGlobalMessageCountByType(message.type)), operators.take(1), operators.filter(function (count) {
+                        return ((config && config.timeout !== undefined) || message.timeout) &&
+                            count &&
+                            count > 0;
+                    }), operators.delay(message.timeout || config.timeout), operators.switchMap(function () {
                         return rxjs.of(new RemoveMessage({
-                            type: type,
+                            type: message.type,
                             index: 0,
                         }));
                     }));

@@ -11335,11 +11335,13 @@ let GlobalMessageService = class GlobalMessageService {
      * Add one message into store
      * @param text: string | Translatable
      * @param type: GlobalMessageType object
+     * @param timeout: number
      */
-    add(text, type) {
+    add(text, type, timeout) {
         this.store.dispatch(new AddMessage({
             text: typeof text === 'string' ? { raw: text } : text,
             type,
+            timeout,
         }));
     }
     /**
@@ -11761,10 +11763,12 @@ let GlobalMessageEffect = class GlobalMessageEffect {
             index: indexOfFirstOccurrence(text, messages),
         })))));
         this.hideAfterDelay$ = isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
-            ? this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload', 'type'), concatMap((type) => {
-                const config = this.config.globalMessages[type];
-                return this.store.pipe(select(getGlobalMessageCountByType(type)), take(1), filter((count) => config && config.timeout !== undefined && count && count > 0), delay(config.timeout), switchMap(() => of(new RemoveMessage({
-                    type,
+            ? this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload'), concatMap((message) => {
+                const config = this.config.globalMessages[message.type];
+                return this.store.pipe(select(getGlobalMessageCountByType(message.type)), take(1), filter((count) => ((config && config.timeout !== undefined) || message.timeout) &&
+                    count &&
+                    count > 0), delay(message.timeout || config.timeout), switchMap(() => of(new RemoveMessage({
+                    type: message.type,
                     index: 0,
                 }))));
             }))

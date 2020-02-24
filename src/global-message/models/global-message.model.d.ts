@@ -8,4 +8,5 @@ export declare enum GlobalMessageType {
 export interface GlobalMessage {
     text: Translatable;
     type: GlobalMessageType;
+    timeout?: number;
 }

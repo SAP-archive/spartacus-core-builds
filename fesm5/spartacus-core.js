@@ -13021,11 +13021,13 @@ var GlobalMessageService = /** @class */ (function () {
      * Add one message into store
      * @param text: string | Translatable
      * @param type: GlobalMessageType object
+     * @param timeout: number
      */
-    GlobalMessageService.prototype.add = function (text, type) {
+    GlobalMessageService.prototype.add = function (text, type, timeout) {
         this.store.dispatch(new AddMessage({
             text: typeof text === 'string' ? { raw: text } : text,
             type: type,
+            timeout: timeout,
         }));
     };
     /**
@@ -13532,13 +13534,15 @@ var GlobalMessageEffect = /** @class */ (function () {
             }));
         }));
         this.hideAfterDelay$ = isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
-            ? this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload', 'type'), concatMap(function (type) {
-                var config = _this.config.globalMessages[type];
-                return _this.store.pipe(select(getGlobalMessageCountByType(type)), take(1), filter(function (count) {
-                    return config && config.timeout !== undefined && count && count > 0;
-                }), delay(config.timeout), switchMap(function () {
+            ? this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload'), concatMap(function (message) {
+                var config = _this.config.globalMessages[message.type];
+                return _this.store.pipe(select(getGlobalMessageCountByType(message.type)), take(1), filter(function (count) {
+                    return ((config && config.timeout !== undefined) || message.timeout) &&
+                        count &&
+                        count > 0;
+                }), delay(message.timeout || config.timeout), switchMap(function () {
                     return of(new RemoveMessage({
-                        type: type,
+                        type: message.type,
                         index: 0,
                     }));
                 }));
