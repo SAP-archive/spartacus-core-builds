@@ -13341,7 +13341,11 @@
                             // see https://jira.hybris.com/browse/CMSX-8516
                             errorMessage = { raw: error.message || '' };
                         }
-                        _this.globalMessageService.add(errorMessage, exports.GlobalMessageType.MSG_TYPE_ERROR);
+                        // @todo: remove this condition once backend is improved, see:
+                        // https://github.com/SAP/cloud-commerce-spartacus-storefront/issues/6679
+                        if (error.type !== 'JaloObjectNoLongerValidError') {
+                            _this.globalMessageService.add(errorMessage, exports.GlobalMessageType.MSG_TYPE_ERROR);
+                        }
                     });
                 }
             }
