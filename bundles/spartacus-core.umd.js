@@ -20173,14 +20173,14 @@
         return ComponentsEffects;
     }());
 
-    var UrlMatcherFactoryService = /** @class */ (function () {
-        function UrlMatcherFactoryService(globService) {
+    var UrlMatcherService = /** @class */ (function () {
+        function UrlMatcherService(globService) {
             this.globService = globService;
         }
         /**
          * Returns a matcher that is always fails
          */
-        UrlMatcherFactoryService.prototype.getFalsyUrlMatcher = function () {
+        UrlMatcherService.prototype.getFalsy = function () {
             return function falsyUrlMatcher() {
                 return null;
             };
@@ -20188,18 +20188,31 @@
         /**
          * Returns a matcher for given list of paths
          */
-        UrlMatcherFactoryService.prototype.getMultiplePathsUrlMatcher = function (paths) {
-            var self = this;
-            var matcher = function multiplePathsUrlMatcher(segments, segmentGroup, route) {
-                for (var i = 0; i < paths.length; i++) {
-                    var result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
+        UrlMatcherService.prototype.getFromPaths = function (paths) {
+            var _this = this;
+            var matchers = paths.map(function (path) { return _this.getFromPath(path); });
+            var matcher = this.getCombined(matchers);
+            if (core.isDevMode()) {
+                matcher['_paths'] = paths; // property added for easier debugging of routes
+            }
+            return matcher;
+        };
+        /**
+         * Returns a matcher that combines the given matchers
+         * */
+        UrlMatcherService.prototype.getCombined = function (matchers) {
+            var matcher = function combinedUrlMatchers(segments, segmentGroup, route) {
+                for (var i = 0; i < matchers.length; i++) {
+                    var result = matchers[i](segments, segmentGroup, route);
                     if (result) {
                         return result;
                     }
                 }
                 return null;
             };
-            matcher.paths = paths; // property added for easier debugging of routes
+            if (core.isDevMode()) {
+                matcher['_matchers'] = matchers; // property added for easier debugging of routes
+            }
             return matcher;
         };
         /**
@@ -20207,9 +20220,9 @@
          * - the `path` comes from function's argument, not from `route.path`
          * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
          */
-        UrlMatcherFactoryService.prototype.getPathUrlMatcher = function (path) {
+        UrlMatcherService.prototype.getFromPath = function (path) {
             if (path === void 0) { path = ''; }
-            return function (segments, segmentGroup, route) {
+            var matcher = function pathUrlMatcher(segments, segmentGroup, route) {
                 /**
                  * @license
                  * The MIT License
@@ -20252,23 +20265,29 @@
                 }
                 return { consumed: segments.slice(0, parts.length), posParams: posParams };
             };
+            if (core.isDevMode()) {
+                matcher['_path'] = path; // property added for easier debugging of routes
+            }
+            return matcher;
         };
         /**
          * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
          */
-        UrlMatcherFactoryService.prototype.getOppositeUrlMatcher = function (originalMatcher) {
+        UrlMatcherService.prototype.getOpposite = function (originalMatcher) {
             var matcher = function oppositeUrlMatcher(segments, group, route) {
                 return originalMatcher(segments, group, route)
                     ? null
                     : { consumed: segments, posParams: {} };
             };
-            matcher.originalMatcher = originalMatcher; // property added for easier debugging of routes
+            if (core.isDevMode()) {
+                matcher['_originalMatcher'] = originalMatcher; // property added for easier debugging of routes
+            }
             return matcher;
         };
         /**
          * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
          */
-        UrlMatcherFactoryService.prototype.getGlobUrlMatcher = function (globPatterns) {
+        UrlMatcherService.prototype.getFromGlob = function (globPatterns) {
             var globValidator = this.globService.getValidator(globPatterns);
             var matcher = function globUrlMatcher(segments) {
                 var fullPath = "/" + segments.map(function (s) { return s.path; }).join('/');
@@ -20276,88 +20295,141 @@
                     ? { consumed: segments, posParams: {} }
                     : null;
             };
-            matcher.globPatterns = globPatterns; // property added for easier debugging of routes
+            if (core.isDevMode()) {
+                matcher['_globPatterns'] = globPatterns; // property added for easier debugging of routes
+            }
             return matcher;
         };
-        UrlMatcherFactoryService.ctorParameters = function () { return [
+        UrlMatcherService.ctorParameters = function () { return [
             { type: GlobService }
         ]; };
-        UrlMatcherFactoryService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(core["ɵɵinject"](GlobService)); }, token: UrlMatcherFactoryService, providedIn: "root" });
-        UrlMatcherFactoryService = __decorate([
+        UrlMatcherService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(core["ɵɵinject"](GlobService)); }, token: UrlMatcherService, providedIn: "root" });
+        UrlMatcherService = __decorate([
             core.Injectable({ providedIn: 'root' })
-        ], UrlMatcherFactoryService);
-        return UrlMatcherFactoryService;
+        ], UrlMatcherService);
+        return UrlMatcherService;
     }());
 
     var ConfigurableRoutesService = /** @class */ (function () {
-        function ConfigurableRoutesService(injector, routingConfigService, urlMatcherFactory) {
+        function ConfigurableRoutesService(injector, routingConfigService, urlMatcherService) {
             this.injector = injector;
             this.routingConfigService = routingConfigService;
-            this.urlMatcherFactory = urlMatcherFactory;
+            this.urlMatcherService = urlMatcherService;
             this.initCalled = false; // guard not to call init() more than once
         }
         /**
-         * Configures all existing Routes in the Router
+         * Enhances existing Angular routes using the routing config of Spartacus.
+         * Can be called only once.
          */
         ConfigurableRoutesService.prototype.init = function () {
             if (!this.initCalled) {
                 this.initCalled = true;
-                this.configureRouter();
+                this.configure();
             }
         };
-        ConfigurableRoutesService.prototype.configureRouter = function () {
+        /**
+         * Enhances existing Angular routes using the routing config of Spartacus.
+         */
+        ConfigurableRoutesService.prototype.configure = function () {
             // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
             var router$1 = this.injector.get(router.Router);
-            var configuredRoutes = this.configureRoutes(router$1.config);
-            router$1.resetConfig(configuredRoutes);
+            router$1.resetConfig(this.configureRoutes(router$1.config));
         };
+        /**
+         * Sets the property `path` or `matcher` for the given routes, based on the Spartacus' routing configuration.
+         *
+         * @param routes list of Angular `Route` objects
+         */
         ConfigurableRoutesService.prototype.configureRoutes = function (routes) {
             var _this = this;
-            var result = [];
-            routes.forEach(function (route) {
+            return routes.map(function (route) {
                 var configuredRoute = _this.configureRoute(route);
                 if (route.children && route.children.length) {
                     configuredRoute.children = _this.configureRoutes(route.children);
                 }
-                result.push(configuredRoute);
+                return configuredRoute;
             });
-            return result;
         };
+        /**
+         * Sets the property `path` or `matcher` of the `Route`, based on the Spartacus' routing configuration.
+         * Uses the property `data.cxRoute` to determine the name of the route.
+         * It's the same name used as a key in the routing configuration: `routing.routes[ROUTE NAME]`.
+         *
+         * @param route Angular `Route` object
+         */
         ConfigurableRoutesService.prototype.configureRoute = function (route) {
+            var _a, _b, _c, _d, _e, _f, _g;
             var routeName = this.getRouteName(route);
             if (routeName) {
                 var routeConfig = this.routingConfigService.getRouteConfig(routeName);
-                var paths = this.getConfiguredPaths(routeConfig, routeName, route);
-                var isDisabled = routeConfig && routeConfig.disabled;
-                if (isDisabled || !paths.length) {
+                this.validateRouteConfig(routeConfig, routeName, route);
+                if ((_a = routeConfig) === null || _a === void 0 ? void 0 : _a.disabled) {
                     delete route.path;
-                    return __assign(__assign({}, route), { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+                    return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
                 }
-                else if (paths.length === 1) {
+                else if ((_b = routeConfig) === null || _b === void 0 ? void 0 : _b.matchers) {
+                    delete route.path;
+                    return __assign(__assign({}, route), { matcher: this.resolveUrlMatchers(route, (_c = routeConfig) === null || _c === void 0 ? void 0 : _c.matchers) });
+                }
+                else if (((_e = (_d = routeConfig) === null || _d === void 0 ? void 0 : _d.paths) === null || _e === void 0 ? void 0 : _e.length) === 1) {
                     delete route.matcher;
-                    return __assign(__assign({}, route), { path: paths[0] });
+                    return __assign(__assign({}, route), { path: (_f = routeConfig) === null || _f === void 0 ? void 0 : _f.paths[0] });
                 }
                 else {
                     delete route.path;
-                    return __assign(__assign({}, route), { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
+                    return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFromPaths(((_g = routeConfig) === null || _g === void 0 ? void 0 : _g.paths) || []) });
                 }
             }
             return route; // if route doesn't have a name, just pass the original route
         };
+        /**
+         * Creates a single `UrlMatcher` based on given matchers and factories of matchers.
+         *
+         * @param route Route object
+         * @param matchersOrFactories `UrlMatcher`s or injection tokens with a factory functions
+         *  that create UrlMatchers based on the given route.
+         */
+        ConfigurableRoutesService.prototype.resolveUrlMatchers = function (route, matchersOrFactories) {
+            var _this = this;
+            var matchers = matchersOrFactories.map(function (matcherOrFactory) {
+                return typeof matcherOrFactory === 'function'
+                    ? matcherOrFactory // matcher
+                    : _this.resolveUrlMatcherFactory(route, matcherOrFactory); // factory injection token
+            });
+            return this.urlMatcherService.getCombined(matchers);
+        };
+        /**
+         * Creates an `UrlMatcher` based on the given route, using the factory function coming from the given injection token.
+         *
+         * @param route Route object
+         * @param factoryToken injection token with a factory function that will create an UrlMatcher using given route
+         */
+        ConfigurableRoutesService.prototype.resolveUrlMatcherFactory = function (route, factoryToken) {
+            var factory = this.injector.get(factoryToken);
+            return factory(route);
+        };
+        /**
+         * Returns the name of the Route stored in its property `data.cxRoute`
+         * @param route
+         */
         ConfigurableRoutesService.prototype.getRouteName = function (route) {
             return route.data && route.data.cxRoute;
         };
-        ConfigurableRoutesService.prototype.getConfiguredPaths = function (routeConfig, routeName, route) {
-            if (routeConfig === undefined) {
-                this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined key '" + routeName + "' in the routes config");
-                return [];
+        ConfigurableRoutesService.prototype.validateRouteConfig = function (routeConfig, routeName, route) {
+            var _a, _b;
+            if (core.isDevMode()) {
+                // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
+                // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
+                if (routeConfig === null ||
+                    routeConfig.paths === null || ((_a = routeConfig) === null || _a === void 0 ? void 0 : _a.matchers)) {
+                    return;
+                }
+                // undefined value of routeConfig or routeConfig.paths is a misconfiguration
+                if (!((_b = routeConfig) === null || _b === void 0 ? void 0 : _b.paths)) {
+                    this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined config or undefined 'paths' property for this route");
+                    return;
+                }
             }
-            if (routeConfig && routeConfig.paths === undefined) {
-                this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined 'paths' for the named route '" + routeName + "' in the routes config");
-                return [];
-            }
-            // routeConfig or routeConfig.paths can be null - which means switching off the route
-            return (routeConfig && routeConfig.paths) || [];
         };
         ConfigurableRoutesService.prototype.warn = function () {
             var args = [];
@@ -20371,9 +20443,9 @@
         ConfigurableRoutesService.ctorParameters = function () { return [
             { type: core.Injector },
             { type: RoutingConfigService },
-            { type: UrlMatcherFactoryService }
+            { type: UrlMatcherService }
         ]; };
-        ConfigurableRoutesService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core["ɵɵinject"](core.INJECTOR), core["ɵɵinject"](RoutingConfigService), core["ɵɵinject"](UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+        ConfigurableRoutesService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core["ɵɵinject"](core.INJECTOR), core["ɵɵinject"](RoutingConfigService), core["ɵɵinject"](UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
         ConfigurableRoutesService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], ConfigurableRoutesService);
@@ -20481,9 +20553,9 @@
      * Service that helps redirecting to different storefront systems for configured URLs
      */
     var ExternalRoutesService = /** @class */ (function () {
-        function ExternalRoutesService(config, matcherFactory, injector) {
+        function ExternalRoutesService(config, urlMatcherService, injector) {
             this.config = config;
-            this.matcherFactory = matcherFactory;
+            this.urlMatcherService = urlMatcherService;
             this.injector = injector;
         }
         Object.defineProperty(ExternalRoutesService.prototype, "internalUrlPatterns", {
@@ -20523,12 +20595,12 @@
          * Returns the URL matcher for the external route
          */
         ExternalRoutesService.prototype.getUrlMatcher = function () {
-            var matcher = this.matcherFactory.getGlobUrlMatcher(this.internalUrlPatterns);
-            return this.matcherFactory.getOppositeUrlMatcher(matcher); // the external route should be activated only when it's NOT an internal route
+            var matcher = this.urlMatcherService.getFromGlob(this.internalUrlPatterns);
+            return this.urlMatcherService.getOpposite(matcher); // the external route should be activated only when it's NOT an internal route
         };
         ExternalRoutesService.ctorParameters = function () { return [
             { type: ExternalRoutesConfig },
-            { type: UrlMatcherFactoryService },
+            { type: UrlMatcherService },
             { type: core.Injector }
         ]; };
         ExternalRoutesService = __decorate([
@@ -20901,6 +20973,31 @@
         ], RoutingModule);
         return RoutingModule;
     }());
+
+    function getDefaultUrlMatcherFactory(routingConfigService, urlMatcherService) {
+        var factory = function (route) {
+            var routeName = route.data && route.data['cxRoute'];
+            var routeConfig = routingConfigService.getRouteConfig(routeName);
+            var paths = (routeConfig && routeConfig.paths) || [];
+            return urlMatcherService.getFromPaths(paths);
+        };
+        return factory;
+    }
+    /**
+     * Injection token with url matcher factory for spartacus routes containing property `data.cxRoute`.
+     * The provided url matcher matches the configured `paths` from routing config.
+     *
+     * If this matcher doesn't fit the requirements, it can be replaced with custom matcher
+     * or additional matchers can be added for a specific route. See for example PRODUCT_DETAILS_URL_MATCHER.
+     *
+     * Note: Matchers will "match" a route, but do not contribute to the creation of the route, nor do they guard routes.
+     */
+    var DEFAULT_URL_MATCHER = new core.InjectionToken('DEFAULT_URL_MATCHER', {
+        providedIn: 'root',
+        factory: function () {
+            return getDefaultUrlMatcherFactory(core.inject(RoutingConfigService), core.inject(UrlMatcherService));
+        },
+    });
 
     var NavigationEntryItemEffects = /** @class */ (function () {
         function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
@@ -27489,6 +27586,7 @@
     exports.CxDatePipe = CxDatePipe;
     exports.DEFAULT_LOCAL_STORAGE_KEY = DEFAULT_LOCAL_STORAGE_KEY;
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
+    exports.DEFAULT_URL_MATCHER = DEFAULT_URL_MATCHER;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.EMAIL_PATTERN = EMAIL_PATTERN;
@@ -27730,7 +27828,7 @@
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.USE_CUSTOMER_SUPPORT_AGENT_TOKEN = USE_CUSTOMER_SUPPORT_AGENT_TOKEN;
     exports.UnknownErrorHandler = UnknownErrorHandler;
-    exports.UrlMatcherFactoryService = UrlMatcherFactoryService;
+    exports.UrlMatcherService = UrlMatcherService;
     exports.UrlModule = UrlModule;
     exports.UrlPipe = UrlPipe;
     exports.UserActions = userGroup_actions;

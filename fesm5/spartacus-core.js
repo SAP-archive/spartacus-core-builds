@@ -1,5 +1,5 @@
 import { __values, __spread, __decorate, __awaiter, __generator, __read, __param, __extends, __assign, __rest } from 'tslib';
-import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Inject, ɵɵdefineInjectable, ɵɵinject, Injectable, APP_INITIALIZER, TemplateRef, ViewContainerRef, Input, Directive, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
+import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Inject, ɵɵdefineInjectable, ɵɵinject, Injectable, APP_INITIALIZER, TemplateRef, ViewContainerRef, Input, Directive, Injector, INJECTOR, Pipe, inject, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, getLocaleId, DatePipe } from '@angular/common';
 import { BehaviorSubject, of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subscription, timer, queueScheduler, using, from, merge, Observable, defer } from 'rxjs';
 import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, switchMapTo, observeOn, groupBy, auditTime, takeWhile } from 'rxjs/operators';
@@ -19982,14 +19982,14 @@ var ComponentsEffects = /** @class */ (function () {
     return ComponentsEffects;
 }());
 
-var UrlMatcherFactoryService = /** @class */ (function () {
-    function UrlMatcherFactoryService(globService) {
+var UrlMatcherService = /** @class */ (function () {
+    function UrlMatcherService(globService) {
         this.globService = globService;
     }
     /**
      * Returns a matcher that is always fails
      */
-    UrlMatcherFactoryService.prototype.getFalsyUrlMatcher = function () {
+    UrlMatcherService.prototype.getFalsy = function () {
         return function falsyUrlMatcher() {
             return null;
         };
@@ -19997,18 +19997,31 @@ var UrlMatcherFactoryService = /** @class */ (function () {
     /**
      * Returns a matcher for given list of paths
      */
-    UrlMatcherFactoryService.prototype.getMultiplePathsUrlMatcher = function (paths) {
-        var self = this;
-        var matcher = function multiplePathsUrlMatcher(segments, segmentGroup, route) {
-            for (var i = 0; i < paths.length; i++) {
-                var result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
+    UrlMatcherService.prototype.getFromPaths = function (paths) {
+        var _this = this;
+        var matchers = paths.map(function (path) { return _this.getFromPath(path); });
+        var matcher = this.getCombined(matchers);
+        if (isDevMode()) {
+            matcher['_paths'] = paths; // property added for easier debugging of routes
+        }
+        return matcher;
+    };
+    /**
+     * Returns a matcher that combines the given matchers
+     * */
+    UrlMatcherService.prototype.getCombined = function (matchers) {
+        var matcher = function combinedUrlMatchers(segments, segmentGroup, route) {
+            for (var i = 0; i < matchers.length; i++) {
+                var result = matchers[i](segments, segmentGroup, route);
                 if (result) {
                     return result;
                 }
             }
             return null;
         };
-        matcher.paths = paths; // property added for easier debugging of routes
+        if (isDevMode()) {
+            matcher['_matchers'] = matchers; // property added for easier debugging of routes
+        }
         return matcher;
     };
     /**
@@ -20016,9 +20029,9 @@ var UrlMatcherFactoryService = /** @class */ (function () {
      * - the `path` comes from function's argument, not from `route.path`
      * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
      */
-    UrlMatcherFactoryService.prototype.getPathUrlMatcher = function (path) {
+    UrlMatcherService.prototype.getFromPath = function (path) {
         if (path === void 0) { path = ''; }
-        return function (segments, segmentGroup, route) {
+        var matcher = function pathUrlMatcher(segments, segmentGroup, route) {
             /**
              * @license
              * The MIT License
@@ -20061,23 +20074,29 @@ var UrlMatcherFactoryService = /** @class */ (function () {
             }
             return { consumed: segments.slice(0, parts.length), posParams: posParams };
         };
+        if (isDevMode()) {
+            matcher['_path'] = path; // property added for easier debugging of routes
+        }
+        return matcher;
     };
     /**
      * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
      */
-    UrlMatcherFactoryService.prototype.getOppositeUrlMatcher = function (originalMatcher) {
+    UrlMatcherService.prototype.getOpposite = function (originalMatcher) {
         var matcher = function oppositeUrlMatcher(segments, group, route) {
             return originalMatcher(segments, group, route)
                 ? null
                 : { consumed: segments, posParams: {} };
         };
-        matcher.originalMatcher = originalMatcher; // property added for easier debugging of routes
+        if (isDevMode()) {
+            matcher['_originalMatcher'] = originalMatcher; // property added for easier debugging of routes
+        }
         return matcher;
     };
     /**
      * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
      */
-    UrlMatcherFactoryService.prototype.getGlobUrlMatcher = function (globPatterns) {
+    UrlMatcherService.prototype.getFromGlob = function (globPatterns) {
         var globValidator = this.globService.getValidator(globPatterns);
         var matcher = function globUrlMatcher(segments) {
             var fullPath = "/" + segments.map(function (s) { return s.path; }).join('/');
@@ -20085,88 +20104,141 @@ var UrlMatcherFactoryService = /** @class */ (function () {
                 ? { consumed: segments, posParams: {} }
                 : null;
         };
-        matcher.globPatterns = globPatterns; // property added for easier debugging of routes
+        if (isDevMode()) {
+            matcher['_globPatterns'] = globPatterns; // property added for easier debugging of routes
+        }
         return matcher;
     };
-    UrlMatcherFactoryService.ctorParameters = function () { return [
+    UrlMatcherService.ctorParameters = function () { return [
         { type: GlobService }
     ]; };
-    UrlMatcherFactoryService.ɵprov = ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(ɵɵinject(GlobService)); }, token: UrlMatcherFactoryService, providedIn: "root" });
-    UrlMatcherFactoryService = __decorate([
+    UrlMatcherService.ɵprov = ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
+    UrlMatcherService = __decorate([
         Injectable({ providedIn: 'root' })
-    ], UrlMatcherFactoryService);
-    return UrlMatcherFactoryService;
+    ], UrlMatcherService);
+    return UrlMatcherService;
 }());
 
 var ConfigurableRoutesService = /** @class */ (function () {
-    function ConfigurableRoutesService(injector, routingConfigService, urlMatcherFactory) {
+    function ConfigurableRoutesService(injector, routingConfigService, urlMatcherService) {
         this.injector = injector;
         this.routingConfigService = routingConfigService;
-        this.urlMatcherFactory = urlMatcherFactory;
+        this.urlMatcherService = urlMatcherService;
         this.initCalled = false; // guard not to call init() more than once
     }
     /**
-     * Configures all existing Routes in the Router
+     * Enhances existing Angular routes using the routing config of Spartacus.
+     * Can be called only once.
      */
     ConfigurableRoutesService.prototype.init = function () {
         if (!this.initCalled) {
             this.initCalled = true;
-            this.configureRouter();
+            this.configure();
         }
     };
-    ConfigurableRoutesService.prototype.configureRouter = function () {
+    /**
+     * Enhances existing Angular routes using the routing config of Spartacus.
+     */
+    ConfigurableRoutesService.prototype.configure = function () {
         // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
         var router = this.injector.get(Router);
-        var configuredRoutes = this.configureRoutes(router.config);
-        router.resetConfig(configuredRoutes);
+        router.resetConfig(this.configureRoutes(router.config));
     };
+    /**
+     * Sets the property `path` or `matcher` for the given routes, based on the Spartacus' routing configuration.
+     *
+     * @param routes list of Angular `Route` objects
+     */
     ConfigurableRoutesService.prototype.configureRoutes = function (routes) {
         var _this = this;
-        var result = [];
-        routes.forEach(function (route) {
+        return routes.map(function (route) {
             var configuredRoute = _this.configureRoute(route);
             if (route.children && route.children.length) {
                 configuredRoute.children = _this.configureRoutes(route.children);
             }
-            result.push(configuredRoute);
+            return configuredRoute;
         });
-        return result;
     };
+    /**
+     * Sets the property `path` or `matcher` of the `Route`, based on the Spartacus' routing configuration.
+     * Uses the property `data.cxRoute` to determine the name of the route.
+     * It's the same name used as a key in the routing configuration: `routing.routes[ROUTE NAME]`.
+     *
+     * @param route Angular `Route` object
+     */
     ConfigurableRoutesService.prototype.configureRoute = function (route) {
+        var _a, _b, _c, _d, _e, _f, _g;
         var routeName = this.getRouteName(route);
         if (routeName) {
             var routeConfig = this.routingConfigService.getRouteConfig(routeName);
-            var paths = this.getConfiguredPaths(routeConfig, routeName, route);
-            var isDisabled = routeConfig && routeConfig.disabled;
-            if (isDisabled || !paths.length) {
+            this.validateRouteConfig(routeConfig, routeName, route);
+            if ((_a = routeConfig) === null || _a === void 0 ? void 0 : _a.disabled) {
                 delete route.path;
-                return __assign(__assign({}, route), { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+                return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
             }
-            else if (paths.length === 1) {
+            else if ((_b = routeConfig) === null || _b === void 0 ? void 0 : _b.matchers) {
+                delete route.path;
+                return __assign(__assign({}, route), { matcher: this.resolveUrlMatchers(route, (_c = routeConfig) === null || _c === void 0 ? void 0 : _c.matchers) });
+            }
+            else if (((_e = (_d = routeConfig) === null || _d === void 0 ? void 0 : _d.paths) === null || _e === void 0 ? void 0 : _e.length) === 1) {
                 delete route.matcher;
-                return __assign(__assign({}, route), { path: paths[0] });
+                return __assign(__assign({}, route), { path: (_f = routeConfig) === null || _f === void 0 ? void 0 : _f.paths[0] });
             }
             else {
                 delete route.path;
-                return __assign(__assign({}, route), { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
+                return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFromPaths(((_g = routeConfig) === null || _g === void 0 ? void 0 : _g.paths) || []) });
             }
         }
         return route; // if route doesn't have a name, just pass the original route
     };
+    /**
+     * Creates a single `UrlMatcher` based on given matchers and factories of matchers.
+     *
+     * @param route Route object
+     * @param matchersOrFactories `UrlMatcher`s or injection tokens with a factory functions
+     *  that create UrlMatchers based on the given route.
+     */
+    ConfigurableRoutesService.prototype.resolveUrlMatchers = function (route, matchersOrFactories) {
+        var _this = this;
+        var matchers = matchersOrFactories.map(function (matcherOrFactory) {
+            return typeof matcherOrFactory === 'function'
+                ? matcherOrFactory // matcher
+                : _this.resolveUrlMatcherFactory(route, matcherOrFactory); // factory injection token
+        });
+        return this.urlMatcherService.getCombined(matchers);
+    };
+    /**
+     * Creates an `UrlMatcher` based on the given route, using the factory function coming from the given injection token.
+     *
+     * @param route Route object
+     * @param factoryToken injection token with a factory function that will create an UrlMatcher using given route
+     */
+    ConfigurableRoutesService.prototype.resolveUrlMatcherFactory = function (route, factoryToken) {
+        var factory = this.injector.get(factoryToken);
+        return factory(route);
+    };
+    /**
+     * Returns the name of the Route stored in its property `data.cxRoute`
+     * @param route
+     */
     ConfigurableRoutesService.prototype.getRouteName = function (route) {
         return route.data && route.data.cxRoute;
     };
-    ConfigurableRoutesService.prototype.getConfiguredPaths = function (routeConfig, routeName, route) {
-        if (routeConfig === undefined) {
-            this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined key '" + routeName + "' in the routes config");
-            return [];
+    ConfigurableRoutesService.prototype.validateRouteConfig = function (routeConfig, routeName, route) {
+        var _a, _b;
+        if (isDevMode()) {
+            // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
+            // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
+            if (routeConfig === null ||
+                routeConfig.paths === null || ((_a = routeConfig) === null || _a === void 0 ? void 0 : _a.matchers)) {
+                return;
+            }
+            // undefined value of routeConfig or routeConfig.paths is a misconfiguration
+            if (!((_b = routeConfig) === null || _b === void 0 ? void 0 : _b.paths)) {
+                this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined config or undefined 'paths' property for this route");
+                return;
+            }
         }
-        if (routeConfig && routeConfig.paths === undefined) {
-            this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined 'paths' for the named route '" + routeName + "' in the routes config");
-            return [];
-        }
-        // routeConfig or routeConfig.paths can be null - which means switching off the route
-        return (routeConfig && routeConfig.paths) || [];
     };
     ConfigurableRoutesService.prototype.warn = function () {
         var args = [];
@@ -20180,9 +20252,9 @@ var ConfigurableRoutesService = /** @class */ (function () {
     ConfigurableRoutesService.ctorParameters = function () { return [
         { type: Injector },
         { type: RoutingConfigService },
-        { type: UrlMatcherFactoryService }
+        { type: UrlMatcherService }
     ]; };
-    ConfigurableRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+    ConfigurableRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
     ConfigurableRoutesService = __decorate([
         Injectable({ providedIn: 'root' })
     ], ConfigurableRoutesService);
@@ -20290,9 +20362,9 @@ function addExternalRoutesFactory(service) {
  * Service that helps redirecting to different storefront systems for configured URLs
  */
 var ExternalRoutesService = /** @class */ (function () {
-    function ExternalRoutesService(config, matcherFactory, injector) {
+    function ExternalRoutesService(config, urlMatcherService, injector) {
         this.config = config;
-        this.matcherFactory = matcherFactory;
+        this.urlMatcherService = urlMatcherService;
         this.injector = injector;
     }
     Object.defineProperty(ExternalRoutesService.prototype, "internalUrlPatterns", {
@@ -20332,12 +20404,12 @@ var ExternalRoutesService = /** @class */ (function () {
      * Returns the URL matcher for the external route
      */
     ExternalRoutesService.prototype.getUrlMatcher = function () {
-        var matcher = this.matcherFactory.getGlobUrlMatcher(this.internalUrlPatterns);
-        return this.matcherFactory.getOppositeUrlMatcher(matcher); // the external route should be activated only when it's NOT an internal route
+        var matcher = this.urlMatcherService.getFromGlob(this.internalUrlPatterns);
+        return this.urlMatcherService.getOpposite(matcher); // the external route should be activated only when it's NOT an internal route
     };
     ExternalRoutesService.ctorParameters = function () { return [
         { type: ExternalRoutesConfig },
-        { type: UrlMatcherFactoryService },
+        { type: UrlMatcherService },
         { type: Injector }
     ]; };
     ExternalRoutesService = __decorate([
@@ -20710,6 +20782,31 @@ var RoutingModule = /** @class */ (function () {
     ], RoutingModule);
     return RoutingModule;
 }());
+
+function getDefaultUrlMatcherFactory(routingConfigService, urlMatcherService) {
+    var factory = function (route) {
+        var routeName = route.data && route.data['cxRoute'];
+        var routeConfig = routingConfigService.getRouteConfig(routeName);
+        var paths = (routeConfig && routeConfig.paths) || [];
+        return urlMatcherService.getFromPaths(paths);
+    };
+    return factory;
+}
+/**
+ * Injection token with url matcher factory for spartacus routes containing property `data.cxRoute`.
+ * The provided url matcher matches the configured `paths` from routing config.
+ *
+ * If this matcher doesn't fit the requirements, it can be replaced with custom matcher
+ * or additional matchers can be added for a specific route. See for example PRODUCT_DETAILS_URL_MATCHER.
+ *
+ * Note: Matchers will "match" a route, but do not contribute to the creation of the route, nor do they guard routes.
+ */
+var DEFAULT_URL_MATCHER = new InjectionToken('DEFAULT_URL_MATCHER', {
+    providedIn: 'root',
+    factory: function () {
+        return getDefaultUrlMatcherFactory(inject(RoutingConfigService), inject(UrlMatcherService));
+    },
+});
 
 var NavigationEntryItemEffects = /** @class */ (function () {
     function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
@@ -27175,5 +27272,5 @@ var UserModule = /** @class */ (function () {
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListEffects, WishListService, clearCartState, clearMultiCartState, configInitializerFactory, configurationFactory, contextServiceMapProvider, deprecatedContextServiceProviders as contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$5 as effects, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getMultiCartReducers, getReducers$5 as getReducers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, deprecatedInitSiteContextRoutesHandler as initSiteContextRoutesHandler, initialEntityState, initialLoaderState, initialProcessesState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$3 as metaReducers, multiCartMetaReducers, multiCartReducerProvider, multiCartReducerToken, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, deprecatedSiteContextParamsProviders as siteContextParamsProviders, testestsd, validateConfig, withdrawOn, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AnonymousConsentsInterceptor as ɵba, asmStoreConfigFactory as ɵbb, AsmStoreModule as ɵbc, getReducers$3 as ɵbd, reducerToken$3 as ɵbe, reducerProvider$3 as ɵbf, clearCustomerSupportAgentAsmState as ɵbg, metaReducers$2 as ɵbh, effects$3 as ɵbi, CustomerEffects as ɵbj, CustomerSupportAgentTokenEffects as ɵbk, UserAuthenticationTokenService as ɵbl, reducer$7 as ɵbm, defaultAsmConfig as ɵbn, interceptors$2 as ɵbo, CustomerSupportAgentAuthErrorInterceptor as ɵbp, CustomerSupportAgentErrorHandlingService as ɵbq, authStoreConfigFactory as ɵbr, AuthStoreModule as ɵbs, getReducers as ɵbt, reducerToken as ɵbu, reducerProvider as ɵbv, clearAuthState as ɵbw, metaReducers as ɵbx, effects as ɵby, ClientTokenEffect as ɵbz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵc, UserTokenEffects as ɵca, ClientAuthenticationTokenService as ɵcb, reducer as ɵcc, defaultAuthConfig as ɵcd, interceptors as ɵce, ClientTokenInterceptor as ɵcf, UserTokenInterceptor as ɵcg, AuthErrorInterceptor as ɵch, UserErrorHandlingService as ɵci, UrlParsingService as ɵcj, ClientErrorHandlingService as ɵck, TokenRevocationInterceptor as ɵcl, AuthServices as ɵcm, cartStoreConfigFactory as ɵcn, CartStoreModule as ɵco, SaveCartConnector as ɵcp, SaveCartAdapter as ɵcq, reducer$9 as ɵcr, multiCartStoreConfigFactory as ɵcs, MultiCartStoreModule as ɵct, MultiCartEffects as ɵcu, processesLoaderReducer as ɵcv, activeCartReducer as ɵcw, cartEntitiesReducer as ɵcx, wishListReducer as ɵcy, CartPageMetaResolver as ɵcz, initConfig as ɵd, CheckoutStoreModule as ɵda, getReducers$6 as ɵdb, reducerToken$6 as ɵdc, reducerProvider$6 as ɵdd, effects$6 as ɵde, AddressVerificationEffect as ɵdf, CardTypesEffects as ɵdg, CheckoutEffects as ɵdh, reducer$c as ɵdi, reducer$b as ɵdj, reducer$a as ɵdk, cmsStoreConfigFactory as ɵdl, CmsStoreModule as ɵdm, getReducers$8 as ɵdn, reducerToken$8 as ɵdo, reducerProvider$8 as ɵdp, clearCmsState as ɵdq, metaReducers$4 as ɵdr, effects$8 as ɵds, ComponentsEffects as ɵdt, NavigationEntryItemEffects as ɵdu, PageEffects as ɵdv, reducer$g as ɵdw, reducer$h as ɵdx, reducer$e as ɵdy, reducer$f as ɵdz, initializeContext as ɵe, configValidatorFactory as ɵea, ConfigValidatorModule as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$4 as ɵed, reducerToken$4 as ɵee, reducerProvider$4 as ɵef, reducer$8 as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, InternalServerErrorHandler as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, clearKymaState as ɵeu, metaReducers$5 as ɵev, effects$9 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, contextServiceProviders as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$a as ɵfn, reducerToken$a as ɵfo, reducerProvider$a as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$b as ɵfs, reducerToken$b as ɵft, reducerProvider$b as ɵfu, clearProductsState as ɵfv, metaReducers$6 as ɵfw, effects$a as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, initSiteContextRoutesHandler as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$i as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$k as ɵgf, reducer$j as ɵgg, PageMetaResolver as ɵgh, addExternalRoutesFactory as ɵgi, getReducers$7 as ɵgj, reducer$d as ɵgk, reducerToken$7 as ɵgl, reducerProvider$7 as ɵgm, CustomSerializer as ɵgn, effects$7 as ɵgo, RouterEffects as ɵgp, SiteContextParamsService as ɵgq, SiteContextUrlSerializer as ɵgr, SiteContextRoutesHandler as ɵgs, defaultSiteContextConfigFactory as ɵgt, siteContextStoreConfigFactory as ɵgu, SiteContextStoreModule as ɵgv, getReducers$1 as ɵgw, reducerToken$1 as ɵgx, reducerProvider$1 as ɵgy, effects$2 as ɵgz, siteContextParamsProviders as ɵh, LanguagesEffects as ɵha, CurrenciesEffects as ɵhb, BaseSiteEffects as ɵhc, reducer$3 as ɵhd, reducer$2 as ɵhe, reducer$1 as ɵhf, baseSiteConfigValidator as ɵhg, interceptors$4 as ɵhh, CmsTicketInterceptor as ɵhi, defaultStoreFinderConfig as ɵhj, StoreFinderStoreModule as ɵhk, getReducers$c as ɵhl, reducerToken$c as ɵhm, reducerProvider$c as ɵhn, effects$b as ɵho, FindStoresEffect as ɵhp, ViewAllStoresEffect as ɵhq, UserStoreModule as ɵhr, getReducers$d as ɵhs, reducerToken$d as ɵht, reducerProvider$d as ɵhu, clearUserState as ɵhv, metaReducers$8 as ɵhw, effects$c as ɵhx, BillingCountriesEffect as ɵhy, ClearMiscsDataEffect as ɵhz, anonymousConsentsStoreConfigFactory as ɵi, ConsignmentTrackingEffects as ɵia, DeliveryCountriesEffects as ɵib, NotificationPreferenceEffects as ɵic, OrderDetailsEffect as ɵid, OrderReturnRequestEffect as ɵie, UserPaymentMethodsEffects as ɵif, RegionsEffects as ɵig, ResetPasswordEffects as ɵih, TitlesEffects as ɵii, UserAddressesEffects as ɵij, UserConsentsEffect as ɵik, UserDetailsEffects as ɵil, UserOrdersEffect as ɵim, UserRegisterEffects as ɵin, CustomerCouponEffects as ɵio, ProductInterestsEffect as ɵip, ForgotPasswordEffects as ɵiq, UpdateEmailEffects as ɵir, UpdatePasswordEffects as ɵis, UserNotificationPreferenceConnector as ɵit, reducer$w as ɵiu, reducer$u as ɵiv, reducer$l as ɵiw, reducer$v as ɵix, reducer$q as ɵiy, reducer$x as ɵiz, AnonymousConsentsStoreModule as ɵj, reducer$p as ɵja, reducer$A as ɵjb, reducer$n as ɵjc, reducer$t as ɵjd, reducer$r as ɵje, reducer$s as ɵjf, reducer$m as ɵjg, reducer$y as ɵjh, reducer$o as ɵji, reducer$z as ɵjj, FindProductPageMetaResolver as ɵjk, PageMetaResolver as ɵjl, TRANSFER_STATE_META_REDUCER as ɵk, STORAGE_SYNC_META_REDUCER as ɵl, stateMetaReducers as ɵm, getStorageSyncReducer as ɵn, getTransferStateReducer as ɵo, getReducers$2 as ɵp, reducerToken$2 as ɵq, reducerProvider$2 as ɵr, clearAnonymousConsentTemplates as ɵs, metaReducers$1 as ɵt, effects$1 as ɵu, AnonymousConsentsEffects as ɵv, reducer$6 as ɵw, reducer$4 as ɵx, reducer$5 as ɵy, interceptors$1 as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListEffects, WishListService, clearCartState, clearMultiCartState, configInitializerFactory, configurationFactory, contextServiceMapProvider, deprecatedContextServiceProviders as contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$5 as effects, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getMultiCartReducers, getReducers$5 as getReducers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, deprecatedInitSiteContextRoutesHandler as initSiteContextRoutesHandler, initialEntityState, initialLoaderState, initialProcessesState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$3 as metaReducers, multiCartMetaReducers, multiCartReducerProvider, multiCartReducerToken, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, deprecatedSiteContextParamsProviders as siteContextParamsProviders, testestsd, validateConfig, withdrawOn, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AnonymousConsentsInterceptor as ɵba, asmStoreConfigFactory as ɵbb, AsmStoreModule as ɵbc, getReducers$3 as ɵbd, reducerToken$3 as ɵbe, reducerProvider$3 as ɵbf, clearCustomerSupportAgentAsmState as ɵbg, metaReducers$2 as ɵbh, effects$3 as ɵbi, CustomerEffects as ɵbj, CustomerSupportAgentTokenEffects as ɵbk, UserAuthenticationTokenService as ɵbl, reducer$7 as ɵbm, defaultAsmConfig as ɵbn, interceptors$2 as ɵbo, CustomerSupportAgentAuthErrorInterceptor as ɵbp, CustomerSupportAgentErrorHandlingService as ɵbq, authStoreConfigFactory as ɵbr, AuthStoreModule as ɵbs, getReducers as ɵbt, reducerToken as ɵbu, reducerProvider as ɵbv, clearAuthState as ɵbw, metaReducers as ɵbx, effects as ɵby, ClientTokenEffect as ɵbz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵc, UserTokenEffects as ɵca, ClientAuthenticationTokenService as ɵcb, reducer as ɵcc, defaultAuthConfig as ɵcd, interceptors as ɵce, ClientTokenInterceptor as ɵcf, UserTokenInterceptor as ɵcg, AuthErrorInterceptor as ɵch, UserErrorHandlingService as ɵci, UrlParsingService as ɵcj, ClientErrorHandlingService as ɵck, TokenRevocationInterceptor as ɵcl, AuthServices as ɵcm, cartStoreConfigFactory as ɵcn, CartStoreModule as ɵco, SaveCartConnector as ɵcp, SaveCartAdapter as ɵcq, reducer$9 as ɵcr, multiCartStoreConfigFactory as ɵcs, MultiCartStoreModule as ɵct, MultiCartEffects as ɵcu, processesLoaderReducer as ɵcv, activeCartReducer as ɵcw, cartEntitiesReducer as ɵcx, wishListReducer as ɵcy, CartPageMetaResolver as ɵcz, initConfig as ɵd, CheckoutStoreModule as ɵda, getReducers$6 as ɵdb, reducerToken$6 as ɵdc, reducerProvider$6 as ɵdd, effects$6 as ɵde, AddressVerificationEffect as ɵdf, CardTypesEffects as ɵdg, CheckoutEffects as ɵdh, reducer$c as ɵdi, reducer$b as ɵdj, reducer$a as ɵdk, cmsStoreConfigFactory as ɵdl, CmsStoreModule as ɵdm, getReducers$8 as ɵdn, reducerToken$8 as ɵdo, reducerProvider$8 as ɵdp, clearCmsState as ɵdq, metaReducers$4 as ɵdr, effects$8 as ɵds, ComponentsEffects as ɵdt, NavigationEntryItemEffects as ɵdu, PageEffects as ɵdv, reducer$g as ɵdw, reducer$h as ɵdx, reducer$e as ɵdy, reducer$f as ɵdz, initializeContext as ɵe, configValidatorFactory as ɵea, ConfigValidatorModule as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$4 as ɵed, reducerToken$4 as ɵee, reducerProvider$4 as ɵef, reducer$8 as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, InternalServerErrorHandler as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, clearKymaState as ɵeu, metaReducers$5 as ɵev, effects$9 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, contextServiceProviders as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$a as ɵfn, reducerToken$a as ɵfo, reducerProvider$a as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$b as ɵfs, reducerToken$b as ɵft, reducerProvider$b as ɵfu, clearProductsState as ɵfv, metaReducers$6 as ɵfw, effects$a as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, initSiteContextRoutesHandler as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$i as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$k as ɵgf, reducer$j as ɵgg, PageMetaResolver as ɵgh, addExternalRoutesFactory as ɵgi, getReducers$7 as ɵgj, reducer$d as ɵgk, reducerToken$7 as ɵgl, reducerProvider$7 as ɵgm, CustomSerializer as ɵgn, effects$7 as ɵgo, RouterEffects as ɵgp, SiteContextParamsService as ɵgq, SiteContextUrlSerializer as ɵgr, SiteContextRoutesHandler as ɵgs, defaultSiteContextConfigFactory as ɵgt, siteContextStoreConfigFactory as ɵgu, SiteContextStoreModule as ɵgv, getReducers$1 as ɵgw, reducerToken$1 as ɵgx, reducerProvider$1 as ɵgy, effects$2 as ɵgz, siteContextParamsProviders as ɵh, LanguagesEffects as ɵha, CurrenciesEffects as ɵhb, BaseSiteEffects as ɵhc, reducer$3 as ɵhd, reducer$2 as ɵhe, reducer$1 as ɵhf, baseSiteConfigValidator as ɵhg, interceptors$4 as ɵhh, CmsTicketInterceptor as ɵhi, defaultStoreFinderConfig as ɵhj, StoreFinderStoreModule as ɵhk, getReducers$c as ɵhl, reducerToken$c as ɵhm, reducerProvider$c as ɵhn, effects$b as ɵho, FindStoresEffect as ɵhp, ViewAllStoresEffect as ɵhq, UserStoreModule as ɵhr, getReducers$d as ɵhs, reducerToken$d as ɵht, reducerProvider$d as ɵhu, clearUserState as ɵhv, metaReducers$8 as ɵhw, effects$c as ɵhx, BillingCountriesEffect as ɵhy, ClearMiscsDataEffect as ɵhz, anonymousConsentsStoreConfigFactory as ɵi, ConsignmentTrackingEffects as ɵia, DeliveryCountriesEffects as ɵib, NotificationPreferenceEffects as ɵic, OrderDetailsEffect as ɵid, OrderReturnRequestEffect as ɵie, UserPaymentMethodsEffects as ɵif, RegionsEffects as ɵig, ResetPasswordEffects as ɵih, TitlesEffects as ɵii, UserAddressesEffects as ɵij, UserConsentsEffect as ɵik, UserDetailsEffects as ɵil, UserOrdersEffect as ɵim, UserRegisterEffects as ɵin, CustomerCouponEffects as ɵio, ProductInterestsEffect as ɵip, ForgotPasswordEffects as ɵiq, UpdateEmailEffects as ɵir, UpdatePasswordEffects as ɵis, UserNotificationPreferenceConnector as ɵit, reducer$w as ɵiu, reducer$u as ɵiv, reducer$l as ɵiw, reducer$v as ɵix, reducer$q as ɵiy, reducer$x as ɵiz, AnonymousConsentsStoreModule as ɵj, reducer$p as ɵja, reducer$A as ɵjb, reducer$n as ɵjc, reducer$t as ɵjd, reducer$r as ɵje, reducer$s as ɵjf, reducer$m as ɵjg, reducer$y as ɵjh, reducer$o as ɵji, reducer$z as ɵjj, FindProductPageMetaResolver as ɵjk, PageMetaResolver as ɵjl, TRANSFER_STATE_META_REDUCER as ɵk, STORAGE_SYNC_META_REDUCER as ɵl, stateMetaReducers as ɵm, getStorageSyncReducer as ɵn, getTransferStateReducer as ɵo, getReducers$2 as ɵp, reducerToken$2 as ɵq, reducerProvider$2 as ɵr, clearAnonymousConsentTemplates as ɵs, metaReducers$1 as ɵt, effects$1 as ɵu, AnonymousConsentsEffects as ɵv, reducer$6 as ɵw, reducer$4 as ɵx, reducer$5 as ɵy, interceptors$1 as ɵz };
 //# sourceMappingURL=spartacus-core.js.map
