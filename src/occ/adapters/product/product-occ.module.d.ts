@@ -8,4 +8,4 @@ export declare class ProductOccModule {
     static ɵinj: ɵngcc0.ɵɵInjectorDef<ProductOccModule>;
 }
 
-//# sourceMappingURL=product-occ.module.d.ts.map
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHJvZHVjdC1vY2MubW9kdWxlLmQudHMiLCJzb3VyY2VzIjpbInByb2R1Y3Qtb2NjLm1vZHVsZS5kLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7OztBQUNBOzs7QUFDQTsiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgJy4vcHJvZHVjdC1vY2MtY29uZmlnJztcbmV4cG9ydCBkZWNsYXJlIGNsYXNzIFByb2R1Y3RPY2NNb2R1bGUge1xufVxuIl19

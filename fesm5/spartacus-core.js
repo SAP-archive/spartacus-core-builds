@@ -3158,7 +3158,9 @@ var UserTokenEffects = /** @class */ (function () {
                 date.setSeconds(date.getSeconds() + token.expires_in);
                 token.expiration_time = date.toJSON();
                 return new RefreshUserTokenSuccess(token);
-            }, catchError(function (error) { return of(new RefreshUserTokenFail(makeErrorSerializable(error))); })));
+            }, catchError(function (error) {
+                return of(new RefreshUserTokenFail(makeErrorSerializable(error)));
+            })));
         }));
         this.revokeUserToken$ = this.actions$.pipe(ofType(REVOKE_USER_TOKEN), map(function (action) {
             return action.payload;
@@ -3647,7 +3649,9 @@ var getAnonymousConsentsBannerDismissed = createSelector(getAnonymousConsentStat
 var ɵ0$a = function (state) { return state.consents; };
 var getAnonymousConsents = createSelector(getAnonymousConsentState, ɵ0$a);
 var getAnonymousConsentByTemplateCode = function (templateCode) {
-    return createSelector(getAnonymousConsents, function (consents) { return consents.find(function (consent) { return consent.templateCode === templateCode; }); });
+    return createSelector(getAnonymousConsents, function (consents) {
+        return consents.find(function (consent) { return consent.templateCode === templateCode; });
+    });
 };
 
 
@@ -4627,7 +4631,9 @@ var OccCartAdapter = /** @class */ (function () {
         var params = new HttpParams({
             fromString: "fields=carts(" + DETAILS_PARAMS + ",saveTime)",
         });
-        return this.http.get(url, { params: params }).pipe(pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
+        return this.http
+            .get(url, { params: params })
+            .pipe(pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
     };
     /**
      * @deprecated Since 1.1
@@ -5757,7 +5763,9 @@ var OccProductReviewsAdapter = /** @class */ (function () {
         this.converter = converter;
     }
     OccProductReviewsAdapter.prototype.load = function (productCode, maxCount) {
-        return this.http.get(this.getEndpoint(productCode, maxCount)).pipe(pluck('reviews'), this.converter.pipeableMany(PRODUCT_REVIEW_NORMALIZER));
+        return this.http
+            .get(this.getEndpoint(productCode, maxCount))
+            .pipe(pluck('reviews'), this.converter.pipeableMany(PRODUCT_REVIEW_NORMALIZER));
     };
     OccProductReviewsAdapter.prototype.post = function (productCode, review) {
         review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
@@ -6685,7 +6693,9 @@ var OccUserAddressAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/json',
         });
-        return this.http.get(url, { headers: headers }).pipe(catchError(function (error) { return throwError(error); }), map(function (addressList) { return addressList.addresses; }), this.converter.pipeableMany(ADDRESS_NORMALIZER));
+        return this.http
+            .get(url, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }), map(function (addressList) { return addressList.addresses; }), this.converter.pipeableMany(ADDRESS_NORMALIZER));
     };
     OccUserAddressAdapter.prototype.add = function (userId, address) {
         var url = this.occEndpoints.getUrl('addresses', { userId: userId });
@@ -6719,7 +6729,9 @@ var OccUserAddressAdapter = /** @class */ (function () {
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
         }
         address = this.converter.convert(address, ADDRESS_SERIALIZER);
-        return this.http.post(url, address, { headers: headers }).pipe(catchError(function (error) { return throwError(error); }), this.converter.pipeable(ADDRESS_VALIDATION_NORMALIZER));
+        return this.http
+            .post(url, address, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }), this.converter.pipeable(ADDRESS_VALIDATION_NORMALIZER));
     };
     OccUserAddressAdapter.prototype.delete = function (userId, addressId) {
         var url = this.occEndpoints.getUrl('addressDetail', {
@@ -6753,7 +6765,9 @@ var OccUserConsentAdapter = /** @class */ (function () {
     OccUserConsentAdapter.prototype.loadConsents = function (userId) {
         var url = this.occEndpoints.getUrl('consentTemplates', { userId: userId });
         var headers = new HttpHeaders({ 'Cache-Control': 'no-cache' });
-        return this.http.get(url, { headers: headers }).pipe(catchError(function (error) { return throwError(error); }), map(function (consentList) { return consentList.consentTemplates; }), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
+        return this.http
+            .get(url, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }), map(function (consentList) { return consentList.consentTemplates; }), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
     };
     OccUserConsentAdapter.prototype.giveConsent = function (userId, consentTemplateId, consentTemplateVersion) {
         var url = this.occEndpoints.getUrl('consents', { userId: userId });
@@ -6978,7 +6992,9 @@ var OccUserPaymentAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/json',
         });
-        return this.http.get(url, { headers: headers }).pipe(catchError(function (error) { return throwError(error); }), map(function (methodList) { return methodList.payments; }), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
+        return this.http
+            .get(url, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }), map(function (methodList) { return methodList.payments; }), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
     };
     OccUserPaymentAdapter.prototype.delete = function (userId, paymentMethodID) {
         var url = this.occEndpoints.getUrl('paymentDetail', {
@@ -9208,13 +9224,19 @@ function getProcessStateFactory(processId) {
     });
 }
 function getProcessLoadingFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
+    return createSelector(getProcessStateFactory(processId), function (loaderState) {
+        return loaderLoadingSelector(loaderState);
+    });
 }
 function getProcessSuccessFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
+    return createSelector(getProcessStateFactory(processId), function (loaderState) {
+        return loaderSuccessSelector(loaderState);
+    });
 }
 function getProcessErrorFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
+    return createSelector(getProcessStateFactory(processId), function (loaderState) {
+        return loaderErrorSelector(loaderState);
+    });
 }
 
 var process_selectors = /*#__PURE__*/Object.freeze({
@@ -11065,7 +11087,9 @@ var ɵ0$b = function (state) { return state.billingCountries; };
 var getBillingCountriesState = createSelector(getUserState, ɵ0$b);
 var ɵ1$7 = function (state) { return state.entities; };
 var getBillingCountriesEntites = createSelector(getBillingCountriesState, ɵ1$7);
-var ɵ2$3 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+var ɵ2$3 = function (entites) {
+    return Object.keys(entites).map(function (isocode) { return entites[isocode]; });
+};
 var getAllBillingCountries = createSelector(getBillingCountriesEntites, ɵ2$3);
 
 var ɵ0$c = function (state) { return state.consignmentTracking; };
@@ -11077,15 +11101,21 @@ var ɵ0$d = function (state) { return state.countries; };
 var getDeliveryCountriesState = createSelector(getUserState, ɵ0$d);
 var ɵ1$9 = function (state) { return state.entities; };
 var getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, ɵ1$9);
-var ɵ2$4 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+var ɵ2$4 = function (entites) {
+    return Object.keys(entites).map(function (isocode) { return entites[isocode]; });
+};
 var getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, ɵ2$4);
 var countrySelectorFactory = function (isocode) {
-    return createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
+    return createSelector(getDeliveryCountriesEntites, function (entities) {
+        return Object.keys(entities).length !== 0 ? entities[isocode] : null;
+    });
 };
 
 var ɵ0$e = function (state) { return state.order; };
 var getOrderState = createSelector(getUserState, ɵ0$e);
-var ɵ1$a = function (state) { return loaderValueSelector(state); };
+var ɵ1$a = function (state) {
+    return loaderValueSelector(state);
+};
 var getOrderDetails = createSelector(getOrderState, ɵ1$a);
 
 var ɵ0$f = function (state) { return state.orderReturn; };
@@ -11159,10 +11189,14 @@ var ɵ0$j = function (state) { return state.titles; };
 var getTitlesState = createSelector(getUserState, ɵ0$j);
 var ɵ1$e = function (state) { return state.entities; };
 var getTitlesEntites = createSelector(getTitlesState, ɵ1$e);
-var ɵ2$8 = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
+var ɵ2$8 = function (entites) {
+    return Object.keys(entites).map(function (code) { return entites[code]; });
+};
 var getAllTitles = createSelector(getTitlesEntites, ɵ2$8);
 var titleSelectorFactory = function (code) {
-    return createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
+    return createSelector(getTitlesEntites, function (entities) {
+        return Object.keys(entities).length !== 0 ? entities[code] : null;
+    });
 };
 
 var ɵ0$k = function (state) { return state.addresses; };
@@ -11185,7 +11219,9 @@ var ɵ0$l = function (state) { return state.consents; };
 var getConsentsState = createSelector(getUserState, ɵ0$l);
 var getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
 var getConsentByTemplateId = function (templateId) {
-    return createSelector(getConsentsValue, function (templates) { return templates.find(function (template) { return template.id === templateId; }); });
+    return createSelector(getConsentsValue, function (templates) {
+        return templates.find(function (template) { return template.id === templateId; });
+    });
 };
 var getConsentsLoading = createSelector(getConsentsState, loaderLoadingSelector);
 var getConsentsSuccess = createSelector(getConsentsState, loaderSuccessSelector);
@@ -12800,16 +12836,24 @@ var getAsmUi = createSelector(getAsmState, ɵ0$r);
 
 var ɵ0$s = function (state) { return state.customerSearchResult; };
 var getCustomerSearchResultsLoaderState = createSelector(getAsmState, ɵ0$s);
-var ɵ1$l = function (state) { return loaderValueSelector(state); };
+var ɵ1$l = function (state) {
+    return loaderValueSelector(state);
+};
 var getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, ɵ1$l);
-var ɵ2$e = function (state) { return loaderLoadingSelector(state); };
+var ɵ2$e = function (state) {
+    return loaderLoadingSelector(state);
+};
 var getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, ɵ2$e);
 
 var ɵ0$t = function (state) { return state.csagentToken; };
 var getCustomerSupportAgentTokenState = createSelector(getAsmState, ɵ0$t);
-var ɵ1$m = function (state) { return loaderValueSelector(state); };
+var ɵ1$m = function (state) {
+    return loaderValueSelector(state);
+};
 var getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, ɵ1$m);
-var ɵ2$f = function (state) { return loaderLoadingSelector(state); };
+var ɵ2$f = function (state) {
+    return loaderLoadingSelector(state);
+};
 var getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
 
 
@@ -13803,7 +13847,9 @@ var ɵ3$9 = getCartMergeCompleteSelector;
 var getCartsState = createFeatureSelector(CART_FEATURE);
 var ɵ4$2 = function (cartsState) { return cartsState.active; };
 var getActiveCartState = createSelector(getCartsState, ɵ4$2);
-var ɵ5$2 = function (state) { return loaderValueSelector(state); };
+var ɵ5$2 = function (state) {
+    return loaderValueSelector(state);
+};
 var getCartState = createSelector(getActiveCartState, ɵ5$2);
 var getCartContent = createSelector(getCartState, getCartContentSelector);
 var getCartRefresh = createSelector(getCartState, getCartRefreshSelector);
@@ -13816,7 +13862,9 @@ var ɵ6 = function (state) {
             !loaderValueSelector(state).refresh);
 };
 var getCartLoaded = createSelector(getActiveCartState, ɵ6);
-var ɵ7 = function (state) { return loaderLoadingSelector(state); };
+var ɵ7 = function (state) {
+    return loaderLoadingSelector(state);
+};
 var getCartLoading = createSelector(getActiveCartState, ɵ7);
 var getCartMergeComplete = createSelector(getCartState, getCartMergeCompleteSelector);
 var getCartEntriesMap = createSelector(getCartState, getCartEntriesSelector);
@@ -15040,7 +15088,8 @@ var ActiveCartService = /** @class */ (function () {
         // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
         filter(function (cartState) {
             return _this.userId === OCC_USER_ID_ANONYMOUS ||
-                (cartState.success || cartState.error);
+                cartState.success ||
+                cartState.error;
         }), take(1), switchMap(function (cartState) {
             if (_this.isEmpty(cartState.value)) {
                 _this.multiCartService.createCart({
@@ -16418,7 +16467,9 @@ var getCmsState = createFeatureSelector(CMS_FEATURE);
 var ɵ0$x = function (state) { return state.components; };
 var getComponentsState = createSelector(getCmsState, ɵ0$x);
 var componentsContextSelectorFactory = function (uid) {
-    return createSelector(getComponentsState, function (componentsState) { return entitySelector(componentsState, uid); });
+    return createSelector(getComponentsState, function (componentsState) {
+        return entitySelector(componentsState, uid);
+    });
 };
 var componentsLoaderStateSelectorFactory = function (uid, context) {
     return createSelector(componentsContextSelectorFactory(uid), function (componentsContext) {
@@ -16434,7 +16485,9 @@ var componentsContextExistsSelectorFactory = function (uid, context) {
     });
 };
 var componentsDataSelectorFactory = function (uid) {
-    return createSelector(componentsContextSelectorFactory(uid), function (state) { return (state ? state.component : undefined); });
+    return createSelector(componentsContextSelectorFactory(uid), function (state) {
+        return state ? state.component : undefined;
+    });
 };
 var componentsSelectorFactory = function (uid, context) {
     return createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), function (componentState, exists) {
@@ -16450,7 +16503,9 @@ var componentsSelectorFactory = function (uid, context) {
 var ɵ0$y = function (state) { return state.navigation; };
 var getNavigationEntryItemState = createSelector(getCmsState, ɵ0$y);
 var getSelectedNavigationEntryItemState = function (nodeId) {
-    return createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
+    return createSelector(getNavigationEntryItemState, function (nodes) {
+        return entityStateSelector(nodes, nodeId);
+    });
 };
 var getNavigationEntryItems = function (nodeId) {
     return createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
@@ -16514,7 +16569,9 @@ var getPageState = createSelector(getCmsState, ɵ3$a);
 var ɵ4$3 = function (page) { return page.index; };
 var getPageStateIndex = createSelector(getPageState, ɵ4$3);
 var getPageStateIndexEntityLoaderState = function (pageContext) {
-    return createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
+    return createSelector(getPageStateIndex, function (index) {
+        return getIndexByType(index, pageContext.type);
+    });
 };
 var getPageStateIndexLoaderState = function (pageContext) {
     return createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) {
@@ -16522,7 +16579,9 @@ var getPageStateIndexLoaderState = function (pageContext) {
     });
 };
 var getPageStateIndexValue = function (pageContext) {
-    return createSelector(getPageStateIndexLoaderState(pageContext), function (entity) { return loaderValueSelector(entity); });
+    return createSelector(getPageStateIndexLoaderState(pageContext), function (entity) {
+        return loaderValueSelector(entity);
+    });
 };
 var getPageEntities = createSelector(getPageState, getPageEntitiesSelector);
 var getPageData = function (pageContext) {
@@ -16531,7 +16590,9 @@ var getPageData = function (pageContext) {
     });
 };
 var getPageComponentTypes = function (pageContext) {
-    return createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
+    return createSelector(getPageData(pageContext), function (pageData) {
+        return getPageComponentTypesSelector(pageData);
+    });
 };
 var getCurrentSlotSelectorFactory = function (pageContext, position) {
     return createSelector(getPageData(pageContext), function (entity) {
@@ -16690,7 +16751,9 @@ var CmsService = /** @class */ (function () {
      */
     CmsService.prototype.getContentSlot = function (position) {
         var _this = this;
-        return this.routingService.getPageContext().pipe(switchMap(function (pageContext) {
+        return this.routingService
+            .getPageContext()
+            .pipe(switchMap(function (pageContext) {
             return _this.store.pipe(select(getCurrentSlotSelectorFactory(pageContext, position)), filter(Boolean));
         }));
     };
@@ -18454,7 +18517,9 @@ var ɵ3$b = getOrderDetailsSelector;
 var getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
 var ɵ4$4 = function (checkoutState) { return checkoutState.steps; };
 var getCheckoutStepsState = createSelector(getCheckoutState, ɵ4$4);
-var ɵ5$3 = function (state) { return loaderValueSelector(state); };
+var ɵ5$3 = function (state) {
+    return loaderValueSelector(state);
+};
 var getCheckoutSteps = createSelector(getCheckoutStepsState, ɵ5$3);
 var getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
 var getDeliveryMode = createSelector(getCheckoutSteps, getDeliveryModeSelector);
@@ -21353,9 +21418,7 @@ function syncI18nextWithSiteContext(language) {
  */
 function i18nextGetHttpClient(httpClient) {
     return function (url, _options, callback, _data) {
-        httpClient
-            .get(url, { responseType: 'text' })
-            .subscribe(function (data) { return callback(data, { status: 200 }); }, function (error) { return callback(null, { status: error.status }); });
+        httpClient.get(url, { responseType: 'text' }).subscribe(function (data) { return callback(data, { status: 200 }); }, function (error) { return callback(null, { status: error.status }); });
     };
 }
 /**
@@ -22552,7 +22615,8 @@ var getSelectedProductsFactory = function (codes) {
 var getSelectedProductStateFactory = function (code, scope) {
     return createSelector(getProductState, function (details) {
         return scope
-            ? entityStateSelector(details, code)[scope] || initialLoaderState
+            ? entityStateSelector(details, code)[scope] ||
+                initialLoaderState
             : entityStateSelector(details, code);
     });
 };
@@ -24052,16 +24116,24 @@ var getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
 
 var ɵ0$J = function (storesState) { return storesState.findStores; };
 var getFindStoresState = createSelector(getStoreFinderState, ɵ0$J);
-var ɵ1$t = function (state) { return loaderValueSelector(state); };
+var ɵ1$t = function (state) {
+    return loaderValueSelector(state);
+};
 var getFindStoresEntities = createSelector(getFindStoresState, ɵ1$t);
-var ɵ2$k = function (state) { return loaderLoadingSelector(state); };
+var ɵ2$k = function (state) {
+    return loaderLoadingSelector(state);
+};
 var getStoresLoading = createSelector(getFindStoresState, ɵ2$k);
 
 var ɵ0$K = function (storesState) { return storesState.viewAllStores; };
 var getViewAllStoresState = createSelector(getStoreFinderState, ɵ0$K);
-var ɵ1$u = function (state) { return loaderValueSelector(state); };
+var ɵ1$u = function (state) {
+    return loaderValueSelector(state);
+};
 var getViewAllStoresEntities = createSelector(getViewAllStoresState, ɵ1$u);
-var ɵ2$l = function (state) { return loaderLoadingSelector(state); };
+var ɵ2$l = function (state) {
+    return loaderLoadingSelector(state);
+};
 var getViewAllStoresLoading = createSelector(getViewAllStoresState, ɵ2$l);
 
 

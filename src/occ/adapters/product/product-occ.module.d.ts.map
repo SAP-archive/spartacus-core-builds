@@ -1,1 +1,0 @@
-{"version":3,"file":"product-occ.module.d.ts","sources":["/home/travis/build/SAP/cloud-commerce-spartacus-storefront/dist/core/src/occ/adapters/product/product-occ.module.d.ts"],"sourcesContent":["import './product-occ-config';\nexport declare class ProductOccModule {\n}\n"],"names":[],"mappings":"AAAA;;;;;AACA;;;AACA;"}

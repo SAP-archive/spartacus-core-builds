@@ -4075,7 +4075,9 @@ let OccCartAdapter = class OccCartAdapter {
         const params = new HttpParams({
             fromString: `fields=carts(${DETAILS_PARAMS},saveTime)`,
         });
-        return this.http.get(url, { params }).pipe(pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
+        return this.http
+            .get(url, { params })
+            .pipe(pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
     }
     /**
      * @deprecated Since 1.1
@@ -5026,7 +5028,9 @@ let OccProductReviewsAdapter = class OccProductReviewsAdapter {
         this.converter = converter;
     }
     load(productCode, maxCount) {
-        return this.http.get(this.getEndpoint(productCode, maxCount)).pipe(pluck('reviews'), this.converter.pipeableMany(PRODUCT_REVIEW_NORMALIZER));
+        return this.http
+            .get(this.getEndpoint(productCode, maxCount))
+            .pipe(pluck('reviews'), this.converter.pipeableMany(PRODUCT_REVIEW_NORMALIZER));
     }
     post(productCode, review) {
         review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
@@ -5842,7 +5846,9 @@ let OccUserAddressAdapter = class OccUserAddressAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
         });
-        return this.http.get(url, { headers }).pipe(catchError((error) => throwError(error)), map(addressList => addressList.addresses), this.converter.pipeableMany(ADDRESS_NORMALIZER));
+        return this.http
+            .get(url, { headers })
+            .pipe(catchError((error) => throwError(error)), map(addressList => addressList.addresses), this.converter.pipeableMany(ADDRESS_NORMALIZER));
     }
     add(userId, address) {
         const url = this.occEndpoints.getUrl('addresses', { userId });
@@ -5876,7 +5882,9 @@ let OccUserAddressAdapter = class OccUserAddressAdapter {
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
         }
         address = this.converter.convert(address, ADDRESS_SERIALIZER);
-        return this.http.post(url, address, { headers }).pipe(catchError((error) => throwError(error)), this.converter.pipeable(ADDRESS_VALIDATION_NORMALIZER));
+        return this.http
+            .post(url, address, { headers })
+            .pipe(catchError((error) => throwError(error)), this.converter.pipeable(ADDRESS_VALIDATION_NORMALIZER));
     }
     delete(userId, addressId) {
         const url = this.occEndpoints.getUrl('addressDetail', {
@@ -5908,7 +5916,9 @@ let OccUserConsentAdapter = class OccUserConsentAdapter {
     loadConsents(userId) {
         const url = this.occEndpoints.getUrl('consentTemplates', { userId });
         const headers = new HttpHeaders({ 'Cache-Control': 'no-cache' });
-        return this.http.get(url, { headers }).pipe(catchError((error) => throwError(error)), map(consentList => consentList.consentTemplates), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
+        return this.http
+            .get(url, { headers })
+            .pipe(catchError((error) => throwError(error)), map(consentList => consentList.consentTemplates), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
     }
     giveConsent(userId, consentTemplateId, consentTemplateVersion) {
         const url = this.occEndpoints.getUrl('consents', { userId });
@@ -6128,7 +6138,9 @@ let OccUserPaymentAdapter = class OccUserPaymentAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
         });
-        return this.http.get(url, { headers }).pipe(catchError((error) => throwError(error)), map(methodList => methodList.payments), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
+        return this.http
+            .get(url, { headers })
+            .pipe(catchError((error) => throwError(error)), map(methodList => methodList.payments), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
     }
     delete(userId, paymentMethodID) {
         const url = this.occEndpoints.getUrl('paymentDetail', {
@@ -9700,7 +9712,7 @@ const ɵ1$9 = (state) => state.entities;
 const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, ɵ1$9);
 const ɵ2$4 = entites => Object.keys(entites).map(isocode => entites[isocode]);
 const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, ɵ2$4);
-const countrySelectorFactory = (isocode) => createSelector(getDeliveryCountriesEntites, entities => (Object.keys(entities).length !== 0 ? entities[isocode] : null));
+const countrySelectorFactory = (isocode) => createSelector(getDeliveryCountriesEntites, entities => Object.keys(entities).length !== 0 ? entities[isocode] : null);
 
 const ɵ0$e = (state) => state.order;
 const getOrderState = createSelector(getUserState, ɵ0$e);
@@ -9760,7 +9772,7 @@ const ɵ1$e = (state) => state.entities;
 const getTitlesEntites = createSelector(getTitlesState, ɵ1$e);
 const ɵ2$8 = entites => Object.keys(entites).map(code => entites[code]);
 const getAllTitles = createSelector(getTitlesEntites, ɵ2$8);
-const titleSelectorFactory = (code) => createSelector(getTitlesEntites, entities => (Object.keys(entities).length !== 0 ? entities[code] : null));
+const titleSelectorFactory = (code) => createSelector(getTitlesEntites, entities => Object.keys(entities).length !== 0 ? entities[code] : null);
 
 const ɵ0$k = (state) => state.addresses;
 const getAddressesLoaderState = createSelector(getUserState, ɵ0$k);
@@ -13050,7 +13062,8 @@ let ActiveCartService = class ActiveCartService {
         }), filter(cartState => !cartState.loading), 
         // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
         filter(cartState => this.userId === OCC_USER_ID_ANONYMOUS ||
-            (cartState.success || cartState.error)), take(1), switchMap(cartState => {
+            cartState.success ||
+            cartState.error), take(1), switchMap(cartState => {
             if (this.isEmpty(cartState.value)) {
                 this.multiCartService.createCart({
                     userId: this.userId,
@@ -14273,7 +14286,7 @@ const componentsContextExistsSelectorFactory = (uid, context) => {
     return createSelector(componentsLoaderStateSelectorFactory(uid, context), loaderState => loaderValueSelector(loaderState) || false);
 };
 const componentsDataSelectorFactory = (uid) => {
-    return createSelector(componentsContextSelectorFactory(uid), state => (state ? state.component : undefined));
+    return createSelector(componentsContextSelectorFactory(uid), state => state ? state.component : undefined);
 };
 const componentsSelectorFactory = (uid, context) => {
     return createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), (componentState, exists) => {
@@ -14482,7 +14495,9 @@ let CmsService = class CmsService {
      * @param position : content slot position
      */
     getContentSlot(position) {
-        return this.routingService.getPageContext().pipe(switchMap(pageContext => this.store.pipe(select(getCurrentSlotSelectorFactory(pageContext, position)), filter(Boolean))));
+        return this.routingService
+            .getPageContext()
+            .pipe(switchMap(pageContext => this.store.pipe(select(getCurrentSlotSelectorFactory(pageContext, position)), filter(Boolean))));
     }
     /**
      * Given navigation node uid, get items (with id and type) inside the navigation entries
@@ -18531,9 +18546,7 @@ function syncI18nextWithSiteContext(language) {
  */
 function i18nextGetHttpClient(httpClient) {
     return (url, _options, callback, _data) => {
-        httpClient
-            .get(url, { responseType: 'text' })
-            .subscribe(data => callback(data, { status: 200 }), error => callback(null, { status: error.status }));
+        httpClient.get(url, { responseType: 'text' }).subscribe(data => callback(data, { status: 200 }), error => callback(null, { status: error.status }));
     };
 }
 /**
@@ -19542,7 +19555,8 @@ const getSelectedProductsFactory = (codes) => {
 };
 const getSelectedProductStateFactory = (code, scope) => {
     return createSelector(getProductState, details => scope
-        ? entityStateSelector(details, code)[scope] || initialLoaderState
+        ? entityStateSelector(details, code)[scope] ||
+            initialLoaderState
         : entityStateSelector(details, code));
 };
 const getSelectedProductFactory = (code, scope) => {

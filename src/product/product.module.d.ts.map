@@ -1,1 +1,0 @@
-{"version":3,"file":"product.module.d.ts","sources":["/home/travis/build/SAP/cloud-commerce-spartacus-storefront/dist/core/src/product/product.module.d.ts"],"sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class ProductModule {\n    static forRoot(): ModuleWithProviders<ProductModule>;\n}\n"],"names":[],"mappings":"AAAA;;;AACA;;;;AAEA;"}

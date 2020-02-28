@@ -1,1 +1,0 @@
-{"version":3,"file":"global-message-store.module.d.ts","sources":["/home/travis/build/SAP/cloud-commerce-spartacus-storefront/dist/core/src/global-message/store/global-message-store.module.d.ts"],"sourcesContent":["export declare class GlobalMessageStoreModule {\n}\n"],"names":[],"mappings":";;;AAAA;;;AACA;"}

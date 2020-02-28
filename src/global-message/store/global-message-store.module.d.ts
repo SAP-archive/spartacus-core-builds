@@ -6,4 +6,4 @@ export declare class GlobalMessageStoreModule {
     static ɵinj: ɵngcc0.ɵɵInjectorDef<GlobalMessageStoreModule>;
 }
 
-//# sourceMappingURL=global-message-store.module.d.ts.map
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZ2xvYmFsLW1lc3NhZ2Utc3RvcmUubW9kdWxlLmQudHMiLCJzb3VyY2VzIjpbImdsb2JhbC1tZXNzYWdlLXN0b3JlLm1vZHVsZS5kLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7OztBQUFBOzs7QUFDQTsiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgZGVjbGFyZSBjbGFzcyBHbG9iYWxNZXNzYWdlU3RvcmVNb2R1bGUge1xufVxuIl19

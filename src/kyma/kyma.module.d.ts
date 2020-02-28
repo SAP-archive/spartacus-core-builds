@@ -8,4 +8,4 @@ export declare class KymaModule {
     static ɵinj: ɵngcc0.ɵɵInjectorDef<KymaModule>;
 }
 
-//# sourceMappingURL=kyma.module.d.ts.map
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia3ltYS5tb2R1bGUuZC50cyIsInNvdXJjZXMiOlsia3ltYS5tb2R1bGUuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7OztBQUFBOzs7QUFDQTsiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgZGVjbGFyZSBjbGFzcyBLeW1hTW9kdWxlIHtcbn1cbiJdfQ==

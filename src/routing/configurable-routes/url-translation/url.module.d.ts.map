@@ -1,1 +1,0 @@
-{"version":3,"file":"url.module.d.ts","sources":["/home/travis/build/SAP/cloud-commerce-spartacus-storefront/dist/core/src/routing/configurable-routes/url-translation/url.module.d.ts"],"sourcesContent":["export declare class UrlModule {\n}\n"],"names":[],"mappings":";;;;AAAA;;;AACA;"}
