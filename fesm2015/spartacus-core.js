@@ -16600,19 +16600,32 @@ var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
 });
 
 let CheckoutService = class CheckoutService {
-    constructor(checkoutStore, cartData) {
+    constructor(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
-        this.cartData = cartData;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
     }
     /**
      * Places an order
      */
     placeOrder() {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new PlaceOrder({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-            }));
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(occUserId => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(activeCartId => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new PlaceOrder({
+                    userId,
+                    cartId,
+                }));
+            }
         }
     }
     /**
@@ -16633,10 +16646,17 @@ let CheckoutService = class CheckoutService {
      * @param cartId : string Cart ID of loaded cart
      */
     loadCheckoutDetails(cartId) {
-        this.checkoutStore.dispatch(new LoadCheckoutDetails({
-            userId: this.cartData.userId,
-            cartId,
-        }));
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(occUserId => (userId = occUserId))
+            .unsubscribe();
+        if (userId) {
+            this.checkoutStore.dispatch(new LoadCheckoutDetails({
+                userId,
+                cartId,
+            }));
+        }
     }
     /**
      * Get status of checkout details loaded
@@ -16651,13 +16671,19 @@ let CheckoutService = class CheckoutService {
         return this.checkoutStore.pipe(select(getCheckoutOrderDetails));
     }
     actionAllowed() {
-        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
-            this.cartData.isGuestCart);
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(occUserId => (userId = occUserId))
+            .unsubscribe();
+        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+            this.activeCartService.isGuestCart());
     }
 };
 CheckoutService.ctorParameters = () => [
     { type: Store },
-    { type: CartDataService }
+    { type: AuthService },
+    { type: ActiveCartService }
 ];
 CheckoutService = __decorate([
     Injectable()

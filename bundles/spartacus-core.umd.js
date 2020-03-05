@@ -18952,19 +18952,32 @@
     });
 
     var CheckoutService = /** @class */ (function () {
-        function CheckoutService(checkoutStore, cartData) {
+        function CheckoutService(checkoutStore, authService, activeCartService) {
             this.checkoutStore = checkoutStore;
-            this.cartData = cartData;
+            this.authService = authService;
+            this.activeCartService = activeCartService;
         }
         /**
          * Places an order
          */
         CheckoutService.prototype.placeOrder = function () {
             if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new PlaceOrder({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                }));
+                var userId_1;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
+                    .unsubscribe();
+                var cartId_1;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
+                    .unsubscribe();
+                if (userId_1 && cartId_1) {
+                    this.checkoutStore.dispatch(new PlaceOrder({
+                        userId: userId_1,
+                        cartId: cartId_1,
+                    }));
+                }
             }
         };
         /**
@@ -18985,10 +18998,17 @@
          * @param cartId : string Cart ID of loaded cart
          */
         CheckoutService.prototype.loadCheckoutDetails = function (cartId) {
-            this.checkoutStore.dispatch(new LoadCheckoutDetails({
-                userId: this.cartData.userId,
-                cartId: cartId,
-            }));
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            if (userId) {
+                this.checkoutStore.dispatch(new LoadCheckoutDetails({
+                    userId: userId,
+                    cartId: cartId,
+                }));
+            }
         };
         /**
          * Get status of checkout details loaded
@@ -19003,12 +19023,18 @@
             return this.checkoutStore.pipe(store.select(getCheckoutOrderDetails));
         };
         CheckoutService.prototype.actionAllowed = function () {
-            return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
-                this.cartData.isGuestCart);
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+                this.activeCartService.isGuestCart());
         };
         CheckoutService.ctorParameters = function () { return [
             { type: store.Store },
-            { type: CartDataService }
+            { type: AuthService },
+            { type: ActiveCartService }
         ]; };
         CheckoutService = __decorate([
             core.Injectable()
