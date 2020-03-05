@@ -20,6 +20,8 @@ export declare const ADD_EMAIL_TO_MULTI_CART_FAIL = "[Multi Cart] Add Email Fail
 export declare const ADD_EMAIL_TO_MULTI_CART_SUCCESS = "[Multi Cart] Add Email Success";
 export declare const CART_PROCESSES_INCREMENT = "[Multi Cart] Cart Processes Increment";
 export declare const CART_PROCESSES_DECREMENT = "[Multi Cart] Cart Processes Decrement";
+export declare const SET_ACTIVE_CART_ID = "[Multi Cart] Set Active Cart Id";
+export declare const CLEAR_MULTI_CART_STATE = "[Multi Cart] Clear Cart State";
 /**
  * To keep track of cart creation process we use cart with `temp-${uuid}` id.
  * After creating cart we switch to entity with `code` or `guid`.
@@ -177,4 +179,13 @@ export declare class CartProcessesDecrement extends EntityProcessesDecrementActi
     readonly type = "[Multi Cart] Cart Processes Decrement";
     constructor(payload: string);
 }
-export declare type MultiCartActions = RemoveTempCart | SetTempCart | CreateMultiCart | CreateMultiCartFail | CreateMultiCartSuccess | LoadMultiCart | LoadMultiCartFail | LoadMultiCartSuccess | MergeMultiCart | MergeMultiCartSuccess | ResetMultiCartDetails | RemoveCart | AddEmailToMultiCart | AddEmailToMultiCartFail | AddEmailToMultiCartSuccess | CartProcessesIncrement | CartProcessesDecrement;
+export declare class SetActiveCartId implements Action {
+    payload: string;
+    readonly type = "[Multi Cart] Set Active Cart Id";
+    constructor(payload: string);
+}
+export declare class ClearMultiCartState extends EntityRemoveAction {
+    readonly type = "[Multi Cart] Clear Cart State";
+    constructor();
+}
+export declare type MultiCartActions = RemoveTempCart | SetTempCart | CreateMultiCart | CreateMultiCartFail | CreateMultiCartSuccess | LoadMultiCart | LoadMultiCartFail | LoadMultiCartSuccess | MergeMultiCart | MergeMultiCartSuccess | ResetMultiCartDetails | RemoveCart | AddEmailToMultiCart | AddEmailToMultiCartFail | AddEmailToMultiCartSuccess | CartProcessesIncrement | CartProcessesDecrement | SetActiveCartId | ClearMultiCartState;

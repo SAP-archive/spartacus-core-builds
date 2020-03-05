@@ -9403,6 +9403,62 @@
         },
     ];
 
+    var StatePersistenceService = /** @class */ (function () {
+        function StatePersistenceService(winRef) {
+            this.winRef = winRef;
+        }
+        /**
+         * Helper to synchronize state to more persistent storage (localStorage, sessionStorage).
+         * It is context aware, so you can keep different state for te same feature based on specified context.
+         *
+         * Eg. cart is valid only under the same base site. So you want to synchronize cart only with the same base site.
+         * Usage for that case: `syncWithStorage({ key: 'cart', state$: activeCartSelector$, context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]), onRead: (state) => setCorrectStateInStore(state) })`.
+         * Active cart for the `electronics` base site will be stored under `spartacus⚿electronics⚿cart` and for apparel under `spartacus⚿apparel⚿cart`.
+         *
+         * On each context change onRead function will be executed with state from storage provided as a parameter.
+         *
+         * Omitting context$ will trigger onRead only once at initialization.
+         *
+         * @param key Key to use in storage for the synchronized state. Should be unique for each feature.
+         * @param state$ State to be saved and later restored.
+         * @param context$ Context for state
+         * @param storageType Storage type to be used to persist state
+         * @param onRead Function to be executed on each storage read after context change
+         *
+         * @returns Subscriptions for reading/writing in storage on context/state change
+         */
+        StatePersistenceService.prototype.syncWithStorage = function (_a) {
+            var _this = this;
+            var key = _a.key, state$ = _a.state$, _b = _a.context$, context$ = _b === void 0 ? rxjs.of('') : _b, _c = _a.storageType, storageType = _c === void 0 ? exports.StorageSyncType.LOCAL_STORAGE : _c, _d = _a.onRead, onRead = _d === void 0 ? function () { } : _d;
+            var storage = getStorage(storageType, this.winRef);
+            var subscriptions = new rxjs.Subscription();
+            // Do not change order of subscription! Read should happen before write on context change.
+            subscriptions.add(context$
+                .pipe(operators.map(function (context) {
+                return readFromStorage(storage, _this.generateKeyWithContext(context, key));
+            }), operators.tap(function (state) { return onRead(state); }))
+                .subscribe());
+            subscriptions.add(state$.pipe(operators.withLatestFrom(context$)).subscribe(function (_a) {
+                var _b = __read(_a, 2), state = _b[0], context = _b[1];
+                persistToStorage(_this.generateKeyWithContext(context, key), state, storage);
+            }));
+            return subscriptions;
+        };
+        StatePersistenceService.prototype.generateKeyWithContext = function (context, key) {
+            return "spartacus\u26BF" + [].concat(context).join('⚿') + "\u26BF" + key;
+        };
+        StatePersistenceService.ctorParameters = function () { return [
+            { type: WindowRef }
+        ]; };
+        StatePersistenceService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(core["ɵɵinject"](WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
+        StatePersistenceService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], StatePersistenceService);
+        return StatePersistenceService;
+    }());
+
     var PROCESS_FEATURE = 'process';
 
     function getProcessState() {
@@ -12093,6 +12149,24 @@
                 service.setActive(value);
             }
         };
+        /**
+         * Get active values for all provided context parameters
+         *
+         * @param params Context parameters
+         *
+         * @returns Observable emitting array of all passed active context values
+         */
+        SiteContextParamsService.prototype.getValues = function (params) {
+            var _this = this;
+            if (params.length === 0) {
+                return rxjs.of([]);
+            }
+            return rxjs.combineLatest(params.map(function (param) {
+                return _this.getSiteContextService(param)
+                    .getActive()
+                    .pipe(operators.distinctUntilChanged());
+            })).pipe(operators.filter(function (value) { return value.every(function (param) { return !!param; }); }));
+        };
         SiteContextParamsService.ctorParameters = function () { return [
             { type: SiteContextConfig },
             { type: core.Injector },
@@ -14550,6 +14624,8 @@
     var ADD_EMAIL_TO_MULTI_CART_SUCCESS = '[Multi Cart] Add Email Success';
     var CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
     var CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
+    var SET_ACTIVE_CART_ID = '[Multi Cart] Set Active Cart Id';
+    var CLEAR_MULTI_CART_STATE = '[Multi Cart] Clear Cart State';
     /**
      * To keep track of cart creation process we use cart with `temp-${uuid}` id.
      * After creating cart we switch to entity with `code` or `guid`.
@@ -14721,6 +14797,22 @@
         }
         return CartProcessesDecrement;
     }(EntityProcessesDecrementAction));
+    var SetActiveCartId = /** @class */ (function () {
+        function SetActiveCartId(payload) {
+            this.payload = payload;
+            this.type = SET_ACTIVE_CART_ID;
+        }
+        return SetActiveCartId;
+    }());
+    var ClearMultiCartState = /** @class */ (function (_super) {
+        __extends(ClearMultiCartState, _super);
+        function ClearMultiCartState() {
+            var _this = _super.call(this, MULTI_CART_FEATURE, null) || this;
+            _this.type = CLEAR_MULTI_CART_STATE;
+            return _this;
+        }
+        return ClearMultiCartState;
+    }(EntityRemoveAction));
 
     var CREATE_WISH_LIST = '[Wish List] Create Wish List';
     var CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
@@ -14858,6 +14950,8 @@
         ADD_EMAIL_TO_MULTI_CART_SUCCESS: ADD_EMAIL_TO_MULTI_CART_SUCCESS,
         CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
         CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
+        SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
+        CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
         RemoveTempCart: RemoveTempCart,
         SetTempCart: SetTempCart,
         CreateMultiCart: CreateMultiCart,
@@ -14875,6 +14969,8 @@
         AddEmailToMultiCartSuccess: AddEmailToMultiCartSuccess,
         CartProcessesIncrement: CartProcessesIncrement,
         CartProcessesDecrement: CartProcessesDecrement,
+        SetActiveCartId: SetActiveCartId,
+        ClearMultiCartState: ClearMultiCartState,
         CREATE_WISH_LIST: CREATE_WISH_LIST,
         CREATE_WISH_LIST_FAIL: CREATE_WISH_LIST_FAIL,
         CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
@@ -18279,6 +18375,20 @@
         return WishListEffects;
     }());
 
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx effects will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     */
+    var effects$4 = [
+        CartEffects,
+        CartEntryEffects,
+        CartVoucherEffects,
+        WishListEffects,
+    ];
+
     var initialState$9 = {
         content: {},
         entries: {},
@@ -18353,6 +18463,8 @@
                 else {
                     return state;
                 }
+            case SET_ACTIVE_CART_ID:
+                return action.payload;
             case REMOVE_CART:
                 if (action.payload === state) {
                     return activeCartInitialState;
@@ -18360,6 +18472,8 @@
                 else {
                     return state;
                 }
+            case CLEAR_MULTI_CART_STATE:
+                return activeCartInitialState;
         }
         return state;
     }
@@ -18382,6 +18496,8 @@
             case CREATE_WISH_LIST_SUCCESS:
             case LOAD_WISH_LIST_SUCCESS:
                 return action.meta.entityId;
+            case CLEAR_MULTI_CART_STATE:
+                return wishListInitialState;
         }
         return state;
     }
@@ -18498,7 +18614,50 @@
         useFactory: getMultiCartReducers,
     };
 
-    var effects$4 = [
+    var MultiCartStatePersistenceService = /** @class */ (function () {
+        function MultiCartStatePersistenceService(statePersistenceService, store, siteContextParamsService) {
+            this.statePersistenceService = statePersistenceService;
+            this.store = store;
+            this.siteContextParamsService = siteContextParamsService;
+        }
+        MultiCartStatePersistenceService.prototype.sync = function () {
+            var _this = this;
+            this.statePersistenceService.syncWithStorage({
+                key: 'cart',
+                state$: this.getCartState(),
+                context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]),
+                onRead: function (state) { return _this.onRead(state); },
+            });
+        };
+        MultiCartStatePersistenceService.prototype.getCartState = function () {
+            return this.store.pipe(store.select(getMultiCartState), operators.filter(function (state) { return !!state; }), operators.distinctUntilKeyChanged('active'), operators.map(function (state) {
+                return {
+                    active: state.active,
+                };
+            }));
+        };
+        MultiCartStatePersistenceService.prototype.onRead = function (state) {
+            this.store.dispatch(new ClearCart());
+            this.store.dispatch(new ClearMultiCartState());
+            if (state) {
+                this.store.dispatch(new SetActiveCartId(state.active));
+            }
+        };
+        MultiCartStatePersistenceService.ctorParameters = function () { return [
+            { type: StatePersistenceService },
+            { type: store.Store },
+            { type: SiteContextParamsService }
+        ]; };
+        MultiCartStatePersistenceService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(core["ɵɵinject"](StatePersistenceService), core["ɵɵinject"](store.Store), core["ɵɵinject"](SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
+        MultiCartStatePersistenceService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], MultiCartStatePersistenceService);
+        return MultiCartStatePersistenceService;
+    }());
+
+    var effects$5 = [
         CartEffects,
         CartEntryEffects,
         CartVoucherEffects,
@@ -18529,7 +18688,7 @@
                     http.HttpClientModule,
                     StateModule,
                     store.StoreModule.forFeature(CART_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
-                    effects$d.EffectsModule.forFeature(effects$4),
+                    effects$d.EffectsModule.forFeature(effects$5),
                     ConfigModule.withConfigFactory(cartStoreConfigFactory),
                 ],
                 providers: [reducerProvider$5],
@@ -18591,19 +18750,6 @@
         return MultiCartEffects;
     }());
 
-    function multiCartStoreConfigFactory() {
-        var _a;
-        var config = {
-            state: {
-                storageSync: {
-                    keys: (_a = {},
-                        _a[MULTI_CART_FEATURE + ".active"] = exports.StorageSyncType.LOCAL_STORAGE,
-                        _a),
-                },
-            },
-        };
-        return config;
-    }
     var MultiCartStoreModule = /** @class */ (function () {
         function MultiCartStoreModule() {
         }
@@ -18616,7 +18762,6 @@
                         metaReducers: multiCartMetaReducers,
                     }),
                     effects$d.EffectsModule.forFeature([MultiCartEffects]),
-                    ConfigModule.withConfigFactory(multiCartStoreConfigFactory),
                 ],
                 providers: [multiCartReducerProvider],
             })
@@ -18624,6 +18769,14 @@
         return MultiCartStoreModule;
     }());
 
+    function cartStatePersistenceFactory(cartStatePersistenceService, configInit) {
+        var result = function () {
+            return configInit.getStableConfig('context').then(function () {
+                cartStatePersistenceService.sync();
+            });
+        };
+        return result;
+    }
     var CartModule = /** @class */ (function () {
         function CartModule() {
         }
@@ -18644,6 +18797,12 @@
                         useExisting: CartPageMetaResolver,
                         multi: true,
                     },
+                    {
+                        provide: core.APP_INITIALIZER,
+                        useFactory: cartStatePersistenceFactory,
+                        deps: [MultiCartStatePersistenceService, ConfigInitializerService],
+                        multi: true,
+                    },
                 ],
             };
         };
@@ -18655,20 +18814,6 @@
         ], CartModule);
         return CartModule;
     }());
-
-    /**
-     * @deprecated since version 1.5
-     *
-     * spartacus ngrx effects will no longer be a part of public API
-     *
-     * TODO(issue:#4507)
-     */
-    var effects$5 = [
-        CartEffects,
-        CartEntryEffects,
-        CartVoucherEffects,
-        WishListEffects,
-    ];
 
     var initialState$a = {
         results: {},
@@ -27639,6 +27784,7 @@
     exports.MockTranslatePipe = MockTranslatePipe;
     exports.MultiCartSelectors = multiCartGroup_selectors;
     exports.MultiCartService = MultiCartService;
+    exports.MultiCartStatePersistenceService = MultiCartStatePersistenceService;
     exports.NAVIGATION_DETAIL_ENTITY = NAVIGATION_DETAIL_ENTITY;
     exports.NOTIFICATION_PREFERENCES = NOTIFICATION_PREFERENCES;
     exports.NgExpressEngineDecorator = NgExpressEngineDecorator;
@@ -27792,6 +27938,7 @@
     exports.StateLoaderActions = loader_action;
     exports.StateLoaderSelectors = loader_selectors;
     exports.StateModule = StateModule;
+    exports.StatePersistenceService = StatePersistenceService;
     exports.StateProcessesLoaderActions = processesLoader_action;
     exports.StateProcessesLoaderSelectors = processesLoader_selectors;
     exports.StoreDataService = StoreDataService;
@@ -27868,7 +28015,7 @@
     exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
     exports.defaultOccConfig = defaultOccConfig;
     exports.defaultStateConfig = defaultStateConfig;
-    exports.effects = effects$5;
+    exports.effects = effects$4;
     exports.entityLoaderReducer = entityLoaderReducer;
     exports.entityProcessesLoaderReducer = entityProcessesLoaderReducer;
     exports.entityReducer = entityReducer;
@@ -27909,54 +28056,54 @@
     exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;
     exports.withdrawOn = withdrawOn;
-    exports.ɵa = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵb = configFromCookieFactory;
-    exports.ɵba = AnonymousConsentsInterceptor;
-    exports.ɵbb = asmStoreConfigFactory;
-    exports.ɵbc = AsmStoreModule;
-    exports.ɵbd = getReducers$3;
-    exports.ɵbe = reducerToken$3;
-    exports.ɵbf = reducerProvider$3;
-    exports.ɵbg = clearCustomerSupportAgentAsmState;
-    exports.ɵbh = metaReducers$2;
-    exports.ɵbi = effects$3;
-    exports.ɵbj = CustomerEffects;
-    exports.ɵbk = CustomerSupportAgentTokenEffects;
-    exports.ɵbl = UserAuthenticationTokenService;
-    exports.ɵbm = reducer$7;
-    exports.ɵbn = defaultAsmConfig;
-    exports.ɵbo = interceptors$2;
-    exports.ɵbp = CustomerSupportAgentAuthErrorInterceptor;
-    exports.ɵbq = CustomerSupportAgentErrorHandlingService;
-    exports.ɵbr = authStoreConfigFactory;
-    exports.ɵbs = AuthStoreModule;
-    exports.ɵbt = getReducers;
-    exports.ɵbu = reducerToken;
-    exports.ɵbv = reducerProvider;
-    exports.ɵbw = clearAuthState;
-    exports.ɵbx = metaReducers;
-    exports.ɵby = effects;
-    exports.ɵbz = ClientTokenEffect;
-    exports.ɵc = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵca = UserTokenEffects;
-    exports.ɵcb = ClientAuthenticationTokenService;
-    exports.ɵcc = reducer;
-    exports.ɵcd = defaultAuthConfig;
-    exports.ɵce = interceptors;
-    exports.ɵcf = ClientTokenInterceptor;
-    exports.ɵcg = UserTokenInterceptor;
-    exports.ɵch = AuthErrorInterceptor;
-    exports.ɵci = UserErrorHandlingService;
-    exports.ɵcj = UrlParsingService;
-    exports.ɵck = ClientErrorHandlingService;
-    exports.ɵcl = TokenRevocationInterceptor;
-    exports.ɵcm = AuthServices;
-    exports.ɵcn = cartStoreConfigFactory;
-    exports.ɵco = CartStoreModule;
-    exports.ɵcp = SaveCartConnector;
-    exports.ɵcq = SaveCartAdapter;
-    exports.ɵcr = reducer$9;
-    exports.ɵcs = multiCartStoreConfigFactory;
+    exports.ɵa = cartStatePersistenceFactory;
+    exports.ɵb = TEST_CONFIG_COOKIE_NAME;
+    exports.ɵba = interceptors$1;
+    exports.ɵbb = AnonymousConsentsInterceptor;
+    exports.ɵbc = asmStoreConfigFactory;
+    exports.ɵbd = AsmStoreModule;
+    exports.ɵbe = getReducers$3;
+    exports.ɵbf = reducerToken$3;
+    exports.ɵbg = reducerProvider$3;
+    exports.ɵbh = clearCustomerSupportAgentAsmState;
+    exports.ɵbi = metaReducers$2;
+    exports.ɵbj = effects$3;
+    exports.ɵbk = CustomerEffects;
+    exports.ɵbl = CustomerSupportAgentTokenEffects;
+    exports.ɵbm = UserAuthenticationTokenService;
+    exports.ɵbn = reducer$7;
+    exports.ɵbo = defaultAsmConfig;
+    exports.ɵbp = interceptors$2;
+    exports.ɵbq = CustomerSupportAgentAuthErrorInterceptor;
+    exports.ɵbr = CustomerSupportAgentErrorHandlingService;
+    exports.ɵbs = authStoreConfigFactory;
+    exports.ɵbt = AuthStoreModule;
+    exports.ɵbu = getReducers;
+    exports.ɵbv = reducerToken;
+    exports.ɵbw = reducerProvider;
+    exports.ɵbx = clearAuthState;
+    exports.ɵby = metaReducers;
+    exports.ɵbz = effects;
+    exports.ɵc = configFromCookieFactory;
+    exports.ɵca = ClientTokenEffect;
+    exports.ɵcb = UserTokenEffects;
+    exports.ɵcc = ClientAuthenticationTokenService;
+    exports.ɵcd = reducer;
+    exports.ɵce = defaultAuthConfig;
+    exports.ɵcf = interceptors;
+    exports.ɵcg = ClientTokenInterceptor;
+    exports.ɵch = UserTokenInterceptor;
+    exports.ɵci = AuthErrorInterceptor;
+    exports.ɵcj = UserErrorHandlingService;
+    exports.ɵck = UrlParsingService;
+    exports.ɵcl = ClientErrorHandlingService;
+    exports.ɵcm = TokenRevocationInterceptor;
+    exports.ɵcn = AuthServices;
+    exports.ɵco = cartStoreConfigFactory;
+    exports.ɵcp = CartStoreModule;
+    exports.ɵcq = SaveCartConnector;
+    exports.ɵcr = SaveCartAdapter;
+    exports.ɵcs = reducer$9;
     exports.ɵct = MultiCartStoreModule;
     exports.ɵcu = MultiCartEffects;
     exports.ɵcv = processesLoaderReducer;
@@ -27964,105 +28111,105 @@
     exports.ɵcx = cartEntitiesReducer;
     exports.ɵcy = wishListReducer;
     exports.ɵcz = CartPageMetaResolver;
-    exports.ɵd = initConfig;
-    exports.ɵda = CheckoutStoreModule;
-    exports.ɵdb = getReducers$6;
-    exports.ɵdc = reducerToken$6;
-    exports.ɵdd = reducerProvider$6;
-    exports.ɵde = effects$6;
-    exports.ɵdf = AddressVerificationEffect;
-    exports.ɵdg = CardTypesEffects;
-    exports.ɵdh = CheckoutEffects;
-    exports.ɵdi = reducer$c;
-    exports.ɵdj = reducer$b;
-    exports.ɵdk = reducer$a;
-    exports.ɵdl = cmsStoreConfigFactory;
-    exports.ɵdm = CmsStoreModule;
-    exports.ɵdn = getReducers$8;
-    exports.ɵdo = reducerToken$8;
-    exports.ɵdp = reducerProvider$8;
-    exports.ɵdq = clearCmsState;
-    exports.ɵdr = metaReducers$4;
-    exports.ɵds = effects$8;
-    exports.ɵdt = ComponentsEffects;
-    exports.ɵdu = NavigationEntryItemEffects;
-    exports.ɵdv = PageEffects;
-    exports.ɵdw = reducer$g;
-    exports.ɵdx = reducer$h;
-    exports.ɵdy = reducer$e;
-    exports.ɵdz = reducer$f;
-    exports.ɵe = initializeContext;
-    exports.ɵea = configValidatorFactory;
-    exports.ɵeb = ConfigValidatorModule;
-    exports.ɵec = GlobalMessageStoreModule;
-    exports.ɵed = getReducers$4;
-    exports.ɵee = reducerToken$4;
-    exports.ɵef = reducerProvider$4;
-    exports.ɵeg = reducer$8;
-    exports.ɵeh = GlobalMessageEffect;
-    exports.ɵei = defaultGlobalMessageConfigFactory;
-    exports.ɵej = InternalServerErrorHandler;
-    exports.ɵek = HttpErrorInterceptor;
-    exports.ɵel = defaultI18nConfig;
-    exports.ɵem = i18nextProviders;
-    exports.ɵen = i18nextInit;
-    exports.ɵeo = MockTranslationService;
-    exports.ɵep = kymaStoreConfigFactory;
-    exports.ɵeq = KymaStoreModule;
-    exports.ɵer = getReducers$9;
-    exports.ɵes = reducerToken$9;
-    exports.ɵet = reducerProvider$9;
-    exports.ɵeu = clearKymaState;
-    exports.ɵev = metaReducers$5;
-    exports.ɵew = effects$9;
-    exports.ɵex = OpenIdTokenEffect;
-    exports.ɵey = OpenIdAuthenticationTokenService;
-    exports.ɵez = defaultKymaConfig;
-    exports.ɵf = contextServiceProviders;
-    exports.ɵfa = defaultOccAsmConfig;
-    exports.ɵfb = defaultOccCartConfig;
-    exports.ɵfc = OccSaveCartAdapter;
-    exports.ɵfd = defaultOccProductConfig;
-    exports.ɵfe = defaultOccSiteContextConfig;
-    exports.ɵff = defaultOccStoreFinderConfig;
-    exports.ɵfg = defaultOccUserConfig;
-    exports.ɵfh = UserNotificationPreferenceAdapter;
-    exports.ɵfi = defaultPersonalizationConfig;
-    exports.ɵfj = interceptors$3;
-    exports.ɵfk = OccPersonalizationIdInterceptor;
-    exports.ɵfl = OccPersonalizationTimeInterceptor;
-    exports.ɵfm = ProcessStoreModule;
-    exports.ɵfn = getReducers$a;
-    exports.ɵfo = reducerToken$a;
-    exports.ɵfp = reducerProvider$a;
-    exports.ɵfq = productStoreConfigFactory;
-    exports.ɵfr = ProductStoreModule;
-    exports.ɵfs = getReducers$b;
-    exports.ɵft = reducerToken$b;
-    exports.ɵfu = reducerProvider$b;
-    exports.ɵfv = clearProductsState;
-    exports.ɵfw = metaReducers$6;
-    exports.ɵfx = effects$a;
-    exports.ɵfy = ProductReferencesEffects;
-    exports.ɵfz = ProductReviewsEffects;
-    exports.ɵg = initSiteContextRoutesHandler;
-    exports.ɵga = ProductsSearchEffects;
-    exports.ɵgb = ProductEffects;
-    exports.ɵgc = reducer$i;
-    exports.ɵgd = entityScopedLoaderReducer;
-    exports.ɵge = scopedLoaderReducer;
-    exports.ɵgf = reducer$k;
-    exports.ɵgg = reducer$j;
-    exports.ɵgh = PageMetaResolver;
-    exports.ɵgi = addExternalRoutesFactory;
-    exports.ɵgj = getReducers$7;
-    exports.ɵgk = reducer$d;
-    exports.ɵgl = reducerToken$7;
-    exports.ɵgm = reducerProvider$7;
-    exports.ɵgn = CustomSerializer;
-    exports.ɵgo = effects$7;
-    exports.ɵgp = RouterEffects;
-    exports.ɵgq = SiteContextParamsService;
+    exports.ɵd = CONFIG_INITIALIZER_FORROOT_GUARD;
+    exports.ɵda = SiteContextParamsService;
+    exports.ɵdb = CheckoutStoreModule;
+    exports.ɵdc = getReducers$6;
+    exports.ɵdd = reducerToken$6;
+    exports.ɵde = reducerProvider$6;
+    exports.ɵdf = effects$6;
+    exports.ɵdg = AddressVerificationEffect;
+    exports.ɵdh = CardTypesEffects;
+    exports.ɵdi = CheckoutEffects;
+    exports.ɵdj = reducer$c;
+    exports.ɵdk = reducer$b;
+    exports.ɵdl = reducer$a;
+    exports.ɵdm = cmsStoreConfigFactory;
+    exports.ɵdn = CmsStoreModule;
+    exports.ɵdo = getReducers$8;
+    exports.ɵdp = reducerToken$8;
+    exports.ɵdq = reducerProvider$8;
+    exports.ɵdr = clearCmsState;
+    exports.ɵds = metaReducers$4;
+    exports.ɵdt = effects$8;
+    exports.ɵdu = ComponentsEffects;
+    exports.ɵdv = NavigationEntryItemEffects;
+    exports.ɵdw = PageEffects;
+    exports.ɵdx = reducer$g;
+    exports.ɵdy = reducer$h;
+    exports.ɵdz = reducer$e;
+    exports.ɵe = initConfig;
+    exports.ɵea = reducer$f;
+    exports.ɵeb = configValidatorFactory;
+    exports.ɵec = ConfigValidatorModule;
+    exports.ɵed = GlobalMessageStoreModule;
+    exports.ɵee = getReducers$4;
+    exports.ɵef = reducerToken$4;
+    exports.ɵeg = reducerProvider$4;
+    exports.ɵeh = reducer$8;
+    exports.ɵei = GlobalMessageEffect;
+    exports.ɵej = defaultGlobalMessageConfigFactory;
+    exports.ɵek = InternalServerErrorHandler;
+    exports.ɵel = HttpErrorInterceptor;
+    exports.ɵem = defaultI18nConfig;
+    exports.ɵen = i18nextProviders;
+    exports.ɵeo = i18nextInit;
+    exports.ɵep = MockTranslationService;
+    exports.ɵeq = kymaStoreConfigFactory;
+    exports.ɵer = KymaStoreModule;
+    exports.ɵes = getReducers$9;
+    exports.ɵet = reducerToken$9;
+    exports.ɵeu = reducerProvider$9;
+    exports.ɵev = clearKymaState;
+    exports.ɵew = metaReducers$5;
+    exports.ɵex = effects$9;
+    exports.ɵey = OpenIdTokenEffect;
+    exports.ɵez = OpenIdAuthenticationTokenService;
+    exports.ɵf = initializeContext;
+    exports.ɵfa = defaultKymaConfig;
+    exports.ɵfb = defaultOccAsmConfig;
+    exports.ɵfc = defaultOccCartConfig;
+    exports.ɵfd = OccSaveCartAdapter;
+    exports.ɵfe = defaultOccProductConfig;
+    exports.ɵff = defaultOccSiteContextConfig;
+    exports.ɵfg = defaultOccStoreFinderConfig;
+    exports.ɵfh = defaultOccUserConfig;
+    exports.ɵfi = UserNotificationPreferenceAdapter;
+    exports.ɵfj = defaultPersonalizationConfig;
+    exports.ɵfk = interceptors$3;
+    exports.ɵfl = OccPersonalizationIdInterceptor;
+    exports.ɵfm = OccPersonalizationTimeInterceptor;
+    exports.ɵfn = ProcessStoreModule;
+    exports.ɵfo = getReducers$a;
+    exports.ɵfp = reducerToken$a;
+    exports.ɵfq = reducerProvider$a;
+    exports.ɵfr = productStoreConfigFactory;
+    exports.ɵfs = ProductStoreModule;
+    exports.ɵft = getReducers$b;
+    exports.ɵfu = reducerToken$b;
+    exports.ɵfv = reducerProvider$b;
+    exports.ɵfw = clearProductsState;
+    exports.ɵfx = metaReducers$6;
+    exports.ɵfy = effects$a;
+    exports.ɵfz = ProductReferencesEffects;
+    exports.ɵg = contextServiceProviders;
+    exports.ɵga = ProductReviewsEffects;
+    exports.ɵgb = ProductsSearchEffects;
+    exports.ɵgc = ProductEffects;
+    exports.ɵgd = reducer$i;
+    exports.ɵge = entityScopedLoaderReducer;
+    exports.ɵgf = scopedLoaderReducer;
+    exports.ɵgg = reducer$k;
+    exports.ɵgh = reducer$j;
+    exports.ɵgi = PageMetaResolver;
+    exports.ɵgj = addExternalRoutesFactory;
+    exports.ɵgk = getReducers$7;
+    exports.ɵgl = reducer$d;
+    exports.ɵgm = reducerToken$7;
+    exports.ɵgn = reducerProvider$7;
+    exports.ɵgo = CustomSerializer;
+    exports.ɵgp = effects$7;
+    exports.ɵgq = RouterEffects;
     exports.ɵgr = SiteContextUrlSerializer;
     exports.ɵgs = SiteContextRoutesHandler;
     exports.ɵgt = defaultSiteContextConfigFactory;
@@ -28072,7 +28219,7 @@
     exports.ɵgx = reducerToken$1;
     exports.ɵgy = reducerProvider$1;
     exports.ɵgz = effects$2;
-    exports.ɵh = siteContextParamsProviders;
+    exports.ɵh = initSiteContextRoutesHandler;
     exports.ɵha = LanguagesEffects;
     exports.ɵhb = CurrenciesEffects;
     exports.ɵhc = BaseSiteEffects;
@@ -28099,7 +28246,7 @@
     exports.ɵhx = effects$c;
     exports.ɵhy = BillingCountriesEffect;
     exports.ɵhz = ClearMiscsDataEffect;
-    exports.ɵi = anonymousConsentsStoreConfigFactory;
+    exports.ɵi = siteContextParamsProviders;
     exports.ɵia = ConsignmentTrackingEffects;
     exports.ɵib = DeliveryCountriesEffects;
     exports.ɵic = NotificationPreferenceEffects;
@@ -28126,7 +28273,7 @@
     exports.ɵix = reducer$v;
     exports.ɵiy = reducer$q;
     exports.ɵiz = reducer$x;
-    exports.ɵj = AnonymousConsentsStoreModule;
+    exports.ɵj = anonymousConsentsStoreConfigFactory;
     exports.ɵja = reducer$p;
     exports.ɵjb = reducer$A;
     exports.ɵjc = reducer$n;
@@ -28139,22 +28286,22 @@
     exports.ɵjj = reducer$z;
     exports.ɵjk = FindProductPageMetaResolver;
     exports.ɵjl = PageMetaResolver;
-    exports.ɵk = TRANSFER_STATE_META_REDUCER;
-    exports.ɵl = STORAGE_SYNC_META_REDUCER;
-    exports.ɵm = stateMetaReducers;
-    exports.ɵn = getStorageSyncReducer;
-    exports.ɵo = getTransferStateReducer;
-    exports.ɵp = getReducers$2;
-    exports.ɵq = reducerToken$2;
-    exports.ɵr = reducerProvider$2;
-    exports.ɵs = clearAnonymousConsentTemplates;
-    exports.ɵt = metaReducers$1;
-    exports.ɵu = effects$1;
-    exports.ɵv = AnonymousConsentsEffects;
-    exports.ɵw = reducer$6;
-    exports.ɵx = reducer$4;
-    exports.ɵy = reducer$5;
-    exports.ɵz = interceptors$1;
+    exports.ɵk = AnonymousConsentsStoreModule;
+    exports.ɵl = TRANSFER_STATE_META_REDUCER;
+    exports.ɵm = STORAGE_SYNC_META_REDUCER;
+    exports.ɵn = stateMetaReducers;
+    exports.ɵo = getStorageSyncReducer;
+    exports.ɵp = getTransferStateReducer;
+    exports.ɵq = getReducers$2;
+    exports.ɵr = reducerToken$2;
+    exports.ɵs = reducerProvider$2;
+    exports.ɵt = clearAnonymousConsentTemplates;
+    exports.ɵu = metaReducers$1;
+    exports.ɵv = effects$1;
+    exports.ɵw = AnonymousConsentsEffects;
+    exports.ɵx = reducer$6;
+    exports.ɵy = reducer$4;
+    exports.ɵz = reducer$5;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
