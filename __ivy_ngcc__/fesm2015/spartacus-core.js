@@ -21429,6 +21429,7 @@ let FindStoresEffect = class FindStoresEffect {
             .pipe(map(data => {
             if (payload.countryIsoCode) {
                 data.stores = data.stores.filter(store => store.address.country.isocode === payload.countryIsoCode);
+                data.stores.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
             }
             return new FindStoresSuccess(data);
         }), catchError(error => of(new FindStoresFail(makeErrorSerializable(error)))))));

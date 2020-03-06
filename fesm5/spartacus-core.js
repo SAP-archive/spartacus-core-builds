@@ -24787,6 +24787,9 @@ var FindStoresEffect = /** @class */ (function () {
                     data.stores = data.stores.filter(function (store) {
                         return store.address.country.isocode === payload.countryIsoCode;
                     });
+                    data.stores.sort(function (a, b) {
+                        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+                    });
                 }
                 return new FindStoresSuccess(data);
             }), catchError(function (error) {
