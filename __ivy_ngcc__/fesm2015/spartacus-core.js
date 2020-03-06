@@ -16833,9 +16833,10 @@ CheckoutModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: CheckoutModule });
 CheckoutModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CheckoutModule_Factory(t) { return new (t || CheckoutModule)(); }, imports: [[CheckoutStoreModule]] });
 
 let CheckoutDeliveryService = class CheckoutDeliveryService {
-    constructor(checkoutStore, cartData) {
+    constructor(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
-        this.cartData = cartData;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
     }
     /**
      * Get supported delivery modes
@@ -16919,11 +16920,23 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
      */
     createAndSetAddress(address) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new AddDeliveryAddress({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                address: address,
-            }));
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(occUserId => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(activeCartId => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new AddDeliveryAddress({
+                    userId,
+                    cartId,
+                    address: address,
+                }));
+            }
         }
     }
     /**
@@ -16931,10 +16944,22 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
      */
     loadSupportedDeliveryModes() {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-            }));
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(occUserId => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(activeCartId => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
+                    userId,
+                    cartId,
+                }));
+            }
         }
     }
     /**
@@ -16943,11 +16968,23 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
      */
     setDeliveryMode(mode) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new SetDeliveryMode({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                selectedModeId: mode,
-            }));
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(occUserId => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(activeCartId => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new SetDeliveryMode({
+                    userId,
+                    cartId,
+                    selectedModeId: mode,
+                }));
+            }
         }
     }
     /**
@@ -16956,10 +16993,17 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
      */
     verifyAddress(address) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new VerifyAddress({
-                userId: this.cartData.userId,
-                address,
-            }));
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(occUserId => (userId = occUserId))
+                .unsubscribe();
+            if (userId) {
+                this.checkoutStore.dispatch(new VerifyAddress({
+                    userId,
+                    address,
+                }));
+            }
         }
     }
     /**
@@ -16968,11 +17012,23 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
      */
     setDeliveryAddress(address) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new SetDeliveryAddress({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cart.code,
-                address: address,
-            }));
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(occUserId => (userId = occUserId))
+                .unsubscribe();
+            let cart;
+            this.activeCartService
+                .getActive()
+                .subscribe(activeCart => (cart = activeCart))
+                .unsubscribe();
+            if (cart && userId) {
+                this.checkoutStore.dispatch(new SetDeliveryAddress({
+                    userId,
+                    cartId: cart.code,
+                    address: address,
+                }));
+            }
         }
     }
     /**
@@ -16985,19 +17041,43 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
      * Clear address already setup in last checkout process
      */
     clearCheckoutDeliveryAddress() {
-        this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-        }));
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(occUserId => (userId = occUserId))
+            .unsubscribe();
+        let cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .subscribe(activeCartId => (cartId = activeCartId))
+            .unsubscribe();
+        if (userId && cartId) {
+            this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
+                userId,
+                cartId,
+            }));
+        }
     }
     /**
      * Clear selected delivery mode setup in last checkout process
      */
     clearCheckoutDeliveryMode() {
-        this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-        }));
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(occUserId => (userId = occUserId))
+            .unsubscribe();
+        let cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .subscribe(activeCartId => (cartId = activeCartId))
+            .unsubscribe();
+        if (userId && cartId) {
+            this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
+                userId,
+                cartId,
+            }));
+        }
     }
     /**
      * Clear address and delivery mode already setup in last checkout process
@@ -17008,16 +17088,22 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
         this.clearCheckoutDeliveryModes();
     }
     actionAllowed() {
-        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
-            this.cartData.isGuestCart);
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(occUserId => (userId = occUserId))
+            .unsubscribe();
+        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+            this.activeCartService.isGuestCart());
     }
 };
-CheckoutDeliveryService.ɵfac = function CheckoutDeliveryService_Factory(t) { return new (t || CheckoutDeliveryService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(CartDataService)); };
+CheckoutDeliveryService.ɵfac = function CheckoutDeliveryService_Factory(t) { return new (t || CheckoutDeliveryService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService), ɵngcc0.ɵɵinject(ActiveCartService)); };
 CheckoutDeliveryService.ctorParameters = () => [
     { type: Store },
-    { type: CartDataService }
+    { type: AuthService },
+    { type: ActiveCartService }
 ];
-CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(CartDataService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
 
 let CheckoutPaymentService = class CheckoutPaymentService {
     constructor(checkoutStore, authService, activeCartService) {
@@ -24852,7 +24938,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
         args: [{
                 providedIn: 'root'
             }]
-    }], function () { return [{ type: ɵngcc1.Store }, { type: CartDataService }]; }, null); })();
+    }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }, { type: ActiveCartService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CheckoutPaymentService, [{
         type: Injectable,
         args: [{

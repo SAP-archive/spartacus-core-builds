@@ -19451,9 +19451,10 @@ var CheckoutModule = /** @class */ (function () {
 }());
 
 var CheckoutDeliveryService = /** @class */ (function () {
-    function CheckoutDeliveryService(checkoutStore, cartData) {
+    function CheckoutDeliveryService(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
-        this.cartData = cartData;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
     }
     /**
      * Get supported delivery modes
@@ -19539,11 +19540,23 @@ var CheckoutDeliveryService = /** @class */ (function () {
      */
     CheckoutDeliveryService.prototype.createAndSetAddress = function (address) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new AddDeliveryAddress({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                address: address,
-            }));
+            var userId_1;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId_1 = occUserId); })
+                .unsubscribe();
+            var cartId_1;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
+                .unsubscribe();
+            if (userId_1 && cartId_1) {
+                this.checkoutStore.dispatch(new AddDeliveryAddress({
+                    userId: userId_1,
+                    cartId: cartId_1,
+                    address: address,
+                }));
+            }
         }
     };
     /**
@@ -19551,10 +19564,22 @@ var CheckoutDeliveryService = /** @class */ (function () {
      */
     CheckoutDeliveryService.prototype.loadSupportedDeliveryModes = function () {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-            }));
+            var userId_2;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId_2 = occUserId); })
+                .unsubscribe();
+            var cartId_2;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(function (activeCartId) { return (cartId_2 = activeCartId); })
+                .unsubscribe();
+            if (userId_2 && cartId_2) {
+                this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
+                    userId: userId_2,
+                    cartId: cartId_2,
+                }));
+            }
         }
     };
     /**
@@ -19563,11 +19588,23 @@ var CheckoutDeliveryService = /** @class */ (function () {
      */
     CheckoutDeliveryService.prototype.setDeliveryMode = function (mode) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new SetDeliveryMode({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                selectedModeId: mode,
-            }));
+            var userId_3;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId_3 = occUserId); })
+                .unsubscribe();
+            var cartId_3;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(function (activeCartId) { return (cartId_3 = activeCartId); })
+                .unsubscribe();
+            if (userId_3 && cartId_3) {
+                this.checkoutStore.dispatch(new SetDeliveryMode({
+                    userId: userId_3,
+                    cartId: cartId_3,
+                    selectedModeId: mode,
+                }));
+            }
         }
     };
     /**
@@ -19576,10 +19613,17 @@ var CheckoutDeliveryService = /** @class */ (function () {
      */
     CheckoutDeliveryService.prototype.verifyAddress = function (address) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new VerifyAddress({
-                userId: this.cartData.userId,
-                address: address,
-            }));
+            var userId_4;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId_4 = occUserId); })
+                .unsubscribe();
+            if (userId_4) {
+                this.checkoutStore.dispatch(new VerifyAddress({
+                    userId: userId_4,
+                    address: address,
+                }));
+            }
         }
     };
     /**
@@ -19588,11 +19632,23 @@ var CheckoutDeliveryService = /** @class */ (function () {
      */
     CheckoutDeliveryService.prototype.setDeliveryAddress = function (address) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new SetDeliveryAddress({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cart.code,
-                address: address,
-            }));
+            var userId_5;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId_5 = occUserId); })
+                .unsubscribe();
+            var cart_1;
+            this.activeCartService
+                .getActive()
+                .subscribe(function (activeCart) { return (cart_1 = activeCart); })
+                .unsubscribe();
+            if (cart_1 && userId_5) {
+                this.checkoutStore.dispatch(new SetDeliveryAddress({
+                    userId: userId_5,
+                    cartId: cart_1.code,
+                    address: address,
+                }));
+            }
         }
     };
     /**
@@ -19605,19 +19661,43 @@ var CheckoutDeliveryService = /** @class */ (function () {
      * Clear address already setup in last checkout process
      */
     CheckoutDeliveryService.prototype.clearCheckoutDeliveryAddress = function () {
-        this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-        }));
+        var userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(function (occUserId) { return (userId = occUserId); })
+            .unsubscribe();
+        var cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .subscribe(function (activeCartId) { return (cartId = activeCartId); })
+            .unsubscribe();
+        if (userId && cartId) {
+            this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
+                userId: userId,
+                cartId: cartId,
+            }));
+        }
     };
     /**
      * Clear selected delivery mode setup in last checkout process
      */
     CheckoutDeliveryService.prototype.clearCheckoutDeliveryMode = function () {
-        this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-        }));
+        var userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(function (occUserId) { return (userId = occUserId); })
+            .unsubscribe();
+        var cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .subscribe(function (activeCartId) { return (cartId = activeCartId); })
+            .unsubscribe();
+        if (userId && cartId) {
+            this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
+                userId: userId,
+                cartId: cartId,
+            }));
+        }
     };
     /**
      * Clear address and delivery mode already setup in last checkout process
@@ -19628,14 +19708,20 @@ var CheckoutDeliveryService = /** @class */ (function () {
         this.clearCheckoutDeliveryModes();
     };
     CheckoutDeliveryService.prototype.actionAllowed = function () {
-        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
-            this.cartData.isGuestCart);
+        var userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(function (occUserId) { return (userId = occUserId); })
+            .unsubscribe();
+        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+            this.activeCartService.isGuestCart());
     };
     CheckoutDeliveryService.ctorParameters = function () { return [
         { type: Store },
-        { type: CartDataService }
+        { type: AuthService },
+        { type: ActiveCartService }
     ]; };
-    CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(CartDataService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+    CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
     CheckoutDeliveryService = __decorate([
         Injectable({
             providedIn: 'root',
