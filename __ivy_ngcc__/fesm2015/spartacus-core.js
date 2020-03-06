@@ -17020,9 +17020,10 @@ CheckoutDeliveryService.ctorParameters = () => [
 CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(CartDataService)); }, token: CheckoutDeliveryService, providedIn: "root" });
 
 let CheckoutPaymentService = class CheckoutPaymentService {
-    constructor(checkoutStore, cartData) {
+    constructor(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
-        this.cartData = cartData;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
     }
     /**
      * Get card types
@@ -17060,11 +17061,23 @@ let CheckoutPaymentService = class CheckoutPaymentService {
      */
     createPaymentDetails(paymentDetails) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new CreatePaymentDetails({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                paymentDetails,
-            }));
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(occUserId => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(activeCartId => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new CreatePaymentDetails({
+                    userId,
+                    cartId,
+                    paymentDetails,
+                }));
+            }
         }
     }
     /**
@@ -17073,11 +17086,23 @@ let CheckoutPaymentService = class CheckoutPaymentService {
      */
     setPaymentDetails(paymentDetails) {
         if (this.actionAllowed()) {
-            this.checkoutStore.dispatch(new SetPaymentDetails({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cart.code,
-                paymentDetails: paymentDetails,
-            }));
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(occUserId => (userId = occUserId))
+                .unsubscribe();
+            let cart;
+            this.activeCartService
+                .getActive()
+                .subscribe(activeCart => (cart = activeCart))
+                .unsubscribe();
+            if (userId && cart) {
+                this.checkoutStore.dispatch(new SetPaymentDetails({
+                    userId,
+                    cartId: cart.code,
+                    paymentDetails: paymentDetails,
+                }));
+            }
         }
     }
     /**
@@ -17087,16 +17112,22 @@ let CheckoutPaymentService = class CheckoutPaymentService {
         this.checkoutStore.dispatch(new PaymentProcessSuccess());
     }
     actionAllowed() {
-        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
-            this.cartData.isGuestCart);
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(occUserId => (userId = occUserId))
+            .unsubscribe();
+        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+            this.activeCartService.isGuestCart());
     }
 };
-CheckoutPaymentService.ɵfac = function CheckoutPaymentService_Factory(t) { return new (t || CheckoutPaymentService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(CartDataService)); };
+CheckoutPaymentService.ɵfac = function CheckoutPaymentService_Factory(t) { return new (t || CheckoutPaymentService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService), ɵngcc0.ɵɵinject(ActiveCartService)); };
 CheckoutPaymentService.ctorParameters = () => [
     { type: Store },
-    { type: CartDataService }
+    { type: AuthService },
+    { type: ActiveCartService }
 ];
-CheckoutPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(CartDataService)); }, token: CheckoutPaymentService, providedIn: "root" });
+CheckoutPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
 
 /**
  * The `CmsStructureConfig` is used to build pages in Spartacus by configuration
@@ -24827,7 +24858,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
         args: [{
                 providedIn: 'root'
             }]
-    }], function () { return [{ type: ɵngcc1.Store }, { type: CartDataService }]; }, null); })();
+    }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }, { type: ActiveCartService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ContentPageMetaResolver, [{
         type: Injectable,
         args: [{

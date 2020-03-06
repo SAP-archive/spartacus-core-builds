@@ -19836,9 +19836,10 @@
     }());
 
     var CheckoutPaymentService = /** @class */ (function () {
-        function CheckoutPaymentService(checkoutStore, cartData) {
+        function CheckoutPaymentService(checkoutStore, authService, activeCartService) {
             this.checkoutStore = checkoutStore;
-            this.cartData = cartData;
+            this.authService = authService;
+            this.activeCartService = activeCartService;
         }
         /**
          * Get card types
@@ -19876,11 +19877,23 @@
          */
         CheckoutPaymentService.prototype.createPaymentDetails = function (paymentDetails) {
             if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new CreatePaymentDetails({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    paymentDetails: paymentDetails,
-                }));
+                var userId_1;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
+                    .unsubscribe();
+                var cartId_1;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
+                    .unsubscribe();
+                if (userId_1 && cartId_1) {
+                    this.checkoutStore.dispatch(new CreatePaymentDetails({
+                        userId: userId_1,
+                        cartId: cartId_1,
+                        paymentDetails: paymentDetails,
+                    }));
+                }
             }
         };
         /**
@@ -19889,11 +19902,23 @@
          */
         CheckoutPaymentService.prototype.setPaymentDetails = function (paymentDetails) {
             if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new SetPaymentDetails({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cart.code,
-                    paymentDetails: paymentDetails,
-                }));
+                var userId_2;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_2 = occUserId); })
+                    .unsubscribe();
+                var cart_1;
+                this.activeCartService
+                    .getActive()
+                    .subscribe(function (activeCart) { return (cart_1 = activeCart); })
+                    .unsubscribe();
+                if (userId_2 && cart_1) {
+                    this.checkoutStore.dispatch(new SetPaymentDetails({
+                        userId: userId_2,
+                        cartId: cart_1.code,
+                        paymentDetails: paymentDetails,
+                    }));
+                }
             }
         };
         /**
@@ -19903,14 +19928,20 @@
             this.checkoutStore.dispatch(new PaymentProcessSuccess());
         };
         CheckoutPaymentService.prototype.actionAllowed = function () {
-            return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
-                this.cartData.isGuestCart);
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+                this.activeCartService.isGuestCart());
         };
         CheckoutPaymentService.ctorParameters = function () { return [
             { type: store.Store },
-            { type: CartDataService }
+            { type: AuthService },
+            { type: ActiveCartService }
         ]; };
-        CheckoutPaymentService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(core["ɵɵinject"](store.Store), core["ɵɵinject"](CartDataService)); }, token: CheckoutPaymentService, providedIn: "root" });
+        CheckoutPaymentService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
         CheckoutPaymentService = __decorate([
             core.Injectable({
                 providedIn: 'root',
