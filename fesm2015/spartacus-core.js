@@ -15761,19 +15761,20 @@ let CartEffects = class CartEffects {
                 }
                 return actions;
             }), catchError(error => {
-                const couponExpiredErrors = error.error.errors.filter(err => err.reason === 'invalid');
-                if (couponExpiredErrors.length > 0) {
-                    // clear coupons actions just wanted to reload cart again
-                    // no need to do it in refresh or keep that action
-                    // however removing this action will be a breaking change
-                    // remove that action in 2.0 release
-                    // @deprecated since 1.4
-                    return from([
-                        new LoadCart(Object.assign({}, payload)),
-                        new ClearExpiredCoupons({}),
-                    ]);
-                }
-                if (error && error.error && error.error.errors) {
+                var _a, _b;
+                if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                    const couponExpiredErrors = error.error.errors.filter(err => err.reason === 'invalid');
+                    if (couponExpiredErrors.length > 0) {
+                        // clear coupons actions just wanted to reload cart again
+                        // no need to do it in refresh or keep that action
+                        // however removing this action will be a breaking change
+                        // remove that action in 2.0 release
+                        // @deprecated since 1.4
+                        return from([
+                            new LoadCart(Object.assign({}, payload)),
+                            new ClearExpiredCoupons({}),
+                        ]);
+                    }
                     const cartNotFoundErrors = error.error.errors.filter(err => err.reason === 'notFound' || 'UnknownResourceError');
                     if (cartNotFoundErrors.length > 0 &&
                         payload.extraData &&
