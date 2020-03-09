@@ -18755,11 +18755,11 @@ var TranslationService = /** @class */ (function () {
  */
 var CheckoutPageMetaResolver = /** @class */ (function (_super) {
     __extends(CheckoutPageMetaResolver, _super);
-    function CheckoutPageMetaResolver(cartService, translation) {
+    function CheckoutPageMetaResolver(translation, activeCartService) {
         var _this = _super.call(this) || this;
-        _this.cartService = cartService;
         _this.translation = translation;
-        _this.cart$ = _this.cartService.getActive();
+        _this.activeCartService = activeCartService;
+        _this.cart$ = _this.activeCartService.getActive();
         _this.pageType = PageType.CONTENT_PAGE;
         _this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
         return _this;
@@ -18793,10 +18793,10 @@ var CheckoutPageMetaResolver = /** @class */ (function (_super) {
         return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
     };
     CheckoutPageMetaResolver.ctorParameters = function () { return [
-        { type: CartService },
-        { type: TranslationService }
+        { type: TranslationService },
+        { type: ActiveCartService }
     ]; };
-    CheckoutPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(CartService), ɵɵinject(TranslationService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+    CheckoutPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(TranslationService), ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
     CheckoutPageMetaResolver = __decorate([
         Injectable({
             providedIn: 'root',

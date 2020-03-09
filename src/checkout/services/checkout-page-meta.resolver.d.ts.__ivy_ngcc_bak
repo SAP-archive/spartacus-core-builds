@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { CartService } from '../../cart/facade/cart.service';
+import { ActiveCartService } from '../../cart/facade/active-cart.service';
 import { PageMeta, PageRobotsMeta } from '../../cms/model/page.model';
 import { PageMetaResolver } from '../../cms/page/page-meta.resolver';
 import { PageRobotsResolver, PageTitleResolver } from '../../cms/page/page.resolvers';
@@ -13,10 +13,10 @@ import { Cart } from '../../model/cart.model';
  * The page title and robots are resolved in this implementation only.
  */
 export declare class CheckoutPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageRobotsResolver {
-    protected cartService: CartService;
     protected translation: TranslationService;
+    protected activeCartService: ActiveCartService;
     private cart$;
-    constructor(cartService: CartService, translation: TranslationService);
+    constructor(translation: TranslationService, activeCartService: ActiveCartService);
     /**
      * @deprecated since version 1.3
      *

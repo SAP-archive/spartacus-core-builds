@@ -16231,11 +16231,11 @@ class TranslationService {
  * The page title and robots are resolved in this implementation only.
  */
 let CheckoutPageMetaResolver = class CheckoutPageMetaResolver extends PageMetaResolver {
-    constructor(cartService, translation) {
+    constructor(translation, activeCartService) {
         super();
-        this.cartService = cartService;
         this.translation = translation;
-        this.cart$ = this.cartService.getActive();
+        this.activeCartService = activeCartService;
+        this.cart$ = this.activeCartService.getActive();
         this.pageType = PageType.CONTENT_PAGE;
         this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
     }
@@ -16259,12 +16259,12 @@ let CheckoutPageMetaResolver = class CheckoutPageMetaResolver extends PageMetaRe
         return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
     }
 };
-CheckoutPageMetaResolver.ɵfac = function CheckoutPageMetaResolver_Factory(t) { return new (t || CheckoutPageMetaResolver)(ɵngcc0.ɵɵinject(CartService), ɵngcc0.ɵɵinject(TranslationService)); };
+CheckoutPageMetaResolver.ɵfac = function CheckoutPageMetaResolver_Factory(t) { return new (t || CheckoutPageMetaResolver)(ɵngcc0.ɵɵinject(TranslationService), ɵngcc0.ɵɵinject(ActiveCartService)); };
 CheckoutPageMetaResolver.ctorParameters = () => [
-    { type: CartService },
-    { type: TranslationService }
+    { type: TranslationService },
+    { type: ActiveCartService }
 ];
-CheckoutPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(CartService), ɵɵinject(TranslationService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+CheckoutPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(TranslationService), ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
 
 const initialState$c = {
     address: {},
@@ -24767,7 +24767,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
         args: [{
                 providedIn: 'root'
             }]
-    }], function () { return [{ type: CartService }, { type: TranslationService }]; }, null); })();
+    }], function () { return [{ type: TranslationService }, { type: ActiveCartService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(UserAddressConnector, [{
         type: Injectable,
         args: [{
