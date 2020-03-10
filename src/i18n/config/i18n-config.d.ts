@@ -19,10 +19,6 @@ export declare abstract class I18nConfig {
              * `assets/i18n-assets/{{lng}}/{{ns}}.json`
              */
             loadPath?: string;
-            /**
-             * @deprecated since 1.4 - this property can be removed since it's not used and we are using Angular HttpClient for loading JSON translations
-             */
-            crossDomain?: boolean;
         };
         /**
          * Reference to translation resources that are eagerly bundled with JS app.
