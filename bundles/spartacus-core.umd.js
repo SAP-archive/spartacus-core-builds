@@ -12057,6 +12057,87 @@
         useFactory: serviceMapFactory,
     };
 
+    function baseSiteConfigValidator(config) {
+        if (getContextParameterDefault(config, BASE_SITE_CONTEXT_ID) === undefined) {
+            return 'Please configure context.parameters.baseSite before using storefront library!';
+        }
+    }
+
+    function defaultSiteContextConfigFactory() {
+        var _a;
+        return {
+            context: (_a = {},
+                _a[LANGUAGE_CONTEXT_ID] = [
+                    'en',
+                    'de',
+                    'ja',
+                    'zh',
+                    'ru',
+                    'fr',
+                    'tr',
+                    'it',
+                    'es',
+                    'uk',
+                    'pl',
+                    'nl',
+                    'hi',
+                    'ar',
+                    'pt',
+                    'bn',
+                    'pa',
+                ],
+                _a[CURRENCY_CONTEXT_ID] = [
+                    'USD',
+                    'EUR',
+                    'JPY',
+                    'GBP',
+                    'AUD',
+                    'CAD',
+                    'CHF',
+                    'CNY',
+                    'SEK',
+                    'NZD',
+                    'MXN',
+                    'SGD',
+                    'HKD',
+                    'NOK',
+                    'KRW',
+                    'TRY',
+                    'RUB',
+                    'INR',
+                    'BRL',
+                    'ZAR',
+                ],
+                _a),
+        };
+    }
+
+    function initializeContext(baseSiteService, langService, currService, configInit) {
+        return function () {
+            configInit.getStableConfig('context').then(function () {
+                baseSiteService.initialize();
+                langService.initialize();
+                currService.initialize();
+            });
+        };
+    }
+    var contextServiceProviders = [
+        BaseSiteService,
+        LanguageService,
+        CurrencyService,
+        {
+            provide: core.APP_INITIALIZER,
+            useFactory: initializeContext,
+            deps: [
+                BaseSiteService,
+                LanguageService,
+                CurrencyService,
+                ConfigInitializerService,
+            ],
+            multi: true,
+        },
+    ];
+
     var SiteContextParamsService = /** @class */ (function () {
         function SiteContextParamsService(config, injector, serviceMap) {
             this.config = config;
@@ -12309,109 +12390,6 @@
             provide: core.APP_INITIALIZER,
             useFactory: initSiteContextRoutesHandler,
             deps: [SiteContextRoutesHandler, ConfigInitializerService],
-            multi: true,
-        },
-    ];
-    /**
-     * @deprecated since 1.3.1; TODO: remove
-     */
-    function deprecatedInitSiteContextRoutesHandler(siteContextRoutesHandler) {
-        return function () {
-            siteContextRoutesHandler.init();
-        };
-    }
-    /**
-     * @deprecated since 1.3.1; TODO: remove
-     */
-    var deprecatedSiteContextParamsProviders = [
-        SiteContextParamsService,
-        SiteContextUrlSerializer,
-        { provide: router.UrlSerializer, useExisting: SiteContextUrlSerializer },
-        {
-            provide: core.APP_INITIALIZER,
-            useFactory: deprecatedInitSiteContextRoutesHandler,
-            deps: [SiteContextRoutesHandler],
-            multi: true,
-        },
-    ];
-
-    function baseSiteConfigValidator(config) {
-        if (getContextParameterDefault(config, BASE_SITE_CONTEXT_ID) === undefined) {
-            return 'Please configure context.parameters.baseSite before using storefront library!';
-        }
-    }
-
-    function defaultSiteContextConfigFactory() {
-        var _a;
-        return {
-            context: (_a = {},
-                _a[LANGUAGE_CONTEXT_ID] = [
-                    'en',
-                    'de',
-                    'ja',
-                    'zh',
-                    'ru',
-                    'fr',
-                    'tr',
-                    'it',
-                    'es',
-                    'uk',
-                    'pl',
-                    'nl',
-                    'hi',
-                    'ar',
-                    'pt',
-                    'bn',
-                    'pa',
-                ],
-                _a[CURRENCY_CONTEXT_ID] = [
-                    'USD',
-                    'EUR',
-                    'JPY',
-                    'GBP',
-                    'AUD',
-                    'CAD',
-                    'CHF',
-                    'CNY',
-                    'SEK',
-                    'NZD',
-                    'MXN',
-                    'SGD',
-                    'HKD',
-                    'NOK',
-                    'KRW',
-                    'TRY',
-                    'RUB',
-                    'INR',
-                    'BRL',
-                    'ZAR',
-                ],
-                _a),
-        };
-    }
-
-    function initializeContext(baseSiteService, langService, currService, configInit) {
-        return function () {
-            configInit.getStableConfig('context').then(function () {
-                baseSiteService.initialize();
-                langService.initialize();
-                currService.initialize();
-            });
-        };
-    }
-    var contextServiceProviders = [
-        BaseSiteService,
-        LanguageService,
-        CurrencyService,
-        {
-            provide: core.APP_INITIALIZER,
-            useFactory: initializeContext,
-            deps: [
-                BaseSiteService,
-                LanguageService,
-                CurrencyService,
-                ConfigInitializerService,
-            ],
             multi: true,
         },
     ];
@@ -28028,7 +28006,6 @@
     exports.getStateSlice = getStateSlice;
     exports.httpErrorInterceptors = httpErrorInterceptors;
     exports.initConfigurableRoutes = initConfigurableRoutes;
-    exports.initSiteContextRoutesHandler = deprecatedInitSiteContextRoutesHandler;
     exports.initialEntityState = initialEntityState;
     exports.initialLoaderState = initialLoaderState;
     exports.initialProcessesState = initialProcessesState;
@@ -28047,201 +28024,200 @@
     exports.provideConfigFromMetaTags = provideConfigFromMetaTags;
     exports.provideConfigValidator = provideConfigValidator;
     exports.serviceMapFactory = serviceMapFactory;
-    exports.siteContextParamsProviders = deprecatedSiteContextParamsProviders;
     exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;
     exports.withdrawOn = withdrawOn;
     exports.ɵa = cartStatePersistenceFactory;
     exports.ɵb = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵba = asmStoreConfigFactory;
-    exports.ɵbb = AsmStoreModule;
-    exports.ɵbc = getReducers$3;
-    exports.ɵbd = reducerToken$3;
-    exports.ɵbe = reducerProvider$3;
-    exports.ɵbf = clearCustomerSupportAgentAsmState;
-    exports.ɵbg = metaReducers$2;
-    exports.ɵbh = effects$3;
-    exports.ɵbi = CustomerEffects;
-    exports.ɵbj = CustomerSupportAgentTokenEffects;
-    exports.ɵbk = UserAuthenticationTokenService;
-    exports.ɵbl = reducer$7;
-    exports.ɵbm = defaultAsmConfig;
-    exports.ɵbn = interceptors$2;
-    exports.ɵbo = CustomerSupportAgentAuthErrorInterceptor;
-    exports.ɵbp = CustomerSupportAgentErrorHandlingService;
-    exports.ɵbq = authStoreConfigFactory;
-    exports.ɵbr = AuthStoreModule;
-    exports.ɵbs = getReducers;
-    exports.ɵbt = reducerToken;
-    exports.ɵbu = reducerProvider;
-    exports.ɵbv = clearAuthState;
-    exports.ɵbw = metaReducers;
-    exports.ɵbx = effects;
-    exports.ɵby = ClientTokenEffect;
-    exports.ɵbz = UserTokenEffects;
+    exports.ɵba = getReducers$3;
+    exports.ɵbb = reducerToken$3;
+    exports.ɵbc = reducerProvider$3;
+    exports.ɵbd = clearCustomerSupportAgentAsmState;
+    exports.ɵbe = metaReducers$2;
+    exports.ɵbf = effects$3;
+    exports.ɵbg = CustomerEffects;
+    exports.ɵbh = CustomerSupportAgentTokenEffects;
+    exports.ɵbi = UserAuthenticationTokenService;
+    exports.ɵbj = reducer$7;
+    exports.ɵbk = defaultAsmConfig;
+    exports.ɵbl = interceptors$2;
+    exports.ɵbm = CustomerSupportAgentAuthErrorInterceptor;
+    exports.ɵbn = CustomerSupportAgentErrorHandlingService;
+    exports.ɵbo = authStoreConfigFactory;
+    exports.ɵbp = AuthStoreModule;
+    exports.ɵbq = getReducers;
+    exports.ɵbr = reducerToken;
+    exports.ɵbs = reducerProvider;
+    exports.ɵbt = clearAuthState;
+    exports.ɵbu = metaReducers;
+    exports.ɵbv = effects;
+    exports.ɵbw = ClientTokenEffect;
+    exports.ɵbx = UserTokenEffects;
+    exports.ɵby = ClientAuthenticationTokenService;
+    exports.ɵbz = reducer;
     exports.ɵc = configFromCookieFactory;
-    exports.ɵca = ClientAuthenticationTokenService;
-    exports.ɵcb = reducer;
-    exports.ɵcc = defaultAuthConfig;
-    exports.ɵcd = interceptors;
-    exports.ɵce = ClientTokenInterceptor;
-    exports.ɵcf = UserTokenInterceptor;
-    exports.ɵcg = AuthErrorInterceptor;
-    exports.ɵch = UserErrorHandlingService;
-    exports.ɵci = UrlParsingService;
-    exports.ɵcj = ClientErrorHandlingService;
-    exports.ɵck = TokenRevocationInterceptor;
-    exports.ɵcl = AuthServices;
-    exports.ɵcm = cartStoreConfigFactory;
-    exports.ɵcn = CartStoreModule;
-    exports.ɵco = getReducers$5;
-    exports.ɵcp = reducerToken$5;
-    exports.ɵcq = reducerProvider$5;
-    exports.ɵcr = clearCartState;
-    exports.ɵcs = metaReducers$3;
-    exports.ɵct = clearMultiCartState;
-    exports.ɵcu = multiCartMetaReducers;
-    exports.ɵcv = multiCartReducerToken;
-    exports.ɵcw = getMultiCartReducers;
-    exports.ɵcx = multiCartReducerProvider;
-    exports.ɵcy = CartEffects;
-    exports.ɵcz = CartEntryEffects;
+    exports.ɵca = defaultAuthConfig;
+    exports.ɵcb = interceptors;
+    exports.ɵcc = ClientTokenInterceptor;
+    exports.ɵcd = UserTokenInterceptor;
+    exports.ɵce = AuthErrorInterceptor;
+    exports.ɵcf = UserErrorHandlingService;
+    exports.ɵcg = UrlParsingService;
+    exports.ɵch = ClientErrorHandlingService;
+    exports.ɵci = TokenRevocationInterceptor;
+    exports.ɵcj = AuthServices;
+    exports.ɵck = cartStoreConfigFactory;
+    exports.ɵcl = CartStoreModule;
+    exports.ɵcm = getReducers$5;
+    exports.ɵcn = reducerToken$5;
+    exports.ɵco = reducerProvider$5;
+    exports.ɵcp = clearCartState;
+    exports.ɵcq = metaReducers$3;
+    exports.ɵcr = clearMultiCartState;
+    exports.ɵcs = multiCartMetaReducers;
+    exports.ɵct = multiCartReducerToken;
+    exports.ɵcu = getMultiCartReducers;
+    exports.ɵcv = multiCartReducerProvider;
+    exports.ɵcw = CartEffects;
+    exports.ɵcx = CartEntryEffects;
+    exports.ɵcy = CartVoucherEffects;
+    exports.ɵcz = WishListEffects;
     exports.ɵd = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵda = CartVoucherEffects;
-    exports.ɵdb = WishListEffects;
-    exports.ɵdc = SaveCartConnector;
-    exports.ɵdd = SaveCartAdapter;
-    exports.ɵde = reducer$9;
-    exports.ɵdf = MultiCartStoreModule;
-    exports.ɵdg = MultiCartEffects;
-    exports.ɵdh = processesLoaderReducer;
-    exports.ɵdi = activeCartReducer;
-    exports.ɵdj = cartEntitiesReducer;
-    exports.ɵdk = wishListReducer;
-    exports.ɵdl = CartPageMetaResolver;
-    exports.ɵdm = SiteContextParamsService;
-    exports.ɵdn = CheckoutStoreModule;
-    exports.ɵdo = getReducers$6;
-    exports.ɵdp = reducerToken$6;
-    exports.ɵdq = reducerProvider$6;
-    exports.ɵdr = effects$5;
-    exports.ɵds = AddressVerificationEffect;
-    exports.ɵdt = CardTypesEffects;
-    exports.ɵdu = CheckoutEffects;
-    exports.ɵdv = reducer$c;
-    exports.ɵdw = reducer$b;
-    exports.ɵdx = reducer$a;
-    exports.ɵdy = cmsStoreConfigFactory;
-    exports.ɵdz = CmsStoreModule;
+    exports.ɵda = SaveCartConnector;
+    exports.ɵdb = SaveCartAdapter;
+    exports.ɵdc = reducer$9;
+    exports.ɵdd = MultiCartStoreModule;
+    exports.ɵde = MultiCartEffects;
+    exports.ɵdf = processesLoaderReducer;
+    exports.ɵdg = activeCartReducer;
+    exports.ɵdh = cartEntitiesReducer;
+    exports.ɵdi = wishListReducer;
+    exports.ɵdj = CartPageMetaResolver;
+    exports.ɵdk = SiteContextParamsService;
+    exports.ɵdl = CheckoutStoreModule;
+    exports.ɵdm = getReducers$6;
+    exports.ɵdn = reducerToken$6;
+    exports.ɵdo = reducerProvider$6;
+    exports.ɵdp = effects$5;
+    exports.ɵdq = AddressVerificationEffect;
+    exports.ɵdr = CardTypesEffects;
+    exports.ɵds = CheckoutEffects;
+    exports.ɵdt = reducer$c;
+    exports.ɵdu = reducer$b;
+    exports.ɵdv = reducer$a;
+    exports.ɵdw = cmsStoreConfigFactory;
+    exports.ɵdx = CmsStoreModule;
+    exports.ɵdy = getReducers$8;
+    exports.ɵdz = reducerToken$8;
     exports.ɵe = initConfig;
-    exports.ɵea = getReducers$8;
-    exports.ɵeb = reducerToken$8;
-    exports.ɵec = reducerProvider$8;
-    exports.ɵed = clearCmsState;
-    exports.ɵee = metaReducers$4;
-    exports.ɵef = effects$7;
-    exports.ɵeg = ComponentsEffects;
-    exports.ɵeh = NavigationEntryItemEffects;
-    exports.ɵei = PageEffects;
-    exports.ɵej = reducer$g;
-    exports.ɵek = reducer$h;
-    exports.ɵel = reducer$e;
-    exports.ɵem = reducer$f;
-    exports.ɵen = configValidatorFactory;
-    exports.ɵeo = ConfigValidatorModule;
-    exports.ɵep = GlobalMessageStoreModule;
-    exports.ɵeq = getReducers$4;
-    exports.ɵer = reducerToken$4;
-    exports.ɵes = reducerProvider$4;
-    exports.ɵet = reducer$8;
-    exports.ɵeu = GlobalMessageEffect;
-    exports.ɵev = defaultGlobalMessageConfigFactory;
-    exports.ɵew = InternalServerErrorHandler;
-    exports.ɵex = HttpErrorInterceptor;
-    exports.ɵey = defaultI18nConfig;
-    exports.ɵez = i18nextProviders;
-    exports.ɵf = initSiteContextRoutesHandler;
-    exports.ɵfa = i18nextInit;
-    exports.ɵfb = MockTranslationService;
-    exports.ɵfc = kymaStoreConfigFactory;
-    exports.ɵfd = KymaStoreModule;
-    exports.ɵfe = getReducers$9;
-    exports.ɵff = reducerToken$9;
-    exports.ɵfg = reducerProvider$9;
-    exports.ɵfh = clearKymaState;
-    exports.ɵfi = metaReducers$5;
-    exports.ɵfj = effects$8;
-    exports.ɵfk = OpenIdTokenEffect;
-    exports.ɵfl = OpenIdAuthenticationTokenService;
-    exports.ɵfm = defaultKymaConfig;
-    exports.ɵfn = defaultOccAsmConfig;
-    exports.ɵfo = defaultOccCartConfig;
-    exports.ɵfp = OccSaveCartAdapter;
-    exports.ɵfq = defaultOccProductConfig;
-    exports.ɵfr = defaultOccSiteContextConfig;
-    exports.ɵfs = defaultOccStoreFinderConfig;
-    exports.ɵft = defaultOccUserConfig;
-    exports.ɵfu = UserNotificationPreferenceAdapter;
-    exports.ɵfv = defaultPersonalizationConfig;
-    exports.ɵfw = interceptors$3;
-    exports.ɵfx = OccPersonalizationIdInterceptor;
-    exports.ɵfy = OccPersonalizationTimeInterceptor;
-    exports.ɵfz = ProcessStoreModule;
-    exports.ɵg = siteContextParamsProviders;
-    exports.ɵga = getReducers$a;
-    exports.ɵgb = reducerToken$a;
-    exports.ɵgc = reducerProvider$a;
-    exports.ɵgd = productStoreConfigFactory;
-    exports.ɵge = ProductStoreModule;
-    exports.ɵgf = getReducers$b;
-    exports.ɵgg = reducerToken$b;
-    exports.ɵgh = reducerProvider$b;
-    exports.ɵgi = clearProductsState;
-    exports.ɵgj = metaReducers$6;
-    exports.ɵgk = effects$9;
-    exports.ɵgl = ProductReferencesEffects;
-    exports.ɵgm = ProductReviewsEffects;
-    exports.ɵgn = ProductsSearchEffects;
-    exports.ɵgo = ProductEffects;
-    exports.ɵgp = reducer$i;
-    exports.ɵgq = entityScopedLoaderReducer;
-    exports.ɵgr = scopedLoaderReducer;
-    exports.ɵgs = reducer$k;
-    exports.ɵgt = reducer$j;
-    exports.ɵgu = PageMetaResolver;
-    exports.ɵgv = addExternalRoutesFactory;
-    exports.ɵgw = getReducers$7;
-    exports.ɵgx = reducer$d;
-    exports.ɵgy = reducerToken$7;
-    exports.ɵgz = reducerProvider$7;
-    exports.ɵh = anonymousConsentsStoreConfigFactory;
-    exports.ɵha = CustomSerializer;
-    exports.ɵhb = effects$6;
-    exports.ɵhc = RouterEffects;
-    exports.ɵhd = SiteContextUrlSerializer;
-    exports.ɵhe = SiteContextRoutesHandler;
-    exports.ɵhf = defaultSiteContextConfigFactory;
-    exports.ɵhg = siteContextStoreConfigFactory;
-    exports.ɵhh = SiteContextStoreModule;
-    exports.ɵhi = getReducers$1;
-    exports.ɵhj = reducerToken$1;
-    exports.ɵhk = reducerProvider$1;
-    exports.ɵhl = effects$2;
-    exports.ɵhm = LanguagesEffects;
-    exports.ɵhn = CurrenciesEffects;
-    exports.ɵho = BaseSiteEffects;
-    exports.ɵhp = reducer$3;
-    exports.ɵhq = reducer$2;
-    exports.ɵhr = reducer$1;
-    exports.ɵhs = initializeContext;
-    exports.ɵht = contextServiceProviders;
+    exports.ɵea = reducerProvider$8;
+    exports.ɵeb = clearCmsState;
+    exports.ɵec = metaReducers$4;
+    exports.ɵed = effects$7;
+    exports.ɵee = ComponentsEffects;
+    exports.ɵef = NavigationEntryItemEffects;
+    exports.ɵeg = PageEffects;
+    exports.ɵeh = reducer$g;
+    exports.ɵei = reducer$h;
+    exports.ɵej = reducer$e;
+    exports.ɵek = reducer$f;
+    exports.ɵel = configValidatorFactory;
+    exports.ɵem = ConfigValidatorModule;
+    exports.ɵen = GlobalMessageStoreModule;
+    exports.ɵeo = getReducers$4;
+    exports.ɵep = reducerToken$4;
+    exports.ɵeq = reducerProvider$4;
+    exports.ɵer = reducer$8;
+    exports.ɵes = GlobalMessageEffect;
+    exports.ɵet = defaultGlobalMessageConfigFactory;
+    exports.ɵeu = InternalServerErrorHandler;
+    exports.ɵev = HttpErrorInterceptor;
+    exports.ɵew = defaultI18nConfig;
+    exports.ɵex = i18nextProviders;
+    exports.ɵey = i18nextInit;
+    exports.ɵez = MockTranslationService;
+    exports.ɵf = anonymousConsentsStoreConfigFactory;
+    exports.ɵfa = kymaStoreConfigFactory;
+    exports.ɵfb = KymaStoreModule;
+    exports.ɵfc = getReducers$9;
+    exports.ɵfd = reducerToken$9;
+    exports.ɵfe = reducerProvider$9;
+    exports.ɵff = clearKymaState;
+    exports.ɵfg = metaReducers$5;
+    exports.ɵfh = effects$8;
+    exports.ɵfi = OpenIdTokenEffect;
+    exports.ɵfj = OpenIdAuthenticationTokenService;
+    exports.ɵfk = defaultKymaConfig;
+    exports.ɵfl = defaultOccAsmConfig;
+    exports.ɵfm = defaultOccCartConfig;
+    exports.ɵfn = OccSaveCartAdapter;
+    exports.ɵfo = defaultOccProductConfig;
+    exports.ɵfp = defaultOccSiteContextConfig;
+    exports.ɵfq = defaultOccStoreFinderConfig;
+    exports.ɵfr = defaultOccUserConfig;
+    exports.ɵfs = UserNotificationPreferenceAdapter;
+    exports.ɵft = defaultPersonalizationConfig;
+    exports.ɵfu = interceptors$3;
+    exports.ɵfv = OccPersonalizationIdInterceptor;
+    exports.ɵfw = OccPersonalizationTimeInterceptor;
+    exports.ɵfx = ProcessStoreModule;
+    exports.ɵfy = getReducers$a;
+    exports.ɵfz = reducerToken$a;
+    exports.ɵg = AnonymousConsentsStoreModule;
+    exports.ɵga = reducerProvider$a;
+    exports.ɵgb = productStoreConfigFactory;
+    exports.ɵgc = ProductStoreModule;
+    exports.ɵgd = getReducers$b;
+    exports.ɵge = reducerToken$b;
+    exports.ɵgf = reducerProvider$b;
+    exports.ɵgg = clearProductsState;
+    exports.ɵgh = metaReducers$6;
+    exports.ɵgi = effects$9;
+    exports.ɵgj = ProductReferencesEffects;
+    exports.ɵgk = ProductReviewsEffects;
+    exports.ɵgl = ProductsSearchEffects;
+    exports.ɵgm = ProductEffects;
+    exports.ɵgn = reducer$i;
+    exports.ɵgo = entityScopedLoaderReducer;
+    exports.ɵgp = scopedLoaderReducer;
+    exports.ɵgq = reducer$k;
+    exports.ɵgr = reducer$j;
+    exports.ɵgs = PageMetaResolver;
+    exports.ɵgt = addExternalRoutesFactory;
+    exports.ɵgu = getReducers$7;
+    exports.ɵgv = reducer$d;
+    exports.ɵgw = reducerToken$7;
+    exports.ɵgx = reducerProvider$7;
+    exports.ɵgy = CustomSerializer;
+    exports.ɵgz = effects$6;
+    exports.ɵh = TRANSFER_STATE_META_REDUCER;
+    exports.ɵha = RouterEffects;
+    exports.ɵhb = defaultSiteContextConfigFactory;
+    exports.ɵhc = siteContextStoreConfigFactory;
+    exports.ɵhd = SiteContextStoreModule;
+    exports.ɵhe = getReducers$1;
+    exports.ɵhf = reducerToken$1;
+    exports.ɵhg = reducerProvider$1;
+    exports.ɵhh = effects$2;
+    exports.ɵhi = LanguagesEffects;
+    exports.ɵhj = CurrenciesEffects;
+    exports.ɵhk = BaseSiteEffects;
+    exports.ɵhl = reducer$3;
+    exports.ɵhm = reducer$2;
+    exports.ɵhn = reducer$1;
+    exports.ɵho = initializeContext;
+    exports.ɵhp = contextServiceProviders;
+    exports.ɵhq = initSiteContextRoutesHandler;
+    exports.ɵhr = siteContextParamsProviders;
+    exports.ɵhs = SiteContextUrlSerializer;
+    exports.ɵht = SiteContextRoutesHandler;
     exports.ɵhu = baseSiteConfigValidator;
     exports.ɵhv = interceptors$4;
     exports.ɵhw = CmsTicketInterceptor;
     exports.ɵhx = defaultStoreFinderConfig;
     exports.ɵhy = StoreFinderStoreModule;
     exports.ɵhz = getReducers$c;
-    exports.ɵi = AnonymousConsentsStoreModule;
+    exports.ɵi = STORAGE_SYNC_META_REDUCER;
     exports.ɵia = reducerToken$c;
     exports.ɵib = reducerProvider$c;
     exports.ɵic = effects$a;
@@ -28268,7 +28244,7 @@
     exports.ɵix = UserAddressesEffects;
     exports.ɵiy = UserConsentsEffect;
     exports.ɵiz = UserDetailsEffects;
-    exports.ɵj = TRANSFER_STATE_META_REDUCER;
+    exports.ɵj = stateMetaReducers;
     exports.ɵja = UserOrdersEffect;
     exports.ɵjb = UserRegisterEffects;
     exports.ɵjc = CustomerCouponEffects;
@@ -28295,22 +28271,22 @@
     exports.ɵjx = reducer$z;
     exports.ɵjy = FindProductPageMetaResolver;
     exports.ɵjz = PageMetaResolver;
-    exports.ɵk = STORAGE_SYNC_META_REDUCER;
-    exports.ɵl = stateMetaReducers;
-    exports.ɵm = getStorageSyncReducer;
-    exports.ɵn = getTransferStateReducer;
-    exports.ɵo = getReducers$2;
-    exports.ɵp = reducerToken$2;
-    exports.ɵq = reducerProvider$2;
-    exports.ɵr = clearAnonymousConsentTemplates;
-    exports.ɵs = metaReducers$1;
-    exports.ɵt = effects$1;
-    exports.ɵu = AnonymousConsentsEffects;
-    exports.ɵv = reducer$6;
-    exports.ɵw = reducer$4;
-    exports.ɵx = reducer$5;
-    exports.ɵy = interceptors$1;
-    exports.ɵz = AnonymousConsentsInterceptor;
+    exports.ɵk = getStorageSyncReducer;
+    exports.ɵl = getTransferStateReducer;
+    exports.ɵm = getReducers$2;
+    exports.ɵn = reducerToken$2;
+    exports.ɵo = reducerProvider$2;
+    exports.ɵp = clearAnonymousConsentTemplates;
+    exports.ɵq = metaReducers$1;
+    exports.ɵr = effects$1;
+    exports.ɵs = AnonymousConsentsEffects;
+    exports.ɵt = reducer$6;
+    exports.ɵu = reducer$4;
+    exports.ɵv = reducer$5;
+    exports.ɵw = interceptors$1;
+    exports.ɵx = AnonymousConsentsInterceptor;
+    exports.ɵy = asmStoreConfigFactory;
+    exports.ɵz = AsmStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
