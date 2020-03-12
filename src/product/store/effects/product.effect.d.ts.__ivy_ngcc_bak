@@ -6,7 +6,7 @@ export declare class ProductEffects {
     private actions$;
     private productConnector;
     private contextChange$;
-    loadProduct$: ({ scheduler, debounce }?: any) => Observable<ProductActions.LoadProductFail | ProductActions.LoadProductSuccess>;
+    loadProduct$: (({ scheduler, debounce }?: any) => Observable<ProductActions.LoadProductFail | ProductActions.LoadProductSuccess>) & import("@ngrx/effects").CreateEffectMetadata;
     private productLoadEffect;
     constructor(actions$: Actions, productConnector: ProductConnector);
 }

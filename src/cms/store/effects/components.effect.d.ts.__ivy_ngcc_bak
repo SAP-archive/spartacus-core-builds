@@ -10,6 +10,6 @@ export declare class ComponentsEffects {
     private featureConfigService;
     constructor(actions$: Actions, cmsComponentLoader: CmsComponentConnector, featureConfigService: FeatureConfigService);
     private contextChange$;
-    loadComponent$: ({ scheduler, debounce }?: any) => Observable<CmsActions.LoadCmsComponentFail | CmsActions.LoadCmsComponentSuccess<CmsComponent>>;
+    loadComponent$: (({ scheduler, debounce }?: any) => Observable<CmsActions.LoadCmsComponentFail | CmsActions.LoadCmsComponentSuccess<CmsComponent>>) & import("@ngrx/effects").CreateEffectMetadata;
     private loadComponentsEffect;
 }

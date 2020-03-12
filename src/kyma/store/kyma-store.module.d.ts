@@ -8,8 +8,8 @@ import * as ɵngcc5 from '@ngrx/effects';
 import * as ɵngcc6 from '../../config/config.module';
 export declare function kymaStoreConfigFactory(): StateConfig;
 export declare class KymaStoreModule {
-    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<KymaStoreModule, never, [typeof ɵngcc1.CommonModule, typeof ɵngcc2.HttpClientModule, typeof ɵngcc3.StateModule, typeof ɵngcc4.StoreFeatureModule, typeof ɵngcc5.ɵngrx_modules_effects_effects_c, typeof ɵngcc6.ConfigModule], never>;
+    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<KymaStoreModule, never, [typeof ɵngcc1.CommonModule, typeof ɵngcc2.HttpClientModule, typeof ɵngcc3.StateModule, typeof ɵngcc4.StoreFeatureModule, typeof ɵngcc5.EffectsFeatureModule, typeof ɵngcc6.ConfigModule], never>;
     static ɵinj: ɵngcc0.ɵɵInjectorDef<KymaStoreModule>;
 }
 
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia3ltYS1zdG9yZS5tb2R1bGUuZC50cyIsInNvdXJjZXMiOlsia3ltYS1zdG9yZS5tb2R1bGUuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Ozs7QUFDQTs7OztBQUVBOyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IFN0YXRlQ29uZmlnIH0gZnJvbSAnLi4vLi4vc3RhdGUvY29uZmlnL3N0YXRlLWNvbmZpZyc7XG5leHBvcnQgZGVjbGFyZSBmdW5jdGlvbiBreW1hU3RvcmVDb25maWdGYWN0b3J5KCk6IFN0YXRlQ29uZmlnO1xuZXhwb3J0IGRlY2xhcmUgY2xhc3MgS3ltYVN0b3JlTW9kdWxlIHtcbn1cbiJdfQ==
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia3ltYS1zdG9yZS5tb2R1bGUuZC50cyIsInNvdXJjZXMiOlsia3ltYS1zdG9yZS5tb2R1bGUuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Ozs7QUFDQTs7OztBQUVBIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgU3RhdGVDb25maWcgfSBmcm9tICcuLi8uLi9zdGF0ZS9jb25maWcvc3RhdGUtY29uZmlnJztcbmV4cG9ydCBkZWNsYXJlIGZ1bmN0aW9uIGt5bWFTdG9yZUNvbmZpZ0ZhY3RvcnkoKTogU3RhdGVDb25maWc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBLeW1hU3RvcmVNb2R1bGUge1xufVxuIl19

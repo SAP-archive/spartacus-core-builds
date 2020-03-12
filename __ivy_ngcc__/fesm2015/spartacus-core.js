@@ -23763,7 +23763,7 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
     }], function () { return [{ type: ɵngcc4.Actions }, { type: UserAuthenticationTokenService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AuthStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AuthStoreModule, [{
         type: NgModule,
         args: [{
@@ -24343,7 +24343,7 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: SiteConnector }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(SiteContextStoreModule, { imports: function () { return [CommonModule,
-        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule]; } }); })();
+        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SiteContextStoreModule, [{
         type: NgModule,
         args: [{
@@ -24372,7 +24372,7 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
     }], null, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AnonymousConsentsStoreModule, { imports: function () { return [CommonModule,
         ReactiveFormsModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AnonymousConsentsStoreModule, [{
         type: NgModule,
         args: [{
@@ -24414,7 +24414,7 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
     }], function () { return [{ type: ɵngcc4.Actions }, { type: UserAuthenticationTokenService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AsmStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AsmStoreModule, [{
         type: NgModule,
         args: [{
@@ -24527,7 +24527,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
                 type: Inject,
                 args: [PLATFORM_ID]
             }] }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(GlobalMessageModule, { imports: [GlobalMessageStoreModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule] }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(GlobalMessageModule, { imports: [GlobalMessageStoreModule, ɵngcc4.EffectsFeatureModule, ConfigModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(GlobalMessageModule, [{
         type: NgModule,
         args: [{
@@ -24655,7 +24655,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
     }], function () { return [{ type: StatePersistenceService }, { type: ɵngcc1.Store }, { type: SiteContextParamsService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CartStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartStoreModule, [{
         type: NgModule,
         args: [{
@@ -24674,7 +24674,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(MultiCartStoreModule, { imports: function () { return [CommonModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(MultiCartStoreModule, [{
         type: NgModule,
         args: [{
@@ -24740,7 +24740,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: CheckoutDeliveryConnector }, { type: CheckoutPaymentConnector }, { type: CheckoutConnector }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CheckoutStoreModule, { imports: function () { return [CommonModule,
-        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c]; } }); })();
+        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CheckoutStoreModule, [{
         type: NgModule,
         args: [{
@@ -24860,7 +24860,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(RouterEffects, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: ɵngcc2.Router }, { type: ɵngcc6.Location }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(RoutingModule, { imports: [ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ɵngcc7.StoreRouterConnectingModule] }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(RoutingModule, { imports: [ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ɵngcc7.StoreRouterConnectingModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(RoutingModule, [{
         type: NgModule,
         args: [{
@@ -24888,7 +24888,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
     }], function () { return [{ type: ɵngcc4.Actions }, { type: CmsPageConnector }, { type: RoutingService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CmsStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CmsStoreModule, [{
         type: NgModule,
         args: [{
@@ -24991,7 +24991,7 @@ const ɵMockDatePipe_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(MockDatePipe)
     }], function () { return [{ type: ɵngcc4.Actions }, { type: OpenIdAuthenticationTokenService }, { type: KymaConfig }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(KymaStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(KymaStoreModule, [{
         type: NgModule,
         args: [{
@@ -25148,7 +25148,7 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: ProductConnector }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(ProductStoreModule, { imports: function () { return [CommonModule,
-        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, ConfigModule]; } }); })();
+        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ProductStoreModule, [{
         type: NgModule,
         args: [{
@@ -25205,7 +25205,7 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: StoreFinderConnector }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(StoreFinderStoreModule, { imports: function () { return [CommonModule,
-        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c]; } }); })();
+        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(StoreFinderStoreModule, [{
         type: NgModule,
         args: [{
@@ -25383,7 +25383,7 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
     }], function () { return [{ type: ɵngcc4.Actions }, { type: UserInterestsConnector }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(UserStoreModule, { imports: function () { return [CommonModule,
         ReactiveFormsModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.ɵngrx_modules_effects_effects_c, RouterModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, RouterModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(UserStoreModule, [{
         type: NgModule,
         args: [{
