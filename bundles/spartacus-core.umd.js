@@ -204,39 +204,6 @@
         return (mod && mod.__esModule) ? mod : { default: mod };
     }
 
-    var ConfigValidatorToken = new core.InjectionToken('ConfigurationValidator');
-    /**
-     * Use to probide config validation at app bootstrap (when all config chunks are merged)
-     *
-     * @param configValidator
-     */
-    function provideConfigValidator(configValidator) {
-        return {
-            provide: ConfigValidatorToken,
-            useValue: configValidator,
-            multi: true,
-        };
-    }
-    function validateConfig(config, configValidators) {
-        var e_1, _a;
-        try {
-            for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
-                var validate = configValidators_1_1.value;
-                var warning = validate(config);
-                if (warning) {
-                    console.warn(warning);
-                }
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-    }
-
     function isObject(item) {
         return item && typeof item === 'object' && !Array.isArray(item);
     }
@@ -269,9 +236,6 @@
         }
         return deepMerge.apply(void 0, __spread([target], sources));
     }
-
-    var CONFIG_INITIALIZER = new core.InjectionToken('ConfigInitializer');
-    var CONFIG_INITIALIZER_FORROOT_GUARD = new core.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
 
     /**
      * Global Configuration injection token, can be used to inject configuration to any part of the app
@@ -309,14 +273,8 @@
      * Factory function that merges all configurations chunks. Should not be used directly without explicit reason.
      *
      */
-    function configurationFactory(configChunks, configValidators, // TODO: remove, deprecated since 1.3, issue #5279
-    configInitializerGuard // TODO: remove, deprecated since 1.3, issue #5279
-    ) {
+    function configurationFactory(configChunks) {
         var config = deepMerge.apply(void 0, __spread([{}], configChunks));
-        // TODO: remove as validators should run independently, deprecated since 1.3, issue #5279
-        if (core.isDevMode() && !configInitializerGuard) {
-            validateConfig(config, configValidators || []);
-        }
         return config;
     }
     var ConfigModule = /** @class */ (function () {
@@ -360,11 +318,7 @@
                     {
                         provide: Config,
                         useFactory: configurationFactory,
-                        deps: [
-                            ConfigChunk,
-                            [new core.Optional(), ConfigValidatorToken],
-                            [new core.Optional(), CONFIG_INITIALIZER_FORROOT_GUARD],
-                        ],
+                        deps: [ConfigChunk],
                     },
                 ],
             };
@@ -439,6 +393,42 @@
         ], TestConfigModule);
         return TestConfigModule;
     }());
+
+    var ConfigValidatorToken = new core.InjectionToken('ConfigurationValidator');
+    /**
+     * Use to probide config validation at app bootstrap (when all config chunks are merged)
+     *
+     * @param configValidator
+     */
+    function provideConfigValidator(configValidator) {
+        return {
+            provide: ConfigValidatorToken,
+            useValue: configValidator,
+            multi: true,
+        };
+    }
+    function validateConfig(config, configValidators) {
+        var e_1, _a;
+        try {
+            for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
+                var validate = configValidators_1_1.value;
+                var warning = validate(config);
+                if (warning) {
+                    console.warn(warning);
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+    }
+
+    var CONFIG_INITIALIZER = new core.InjectionToken('ConfigInitializer');
+    var CONFIG_INITIALIZER_FORROOT_GUARD = new core.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
 
     /**
      * Provides support for CONFIG_INITIALIZERS
@@ -732,11 +722,7 @@
         };
         var ConfigInitializerModule_1;
         ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
-            core.NgModule({
-                imports: [
-                    ConfigValidatorModule.forRoot(),
-                ],
-            })
+            core.NgModule({})
         ], ConfigInitializerModule);
         return ConfigInitializerModule;
     }());
@@ -27703,6 +27689,7 @@
     exports.ConfigInitializerModule = ConfigInitializerModule;
     exports.ConfigInitializerService = ConfigInitializerService;
     exports.ConfigModule = ConfigModule;
+    exports.ConfigValidatorModule = ConfigValidatorModule;
     exports.ConfigValidatorToken = ConfigValidatorToken;
     exports.ConfigurableRoutesService = ConfigurableRoutesService;
     exports.ConflictHandler = ConflictHandler;
@@ -27992,6 +27979,7 @@
     exports.WindowRef = WindowRef;
     exports.WishListService = WishListService;
     exports.configInitializerFactory = configInitializerFactory;
+    exports.configValidatorFactory = configValidatorFactory;
     exports.configurationFactory = configurationFactory;
     exports.contextServiceMapProvider = contextServiceMapProvider;
     exports.defaultAnonymousConsentsConfig = defaultAnonymousConsentsConfig;
@@ -28121,156 +28109,154 @@
     exports.ɵei = reducer$h;
     exports.ɵej = reducer$e;
     exports.ɵek = reducer$f;
-    exports.ɵel = configValidatorFactory;
-    exports.ɵem = ConfigValidatorModule;
-    exports.ɵen = GlobalMessageStoreModule;
-    exports.ɵeo = getReducers$4;
-    exports.ɵep = reducerToken$4;
-    exports.ɵeq = reducerProvider$4;
-    exports.ɵer = reducer$8;
-    exports.ɵes = GlobalMessageEffect;
-    exports.ɵet = defaultGlobalMessageConfigFactory;
-    exports.ɵeu = InternalServerErrorHandler;
-    exports.ɵev = HttpErrorInterceptor;
-    exports.ɵew = defaultI18nConfig;
-    exports.ɵex = i18nextProviders;
-    exports.ɵey = i18nextInit;
-    exports.ɵez = MockTranslationService;
+    exports.ɵel = GlobalMessageStoreModule;
+    exports.ɵem = getReducers$4;
+    exports.ɵen = reducerToken$4;
+    exports.ɵeo = reducerProvider$4;
+    exports.ɵep = reducer$8;
+    exports.ɵeq = GlobalMessageEffect;
+    exports.ɵer = defaultGlobalMessageConfigFactory;
+    exports.ɵes = InternalServerErrorHandler;
+    exports.ɵet = HttpErrorInterceptor;
+    exports.ɵeu = defaultI18nConfig;
+    exports.ɵev = i18nextProviders;
+    exports.ɵew = i18nextInit;
+    exports.ɵex = MockTranslationService;
+    exports.ɵey = kymaStoreConfigFactory;
+    exports.ɵez = KymaStoreModule;
     exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = kymaStoreConfigFactory;
-    exports.ɵfb = KymaStoreModule;
-    exports.ɵfc = getReducers$9;
-    exports.ɵfd = reducerToken$9;
-    exports.ɵfe = reducerProvider$9;
-    exports.ɵff = clearKymaState;
-    exports.ɵfg = metaReducers$5;
-    exports.ɵfh = effects$8;
-    exports.ɵfi = OpenIdTokenEffect;
-    exports.ɵfj = OpenIdAuthenticationTokenService;
-    exports.ɵfk = defaultKymaConfig;
-    exports.ɵfl = defaultOccAsmConfig;
-    exports.ɵfm = defaultOccCartConfig;
-    exports.ɵfn = OccSaveCartAdapter;
-    exports.ɵfo = defaultOccProductConfig;
-    exports.ɵfp = defaultOccSiteContextConfig;
-    exports.ɵfq = defaultOccStoreFinderConfig;
-    exports.ɵfr = defaultOccUserConfig;
-    exports.ɵfs = UserNotificationPreferenceAdapter;
-    exports.ɵft = defaultPersonalizationConfig;
-    exports.ɵfu = interceptors$3;
-    exports.ɵfv = OccPersonalizationIdInterceptor;
-    exports.ɵfw = OccPersonalizationTimeInterceptor;
-    exports.ɵfx = ProcessStoreModule;
-    exports.ɵfy = getReducers$a;
-    exports.ɵfz = reducerToken$a;
+    exports.ɵfa = getReducers$9;
+    exports.ɵfb = reducerToken$9;
+    exports.ɵfc = reducerProvider$9;
+    exports.ɵfd = clearKymaState;
+    exports.ɵfe = metaReducers$5;
+    exports.ɵff = effects$8;
+    exports.ɵfg = OpenIdTokenEffect;
+    exports.ɵfh = OpenIdAuthenticationTokenService;
+    exports.ɵfi = defaultKymaConfig;
+    exports.ɵfj = defaultOccAsmConfig;
+    exports.ɵfk = defaultOccCartConfig;
+    exports.ɵfl = OccSaveCartAdapter;
+    exports.ɵfm = defaultOccProductConfig;
+    exports.ɵfn = defaultOccSiteContextConfig;
+    exports.ɵfo = defaultOccStoreFinderConfig;
+    exports.ɵfp = defaultOccUserConfig;
+    exports.ɵfq = UserNotificationPreferenceAdapter;
+    exports.ɵfr = defaultPersonalizationConfig;
+    exports.ɵfs = interceptors$3;
+    exports.ɵft = OccPersonalizationIdInterceptor;
+    exports.ɵfu = OccPersonalizationTimeInterceptor;
+    exports.ɵfv = ProcessStoreModule;
+    exports.ɵfw = getReducers$a;
+    exports.ɵfx = reducerToken$a;
+    exports.ɵfy = reducerProvider$a;
+    exports.ɵfz = productStoreConfigFactory;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = reducerProvider$a;
-    exports.ɵgb = productStoreConfigFactory;
-    exports.ɵgc = ProductStoreModule;
-    exports.ɵgd = getReducers$b;
-    exports.ɵge = reducerToken$b;
-    exports.ɵgf = reducerProvider$b;
-    exports.ɵgg = clearProductsState;
-    exports.ɵgh = metaReducers$6;
-    exports.ɵgi = effects$9;
-    exports.ɵgj = ProductReferencesEffects;
-    exports.ɵgk = ProductReviewsEffects;
-    exports.ɵgl = ProductsSearchEffects;
-    exports.ɵgm = ProductEffects;
-    exports.ɵgn = reducer$i;
-    exports.ɵgo = entityScopedLoaderReducer;
-    exports.ɵgp = scopedLoaderReducer;
-    exports.ɵgq = reducer$k;
-    exports.ɵgr = reducer$j;
-    exports.ɵgs = PageMetaResolver;
-    exports.ɵgt = addExternalRoutesFactory;
-    exports.ɵgu = getReducers$7;
-    exports.ɵgv = reducer$d;
-    exports.ɵgw = reducerToken$7;
-    exports.ɵgx = reducerProvider$7;
-    exports.ɵgy = CustomSerializer;
-    exports.ɵgz = effects$6;
+    exports.ɵga = ProductStoreModule;
+    exports.ɵgb = getReducers$b;
+    exports.ɵgc = reducerToken$b;
+    exports.ɵgd = reducerProvider$b;
+    exports.ɵge = clearProductsState;
+    exports.ɵgf = metaReducers$6;
+    exports.ɵgg = effects$9;
+    exports.ɵgh = ProductReferencesEffects;
+    exports.ɵgi = ProductReviewsEffects;
+    exports.ɵgj = ProductsSearchEffects;
+    exports.ɵgk = ProductEffects;
+    exports.ɵgl = reducer$i;
+    exports.ɵgm = entityScopedLoaderReducer;
+    exports.ɵgn = scopedLoaderReducer;
+    exports.ɵgo = reducer$k;
+    exports.ɵgp = reducer$j;
+    exports.ɵgq = PageMetaResolver;
+    exports.ɵgr = addExternalRoutesFactory;
+    exports.ɵgs = getReducers$7;
+    exports.ɵgt = reducer$d;
+    exports.ɵgu = reducerToken$7;
+    exports.ɵgv = reducerProvider$7;
+    exports.ɵgw = CustomSerializer;
+    exports.ɵgx = effects$6;
+    exports.ɵgy = RouterEffects;
+    exports.ɵgz = defaultSiteContextConfigFactory;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = RouterEffects;
-    exports.ɵhb = defaultSiteContextConfigFactory;
-    exports.ɵhc = siteContextStoreConfigFactory;
-    exports.ɵhd = SiteContextStoreModule;
-    exports.ɵhe = getReducers$1;
-    exports.ɵhf = reducerToken$1;
-    exports.ɵhg = reducerProvider$1;
-    exports.ɵhh = effects$2;
-    exports.ɵhi = LanguagesEffects;
-    exports.ɵhj = CurrenciesEffects;
-    exports.ɵhk = BaseSiteEffects;
-    exports.ɵhl = reducer$3;
-    exports.ɵhm = reducer$2;
-    exports.ɵhn = reducer$1;
-    exports.ɵho = initializeContext;
-    exports.ɵhp = contextServiceProviders;
-    exports.ɵhq = initSiteContextRoutesHandler;
-    exports.ɵhr = siteContextParamsProviders;
-    exports.ɵhs = SiteContextUrlSerializer;
-    exports.ɵht = SiteContextRoutesHandler;
-    exports.ɵhu = baseSiteConfigValidator;
-    exports.ɵhv = interceptors$4;
-    exports.ɵhw = CmsTicketInterceptor;
-    exports.ɵhx = defaultStoreFinderConfig;
-    exports.ɵhy = StoreFinderStoreModule;
-    exports.ɵhz = getReducers$c;
+    exports.ɵha = siteContextStoreConfigFactory;
+    exports.ɵhb = SiteContextStoreModule;
+    exports.ɵhc = getReducers$1;
+    exports.ɵhd = reducerToken$1;
+    exports.ɵhe = reducerProvider$1;
+    exports.ɵhf = effects$2;
+    exports.ɵhg = LanguagesEffects;
+    exports.ɵhh = CurrenciesEffects;
+    exports.ɵhi = BaseSiteEffects;
+    exports.ɵhj = reducer$3;
+    exports.ɵhk = reducer$2;
+    exports.ɵhl = reducer$1;
+    exports.ɵhm = initializeContext;
+    exports.ɵhn = contextServiceProviders;
+    exports.ɵho = initSiteContextRoutesHandler;
+    exports.ɵhp = siteContextParamsProviders;
+    exports.ɵhq = SiteContextUrlSerializer;
+    exports.ɵhr = SiteContextRoutesHandler;
+    exports.ɵhs = baseSiteConfigValidator;
+    exports.ɵht = interceptors$4;
+    exports.ɵhu = CmsTicketInterceptor;
+    exports.ɵhv = defaultStoreFinderConfig;
+    exports.ɵhw = StoreFinderStoreModule;
+    exports.ɵhx = getReducers$c;
+    exports.ɵhy = reducerToken$c;
+    exports.ɵhz = reducerProvider$c;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = reducerToken$c;
-    exports.ɵib = reducerProvider$c;
-    exports.ɵic = effects$a;
-    exports.ɵid = FindStoresEffect;
-    exports.ɵie = ViewAllStoresEffect;
-    exports.ɵif = UserStoreModule;
-    exports.ɵig = getReducers$d;
-    exports.ɵih = reducerToken$d;
-    exports.ɵii = reducerProvider$d;
-    exports.ɵij = clearUserState;
-    exports.ɵik = metaReducers$8;
-    exports.ɵil = effects$b;
-    exports.ɵim = BillingCountriesEffect;
-    exports.ɵin = ClearMiscsDataEffect;
-    exports.ɵio = ConsignmentTrackingEffects;
-    exports.ɵip = DeliveryCountriesEffects;
-    exports.ɵiq = NotificationPreferenceEffects;
-    exports.ɵir = OrderDetailsEffect;
-    exports.ɵis = OrderReturnRequestEffect;
-    exports.ɵit = UserPaymentMethodsEffects;
-    exports.ɵiu = RegionsEffects;
-    exports.ɵiv = ResetPasswordEffects;
-    exports.ɵiw = TitlesEffects;
-    exports.ɵix = UserAddressesEffects;
-    exports.ɵiy = UserConsentsEffect;
-    exports.ɵiz = UserDetailsEffects;
+    exports.ɵia = effects$a;
+    exports.ɵib = FindStoresEffect;
+    exports.ɵic = ViewAllStoresEffect;
+    exports.ɵid = UserStoreModule;
+    exports.ɵie = getReducers$d;
+    exports.ɵif = reducerToken$d;
+    exports.ɵig = reducerProvider$d;
+    exports.ɵih = clearUserState;
+    exports.ɵii = metaReducers$8;
+    exports.ɵij = effects$b;
+    exports.ɵik = BillingCountriesEffect;
+    exports.ɵil = ClearMiscsDataEffect;
+    exports.ɵim = ConsignmentTrackingEffects;
+    exports.ɵin = DeliveryCountriesEffects;
+    exports.ɵio = NotificationPreferenceEffects;
+    exports.ɵip = OrderDetailsEffect;
+    exports.ɵiq = OrderReturnRequestEffect;
+    exports.ɵir = UserPaymentMethodsEffects;
+    exports.ɵis = RegionsEffects;
+    exports.ɵit = ResetPasswordEffects;
+    exports.ɵiu = TitlesEffects;
+    exports.ɵiv = UserAddressesEffects;
+    exports.ɵiw = UserConsentsEffect;
+    exports.ɵix = UserDetailsEffects;
+    exports.ɵiy = UserOrdersEffect;
+    exports.ɵiz = UserRegisterEffects;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = UserOrdersEffect;
-    exports.ɵjb = UserRegisterEffects;
-    exports.ɵjc = CustomerCouponEffects;
-    exports.ɵjd = ProductInterestsEffect;
-    exports.ɵje = ForgotPasswordEffects;
-    exports.ɵjf = UpdateEmailEffects;
-    exports.ɵjg = UpdatePasswordEffects;
-    exports.ɵjh = UserNotificationPreferenceConnector;
-    exports.ɵji = reducer$w;
-    exports.ɵjj = reducer$u;
-    exports.ɵjk = reducer$l;
-    exports.ɵjl = reducer$v;
-    exports.ɵjm = reducer$q;
-    exports.ɵjn = reducer$x;
-    exports.ɵjo = reducer$p;
-    exports.ɵjp = reducer$A;
-    exports.ɵjq = reducer$n;
-    exports.ɵjr = reducer$t;
-    exports.ɵjs = reducer$r;
-    exports.ɵjt = reducer$s;
-    exports.ɵju = reducer$m;
-    exports.ɵjv = reducer$y;
-    exports.ɵjw = reducer$o;
-    exports.ɵjx = reducer$z;
-    exports.ɵjy = FindProductPageMetaResolver;
-    exports.ɵjz = PageMetaResolver;
+    exports.ɵja = CustomerCouponEffects;
+    exports.ɵjb = ProductInterestsEffect;
+    exports.ɵjc = ForgotPasswordEffects;
+    exports.ɵjd = UpdateEmailEffects;
+    exports.ɵje = UpdatePasswordEffects;
+    exports.ɵjf = UserNotificationPreferenceConnector;
+    exports.ɵjg = reducer$w;
+    exports.ɵjh = reducer$u;
+    exports.ɵji = reducer$l;
+    exports.ɵjj = reducer$v;
+    exports.ɵjk = reducer$q;
+    exports.ɵjl = reducer$x;
+    exports.ɵjm = reducer$p;
+    exports.ɵjn = reducer$A;
+    exports.ɵjo = reducer$n;
+    exports.ɵjp = reducer$t;
+    exports.ɵjq = reducer$r;
+    exports.ɵjr = reducer$s;
+    exports.ɵjs = reducer$m;
+    exports.ɵjt = reducer$y;
+    exports.ɵju = reducer$o;
+    exports.ɵjv = reducer$z;
+    exports.ɵjw = FindProductPageMetaResolver;
+    exports.ɵjx = PageMetaResolver;
     exports.ɵk = getStorageSyncReducer;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$2;
