@@ -3,11 +3,10 @@ import * as ɵngcc0 from '@angular/core';
 import * as ɵngcc1 from '@angular/common';
 import * as ɵngcc2 from '@angular/common/http';
 import * as ɵngcc3 from './store/auth-store.module';
-import * as ɵngcc4 from '../config/config.module';
 export declare class AuthModule {
     static forRoot(): ModuleWithProviders<AuthModule>;
-    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<AuthModule, never, [typeof ɵngcc1.CommonModule, typeof ɵngcc2.HttpClientModule, typeof ɵngcc3.AuthStoreModule, typeof ɵngcc4.ConfigModule], never>;
+    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<AuthModule, never, [typeof ɵngcc1.CommonModule, typeof ɵngcc2.HttpClientModule, typeof ɵngcc3.AuthStoreModule], never>;
     static ɵinj: ɵngcc0.ɵɵInjectorDef<AuthModule>;
 }
 
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXV0aC5tb2R1bGUuZC50cyIsInNvdXJjZXMiOlsiYXV0aC5tb2R1bGUuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7O0FBQ0E7Ozs7QUFFQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE1vZHVsZVdpdGhQcm92aWRlcnMgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmV4cG9ydCBkZWNsYXJlIGNsYXNzIEF1dGhNb2R1bGUge1xuICAgIHN0YXRpYyBmb3JSb290KCk6IE1vZHVsZVdpdGhQcm92aWRlcnM8QXV0aE1vZHVsZT47XG59XG4iXX0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXV0aC5tb2R1bGUuZC50cyIsInNvdXJjZXMiOlsiYXV0aC5tb2R1bGUuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7QUFDQTs7OztBQUVBIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgTW9kdWxlV2l0aFByb3ZpZGVycyB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuZXhwb3J0IGRlY2xhcmUgY2xhc3MgQXV0aE1vZHVsZSB7XG4gICAgc3RhdGljIGZvclJvb3QoKTogTW9kdWxlV2l0aFByb3ZpZGVyczxBdXRoTW9kdWxlPjtcbn1cbiJdfQ==

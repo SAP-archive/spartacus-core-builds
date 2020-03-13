@@ -1,9 +1,9 @@
-import { __decorate, __awaiter, __param, __rest } from 'tslib';
-import { InjectionToken, NgModule, PLATFORM_ID, isDevMode, Inject, Optional, ɵɵdefineInjectable, ɵɵinject, Injectable, APP_INITIALIZER, TemplateRef, ViewContainerRef, Input, Directive, Injector, INJECTOR, Pipe, inject, ChangeDetectorRef, NgZone } from '@angular/core';
-import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
-import { BehaviorSubject, of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subscription, timer, queueScheduler, using, from, merge, Observable, defer } from 'rxjs';
-import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, switchMapTo, observeOn, groupBy, distinctUntilKeyChanged, auditTime, takeWhile } from 'rxjs/operators';
+import { __decorate, __param, __rest, __awaiter } from 'tslib';
+import { InjectionToken, Optional, NgModule, isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, PLATFORM_ID, TemplateRef, ViewContainerRef, Input, Directive, Injector, INJECTOR, APP_INITIALIZER, Pipe, inject, ChangeDetectorRef, NgZone } from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
+import { of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subscription, BehaviorSubject, timer, queueScheduler, using, from, merge, Observable, defer } from 'rxjs';
+import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, mapTo, delay, debounce, switchMapTo, observeOn, groupBy, distinctUntilKeyChanged, auditTime, takeWhile } from 'rxjs/operators';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
@@ -59,22 +59,63 @@ const Config = new InjectionToken('Configuration');
  */
 const ConfigChunk = new InjectionToken('ConfigurationChunk');
 /**
+ * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
+ * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
+ *
+ * General rule is, that all config provided in libraries should be provided as default config.
+ */
+const DefaultConfigChunk = new InjectionToken('DefaultConfigurationChunk');
+/**
  * Helper function to provide configuration chunk using ConfigChunk token
+ *
+ * To provide default configuration in libraries provideDefaultConfig should be used instead.
  *
  * @param config Config object to merge with the global configuration
  */
-function provideConfig(config = {}) {
-    return { provide: ConfigChunk, useValue: config, multi: true };
+function provideConfig(config = {}, defaultConfig = false) {
+    return {
+        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+        useValue: config,
+        multi: true,
+    };
 }
 /**
  * Helper function to provide configuration with factory function, using ConfigChunk token
  *
+ * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
+ *
  * @param configFactory Factory Function that will generate config object
  * @param deps Optional dependencies to a factory function
  */
-function provideConfigFactory(configFactory, deps) {
+function provideConfigFactory(configFactory, deps, defaultConfig = false) {
     return {
-        provide: ConfigChunk,
+        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+        useFactory: configFactory,
+        multi: true,
+        deps: deps,
+    };
+}
+/**
+ * Helper function to provide default configuration chunk using DefaultConfigChunk token
+ *
+ * @param config Config object to merge with the default configuration
+ */
+function provideDefaultConfig(config = {}) {
+    return {
+        provide: DefaultConfigChunk,
+        useValue: config,
+        multi: true,
+    };
+}
+/**
+ * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
+ *
+ * @param configFactory Factory Function that will generate config object
+ * @param deps Optional dependencies to a factory function
+ */
+function provideDefaultConfigFactory(configFactory, deps) {
+    return {
+        provide: DefaultConfigChunk,
         useFactory: configFactory,
         multi: true,
         deps: deps,
@@ -84,13 +125,15 @@ function provideConfigFactory(configFactory, deps) {
  * Factory function that merges all configurations chunks. Should not be used directly without explicit reason.
  *
  */
-function configurationFactory(configChunks) {
-    const config = deepMerge({}, ...configChunks);
+function configurationFactory(configChunks = [], defaultConfigChunks = []) {
+    const config = deepMerge({}, ...((defaultConfigChunks !== null && defaultConfigChunks !== void 0 ? defaultConfigChunks : [])), ...((configChunks !== null && configChunks !== void 0 ? configChunks : [])));
     return config;
 }
 let ConfigModule = ConfigModule_1 = class ConfigModule {
     /**
      * Import ConfigModule and contribute config to the global configuration
+     *
+     * To provide default configuration in libraries provideDefaultConfig should be used instead.
      *
      * @param config Config object to merge with the global configuration
      */
@@ -102,6 +145,8 @@ let ConfigModule = ConfigModule_1 = class ConfigModule {
     }
     /**
      * Import ConfigModule and contribute config to the global configuration using factory function
+     *
+     * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
      *
      * @param configFactory Factory function that will generate configuration
      * @param deps Optional dependencies to factory function
@@ -125,7 +170,10 @@ let ConfigModule = ConfigModule_1 = class ConfigModule {
                 {
                     provide: Config,
                     useFactory: configurationFactory,
-                    deps: [ConfigChunk],
+                    deps: [
+                        [new Optional(), ConfigChunk],
+                        [new Optional(), DefaultConfigChunk],
+                    ],
                 },
             ],
         };
@@ -133,290 +181,6 @@ let ConfigModule = ConfigModule_1 = class ConfigModule {
 };
 ConfigModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ConfigModule });
 ConfigModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ConfigModule_Factory(t) { return new (t || ConfigModule)(); }, imports: [[CommonModule]] });
-
-function getCookie(cookie, name) {
-    const regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
-    const result = regExp.exec(cookie);
-    return (result && decodeURIComponent(result[1])) || '';
-}
-
-var TestConfigModule_1;
-const TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
-function parseConfigJSON(config) {
-    try {
-        return JSON.parse(decodeURIComponent(config));
-    }
-    catch (_) {
-        return {};
-    }
-}
-function configFromCookieFactory(cookieName, platform, document) {
-    if (isPlatformBrowser(platform) && cookieName) {
-        const config = getCookie(document.cookie, cookieName);
-        return parseConfigJSON(config);
-    }
-    return {};
-}
-/**
- * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
- *
- * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
- */
-let TestConfigModule = TestConfigModule_1 = class TestConfigModule {
-    /**
-     * Injects JSON config from the cookie of the given name.
-     *
-     * Be aware of the cookie limitations (4096 bytes).
-     *
-     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
-     */
-    static forRoot(options) {
-        return {
-            ngModule: TestConfigModule_1,
-            providers: [
-                {
-                    provide: TEST_CONFIG_COOKIE_NAME,
-                    useValue: options && options.cookie,
-                },
-                provideConfigFactory(configFromCookieFactory, [
-                    TEST_CONFIG_COOKIE_NAME,
-                    PLATFORM_ID,
-                    DOCUMENT,
-                ]),
-            ],
-        };
-    }
-};
-TestConfigModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: TestConfigModule });
-TestConfigModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function TestConfigModule_Factory(t) { return new (t || TestConfigModule)(); } });
-
-const ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
-/**
- * Use to probide config validation at app bootstrap (when all config chunks are merged)
- *
- * @param configValidator
- */
-function provideConfigValidator(configValidator) {
-    return {
-        provide: ConfigValidatorToken,
-        useValue: configValidator,
-        multi: true,
-    };
-}
-function validateConfig(config, configValidators) {
-    for (const validate of configValidators) {
-        const warning = validate(config);
-        if (warning) {
-            console.warn(warning);
-        }
-    }
-}
-
-const CONFIG_INITIALIZER = new InjectionToken('ConfigInitializer');
-const CONFIG_INITIALIZER_FORROOT_GUARD = new InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
-
-/**
- * Provides support for CONFIG_INITIALIZERS
- */
-let ConfigInitializerService = class ConfigInitializerService {
-    constructor(config, initializerGuard) {
-        this.config = config;
-        this.initializerGuard = initializerGuard;
-        this.ongoingScopes$ = new BehaviorSubject(undefined);
-    }
-    /**
-     * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
-     */
-    get isStable() {
-        return (!this.initializerGuard ||
-            (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
-    }
-    /**
-     * Recommended way to get config for code that can run before app will finish
-     * initialization (APP_INITIALIZERS, selected service constructors)
-     *
-     * Used without parameters waits for the whole config to become stable
-     *
-     * Parameters allow to describe which part of the config should be stable using
-     * string describing config part, e.g.:
-     * 'siteContext', 'siteContext.language', etc.
-     *
-     * @param scopes String describing parts of the config we want to be sure are stable
-     */
-    getStableConfig(...scopes) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.isStable) {
-                return this.config;
-            }
-            return this.ongoingScopes$
-                .pipe(filter(ongoingScopes => ongoingScopes && this.areReady(scopes, ongoingScopes)), take(1), mapTo(this.config))
-                .toPromise();
-        });
-    }
-    /**
-     * Removes provided scopes from currently ongoingScopes
-     *
-     * @param scopes
-     */
-    finishScopes(scopes) {
-        const newScopes = [...this.ongoingScopes$.value];
-        for (const scope of scopes) {
-            newScopes.splice(newScopes.indexOf(scope), 1);
-        }
-        this.ongoingScopes$.next(newScopes);
-    }
-    /**
-     * Return true if provided scopes are not part of ongoingScopes
-     *
-     * @param scopes
-     * @param ongoingScopes
-     */
-    areReady(scopes, ongoingScopes) {
-        if (!scopes.length) {
-            return !ongoingScopes.length;
-        }
-        for (const scope of scopes) {
-            for (const ongoingScope of ongoingScopes) {
-                if (this.scopesOverlap(scope, ongoingScope)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    /**
-     * Check if two scopes overlap.
-     *
-     * Example of scopes that overlap:
-     * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
-     *
-     * Example of scopes that do not overlap:
-     * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
-     *
-     * @param a ScopeA
-     * @param b ScopeB
-     */
-    scopesOverlap(a, b) {
-        if (b.length > a.length) {
-            [a, b] = [b, a];
-        }
-        return a.startsWith(b) && (a[b.length] || '.') === '.';
-    }
-    /**
-     * @internal
-     *
-     * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
-     *
-     */
-    initialize(initializers) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.ongoingScopes$.value) {
-                // guard for double initialization
-                return;
-            }
-            const ongoingScopes = [];
-            const asyncConfigs = [];
-            for (const initializer of initializers || []) {
-                if (!initializer) {
-                    continue;
-                }
-                if (!initializer.scopes || !initializer.scopes.length) {
-                    throw new Error('CONFIG_INITIALIZER should provide scope!');
-                }
-                if (isDevMode() && !this.areReady(initializer.scopes, ongoingScopes)) {
-                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
-                }
-                ongoingScopes.push(...initializer.scopes);
-                asyncConfigs.push((() => __awaiter(this, void 0, void 0, function* () {
-                    deepMerge(this.config, yield initializer.configFactory());
-                    this.finishScopes(initializer.scopes);
-                }))());
-            }
-            this.ongoingScopes$.next(ongoingScopes);
-            if (asyncConfigs.length) {
-                yield Promise.all(asyncConfigs);
-            }
-        });
-    }
-};
-ConfigInitializerService.ɵfac = function ConfigInitializerService_Factory(t) { return new (t || ConfigInitializerService)(ɵngcc0.ɵɵinject(Config), ɵngcc0.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); };
-ConfigInitializerService.ctorParameters = () => [
-    { type: undefined, decorators: [{ type: Inject, args: [Config,] }] },
-    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
-];
-ConfigInitializerService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(ɵɵinject(Config), ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
-ConfigInitializerService = __decorate([ __param(0, Inject(Config)),
-    __param(1, Optional()),
-    __param(1, Inject(CONFIG_INITIALIZER_FORROOT_GUARD))
-], ConfigInitializerService);
-
-var ConfigValidatorModule_1;
-function configValidatorFactory(configInitializer, validators) {
-    const validate = () => {
-        if (isDevMode()) {
-            configInitializer
-                .getStableConfig()
-                .then(config => validateConfig(config, validators || []));
-        }
-    };
-    return validate;
-}
-/**
- * Should stay private in 1.x
- * as forRoot() is used internally by ConfigInitializerModule
- *
- * issue: #5279
- */
-let ConfigValidatorModule = ConfigValidatorModule_1 = class ConfigValidatorModule {
-    static forRoot() {
-        return {
-            ngModule: ConfigValidatorModule_1,
-            providers: [
-                {
-                    provide: APP_INITIALIZER,
-                    multi: true,
-                    useFactory: configValidatorFactory,
-                    deps: [
-                        ConfigInitializerService,
-                        [new Optional(), ConfigValidatorToken],
-                    ],
-                },
-            ],
-        };
-    }
-};
-ConfigValidatorModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ConfigValidatorModule });
-ConfigValidatorModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ConfigValidatorModule_Factory(t) { return new (t || ConfigValidatorModule)(); } });
-
-var ConfigInitializerModule_1;
-function configInitializerFactory(configInitializer, initializers) {
-    const isReady = () => configInitializer.initialize(initializers);
-    return isReady;
-}
-let ConfigInitializerModule = ConfigInitializerModule_1 = class ConfigInitializerModule {
-    static forRoot() {
-        return {
-            ngModule: ConfigInitializerModule_1,
-            providers: [
-                {
-                    provide: CONFIG_INITIALIZER_FORROOT_GUARD,
-                    useValue: true,
-                },
-                {
-                    provide: APP_INITIALIZER,
-                    multi: true,
-                    useFactory: configInitializerFactory,
-                    deps: [
-                        ConfigInitializerService,
-                        [new Optional(), CONFIG_INITIALIZER],
-                    ],
-                },
-            ],
-        };
-    }
-};
-ConfigInitializerModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ConfigInitializerModule });
-ConfigInitializerModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ConfigInitializerModule_Factory(t) { return new (t || ConfigInitializerModule)(); } });
 
 class SiteContextConfig {
 }
@@ -2667,7 +2431,7 @@ let StateModule = StateModule_1 = class StateModule {
             ngModule: StateModule_1,
             providers: [
                 ...stateMetaReducers,
-                provideConfig(defaultStateConfig),
+                provideDefaultConfig(defaultStateConfig),
                 { provide: StateConfig, useExisting: Config },
             ],
         };
@@ -2848,13 +2612,15 @@ function authStoreConfigFactory() {
 let AuthStoreModule = class AuthStoreModule {
 };
 AuthStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: AuthStoreModule });
-AuthStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AuthStoreModule_Factory(t) { return new (t || AuthStoreModule)(); }, providers: [reducerProvider], imports: [[
+AuthStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AuthStoreModule_Factory(t) { return new (t || AuthStoreModule)(); }, providers: [
+        provideDefaultConfigFactory(authStoreConfigFactory),
+        reducerProvider,
+    ], imports: [[
             CommonModule,
             HttpClientModule,
             StateModule,
             StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers }),
             EffectsModule.forFeature(effects),
-            ConfigModule.withConfigFactory(authStoreConfigFactory),
         ]] });
 
 var AuthModule_1;
@@ -2863,6 +2629,7 @@ let AuthModule = AuthModule_1 = class AuthModule {
         return {
             ngModule: AuthModule_1,
             providers: [
+                provideDefaultConfig(defaultAuthConfig),
                 ...interceptors,
                 ...AuthServices,
                 { provide: AuthConfig, useExisting: Config },
@@ -2871,12 +2638,7 @@ let AuthModule = AuthModule_1 = class AuthModule {
     }
 };
 AuthModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: AuthModule });
-AuthModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AuthModule_Factory(t) { return new (t || AuthModule)(); }, imports: [[
-            CommonModule,
-            HttpClientModule,
-            AuthStoreModule,
-            ConfigModule.withConfig(defaultAuthConfig),
-        ]] });
+AuthModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AuthModule_Factory(t) { return new (t || AuthModule)(); }, imports: [[CommonModule, HttpClientModule, AuthStoreModule]] });
 
 let AuthRedirectService = class AuthRedirectService {
     /**
@@ -3557,7 +3319,7 @@ let FeaturesConfigModule = FeaturesConfigModule_1 = class FeaturesConfigModule {
         return {
             ngModule: FeaturesConfigModule_1,
             providers: [
-                provideConfig({
+                provideDefaultConfig({
                     features: {
                         level: defaultLevel || '*',
                     },
@@ -3711,15 +3473,12 @@ let AsmOccModule = class AsmOccModule {
 };
 AsmOccModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: AsmOccModule });
 AsmOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AsmOccModule_Factory(t) { return new (t || AsmOccModule)(); }, providers: [
+        provideDefaultConfig(defaultOccAsmConfig),
         {
             provide: AsmAdapter,
             useClass: OccAsmAdapter
         },
-    ], imports: [[
-            CommonModule,
-            HttpClientModule,
-            ConfigModule.withConfig(defaultOccAsmConfig),
-        ]] });
+    ], imports: [[CommonModule, HttpClientModule]] });
 
 class CartAdapter {
 }
@@ -4160,6 +3919,7 @@ let CartOccModule = class CartOccModule {
 };
 CartOccModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: CartOccModule });
 CartOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CartOccModule_Factory(t) { return new (t || CartOccModule)(); }, providers: [
+        provideDefaultConfig(defaultOccCartConfig),
         {
             provide: CartAdapter,
             useClass: OccCartAdapter
@@ -4181,11 +3941,7 @@ CartOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CartOccModu
             provide: SaveCartAdapter,
             useClass: OccSaveCartAdapter
         },
-    ], imports: [[
-            CommonModule,
-            HttpClientModule,
-            ConfigModule.withConfig(defaultOccCartConfig),
-        ]] });
+    ], imports: [[CommonModule, HttpClientModule]] });
 
 const ORDER_NORMALIZER = new InjectionToken('OrderNormalizer');
 
@@ -5420,6 +5176,7 @@ let ProductOccModule = class ProductOccModule {
 };
 ProductOccModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ProductOccModule });
 ProductOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ProductOccModule_Factory(t) { return new (t || ProductOccModule)(); }, providers: [
+        provideDefaultConfig(defaultOccProductConfig),
         {
             provide: ProductAdapter,
             useClass: OccProductAdapter
@@ -5456,11 +5213,7 @@ ProductOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ProductO
             provide: ProductReviewsAdapter,
             useClass: OccProductReviewsAdapter
         },
-    ], imports: [[
-            CommonModule,
-            HttpClientModule,
-            ConfigModule.withConfig(defaultOccProductConfig),
-        ]] });
+    ], imports: [[CommonModule, HttpClientModule]] });
 
 const LANGUAGE_NORMALIZER = new InjectionToken('LanguageNormalizer');
 const CURRENCY_NORMALIZER = new InjectionToken('CurrencyNormalizer');
@@ -5694,6 +5447,7 @@ let SiteContextOccModule = class SiteContextOccModule {
 };
 SiteContextOccModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: SiteContextOccModule });
 SiteContextOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function SiteContextOccModule_Factory(t) { return new (t || SiteContextOccModule)(); }, providers: [
+        provideDefaultConfig(defaultOccSiteContextConfig),
         {
             provide: SiteAdapter,
             useClass: OccSiteAdapter
@@ -5703,11 +5457,7 @@ SiteContextOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function Site
             useExisting: SiteContextInterceptor,
             multi: true
         },
-    ], imports: [[
-            CommonModule,
-            HttpClientModule,
-            ConfigModule.withConfig(defaultOccSiteContextConfig),
-        ]] });
+    ], imports: [[CommonModule, HttpClientModule]] });
 
 class StoreFinderAdapter {
 }
@@ -5800,7 +5550,10 @@ OccStoreFinderAdapter.ctorParameters = () => [
 let StoreFinderOccModule = class StoreFinderOccModule {
 };
 StoreFinderOccModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: StoreFinderOccModule });
-StoreFinderOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function StoreFinderOccModule_Factory(t) { return new (t || StoreFinderOccModule)(); }, providers: [{ provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter }], imports: [[ConfigModule.withConfig(defaultOccStoreFinderConfig)]] });
+StoreFinderOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function StoreFinderOccModule_Factory(t) { return new (t || StoreFinderOccModule)(); }, providers: [
+        provideDefaultConfig(defaultOccStoreFinderConfig),
+        { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
+    ] });
 
 const CONSENT_TEMPLATE_NORMALIZER = new InjectionToken('ConsentTemplateNormalizer');
 
@@ -6558,6 +6311,7 @@ let UserOccModule = class UserOccModule {
 };
 UserOccModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: UserOccModule });
 UserOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserOccModule_Factory(t) { return new (t || UserOccModule)(); }, providers: [
+        provideDefaultConfig(defaultOccUserConfig),
         { provide: UserAdapter, useClass: OccUserAdapter },
         { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
         { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
@@ -6586,11 +6340,7 @@ UserOccModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserOccModu
             useExisting: OccReturnRequestNormalizer,
             multi: true
         },
-    ], imports: [[
-            CommonModule,
-            HttpClientModule,
-            ConfigModule.withConfig(defaultOccUserConfig),
-        ]] });
+    ], imports: [[CommonModule, HttpClientModule]] });
 
 let JavaRegExpConverter = class JavaRegExpConverter {
     constructor() {
@@ -6640,6 +6390,9 @@ let JavaRegExpConverter = class JavaRegExpConverter {
 };
 JavaRegExpConverter.ɵfac = function JavaRegExpConverter_Factory(t) { return new (t || JavaRegExpConverter)(); };
 JavaRegExpConverter.ɵprov = ɵɵdefineInjectable({ factory: function JavaRegExpConverter_Factory() { return new JavaRegExpConverter(); }, token: JavaRegExpConverter, providedIn: "root" });
+
+const CONFIG_INITIALIZER = new InjectionToken('ConfigInitializer');
+const CONFIG_INITIALIZER_FORROOT_GUARD = new InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
 
 /**
  * The url of the server request when running SSR
@@ -8033,6 +7786,28 @@ var Occ;
     })(NotificationType = Occ.NotificationType || (Occ.NotificationType = {}));
 })(Occ || (Occ = {}));
 
+const ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
+/**
+ * Use to probide config validation at app bootstrap (when all config chunks are merged)
+ *
+ * @param configValidator
+ */
+function provideConfigValidator(configValidator) {
+    return {
+        provide: ConfigValidatorToken,
+        useValue: configValidator,
+        multi: true,
+    };
+}
+function validateConfig(config, configValidators) {
+    for (const validate of configValidators) {
+        const warning = validate(config);
+        if (warning) {
+            console.warn(warning);
+        }
+    }
+}
+
 var OccModule_1;
 let OccModule = OccModule_1 = class OccModule {
     static forRoot() {
@@ -8040,7 +7815,7 @@ let OccModule = OccModule_1 = class OccModule {
             ngModule: OccModule_1,
             providers: [
                 { provide: OccConfig, useExisting: Config },
-                provideConfig(defaultOccConfig),
+                provideDefaultConfig(defaultOccConfig),
                 provideConfigValidator(occConfigValidator),
             ],
         };
@@ -10329,6 +10104,141 @@ function defaultSiteContextConfigFactory() {
     };
 }
 
+/**
+ * Provides support for CONFIG_INITIALIZERS
+ */
+let ConfigInitializerService = class ConfigInitializerService {
+    constructor(config, initializerGuard) {
+        this.config = config;
+        this.initializerGuard = initializerGuard;
+        this.ongoingScopes$ = new BehaviorSubject(undefined);
+    }
+    /**
+     * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
+     */
+    get isStable() {
+        return (!this.initializerGuard ||
+            (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
+    }
+    /**
+     * Recommended way to get config for code that can run before app will finish
+     * initialization (APP_INITIALIZERS, selected service constructors)
+     *
+     * Used without parameters waits for the whole config to become stable
+     *
+     * Parameters allow to describe which part of the config should be stable using
+     * string describing config part, e.g.:
+     * 'siteContext', 'siteContext.language', etc.
+     *
+     * @param scopes String describing parts of the config we want to be sure are stable
+     */
+    getStableConfig(...scopes) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.isStable) {
+                return this.config;
+            }
+            return this.ongoingScopes$
+                .pipe(filter(ongoingScopes => ongoingScopes && this.areReady(scopes, ongoingScopes)), take(1), mapTo(this.config))
+                .toPromise();
+        });
+    }
+    /**
+     * Removes provided scopes from currently ongoingScopes
+     *
+     * @param scopes
+     */
+    finishScopes(scopes) {
+        const newScopes = [...this.ongoingScopes$.value];
+        for (const scope of scopes) {
+            newScopes.splice(newScopes.indexOf(scope), 1);
+        }
+        this.ongoingScopes$.next(newScopes);
+    }
+    /**
+     * Return true if provided scopes are not part of ongoingScopes
+     *
+     * @param scopes
+     * @param ongoingScopes
+     */
+    areReady(scopes, ongoingScopes) {
+        if (!scopes.length) {
+            return !ongoingScopes.length;
+        }
+        for (const scope of scopes) {
+            for (const ongoingScope of ongoingScopes) {
+                if (this.scopesOverlap(scope, ongoingScope)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    /**
+     * Check if two scopes overlap.
+     *
+     * Example of scopes that overlap:
+     * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
+     *
+     * Example of scopes that do not overlap:
+     * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
+     *
+     * @param a ScopeA
+     * @param b ScopeB
+     */
+    scopesOverlap(a, b) {
+        if (b.length > a.length) {
+            [a, b] = [b, a];
+        }
+        return a.startsWith(b) && (a[b.length] || '.') === '.';
+    }
+    /**
+     * @internal
+     *
+     * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
+     *
+     */
+    initialize(initializers) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.ongoingScopes$.value) {
+                // guard for double initialization
+                return;
+            }
+            const ongoingScopes = [];
+            const asyncConfigs = [];
+            for (const initializer of initializers || []) {
+                if (!initializer) {
+                    continue;
+                }
+                if (!initializer.scopes || !initializer.scopes.length) {
+                    throw new Error('CONFIG_INITIALIZER should provide scope!');
+                }
+                if (isDevMode() && !this.areReady(initializer.scopes, ongoingScopes)) {
+                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
+                }
+                ongoingScopes.push(...initializer.scopes);
+                asyncConfigs.push((() => __awaiter(this, void 0, void 0, function* () {
+                    deepMerge(this.config, yield initializer.configFactory());
+                    this.finishScopes(initializer.scopes);
+                }))());
+            }
+            this.ongoingScopes$.next(ongoingScopes);
+            if (asyncConfigs.length) {
+                yield Promise.all(asyncConfigs);
+            }
+        });
+    }
+};
+ConfigInitializerService.ɵfac = function ConfigInitializerService_Factory(t) { return new (t || ConfigInitializerService)(ɵngcc0.ɵɵinject(Config), ɵngcc0.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); };
+ConfigInitializerService.ctorParameters = () => [
+    { type: undefined, decorators: [{ type: Inject, args: [Config,] }] },
+    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
+];
+ConfigInitializerService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(ɵɵinject(Config), ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
+ConfigInitializerService = __decorate([ __param(0, Inject(Config)),
+    __param(1, Optional()),
+    __param(1, Inject(CONFIG_INITIALIZER_FORROOT_GUARD))
+], ConfigInitializerService);
+
 function initializeContext(baseSiteService, langService, currService, configInit) {
     return () => {
         configInit.getStableConfig('context').then(() => {
@@ -10749,12 +10659,14 @@ function siteContextStoreConfigFactory() {
 let SiteContextStoreModule = class SiteContextStoreModule {
 };
 SiteContextStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: SiteContextStoreModule });
-SiteContextStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function SiteContextStoreModule_Factory(t) { return new (t || SiteContextStoreModule)(); }, providers: [reducerProvider$1], imports: [[
+SiteContextStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function SiteContextStoreModule_Factory(t) { return new (t || SiteContextStoreModule)(); }, providers: [
+        provideDefaultConfigFactory(siteContextStoreConfigFactory),
+        reducerProvider$1,
+    ], imports: [[
             CommonModule,
             HttpClientModule,
             StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
             EffectsModule.forFeature(effects$2),
-            ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
         ]] });
 
 var SiteContextModule_1;
@@ -10764,6 +10676,7 @@ let SiteContextModule = SiteContextModule_1 = class SiteContextModule {
         return {
             ngModule: SiteContextModule_1,
             providers: [
+                provideDefaultConfigFactory(defaultSiteContextConfigFactory),
                 contextServiceMapProvider,
                 ...contextServiceProviders,
                 ...siteContextParamsProviders,
@@ -10774,11 +10687,7 @@ let SiteContextModule = SiteContextModule_1 = class SiteContextModule {
     }
 };
 SiteContextModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: SiteContextModule });
-SiteContextModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function SiteContextModule_Factory(t) { return new (t || SiteContextModule)(); }, imports: [[
-            ConfigModule.withConfigFactory(defaultSiteContextConfigFactory),
-            StateModule,
-            SiteContextStoreModule,
-        ]] });
+SiteContextModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function SiteContextModule_Factory(t) { return new (t || SiteContextModule)(); }, imports: [[StateModule, SiteContextStoreModule]] });
 
 const initialState$4 = false;
 function reducer$4(state = initialState$4, action) {
@@ -10870,7 +10779,10 @@ function anonymousConsentsStoreConfigFactory() {
 let AnonymousConsentsStoreModule = class AnonymousConsentsStoreModule {
 };
 AnonymousConsentsStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: AnonymousConsentsStoreModule });
-AnonymousConsentsStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AnonymousConsentsStoreModule_Factory(t) { return new (t || AnonymousConsentsStoreModule)(); }, providers: [reducerProvider$2], imports: [[
+AnonymousConsentsStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AnonymousConsentsStoreModule_Factory(t) { return new (t || AnonymousConsentsStoreModule)(); }, providers: [
+        provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
+        reducerProvider$2,
+    ], imports: [[
             CommonModule,
             ReactiveFormsModule,
             StateModule,
@@ -10878,7 +10790,6 @@ AnonymousConsentsStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: funct
                 metaReducers: metaReducers$1
             }),
             EffectsModule.forFeature(effects$1),
-            ConfigModule.withConfigFactory(anonymousConsentsStoreConfigFactory),
         ]] });
 
 var AnonymousConsentsModule_1;
@@ -10890,15 +10801,13 @@ let AnonymousConsentsModule = AnonymousConsentsModule_1 = class AnonymousConsent
                 ...interceptors$1,
                 AnonymousConsentsService,
                 { provide: AnonymousConsentsConfig, useExisting: Config },
+                provideDefaultConfig(defaultAnonymousConsentsConfig),
             ],
         };
     }
 };
 AnonymousConsentsModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: AnonymousConsentsModule });
-AnonymousConsentsModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AnonymousConsentsModule_Factory(t) { return new (t || AnonymousConsentsModule)(); }, imports: [[
-            AnonymousConsentsStoreModule,
-            ConfigModule.withConfig(defaultAnonymousConsentsConfig),
-        ]] });
+AnonymousConsentsModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AnonymousConsentsModule_Factory(t) { return new (t || AnonymousConsentsModule)(); }, imports: [[AnonymousConsentsStoreModule]] });
 
 const defaultAsmConfig = {
     asm: {
@@ -11125,13 +11034,15 @@ function asmStoreConfigFactory() {
 let AsmStoreModule = class AsmStoreModule {
 };
 AsmStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: AsmStoreModule });
-AsmStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AsmStoreModule_Factory(t) { return new (t || AsmStoreModule)(); }, providers: [reducerProvider$3], imports: [[
+AsmStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AsmStoreModule_Factory(t) { return new (t || AsmStoreModule)(); }, providers: [
+        provideDefaultConfigFactory(asmStoreConfigFactory),
+        reducerProvider$3,
+    ], imports: [[
             CommonModule,
             HttpClientModule,
             StateModule,
             StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
             EffectsModule.forFeature(effects$3),
-            ConfigModule.withConfigFactory(asmStoreConfigFactory),
         ]] });
 
 const getAsmState = createFeatureSelector(ASM_FEATURE);
@@ -11838,12 +11749,12 @@ let GlobalMessageModule = GlobalMessageModule_1 = class GlobalMessageModule {
 };
 GlobalMessageModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: GlobalMessageModule });
 GlobalMessageModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function GlobalMessageModule_Factory(t) { return new (t || GlobalMessageModule)(); }, providers: [
+        provideDefaultConfigFactory(defaultGlobalMessageConfigFactory),
         GlobalMessageService,
         { provide: GlobalMessageConfig, useExisting: Config },
     ], imports: [[
             GlobalMessageStoreModule,
             EffectsModule.forFeature([GlobalMessageEffect]),
-            ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
         ]] });
 
 let CustomerSupportAgentErrorHandlingService = class CustomerSupportAgentErrorHandlingService {
@@ -11914,17 +11825,16 @@ let AsmModule = AsmModule_1 = class AsmModule {
     static forRoot() {
         return {
             ngModule: AsmModule_1,
-            providers: [{ provide: AsmConfig, useExisting: Config }, ...interceptors$2],
+            providers: [
+                { provide: AsmConfig, useExisting: Config },
+                ...interceptors$2,
+                provideDefaultConfig(defaultAsmConfig),
+            ],
         };
     }
 };
 AsmModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: AsmModule });
-AsmModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AsmModule_Factory(t) { return new (t || AsmModule)(); }, imports: [[
-            CommonModule,
-            HttpClientModule,
-            AsmStoreModule,
-            ConfigModule.withConfig(defaultAsmConfig),
-        ]] });
+AsmModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function AsmModule_Factory(t) { return new (t || AsmModule)(); }, imports: [[CommonModule, HttpClientModule, AsmStoreModule]] });
 
 let AsmService = class AsmService {
     constructor(store) {
@@ -13978,11 +13888,11 @@ let UserService = class UserService {
     }
 };
 UserService.ɵfac = function UserService_Factory(t) { return new (t || UserService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
-UserService.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: UserService, factory: UserService.ɵfac });
 UserService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
+UserService.ɵprov = ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
 
 let SelectiveCartService = class SelectiveCartService {
     constructor(store, userService, authService, multiCartService, baseSiteService) {
@@ -15844,13 +15754,15 @@ function cartStoreConfigFactory() {
 let CartStoreModule = class CartStoreModule {
 };
 CartStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: CartStoreModule });
-CartStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CartStoreModule_Factory(t) { return new (t || CartStoreModule)(); }, providers: [reducerProvider$5], imports: [[
+CartStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CartStoreModule_Factory(t) { return new (t || CartStoreModule)(); }, providers: [
+        provideDefaultConfigFactory(cartStoreConfigFactory),
+        reducerProvider$5,
+    ], imports: [[
             CommonModule,
             HttpClientModule,
             StateModule,
             StoreModule.forFeature(CART_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
             EffectsModule.forFeature(effects$4),
-            ConfigModule.withConfigFactory(cartStoreConfigFactory),
         ]] });
 
 let MultiCartEffects = class MultiCartEffects {
@@ -18406,13 +18318,15 @@ function cmsStoreConfigFactory() {
 let CmsStoreModule = class CmsStoreModule {
 };
 CmsStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: CmsStoreModule });
-CmsStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CmsStoreModule_Factory(t) { return new (t || CmsStoreModule)(); }, providers: [reducerProvider$8], imports: [[
+CmsStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CmsStoreModule_Factory(t) { return new (t || CmsStoreModule)(); }, providers: [
+        provideDefaultConfigFactory(cmsStoreConfigFactory),
+        reducerProvider$8,
+    ], imports: [[
             CommonModule,
             HttpClientModule,
             StateModule,
             StoreModule.forFeature(CMS_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
             EffectsModule.forFeature(effects$7),
-            ConfigModule.withConfigFactory(cmsStoreConfigFactory),
         ]] });
 
 var CmsModule_1;
@@ -18424,7 +18338,7 @@ let CmsModule = CmsModule_1 = class CmsModule {
                 CmsService,
                 { provide: CmsConfig, useExisting: Config },
                 { provide: CmsStructureConfig, useExisting: Config },
-                provideConfig(defaultCmsModuleConfig),
+                provideDefaultConfig(defaultCmsModuleConfig),
             ],
         };
     }
@@ -18548,6 +18462,130 @@ let DynamicAttributeService = class DynamicAttributeService {
 };
 DynamicAttributeService.ɵfac = function DynamicAttributeService_Factory(t) { return new (t || DynamicAttributeService)(); };
 DynamicAttributeService.ɵprov = ɵɵdefineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(); }, token: DynamicAttributeService, providedIn: "root" });
+
+function getCookie(cookie, name) {
+    const regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
+    const result = regExp.exec(cookie);
+    return (result && decodeURIComponent(result[1])) || '';
+}
+
+var TestConfigModule_1;
+const TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
+function parseConfigJSON(config) {
+    try {
+        return JSON.parse(decodeURIComponent(config));
+    }
+    catch (_) {
+        return {};
+    }
+}
+function configFromCookieFactory(cookieName, platform, document) {
+    if (isPlatformBrowser(platform) && cookieName) {
+        const config = getCookie(document.cookie, cookieName);
+        return parseConfigJSON(config);
+    }
+    return {};
+}
+/**
+ * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
+ *
+ * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+ */
+let TestConfigModule = TestConfigModule_1 = class TestConfigModule {
+    /**
+     * Injects JSON config from the cookie of the given name.
+     *
+     * Be aware of the cookie limitations (4096 bytes).
+     *
+     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+     */
+    static forRoot(options) {
+        return {
+            ngModule: TestConfigModule_1,
+            providers: [
+                {
+                    provide: TEST_CONFIG_COOKIE_NAME,
+                    useValue: options && options.cookie,
+                },
+                provideConfigFactory(configFromCookieFactory, [
+                    TEST_CONFIG_COOKIE_NAME,
+                    PLATFORM_ID,
+                    DOCUMENT,
+                ]),
+            ],
+        };
+    }
+};
+TestConfigModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: TestConfigModule });
+TestConfigModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function TestConfigModule_Factory(t) { return new (t || TestConfigModule)(); } });
+
+var ConfigValidatorModule_1;
+function configValidatorFactory(configInitializer, validators) {
+    const validate = () => {
+        if (isDevMode()) {
+            configInitializer
+                .getStableConfig()
+                .then(config => validateConfig(config, validators || []));
+        }
+    };
+    return validate;
+}
+/**
+ * Should stay private in 1.x
+ * as forRoot() is used internally by ConfigInitializerModule
+ *
+ * issue: #5279
+ */
+let ConfigValidatorModule = ConfigValidatorModule_1 = class ConfigValidatorModule {
+    static forRoot() {
+        return {
+            ngModule: ConfigValidatorModule_1,
+            providers: [
+                {
+                    provide: APP_INITIALIZER,
+                    multi: true,
+                    useFactory: configValidatorFactory,
+                    deps: [
+                        ConfigInitializerService,
+                        [new Optional(), ConfigValidatorToken],
+                    ],
+                },
+            ],
+        };
+    }
+};
+ConfigValidatorModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ConfigValidatorModule });
+ConfigValidatorModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ConfigValidatorModule_Factory(t) { return new (t || ConfigValidatorModule)(); } });
+
+var ConfigInitializerModule_1;
+function configInitializerFactory(configInitializer, initializers) {
+    const isReady = () => configInitializer.initialize(initializers);
+    return isReady;
+}
+let ConfigInitializerModule = ConfigInitializerModule_1 = class ConfigInitializerModule {
+    static forRoot() {
+        return {
+            ngModule: ConfigInitializerModule_1,
+            providers: [
+                {
+                    provide: CONFIG_INITIALIZER_FORROOT_GUARD,
+                    useValue: true,
+                },
+                {
+                    provide: APP_INITIALIZER,
+                    multi: true,
+                    useFactory: configInitializerFactory,
+                    deps: [
+                        ConfigInitializerService,
+                        [new Optional(), CONFIG_INITIALIZER],
+                    ],
+                },
+            ],
+        };
+    }
+};
+ConfigInitializerModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ConfigInitializerModule });
+ConfigInitializerModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ConfigInitializerModule_Factory(t) { return new (t || ConfigInitializerModule)(); } });
 
 // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
 let CxDatePipe = class CxDatePipe extends DatePipe {
@@ -18851,7 +18889,7 @@ let I18nModule = I18nModule_1 = class I18nModule {
         return {
             ngModule: I18nModule_1,
             providers: [
-                provideConfig(defaultI18nConfig),
+                provideDefaultConfig(defaultI18nConfig),
                 { provide: I18nConfig, useExisting: Config },
                 { provide: TranslationService, useClass: I18nextTranslationService },
                 TranslationChunkService,
@@ -19116,24 +19154,25 @@ function kymaStoreConfigFactory() {
 let KymaStoreModule = class KymaStoreModule {
 };
 KymaStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: KymaStoreModule });
-KymaStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function KymaStoreModule_Factory(t) { return new (t || KymaStoreModule)(); }, providers: [reducerProvider$9], imports: [[
+KymaStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function KymaStoreModule_Factory(t) { return new (t || KymaStoreModule)(); }, providers: [
+        provideDefaultConfigFactory(kymaStoreConfigFactory),
+        reducerProvider$9,
+    ], imports: [[
             CommonModule,
             HttpClientModule,
             StateModule,
             StoreModule.forFeature(KYMA_FEATURE, reducerToken$9, { metaReducers: metaReducers$5 }),
             EffectsModule.forFeature(effects$8),
-            ConfigModule.withConfigFactory(kymaStoreConfigFactory),
         ]] });
 
 let KymaModule = class KymaModule {
 };
 KymaModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: KymaModule });
-KymaModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function KymaModule_Factory(t) { return new (t || KymaModule)(); }, providers: [...KymaServices, { provide: KymaConfig, useExisting: Config }], imports: [[
-            CommonModule,
-            HttpClientModule,
-            KymaStoreModule,
-            ConfigModule.withConfig(defaultKymaConfig),
-        ]] });
+KymaModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function KymaModule_Factory(t) { return new (t || KymaModule)(); }, providers: [
+        provideDefaultConfig(defaultKymaConfig),
+        ...KymaServices,
+        { provide: KymaConfig, useExisting: Config },
+    ], imports: [[CommonModule, HttpClientModule, KymaStoreModule]] });
 
 class PersonalizationConfig {
 }
@@ -19284,12 +19323,15 @@ let PersonalizationModule = PersonalizationModule_1 = class PersonalizationModul
     static forRoot() {
         return {
             ngModule: PersonalizationModule_1,
-            providers: [...interceptors$3],
+            providers: [
+                provideDefaultConfig(defaultPersonalizationConfig),
+                ...interceptors$3,
+            ],
         };
     }
 };
 PersonalizationModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: PersonalizationModule });
-PersonalizationModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function PersonalizationModule_Factory(t) { return new (t || PersonalizationModule)(); }, providers: [{ provide: PersonalizationConfig, useExisting: Config }], imports: [[ConfigModule.withConfig(defaultPersonalizationConfig)]] });
+PersonalizationModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function PersonalizationModule_Factory(t) { return new (t || PersonalizationModule)(); }, providers: [{ provide: PersonalizationConfig, useExisting: Config }] });
 
 let PersonalizationContextService = class PersonalizationContextService {
     constructor(config, cmsService) {
@@ -20618,12 +20660,14 @@ function productStoreConfigFactory() {
 let ProductStoreModule = class ProductStoreModule {
 };
 ProductStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ProductStoreModule });
-ProductStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ProductStoreModule_Factory(t) { return new (t || ProductStoreModule)(); }, providers: [reducerProvider$b], imports: [[
+ProductStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ProductStoreModule_Factory(t) { return new (t || ProductStoreModule)(); }, providers: [
+        provideDefaultConfigFactory(productStoreConfigFactory),
+        reducerProvider$b,
+    ], imports: [[
             CommonModule,
             HttpClientModule,
             StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
             EffectsModule.forFeature(effects$9),
-            ConfigModule.withConfigFactory(productStoreConfigFactory),
         ]] });
 
 var ProductModule_1;
@@ -21430,15 +21474,13 @@ let StoreFinderCoreModule = class StoreFinderCoreModule {
 };
 StoreFinderCoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: StoreFinderCoreModule });
 StoreFinderCoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function StoreFinderCoreModule_Factory(t) { return new (t || StoreFinderCoreModule)(); }, providers: [
+        provideDefaultConfig(defaultStoreFinderConfig),
         StoreFinderService,
         StoreDataService,
         GoogleMapRendererService,
         ExternalJsFileLoader,
         { provide: StoreFinderConfig, useExisting: Config },
-    ], imports: [[
-            ConfigModule.withConfig(defaultStoreFinderConfig),
-            StoreFinderStoreModule,
-        ]] });
+    ], imports: [[StoreFinderStoreModule]] });
 
 let UserConnector = class UserConnector {
     constructor(adapter) {
@@ -23628,7 +23670,6 @@ let UserModule = UserModule_1 = class UserModule {
         return {
             ngModule: UserModule_1,
             providers: [
-                UserService,
                 {
                     provide: PageMetaResolver,
                     useExisting: FindProductPageMetaResolver,
@@ -23647,31 +23688,6 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
                 imports: [CommonModule],
                 declarations: []
             }]
-    }], null, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(TestConfigModule, [{
-        type: NgModule,
-        args: [{}]
-    }], null, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ConfigInitializerService, [{
-        type: Injectable,
-        args: [{
-                providedIn: 'root'
-            }]
-    }], function () { return [{ type: undefined, decorators: [{
-                type: Inject,
-                args: [Config]
-            }] }, { type: undefined, decorators: [{
-                type: Optional
-            }, {
-                type: Inject,
-                args: [CONFIG_INITIALIZER_FORROOT_GUARD]
-            }] }]; }, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ConfigValidatorModule, [{
-        type: NgModule
-    }], null, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ConfigInitializerModule, [{
-        type: NgModule,
-        args: [{}]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AuthService, [{
         type: Injectable,
@@ -23757,7 +23773,7 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
     }], function () { return [{ type: ɵngcc4.Actions }, { type: UserAuthenticationTokenService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AuthStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AuthStoreModule, [{
         type: NgModule,
         args: [{
@@ -23767,24 +23783,19 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
                     StateModule,
                     StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers }),
                     EffectsModule.forFeature(effects),
-                    ConfigModule.withConfigFactory(authStoreConfigFactory),
                 ],
-                providers: [reducerProvider]
+                providers: [
+                    provideDefaultConfigFactory(authStoreConfigFactory),
+                    reducerProvider,
+                ]
             }]
     }], null, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AuthModule, { imports: function () { return [CommonModule,
-        HttpClientModule,
-        AuthStoreModule,
-        ConfigModule]; } }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AuthModule, { imports: function () { return [CommonModule, HttpClientModule,
+        AuthStoreModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AuthModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    AuthStoreModule,
-                    ConfigModule.withConfig(defaultAuthConfig),
-                ]
+                imports: [CommonModule, HttpClientModule, AuthStoreModule]
             }]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AuthRedirectService, [{
@@ -23850,18 +23861,13 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccAsmAdapter, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }, { type: AsmConfig }, { type: BaseSiteService }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AsmOccModule, { imports: function () { return [CommonModule,
-        HttpClientModule,
-        ConfigModule]; } }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AsmOccModule, { imports: function () { return [CommonModule, HttpClientModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AsmOccModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    ConfigModule.withConfig(defaultOccAsmConfig),
-                ],
+                imports: [CommonModule, HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccAsmConfig),
                     {
                         provide: AsmAdapter,
                         useClass: OccAsmAdapter
@@ -23885,18 +23891,13 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccSaveCartAdapter, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CartOccModule, { imports: function () { return [CommonModule,
-        HttpClientModule,
-        ConfigModule]; } }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CartOccModule, { imports: function () { return [CommonModule, HttpClientModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartOccModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    ConfigModule.withConfig(defaultOccCartConfig),
-                ],
+                imports: [CommonModule, HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccCartConfig),
                     {
                         provide: CartAdapter,
                         useClass: OccCartAdapter
@@ -24031,18 +24032,13 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccProductAdapter, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }, { type: OccRequestsOptimizerService }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(ProductOccModule, { imports: function () { return [CommonModule,
-        HttpClientModule,
-        ConfigModule]; } }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(ProductOccModule, { imports: function () { return [CommonModule, HttpClientModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ProductOccModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    ConfigModule.withConfig(defaultOccProductConfig),
-                ],
+                imports: [CommonModule, HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccProductConfig),
                     {
                         provide: ProductAdapter,
                         useClass: OccProductAdapter
@@ -24095,18 +24091,13 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
         type: Injectable,
         args: [{ providedIn: 'root' }]
     }], function () { return [{ type: LanguageService }, { type: CurrencyService }, { type: OccEndpointsService }, { type: SiteContextConfig }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(SiteContextOccModule, { imports: function () { return [CommonModule,
-        HttpClientModule,
-        ConfigModule]; } }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(SiteContextOccModule, { imports: function () { return [CommonModule, HttpClientModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SiteContextOccModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    ConfigModule.withConfig(defaultOccSiteContextConfig),
-                ],
+                imports: [CommonModule, HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccSiteContextConfig),
                     {
                         provide: SiteAdapter,
                         useClass: OccSiteAdapter
@@ -24126,12 +24117,13 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccStoreFinderAdapter, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(StoreFinderOccModule, { imports: [ConfigModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(StoreFinderOccModule, [{
         type: NgModule,
         args: [{
-                imports: [ConfigModule.withConfig(defaultOccStoreFinderConfig)],
-                providers: [{ provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter }]
+                providers: [
+                    provideDefaultConfig(defaultOccStoreFinderConfig),
+                    { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
+                ]
             }]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccAnonymousConsentTemplatesAdapter, [{
@@ -24175,18 +24167,13 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
         type: Injectable,
         args: [{ providedIn: 'root' }]
     }], function () { return [{ type: ConverterService }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(UserOccModule, { imports: function () { return [CommonModule,
-        HttpClientModule,
-        ConfigModule]; } }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(UserOccModule, { imports: function () { return [CommonModule, HttpClientModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(UserOccModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    ConfigModule.withConfig(defaultOccUserConfig),
-                ],
+                imports: [CommonModule, HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccUserConfig),
                     { provide: UserAdapter, useClass: OccUserAdapter },
                     { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
                     { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
@@ -24315,6 +24302,20 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
                 providedIn: 'root'
             }]
     }], function () { return [{ type: SiteAdapter }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ConfigInitializerService, [{
+        type: Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return [{ type: undefined, decorators: [{
+                type: Inject,
+                args: [Config]
+            }] }, { type: undefined, decorators: [{
+                type: Optional
+            }, {
+                type: Inject,
+                args: [CONFIG_INITIALIZER_FORROOT_GUARD]
+            }] }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SiteContextParamsService, [{
         type: Injectable
     }], function () { return [{ type: SiteContextConfig }, { type: ɵngcc0.Injector }, { type: ContextServiceMap }]; }, null); })();
@@ -24337,7 +24338,7 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: SiteConnector }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(SiteContextStoreModule, { imports: function () { return [CommonModule,
-        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
+        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SiteContextStoreModule, [{
         type: NgModule,
         args: [{
@@ -24346,27 +24347,24 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
                     HttpClientModule,
                     StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
                     EffectsModule.forFeature(effects$2),
-                    ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                 ],
-                providers: [reducerProvider$1]
+                providers: [
+                    provideDefaultConfigFactory(siteContextStoreConfigFactory),
+                    reducerProvider$1,
+                ]
             }]
     }], null, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(SiteContextModule, { imports: [ConfigModule,
-        StateModule,
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(SiteContextModule, { imports: [StateModule,
         SiteContextStoreModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SiteContextModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    ConfigModule.withConfigFactory(defaultSiteContextConfigFactory),
-                    StateModule,
-                    SiteContextStoreModule,
-                ]
+                imports: [StateModule, SiteContextStoreModule]
             }]
     }], null, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AnonymousConsentsStoreModule, { imports: function () { return [CommonModule,
         ReactiveFormsModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AnonymousConsentsStoreModule, [{
         type: NgModule,
         args: [{
@@ -24378,20 +24376,18 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
                         metaReducers: metaReducers$1
                     }),
                     EffectsModule.forFeature(effects$1),
-                    ConfigModule.withConfigFactory(anonymousConsentsStoreConfigFactory),
                 ],
-                providers: [reducerProvider$2]
+                providers: [
+                    provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
+                    reducerProvider$2,
+                ]
             }]
     }], null, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AnonymousConsentsModule, { imports: [AnonymousConsentsStoreModule,
-        ConfigModule] }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AnonymousConsentsModule, { imports: [AnonymousConsentsStoreModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AnonymousConsentsModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    AnonymousConsentsStoreModule,
-                    ConfigModule.withConfig(defaultAnonymousConsentsConfig),
-                ]
+                imports: [AnonymousConsentsStoreModule]
             }]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AsmConnector, [{
@@ -24408,7 +24404,7 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
     }], function () { return [{ type: ɵngcc4.Actions }, { type: UserAuthenticationTokenService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AsmStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AsmStoreModule, [{
         type: NgModule,
         args: [{
@@ -24418,9 +24414,11 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
                     StateModule,
                     StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
                     EffectsModule.forFeature(effects$3),
-                    ConfigModule.withConfigFactory(asmStoreConfigFactory),
                 ],
-                providers: [reducerProvider$3]
+                providers: [
+                    provideDefaultConfigFactory(asmStoreConfigFactory),
+                    reducerProvider$3,
+                ]
             }]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AsmAuthService, [{
@@ -24521,16 +24519,16 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
                 type: Inject,
                 args: [PLATFORM_ID]
             }] }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(GlobalMessageModule, { imports: [GlobalMessageStoreModule, ɵngcc4.EffectsFeatureModule, ConfigModule] }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(GlobalMessageModule, { imports: [GlobalMessageStoreModule, ɵngcc4.EffectsFeatureModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(GlobalMessageModule, [{
         type: NgModule,
         args: [{
                 imports: [
                     GlobalMessageStoreModule,
                     EffectsModule.forFeature([GlobalMessageEffect]),
-                    ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
                 ],
                 providers: [
+                    provideDefaultConfigFactory(defaultGlobalMessageConfigFactory),
                     GlobalMessageService,
                     { provide: GlobalMessageConfig, useExisting: Config },
                 ]
@@ -24544,19 +24542,12 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
         type: Injectable,
         args: [{ providedIn: 'root' }]
     }], function () { return [{ type: CustomerSupportAgentErrorHandlingService }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AsmModule, { imports: function () { return [CommonModule,
-        HttpClientModule,
-        AsmStoreModule,
-        ConfigModule]; } }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AsmModule, { imports: function () { return [CommonModule, HttpClientModule,
+        AsmStoreModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AsmModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    AsmStoreModule,
-                    ConfigModule.withConfig(defaultAsmConfig),
-                ]
+                imports: [CommonModule, HttpClientModule, AsmStoreModule]
             }]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AsmService, [{
@@ -24585,7 +24576,8 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
         type: Injectable
     }], function () { return [{ type: ɵngcc1.Store }, { type: CartDataService }, { type: AuthService }, { type: ActiveCartService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(UserService, [{
-        type: Injectable
+        type: Injectable,
+        args: [{ providedIn: 'root' }]
     }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SelectiveCartService, [{
         type: Injectable
@@ -24649,7 +24641,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
     }], function () { return [{ type: StatePersistenceService }, { type: ɵngcc1.Store }, { type: SiteContextParamsService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CartStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartStoreModule, [{
         type: NgModule,
         args: [{
@@ -24659,9 +24651,11 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
                     StateModule,
                     StoreModule.forFeature(CART_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
                     EffectsModule.forFeature(effects$4),
-                    ConfigModule.withConfigFactory(cartStoreConfigFactory),
                 ],
-                providers: [reducerProvider$5]
+                providers: [
+                    provideDefaultConfigFactory(cartStoreConfigFactory),
+                    reducerProvider$5,
+                ]
             }]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(MultiCartEffects, [{
@@ -24882,7 +24876,7 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
     }], function () { return [{ type: ɵngcc4.Actions }, { type: CmsPageConnector }, { type: RoutingService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CmsStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CmsStoreModule, [{
         type: NgModule,
         args: [{
@@ -24892,9 +24886,11 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
                     StateModule,
                     StoreModule.forFeature(CMS_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
                     EffectsModule.forFeature(effects$7),
-                    ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                 ],
-                providers: [reducerProvider$8]
+                providers: [
+                    provideDefaultConfigFactory(cmsStoreConfigFactory),
+                    reducerProvider$8,
+                ]
             }]
     }], null, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CmsModule, { imports: [CmsStoreModule,
@@ -24921,6 +24917,17 @@ const ɵNotFoundHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(NotFoundHa
         args: [{
                 providedIn: 'root'
             }]
+    }], null, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(TestConfigModule, [{
+        type: NgModule,
+        args: [{}]
+    }], null, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ConfigValidatorModule, [{
+        type: NgModule
+    }], null, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ConfigInitializerModule, [{
+        type: NgModule,
+        args: [{}]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CxDatePipe, [{
         type: Pipe,
@@ -24985,7 +24992,7 @@ const ɵMockDatePipe_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(MockDatePipe)
     }], function () { return [{ type: ɵngcc4.Actions }, { type: OpenIdAuthenticationTokenService }, { type: KymaConfig }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(KymaStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
-        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
+        StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(KymaStoreModule, [{
         type: NgModule,
         args: [{
@@ -24995,25 +25002,24 @@ const ɵMockDatePipe_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(MockDatePipe)
                     StateModule,
                     StoreModule.forFeature(KYMA_FEATURE, reducerToken$9, { metaReducers: metaReducers$5 }),
                     EffectsModule.forFeature(effects$8),
-                    ConfigModule.withConfigFactory(kymaStoreConfigFactory),
                 ],
-                providers: [reducerProvider$9]
+                providers: [
+                    provideDefaultConfigFactory(kymaStoreConfigFactory),
+                    reducerProvider$9,
+                ]
             }]
     }], null, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(KymaModule, { imports: function () { return [CommonModule,
-        HttpClientModule,
-        KymaStoreModule,
-        ConfigModule]; } }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(KymaModule, { imports: function () { return [CommonModule, HttpClientModule,
+        KymaStoreModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(KymaModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    KymaStoreModule,
-                    ConfigModule.withConfig(defaultKymaConfig),
-                ],
-                providers: [...KymaServices, { provide: KymaConfig, useExisting: Config }]
+                imports: [CommonModule, HttpClientModule, KymaStoreModule],
+                providers: [
+                    provideDefaultConfig(defaultKymaConfig),
+                    ...KymaServices,
+                    { provide: KymaConfig, useExisting: Config },
+                ]
             }]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccPersonalizationIdInterceptor, [{
@@ -25030,11 +25036,9 @@ const ɵMockDatePipe_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(MockDatePipe)
                 type: Inject,
                 args: [PLATFORM_ID]
             }] }]; }, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(PersonalizationModule, { imports: [ConfigModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(PersonalizationModule, [{
         type: NgModule,
         args: [{
-                imports: [ConfigModule.withConfig(defaultPersonalizationConfig)],
                 providers: [{ provide: PersonalizationConfig, useExisting: Config }]
             }]
     }], null, null); })();
@@ -25142,7 +25146,7 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: ProductConnector }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(ProductStoreModule, { imports: function () { return [CommonModule,
-        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, ConfigModule]; } }); })();
+        HttpClientModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ProductStoreModule, [{
         type: NgModule,
         args: [{
@@ -25151,9 +25155,11 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
                     HttpClientModule,
                     StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
                     EffectsModule.forFeature(effects$9),
-                    ConfigModule.withConfigFactory(productStoreConfigFactory),
                 ],
-                providers: [reducerProvider$b]
+                providers: [
+                    provideDefaultConfigFactory(productStoreConfigFactory),
+                    reducerProvider$b,
+                ]
             }]
     }], null, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(ProductModule, { imports: [ProductStoreModule] }); })();
@@ -25212,16 +25218,13 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
                 providers: [reducerProvider$c]
             }]
     }], null, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(StoreFinderCoreModule, { imports: [ConfigModule,
-        StoreFinderStoreModule] }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(StoreFinderCoreModule, { imports: [StoreFinderStoreModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(StoreFinderCoreModule, [{
         type: NgModule,
         args: [{
-                imports: [
-                    ConfigModule.withConfig(defaultStoreFinderConfig),
-                    StoreFinderStoreModule,
-                ],
+                imports: [StoreFinderStoreModule],
                 providers: [
+                    provideDefaultConfig(defaultStoreFinderConfig),
                     StoreFinderService,
                     StoreDataService,
                     GoogleMapRendererService,
@@ -25414,6 +25417,6 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StatePersistenceService, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initialEntityState, initialLoaderState, initialProcessesState, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, getReducers$3 as ɵba, reducerToken$3 as ɵbb, reducerProvider$3 as ɵbc, clearCustomerSupportAgentAsmState as ɵbd, metaReducers$2 as ɵbe, effects$3 as ɵbf, CustomerEffects as ɵbg, CustomerSupportAgentTokenEffects as ɵbh, UserAuthenticationTokenService as ɵbi, reducer$7 as ɵbj, defaultAsmConfig as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, authStoreConfigFactory as ɵbo, AuthStoreModule as ɵbp, getReducers as ɵbq, reducerToken as ɵbr, reducerProvider as ɵbs, clearAuthState as ɵbt, metaReducers as ɵbu, effects as ɵbv, ClientTokenEffect as ɵbw, UserTokenEffects as ɵbx, ClientAuthenticationTokenService as ɵby, reducer as ɵbz, configFromCookieFactory as ɵc, defaultAuthConfig as ɵca, interceptors as ɵcb, ClientTokenInterceptor as ɵcc, UserTokenInterceptor as ɵcd, AuthErrorInterceptor as ɵce, UserErrorHandlingService as ɵcf, UrlParsingService as ɵcg, ClientErrorHandlingService as ɵch, TokenRevocationInterceptor as ɵci, AuthServices as ɵcj, cartStoreConfigFactory as ɵck, CartStoreModule as ɵcl, getReducers$5 as ɵcm, reducerToken$5 as ɵcn, reducerProvider$5 as ɵco, clearCartState as ɵcp, metaReducers$3 as ɵcq, clearMultiCartState as ɵcr, multiCartMetaReducers as ɵcs, multiCartReducerToken as ɵct, getMultiCartReducers as ɵcu, multiCartReducerProvider as ɵcv, CartEffects as ɵcw, CartEntryEffects as ɵcx, CartVoucherEffects as ɵcy, WishListEffects as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, SaveCartConnector as ɵda, SaveCartAdapter as ɵdb, reducer$9 as ɵdc, MultiCartStoreModule as ɵdd, MultiCartEffects as ɵde, processesLoaderReducer as ɵdf, activeCartReducer as ɵdg, cartEntitiesReducer as ɵdh, wishListReducer as ɵdi, CartPageMetaResolver as ɵdj, SiteContextParamsService as ɵdk, CheckoutStoreModule as ɵdl, getReducers$6 as ɵdm, reducerToken$6 as ɵdn, reducerProvider$6 as ɵdo, effects$5 as ɵdp, AddressVerificationEffect as ɵdq, CardTypesEffects as ɵdr, CheckoutEffects as ɵds, reducer$c as ɵdt, reducer$b as ɵdu, reducer$a as ɵdv, cmsStoreConfigFactory as ɵdw, CmsStoreModule as ɵdx, getReducers$8 as ɵdy, reducerToken$8 as ɵdz, initConfig as ɵe, reducerProvider$8 as ɵea, clearCmsState as ɵeb, metaReducers$4 as ɵec, effects$7 as ɵed, ComponentsEffects as ɵee, NavigationEntryItemEffects as ɵef, PageEffects as ɵeg, reducer$g as ɵeh, reducer$h as ɵei, reducer$e as ɵej, reducer$f as ɵek, GlobalMessageStoreModule as ɵel, getReducers$4 as ɵem, reducerToken$4 as ɵen, reducerProvider$4 as ɵeo, reducer$8 as ɵep, GlobalMessageEffect as ɵeq, defaultGlobalMessageConfigFactory as ɵer, InternalServerErrorHandler as ɵes, HttpErrorInterceptor as ɵet, defaultI18nConfig as ɵeu, i18nextProviders as ɵev, i18nextInit as ɵew, MockTranslationService as ɵex, kymaStoreConfigFactory as ɵey, KymaStoreModule as ɵez, anonymousConsentsStoreConfigFactory as ɵf, getReducers$9 as ɵfa, reducerToken$9 as ɵfb, reducerProvider$9 as ɵfc, clearKymaState as ɵfd, metaReducers$5 as ɵfe, effects$8 as ɵff, OpenIdTokenEffect as ɵfg, OpenIdAuthenticationTokenService as ɵfh, defaultKymaConfig as ɵfi, defaultOccAsmConfig as ɵfj, defaultOccCartConfig as ɵfk, OccSaveCartAdapter as ɵfl, defaultOccProductConfig as ɵfm, defaultOccSiteContextConfig as ɵfn, defaultOccStoreFinderConfig as ɵfo, defaultOccUserConfig as ɵfp, UserNotificationPreferenceAdapter as ɵfq, defaultPersonalizationConfig as ɵfr, interceptors$3 as ɵfs, OccPersonalizationIdInterceptor as ɵft, OccPersonalizationTimeInterceptor as ɵfu, ProcessStoreModule as ɵfv, getReducers$a as ɵfw, reducerToken$a as ɵfx, reducerProvider$a as ɵfy, productStoreConfigFactory as ɵfz, AnonymousConsentsStoreModule as ɵg, ProductStoreModule as ɵga, getReducers$b as ɵgb, reducerToken$b as ɵgc, reducerProvider$b as ɵgd, clearProductsState as ɵge, metaReducers$6 as ɵgf, effects$9 as ɵgg, ProductReferencesEffects as ɵgh, ProductReviewsEffects as ɵgi, ProductsSearchEffects as ɵgj, ProductEffects as ɵgk, reducer$i as ɵgl, entityScopedLoaderReducer as ɵgm, scopedLoaderReducer as ɵgn, reducer$k as ɵgo, reducer$j as ɵgp, PageMetaResolver as ɵgq, addExternalRoutesFactory as ɵgr, getReducers$7 as ɵgs, reducer$d as ɵgt, reducerToken$7 as ɵgu, reducerProvider$7 as ɵgv, CustomSerializer as ɵgw, effects$6 as ɵgx, RouterEffects as ɵgy, defaultSiteContextConfigFactory as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, siteContextStoreConfigFactory as ɵha, SiteContextStoreModule as ɵhb, getReducers$1 as ɵhc, reducerToken$1 as ɵhd, reducerProvider$1 as ɵhe, effects$2 as ɵhf, LanguagesEffects as ɵhg, CurrenciesEffects as ɵhh, BaseSiteEffects as ɵhi, reducer$3 as ɵhj, reducer$2 as ɵhk, reducer$1 as ɵhl, initializeContext as ɵhm, contextServiceProviders as ɵhn, initSiteContextRoutesHandler as ɵho, siteContextParamsProviders as ɵhp, SiteContextUrlSerializer as ɵhq, SiteContextRoutesHandler as ɵhr, baseSiteConfigValidator as ɵhs, interceptors$4 as ɵht, CmsTicketInterceptor as ɵhu, defaultStoreFinderConfig as ɵhv, StoreFinderStoreModule as ɵhw, getReducers$c as ɵhx, reducerToken$c as ɵhy, reducerProvider$c as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, effects$a as ɵia, FindStoresEffect as ɵib, ViewAllStoresEffect as ɵic, UserStoreModule as ɵid, getReducers$d as ɵie, reducerToken$d as ɵif, reducerProvider$d as ɵig, clearUserState as ɵih, metaReducers$8 as ɵii, effects$b as ɵij, BillingCountriesEffect as ɵik, ClearMiscsDataEffect as ɵil, ConsignmentTrackingEffects as ɵim, DeliveryCountriesEffects as ɵin, NotificationPreferenceEffects as ɵio, OrderDetailsEffect as ɵip, OrderReturnRequestEffect as ɵiq, UserPaymentMethodsEffects as ɵir, RegionsEffects as ɵis, ResetPasswordEffects as ɵit, TitlesEffects as ɵiu, UserAddressesEffects as ɵiv, UserConsentsEffect as ɵiw, UserDetailsEffects as ɵix, UserOrdersEffect as ɵiy, UserRegisterEffects as ɵiz, stateMetaReducers as ɵj, CustomerCouponEffects as ɵja, ProductInterestsEffect as ɵjb, ForgotPasswordEffects as ɵjc, UpdateEmailEffects as ɵjd, UpdatePasswordEffects as ɵje, UserNotificationPreferenceConnector as ɵjf, reducer$w as ɵjg, reducer$u as ɵjh, reducer$l as ɵji, reducer$v as ɵjj, reducer$q as ɵjk, reducer$x as ɵjl, reducer$p as ɵjm, reducer$A as ɵjn, reducer$n as ɵjo, reducer$t as ɵjp, reducer$r as ɵjq, reducer$s as ɵjr, reducer$m as ɵjs, reducer$y as ɵjt, reducer$o as ɵju, reducer$z as ɵjv, FindProductPageMetaResolver as ɵjw, PageMetaResolver as ɵjx, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, reducer$6 as ɵt, reducer$4 as ɵu, reducer$5 as ɵv, interceptors$1 as ɵw, AnonymousConsentsInterceptor as ɵx, asmStoreConfigFactory as ɵy, AsmStoreModule as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StatePersistenceService, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initialEntityState, initialLoaderState, initialProcessesState, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, getReducers$3 as ɵba, reducerToken$3 as ɵbb, reducerProvider$3 as ɵbc, clearCustomerSupportAgentAsmState as ɵbd, metaReducers$2 as ɵbe, effects$3 as ɵbf, CustomerEffects as ɵbg, CustomerSupportAgentTokenEffects as ɵbh, UserAuthenticationTokenService as ɵbi, reducer$7 as ɵbj, interceptors$2 as ɵbk, CustomerSupportAgentAuthErrorInterceptor as ɵbl, CustomerSupportAgentErrorHandlingService as ɵbm, defaultAsmConfig as ɵbn, authStoreConfigFactory as ɵbo, AuthStoreModule as ɵbp, getReducers as ɵbq, reducerToken as ɵbr, reducerProvider as ɵbs, clearAuthState as ɵbt, metaReducers as ɵbu, effects as ɵbv, ClientTokenEffect as ɵbw, UserTokenEffects as ɵbx, ClientAuthenticationTokenService as ɵby, reducer as ɵbz, configFromCookieFactory as ɵc, defaultAuthConfig as ɵca, interceptors as ɵcb, ClientTokenInterceptor as ɵcc, UserTokenInterceptor as ɵcd, AuthErrorInterceptor as ɵce, UserErrorHandlingService as ɵcf, UrlParsingService as ɵcg, ClientErrorHandlingService as ɵch, TokenRevocationInterceptor as ɵci, AuthServices as ɵcj, cartStoreConfigFactory as ɵck, CartStoreModule as ɵcl, getReducers$5 as ɵcm, reducerToken$5 as ɵcn, reducerProvider$5 as ɵco, clearCartState as ɵcp, metaReducers$3 as ɵcq, clearMultiCartState as ɵcr, multiCartMetaReducers as ɵcs, multiCartReducerToken as ɵct, getMultiCartReducers as ɵcu, multiCartReducerProvider as ɵcv, CartEffects as ɵcw, CartEntryEffects as ɵcx, CartVoucherEffects as ɵcy, WishListEffects as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, SaveCartConnector as ɵda, SaveCartAdapter as ɵdb, reducer$9 as ɵdc, MultiCartStoreModule as ɵdd, MultiCartEffects as ɵde, processesLoaderReducer as ɵdf, activeCartReducer as ɵdg, cartEntitiesReducer as ɵdh, wishListReducer as ɵdi, CartPageMetaResolver as ɵdj, SiteContextParamsService as ɵdk, CheckoutStoreModule as ɵdl, getReducers$6 as ɵdm, reducerToken$6 as ɵdn, reducerProvider$6 as ɵdo, effects$5 as ɵdp, AddressVerificationEffect as ɵdq, CardTypesEffects as ɵdr, CheckoutEffects as ɵds, reducer$c as ɵdt, reducer$b as ɵdu, reducer$a as ɵdv, cmsStoreConfigFactory as ɵdw, CmsStoreModule as ɵdx, getReducers$8 as ɵdy, reducerToken$8 as ɵdz, initConfig as ɵe, reducerProvider$8 as ɵea, clearCmsState as ɵeb, metaReducers$4 as ɵec, effects$7 as ɵed, ComponentsEffects as ɵee, NavigationEntryItemEffects as ɵef, PageEffects as ɵeg, reducer$g as ɵeh, reducer$h as ɵei, reducer$e as ɵej, reducer$f as ɵek, GlobalMessageStoreModule as ɵel, getReducers$4 as ɵem, reducerToken$4 as ɵen, reducerProvider$4 as ɵeo, reducer$8 as ɵep, GlobalMessageEffect as ɵeq, defaultGlobalMessageConfigFactory as ɵer, InternalServerErrorHandler as ɵes, HttpErrorInterceptor as ɵet, defaultI18nConfig as ɵeu, i18nextProviders as ɵev, i18nextInit as ɵew, MockTranslationService as ɵex, kymaStoreConfigFactory as ɵey, KymaStoreModule as ɵez, anonymousConsentsStoreConfigFactory as ɵf, getReducers$9 as ɵfa, reducerToken$9 as ɵfb, reducerProvider$9 as ɵfc, clearKymaState as ɵfd, metaReducers$5 as ɵfe, effects$8 as ɵff, OpenIdTokenEffect as ɵfg, OpenIdAuthenticationTokenService as ɵfh, defaultKymaConfig as ɵfi, defaultOccAsmConfig as ɵfj, defaultOccCartConfig as ɵfk, OccSaveCartAdapter as ɵfl, defaultOccProductConfig as ɵfm, defaultOccSiteContextConfig as ɵfn, defaultOccStoreFinderConfig as ɵfo, defaultOccUserConfig as ɵfp, UserNotificationPreferenceAdapter as ɵfq, defaultPersonalizationConfig as ɵfr, interceptors$3 as ɵfs, OccPersonalizationIdInterceptor as ɵft, OccPersonalizationTimeInterceptor as ɵfu, ProcessStoreModule as ɵfv, getReducers$a as ɵfw, reducerToken$a as ɵfx, reducerProvider$a as ɵfy, productStoreConfigFactory as ɵfz, AnonymousConsentsStoreModule as ɵg, ProductStoreModule as ɵga, getReducers$b as ɵgb, reducerToken$b as ɵgc, reducerProvider$b as ɵgd, clearProductsState as ɵge, metaReducers$6 as ɵgf, effects$9 as ɵgg, ProductReferencesEffects as ɵgh, ProductReviewsEffects as ɵgi, ProductsSearchEffects as ɵgj, ProductEffects as ɵgk, reducer$i as ɵgl, entityScopedLoaderReducer as ɵgm, scopedLoaderReducer as ɵgn, reducer$k as ɵgo, reducer$j as ɵgp, PageMetaResolver as ɵgq, addExternalRoutesFactory as ɵgr, getReducers$7 as ɵgs, reducer$d as ɵgt, reducerToken$7 as ɵgu, reducerProvider$7 as ɵgv, CustomSerializer as ɵgw, effects$6 as ɵgx, RouterEffects as ɵgy, siteContextStoreConfigFactory as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, SiteContextStoreModule as ɵha, getReducers$1 as ɵhb, reducerToken$1 as ɵhc, reducerProvider$1 as ɵhd, effects$2 as ɵhe, LanguagesEffects as ɵhf, CurrenciesEffects as ɵhg, BaseSiteEffects as ɵhh, reducer$3 as ɵhi, reducer$2 as ɵhj, reducer$1 as ɵhk, defaultSiteContextConfigFactory as ɵhl, initializeContext as ɵhm, contextServiceProviders as ɵhn, initSiteContextRoutesHandler as ɵho, siteContextParamsProviders as ɵhp, SiteContextUrlSerializer as ɵhq, SiteContextRoutesHandler as ɵhr, baseSiteConfigValidator as ɵhs, interceptors$4 as ɵht, CmsTicketInterceptor as ɵhu, StoreFinderStoreModule as ɵhv, getReducers$c as ɵhw, reducerToken$c as ɵhx, reducerProvider$c as ɵhy, effects$a as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, FindStoresEffect as ɵia, ViewAllStoresEffect as ɵib, defaultStoreFinderConfig as ɵic, UserStoreModule as ɵid, getReducers$d as ɵie, reducerToken$d as ɵif, reducerProvider$d as ɵig, clearUserState as ɵih, metaReducers$8 as ɵii, effects$b as ɵij, BillingCountriesEffect as ɵik, ClearMiscsDataEffect as ɵil, ConsignmentTrackingEffects as ɵim, DeliveryCountriesEffects as ɵin, NotificationPreferenceEffects as ɵio, OrderDetailsEffect as ɵip, OrderReturnRequestEffect as ɵiq, UserPaymentMethodsEffects as ɵir, RegionsEffects as ɵis, ResetPasswordEffects as ɵit, TitlesEffects as ɵiu, UserAddressesEffects as ɵiv, UserConsentsEffect as ɵiw, UserDetailsEffects as ɵix, UserOrdersEffect as ɵiy, UserRegisterEffects as ɵiz, stateMetaReducers as ɵj, CustomerCouponEffects as ɵja, ProductInterestsEffect as ɵjb, ForgotPasswordEffects as ɵjc, UpdateEmailEffects as ɵjd, UpdatePasswordEffects as ɵje, UserNotificationPreferenceConnector as ɵjf, reducer$w as ɵjg, reducer$u as ɵjh, reducer$l as ɵji, reducer$v as ɵjj, reducer$q as ɵjk, reducer$x as ɵjl, reducer$p as ɵjm, reducer$A as ɵjn, reducer$n as ɵjo, reducer$t as ɵjp, reducer$r as ɵjq, reducer$s as ɵjr, reducer$m as ɵjs, reducer$y as ɵjt, reducer$o as ɵju, reducer$z as ɵjv, FindProductPageMetaResolver as ɵjw, PageMetaResolver as ɵjx, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, reducer$6 as ɵt, reducer$4 as ɵu, reducer$5 as ɵv, interceptors$1 as ɵw, AnonymousConsentsInterceptor as ɵx, asmStoreConfigFactory as ɵy, AsmStoreModule as ɵz };
 
 //# sourceMappingURL=spartacus-core.js.map

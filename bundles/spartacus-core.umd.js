@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/forms'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', 'rxjs', 'rxjs/operators', '@ngrx/store', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@angular/forms', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.rxjs, global.rxjs.operators, global.store, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.ng.forms, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, (function (exports, core, common, rxjs, operators, store, http, router, effects$c, platformBrowser, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/forms'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@angular/forms', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.store, global.rxjs, global.rxjs.operators, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.ng.forms, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, (function (exports, core, common, store, rxjs, operators, http, router, effects$c, platformBrowser, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -247,23 +247,67 @@
      */
     var ConfigChunk = new core.InjectionToken('ConfigurationChunk');
     /**
+     * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
+     * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
+     *
+     * General rule is, that all config provided in libraries should be provided as default config.
+     */
+    var DefaultConfigChunk = new core.InjectionToken('DefaultConfigurationChunk');
+    /**
      * Helper function to provide configuration chunk using ConfigChunk token
+     *
+     * To provide default configuration in libraries provideDefaultConfig should be used instead.
      *
      * @param config Config object to merge with the global configuration
      */
-    function provideConfig(config) {
+    function provideConfig(config, defaultConfig) {
         if (config === void 0) { config = {}; }
-        return { provide: ConfigChunk, useValue: config, multi: true };
+        if (defaultConfig === void 0) { defaultConfig = false; }
+        return {
+            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+            useValue: config,
+            multi: true,
+        };
     }
     /**
      * Helper function to provide configuration with factory function, using ConfigChunk token
      *
+     * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
+     *
      * @param configFactory Factory Function that will generate config object
      * @param deps Optional dependencies to a factory function
      */
-    function provideConfigFactory(configFactory, deps) {
+    function provideConfigFactory(configFactory, deps, defaultConfig) {
+        if (defaultConfig === void 0) { defaultConfig = false; }
         return {
-            provide: ConfigChunk,
+            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+            useFactory: configFactory,
+            multi: true,
+            deps: deps,
+        };
+    }
+    /**
+     * Helper function to provide default configuration chunk using DefaultConfigChunk token
+     *
+     * @param config Config object to merge with the default configuration
+     */
+    function provideDefaultConfig(config) {
+        if (config === void 0) { config = {}; }
+        return {
+            provide: DefaultConfigChunk,
+            useValue: config,
+            multi: true,
+        };
+    }
+    /**
+     * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
+     *
+     * @param configFactory Factory Function that will generate config object
+     * @param deps Optional dependencies to a factory function
+     */
+    function provideDefaultConfigFactory(configFactory, deps) {
+        return {
+            provide: DefaultConfigChunk,
             useFactory: configFactory,
             multi: true,
             deps: deps,
@@ -273,8 +317,10 @@
      * Factory function that merges all configurations chunks. Should not be used directly without explicit reason.
      *
      */
-    function configurationFactory(configChunks) {
-        var config = deepMerge.apply(void 0, __spread([{}], configChunks));
+    function configurationFactory(configChunks, defaultConfigChunks) {
+        if (configChunks === void 0) { configChunks = []; }
+        if (defaultConfigChunks === void 0) { defaultConfigChunks = []; }
+        var config = deepMerge.apply(void 0, __spread([{}], ((defaultConfigChunks !== null && defaultConfigChunks !== void 0 ? defaultConfigChunks : [])), ((configChunks !== null && configChunks !== void 0 ? configChunks : []))));
         return config;
     }
     var ConfigModule = /** @class */ (function () {
@@ -283,6 +329,8 @@
         ConfigModule_1 = ConfigModule;
         /**
          * Import ConfigModule and contribute config to the global configuration
+         *
+         * To provide default configuration in libraries provideDefaultConfig should be used instead.
          *
          * @param config Config object to merge with the global configuration
          */
@@ -294,6 +342,8 @@
         };
         /**
          * Import ConfigModule and contribute config to the global configuration using factory function
+         *
+         * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
          *
          * @param configFactory Factory function that will generate configuration
          * @param deps Optional dependencies to factory function
@@ -318,7 +368,10 @@
                     {
                         provide: Config,
                         useFactory: configurationFactory,
-                        deps: [ConfigChunk],
+                        deps: [
+                            [new core.Optional(), ConfigChunk],
+                            [new core.Optional(), DefaultConfigChunk],
+                        ],
                     },
                 ],
             };
@@ -331,400 +384,6 @@
             })
         ], ConfigModule);
         return ConfigModule;
-    }());
-
-    function getCookie(cookie, name) {
-        var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
-        var result = regExp.exec(cookie);
-        return (result && decodeURIComponent(result[1])) || '';
-    }
-
-    var TEST_CONFIG_COOKIE_NAME = new core.InjectionToken('TEST_CONFIG_COOKIE_NAME');
-    function parseConfigJSON(config) {
-        try {
-            return JSON.parse(decodeURIComponent(config));
-        }
-        catch (_) {
-            return {};
-        }
-    }
-    function configFromCookieFactory(cookieName, platform, document) {
-        if (common.isPlatformBrowser(platform) && cookieName) {
-            var config = getCookie(document.cookie, cookieName);
-            return parseConfigJSON(config);
-        }
-        return {};
-    }
-    /**
-     * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
-     *
-     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
-     */
-    var TestConfigModule = /** @class */ (function () {
-        function TestConfigModule() {
-        }
-        TestConfigModule_1 = TestConfigModule;
-        /**
-         * Injects JSON config from the cookie of the given name.
-         *
-         * Be aware of the cookie limitations (4096 bytes).
-         *
-         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
-         */
-        TestConfigModule.forRoot = function (options) {
-            return {
-                ngModule: TestConfigModule_1,
-                providers: [
-                    {
-                        provide: TEST_CONFIG_COOKIE_NAME,
-                        useValue: options && options.cookie,
-                    },
-                    provideConfigFactory(configFromCookieFactory, [
-                        TEST_CONFIG_COOKIE_NAME,
-                        core.PLATFORM_ID,
-                        common.DOCUMENT,
-                    ]),
-                ],
-            };
-        };
-        var TestConfigModule_1;
-        TestConfigModule = TestConfigModule_1 = __decorate([
-            core.NgModule({})
-        ], TestConfigModule);
-        return TestConfigModule;
-    }());
-
-    var ConfigValidatorToken = new core.InjectionToken('ConfigurationValidator');
-    /**
-     * Use to probide config validation at app bootstrap (when all config chunks are merged)
-     *
-     * @param configValidator
-     */
-    function provideConfigValidator(configValidator) {
-        return {
-            provide: ConfigValidatorToken,
-            useValue: configValidator,
-            multi: true,
-        };
-    }
-    function validateConfig(config, configValidators) {
-        var e_1, _a;
-        try {
-            for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
-                var validate = configValidators_1_1.value;
-                var warning = validate(config);
-                if (warning) {
-                    console.warn(warning);
-                }
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-    }
-
-    var CONFIG_INITIALIZER = new core.InjectionToken('ConfigInitializer');
-    var CONFIG_INITIALIZER_FORROOT_GUARD = new core.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
-
-    /**
-     * Provides support for CONFIG_INITIALIZERS
-     */
-    var ConfigInitializerService = /** @class */ (function () {
-        function ConfigInitializerService(config, initializerGuard) {
-            this.config = config;
-            this.initializerGuard = initializerGuard;
-            this.ongoingScopes$ = new rxjs.BehaviorSubject(undefined);
-        }
-        Object.defineProperty(ConfigInitializerService.prototype, "isStable", {
-            /**
-             * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
-             */
-            get: function () {
-                return (!this.initializerGuard ||
-                    (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * Recommended way to get config for code that can run before app will finish
-         * initialization (APP_INITIALIZERS, selected service constructors)
-         *
-         * Used without parameters waits for the whole config to become stable
-         *
-         * Parameters allow to describe which part of the config should be stable using
-         * string describing config part, e.g.:
-         * 'siteContext', 'siteContext.language', etc.
-         *
-         * @param scopes String describing parts of the config we want to be sure are stable
-         */
-        ConfigInitializerService.prototype.getStableConfig = function () {
-            var scopes = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                scopes[_i] = arguments[_i];
-            }
-            return __awaiter(this, void 0, void 0, function () {
-                var _this = this;
-                return __generator(this, function (_a) {
-                    if (this.isStable) {
-                        return [2 /*return*/, this.config];
-                    }
-                    return [2 /*return*/, this.ongoingScopes$
-                            .pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config))
-                            .toPromise()];
-                });
-            });
-        };
-        /**
-         * Removes provided scopes from currently ongoingScopes
-         *
-         * @param scopes
-         */
-        ConfigInitializerService.prototype.finishScopes = function (scopes) {
-            var e_1, _a;
-            var newScopes = __spread(this.ongoingScopes$.value);
-            try {
-                for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
-                    var scope = scopes_1_1.value;
-                    newScopes.splice(newScopes.indexOf(scope), 1);
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
-            this.ongoingScopes$.next(newScopes);
-        };
-        /**
-         * Return true if provided scopes are not part of ongoingScopes
-         *
-         * @param scopes
-         * @param ongoingScopes
-         */
-        ConfigInitializerService.prototype.areReady = function (scopes, ongoingScopes) {
-            var e_2, _a, e_3, _b;
-            if (!scopes.length) {
-                return !ongoingScopes.length;
-            }
-            try {
-                for (var scopes_2 = __values(scopes), scopes_2_1 = scopes_2.next(); !scopes_2_1.done; scopes_2_1 = scopes_2.next()) {
-                    var scope = scopes_2_1.value;
-                    try {
-                        for (var ongoingScopes_1 = (e_3 = void 0, __values(ongoingScopes)), ongoingScopes_1_1 = ongoingScopes_1.next(); !ongoingScopes_1_1.done; ongoingScopes_1_1 = ongoingScopes_1.next()) {
-                            var ongoingScope = ongoingScopes_1_1.value;
-                            if (this.scopesOverlap(scope, ongoingScope)) {
-                                return false;
-                            }
-                        }
-                    }
-                    catch (e_3_1) { e_3 = { error: e_3_1 }; }
-                    finally {
-                        try {
-                            if (ongoingScopes_1_1 && !ongoingScopes_1_1.done && (_b = ongoingScopes_1.return)) _b.call(ongoingScopes_1);
-                        }
-                        finally { if (e_3) throw e_3.error; }
-                    }
-                }
-            }
-            catch (e_2_1) { e_2 = { error: e_2_1 }; }
-            finally {
-                try {
-                    if (scopes_2_1 && !scopes_2_1.done && (_a = scopes_2.return)) _a.call(scopes_2);
-                }
-                finally { if (e_2) throw e_2.error; }
-            }
-            return true;
-        };
-        /**
-         * Check if two scopes overlap.
-         *
-         * Example of scopes that overlap:
-         * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
-         *
-         * Example of scopes that do not overlap:
-         * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
-         *
-         * @param a ScopeA
-         * @param b ScopeB
-         */
-        ConfigInitializerService.prototype.scopesOverlap = function (a, b) {
-            var _a;
-            if (b.length > a.length) {
-                _a = __read([b, a], 2), a = _a[0], b = _a[1];
-            }
-            return a.startsWith(b) && (a[b.length] || '.') === '.';
-        };
-        /**
-         * @internal
-         *
-         * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
-         *
-         */
-        ConfigInitializerService.prototype.initialize = function (initializers) {
-            return __awaiter(this, void 0, void 0, function () {
-                var ongoingScopes, asyncConfigs, _loop_1, this_1, _a, _b, initializer;
-                var e_4, _c;
-                var _this = this;
-                return __generator(this, function (_d) {
-                    switch (_d.label) {
-                        case 0:
-                            if (this.ongoingScopes$.value) {
-                                // guard for double initialization
-                                return [2 /*return*/];
-                            }
-                            ongoingScopes = [];
-                            asyncConfigs = [];
-                            _loop_1 = function (initializer) {
-                                if (!initializer) {
-                                    return "continue";
-                                }
-                                if (!initializer.scopes || !initializer.scopes.length) {
-                                    throw new Error('CONFIG_INITIALIZER should provide scope!');
-                                }
-                                if (core.isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
-                                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
-                                }
-                                ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
-                                asyncConfigs.push((function () { return __awaiter(_this, void 0, void 0, function () {
-                                    var _a, _b;
-                                    return __generator(this, function (_c) {
-                                        switch (_c.label) {
-                                            case 0:
-                                                _a = deepMerge;
-                                                _b = [this.config];
-                                                return [4 /*yield*/, initializer.configFactory()];
-                                            case 1:
-                                                _a.apply(void 0, _b.concat([_c.sent()]));
-                                                this.finishScopes(initializer.scopes);
-                                                return [2 /*return*/];
-                                        }
-                                    });
-                                }); })());
-                            };
-                            this_1 = this;
-                            try {
-                                for (_a = __values(initializers || []), _b = _a.next(); !_b.done; _b = _a.next()) {
-                                    initializer = _b.value;
-                                    _loop_1(initializer);
-                                }
-                            }
-                            catch (e_4_1) { e_4 = { error: e_4_1 }; }
-                            finally {
-                                try {
-                                    if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
-                                }
-                                finally { if (e_4) throw e_4.error; }
-                            }
-                            this.ongoingScopes$.next(ongoingScopes);
-                            if (!asyncConfigs.length) return [3 /*break*/, 2];
-                            return [4 /*yield*/, Promise.all(asyncConfigs)];
-                        case 1:
-                            _d.sent();
-                            _d.label = 2;
-                        case 2: return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        ConfigInitializerService.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] },
-            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
-        ]; };
-        ConfigInitializerService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(core["ɵɵinject"](Config), core["ɵɵinject"](CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
-        ConfigInitializerService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            }),
-            __param(0, core.Inject(Config)),
-            __param(1, core.Optional()),
-            __param(1, core.Inject(CONFIG_INITIALIZER_FORROOT_GUARD))
-        ], ConfigInitializerService);
-        return ConfigInitializerService;
-    }());
-
-    function configValidatorFactory(configInitializer, validators) {
-        var validate = function () {
-            if (core.isDevMode()) {
-                configInitializer
-                    .getStableConfig()
-                    .then(function (config) { return validateConfig(config, validators || []); });
-            }
-        };
-        return validate;
-    }
-    /**
-     * Should stay private in 1.x
-     * as forRoot() is used internally by ConfigInitializerModule
-     *
-     * issue: #5279
-     */
-    var ConfigValidatorModule = /** @class */ (function () {
-        function ConfigValidatorModule() {
-        }
-        ConfigValidatorModule_1 = ConfigValidatorModule;
-        ConfigValidatorModule.forRoot = function () {
-            return {
-                ngModule: ConfigValidatorModule_1,
-                providers: [
-                    {
-                        provide: core.APP_INITIALIZER,
-                        multi: true,
-                        useFactory: configValidatorFactory,
-                        deps: [
-                            ConfigInitializerService,
-                            [new core.Optional(), ConfigValidatorToken],
-                        ],
-                    },
-                ],
-            };
-        };
-        var ConfigValidatorModule_1;
-        ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
-            core.NgModule()
-        ], ConfigValidatorModule);
-        return ConfigValidatorModule;
-    }());
-
-    function configInitializerFactory(configInitializer, initializers) {
-        var isReady = function () { return configInitializer.initialize(initializers); };
-        return isReady;
-    }
-    var ConfigInitializerModule = /** @class */ (function () {
-        function ConfigInitializerModule() {
-        }
-        ConfigInitializerModule_1 = ConfigInitializerModule;
-        ConfigInitializerModule.forRoot = function () {
-            return {
-                ngModule: ConfigInitializerModule_1,
-                providers: [
-                    {
-                        provide: CONFIG_INITIALIZER_FORROOT_GUARD,
-                        useValue: true,
-                    },
-                    {
-                        provide: core.APP_INITIALIZER,
-                        multi: true,
-                        useFactory: configInitializerFactory,
-                        deps: [
-                            ConfigInitializerService,
-                            [new core.Optional(), CONFIG_INITIALIZER],
-                        ],
-                    },
-                ],
-            };
-        };
-        var ConfigInitializerModule_1;
-        ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
-            core.NgModule({})
-        ], ConfigInitializerModule);
-        return ConfigInitializerModule;
     }());
 
     var SiteContextConfig = /** @class */ (function () {
@@ -3230,7 +2889,7 @@
             return {
                 ngModule: StateModule_1,
                 providers: __spread(stateMetaReducers, [
-                    provideConfig(defaultStateConfig),
+                    provideDefaultConfig(defaultStateConfig),
                     { provide: StateConfig, useExisting: Config },
                 ]),
             };
@@ -3439,9 +3098,11 @@
                     StateModule,
                     store.StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers: metaReducers }),
                     effects$c.EffectsModule.forFeature(effects),
-                    ConfigModule.withConfigFactory(authStoreConfigFactory),
                 ],
-                providers: [reducerProvider],
+                providers: [
+                    provideDefaultConfigFactory(authStoreConfigFactory),
+                    reducerProvider,
+                ],
             })
         ], AuthStoreModule);
         return AuthStoreModule;
@@ -3454,7 +3115,9 @@
         AuthModule.forRoot = function () {
             return {
                 ngModule: AuthModule_1,
-                providers: __spread(interceptors, AuthServices, [
+                providers: __spread([
+                    provideDefaultConfig(defaultAuthConfig)
+                ], interceptors, AuthServices, [
                     { provide: AuthConfig, useExisting: Config },
                 ]),
             };
@@ -3462,12 +3125,7 @@
         var AuthModule_1;
         AuthModule = AuthModule_1 = __decorate([
             core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    AuthStoreModule,
-                    ConfigModule.withConfig(defaultAuthConfig),
-                ],
+                imports: [common.CommonModule, http.HttpClientModule, AuthStoreModule],
             })
         ], AuthModule);
         return AuthModule;
@@ -4248,7 +3906,7 @@
             return {
                 ngModule: FeaturesConfigModule_1,
                 providers: [
-                    provideConfig({
+                    provideDefaultConfig({
                         features: {
                             level: defaultLevel || '*',
                         },
@@ -4428,12 +4086,9 @@
         }
         AsmOccModule = __decorate([
             core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    ConfigModule.withConfig(defaultOccAsmConfig),
-                ],
+                imports: [common.CommonModule, http.HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccAsmConfig),
                     {
                         provide: AsmAdapter,
                         useClass: OccAsmAdapter,
@@ -4910,12 +4565,9 @@
         }
         CartOccModule = __decorate([
             core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    ConfigModule.withConfig(defaultOccCartConfig),
-                ],
+                imports: [common.CommonModule, http.HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccCartConfig),
                     {
                         provide: CartAdapter,
                         useClass: OccCartAdapter,
@@ -6406,12 +6058,9 @@
         }
         ProductOccModule = __decorate([
             core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    ConfigModule.withConfig(defaultOccProductConfig),
-                ],
+                imports: [common.CommonModule, http.HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccProductConfig),
                     {
                         provide: ProductAdapter,
                         useClass: OccProductAdapter,
@@ -6704,12 +6353,9 @@
         }
         SiteContextOccModule = __decorate([
             core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    ConfigModule.withConfig(defaultOccSiteContextConfig),
-                ],
+                imports: [common.CommonModule, http.HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccSiteContextConfig),
                     {
                         provide: SiteAdapter,
                         useClass: OccSiteAdapter,
@@ -6829,8 +6475,10 @@
         }
         StoreFinderOccModule = __decorate([
             core.NgModule({
-                imports: [ConfigModule.withConfig(defaultOccStoreFinderConfig)],
-                providers: [{ provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter }],
+                providers: [
+                    provideDefaultConfig(defaultOccStoreFinderConfig),
+                    { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
+                ],
             })
         ], StoreFinderOccModule);
         return StoreFinderOccModule;
@@ -7653,12 +7301,9 @@
         }
         UserOccModule = __decorate([
             core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    ConfigModule.withConfig(defaultOccUserConfig),
-                ],
+                imports: [common.CommonModule, http.HttpClientModule],
                 providers: [
+                    provideDefaultConfig(defaultOccUserConfig),
                     { provide: UserAdapter, useClass: OccUserAdapter },
                     { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
                     { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
@@ -7744,6 +7389,9 @@
         ], JavaRegExpConverter);
         return JavaRegExpConverter;
     }());
+
+    var CONFIG_INITIALIZER = new core.InjectionToken('ConfigInitializer');
+    var CONFIG_INITIALIZER_FORROOT_GUARD = new core.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
 
     /**
      * The url of the server request when running SSR
@@ -9181,6 +8829,39 @@
         })(NotificationType = Occ.NotificationType || (Occ.NotificationType = {}));
     })(exports.Occ || (exports.Occ = {}));
 
+    var ConfigValidatorToken = new core.InjectionToken('ConfigurationValidator');
+    /**
+     * Use to probide config validation at app bootstrap (when all config chunks are merged)
+     *
+     * @param configValidator
+     */
+    function provideConfigValidator(configValidator) {
+        return {
+            provide: ConfigValidatorToken,
+            useValue: configValidator,
+            multi: true,
+        };
+    }
+    function validateConfig(config, configValidators) {
+        var e_1, _a;
+        try {
+            for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
+                var validate = configValidators_1_1.value;
+                var warning = validate(config);
+                if (warning) {
+                    console.warn(warning);
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+    }
+
     var OccModule = /** @class */ (function () {
         function OccModule() {
         }
@@ -9190,7 +8871,7 @@
                 ngModule: OccModule_1,
                 providers: [
                     { provide: OccConfig, useExisting: Config },
-                    provideConfig(defaultOccConfig),
+                    provideDefaultConfig(defaultOccConfig),
                     provideConfigValidator(occConfigValidator),
                 ],
             };
@@ -12092,6 +11773,225 @@
         };
     }
 
+    /**
+     * Provides support for CONFIG_INITIALIZERS
+     */
+    var ConfigInitializerService = /** @class */ (function () {
+        function ConfigInitializerService(config, initializerGuard) {
+            this.config = config;
+            this.initializerGuard = initializerGuard;
+            this.ongoingScopes$ = new rxjs.BehaviorSubject(undefined);
+        }
+        Object.defineProperty(ConfigInitializerService.prototype, "isStable", {
+            /**
+             * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
+             */
+            get: function () {
+                return (!this.initializerGuard ||
+                    (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Recommended way to get config for code that can run before app will finish
+         * initialization (APP_INITIALIZERS, selected service constructors)
+         *
+         * Used without parameters waits for the whole config to become stable
+         *
+         * Parameters allow to describe which part of the config should be stable using
+         * string describing config part, e.g.:
+         * 'siteContext', 'siteContext.language', etc.
+         *
+         * @param scopes String describing parts of the config we want to be sure are stable
+         */
+        ConfigInitializerService.prototype.getStableConfig = function () {
+            var scopes = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                scopes[_i] = arguments[_i];
+            }
+            return __awaiter(this, void 0, void 0, function () {
+                var _this = this;
+                return __generator(this, function (_a) {
+                    if (this.isStable) {
+                        return [2 /*return*/, this.config];
+                    }
+                    return [2 /*return*/, this.ongoingScopes$
+                            .pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config))
+                            .toPromise()];
+                });
+            });
+        };
+        /**
+         * Removes provided scopes from currently ongoingScopes
+         *
+         * @param scopes
+         */
+        ConfigInitializerService.prototype.finishScopes = function (scopes) {
+            var e_1, _a;
+            var newScopes = __spread(this.ongoingScopes$.value);
+            try {
+                for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
+                    var scope = scopes_1_1.value;
+                    newScopes.splice(newScopes.indexOf(scope), 1);
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            this.ongoingScopes$.next(newScopes);
+        };
+        /**
+         * Return true if provided scopes are not part of ongoingScopes
+         *
+         * @param scopes
+         * @param ongoingScopes
+         */
+        ConfigInitializerService.prototype.areReady = function (scopes, ongoingScopes) {
+            var e_2, _a, e_3, _b;
+            if (!scopes.length) {
+                return !ongoingScopes.length;
+            }
+            try {
+                for (var scopes_2 = __values(scopes), scopes_2_1 = scopes_2.next(); !scopes_2_1.done; scopes_2_1 = scopes_2.next()) {
+                    var scope = scopes_2_1.value;
+                    try {
+                        for (var ongoingScopes_1 = (e_3 = void 0, __values(ongoingScopes)), ongoingScopes_1_1 = ongoingScopes_1.next(); !ongoingScopes_1_1.done; ongoingScopes_1_1 = ongoingScopes_1.next()) {
+                            var ongoingScope = ongoingScopes_1_1.value;
+                            if (this.scopesOverlap(scope, ongoingScope)) {
+                                return false;
+                            }
+                        }
+                    }
+                    catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                    finally {
+                        try {
+                            if (ongoingScopes_1_1 && !ongoingScopes_1_1.done && (_b = ongoingScopes_1.return)) _b.call(ongoingScopes_1);
+                        }
+                        finally { if (e_3) throw e_3.error; }
+                    }
+                }
+            }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            finally {
+                try {
+                    if (scopes_2_1 && !scopes_2_1.done && (_a = scopes_2.return)) _a.call(scopes_2);
+                }
+                finally { if (e_2) throw e_2.error; }
+            }
+            return true;
+        };
+        /**
+         * Check if two scopes overlap.
+         *
+         * Example of scopes that overlap:
+         * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
+         *
+         * Example of scopes that do not overlap:
+         * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
+         *
+         * @param a ScopeA
+         * @param b ScopeB
+         */
+        ConfigInitializerService.prototype.scopesOverlap = function (a, b) {
+            var _a;
+            if (b.length > a.length) {
+                _a = __read([b, a], 2), a = _a[0], b = _a[1];
+            }
+            return a.startsWith(b) && (a[b.length] || '.') === '.';
+        };
+        /**
+         * @internal
+         *
+         * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
+         *
+         */
+        ConfigInitializerService.prototype.initialize = function (initializers) {
+            return __awaiter(this, void 0, void 0, function () {
+                var ongoingScopes, asyncConfigs, _loop_1, this_1, _a, _b, initializer;
+                var e_4, _c;
+                var _this = this;
+                return __generator(this, function (_d) {
+                    switch (_d.label) {
+                        case 0:
+                            if (this.ongoingScopes$.value) {
+                                // guard for double initialization
+                                return [2 /*return*/];
+                            }
+                            ongoingScopes = [];
+                            asyncConfigs = [];
+                            _loop_1 = function (initializer) {
+                                if (!initializer) {
+                                    return "continue";
+                                }
+                                if (!initializer.scopes || !initializer.scopes.length) {
+                                    throw new Error('CONFIG_INITIALIZER should provide scope!');
+                                }
+                                if (core.isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
+                                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
+                                }
+                                ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
+                                asyncConfigs.push((function () { return __awaiter(_this, void 0, void 0, function () {
+                                    var _a, _b;
+                                    return __generator(this, function (_c) {
+                                        switch (_c.label) {
+                                            case 0:
+                                                _a = deepMerge;
+                                                _b = [this.config];
+                                                return [4 /*yield*/, initializer.configFactory()];
+                                            case 1:
+                                                _a.apply(void 0, _b.concat([_c.sent()]));
+                                                this.finishScopes(initializer.scopes);
+                                                return [2 /*return*/];
+                                        }
+                                    });
+                                }); })());
+                            };
+                            this_1 = this;
+                            try {
+                                for (_a = __values(initializers || []), _b = _a.next(); !_b.done; _b = _a.next()) {
+                                    initializer = _b.value;
+                                    _loop_1(initializer);
+                                }
+                            }
+                            catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                            finally {
+                                try {
+                                    if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                                }
+                                finally { if (e_4) throw e_4.error; }
+                            }
+                            this.ongoingScopes$.next(ongoingScopes);
+                            if (!asyncConfigs.length) return [3 /*break*/, 2];
+                            return [4 /*yield*/, Promise.all(asyncConfigs)];
+                        case 1:
+                            _d.sent();
+                            _d.label = 2;
+                        case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        ConfigInitializerService.ctorParameters = function () { return [
+            { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] },
+            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
+        ]; };
+        ConfigInitializerService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(core["ɵɵinject"](Config), core["ɵɵinject"](CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
+        ConfigInitializerService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            }),
+            __param(0, core.Inject(Config)),
+            __param(1, core.Optional()),
+            __param(1, core.Inject(CONFIG_INITIALIZER_FORROOT_GUARD))
+        ], ConfigInitializerService);
+        return ConfigInitializerService;
+    }());
+
     function initializeContext(baseSiteService, langService, currService, configInit) {
         return function () {
             configInit.getStableConfig('context').then(function () {
@@ -12570,9 +12470,11 @@
                     http.HttpClientModule,
                     store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
                     effects$c.EffectsModule.forFeature(effects$2),
-                    ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                 ],
-                providers: [reducerProvider$1],
+                providers: [
+                    provideDefaultConfigFactory(siteContextStoreConfigFactory),
+                    reducerProvider$1,
+                ],
             })
         ], SiteContextStoreModule);
         return SiteContextStoreModule;
@@ -12587,6 +12489,7 @@
             return {
                 ngModule: SiteContextModule_1,
                 providers: __spread([
+                    provideDefaultConfigFactory(defaultSiteContextConfigFactory),
                     contextServiceMapProvider
                 ], contextServiceProviders, siteContextParamsProviders, [
                     { provide: SiteContextConfig, useExisting: Config },
@@ -12597,11 +12500,7 @@
         var SiteContextModule_1;
         SiteContextModule = SiteContextModule_1 = __decorate([
             core.NgModule({
-                imports: [
-                    ConfigModule.withConfigFactory(defaultSiteContextConfigFactory),
-                    StateModule,
-                    SiteContextStoreModule,
-                ],
+                imports: [StateModule, SiteContextStoreModule],
             })
         ], SiteContextModule);
         return SiteContextModule;
@@ -12711,9 +12610,11 @@
                         metaReducers: metaReducers$1,
                     }),
                     effects$c.EffectsModule.forFeature(effects$1),
-                    ConfigModule.withConfigFactory(anonymousConsentsStoreConfigFactory),
                 ],
-                providers: [reducerProvider$2],
+                providers: [
+                    provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
+                    reducerProvider$2,
+                ],
             })
         ], AnonymousConsentsStoreModule);
         return AnonymousConsentsStoreModule;
@@ -12729,16 +12630,14 @@
                 providers: __spread(interceptors$1, [
                     AnonymousConsentsService,
                     { provide: AnonymousConsentsConfig, useExisting: Config },
+                    provideDefaultConfig(defaultAnonymousConsentsConfig),
                 ]),
             };
         };
         var AnonymousConsentsModule_1;
         AnonymousConsentsModule = AnonymousConsentsModule_1 = __decorate([
             core.NgModule({
-                imports: [
-                    AnonymousConsentsStoreModule,
-                    ConfigModule.withConfig(defaultAnonymousConsentsConfig),
-                ],
+                imports: [AnonymousConsentsStoreModule],
             })
         ], AnonymousConsentsModule);
         return AnonymousConsentsModule;
@@ -13021,9 +12920,11 @@
                     StateModule,
                     store.StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
                     effects$c.EffectsModule.forFeature(effects$3),
-                    ConfigModule.withConfigFactory(asmStoreConfigFactory),
                 ],
-                providers: [reducerProvider$3],
+                providers: [
+                    provideDefaultConfigFactory(asmStoreConfigFactory),
+                    reducerProvider$3,
+                ],
             })
         ], AsmStoreModule);
         return AsmStoreModule;
@@ -13852,9 +13753,9 @@
                 imports: [
                     GlobalMessageStoreModule,
                     effects$c.EffectsModule.forFeature([GlobalMessageEffect]),
-                    ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
                 ],
                 providers: [
+                    provideDefaultConfigFactory(defaultGlobalMessageConfigFactory),
                     GlobalMessageService,
                     { provide: GlobalMessageConfig, useExisting: Config },
                 ],
@@ -13940,18 +13841,17 @@
         AsmModule.forRoot = function () {
             return {
                 ngModule: AsmModule_1,
-                providers: __spread([{ provide: AsmConfig, useExisting: Config }], interceptors$2),
+                providers: __spread([
+                    { provide: AsmConfig, useExisting: Config }
+                ], interceptors$2, [
+                    provideDefaultConfig(defaultAsmConfig),
+                ]),
             };
         };
         var AsmModule_1;
         AsmModule = AsmModule_1 = __decorate([
             core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    AsmStoreModule,
-                    ConfigModule.withConfig(defaultAsmConfig),
-                ],
+                imports: [common.CommonModule, http.HttpClientModule, AsmStoreModule],
             })
         ], AsmModule);
         return AsmModule;
@@ -16298,8 +16198,9 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
+        UserService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserService_Factory() { return new UserService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserService, providedIn: "root" });
         UserService = __decorate([
-            core.Injectable()
+            core.Injectable({ providedIn: 'root' })
         ], UserService);
         return UserService;
     }());
@@ -18513,9 +18414,11 @@
                     StateModule,
                     store.StoreModule.forFeature(CART_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
                     effects$c.EffectsModule.forFeature(effects$4),
-                    ConfigModule.withConfigFactory(cartStoreConfigFactory),
                 ],
-                providers: [reducerProvider$5],
+                providers: [
+                    provideDefaultConfigFactory(cartStoreConfigFactory),
+                    reducerProvider$5,
+                ],
             })
         ], CartStoreModule);
         return CartStoreModule;
@@ -21451,9 +21354,11 @@
                     StateModule,
                     store.StoreModule.forFeature(CMS_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
                     effects$c.EffectsModule.forFeature(effects$7),
-                    ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                 ],
-                providers: [reducerProvider$8],
+                providers: [
+                    provideDefaultConfigFactory(cmsStoreConfigFactory),
+                    reducerProvider$8,
+                ],
             })
         ], CmsStoreModule);
         return CmsStoreModule;
@@ -21470,7 +21375,7 @@
                     CmsService,
                     { provide: CmsConfig, useExisting: Config },
                     { provide: CmsStructureConfig, useExisting: Config },
-                    provideConfig(defaultCmsModuleConfig),
+                    provideDefaultConfig(defaultCmsModuleConfig),
                 ],
             };
         };
@@ -21616,6 +21521,145 @@
             })
         ], DynamicAttributeService);
         return DynamicAttributeService;
+    }());
+
+    function getCookie(cookie, name) {
+        var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
+        var result = regExp.exec(cookie);
+        return (result && decodeURIComponent(result[1])) || '';
+    }
+
+    var TEST_CONFIG_COOKIE_NAME = new core.InjectionToken('TEST_CONFIG_COOKIE_NAME');
+    function parseConfigJSON(config) {
+        try {
+            return JSON.parse(decodeURIComponent(config));
+        }
+        catch (_) {
+            return {};
+        }
+    }
+    function configFromCookieFactory(cookieName, platform, document) {
+        if (common.isPlatformBrowser(platform) && cookieName) {
+            var config = getCookie(document.cookie, cookieName);
+            return parseConfigJSON(config);
+        }
+        return {};
+    }
+    /**
+     * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
+     *
+     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+     */
+    var TestConfigModule = /** @class */ (function () {
+        function TestConfigModule() {
+        }
+        TestConfigModule_1 = TestConfigModule;
+        /**
+         * Injects JSON config from the cookie of the given name.
+         *
+         * Be aware of the cookie limitations (4096 bytes).
+         *
+         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+         */
+        TestConfigModule.forRoot = function (options) {
+            return {
+                ngModule: TestConfigModule_1,
+                providers: [
+                    {
+                        provide: TEST_CONFIG_COOKIE_NAME,
+                        useValue: options && options.cookie,
+                    },
+                    provideConfigFactory(configFromCookieFactory, [
+                        TEST_CONFIG_COOKIE_NAME,
+                        core.PLATFORM_ID,
+                        common.DOCUMENT,
+                    ]),
+                ],
+            };
+        };
+        var TestConfigModule_1;
+        TestConfigModule = TestConfigModule_1 = __decorate([
+            core.NgModule({})
+        ], TestConfigModule);
+        return TestConfigModule;
+    }());
+
+    function configValidatorFactory(configInitializer, validators) {
+        var validate = function () {
+            if (core.isDevMode()) {
+                configInitializer
+                    .getStableConfig()
+                    .then(function (config) { return validateConfig(config, validators || []); });
+            }
+        };
+        return validate;
+    }
+    /**
+     * Should stay private in 1.x
+     * as forRoot() is used internally by ConfigInitializerModule
+     *
+     * issue: #5279
+     */
+    var ConfigValidatorModule = /** @class */ (function () {
+        function ConfigValidatorModule() {
+        }
+        ConfigValidatorModule_1 = ConfigValidatorModule;
+        ConfigValidatorModule.forRoot = function () {
+            return {
+                ngModule: ConfigValidatorModule_1,
+                providers: [
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: configValidatorFactory,
+                        deps: [
+                            ConfigInitializerService,
+                            [new core.Optional(), ConfigValidatorToken],
+                        ],
+                    },
+                ],
+            };
+        };
+        var ConfigValidatorModule_1;
+        ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
+            core.NgModule()
+        ], ConfigValidatorModule);
+        return ConfigValidatorModule;
+    }());
+
+    function configInitializerFactory(configInitializer, initializers) {
+        var isReady = function () { return configInitializer.initialize(initializers); };
+        return isReady;
+    }
+    var ConfigInitializerModule = /** @class */ (function () {
+        function ConfigInitializerModule() {
+        }
+        ConfigInitializerModule_1 = ConfigInitializerModule;
+        ConfigInitializerModule.forRoot = function () {
+            return {
+                ngModule: ConfigInitializerModule_1,
+                providers: [
+                    {
+                        provide: CONFIG_INITIALIZER_FORROOT_GUARD,
+                        useValue: true,
+                    },
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: configInitializerFactory,
+                        deps: [
+                            ConfigInitializerService,
+                            [new core.Optional(), CONFIG_INITIALIZER],
+                        ],
+                    },
+                ],
+            };
+        };
+        var ConfigInitializerModule_1;
+        ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
+            core.NgModule({})
+        ], ConfigInitializerModule);
+        return ConfigInitializerModule;
     }());
 
     // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
@@ -21945,7 +21989,7 @@
             return {
                 ngModule: I18nModule_1,
                 providers: __spread([
-                    provideConfig(defaultI18nConfig),
+                    provideDefaultConfig(defaultI18nConfig),
                     { provide: I18nConfig, useExisting: Config },
                     { provide: TranslationService, useClass: I18nextTranslationService },
                     TranslationChunkService
@@ -22280,9 +22324,11 @@
                     StateModule,
                     store.StoreModule.forFeature(KYMA_FEATURE, reducerToken$9, { metaReducers: metaReducers$5 }),
                     effects$c.EffectsModule.forFeature(effects$8),
-                    ConfigModule.withConfigFactory(kymaStoreConfigFactory),
                 ],
-                providers: [reducerProvider$9],
+                providers: [
+                    provideDefaultConfigFactory(kymaStoreConfigFactory),
+                    reducerProvider$9,
+                ],
             })
         ], KymaStoreModule);
         return KymaStoreModule;
@@ -22293,13 +22339,12 @@
         }
         KymaModule = __decorate([
             core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    KymaStoreModule,
-                    ConfigModule.withConfig(defaultKymaConfig),
-                ],
-                providers: __spread(KymaServices, [{ provide: KymaConfig, useExisting: Config }]),
+                imports: [common.CommonModule, http.HttpClientModule, KymaStoreModule],
+                providers: __spread([
+                    provideDefaultConfig(defaultKymaConfig)
+                ], KymaServices, [
+                    { provide: KymaConfig, useExisting: Config },
+                ]),
             })
         ], KymaModule);
         return KymaModule;
@@ -22467,13 +22512,14 @@
         PersonalizationModule.forRoot = function () {
             return {
                 ngModule: PersonalizationModule_1,
-                providers: __spread(interceptors$3),
+                providers: __spread([
+                    provideDefaultConfig(defaultPersonalizationConfig)
+                ], interceptors$3),
             };
         };
         var PersonalizationModule_1;
         PersonalizationModule = PersonalizationModule_1 = __decorate([
             core.NgModule({
-                imports: [ConfigModule.withConfig(defaultPersonalizationConfig)],
                 providers: [{ provide: PersonalizationConfig, useExisting: Config }],
             })
         ], PersonalizationModule);
@@ -24074,9 +24120,11 @@
                     http.HttpClientModule,
                     store.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
                     effects$c.EffectsModule.forFeature(effects$9),
-                    ConfigModule.withConfigFactory(productStoreConfigFactory),
                 ],
-                providers: [reducerProvider$b],
+                providers: [
+                    provideDefaultConfigFactory(productStoreConfigFactory),
+                    reducerProvider$b,
+                ],
             })
         ], ProductStoreModule);
         return ProductStoreModule;
@@ -25001,11 +25049,9 @@
         }
         StoreFinderCoreModule = __decorate([
             core.NgModule({
-                imports: [
-                    ConfigModule.withConfig(defaultStoreFinderConfig),
-                    StoreFinderStoreModule,
-                ],
+                imports: [StoreFinderStoreModule],
                 providers: [
+                    provideDefaultConfig(defaultStoreFinderConfig),
                     StoreFinderService,
                     StoreDataService,
                     GoogleMapRendererService,
@@ -27552,7 +27598,6 @@
             return {
                 ngModule: UserModule_1,
                 providers: [
-                    UserService,
                     {
                         provide: PageMetaResolver,
                         useExisting: FindProductPageMetaResolver,
@@ -27700,6 +27745,7 @@
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
     exports.DEFAULT_URL_MATCHER = DEFAULT_URL_MATCHER;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
+    exports.DefaultConfigChunk = DefaultConfigChunk;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.EMAIL_PATTERN = EMAIL_PATTERN;
     exports.EXTERNAL_CONFIG_TRANSFER_ID = EXTERNAL_CONFIG_TRANSFER_ID;
@@ -28004,6 +28050,8 @@
     exports.provideConfigFactory = provideConfigFactory;
     exports.provideConfigFromMetaTags = provideConfigFromMetaTags;
     exports.provideConfigValidator = provideConfigValidator;
+    exports.provideDefaultConfig = provideDefaultConfig;
+    exports.provideDefaultConfigFactory = provideDefaultConfigFactory;
     exports.serviceMapFactory = serviceMapFactory;
     exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;
@@ -28020,10 +28068,10 @@
     exports.ɵbh = CustomerSupportAgentTokenEffects;
     exports.ɵbi = UserAuthenticationTokenService;
     exports.ɵbj = reducer$7;
-    exports.ɵbk = defaultAsmConfig;
-    exports.ɵbl = interceptors$2;
-    exports.ɵbm = CustomerSupportAgentAuthErrorInterceptor;
-    exports.ɵbn = CustomerSupportAgentErrorHandlingService;
+    exports.ɵbk = interceptors$2;
+    exports.ɵbl = CustomerSupportAgentAuthErrorInterceptor;
+    exports.ɵbm = CustomerSupportAgentErrorHandlingService;
+    exports.ɵbn = defaultAsmConfig;
     exports.ɵbo = authStoreConfigFactory;
     exports.ɵbp = AuthStoreModule;
     exports.ɵbq = getReducers;
@@ -28170,20 +28218,20 @@
     exports.ɵgw = CustomSerializer;
     exports.ɵgx = effects$6;
     exports.ɵgy = RouterEffects;
-    exports.ɵgz = defaultSiteContextConfigFactory;
+    exports.ɵgz = siteContextStoreConfigFactory;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = siteContextStoreConfigFactory;
-    exports.ɵhb = SiteContextStoreModule;
-    exports.ɵhc = getReducers$1;
-    exports.ɵhd = reducerToken$1;
-    exports.ɵhe = reducerProvider$1;
-    exports.ɵhf = effects$2;
-    exports.ɵhg = LanguagesEffects;
-    exports.ɵhh = CurrenciesEffects;
-    exports.ɵhi = BaseSiteEffects;
-    exports.ɵhj = reducer$3;
-    exports.ɵhk = reducer$2;
-    exports.ɵhl = reducer$1;
+    exports.ɵha = SiteContextStoreModule;
+    exports.ɵhb = getReducers$1;
+    exports.ɵhc = reducerToken$1;
+    exports.ɵhd = reducerProvider$1;
+    exports.ɵhe = effects$2;
+    exports.ɵhf = LanguagesEffects;
+    exports.ɵhg = CurrenciesEffects;
+    exports.ɵhh = BaseSiteEffects;
+    exports.ɵhi = reducer$3;
+    exports.ɵhj = reducer$2;
+    exports.ɵhk = reducer$1;
+    exports.ɵhl = defaultSiteContextConfigFactory;
     exports.ɵhm = initializeContext;
     exports.ɵhn = contextServiceProviders;
     exports.ɵho = initSiteContextRoutesHandler;
@@ -28193,15 +28241,15 @@
     exports.ɵhs = baseSiteConfigValidator;
     exports.ɵht = interceptors$4;
     exports.ɵhu = CmsTicketInterceptor;
-    exports.ɵhv = defaultStoreFinderConfig;
-    exports.ɵhw = StoreFinderStoreModule;
-    exports.ɵhx = getReducers$c;
-    exports.ɵhy = reducerToken$c;
-    exports.ɵhz = reducerProvider$c;
+    exports.ɵhv = StoreFinderStoreModule;
+    exports.ɵhw = getReducers$c;
+    exports.ɵhx = reducerToken$c;
+    exports.ɵhy = reducerProvider$c;
+    exports.ɵhz = effects$a;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = effects$a;
-    exports.ɵib = FindStoresEffect;
-    exports.ɵic = ViewAllStoresEffect;
+    exports.ɵia = FindStoresEffect;
+    exports.ɵib = ViewAllStoresEffect;
+    exports.ɵic = defaultStoreFinderConfig;
     exports.ɵid = UserStoreModule;
     exports.ɵie = getReducers$d;
     exports.ɵif = reducerToken$d;

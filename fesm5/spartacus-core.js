@@ -1,9 +1,9 @@
-import { __spread, __decorate, __values, __awaiter, __generator, __read, __param, __extends, __assign, __rest } from 'tslib';
-import { InjectionToken, NgModule, PLATFORM_ID, isDevMode, Inject, Optional, ɵɵdefineInjectable, ɵɵinject, Injectable, APP_INITIALIZER, TemplateRef, ViewContainerRef, Input, Directive, Injector, INJECTOR, Pipe, inject, ChangeDetectorRef, NgZone } from '@angular/core';
-import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, getLocaleId, DatePipe } from '@angular/common';
-import { BehaviorSubject, of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subscription, timer, queueScheduler, using, from, merge, Observable, defer } from 'rxjs';
-import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, switchMapTo, observeOn, groupBy, distinctUntilKeyChanged, auditTime, takeWhile } from 'rxjs/operators';
+import { __spread, __decorate, __extends, __assign, __values, __param, __read, __rest, __awaiter, __generator } from 'tslib';
+import { InjectionToken, Optional, NgModule, isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, PLATFORM_ID, TemplateRef, ViewContainerRef, Input, Directive, Injector, INJECTOR, APP_INITIALIZER, Pipe, inject, ChangeDetectorRef, NgZone } from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, getLocaleId, DatePipe } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
+import { of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subscription, BehaviorSubject, timer, queueScheduler, using, from, merge, Observable, defer } from 'rxjs';
+import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, mapTo, delay, debounce, switchMapTo, observeOn, groupBy, distinctUntilKeyChanged, auditTime, takeWhile } from 'rxjs/operators';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
@@ -56,23 +56,67 @@ var Config = new InjectionToken('Configuration');
  */
 var ConfigChunk = new InjectionToken('ConfigurationChunk');
 /**
+ * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
+ * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
+ *
+ * General rule is, that all config provided in libraries should be provided as default config.
+ */
+var DefaultConfigChunk = new InjectionToken('DefaultConfigurationChunk');
+/**
  * Helper function to provide configuration chunk using ConfigChunk token
+ *
+ * To provide default configuration in libraries provideDefaultConfig should be used instead.
  *
  * @param config Config object to merge with the global configuration
  */
-function provideConfig(config) {
+function provideConfig(config, defaultConfig) {
     if (config === void 0) { config = {}; }
-    return { provide: ConfigChunk, useValue: config, multi: true };
+    if (defaultConfig === void 0) { defaultConfig = false; }
+    return {
+        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+        useValue: config,
+        multi: true,
+    };
 }
 /**
  * Helper function to provide configuration with factory function, using ConfigChunk token
  *
+ * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
+ *
  * @param configFactory Factory Function that will generate config object
  * @param deps Optional dependencies to a factory function
  */
-function provideConfigFactory(configFactory, deps) {
+function provideConfigFactory(configFactory, deps, defaultConfig) {
+    if (defaultConfig === void 0) { defaultConfig = false; }
     return {
-        provide: ConfigChunk,
+        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+        useFactory: configFactory,
+        multi: true,
+        deps: deps,
+    };
+}
+/**
+ * Helper function to provide default configuration chunk using DefaultConfigChunk token
+ *
+ * @param config Config object to merge with the default configuration
+ */
+function provideDefaultConfig(config) {
+    if (config === void 0) { config = {}; }
+    return {
+        provide: DefaultConfigChunk,
+        useValue: config,
+        multi: true,
+    };
+}
+/**
+ * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
+ *
+ * @param configFactory Factory Function that will generate config object
+ * @param deps Optional dependencies to a factory function
+ */
+function provideDefaultConfigFactory(configFactory, deps) {
+    return {
+        provide: DefaultConfigChunk,
         useFactory: configFactory,
         multi: true,
         deps: deps,
@@ -82,8 +126,10 @@ function provideConfigFactory(configFactory, deps) {
  * Factory function that merges all configurations chunks. Should not be used directly without explicit reason.
  *
  */
-function configurationFactory(configChunks) {
-    var config = deepMerge.apply(void 0, __spread([{}], configChunks));
+function configurationFactory(configChunks, defaultConfigChunks) {
+    if (configChunks === void 0) { configChunks = []; }
+    if (defaultConfigChunks === void 0) { defaultConfigChunks = []; }
+    var config = deepMerge.apply(void 0, __spread([{}], ((defaultConfigChunks !== null && defaultConfigChunks !== void 0 ? defaultConfigChunks : [])), ((configChunks !== null && configChunks !== void 0 ? configChunks : []))));
     return config;
 }
 var ConfigModule = /** @class */ (function () {
@@ -92,6 +138,8 @@ var ConfigModule = /** @class */ (function () {
     ConfigModule_1 = ConfigModule;
     /**
      * Import ConfigModule and contribute config to the global configuration
+     *
+     * To provide default configuration in libraries provideDefaultConfig should be used instead.
      *
      * @param config Config object to merge with the global configuration
      */
@@ -103,6 +151,8 @@ var ConfigModule = /** @class */ (function () {
     };
     /**
      * Import ConfigModule and contribute config to the global configuration using factory function
+     *
+     * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
      *
      * @param configFactory Factory function that will generate configuration
      * @param deps Optional dependencies to factory function
@@ -127,7 +177,10 @@ var ConfigModule = /** @class */ (function () {
                 {
                     provide: Config,
                     useFactory: configurationFactory,
-                    deps: [ConfigChunk],
+                    deps: [
+                        [new Optional(), ConfigChunk],
+                        [new Optional(), DefaultConfigChunk],
+                    ],
                 },
             ],
         };
@@ -140,400 +193,6 @@ var ConfigModule = /** @class */ (function () {
         })
     ], ConfigModule);
     return ConfigModule;
-}());
-
-function getCookie(cookie, name) {
-    var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
-    var result = regExp.exec(cookie);
-    return (result && decodeURIComponent(result[1])) || '';
-}
-
-var TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
-function parseConfigJSON(config) {
-    try {
-        return JSON.parse(decodeURIComponent(config));
-    }
-    catch (_) {
-        return {};
-    }
-}
-function configFromCookieFactory(cookieName, platform, document) {
-    if (isPlatformBrowser(platform) && cookieName) {
-        var config = getCookie(document.cookie, cookieName);
-        return parseConfigJSON(config);
-    }
-    return {};
-}
-/**
- * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
- *
- * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
- */
-var TestConfigModule = /** @class */ (function () {
-    function TestConfigModule() {
-    }
-    TestConfigModule_1 = TestConfigModule;
-    /**
-     * Injects JSON config from the cookie of the given name.
-     *
-     * Be aware of the cookie limitations (4096 bytes).
-     *
-     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
-     */
-    TestConfigModule.forRoot = function (options) {
-        return {
-            ngModule: TestConfigModule_1,
-            providers: [
-                {
-                    provide: TEST_CONFIG_COOKIE_NAME,
-                    useValue: options && options.cookie,
-                },
-                provideConfigFactory(configFromCookieFactory, [
-                    TEST_CONFIG_COOKIE_NAME,
-                    PLATFORM_ID,
-                    DOCUMENT,
-                ]),
-            ],
-        };
-    };
-    var TestConfigModule_1;
-    TestConfigModule = TestConfigModule_1 = __decorate([
-        NgModule({})
-    ], TestConfigModule);
-    return TestConfigModule;
-}());
-
-var ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
-/**
- * Use to probide config validation at app bootstrap (when all config chunks are merged)
- *
- * @param configValidator
- */
-function provideConfigValidator(configValidator) {
-    return {
-        provide: ConfigValidatorToken,
-        useValue: configValidator,
-        multi: true,
-    };
-}
-function validateConfig(config, configValidators) {
-    var e_1, _a;
-    try {
-        for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
-            var validate = configValidators_1_1.value;
-            var warning = validate(config);
-            if (warning) {
-                console.warn(warning);
-            }
-        }
-    }
-    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-    finally {
-        try {
-            if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
-        }
-        finally { if (e_1) throw e_1.error; }
-    }
-}
-
-var CONFIG_INITIALIZER = new InjectionToken('ConfigInitializer');
-var CONFIG_INITIALIZER_FORROOT_GUARD = new InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
-
-/**
- * Provides support for CONFIG_INITIALIZERS
- */
-var ConfigInitializerService = /** @class */ (function () {
-    function ConfigInitializerService(config, initializerGuard) {
-        this.config = config;
-        this.initializerGuard = initializerGuard;
-        this.ongoingScopes$ = new BehaviorSubject(undefined);
-    }
-    Object.defineProperty(ConfigInitializerService.prototype, "isStable", {
-        /**
-         * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
-         */
-        get: function () {
-            return (!this.initializerGuard ||
-                (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
-        },
-        enumerable: true,
-        configurable: true
-    });
-    /**
-     * Recommended way to get config for code that can run before app will finish
-     * initialization (APP_INITIALIZERS, selected service constructors)
-     *
-     * Used without parameters waits for the whole config to become stable
-     *
-     * Parameters allow to describe which part of the config should be stable using
-     * string describing config part, e.g.:
-     * 'siteContext', 'siteContext.language', etc.
-     *
-     * @param scopes String describing parts of the config we want to be sure are stable
-     */
-    ConfigInitializerService.prototype.getStableConfig = function () {
-        var scopes = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            scopes[_i] = arguments[_i];
-        }
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                if (this.isStable) {
-                    return [2 /*return*/, this.config];
-                }
-                return [2 /*return*/, this.ongoingScopes$
-                        .pipe(filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), take(1), mapTo(this.config))
-                        .toPromise()];
-            });
-        });
-    };
-    /**
-     * Removes provided scopes from currently ongoingScopes
-     *
-     * @param scopes
-     */
-    ConfigInitializerService.prototype.finishScopes = function (scopes) {
-        var e_1, _a;
-        var newScopes = __spread(this.ongoingScopes$.value);
-        try {
-            for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
-                var scope = scopes_1_1.value;
-                newScopes.splice(newScopes.indexOf(scope), 1);
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        this.ongoingScopes$.next(newScopes);
-    };
-    /**
-     * Return true if provided scopes are not part of ongoingScopes
-     *
-     * @param scopes
-     * @param ongoingScopes
-     */
-    ConfigInitializerService.prototype.areReady = function (scopes, ongoingScopes) {
-        var e_2, _a, e_3, _b;
-        if (!scopes.length) {
-            return !ongoingScopes.length;
-        }
-        try {
-            for (var scopes_2 = __values(scopes), scopes_2_1 = scopes_2.next(); !scopes_2_1.done; scopes_2_1 = scopes_2.next()) {
-                var scope = scopes_2_1.value;
-                try {
-                    for (var ongoingScopes_1 = (e_3 = void 0, __values(ongoingScopes)), ongoingScopes_1_1 = ongoingScopes_1.next(); !ongoingScopes_1_1.done; ongoingScopes_1_1 = ongoingScopes_1.next()) {
-                        var ongoingScope = ongoingScopes_1_1.value;
-                        if (this.scopesOverlap(scope, ongoingScope)) {
-                            return false;
-                        }
-                    }
-                }
-                catch (e_3_1) { e_3 = { error: e_3_1 }; }
-                finally {
-                    try {
-                        if (ongoingScopes_1_1 && !ongoingScopes_1_1.done && (_b = ongoingScopes_1.return)) _b.call(ongoingScopes_1);
-                    }
-                    finally { if (e_3) throw e_3.error; }
-                }
-            }
-        }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-        finally {
-            try {
-                if (scopes_2_1 && !scopes_2_1.done && (_a = scopes_2.return)) _a.call(scopes_2);
-            }
-            finally { if (e_2) throw e_2.error; }
-        }
-        return true;
-    };
-    /**
-     * Check if two scopes overlap.
-     *
-     * Example of scopes that overlap:
-     * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
-     *
-     * Example of scopes that do not overlap:
-     * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
-     *
-     * @param a ScopeA
-     * @param b ScopeB
-     */
-    ConfigInitializerService.prototype.scopesOverlap = function (a, b) {
-        var _a;
-        if (b.length > a.length) {
-            _a = __read([b, a], 2), a = _a[0], b = _a[1];
-        }
-        return a.startsWith(b) && (a[b.length] || '.') === '.';
-    };
-    /**
-     * @internal
-     *
-     * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
-     *
-     */
-    ConfigInitializerService.prototype.initialize = function (initializers) {
-        return __awaiter(this, void 0, void 0, function () {
-            var ongoingScopes, asyncConfigs, _loop_1, this_1, _a, _b, initializer;
-            var e_4, _c;
-            var _this = this;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0:
-                        if (this.ongoingScopes$.value) {
-                            // guard for double initialization
-                            return [2 /*return*/];
-                        }
-                        ongoingScopes = [];
-                        asyncConfigs = [];
-                        _loop_1 = function (initializer) {
-                            if (!initializer) {
-                                return "continue";
-                            }
-                            if (!initializer.scopes || !initializer.scopes.length) {
-                                throw new Error('CONFIG_INITIALIZER should provide scope!');
-                            }
-                            if (isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
-                                console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
-                            }
-                            ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
-                            asyncConfigs.push((function () { return __awaiter(_this, void 0, void 0, function () {
-                                var _a, _b;
-                                return __generator(this, function (_c) {
-                                    switch (_c.label) {
-                                        case 0:
-                                            _a = deepMerge;
-                                            _b = [this.config];
-                                            return [4 /*yield*/, initializer.configFactory()];
-                                        case 1:
-                                            _a.apply(void 0, _b.concat([_c.sent()]));
-                                            this.finishScopes(initializer.scopes);
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })());
-                        };
-                        this_1 = this;
-                        try {
-                            for (_a = __values(initializers || []), _b = _a.next(); !_b.done; _b = _a.next()) {
-                                initializer = _b.value;
-                                _loop_1(initializer);
-                            }
-                        }
-                        catch (e_4_1) { e_4 = { error: e_4_1 }; }
-                        finally {
-                            try {
-                                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
-                            }
-                            finally { if (e_4) throw e_4.error; }
-                        }
-                        this.ongoingScopes$.next(ongoingScopes);
-                        if (!asyncConfigs.length) return [3 /*break*/, 2];
-                        return [4 /*yield*/, Promise.all(asyncConfigs)];
-                    case 1:
-                        _d.sent();
-                        _d.label = 2;
-                    case 2: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ConfigInitializerService.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: Inject, args: [Config,] }] },
-        { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
-    ]; };
-    ConfigInitializerService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(ɵɵinject(Config), ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
-    ConfigInitializerService = __decorate([
-        Injectable({
-            providedIn: 'root',
-        }),
-        __param(0, Inject(Config)),
-        __param(1, Optional()),
-        __param(1, Inject(CONFIG_INITIALIZER_FORROOT_GUARD))
-    ], ConfigInitializerService);
-    return ConfigInitializerService;
-}());
-
-function configValidatorFactory(configInitializer, validators) {
-    var validate = function () {
-        if (isDevMode()) {
-            configInitializer
-                .getStableConfig()
-                .then(function (config) { return validateConfig(config, validators || []); });
-        }
-    };
-    return validate;
-}
-/**
- * Should stay private in 1.x
- * as forRoot() is used internally by ConfigInitializerModule
- *
- * issue: #5279
- */
-var ConfigValidatorModule = /** @class */ (function () {
-    function ConfigValidatorModule() {
-    }
-    ConfigValidatorModule_1 = ConfigValidatorModule;
-    ConfigValidatorModule.forRoot = function () {
-        return {
-            ngModule: ConfigValidatorModule_1,
-            providers: [
-                {
-                    provide: APP_INITIALIZER,
-                    multi: true,
-                    useFactory: configValidatorFactory,
-                    deps: [
-                        ConfigInitializerService,
-                        [new Optional(), ConfigValidatorToken],
-                    ],
-                },
-            ],
-        };
-    };
-    var ConfigValidatorModule_1;
-    ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
-        NgModule()
-    ], ConfigValidatorModule);
-    return ConfigValidatorModule;
-}());
-
-function configInitializerFactory(configInitializer, initializers) {
-    var isReady = function () { return configInitializer.initialize(initializers); };
-    return isReady;
-}
-var ConfigInitializerModule = /** @class */ (function () {
-    function ConfigInitializerModule() {
-    }
-    ConfigInitializerModule_1 = ConfigInitializerModule;
-    ConfigInitializerModule.forRoot = function () {
-        return {
-            ngModule: ConfigInitializerModule_1,
-            providers: [
-                {
-                    provide: CONFIG_INITIALIZER_FORROOT_GUARD,
-                    useValue: true,
-                },
-                {
-                    provide: APP_INITIALIZER,
-                    multi: true,
-                    useFactory: configInitializerFactory,
-                    deps: [
-                        ConfigInitializerService,
-                        [new Optional(), CONFIG_INITIALIZER],
-                    ],
-                },
-            ],
-        };
-    };
-    var ConfigInitializerModule_1;
-    ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
-        NgModule({})
-    ], ConfigInitializerModule);
-    return ConfigInitializerModule;
 }());
 
 var SiteContextConfig = /** @class */ (function () {
@@ -3039,7 +2698,7 @@ var StateModule = /** @class */ (function () {
         return {
             ngModule: StateModule_1,
             providers: __spread(stateMetaReducers, [
-                provideConfig(defaultStateConfig),
+                provideDefaultConfig(defaultStateConfig),
                 { provide: StateConfig, useExisting: Config },
             ]),
         };
@@ -3248,9 +2907,11 @@ var AuthStoreModule = /** @class */ (function () {
                 StateModule,
                 StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers: metaReducers }),
                 EffectsModule.forFeature(effects),
-                ConfigModule.withConfigFactory(authStoreConfigFactory),
             ],
-            providers: [reducerProvider],
+            providers: [
+                provideDefaultConfigFactory(authStoreConfigFactory),
+                reducerProvider,
+            ],
         })
     ], AuthStoreModule);
     return AuthStoreModule;
@@ -3263,7 +2924,9 @@ var AuthModule = /** @class */ (function () {
     AuthModule.forRoot = function () {
         return {
             ngModule: AuthModule_1,
-            providers: __spread(interceptors, AuthServices, [
+            providers: __spread([
+                provideDefaultConfig(defaultAuthConfig)
+            ], interceptors, AuthServices, [
                 { provide: AuthConfig, useExisting: Config },
             ]),
         };
@@ -3271,12 +2934,7 @@ var AuthModule = /** @class */ (function () {
     var AuthModule_1;
     AuthModule = AuthModule_1 = __decorate([
         NgModule({
-            imports: [
-                CommonModule,
-                HttpClientModule,
-                AuthStoreModule,
-                ConfigModule.withConfig(defaultAuthConfig),
-            ],
+            imports: [CommonModule, HttpClientModule, AuthStoreModule],
         })
     ], AuthModule);
     return AuthModule;
@@ -4057,7 +3715,7 @@ var FeaturesConfigModule = /** @class */ (function () {
         return {
             ngModule: FeaturesConfigModule_1,
             providers: [
-                provideConfig({
+                provideDefaultConfig({
                     features: {
                         level: defaultLevel || '*',
                     },
@@ -4237,12 +3895,9 @@ var AsmOccModule = /** @class */ (function () {
     }
     AsmOccModule = __decorate([
         NgModule({
-            imports: [
-                CommonModule,
-                HttpClientModule,
-                ConfigModule.withConfig(defaultOccAsmConfig),
-            ],
+            imports: [CommonModule, HttpClientModule],
             providers: [
+                provideDefaultConfig(defaultOccAsmConfig),
                 {
                     provide: AsmAdapter,
                     useClass: OccAsmAdapter,
@@ -4719,12 +4374,9 @@ var CartOccModule = /** @class */ (function () {
     }
     CartOccModule = __decorate([
         NgModule({
-            imports: [
-                CommonModule,
-                HttpClientModule,
-                ConfigModule.withConfig(defaultOccCartConfig),
-            ],
+            imports: [CommonModule, HttpClientModule],
             providers: [
+                provideDefaultConfig(defaultOccCartConfig),
                 {
                     provide: CartAdapter,
                     useClass: OccCartAdapter,
@@ -6215,12 +5867,9 @@ var ProductOccModule = /** @class */ (function () {
     }
     ProductOccModule = __decorate([
         NgModule({
-            imports: [
-                CommonModule,
-                HttpClientModule,
-                ConfigModule.withConfig(defaultOccProductConfig),
-            ],
+            imports: [CommonModule, HttpClientModule],
             providers: [
+                provideDefaultConfig(defaultOccProductConfig),
                 {
                     provide: ProductAdapter,
                     useClass: OccProductAdapter,
@@ -6513,12 +6162,9 @@ var SiteContextOccModule = /** @class */ (function () {
     }
     SiteContextOccModule = __decorate([
         NgModule({
-            imports: [
-                CommonModule,
-                HttpClientModule,
-                ConfigModule.withConfig(defaultOccSiteContextConfig),
-            ],
+            imports: [CommonModule, HttpClientModule],
             providers: [
+                provideDefaultConfig(defaultOccSiteContextConfig),
                 {
                     provide: SiteAdapter,
                     useClass: OccSiteAdapter,
@@ -6638,8 +6284,10 @@ var StoreFinderOccModule = /** @class */ (function () {
     }
     StoreFinderOccModule = __decorate([
         NgModule({
-            imports: [ConfigModule.withConfig(defaultOccStoreFinderConfig)],
-            providers: [{ provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter }],
+            providers: [
+                provideDefaultConfig(defaultOccStoreFinderConfig),
+                { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
+            ],
         })
     ], StoreFinderOccModule);
     return StoreFinderOccModule;
@@ -7462,12 +7110,9 @@ var UserOccModule = /** @class */ (function () {
     }
     UserOccModule = __decorate([
         NgModule({
-            imports: [
-                CommonModule,
-                HttpClientModule,
-                ConfigModule.withConfig(defaultOccUserConfig),
-            ],
+            imports: [CommonModule, HttpClientModule],
             providers: [
+                provideDefaultConfig(defaultOccUserConfig),
                 { provide: UserAdapter, useClass: OccUserAdapter },
                 { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
                 { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
@@ -7553,6 +7198,9 @@ var JavaRegExpConverter = /** @class */ (function () {
     ], JavaRegExpConverter);
     return JavaRegExpConverter;
 }());
+
+var CONFIG_INITIALIZER = new InjectionToken('ConfigInitializer');
+var CONFIG_INITIALIZER_FORROOT_GUARD = new InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
 
 /**
  * The url of the server request when running SSR
@@ -8990,6 +8638,39 @@ var Occ;
     })(NotificationType = Occ.NotificationType || (Occ.NotificationType = {}));
 })(Occ || (Occ = {}));
 
+var ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
+/**
+ * Use to probide config validation at app bootstrap (when all config chunks are merged)
+ *
+ * @param configValidator
+ */
+function provideConfigValidator(configValidator) {
+    return {
+        provide: ConfigValidatorToken,
+        useValue: configValidator,
+        multi: true,
+    };
+}
+function validateConfig(config, configValidators) {
+    var e_1, _a;
+    try {
+        for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
+            var validate = configValidators_1_1.value;
+            var warning = validate(config);
+            if (warning) {
+                console.warn(warning);
+            }
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+}
+
 var OccModule = /** @class */ (function () {
     function OccModule() {
     }
@@ -8999,7 +8680,7 @@ var OccModule = /** @class */ (function () {
             ngModule: OccModule_1,
             providers: [
                 { provide: OccConfig, useExisting: Config },
-                provideConfig(defaultOccConfig),
+                provideDefaultConfig(defaultOccConfig),
                 provideConfigValidator(occConfigValidator),
             ],
         };
@@ -11901,6 +11582,225 @@ function defaultSiteContextConfigFactory() {
     };
 }
 
+/**
+ * Provides support for CONFIG_INITIALIZERS
+ */
+var ConfigInitializerService = /** @class */ (function () {
+    function ConfigInitializerService(config, initializerGuard) {
+        this.config = config;
+        this.initializerGuard = initializerGuard;
+        this.ongoingScopes$ = new BehaviorSubject(undefined);
+    }
+    Object.defineProperty(ConfigInitializerService.prototype, "isStable", {
+        /**
+         * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
+         */
+        get: function () {
+            return (!this.initializerGuard ||
+                (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Recommended way to get config for code that can run before app will finish
+     * initialization (APP_INITIALIZERS, selected service constructors)
+     *
+     * Used without parameters waits for the whole config to become stable
+     *
+     * Parameters allow to describe which part of the config should be stable using
+     * string describing config part, e.g.:
+     * 'siteContext', 'siteContext.language', etc.
+     *
+     * @param scopes String describing parts of the config we want to be sure are stable
+     */
+    ConfigInitializerService.prototype.getStableConfig = function () {
+        var scopes = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            scopes[_i] = arguments[_i];
+        }
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                if (this.isStable) {
+                    return [2 /*return*/, this.config];
+                }
+                return [2 /*return*/, this.ongoingScopes$
+                        .pipe(filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), take(1), mapTo(this.config))
+                        .toPromise()];
+            });
+        });
+    };
+    /**
+     * Removes provided scopes from currently ongoingScopes
+     *
+     * @param scopes
+     */
+    ConfigInitializerService.prototype.finishScopes = function (scopes) {
+        var e_1, _a;
+        var newScopes = __spread(this.ongoingScopes$.value);
+        try {
+            for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
+                var scope = scopes_1_1.value;
+                newScopes.splice(newScopes.indexOf(scope), 1);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        this.ongoingScopes$.next(newScopes);
+    };
+    /**
+     * Return true if provided scopes are not part of ongoingScopes
+     *
+     * @param scopes
+     * @param ongoingScopes
+     */
+    ConfigInitializerService.prototype.areReady = function (scopes, ongoingScopes) {
+        var e_2, _a, e_3, _b;
+        if (!scopes.length) {
+            return !ongoingScopes.length;
+        }
+        try {
+            for (var scopes_2 = __values(scopes), scopes_2_1 = scopes_2.next(); !scopes_2_1.done; scopes_2_1 = scopes_2.next()) {
+                var scope = scopes_2_1.value;
+                try {
+                    for (var ongoingScopes_1 = (e_3 = void 0, __values(ongoingScopes)), ongoingScopes_1_1 = ongoingScopes_1.next(); !ongoingScopes_1_1.done; ongoingScopes_1_1 = ongoingScopes_1.next()) {
+                        var ongoingScope = ongoingScopes_1_1.value;
+                        if (this.scopesOverlap(scope, ongoingScope)) {
+                            return false;
+                        }
+                    }
+                }
+                catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                finally {
+                    try {
+                        if (ongoingScopes_1_1 && !ongoingScopes_1_1.done && (_b = ongoingScopes_1.return)) _b.call(ongoingScopes_1);
+                    }
+                    finally { if (e_3) throw e_3.error; }
+                }
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (scopes_2_1 && !scopes_2_1.done && (_a = scopes_2.return)) _a.call(scopes_2);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        return true;
+    };
+    /**
+     * Check if two scopes overlap.
+     *
+     * Example of scopes that overlap:
+     * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
+     *
+     * Example of scopes that do not overlap:
+     * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
+     *
+     * @param a ScopeA
+     * @param b ScopeB
+     */
+    ConfigInitializerService.prototype.scopesOverlap = function (a, b) {
+        var _a;
+        if (b.length > a.length) {
+            _a = __read([b, a], 2), a = _a[0], b = _a[1];
+        }
+        return a.startsWith(b) && (a[b.length] || '.') === '.';
+    };
+    /**
+     * @internal
+     *
+     * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
+     *
+     */
+    ConfigInitializerService.prototype.initialize = function (initializers) {
+        return __awaiter(this, void 0, void 0, function () {
+            var ongoingScopes, asyncConfigs, _loop_1, this_1, _a, _b, initializer;
+            var e_4, _c;
+            var _this = this;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        if (this.ongoingScopes$.value) {
+                            // guard for double initialization
+                            return [2 /*return*/];
+                        }
+                        ongoingScopes = [];
+                        asyncConfigs = [];
+                        _loop_1 = function (initializer) {
+                            if (!initializer) {
+                                return "continue";
+                            }
+                            if (!initializer.scopes || !initializer.scopes.length) {
+                                throw new Error('CONFIG_INITIALIZER should provide scope!');
+                            }
+                            if (isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
+                                console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
+                            }
+                            ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
+                            asyncConfigs.push((function () { return __awaiter(_this, void 0, void 0, function () {
+                                var _a, _b;
+                                return __generator(this, function (_c) {
+                                    switch (_c.label) {
+                                        case 0:
+                                            _a = deepMerge;
+                                            _b = [this.config];
+                                            return [4 /*yield*/, initializer.configFactory()];
+                                        case 1:
+                                            _a.apply(void 0, _b.concat([_c.sent()]));
+                                            this.finishScopes(initializer.scopes);
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); })());
+                        };
+                        this_1 = this;
+                        try {
+                            for (_a = __values(initializers || []), _b = _a.next(); !_b.done; _b = _a.next()) {
+                                initializer = _b.value;
+                                _loop_1(initializer);
+                            }
+                        }
+                        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                        finally {
+                            try {
+                                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                            }
+                            finally { if (e_4) throw e_4.error; }
+                        }
+                        this.ongoingScopes$.next(ongoingScopes);
+                        if (!asyncConfigs.length) return [3 /*break*/, 2];
+                        return [4 /*yield*/, Promise.all(asyncConfigs)];
+                    case 1:
+                        _d.sent();
+                        _d.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ConfigInitializerService.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: Inject, args: [Config,] }] },
+        { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
+    ]; };
+    ConfigInitializerService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(ɵɵinject(Config), ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
+    ConfigInitializerService = __decorate([
+        Injectable({
+            providedIn: 'root',
+        }),
+        __param(0, Inject(Config)),
+        __param(1, Optional()),
+        __param(1, Inject(CONFIG_INITIALIZER_FORROOT_GUARD))
+    ], ConfigInitializerService);
+    return ConfigInitializerService;
+}());
+
 function initializeContext(baseSiteService, langService, currService, configInit) {
     return function () {
         configInit.getStableConfig('context').then(function () {
@@ -12379,9 +12279,11 @@ var SiteContextStoreModule = /** @class */ (function () {
                 HttpClientModule,
                 StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
                 EffectsModule.forFeature(effects$2),
-                ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
             ],
-            providers: [reducerProvider$1],
+            providers: [
+                provideDefaultConfigFactory(siteContextStoreConfigFactory),
+                reducerProvider$1,
+            ],
         })
     ], SiteContextStoreModule);
     return SiteContextStoreModule;
@@ -12396,6 +12298,7 @@ var SiteContextModule = /** @class */ (function () {
         return {
             ngModule: SiteContextModule_1,
             providers: __spread([
+                provideDefaultConfigFactory(defaultSiteContextConfigFactory),
                 contextServiceMapProvider
             ], contextServiceProviders, siteContextParamsProviders, [
                 { provide: SiteContextConfig, useExisting: Config },
@@ -12406,11 +12309,7 @@ var SiteContextModule = /** @class */ (function () {
     var SiteContextModule_1;
     SiteContextModule = SiteContextModule_1 = __decorate([
         NgModule({
-            imports: [
-                ConfigModule.withConfigFactory(defaultSiteContextConfigFactory),
-                StateModule,
-                SiteContextStoreModule,
-            ],
+            imports: [StateModule, SiteContextStoreModule],
         })
     ], SiteContextModule);
     return SiteContextModule;
@@ -12520,9 +12419,11 @@ var AnonymousConsentsStoreModule = /** @class */ (function () {
                     metaReducers: metaReducers$1,
                 }),
                 EffectsModule.forFeature(effects$1),
-                ConfigModule.withConfigFactory(anonymousConsentsStoreConfigFactory),
             ],
-            providers: [reducerProvider$2],
+            providers: [
+                provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
+                reducerProvider$2,
+            ],
         })
     ], AnonymousConsentsStoreModule);
     return AnonymousConsentsStoreModule;
@@ -12538,16 +12439,14 @@ var AnonymousConsentsModule = /** @class */ (function () {
             providers: __spread(interceptors$1, [
                 AnonymousConsentsService,
                 { provide: AnonymousConsentsConfig, useExisting: Config },
+                provideDefaultConfig(defaultAnonymousConsentsConfig),
             ]),
         };
     };
     var AnonymousConsentsModule_1;
     AnonymousConsentsModule = AnonymousConsentsModule_1 = __decorate([
         NgModule({
-            imports: [
-                AnonymousConsentsStoreModule,
-                ConfigModule.withConfig(defaultAnonymousConsentsConfig),
-            ],
+            imports: [AnonymousConsentsStoreModule],
         })
     ], AnonymousConsentsModule);
     return AnonymousConsentsModule;
@@ -12830,9 +12729,11 @@ var AsmStoreModule = /** @class */ (function () {
                 StateModule,
                 StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
                 EffectsModule.forFeature(effects$3),
-                ConfigModule.withConfigFactory(asmStoreConfigFactory),
             ],
-            providers: [reducerProvider$3],
+            providers: [
+                provideDefaultConfigFactory(asmStoreConfigFactory),
+                reducerProvider$3,
+            ],
         })
     ], AsmStoreModule);
     return AsmStoreModule;
@@ -13661,9 +13562,9 @@ var GlobalMessageModule = /** @class */ (function () {
             imports: [
                 GlobalMessageStoreModule,
                 EffectsModule.forFeature([GlobalMessageEffect]),
-                ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
             ],
             providers: [
+                provideDefaultConfigFactory(defaultGlobalMessageConfigFactory),
                 GlobalMessageService,
                 { provide: GlobalMessageConfig, useExisting: Config },
             ],
@@ -13749,18 +13650,17 @@ var AsmModule = /** @class */ (function () {
     AsmModule.forRoot = function () {
         return {
             ngModule: AsmModule_1,
-            providers: __spread([{ provide: AsmConfig, useExisting: Config }], interceptors$2),
+            providers: __spread([
+                { provide: AsmConfig, useExisting: Config }
+            ], interceptors$2, [
+                provideDefaultConfig(defaultAsmConfig),
+            ]),
         };
     };
     var AsmModule_1;
     AsmModule = AsmModule_1 = __decorate([
         NgModule({
-            imports: [
-                CommonModule,
-                HttpClientModule,
-                AsmStoreModule,
-                ConfigModule.withConfig(defaultAsmConfig),
-            ],
+            imports: [CommonModule, HttpClientModule, AsmStoreModule],
         })
     ], AsmModule);
     return AsmModule;
@@ -16107,8 +16007,9 @@ var UserService = /** @class */ (function () {
         { type: Store },
         { type: AuthService }
     ]; };
+    UserService.ɵprov = ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
     UserService = __decorate([
-        Injectable()
+        Injectable({ providedIn: 'root' })
     ], UserService);
     return UserService;
 }());
@@ -18322,9 +18223,11 @@ var CartStoreModule = /** @class */ (function () {
                 StateModule,
                 StoreModule.forFeature(CART_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
                 EffectsModule.forFeature(effects$4),
-                ConfigModule.withConfigFactory(cartStoreConfigFactory),
             ],
-            providers: [reducerProvider$5],
+            providers: [
+                provideDefaultConfigFactory(cartStoreConfigFactory),
+                reducerProvider$5,
+            ],
         })
     ], CartStoreModule);
     return CartStoreModule;
@@ -21260,9 +21163,11 @@ var CmsStoreModule = /** @class */ (function () {
                 StateModule,
                 StoreModule.forFeature(CMS_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
                 EffectsModule.forFeature(effects$7),
-                ConfigModule.withConfigFactory(cmsStoreConfigFactory),
             ],
-            providers: [reducerProvider$8],
+            providers: [
+                provideDefaultConfigFactory(cmsStoreConfigFactory),
+                reducerProvider$8,
+            ],
         })
     ], CmsStoreModule);
     return CmsStoreModule;
@@ -21279,7 +21184,7 @@ var CmsModule = /** @class */ (function () {
                 CmsService,
                 { provide: CmsConfig, useExisting: Config },
                 { provide: CmsStructureConfig, useExisting: Config },
-                provideConfig(defaultCmsModuleConfig),
+                provideDefaultConfig(defaultCmsModuleConfig),
             ],
         };
     };
@@ -21425,6 +21330,145 @@ var DynamicAttributeService = /** @class */ (function () {
         })
     ], DynamicAttributeService);
     return DynamicAttributeService;
+}());
+
+function getCookie(cookie, name) {
+    var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
+    var result = regExp.exec(cookie);
+    return (result && decodeURIComponent(result[1])) || '';
+}
+
+var TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
+function parseConfigJSON(config) {
+    try {
+        return JSON.parse(decodeURIComponent(config));
+    }
+    catch (_) {
+        return {};
+    }
+}
+function configFromCookieFactory(cookieName, platform, document) {
+    if (isPlatformBrowser(platform) && cookieName) {
+        var config = getCookie(document.cookie, cookieName);
+        return parseConfigJSON(config);
+    }
+    return {};
+}
+/**
+ * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
+ *
+ * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+ */
+var TestConfigModule = /** @class */ (function () {
+    function TestConfigModule() {
+    }
+    TestConfigModule_1 = TestConfigModule;
+    /**
+     * Injects JSON config from the cookie of the given name.
+     *
+     * Be aware of the cookie limitations (4096 bytes).
+     *
+     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+     */
+    TestConfigModule.forRoot = function (options) {
+        return {
+            ngModule: TestConfigModule_1,
+            providers: [
+                {
+                    provide: TEST_CONFIG_COOKIE_NAME,
+                    useValue: options && options.cookie,
+                },
+                provideConfigFactory(configFromCookieFactory, [
+                    TEST_CONFIG_COOKIE_NAME,
+                    PLATFORM_ID,
+                    DOCUMENT,
+                ]),
+            ],
+        };
+    };
+    var TestConfigModule_1;
+    TestConfigModule = TestConfigModule_1 = __decorate([
+        NgModule({})
+    ], TestConfigModule);
+    return TestConfigModule;
+}());
+
+function configValidatorFactory(configInitializer, validators) {
+    var validate = function () {
+        if (isDevMode()) {
+            configInitializer
+                .getStableConfig()
+                .then(function (config) { return validateConfig(config, validators || []); });
+        }
+    };
+    return validate;
+}
+/**
+ * Should stay private in 1.x
+ * as forRoot() is used internally by ConfigInitializerModule
+ *
+ * issue: #5279
+ */
+var ConfigValidatorModule = /** @class */ (function () {
+    function ConfigValidatorModule() {
+    }
+    ConfigValidatorModule_1 = ConfigValidatorModule;
+    ConfigValidatorModule.forRoot = function () {
+        return {
+            ngModule: ConfigValidatorModule_1,
+            providers: [
+                {
+                    provide: APP_INITIALIZER,
+                    multi: true,
+                    useFactory: configValidatorFactory,
+                    deps: [
+                        ConfigInitializerService,
+                        [new Optional(), ConfigValidatorToken],
+                    ],
+                },
+            ],
+        };
+    };
+    var ConfigValidatorModule_1;
+    ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
+        NgModule()
+    ], ConfigValidatorModule);
+    return ConfigValidatorModule;
+}());
+
+function configInitializerFactory(configInitializer, initializers) {
+    var isReady = function () { return configInitializer.initialize(initializers); };
+    return isReady;
+}
+var ConfigInitializerModule = /** @class */ (function () {
+    function ConfigInitializerModule() {
+    }
+    ConfigInitializerModule_1 = ConfigInitializerModule;
+    ConfigInitializerModule.forRoot = function () {
+        return {
+            ngModule: ConfigInitializerModule_1,
+            providers: [
+                {
+                    provide: CONFIG_INITIALIZER_FORROOT_GUARD,
+                    useValue: true,
+                },
+                {
+                    provide: APP_INITIALIZER,
+                    multi: true,
+                    useFactory: configInitializerFactory,
+                    deps: [
+                        ConfigInitializerService,
+                        [new Optional(), CONFIG_INITIALIZER],
+                    ],
+                },
+            ],
+        };
+    };
+    var ConfigInitializerModule_1;
+    ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
+        NgModule({})
+    ], ConfigInitializerModule);
+    return ConfigInitializerModule;
 }());
 
 // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
@@ -21754,7 +21798,7 @@ var I18nModule = /** @class */ (function () {
         return {
             ngModule: I18nModule_1,
             providers: __spread([
-                provideConfig(defaultI18nConfig),
+                provideDefaultConfig(defaultI18nConfig),
                 { provide: I18nConfig, useExisting: Config },
                 { provide: TranslationService, useClass: I18nextTranslationService },
                 TranslationChunkService
@@ -22089,9 +22133,11 @@ var KymaStoreModule = /** @class */ (function () {
                 StateModule,
                 StoreModule.forFeature(KYMA_FEATURE, reducerToken$9, { metaReducers: metaReducers$5 }),
                 EffectsModule.forFeature(effects$8),
-                ConfigModule.withConfigFactory(kymaStoreConfigFactory),
             ],
-            providers: [reducerProvider$9],
+            providers: [
+                provideDefaultConfigFactory(kymaStoreConfigFactory),
+                reducerProvider$9,
+            ],
         })
     ], KymaStoreModule);
     return KymaStoreModule;
@@ -22102,13 +22148,12 @@ var KymaModule = /** @class */ (function () {
     }
     KymaModule = __decorate([
         NgModule({
-            imports: [
-                CommonModule,
-                HttpClientModule,
-                KymaStoreModule,
-                ConfigModule.withConfig(defaultKymaConfig),
-            ],
-            providers: __spread(KymaServices, [{ provide: KymaConfig, useExisting: Config }]),
+            imports: [CommonModule, HttpClientModule, KymaStoreModule],
+            providers: __spread([
+                provideDefaultConfig(defaultKymaConfig)
+            ], KymaServices, [
+                { provide: KymaConfig, useExisting: Config },
+            ]),
         })
     ], KymaModule);
     return KymaModule;
@@ -22276,13 +22321,14 @@ var PersonalizationModule = /** @class */ (function () {
     PersonalizationModule.forRoot = function () {
         return {
             ngModule: PersonalizationModule_1,
-            providers: __spread(interceptors$3),
+            providers: __spread([
+                provideDefaultConfig(defaultPersonalizationConfig)
+            ], interceptors$3),
         };
     };
     var PersonalizationModule_1;
     PersonalizationModule = PersonalizationModule_1 = __decorate([
         NgModule({
-            imports: [ConfigModule.withConfig(defaultPersonalizationConfig)],
             providers: [{ provide: PersonalizationConfig, useExisting: Config }],
         })
     ], PersonalizationModule);
@@ -23883,9 +23929,11 @@ var ProductStoreModule = /** @class */ (function () {
                 HttpClientModule,
                 StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
                 EffectsModule.forFeature(effects$9),
-                ConfigModule.withConfigFactory(productStoreConfigFactory),
             ],
-            providers: [reducerProvider$b],
+            providers: [
+                provideDefaultConfigFactory(productStoreConfigFactory),
+                reducerProvider$b,
+            ],
         })
     ], ProductStoreModule);
     return ProductStoreModule;
@@ -24810,11 +24858,9 @@ var StoreFinderCoreModule = /** @class */ (function () {
     }
     StoreFinderCoreModule = __decorate([
         NgModule({
-            imports: [
-                ConfigModule.withConfig(defaultStoreFinderConfig),
-                StoreFinderStoreModule,
-            ],
+            imports: [StoreFinderStoreModule],
             providers: [
+                provideDefaultConfig(defaultStoreFinderConfig),
                 StoreFinderService,
                 StoreDataService,
                 GoogleMapRendererService,
@@ -27361,7 +27407,6 @@ var UserModule = /** @class */ (function () {
         return {
             ngModule: UserModule_1,
             providers: [
-                UserService,
                 {
                     provide: PageMetaResolver,
                     useExisting: FindProductPageMetaResolver,
@@ -27387,5 +27432,5 @@ var UserModule = /** @class */ (function () {
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StatePersistenceService, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initialEntityState, initialLoaderState, initialProcessesState, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, getReducers$3 as ɵba, reducerToken$3 as ɵbb, reducerProvider$3 as ɵbc, clearCustomerSupportAgentAsmState as ɵbd, metaReducers$2 as ɵbe, effects$3 as ɵbf, CustomerEffects as ɵbg, CustomerSupportAgentTokenEffects as ɵbh, UserAuthenticationTokenService as ɵbi, reducer$7 as ɵbj, defaultAsmConfig as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, authStoreConfigFactory as ɵbo, AuthStoreModule as ɵbp, getReducers as ɵbq, reducerToken as ɵbr, reducerProvider as ɵbs, clearAuthState as ɵbt, metaReducers as ɵbu, effects as ɵbv, ClientTokenEffect as ɵbw, UserTokenEffects as ɵbx, ClientAuthenticationTokenService as ɵby, reducer as ɵbz, configFromCookieFactory as ɵc, defaultAuthConfig as ɵca, interceptors as ɵcb, ClientTokenInterceptor as ɵcc, UserTokenInterceptor as ɵcd, AuthErrorInterceptor as ɵce, UserErrorHandlingService as ɵcf, UrlParsingService as ɵcg, ClientErrorHandlingService as ɵch, TokenRevocationInterceptor as ɵci, AuthServices as ɵcj, cartStoreConfigFactory as ɵck, CartStoreModule as ɵcl, getReducers$5 as ɵcm, reducerToken$5 as ɵcn, reducerProvider$5 as ɵco, clearCartState as ɵcp, metaReducers$3 as ɵcq, clearMultiCartState as ɵcr, multiCartMetaReducers as ɵcs, multiCartReducerToken as ɵct, getMultiCartReducers as ɵcu, multiCartReducerProvider as ɵcv, CartEffects as ɵcw, CartEntryEffects as ɵcx, CartVoucherEffects as ɵcy, WishListEffects as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, SaveCartConnector as ɵda, SaveCartAdapter as ɵdb, reducer$9 as ɵdc, MultiCartStoreModule as ɵdd, MultiCartEffects as ɵde, processesLoaderReducer as ɵdf, activeCartReducer as ɵdg, cartEntitiesReducer as ɵdh, wishListReducer as ɵdi, CartPageMetaResolver as ɵdj, SiteContextParamsService as ɵdk, CheckoutStoreModule as ɵdl, getReducers$6 as ɵdm, reducerToken$6 as ɵdn, reducerProvider$6 as ɵdo, effects$5 as ɵdp, AddressVerificationEffect as ɵdq, CardTypesEffects as ɵdr, CheckoutEffects as ɵds, reducer$c as ɵdt, reducer$b as ɵdu, reducer$a as ɵdv, cmsStoreConfigFactory as ɵdw, CmsStoreModule as ɵdx, getReducers$8 as ɵdy, reducerToken$8 as ɵdz, initConfig as ɵe, reducerProvider$8 as ɵea, clearCmsState as ɵeb, metaReducers$4 as ɵec, effects$7 as ɵed, ComponentsEffects as ɵee, NavigationEntryItemEffects as ɵef, PageEffects as ɵeg, reducer$g as ɵeh, reducer$h as ɵei, reducer$e as ɵej, reducer$f as ɵek, GlobalMessageStoreModule as ɵel, getReducers$4 as ɵem, reducerToken$4 as ɵen, reducerProvider$4 as ɵeo, reducer$8 as ɵep, GlobalMessageEffect as ɵeq, defaultGlobalMessageConfigFactory as ɵer, InternalServerErrorHandler as ɵes, HttpErrorInterceptor as ɵet, defaultI18nConfig as ɵeu, i18nextProviders as ɵev, i18nextInit as ɵew, MockTranslationService as ɵex, kymaStoreConfigFactory as ɵey, KymaStoreModule as ɵez, anonymousConsentsStoreConfigFactory as ɵf, getReducers$9 as ɵfa, reducerToken$9 as ɵfb, reducerProvider$9 as ɵfc, clearKymaState as ɵfd, metaReducers$5 as ɵfe, effects$8 as ɵff, OpenIdTokenEffect as ɵfg, OpenIdAuthenticationTokenService as ɵfh, defaultKymaConfig as ɵfi, defaultOccAsmConfig as ɵfj, defaultOccCartConfig as ɵfk, OccSaveCartAdapter as ɵfl, defaultOccProductConfig as ɵfm, defaultOccSiteContextConfig as ɵfn, defaultOccStoreFinderConfig as ɵfo, defaultOccUserConfig as ɵfp, UserNotificationPreferenceAdapter as ɵfq, defaultPersonalizationConfig as ɵfr, interceptors$3 as ɵfs, OccPersonalizationIdInterceptor as ɵft, OccPersonalizationTimeInterceptor as ɵfu, ProcessStoreModule as ɵfv, getReducers$a as ɵfw, reducerToken$a as ɵfx, reducerProvider$a as ɵfy, productStoreConfigFactory as ɵfz, AnonymousConsentsStoreModule as ɵg, ProductStoreModule as ɵga, getReducers$b as ɵgb, reducerToken$b as ɵgc, reducerProvider$b as ɵgd, clearProductsState as ɵge, metaReducers$6 as ɵgf, effects$9 as ɵgg, ProductReferencesEffects as ɵgh, ProductReviewsEffects as ɵgi, ProductsSearchEffects as ɵgj, ProductEffects as ɵgk, reducer$i as ɵgl, entityScopedLoaderReducer as ɵgm, scopedLoaderReducer as ɵgn, reducer$k as ɵgo, reducer$j as ɵgp, PageMetaResolver as ɵgq, addExternalRoutesFactory as ɵgr, getReducers$7 as ɵgs, reducer$d as ɵgt, reducerToken$7 as ɵgu, reducerProvider$7 as ɵgv, CustomSerializer as ɵgw, effects$6 as ɵgx, RouterEffects as ɵgy, defaultSiteContextConfigFactory as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, siteContextStoreConfigFactory as ɵha, SiteContextStoreModule as ɵhb, getReducers$1 as ɵhc, reducerToken$1 as ɵhd, reducerProvider$1 as ɵhe, effects$2 as ɵhf, LanguagesEffects as ɵhg, CurrenciesEffects as ɵhh, BaseSiteEffects as ɵhi, reducer$3 as ɵhj, reducer$2 as ɵhk, reducer$1 as ɵhl, initializeContext as ɵhm, contextServiceProviders as ɵhn, initSiteContextRoutesHandler as ɵho, siteContextParamsProviders as ɵhp, SiteContextUrlSerializer as ɵhq, SiteContextRoutesHandler as ɵhr, baseSiteConfigValidator as ɵhs, interceptors$4 as ɵht, CmsTicketInterceptor as ɵhu, defaultStoreFinderConfig as ɵhv, StoreFinderStoreModule as ɵhw, getReducers$c as ɵhx, reducerToken$c as ɵhy, reducerProvider$c as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, effects$a as ɵia, FindStoresEffect as ɵib, ViewAllStoresEffect as ɵic, UserStoreModule as ɵid, getReducers$d as ɵie, reducerToken$d as ɵif, reducerProvider$d as ɵig, clearUserState as ɵih, metaReducers$8 as ɵii, effects$b as ɵij, BillingCountriesEffect as ɵik, ClearMiscsDataEffect as ɵil, ConsignmentTrackingEffects as ɵim, DeliveryCountriesEffects as ɵin, NotificationPreferenceEffects as ɵio, OrderDetailsEffect as ɵip, OrderReturnRequestEffect as ɵiq, UserPaymentMethodsEffects as ɵir, RegionsEffects as ɵis, ResetPasswordEffects as ɵit, TitlesEffects as ɵiu, UserAddressesEffects as ɵiv, UserConsentsEffect as ɵiw, UserDetailsEffects as ɵix, UserOrdersEffect as ɵiy, UserRegisterEffects as ɵiz, stateMetaReducers as ɵj, CustomerCouponEffects as ɵja, ProductInterestsEffect as ɵjb, ForgotPasswordEffects as ɵjc, UpdateEmailEffects as ɵjd, UpdatePasswordEffects as ɵje, UserNotificationPreferenceConnector as ɵjf, reducer$w as ɵjg, reducer$u as ɵjh, reducer$l as ɵji, reducer$v as ɵjj, reducer$q as ɵjk, reducer$x as ɵjl, reducer$p as ɵjm, reducer$A as ɵjn, reducer$n as ɵjo, reducer$t as ɵjp, reducer$r as ɵjq, reducer$s as ɵjr, reducer$m as ɵjs, reducer$y as ɵjt, reducer$o as ɵju, reducer$z as ɵjv, FindProductPageMetaResolver as ɵjw, PageMetaResolver as ɵjx, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, reducer$6 as ɵt, reducer$4 as ɵu, reducer$5 as ɵv, interceptors$1 as ɵw, AnonymousConsentsInterceptor as ɵx, asmStoreConfigFactory as ɵy, AsmStoreModule as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StatePersistenceService, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initialEntityState, initialLoaderState, initialProcessesState, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, getReducers$3 as ɵba, reducerToken$3 as ɵbb, reducerProvider$3 as ɵbc, clearCustomerSupportAgentAsmState as ɵbd, metaReducers$2 as ɵbe, effects$3 as ɵbf, CustomerEffects as ɵbg, CustomerSupportAgentTokenEffects as ɵbh, UserAuthenticationTokenService as ɵbi, reducer$7 as ɵbj, interceptors$2 as ɵbk, CustomerSupportAgentAuthErrorInterceptor as ɵbl, CustomerSupportAgentErrorHandlingService as ɵbm, defaultAsmConfig as ɵbn, authStoreConfigFactory as ɵbo, AuthStoreModule as ɵbp, getReducers as ɵbq, reducerToken as ɵbr, reducerProvider as ɵbs, clearAuthState as ɵbt, metaReducers as ɵbu, effects as ɵbv, ClientTokenEffect as ɵbw, UserTokenEffects as ɵbx, ClientAuthenticationTokenService as ɵby, reducer as ɵbz, configFromCookieFactory as ɵc, defaultAuthConfig as ɵca, interceptors as ɵcb, ClientTokenInterceptor as ɵcc, UserTokenInterceptor as ɵcd, AuthErrorInterceptor as ɵce, UserErrorHandlingService as ɵcf, UrlParsingService as ɵcg, ClientErrorHandlingService as ɵch, TokenRevocationInterceptor as ɵci, AuthServices as ɵcj, cartStoreConfigFactory as ɵck, CartStoreModule as ɵcl, getReducers$5 as ɵcm, reducerToken$5 as ɵcn, reducerProvider$5 as ɵco, clearCartState as ɵcp, metaReducers$3 as ɵcq, clearMultiCartState as ɵcr, multiCartMetaReducers as ɵcs, multiCartReducerToken as ɵct, getMultiCartReducers as ɵcu, multiCartReducerProvider as ɵcv, CartEffects as ɵcw, CartEntryEffects as ɵcx, CartVoucherEffects as ɵcy, WishListEffects as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, SaveCartConnector as ɵda, SaveCartAdapter as ɵdb, reducer$9 as ɵdc, MultiCartStoreModule as ɵdd, MultiCartEffects as ɵde, processesLoaderReducer as ɵdf, activeCartReducer as ɵdg, cartEntitiesReducer as ɵdh, wishListReducer as ɵdi, CartPageMetaResolver as ɵdj, SiteContextParamsService as ɵdk, CheckoutStoreModule as ɵdl, getReducers$6 as ɵdm, reducerToken$6 as ɵdn, reducerProvider$6 as ɵdo, effects$5 as ɵdp, AddressVerificationEffect as ɵdq, CardTypesEffects as ɵdr, CheckoutEffects as ɵds, reducer$c as ɵdt, reducer$b as ɵdu, reducer$a as ɵdv, cmsStoreConfigFactory as ɵdw, CmsStoreModule as ɵdx, getReducers$8 as ɵdy, reducerToken$8 as ɵdz, initConfig as ɵe, reducerProvider$8 as ɵea, clearCmsState as ɵeb, metaReducers$4 as ɵec, effects$7 as ɵed, ComponentsEffects as ɵee, NavigationEntryItemEffects as ɵef, PageEffects as ɵeg, reducer$g as ɵeh, reducer$h as ɵei, reducer$e as ɵej, reducer$f as ɵek, GlobalMessageStoreModule as ɵel, getReducers$4 as ɵem, reducerToken$4 as ɵen, reducerProvider$4 as ɵeo, reducer$8 as ɵep, GlobalMessageEffect as ɵeq, defaultGlobalMessageConfigFactory as ɵer, InternalServerErrorHandler as ɵes, HttpErrorInterceptor as ɵet, defaultI18nConfig as ɵeu, i18nextProviders as ɵev, i18nextInit as ɵew, MockTranslationService as ɵex, kymaStoreConfigFactory as ɵey, KymaStoreModule as ɵez, anonymousConsentsStoreConfigFactory as ɵf, getReducers$9 as ɵfa, reducerToken$9 as ɵfb, reducerProvider$9 as ɵfc, clearKymaState as ɵfd, metaReducers$5 as ɵfe, effects$8 as ɵff, OpenIdTokenEffect as ɵfg, OpenIdAuthenticationTokenService as ɵfh, defaultKymaConfig as ɵfi, defaultOccAsmConfig as ɵfj, defaultOccCartConfig as ɵfk, OccSaveCartAdapter as ɵfl, defaultOccProductConfig as ɵfm, defaultOccSiteContextConfig as ɵfn, defaultOccStoreFinderConfig as ɵfo, defaultOccUserConfig as ɵfp, UserNotificationPreferenceAdapter as ɵfq, defaultPersonalizationConfig as ɵfr, interceptors$3 as ɵfs, OccPersonalizationIdInterceptor as ɵft, OccPersonalizationTimeInterceptor as ɵfu, ProcessStoreModule as ɵfv, getReducers$a as ɵfw, reducerToken$a as ɵfx, reducerProvider$a as ɵfy, productStoreConfigFactory as ɵfz, AnonymousConsentsStoreModule as ɵg, ProductStoreModule as ɵga, getReducers$b as ɵgb, reducerToken$b as ɵgc, reducerProvider$b as ɵgd, clearProductsState as ɵge, metaReducers$6 as ɵgf, effects$9 as ɵgg, ProductReferencesEffects as ɵgh, ProductReviewsEffects as ɵgi, ProductsSearchEffects as ɵgj, ProductEffects as ɵgk, reducer$i as ɵgl, entityScopedLoaderReducer as ɵgm, scopedLoaderReducer as ɵgn, reducer$k as ɵgo, reducer$j as ɵgp, PageMetaResolver as ɵgq, addExternalRoutesFactory as ɵgr, getReducers$7 as ɵgs, reducer$d as ɵgt, reducerToken$7 as ɵgu, reducerProvider$7 as ɵgv, CustomSerializer as ɵgw, effects$6 as ɵgx, RouterEffects as ɵgy, siteContextStoreConfigFactory as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, SiteContextStoreModule as ɵha, getReducers$1 as ɵhb, reducerToken$1 as ɵhc, reducerProvider$1 as ɵhd, effects$2 as ɵhe, LanguagesEffects as ɵhf, CurrenciesEffects as ɵhg, BaseSiteEffects as ɵhh, reducer$3 as ɵhi, reducer$2 as ɵhj, reducer$1 as ɵhk, defaultSiteContextConfigFactory as ɵhl, initializeContext as ɵhm, contextServiceProviders as ɵhn, initSiteContextRoutesHandler as ɵho, siteContextParamsProviders as ɵhp, SiteContextUrlSerializer as ɵhq, SiteContextRoutesHandler as ɵhr, baseSiteConfigValidator as ɵhs, interceptors$4 as ɵht, CmsTicketInterceptor as ɵhu, StoreFinderStoreModule as ɵhv, getReducers$c as ɵhw, reducerToken$c as ɵhx, reducerProvider$c as ɵhy, effects$a as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, FindStoresEffect as ɵia, ViewAllStoresEffect as ɵib, defaultStoreFinderConfig as ɵic, UserStoreModule as ɵid, getReducers$d as ɵie, reducerToken$d as ɵif, reducerProvider$d as ɵig, clearUserState as ɵih, metaReducers$8 as ɵii, effects$b as ɵij, BillingCountriesEffect as ɵik, ClearMiscsDataEffect as ɵil, ConsignmentTrackingEffects as ɵim, DeliveryCountriesEffects as ɵin, NotificationPreferenceEffects as ɵio, OrderDetailsEffect as ɵip, OrderReturnRequestEffect as ɵiq, UserPaymentMethodsEffects as ɵir, RegionsEffects as ɵis, ResetPasswordEffects as ɵit, TitlesEffects as ɵiu, UserAddressesEffects as ɵiv, UserConsentsEffect as ɵiw, UserDetailsEffects as ɵix, UserOrdersEffect as ɵiy, UserRegisterEffects as ɵiz, stateMetaReducers as ɵj, CustomerCouponEffects as ɵja, ProductInterestsEffect as ɵjb, ForgotPasswordEffects as ɵjc, UpdateEmailEffects as ɵjd, UpdatePasswordEffects as ɵje, UserNotificationPreferenceConnector as ɵjf, reducer$w as ɵjg, reducer$u as ɵjh, reducer$l as ɵji, reducer$v as ɵjj, reducer$q as ɵjk, reducer$x as ɵjl, reducer$p as ɵjm, reducer$A as ɵjn, reducer$n as ɵjo, reducer$t as ɵjp, reducer$r as ɵjq, reducer$s as ɵjr, reducer$m as ɵjs, reducer$y as ɵjt, reducer$o as ɵju, reducer$z as ɵjv, FindProductPageMetaResolver as ɵjw, PageMetaResolver as ɵjx, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, reducer$6 as ɵt, reducer$4 as ɵu, reducer$5 as ɵv, interceptors$1 as ɵw, AnonymousConsentsInterceptor as ɵx, asmStoreConfigFactory as ɵy, AsmStoreModule as ɵz };
 //# sourceMappingURL=spartacus-core.js.map
