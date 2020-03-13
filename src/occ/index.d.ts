@@ -9,8 +9,3 @@ export * from './occ.module';
 export * from './services/index';
 export * from './utils/interceptor-util';
 export * from './utils/occ-constants';
-/**
- * @deprecated since 1.2.0
- * Use OCC_USER_ID_ANONYMOUS instead
- */
-export declare const ANONYMOUS_USERID = "anonymous";

@@ -9291,12 +9291,6 @@
         return LoadingScopesService;
     }());
 
-    /**
-     * @deprecated since 1.2.0
-     * Use OCC_USER_ID_ANONYMOUS instead
-     */
-    var ANONYMOUS_USERID = OCC_USER_ID_ANONYMOUS;
-
     var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
     var AnonymousConsentsInterceptor = /** @class */ (function () {
         function AnonymousConsentsInterceptor(anonymousConsentsService, authService, occEndpoints, config) {
@@ -27584,7 +27578,6 @@
     exports.ANONYMOUS_CONSENTS = ANONYMOUS_CONSENTS;
     exports.ANONYMOUS_CONSENTS_FEATURE = ANONYMOUS_CONSENTS_FEATURE;
     exports.ANONYMOUS_CONSENTS_STORE_FEATURE = ANONYMOUS_CONSENTS_STORE_FEATURE;
-    exports.ANONYMOUS_USERID = ANONYMOUS_USERID;
     exports.ASM_FEATURE = ASM_FEATURE;
     exports.AUTH_FEATURE = AUTH_FEATURE;
     exports.ActiveCartService = ActiveCartService;
