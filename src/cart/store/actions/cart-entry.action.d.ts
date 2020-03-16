@@ -9,14 +9,32 @@ export declare const CART_UPDATE_ENTRY = "[Cart-entry] Update Entry";
 export declare const CART_UPDATE_ENTRY_SUCCESS = "[Cart-entry] Update Entry Success";
 export declare const CART_UPDATE_ENTRY_FAIL = "[Cart-entry] Update Entry Fail";
 export declare class CartAddEntry extends StateLoaderActions.LoaderLoadAction {
-    payload: any;
+    payload: {
+        cartId: string;
+        userId: string;
+        productCode: string;
+        quantity: number;
+    };
     readonly type = "[Cart-entry] Add Entry";
-    constructor(payload: any);
+    constructor(payload: {
+        cartId: string;
+        userId: string;
+        productCode: string;
+        quantity: number;
+    });
 }
 export declare class CartAddEntrySuccess extends StateLoaderActions.LoaderSuccessAction {
-    payload: any;
+    payload: {
+        userId: string;
+        cartId: string;
+        [key: string]: any;
+    };
     readonly type = "[Cart-entry] Add Entry Success";
-    constructor(payload: any);
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+        [key: string]: any;
+    });
 }
 export declare class CartAddEntryFail extends StateLoaderActions.LoaderFailAction {
     payload: any;
@@ -24,14 +42,28 @@ export declare class CartAddEntryFail extends StateLoaderActions.LoaderFailActio
     constructor(payload: any);
 }
 export declare class CartRemoveEntry extends StateLoaderActions.LoaderLoadAction {
-    payload: any;
+    payload: {
+        cartId: string;
+        userId: string;
+        entry: string;
+    };
     readonly type = "[Cart-entry] Remove Entry";
-    constructor(payload: any);
+    constructor(payload: {
+        cartId: string;
+        userId: string;
+        entry: string;
+    });
 }
 export declare class CartRemoveEntrySuccess extends StateLoaderActions.LoaderSuccessAction {
-    payload: any;
+    payload: {
+        userId: string;
+        cartId: string;
+    };
     readonly type = "[Cart-entry] Remove Entry Success";
-    constructor(payload: any);
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+    });
 }
 export declare class CartRemoveEntryFail extends StateLoaderActions.LoaderFailAction {
     payload: any;
@@ -39,14 +71,30 @@ export declare class CartRemoveEntryFail extends StateLoaderActions.LoaderFailAc
     constructor(payload: any);
 }
 export declare class CartUpdateEntry extends StateLoaderActions.LoaderLoadAction {
-    payload: any;
+    payload: {
+        userId: string;
+        cartId: string;
+        entry: string;
+        qty: number;
+    };
     readonly type = "[Cart-entry] Update Entry";
-    constructor(payload: any);
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+        entry: string;
+        qty: number;
+    });
 }
 export declare class CartUpdateEntrySuccess extends StateLoaderActions.LoaderSuccessAction {
-    payload: any;
+    payload: {
+        userId: string;
+        cartId: string;
+    };
     readonly type = "[Cart-entry] Update Entry Success";
-    constructor(payload: any);
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+    });
 }
 export declare class CartUpdateEntryFail extends StateLoaderActions.LoaderFailAction {
     payload: any;

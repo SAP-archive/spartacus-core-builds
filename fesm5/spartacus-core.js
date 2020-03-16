@@ -14769,7 +14769,7 @@ var MultiCartService = /** @class */ (function () {
         this.store.dispatch(new CartRemoveEntry({
             userId: userId,
             cartId: cartId,
-            entry: entryNumber,
+            entry: "" + entryNumber,
         }));
     };
     /**
@@ -14785,7 +14785,7 @@ var MultiCartService = /** @class */ (function () {
             this.store.dispatch(new CartUpdateEntry({
                 userId: userId,
                 cartId: cartId,
-                entry: entryNumber,
+                entry: "" + entryNumber,
                 qty: quantity,
             }));
         }
@@ -17342,20 +17342,15 @@ var CartConnector = /** @class */ (function () {
 }());
 
 var CartEffects = /** @class */ (function () {
-    function CartEffects(actions$, cartConnector, cartData, store) {
+    function CartEffects(actions$, cartConnector, store) {
         var _this = this;
         this.actions$ = actions$;
         this.cartConnector = cartConnector;
-        this.cartData = cartData;
         this.store = store;
         this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
         this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map(function (action) { return action.payload; }), groupBy(function (payload) { return payload.cartId; }), mergeMap(function (group$) {
             return group$.pipe(switchMap(function (payload) {
-                return of(payload).pipe(withLatestFrom(
-                // TODO: deprecated -> remove check for store in 2.0 when store will be required
-                !_this.store
-                    ? of(false)
-                    : _this.store.pipe(select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
+                return of(payload).pipe(withLatestFrom(_this.store.pipe(select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
             }), filter(function (_a) {
                 var _b = __read(_a, 2), _ = _b[0], hasPendingProcesses = _b[1];
                 return !hasPendingProcesses;
@@ -17363,42 +17358,24 @@ var CartEffects = /** @class */ (function () {
                 var _b = __read(_a, 1), payload = _b[0];
                 return payload;
             }), switchMap(function (payload) {
-                var loadCartParams = {
-                    userId: (payload && payload.userId) || _this.cartData.userId,
-                    cartId: (payload && payload.cartId) || _this.cartData.cartId,
-                };
-                if (_this.isMissingData(loadCartParams)) {
-                    return from([
-                        new LoadCartFail({}),
-                        new LoadMultiCartFail({
-                            cartId: loadCartParams.cartId,
-                        }),
-                    ]);
-                }
-                return _this.cartConnector
-                    .load(loadCartParams.userId, loadCartParams.cartId)
-                    .pipe(
+                return _this.cartConnector.load(payload.userId, payload.cartId).pipe(
                 // TODO: remove with the `cart` store feature
-                withLatestFrom(
-                // TODO: deprecated -> remove check for store in 2.0 when store will be required
-                !_this.store
-                    ? of(payload.cartId)
-                    : _this.store.pipe(select(getActiveCartId))), mergeMap(function (_a) {
+                withLatestFrom(_this.store.pipe(select(getActiveCartId))), mergeMap(function (_a) {
                     var _b = __read(_a, 2), cart = _b[0], activeCartId = _b[1];
                     var actions = [];
                     if (cart) {
                         // `cart` store branch should only be updated for active cart
                         // avoid dispatching LoadCartSuccess action on different cart loads
-                        if (loadCartParams.cartId === activeCartId ||
-                            loadCartParams.cartId === OCC_CART_ID_CURRENT) {
+                        if (payload.cartId === activeCartId ||
+                            payload.cartId === OCC_CART_ID_CURRENT) {
                             actions.push(new LoadCartSuccess(cart));
                         }
                         actions.push(new LoadMultiCartSuccess({
                             cart: cart,
-                            userId: loadCartParams.userId,
+                            userId: payload.userId,
                             extraData: payload.extraData,
                         }));
-                        if (loadCartParams.cartId === OCC_CART_ID_CURRENT) {
+                        if (payload.cartId === OCC_CART_ID_CURRENT) {
                             // Removing cart from entity object under `current` key as it is no longer needed.
                             // Current cart is loaded under it's code entity.
                             actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
@@ -17408,7 +17385,7 @@ var CartEffects = /** @class */ (function () {
                         actions = [
                             new LoadCartFail({}),
                             new LoadMultiCartFail({
-                                cartId: loadCartParams.cartId,
+                                cartId: payload.cartId,
                             }),
                         ];
                     }
@@ -17436,14 +17413,14 @@ var CartEffects = /** @class */ (function () {
                             // Remove cart does the same thing, but in `multi-cart` store feature.
                             return from([
                                 new ClearCart(),
-                                new RemoveCart(loadCartParams.cartId),
+                                new RemoveCart(payload.cartId),
                             ]);
                         }
                     }
                     return from([
                         new LoadCartFail(makeErrorSerializable(error)),
                         new LoadMultiCartFail({
-                            cartId: loadCartParams.cartId,
+                            cartId: payload.cartId,
                             error: makeErrorSerializable(error),
                         }),
                     ]);
@@ -17564,13 +17541,9 @@ var CartEffects = /** @class */ (function () {
             }));
         }));
     }
-    CartEffects.prototype.isMissingData = function (payload) {
-        return payload.userId === undefined || payload.cartId === undefined;
-    };
     CartEffects.ctorParameters = function () { return [
         { type: Actions },
         { type: CartConnector },
-        { type: CartDataService },
         { type: Store }
     ]; };
     __decorate([

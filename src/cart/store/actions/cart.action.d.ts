@@ -50,9 +50,15 @@ export declare class AddEmailToCartFail extends StateLoaderActions.LoaderFailAct
     constructor(payload: any);
 }
 export declare class AddEmailToCartSuccess extends StateLoaderActions.LoaderSuccessAction {
-    payload: any;
+    payload: {
+        userId: string;
+        cartId: string;
+    };
     readonly type = "[Cart] Add Email to Cart Success";
-    constructor(payload: any);
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+    });
 }
 export declare class LoadCart extends StateLoaderActions.LoaderLoadAction {
     payload: {
@@ -83,9 +89,15 @@ export declare class MergeCart implements Action {
     constructor(payload: any);
 }
 export declare class MergeCartSuccess implements Action {
-    payload: any;
+    payload: {
+        cartId: string;
+        userId: string;
+    };
     readonly type = "[Cart] Merge Cart Success";
-    constructor(payload: any);
+    constructor(payload: {
+        cartId: string;
+        userId: string;
+    });
 }
 export declare class ResetCartDetails implements Action {
     readonly type = "[Cart] Reset Cart Details";

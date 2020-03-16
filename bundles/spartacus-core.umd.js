@@ -14960,7 +14960,7 @@
             this.store.dispatch(new CartRemoveEntry({
                 userId: userId,
                 cartId: cartId,
-                entry: entryNumber,
+                entry: "" + entryNumber,
             }));
         };
         /**
@@ -14976,7 +14976,7 @@
                 this.store.dispatch(new CartUpdateEntry({
                     userId: userId,
                     cartId: cartId,
-                    entry: entryNumber,
+                    entry: "" + entryNumber,
                     qty: quantity,
                 }));
             }
@@ -17533,20 +17533,15 @@
     }());
 
     var CartEffects = /** @class */ (function () {
-        function CartEffects(actions$, cartConnector, cartData, store$1) {
+        function CartEffects(actions$, cartConnector, store$1) {
             var _this = this;
             this.actions$ = actions$;
             this.cartConnector = cartConnector;
-            this.cartData = cartData;
             this.store = store$1;
             this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
             this.loadCart$ = this.actions$.pipe(effects$c.ofType(LOAD_CART), operators.map(function (action) { return action.payload; }), operators.groupBy(function (payload) { return payload.cartId; }), operators.mergeMap(function (group$) {
                 return group$.pipe(operators.switchMap(function (payload) {
-                    return rxjs.of(payload).pipe(operators.withLatestFrom(
-                    // TODO: deprecated -> remove check for store in 2.0 when store will be required
-                    !_this.store
-                        ? rxjs.of(false)
-                        : _this.store.pipe(store.select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
+                    return rxjs.of(payload).pipe(operators.withLatestFrom(_this.store.pipe(store.select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
                 }), operators.filter(function (_a) {
                     var _b = __read(_a, 2), _ = _b[0], hasPendingProcesses = _b[1];
                     return !hasPendingProcesses;
@@ -17554,42 +17549,24 @@
                     var _b = __read(_a, 1), payload = _b[0];
                     return payload;
                 }), operators.switchMap(function (payload) {
-                    var loadCartParams = {
-                        userId: (payload && payload.userId) || _this.cartData.userId,
-                        cartId: (payload && payload.cartId) || _this.cartData.cartId,
-                    };
-                    if (_this.isMissingData(loadCartParams)) {
-                        return rxjs.from([
-                            new LoadCartFail({}),
-                            new LoadMultiCartFail({
-                                cartId: loadCartParams.cartId,
-                            }),
-                        ]);
-                    }
-                    return _this.cartConnector
-                        .load(loadCartParams.userId, loadCartParams.cartId)
-                        .pipe(
+                    return _this.cartConnector.load(payload.userId, payload.cartId).pipe(
                     // TODO: remove with the `cart` store feature
-                    operators.withLatestFrom(
-                    // TODO: deprecated -> remove check for store in 2.0 when store will be required
-                    !_this.store
-                        ? rxjs.of(payload.cartId)
-                        : _this.store.pipe(store.select(getActiveCartId))), operators.mergeMap(function (_a) {
+                    operators.withLatestFrom(_this.store.pipe(store.select(getActiveCartId))), operators.mergeMap(function (_a) {
                         var _b = __read(_a, 2), cart = _b[0], activeCartId = _b[1];
                         var actions = [];
                         if (cart) {
                             // `cart` store branch should only be updated for active cart
                             // avoid dispatching LoadCartSuccess action on different cart loads
-                            if (loadCartParams.cartId === activeCartId ||
-                                loadCartParams.cartId === OCC_CART_ID_CURRENT) {
+                            if (payload.cartId === activeCartId ||
+                                payload.cartId === OCC_CART_ID_CURRENT) {
                                 actions.push(new LoadCartSuccess(cart));
                             }
                             actions.push(new LoadMultiCartSuccess({
                                 cart: cart,
-                                userId: loadCartParams.userId,
+                                userId: payload.userId,
                                 extraData: payload.extraData,
                             }));
-                            if (loadCartParams.cartId === OCC_CART_ID_CURRENT) {
+                            if (payload.cartId === OCC_CART_ID_CURRENT) {
                                 // Removing cart from entity object under `current` key as it is no longer needed.
                                 // Current cart is loaded under it's code entity.
                                 actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
@@ -17599,7 +17576,7 @@
                             actions = [
                                 new LoadCartFail({}),
                                 new LoadMultiCartFail({
-                                    cartId: loadCartParams.cartId,
+                                    cartId: payload.cartId,
                                 }),
                             ];
                         }
@@ -17627,14 +17604,14 @@
                                 // Remove cart does the same thing, but in `multi-cart` store feature.
                                 return rxjs.from([
                                     new ClearCart(),
-                                    new RemoveCart(loadCartParams.cartId),
+                                    new RemoveCart(payload.cartId),
                                 ]);
                             }
                         }
                         return rxjs.from([
                             new LoadCartFail(makeErrorSerializable(error)),
                             new LoadMultiCartFail({
-                                cartId: loadCartParams.cartId,
+                                cartId: payload.cartId,
                                 error: makeErrorSerializable(error),
                             }),
                         ]);
@@ -17755,13 +17732,9 @@
                 }));
             }));
         }
-        CartEffects.prototype.isMissingData = function (payload) {
-            return payload.userId === undefined || payload.cartId === undefined;
-        };
         CartEffects.ctorParameters = function () { return [
             { type: effects$c.Actions },
             { type: CartConnector },
-            { type: CartDataService },
             { type: store.Store }
         ]; };
         __decorate([

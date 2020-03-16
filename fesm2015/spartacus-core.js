@@ -13056,7 +13056,7 @@ let MultiCartService = class MultiCartService {
         this.store.dispatch(new CartRemoveEntry({
             userId,
             cartId,
-            entry: entryNumber,
+            entry: `${entryNumber}`,
         }));
     }
     /**
@@ -13072,7 +13072,7 @@ let MultiCartService = class MultiCartService {
             this.store.dispatch(new CartUpdateEntry({
                 userId,
                 cartId,
-                entry: entryNumber,
+                entry: `${entryNumber}`,
                 qty: quantity,
             }));
         }
@@ -15271,54 +15271,31 @@ CartConnector = __decorate([
 ], CartConnector);
 
 let CartEffects = class CartEffects {
-    constructor(actions$, cartConnector, cartData, store) {
+    constructor(actions$, cartConnector, store) {
         this.actions$ = actions$;
         this.cartConnector = cartConnector;
-        this.cartData = cartData;
         this.store = store;
         this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
         this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((action) => action.payload), groupBy(payload => payload.cartId), mergeMap(group$ => group$.pipe(switchMap(payload => {
-            return of(payload).pipe(withLatestFrom(
-            // TODO: deprecated -> remove check for store in 2.0 when store will be required
-            !this.store
-                ? of(false)
-                : this.store.pipe(select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
+            return of(payload).pipe(withLatestFrom(this.store.pipe(select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
         }), filter(([_, hasPendingProcesses]) => !hasPendingProcesses), map(([payload]) => payload), switchMap(payload => {
-            const loadCartParams = {
-                userId: (payload && payload.userId) || this.cartData.userId,
-                cartId: (payload && payload.cartId) || this.cartData.cartId,
-            };
-            if (this.isMissingData(loadCartParams)) {
-                return from([
-                    new LoadCartFail({}),
-                    new LoadMultiCartFail({
-                        cartId: loadCartParams.cartId,
-                    }),
-                ]);
-            }
-            return this.cartConnector
-                .load(loadCartParams.userId, loadCartParams.cartId)
-                .pipe(
+            return this.cartConnector.load(payload.userId, payload.cartId).pipe(
             // TODO: remove with the `cart` store feature
-            withLatestFrom(
-            // TODO: deprecated -> remove check for store in 2.0 when store will be required
-            !this.store
-                ? of(payload.cartId)
-                : this.store.pipe(select(getActiveCartId))), mergeMap(([cart, activeCartId]) => {
+            withLatestFrom(this.store.pipe(select(getActiveCartId))), mergeMap(([cart, activeCartId]) => {
                 let actions = [];
                 if (cart) {
                     // `cart` store branch should only be updated for active cart
                     // avoid dispatching LoadCartSuccess action on different cart loads
-                    if (loadCartParams.cartId === activeCartId ||
-                        loadCartParams.cartId === OCC_CART_ID_CURRENT) {
+                    if (payload.cartId === activeCartId ||
+                        payload.cartId === OCC_CART_ID_CURRENT) {
                         actions.push(new LoadCartSuccess(cart));
                     }
                     actions.push(new LoadMultiCartSuccess({
                         cart,
-                        userId: loadCartParams.userId,
+                        userId: payload.userId,
                         extraData: payload.extraData,
                     }));
-                    if (loadCartParams.cartId === OCC_CART_ID_CURRENT) {
+                    if (payload.cartId === OCC_CART_ID_CURRENT) {
                         // Removing cart from entity object under `current` key as it is no longer needed.
                         // Current cart is loaded under it's code entity.
                         actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
@@ -15328,7 +15305,7 @@ let CartEffects = class CartEffects {
                     actions = [
                         new LoadCartFail({}),
                         new LoadMultiCartFail({
-                            cartId: loadCartParams.cartId,
+                            cartId: payload.cartId,
                         }),
                     ];
                 }
@@ -15356,14 +15333,14 @@ let CartEffects = class CartEffects {
                         // Remove cart does the same thing, but in `multi-cart` store feature.
                         return from([
                             new ClearCart(),
-                            new RemoveCart(loadCartParams.cartId),
+                            new RemoveCart(payload.cartId),
                         ]);
                     }
                 }
                 return from([
                     new LoadCartFail(makeErrorSerializable(error)),
                     new LoadMultiCartFail({
-                        cartId: loadCartParams.cartId,
+                        cartId: payload.cartId,
                         error: makeErrorSerializable(error),
                     }),
                 ]);
@@ -15470,14 +15447,10 @@ let CartEffects = class CartEffects {
             return new ClearCart();
         }), catchError(error => of(new DeleteCartFail(makeErrorSerializable(error)))))));
     }
-    isMissingData(payload) {
-        return payload.userId === undefined || payload.cartId === undefined;
-    }
 };
 CartEffects.ctorParameters = () => [
     { type: Actions },
     { type: CartConnector },
-    { type: CartDataService },
     { type: Store }
 ];
 __decorate([
