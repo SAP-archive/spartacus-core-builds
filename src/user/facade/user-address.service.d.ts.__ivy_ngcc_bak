@@ -68,9 +68,5 @@ export declare class UserAddressService {
      * Returns all regions
      */
     getRegions(countryIsoCode: string): Observable<Region[]>;
-    /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
-     */
     private withUserId;
 }

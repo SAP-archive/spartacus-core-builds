@@ -1,7 +1,7 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/facade/auth.service';
-import { ReturnRequestList, ReturnRequestEntryInputList, ReturnRequest, ReturnRequestModification } from '../../model/order.model';
+import { ReturnRequest, ReturnRequestEntryInputList, ReturnRequestList, ReturnRequestModification } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
 export declare class OrderReturnRequestService {

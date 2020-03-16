@@ -9877,21 +9877,14 @@ let UserConsentService = class UserConsentService {
         }
         return updatedTemplateList;
     }
-    /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
+    /*
+     * Utility method to distinquish user id in a convenient way
      */
     withUserId(callback) {
-        if (this.authService) {
-            this.authService
-                .getOccUserId()
-                .pipe(take(1))
-                .subscribe(userId => callback(userId));
-        }
-        else {
-            // TODO(issue:#5628) Deprecated since 1.3.0
-            callback(OCC_USER_ID_CURRENT);
-        }
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe(userId => callback(userId));
     }
 };
 UserConsentService.ɵfac = function UserConsentService_Factory(t) { return new (t || UserConsentService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -13401,21 +13394,14 @@ let UserService = class UserService {
     resetUpdatePasswordProcessState() {
         this.store.dispatch(new UpdatePasswordReset());
     }
-    /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
+    /*
+     * Utility method to distinquish user id in a convenient way
      */
     withUserId(callback) {
-        if (this.authService) {
-            this.authService
-                .getOccUserId()
-                .pipe(take(1))
-                .subscribe(userId => callback(userId));
-        }
-        else {
-            // TODO(issue:#5628) Deprecated since 1.3.0
-            callback(OCC_USER_ID_CURRENT);
-        }
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe(userId => callback(userId));
     }
 };
 UserService.ɵfac = function UserService_Factory(t) { return new (t || UserService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -21486,21 +21472,14 @@ let UserAddressService = class UserAddressService {
             return regions;
         }));
     }
-    /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
+    /*
+     * Utility method to distinquish user id in a convenient way
      */
     withUserId(callback) {
-        if (this.authService) {
-            this.authService
-                .getOccUserId()
-                .pipe(take(1))
-                .subscribe(userId => callback(userId));
-        }
-        else {
-            // TODO(issue:#5628) Deprecated since 1.3.0
-            callback(OCC_USER_ID_CURRENT);
-        }
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe(userId => callback(userId));
     }
 };
 UserAddressService.ɵfac = function UserAddressService_Factory(t) { return new (t || UserAddressService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -21631,21 +21610,14 @@ let UserOrderService = class UserOrderService {
     resetCancelOrderProcessState() {
         return this.store.dispatch(new ResetCancelOrderProcess());
     }
-    /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
+    /*
+     * Utility method to distinquish user id in a convenient way
      */
     withUserId(callback) {
-        if (this.authService) {
-            this.authService
-                .getOccUserId()
-                .pipe(take(1))
-                .subscribe(userId => callback(userId));
-        }
-        else {
-            // TODO(issue:#5628) Deprecated since 1.3.0
-            callback(OCC_USER_ID_CURRENT);
-        }
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe(userId => callback(userId));
     }
 };
 UserOrderService.ɵfac = function UserOrderService_Factory(t) { return new (t || UserOrderService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -21837,21 +21809,14 @@ let UserPaymentService = class UserPaymentService {
     loadBillingCountries() {
         this.store.dispatch(new LoadBillingCountries());
     }
-    /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
+    /*
+     * Utility method to distinquish user id in a convenient way
      */
     withUserId(callback) {
-        if (this.authService) {
-            this.authService
-                .getOccUserId()
-                .pipe(take(1))
-                .subscribe(userId => callback(userId));
-        }
-        else {
-            // TODO(issue:#5628) Deprecated since 1.3.0
-            callback(OCC_USER_ID_CURRENT);
-        }
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe(userId => callback(userId));
     }
 };
 UserPaymentService.ɵfac = function UserPaymentService_Factory(t) { return new (t || UserPaymentService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -21981,20 +21946,13 @@ let OrderReturnRequestService = class OrderReturnRequestService {
         return this.store.dispatch(new ResetCancelReturnProcess());
     }
     /*
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
+     * Utility method to distinquish user id in a convenient way
      */
     withUserId(callback) {
-        if (this.authService) {
-            this.authService
-                .getOccUserId()
-                .pipe(take(1))
-                .subscribe(userId => callback(userId));
-        }
-        else {
-            // TODO(issue:#5628) Deprecated since 1.3.0
-            callback(OCC_USER_ID_CURRENT);
-        }
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe(userId => callback(userId));
     }
 };
 OrderReturnRequestService.ɵfac = function OrderReturnRequestService_Factory(t) { return new (t || OrderReturnRequestService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };

@@ -11465,21 +11465,14 @@
             }
             return updatedTemplateList;
         };
-        /**
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
+        /*
+         * Utility method to distinquish user id in a convenient way
          */
         UserConsentService.prototype.withUserId = function (callback) {
-            if (this.authService) {
-                this.authService
-                    .getOccUserId()
-                    .pipe(operators.take(1))
-                    .subscribe(function (userId) { return callback(userId); });
-            }
-            else {
-                // TODO(issue:#5628) Deprecated since 1.3.0
-                callback(OCC_USER_ID_CURRENT);
-            }
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe(function (userId) { return callback(userId); });
         };
         UserConsentService.ctorParameters = function () { return [
             { type: store.Store },
@@ -15654,21 +15647,14 @@
         UserService.prototype.resetUpdatePasswordProcessState = function () {
             this.store.dispatch(new UpdatePasswordReset());
         };
-        /**
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
+        /*
+         * Utility method to distinquish user id in a convenient way
          */
         UserService.prototype.withUserId = function (callback) {
-            if (this.authService) {
-                this.authService
-                    .getOccUserId()
-                    .pipe(operators.take(1))
-                    .subscribe(function (userId) { return callback(userId); });
-            }
-            else {
-                // TODO(issue:#5628) Deprecated since 1.3.0
-                callback(OCC_USER_ID_CURRENT);
-            }
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe(function (userId) { return callback(userId); });
         };
         UserService.ctorParameters = function () { return [
             { type: store.Store },
@@ -25080,21 +25066,14 @@
                 return regions;
             }));
         };
-        /**
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
+        /*
+         * Utility method to distinquish user id in a convenient way
          */
         UserAddressService.prototype.withUserId = function (callback) {
-            if (this.authService) {
-                this.authService
-                    .getOccUserId()
-                    .pipe(operators.take(1))
-                    .subscribe(function (userId) { return callback(userId); });
-            }
-            else {
-                // TODO(issue:#5628) Deprecated since 1.3.0
-                callback(OCC_USER_ID_CURRENT);
-            }
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe(function (userId) { return callback(userId); });
         };
         UserAddressService.ctorParameters = function () { return [
             { type: store.Store },
@@ -25241,21 +25220,14 @@
         UserOrderService.prototype.resetCancelOrderProcessState = function () {
             return this.store.dispatch(new ResetCancelOrderProcess());
         };
-        /**
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
+        /*
+         * Utility method to distinquish user id in a convenient way
          */
         UserOrderService.prototype.withUserId = function (callback) {
-            if (this.authService) {
-                this.authService
-                    .getOccUserId()
-                    .pipe(operators.take(1))
-                    .subscribe(function (userId) { return callback(userId); });
-            }
-            else {
-                // TODO(issue:#5628) Deprecated since 1.3.0
-                callback(OCC_USER_ID_CURRENT);
-            }
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe(function (userId) { return callback(userId); });
         };
         UserOrderService.ctorParameters = function () { return [
             { type: store.Store },
@@ -25467,21 +25439,14 @@
         UserPaymentService.prototype.loadBillingCountries = function () {
             this.store.dispatch(new LoadBillingCountries());
         };
-        /**
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
+        /*
+         * Utility method to distinquish user id in a convenient way
          */
         UserPaymentService.prototype.withUserId = function (callback) {
-            if (this.authService) {
-                this.authService
-                    .getOccUserId()
-                    .pipe(operators.take(1))
-                    .subscribe(function (userId) { return callback(userId); });
-            }
-            else {
-                // TODO(issue:#5628) Deprecated since 1.3.0
-                callback(OCC_USER_ID_CURRENT);
-            }
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe(function (userId) { return callback(userId); });
         };
         UserPaymentService.ctorParameters = function () { return [
             { type: store.Store },
@@ -25621,20 +25586,13 @@
             return this.store.dispatch(new ResetCancelReturnProcess());
         };
         /*
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
+         * Utility method to distinquish user id in a convenient way
          */
         OrderReturnRequestService.prototype.withUserId = function (callback) {
-            if (this.authService) {
-                this.authService
-                    .getOccUserId()
-                    .pipe(operators.take(1))
-                    .subscribe(function (userId) { return callback(userId); });
-            }
-            else {
-                // TODO(issue:#5628) Deprecated since 1.3.0
-                callback(OCC_USER_ID_CURRENT);
-            }
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe(function (userId) { return callback(userId); });
         };
         OrderReturnRequestService.ctorParameters = function () { return [
             { type: store.Store },
