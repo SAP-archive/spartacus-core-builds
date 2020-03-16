@@ -15340,246 +15340,6 @@
         return ActiveCartService;
     }());
 
-    /**
-     * @license
-     * The MIT License
-     * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
-     *
-     * See:
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
-     */
-    var QUESTION_MARK = '[^/]';
-    var WILD_SINGLE = '[^/]*';
-    var WILD_OPEN = '(?:.+\\/)?';
-    var TO_ESCAPE_BASE = [
-        { replace: /\./g, with: '\\.' },
-        { replace: /\+/g, with: '\\+' },
-        { replace: /\*/g, with: WILD_SINGLE },
-    ];
-    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: QUESTION_MARK },
-    ]);
-    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: '\\?' },
-    ]);
-    /**
-     * Converts the glob-like pattern into regex string.
-     *
-     * Patterns use a limited glob format:
-     * `**` matches 0 or more path segments
-     * `*` matches 0 or more characters excluding `/`
-     * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
-     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
-     *
-     * @param glob glob-like pattern
-     * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
-     */
-    function globToRegex(glob, literalQuestionMark) {
-        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
-        var toEscape = literalQuestionMark
-            ? TO_ESCAPE_LITERAL_QM
-            : TO_ESCAPE_WILDCARD_QM;
-        var segments = glob.split('/').reverse();
-        var regex = '';
-        while (segments.length > 0) {
-            var segment = segments.pop();
-            if (segment === '**') {
-                if (segments.length > 0) {
-                    regex += WILD_OPEN;
-                }
-                else {
-                    regex += '.*';
-                }
-            }
-            else {
-                var processed = toEscape.reduce(function (seg, escape) { return seg.replace(escape.replace, escape.with); }, segment);
-                regex += processed;
-                if (segments.length > 0) {
-                    regex += '\\/';
-                }
-            }
-        }
-        return regex;
-    }
-    /**
-     * For given list of glob-like patterns, returns a matcher function.
-     *
-     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     */
-    function getGlobMatcher(patterns) {
-        var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
-            var positive = _a.positive, regex = _a.regex;
-            return ({
-                positive: positive,
-                regex: new RegExp(regex),
-            });
-        });
-        var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
-        var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-        return function (url) {
-            return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); });
-        };
-    }
-    /**
-     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
-     */
-    function processGlobPatterns(urls) {
-        return urls.map(function (url) {
-            var positive = !url.startsWith('!');
-            url = positive ? url : url.substr(1);
-            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
-        });
-    }
-
-    var GlobService = /** @class */ (function () {
-        function GlobService() {
-        }
-        /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         */
-        GlobService.prototype.getValidator = function (patterns) {
-            var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
-                var positive = _a.positive, regex = _a.regex;
-                return ({
-                    positive: positive,
-                    regex: new RegExp(regex),
-                });
-            });
-            var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
-            var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-            return function (url) {
-                return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-                    !excludePatterns.some(function (pattern) { return pattern.regex.test(url); });
-            };
-        };
-        GlobService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-        GlobService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], GlobService);
-        return GlobService;
-    }());
-
-    /**
-     *
-     * Withdraw from the source observable when notifier emits a value
-     *
-     * Withdraw will result in resubscribing to the source observable
-     * Operator is useful to kill ongoing emission transformation on notifier emission
-     *
-     * @param notifier
-     */
-    function withdrawOn(notifier) {
-        return function (source) {
-            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
-        };
-    }
-
-    /**
-     * @deprecated since version 1.4
-     * Replace particular methods usage with replacements from other services
-     */
-    var CartDataService = /** @class */ (function () {
-        function CartDataService(store$1, authService) {
-            var _this = this;
-            this.store = store$1;
-            this.authService = authService;
-            this._userId = OCC_USER_ID_ANONYMOUS;
-            this.authService
-                .getUserToken()
-                .pipe(operators.filter(function (userToken) { return _this.userId !== userToken.userId; }))
-                .subscribe(function (userToken) {
-                if (Object.keys(userToken).length !== 0) {
-                    _this._userId = userToken.userId;
-                }
-                else {
-                    _this._userId = OCC_USER_ID_ANONYMOUS;
-                }
-            });
-            this.store.pipe(store.select(getCartContent)).subscribe(function (cart) {
-                _this._cart = cart;
-            });
-        }
-        Object.defineProperty(CartDataService.prototype, "hasCart", {
-            get: function () {
-                return !!this._cart && Object.keys(this._cart).length > 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(CartDataService.prototype, "userId", {
-            /**
-             * @deprecated since version 1.4
-             * Use `getOccUserId` from `AuthService` instead
-             */
-            get: function () {
-                return this._userId;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(CartDataService.prototype, "cart", {
-            /**
-             * @deprecated since version 1.4
-             * Use `getActive` from `ActiveCartService` instead
-             */
-            get: function () {
-                return this._cart;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(CartDataService.prototype, "cartId", {
-            /**
-             * @deprecated since version 1.4
-             * Use `getActiveCartId` from `ActiveCartService` instead
-             */
-            get: function () {
-                if (this.hasCart) {
-                    return this.userId === OCC_USER_ID_ANONYMOUS
-                        ? this.cart.guid
-                        : this.cart.code;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(CartDataService.prototype, "isGuestCart", {
-            /**
-             * @deprecated since version 1.4
-             * Use `isGuestCart` from `ActiveCartService` instead
-             */
-            get: function () {
-                return (this.cart.user &&
-                    (this.cart.user.name === OCC_USER_ID_GUEST ||
-                        this.isEmail(this.cart.user.uid
-                            .split('|')
-                            .slice(1)
-                            .join('|'))));
-            },
-            enumerable: true,
-            configurable: true
-        });
-        CartDataService.prototype.isEmail = function (str) {
-            if (str) {
-                return str.match(EMAIL_PATTERN) ? true : false;
-            }
-            return false;
-        };
-        CartDataService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        CartDataService = __decorate([
-            core.Injectable()
-        ], CartDataService);
-        return CartDataService;
-    }());
-
     var CartVoucherService = /** @class */ (function () {
         function CartVoucherService(store, authService) {
             this.store = store;
@@ -16769,6 +16529,21 @@
         ], CartPageMetaResolver);
         return CartPageMetaResolver;
     }(PageMetaResolver));
+
+    /**
+     *
+     * Withdraw from the source observable when notifier emits a value
+     *
+     * Withdraw will result in resubscribing to the source observable
+     * Operator is useful to kill ongoing emission transformation on notifier emission
+     *
+     * @param notifier
+     */
+    function withdrawOn(notifier) {
+        return function (source) {
+            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
+        };
+    }
 
     var CartEntryConnector = /** @class */ (function () {
         function CartEntryConnector(adapter) {
@@ -18201,7 +17976,6 @@
             return {
                 ngModule: CartModule_1,
                 providers: [
-                    CartDataService,
                     CartVoucherService,
                     MultiCartService,
                     WishListService,
@@ -19874,6 +19648,130 @@
             core.Injectable()
         ], ComponentsEffects);
         return ComponentsEffects;
+    }());
+
+    /**
+     * @license
+     * The MIT License
+     * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
+     *
+     * See:
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
+     */
+    var QUESTION_MARK = '[^/]';
+    var WILD_SINGLE = '[^/]*';
+    var WILD_OPEN = '(?:.+\\/)?';
+    var TO_ESCAPE_BASE = [
+        { replace: /\./g, with: '\\.' },
+        { replace: /\+/g, with: '\\+' },
+        { replace: /\*/g, with: WILD_SINGLE },
+    ];
+    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: QUESTION_MARK },
+    ]);
+    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: '\\?' },
+    ]);
+    /**
+     * Converts the glob-like pattern into regex string.
+     *
+     * Patterns use a limited glob format:
+     * `**` matches 0 or more path segments
+     * `*` matches 0 or more characters excluding `/`
+     * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
+     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+     *
+     * @param glob glob-like pattern
+     * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
+     */
+    function globToRegex(glob, literalQuestionMark) {
+        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
+        var toEscape = literalQuestionMark
+            ? TO_ESCAPE_LITERAL_QM
+            : TO_ESCAPE_WILDCARD_QM;
+        var segments = glob.split('/').reverse();
+        var regex = '';
+        while (segments.length > 0) {
+            var segment = segments.pop();
+            if (segment === '**') {
+                if (segments.length > 0) {
+                    regex += WILD_OPEN;
+                }
+                else {
+                    regex += '.*';
+                }
+            }
+            else {
+                var processed = toEscape.reduce(function (seg, escape) { return seg.replace(escape.replace, escape.with); }, segment);
+                regex += processed;
+                if (segments.length > 0) {
+                    regex += '\\/';
+                }
+            }
+        }
+        return regex;
+    }
+    /**
+     * For given list of glob-like patterns, returns a matcher function.
+     *
+     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     */
+    function getGlobMatcher(patterns) {
+        var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
+            var positive = _a.positive, regex = _a.regex;
+            return ({
+                positive: positive,
+                regex: new RegExp(regex),
+            });
+        });
+        var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
+        var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
+        return function (url) {
+            return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); });
+        };
+    }
+    /**
+     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+     */
+    function processGlobPatterns(urls) {
+        return urls.map(function (url) {
+            var positive = !url.startsWith('!');
+            url = positive ? url : url.substr(1);
+            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
+        });
+    }
+
+    var GlobService = /** @class */ (function () {
+        function GlobService() {
+        }
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         */
+        GlobService.prototype.getValidator = function (patterns) {
+            var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
+                var positive = _a.positive, regex = _a.regex;
+                return ({
+                    positive: positive,
+                    regex: new RegExp(regex),
+                });
+            });
+            var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
+            var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
+            return function (url) {
+                return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+                    !excludePatterns.some(function (pattern) { return pattern.regex.test(url); });
+            };
+        };
+        GlobService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+        GlobService = __decorate([
+            core.Injectable({ providedIn: 'root' })
+        ], GlobService);
+        return GlobService;
     }());
 
     var UrlMatcherService = /** @class */ (function () {
@@ -27372,7 +27270,6 @@
     exports.CartActions = cartGroup_actions;
     exports.CartAdapter = CartAdapter;
     exports.CartConnector = CartConnector;
-    exports.CartDataService = CartDataService;
     exports.CartEntryAdapter = CartEntryAdapter;
     exports.CartEntryConnector = CartEntryConnector;
     exports.CartModule = CartModule;
