@@ -13923,92 +13923,12 @@
     var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
     var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
-    var CART_FEATURE = 'cart';
-    var CART_DATA = '[Cart] Cart Data';
-    var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
-
-    var getCartContentSelector = function (state) { return state.content; };
-    var ɵ0$v = getCartContentSelector;
-    var getCartRefreshSelector = function (state) { return state.refresh; };
-    var ɵ1$n = getCartRefreshSelector;
-    var getCartEntriesSelector = function (state) { return state.entries; };
-    var ɵ2$g = getCartEntriesSelector;
-    var getCartMergeCompleteSelector = function (state) {
-        return state.cartMergeComplete;
-    };
-    var ɵ3$9 = getCartMergeCompleteSelector;
-    var getCartsState = store.createFeatureSelector(CART_FEATURE);
-    var ɵ4$2 = function (cartsState) { return cartsState.active; };
-    var getActiveCartState = store.createSelector(getCartsState, ɵ4$2);
-    var ɵ5$2 = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getCartState = store.createSelector(getActiveCartState, ɵ5$2);
-    var getCartContent = store.createSelector(getCartState, getCartContentSelector);
-    var getCartRefresh = store.createSelector(getCartState, getCartRefreshSelector);
-    var ɵ6 = function (state) {
-        return (loaderSuccessSelector(state) &&
-            !loaderLoadingSelector(state) &&
-            !loaderValueSelector(state).refresh) ||
-            (loaderErrorSelector(state) &&
-                !loaderLoadingSelector(state) &&
-                !loaderValueSelector(state).refresh);
-    };
-    var getCartLoaded = store.createSelector(getActiveCartState, ɵ6);
-    var ɵ7 = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getCartLoading = store.createSelector(getActiveCartState, ɵ7);
-    var getCartMergeComplete = store.createSelector(getCartState, getCartMergeCompleteSelector);
-    var getCartEntriesMap = store.createSelector(getCartState, getCartEntriesSelector);
-    var getCartEntrySelectorFactory = function (productCode) {
-        return store.createSelector(getCartEntriesMap, function (entries) {
-            if (entries) {
-                return entries[productCode];
-            }
-        });
-    };
-    var ɵ8 = function (entities) {
-        return Object.keys(entities).map(function (code) { return entities[code]; });
-    };
-    var getCartEntries = store.createSelector(getCartEntriesMap, ɵ8);
-    var ɵ9 = function (content) { return content.user; };
-    var getCartUser = store.createSelector(getCartContent, ɵ9);
-
-
-
-    var cartGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getCartsState: getCartsState,
-        getActiveCartState: getActiveCartState,
-        getCartState: getCartState,
-        getCartContent: getCartContent,
-        getCartRefresh: getCartRefresh,
-        getCartLoaded: getCartLoaded,
-        getCartLoading: getCartLoading,
-        getCartMergeComplete: getCartMergeComplete,
-        getCartEntriesMap: getCartEntriesMap,
-        getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-        getCartEntries: getCartEntries,
-        getCartUser: getCartUser,
-        ɵ0: ɵ0$v,
-        ɵ1: ɵ1$n,
-        ɵ2: ɵ2$g,
-        ɵ3: ɵ3$9,
-        ɵ4: ɵ4$2,
-        ɵ5: ɵ5$2,
-        ɵ6: ɵ6,
-        ɵ7: ɵ7,
-        ɵ8: ɵ8,
-        ɵ9: ɵ9
-    });
-
     var MULTI_CART_FEATURE = 'multi-cart';
     var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
 
     var getMultiCartState = store.createFeatureSelector(MULTI_CART_FEATURE);
-    var ɵ0$w = function (state) { return state.carts; };
-    var getMultiCartEntities = store.createSelector(getMultiCartState, ɵ0$w);
+    var ɵ0$v = function (state) { return state.carts; };
+    var getMultiCartEntities = store.createSelector(getMultiCartState, ɵ0$v);
     var getCartEntitySelectorFactory = function (cartId) {
         return store.createSelector(getMultiCartEntities, function (state) {
             return entityProcessesLoaderStateSelector(state, cartId);
@@ -14034,17 +13954,17 @@
             return state && state.entries ? state.entries : [];
         });
     };
-    var getCartEntrySelectorFactory$1 = function (cartId, productCode) {
+    var getCartEntrySelectorFactory = function (cartId, productCode) {
         return store.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
             return state
                 ? state.find(function (entry) { return entry.product.code === productCode; })
                 : undefined;
         });
     };
-    var ɵ1$o = function (state) { return state.active; };
-    var getActiveCartId = store.createSelector(getMultiCartState, ɵ1$o);
-    var ɵ2$h = function (state) { return state.wishList; };
-    var getWishListId = store.createSelector(getMultiCartState, ɵ2$h);
+    var ɵ1$n = function (state) { return state.active; };
+    var getActiveCartId = store.createSelector(getMultiCartState, ɵ1$n);
+    var ɵ2$g = function (state) { return state.wishList; };
+    var getWishListId = store.createSelector(getMultiCartState, ɵ2$g);
 
 
 
@@ -14057,12 +13977,12 @@
         getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
         getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
         getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
-        getCartEntrySelectorFactory: getCartEntrySelectorFactory$1,
+        getCartEntrySelectorFactory: getCartEntrySelectorFactory,
         getActiveCartId: getActiveCartId,
         getWishListId: getWishListId,
-        ɵ0: ɵ0$w,
-        ɵ1: ɵ1$o,
-        ɵ2: ɵ2$h
+        ɵ0: ɵ0$v,
+        ɵ1: ɵ1$n,
+        ɵ2: ɵ2$g
     });
 
     function getCartIdByUserId(cart, userId) {
@@ -14092,6 +14012,10 @@
     function isTempCartId(cartId) {
         return cartId.startsWith('temp-');
     }
+
+    var CART_FEATURE = 'cart';
+    var CART_DATA = '[Cart] Cart Data';
+    var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
 
     var CREATE_CART = '[Cart] Create Cart';
     var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
@@ -14984,7 +14908,7 @@
          * @param productCode
          */
         MultiCartService.prototype.getEntry = function (cartId, productCode) {
-            return this.store.pipe(store.select(getCartEntrySelectorFactory$1(cartId, productCode)));
+            return this.store.pipe(store.select(getCartEntrySelectorFactory(cartId, productCode)));
         };
         /**
          * Assign email to the cart
@@ -15334,9 +15258,10 @@
     }());
 
     var CartVoucherService = /** @class */ (function () {
-        function CartVoucherService(store, authService) {
+        function CartVoucherService(store, authService, activeCartService) {
             this.store = store;
             this.authService = authService;
+            this.activeCartService = activeCartService;
         }
         CartVoucherService.prototype.addVoucher = function (voucherId, cartId) {
             var _this = this;
@@ -15379,19 +15304,14 @@
             else {
                 return rxjs.combineLatest([
                     this.authService.getOccUserId(),
-                    this.store.pipe(store.select(getCartContent), operators.map(function (cart) { return cart; })),
-                ]).pipe(operators.take(1), operators.map(function (_a) {
-                    var _b = __read(_a, 2), userId = _b[0], cart = _b[1];
-                    return [
-                        userId,
-                        userId === OCC_USER_ID_ANONYMOUS ? cart.guid : cart.code,
-                    ];
-                }));
+                    this.activeCartService.getActiveCartId(),
+                ]).pipe(operators.take(1));
             }
         };
         CartVoucherService.ctorParameters = function () { return [
             { type: store.Store },
-            { type: AuthService }
+            { type: AuthService },
+            { type: ActiveCartService }
         ]; };
         CartVoucherService = __decorate([
             core.Injectable()
@@ -16049,8 +15969,8 @@
 
     var getCmsState = store.createFeatureSelector(CMS_FEATURE);
 
-    var ɵ0$x = function (state) { return state.components; };
-    var getComponentsState = store.createSelector(getCmsState, ɵ0$x);
+    var ɵ0$w = function (state) { return state.components; };
+    var getComponentsState = store.createSelector(getCmsState, ɵ0$w);
     var componentsContextSelectorFactory = function (uid) {
         return store.createSelector(getComponentsState, function (componentsState) {
             return entitySelector(componentsState, uid);
@@ -16085,8 +16005,8 @@
         });
     };
 
-    var ɵ0$y = function (state) { return state.navigation; };
-    var getNavigationEntryItemState = store.createSelector(getCmsState, ɵ0$y);
+    var ɵ0$x = function (state) { return state.navigation; };
+    var getNavigationEntryItemState = store.createSelector(getCmsState, ɵ0$x);
     var getSelectedNavigationEntryItemState = function (nodeId) {
         return store.createSelector(getNavigationEntryItemState, function (nodes) {
             return entityStateSelector(nodes, nodeId);
@@ -16097,7 +16017,7 @@
     };
 
     var getPageEntitiesSelector = function (state) { return state.pageData.entities; };
-    var ɵ0$z = getPageEntitiesSelector;
+    var ɵ0$y = getPageEntitiesSelector;
     var getIndexByType = function (index, type) {
         switch (type) {
             case exports.PageType.CONTENT_PAGE: {
@@ -16115,7 +16035,7 @@
         }
         return { entities: {} };
     };
-    var ɵ1$p = getIndexByType;
+    var ɵ1$o = getIndexByType;
     var getPageComponentTypesSelector = function (page) {
         var e_1, _a, e_2, _b;
         var componentTypes = new Set();
@@ -16148,11 +16068,11 @@
         }
         return Array.from(componentTypes);
     };
-    var ɵ2$i = getPageComponentTypesSelector;
-    var ɵ3$a = function (state) { return state.page; };
-    var getPageState = store.createSelector(getCmsState, ɵ3$a);
-    var ɵ4$3 = function (page) { return page.index; };
-    var getPageStateIndex = store.createSelector(getPageState, ɵ4$3);
+    var ɵ2$h = getPageComponentTypesSelector;
+    var ɵ3$9 = function (state) { return state.page; };
+    var getPageState = store.createSelector(getCmsState, ɵ3$9);
+    var ɵ4$2 = function (page) { return page.index; };
+    var getPageStateIndex = store.createSelector(getPageState, ɵ4$2);
     var getPageStateIndexEntityLoaderState = function (pageContext) {
         return store.createSelector(getPageStateIndex, function (index) {
             return getIndexByType(index, pageContext.type);
@@ -16197,7 +16117,7 @@
         componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
         componentsDataSelectorFactory: componentsDataSelectorFactory,
         componentsSelectorFactory: componentsSelectorFactory,
-        ɵ0: ɵ0$x,
+        ɵ0: ɵ0$w,
         getCmsState: getCmsState,
         getNavigationEntryItemState: getNavigationEntryItemState,
         getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
@@ -16211,10 +16131,10 @@
         getPageData: getPageData,
         getPageComponentTypes: getPageComponentTypes,
         getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory,
-        ɵ1: ɵ1$p,
-        ɵ2: ɵ2$i,
-        ɵ3: ɵ3$a,
-        ɵ4: ɵ4$3
+        ɵ1: ɵ1$o,
+        ɵ2: ɵ2$h,
+        ɵ3: ɵ3$9,
+        ɵ4: ɵ4$2
     });
 
     var CURRENT_CONTEXT_KEY = 'current';
@@ -18012,38 +17932,38 @@
     var getAddressVerificationResults = function (state) { return state.results; };
 
     var getDeliveryAddressSelector = function (state) { return state.address; };
-    var ɵ0$A = getDeliveryAddressSelector;
+    var ɵ0$z = getDeliveryAddressSelector;
     var getDeliveryModeSelector = function (state) {
         return state.deliveryMode;
     };
-    var ɵ1$q = getDeliveryModeSelector;
+    var ɵ1$p = getDeliveryModeSelector;
     var getPaymentDetailsSelector = function (state) {
         return state.paymentDetails;
     };
-    var ɵ2$j = getPaymentDetailsSelector;
+    var ɵ2$i = getPaymentDetailsSelector;
     var getOrderDetailsSelector = function (state) {
         return state.orderDetails;
     };
-    var ɵ3$b = getOrderDetailsSelector;
+    var ɵ3$a = getOrderDetailsSelector;
     var getCheckoutState = store.createFeatureSelector(CHECKOUT_FEATURE);
-    var ɵ4$4 = function (checkoutState) { return checkoutState.steps; };
-    var getCheckoutStepsState = store.createSelector(getCheckoutState, ɵ4$4);
-    var ɵ5$3 = function (state) {
+    var ɵ4$3 = function (checkoutState) { return checkoutState.steps; };
+    var getCheckoutStepsState = store.createSelector(getCheckoutState, ɵ4$3);
+    var ɵ5$2 = function (state) {
         return loaderValueSelector(state);
     };
-    var getCheckoutSteps = store.createSelector(getCheckoutStepsState, ɵ5$3);
+    var getCheckoutSteps = store.createSelector(getCheckoutStepsState, ɵ5$2);
     var getDeliveryAddress = store.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
     var getDeliveryMode = store.createSelector(getCheckoutSteps, getDeliveryModeSelector);
-    var ɵ6$1 = function (deliveryMode) {
+    var ɵ6 = function (deliveryMode) {
         return (deliveryMode &&
             Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
     };
-    var getSupportedDeliveryModes = store.createSelector(getDeliveryMode, ɵ6$1);
-    var ɵ7$1 = function (deliveryMode) {
+    var getSupportedDeliveryModes = store.createSelector(getDeliveryMode, ɵ6);
+    var ɵ7 = function (deliveryMode) {
         return deliveryMode && deliveryMode.selected;
     };
-    var getSelectedDeliveryModeCode = store.createSelector(getDeliveryMode, ɵ7$1);
-    var ɵ8$1 = function (deliveryMode) {
+    var getSelectedDeliveryModeCode = store.createSelector(getDeliveryMode, ɵ7);
+    var ɵ8 = function (deliveryMode) {
         if (deliveryMode.selected !== '') {
             if (Object.keys(deliveryMode.supported).length === 0) {
                 return null;
@@ -18051,17 +17971,17 @@
             return deliveryMode.supported[deliveryMode.selected];
         }
     };
-    var getSelectedDeliveryMode = store.createSelector(getDeliveryMode, ɵ8$1);
+    var getSelectedDeliveryMode = store.createSelector(getDeliveryMode, ɵ8);
     var getPaymentDetails = store.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
     var getCheckoutOrderDetails = store.createSelector(getCheckoutSteps, getOrderDetailsSelector);
-    var ɵ9$1 = function (state) {
+    var ɵ9 = function (state) {
         return loaderSuccessSelector(state) &&
             !loaderLoadingSelector(state);
     };
-    var getCheckoutDetailsLoaded = store.createSelector(getCheckoutStepsState, ɵ9$1);
+    var getCheckoutDetailsLoaded = store.createSelector(getCheckoutStepsState, ɵ9);
 
-    var ɵ0$B = function (state) { return state.addressVerification; };
-    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, ɵ0$B);
+    var ɵ0$A = function (state) { return state.addressVerification; };
+    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, ɵ0$A);
     var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
     var initialState$b = {
@@ -18086,13 +18006,13 @@
     }
     var getCardTypesEntites = function (state) { return state.entities; };
 
-    var ɵ0$C = function (state) { return state.cardTypes; };
-    var getCardTypesState = store.createSelector(getCheckoutState, ɵ0$C);
+    var ɵ0$B = function (state) { return state.cardTypes; };
+    var getCardTypesState = store.createSelector(getCheckoutState, ɵ0$B);
     var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$r = function (entites) {
+    var ɵ1$q = function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     };
-    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, ɵ1$r);
+    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, ɵ1$q);
 
 
 
@@ -18100,11 +18020,11 @@
         __proto__: null,
         getAddressVerificationResultsState: getAddressVerificationResultsState,
         getAddressVerificationResults: getAddressVerificationResults$1,
-        ɵ0: ɵ0$B,
+        ɵ0: ɵ0$A,
         getCardTypesState: getCardTypesState,
         getCardTypesEntites: getCardTypesEntites$1,
         getAllCardTypes: getAllCardTypes,
-        ɵ1: ɵ1$r,
+        ɵ1: ɵ1$q,
         getCheckoutState: getCheckoutState,
         getCheckoutStepsState: getCheckoutStepsState,
         getCheckoutSteps: getCheckoutSteps,
@@ -18116,14 +18036,14 @@
         getPaymentDetails: getPaymentDetails,
         getCheckoutOrderDetails: getCheckoutOrderDetails,
         getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
-        ɵ2: ɵ2$j,
-        ɵ3: ɵ3$b,
-        ɵ4: ɵ4$4,
-        ɵ5: ɵ5$3,
-        ɵ6: ɵ6$1,
-        ɵ7: ɵ7$1,
-        ɵ8: ɵ8$1,
-        ɵ9: ɵ9$1
+        ɵ2: ɵ2$i,
+        ɵ3: ɵ3$a,
+        ɵ4: ɵ4$3,
+        ɵ5: ɵ5$2,
+        ɵ6: ɵ6,
+        ɵ7: ɵ7,
+        ɵ8: ɵ8,
+        ɵ9: ɵ9
     });
 
     var CheckoutService = /** @class */ (function () {
@@ -21460,11 +21380,11 @@
         return path;
     }
 
-    var ɵ0$D = i18nextInit;
+    var ɵ0$C = i18nextInit;
     var i18nextProviders = [
         {
             provide: core.APP_INITIALIZER,
-            useFactory: ɵ0$D,
+            useFactory: ɵ0$C,
             deps: [
                 ConfigInitializerService,
                 LanguageService,
@@ -21716,8 +21636,8 @@
 
     var getKymaState = store.createFeatureSelector(KYMA_FEATURE);
 
-    var ɵ0$E = function (state) { return state.openIdToken; };
-    var getOpenIdTokenState = store.createSelector(getKymaState, ɵ0$E);
+    var ɵ0$D = function (state) { return state.openIdToken; };
+    var getOpenIdTokenState = store.createSelector(getKymaState, ɵ0$D);
     var getOpenIdTokenValue = store.createSelector(getOpenIdTokenState, loaderValueSelector);
     var getOpenIdTokenLoading = store.createSelector(getOpenIdTokenState, loaderLoadingSelector);
     var getOpenIdTokenSuccess = store.createSelector(getOpenIdTokenState, loaderSuccessSelector);
@@ -21733,7 +21653,7 @@
         getOpenIdTokenLoading: getOpenIdTokenLoading,
         getOpenIdTokenSuccess: getOpenIdTokenSuccess,
         getOpenIdTokenError: getOpenIdTokenError,
-        ɵ0: ɵ0$E
+        ɵ0: ɵ0$D
     });
 
     var KymaService = /** @class */ (function () {
@@ -22554,8 +22474,8 @@
 
     var getProductsState = store.createFeatureSelector(PRODUCT_FEATURE);
 
-    var ɵ0$F = function (state) { return state.references; };
-    var getProductReferencesState = store.createSelector(getProductsState, ɵ0$F);
+    var ɵ0$E = function (state) { return state.references; };
+    var getProductReferencesState = store.createSelector(getProductsState, ɵ0$E);
     var getSelectedProductReferencesFactory = function (productCode, referenceType) {
         return store.createSelector(getProductReferencesState, function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
@@ -22572,8 +22492,8 @@
         });
     };
 
-    var ɵ0$G = function (state) { return state.reviews; };
-    var getProductReviewsState = store.createSelector(getProductsState, ɵ0$G);
+    var ɵ0$F = function (state) { return state.reviews; };
+    var getProductReviewsState = store.createSelector(getProductsState, ɵ0$F);
     var getSelectedProductReviewsFactory = function (productCode) {
         return store.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
@@ -22613,14 +22533,14 @@
     var getAuxSearchResults = function (state) { return state.auxResults; };
     var getProductSuggestions = function (state) { return state.suggestions; };
 
-    var ɵ0$H = function (state) { return state.search; };
-    var getProductsSearchState = store.createSelector(getProductsState, ɵ0$H);
+    var ɵ0$G = function (state) { return state.search; };
+    var getProductsSearchState = store.createSelector(getProductsState, ɵ0$G);
     var getSearchResults$1 = store.createSelector(getProductsSearchState, getSearchResults);
     var getAuxSearchResults$1 = store.createSelector(getProductsSearchState, getAuxSearchResults);
     var getProductSuggestions$1 = store.createSelector(getProductsSearchState, getProductSuggestions);
 
-    var ɵ0$I = function (state) { return state.details; };
-    var getProductState = store.createSelector(getProductsState, ɵ0$I);
+    var ɵ0$H = function (state) { return state.details; };
+    var getProductState = store.createSelector(getProductsState, ɵ0$H);
     var getSelectedProductsFactory = function (codes) {
         return store.createSelector(getProductState, function (details) {
             return codes
@@ -22650,10 +22570,10 @@
     var getSelectedProductErrorFactory = function (code, scope) {
         return store.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderErrorSelector(productState); });
     };
-    var ɵ1$s = function (details) {
+    var ɵ1$r = function (details) {
         return Object.keys(details.entities);
     };
-    var getAllProductCodes = store.createSelector(getProductState, ɵ1$s);
+    var getAllProductCodes = store.createSelector(getProductState, ɵ1$r);
 
 
 
@@ -22662,7 +22582,7 @@
         getProductsState: getProductsState,
         getProductReferencesState: getProductReferencesState,
         getSelectedProductReferencesFactory: getSelectedProductReferencesFactory,
-        ɵ0: ɵ0$F,
+        ɵ0: ɵ0$E,
         getProductReviewsState: getProductReviewsState,
         getSelectedProductReviewsFactory: getSelectedProductReviewsFactory,
         getProductsSearchState: getProductsSearchState,
@@ -22677,7 +22597,7 @@
         getSelectedProductSuccessFactory: getSelectedProductSuccessFactory,
         getSelectedProductErrorFactory: getSelectedProductErrorFactory,
         getAllProductCodes: getAllProductCodes,
-        ɵ1: ɵ1$s
+        ɵ1: ɵ1$r
     });
 
     var ProductReferenceService = /** @class */ (function () {
@@ -24134,27 +24054,27 @@
 
     var getStoreFinderState = store.createFeatureSelector(STORE_FINDER_FEATURE);
 
-    var ɵ0$J = function (storesState) { return storesState.findStores; };
-    var getFindStoresState = store.createSelector(getStoreFinderState, ɵ0$J);
+    var ɵ0$I = function (storesState) { return storesState.findStores; };
+    var getFindStoresState = store.createSelector(getStoreFinderState, ɵ0$I);
+    var ɵ1$s = function (state) {
+        return loaderValueSelector(state);
+    };
+    var getFindStoresEntities = store.createSelector(getFindStoresState, ɵ1$s);
+    var ɵ2$j = function (state) {
+        return loaderLoadingSelector(state);
+    };
+    var getStoresLoading = store.createSelector(getFindStoresState, ɵ2$j);
+
+    var ɵ0$J = function (storesState) { return storesState.viewAllStores; };
+    var getViewAllStoresState = store.createSelector(getStoreFinderState, ɵ0$J);
     var ɵ1$t = function (state) {
         return loaderValueSelector(state);
     };
-    var getFindStoresEntities = store.createSelector(getFindStoresState, ɵ1$t);
+    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, ɵ1$t);
     var ɵ2$k = function (state) {
         return loaderLoadingSelector(state);
     };
-    var getStoresLoading = store.createSelector(getFindStoresState, ɵ2$k);
-
-    var ɵ0$K = function (storesState) { return storesState.viewAllStores; };
-    var getViewAllStoresState = store.createSelector(getStoreFinderState, ɵ0$K);
-    var ɵ1$u = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, ɵ1$u);
-    var ɵ2$l = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, ɵ2$l);
+    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, ɵ2$k);
 
 
 
@@ -24163,9 +24083,9 @@
         getFindStoresState: getFindStoresState,
         getFindStoresEntities: getFindStoresEntities,
         getStoresLoading: getStoresLoading,
-        ɵ0: ɵ0$J,
-        ɵ1: ɵ1$t,
-        ɵ2: ɵ2$k,
+        ɵ0: ɵ0$I,
+        ɵ1: ɵ1$s,
+        ɵ2: ɵ2$j,
         getViewAllStoresState: getViewAllStoresState,
         getViewAllStoresEntities: getViewAllStoresEntities,
         getViewAllStoresLoading: getViewAllStoresLoading
@@ -27232,7 +27152,6 @@
     exports.CartEntryConnector = CartEntryConnector;
     exports.CartModule = CartModule;
     exports.CartOccModule = CartOccModule;
-    exports.CartSelectors = cartGroup_selectors;
     exports.CartVoucherAdapter = CartVoucherAdapter;
     exports.CartVoucherConnector = CartVoucherConnector;
     exports.CartVoucherService = CartVoucherService;
