@@ -9064,6 +9064,231 @@
         },
     ];
 
+    /**
+     * Base class for events.
+     *
+     * For convenience it copies all properties of the argument object into the properties of the class instance.
+     *
+     * Provides type safety both for the argument and the result class instance. For example:
+     *
+     * ```
+     * export class CreateCartSuccess extends BaseEvent<CreateCartSuccess> {
+     *   cart: Cart;
+     * }
+     * const event = new CreateCartSuccess({ cart: ... });
+     * event.cart
+     * ```
+     */
+    var BaseEvent = /** @class */ (function () {
+        function BaseEvent(data) {
+            Object.assign(this, data);
+        }
+        return BaseEvent;
+    }());
+
+    /**
+     * A service to register and observe event sources. Events are driven by event types, which are class signatures
+     * for the given event.
+     *
+     * It is possible to register multiple sources to a single event, even without
+     * knowing as multiple decoupled features can attach sources to the same
+     * event type.
+     */
+    var EventService = /** @class */ (function () {
+        function EventService() {
+            /**
+             * The various events meta are collected in a map, stored by the event type class
+             */
+            this.eventsMeta = new Map();
+        }
+        /**
+         * Register an event source for the given event type.
+         *
+         * CAUTION: To avoid memory leaks, the returned teardown function should be called
+         *  when the event source is no longer maintained by its creator
+         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
+         *
+         * @param eventType the event type
+         * @param source$ an observable that represents the source
+         *
+         * @returns a teardown function which unregisters the given event source
+         */
+        EventService.prototype.register = function (eventType, source$) {
+            var _this = this;
+            var event = this.getEventMeta(eventType);
+            var sources = event.sources$.value;
+            if (sources.includes(source$)) {
+                if (core.isDevMode()) {
+                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
+                }
+            }
+            else {
+                event.sources$.next(__spread(sources, [source$]));
+            }
+            return function () { return _this.unregister(eventType, source$); };
+        };
+        /**
+         * Unregisters an event source for the given event type
+         *
+         * @param eventType the event type
+         * @param source$ an observable that represents the source
+         */
+        EventService.prototype.unregister = function (eventType, source$) {
+            var event = this.getEventMeta(eventType);
+            var newSources = event.sources$.value.filter(function (s$) { return s$ !== source$; });
+            event.sources$.next(newSources);
+        };
+        /**
+         * Returns a stream of events for the given event type
+         * @param eventTypes event type
+         */
+        EventService.prototype.get = function (eventType) {
+            return this.getEventMeta(eventType).output$;
+        };
+        /**
+         * Dispatches a single event.
+         *
+         * However, it's recommended to use method `register` instead, whenever the event can come from some stream.
+         *  It allows for lazy computations in the event source stream -
+         *  if no one subscribes to the event, the logic of the event source stream won't be evaluated.
+         */
+        EventService.prototype.dispatch = function (event) {
+            var eventType = event.constructor;
+            var inputSubject$ = this.getInputSubject(eventType);
+            inputSubject$.next(event);
+        };
+        /**
+         * Returns the input subject used to dispatch a single event.
+         * The subject is created on demand, when it's needed for the first time.
+         * @param eventType type of event
+         */
+        EventService.prototype.getInputSubject = function (eventType) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (!eventMeta.inputSubject$) {
+                eventMeta.inputSubject$ = new rxjs.Subject();
+                this.register(eventType, eventMeta.inputSubject$);
+            }
+            return eventMeta.inputSubject$;
+        };
+        /**
+         * Returns the event meta object for the given event type
+         */
+        EventService.prototype.getEventMeta = function (eventType) {
+            if (core.isDevMode()) {
+                this.validateEventType(eventType);
+            }
+            if (!this.eventsMeta.get(eventType)) {
+                this.createEventMeta(eventType);
+            }
+            return this.eventsMeta.get(eventType);
+        };
+        /**
+         * Creates the event meta object for the given event type
+         */
+        EventService.prototype.createEventMeta = function (eventType) {
+            var sources$ = new rxjs.BehaviorSubject([]);
+            var output$ = sources$.pipe(operators.switchMap(function (sources) { return rxjs.merge.apply(void 0, __spread(sources)); }), operators.share() // share the result observable to avoid merging sources for each subscriber
+            );
+            if (core.isDevMode()) {
+                output$ = this.validateEventStream(output$, eventType);
+            }
+            this.eventsMeta.set(eventType, {
+                inputSubject$: null,
+                sources$: sources$,
+                output$: output$,
+            });
+        };
+        /**
+         * Checks if the event type is a valid type (is a class with constructor).
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.validateEventType = function (eventType) {
+            var _a;
+            if (!((_a = eventType) === null || _a === void 0 ? void 0 : _a.constructor)) {
+                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
+            }
+        };
+        /**
+         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.validateEventStream = function (source$, eventType) {
+            return source$.pipe(operators.tap(function (event) {
+                if (!(event instanceof eventType)) {
+                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
+                }
+            }));
+        };
+        EventService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+        EventService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], EventService);
+        return EventService;
+    }());
+
+    /**
+     * Registers streams of ngrx actions as events source streams
+     */
+    var StateEventService = /** @class */ (function () {
+        function StateEventService(actionsSubject, eventService) {
+            this.actionsSubject = actionsSubject;
+            this.eventService = eventService;
+        }
+        /**
+         * Registers an event source stream of specific events
+         * mapped from a given action type.
+         *
+         * @param mapping mapping from action to event
+         *
+         * @returns a teardown function that unregisters the event source
+         */
+        StateEventService.prototype.register = function (mapping) {
+            return this.eventService.register(mapping.event, this.getFromAction(mapping));
+        };
+        /**
+         * Returns a stream of specific events mapped from a specific action.
+         * @param mapping mapping from action to event
+         */
+        StateEventService.prototype.getFromAction = function (mapping) {
+            var _this = this;
+            return this.actionsSubject
+                .pipe(effects$c.ofType.apply(void 0, __spread([].concat(mapping.action))))
+                .pipe(operators.map(function (action) {
+                return _this.createEvent(action, mapping.event, mapping.factory);
+            }));
+        };
+        /**
+         * Creates an event instance for given class out from the action object.
+         * Unless the `factory` parameter is given, the action's `payload` is used
+         * as the argument for the event's constructor.
+         *
+         * @param action instance of an Action
+         * @param mapping mapping from action to event
+         * @param factory optional function getting an action instance and returning an event instance
+         *
+         * @returns instance of an Event
+         */
+        StateEventService.prototype.createEvent = function (action, eventType, factory) {
+            var _a;
+            return factory ? factory(action) : new eventType((_a = action.payload, (_a !== null && _a !== void 0 ? _a : {})));
+        };
+        StateEventService.ctorParameters = function () { return [
+            { type: store.ActionsSubject },
+            { type: EventService }
+        ]; };
+        StateEventService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StateEventService_Factory() { return new StateEventService(core["ɵɵinject"](store.ActionsSubject), core["ɵɵinject"](EventService)); }, token: StateEventService, providedIn: "root" });
+        StateEventService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], StateEventService);
+        return StateEventService;
+    }());
+
     var StatePersistenceService = /** @class */ (function () {
         function StatePersistenceService(winRef) {
             this.winRef = winRef;
@@ -27116,6 +27341,7 @@
     exports.BASE_SITE_CONTEXT_ID = BASE_SITE_CONTEXT_ID;
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
+    exports.BaseEvent = BaseEvent;
     exports.BaseSiteService = BaseSiteService;
     exports.CANCEL_ORDER_PROCESS_ID = CANCEL_ORDER_PROCESS_ID;
     exports.CANCEL_RETURN_PROCESS_ID = CANCEL_RETURN_PROCESS_ID;
@@ -27210,6 +27436,7 @@
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.EMAIL_PATTERN = EMAIL_PATTERN;
     exports.EXTERNAL_CONFIG_TRANSFER_ID = EXTERNAL_CONFIG_TRANSFER_ID;
+    exports.EventService = EventService;
     exports.ExternalJsFileLoader = ExternalJsFileLoader;
     exports.ExternalRoutesConfig = ExternalRoutesConfig;
     exports.ExternalRoutesGuard = ExternalRoutesGuard;
@@ -27409,6 +27636,7 @@
     exports.StateEntityProcessesLoaderActions = entityProcessesLoader_action;
     exports.StateEntityProcessesLoaderSelectors = entityProcessesLoader_selectors;
     exports.StateEntitySelectors = entity_selectors;
+    exports.StateEventService = StateEventService;
     exports.StateLoaderActions = loader_action;
     exports.StateLoaderSelectors = loader_selectors;
     exports.StateModule = StateModule;
