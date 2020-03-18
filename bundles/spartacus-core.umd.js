@@ -13420,6 +13420,7 @@
     (function (HttpResponseStatus) {
         HttpResponseStatus[HttpResponseStatus["UNKNOWN"] = -1] = "UNKNOWN";
         HttpResponseStatus[HttpResponseStatus["BAD_REQUEST"] = 400] = "BAD_REQUEST";
+        HttpResponseStatus[HttpResponseStatus["UNAUTHORIZED"] = 401] = "UNAUTHORIZED";
         HttpResponseStatus[HttpResponseStatus["FORBIDDEN"] = 403] = "FORBIDDEN";
         HttpResponseStatus[HttpResponseStatus["NOT_FOUND"] = 404] = "NOT_FOUND";
         HttpResponseStatus[HttpResponseStatus["CONFLICT"] = 409] = "CONFLICT";
@@ -13472,11 +13473,16 @@
             return _this;
         }
         BadRequestHandler.prototype.handleError = function (request, response) {
-            var _this = this;
-            if (response.url.includes(OAUTH_ENDPOINT$1) &&
-                response.error &&
-                response.error.error === 'invalid_grant' &&
-                request.body.get('grant_type') === 'password') {
+            this.handleBadPassword(request, response);
+            this.handleBadLoginResponse(request, response);
+            this.handleBadCartRequest(request, response);
+            this.handleValidationError(request, response);
+        };
+        BadRequestHandler.prototype.handleBadPassword = function (request, response) {
+            var _a, _b, _c;
+            if (((_a = response.url) === null || _a === void 0 ? void 0 : _a.includes(OAUTH_ENDPOINT$1)) &&
+                ((_b = response.error) === null || _b === void 0 ? void 0 : _b.error) === 'invalid_grant' &&
+                ((_c = request.body) === null || _c === void 0 ? void 0 : _c.get('grant_type')) === 'password') {
                 this.globalMessageService.add({
                     key: 'httpHandlers.badRequestPleaseLoginAgain',
                     params: {
@@ -13485,42 +13491,36 @@
                 }, exports.GlobalMessageType.MSG_TYPE_ERROR);
                 this.globalMessageService.remove(exports.GlobalMessageType.MSG_TYPE_CONFIRMATION);
             }
-            else {
-                if (response.error &&
-                    response.error.errors &&
-                    response.error.errors instanceof Array) {
-                    response.error.errors.forEach(function (error) {
-                        var errorMessage;
-                        if (error.type === 'PasswordMismatchError') {
-                            // uses en translation error message instead of backend exception error
-                            // @todo: this condition could be removed if backend gives better message
-                            errorMessage = {
-                                key: 'httpHandlers.badRequestOldPasswordIncorrect',
-                            };
-                        }
-                        else if (error.subjectType === 'cart' &&
-                            error.reason === 'notFound') {
-                            errorMessage = { key: 'httpHandlers.cartNotFound' };
-                        }
-                        else if (error.type === 'ValidationError') {
-                            // build translation key in case of backend field validation error
-                            errorMessage = {
-                                key: "httpHandlers.validationErrors." + error.reason + "." + error.subject,
-                            };
-                        }
-                        else {
-                            // this is currently showing up in case we have a page not found. It should be a 404.
-                            // see https://jira.hybris.com/browse/CMSX-8516
-                            errorMessage = { raw: error.message || '' };
-                        }
-                        // @todo: remove this condition once backend is improved, see:
-                        // https://github.com/SAP/cloud-commerce-spartacus-storefront/issues/6679
-                        if (error.type !== 'JaloObjectNoLongerValidError') {
-                            _this.globalMessageService.add(errorMessage, exports.GlobalMessageType.MSG_TYPE_ERROR);
-                        }
-                    });
-                }
-            }
+        };
+        BadRequestHandler.prototype.handleBadLoginResponse = function (_request, response) {
+            var _this = this;
+            this.getErrors(response)
+                .filter(function (error) { return error.type === 'PasswordMismatchError'; })
+                .forEach(function () {
+                _this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+            });
+        };
+        BadRequestHandler.prototype.handleValidationError = function (_request, response) {
+            var _this = this;
+            this.getErrors(response)
+                .filter(function (e) { return e.type === 'ValidationError'; })
+                .forEach(function (error) {
+                _this.globalMessageService.add({
+                    key: "httpHandlers.validationErrors." + error.reason + "." + error.subject,
+                }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+            });
+        };
+        BadRequestHandler.prototype.handleBadCartRequest = function (_request, response) {
+            var _this = this;
+            this.getErrors(response)
+                .filter(function (e) { return e.subjectType === 'cart' && e.reason === 'notFound'; })
+                .forEach(function () {
+                _this.globalMessageService.add({ key: 'httpHandlers.cartNotFound' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+            });
+        };
+        BadRequestHandler.prototype.getErrors = function (response) {
+            var _a;
+            return (((_a = response.error) === null || _a === void 0 ? void 0 : _a.errors) || []).filter(function (error) { return error.type !== 'JaloObjectNoLongerValidError'; });
         };
         BadRequestHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(core["ɵɵinject"](GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
         BadRequestHandler = __decorate([
@@ -13625,11 +13625,48 @@
         return NotFoundHandler;
     }(HttpErrorHandler));
 
-    var UnknownErrorHandler = /** @class */ (function (_super) {
-        __extends(UnknownErrorHandler, _super);
-        function UnknownErrorHandler(globalMessageService) {
+    /**
+     * Handles Oauth client errors when a 401 is returned. This is the case for failing
+     * authenticaton requests to OCC.
+     */
+    var UnauthorizedErrorHandler = /** @class */ (function (_super) {
+        __extends(UnauthorizedErrorHandler, _super);
+        function UnauthorizedErrorHandler(globalMessageService) {
             var _this = _super.call(this, globalMessageService) || this;
             _this.globalMessageService = globalMessageService;
+            _this.responseStatus = HttpResponseStatus.UNAUTHORIZED;
+            return _this;
+        }
+        UnauthorizedErrorHandler.prototype.handleError = function (_request, response) {
+            var _a, _b;
+            if (core.isDevMode()) {
+                console.warn("There's a problem with the \"Oauth client\" configuration. You must configure a matching Oauth client in the backend and Spartacus.");
+            }
+            if (((_a = response.error) === null || _a === void 0 ? void 0 : _a.error) === 'invalid_client') {
+                this.globalMessageService.add(((_b = response.error) === null || _b === void 0 ? void 0 : _b.error_description) || {
+                    key: 'httpHandlers.unauthorized.invalid_client',
+                }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+            }
+            else {
+                this.globalMessageService.add({ key: 'httpHandlers.unauthorized.common' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+            }
+        };
+        UnauthorizedErrorHandler.ctorParameters = function () { return [
+            { type: GlobalMessageService }
+        ]; };
+        UnauthorizedErrorHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(core["ɵɵinject"](GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
+        UnauthorizedErrorHandler = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], UnauthorizedErrorHandler);
+        return UnauthorizedErrorHandler;
+    }(HttpErrorHandler));
+
+    var UnknownErrorHandler = /** @class */ (function (_super) {
+        __extends(UnknownErrorHandler, _super);
+        function UnknownErrorHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
             _this.responseStatus = HttpResponseStatus.UNKNOWN;
             return _this;
         }
@@ -13638,9 +13675,6 @@
                 console.warn("Unknown http response error: " + this.responseStatus);
             }
         };
-        UnknownErrorHandler.ctorParameters = function () { return [
-            { type: GlobalMessageService }
-        ]; };
         UnknownErrorHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core["ɵɵinject"](GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
         UnknownErrorHandler = __decorate([
             core.Injectable({
@@ -13734,6 +13768,11 @@
         {
             provide: HttpErrorHandler,
             useExisting: NotFoundHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: UnauthorizedErrorHandler,
             multi: true,
         },
     ];
@@ -27464,6 +27503,7 @@
     exports.I18nTestingModule = I18nTestingModule;
     exports.I18nextTranslationService = I18nextTranslationService;
     exports.InterceptorUtil = InterceptorUtil;
+    exports.InternalServerErrorHandler = InternalServerErrorHandler;
     exports.JSP_INCLUDE_CMS_COMPONENT_TYPE = JSP_INCLUDE_CMS_COMPONENT_TYPE;
     exports.JavaRegExpConverter = JavaRegExpConverter;
     exports.KYMA_FEATURE = KYMA_FEATURE;
@@ -27676,6 +27716,7 @@
     exports.USER_SIGN_UP_SERIALIZER = USER_SIGN_UP_SERIALIZER;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.USE_CUSTOMER_SUPPORT_AGENT_TOKEN = USE_CUSTOMER_SUPPORT_AGENT_TOKEN;
+    exports.UnauthorizedErrorHandler = UnauthorizedErrorHandler;
     exports.UnknownErrorHandler = UnknownErrorHandler;
     exports.UrlMatcherService = UrlMatcherService;
     exports.UrlModule = UrlModule;
@@ -27846,147 +27887,146 @@
     exports.ɵep = reducer$8;
     exports.ɵeq = GlobalMessageEffect;
     exports.ɵer = defaultGlobalMessageConfigFactory;
-    exports.ɵes = InternalServerErrorHandler;
-    exports.ɵet = HttpErrorInterceptor;
-    exports.ɵeu = defaultI18nConfig;
-    exports.ɵev = i18nextProviders;
-    exports.ɵew = i18nextInit;
-    exports.ɵex = MockTranslationService;
-    exports.ɵey = kymaStoreConfigFactory;
-    exports.ɵez = KymaStoreModule;
+    exports.ɵes = HttpErrorInterceptor;
+    exports.ɵet = defaultI18nConfig;
+    exports.ɵeu = i18nextProviders;
+    exports.ɵev = i18nextInit;
+    exports.ɵew = MockTranslationService;
+    exports.ɵex = kymaStoreConfigFactory;
+    exports.ɵey = KymaStoreModule;
+    exports.ɵez = getReducers$9;
     exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = getReducers$9;
-    exports.ɵfb = reducerToken$9;
-    exports.ɵfc = reducerProvider$9;
-    exports.ɵfd = clearKymaState;
-    exports.ɵfe = metaReducers$5;
-    exports.ɵff = effects$8;
-    exports.ɵfg = OpenIdTokenEffect;
-    exports.ɵfh = OpenIdAuthenticationTokenService;
-    exports.ɵfi = defaultKymaConfig;
-    exports.ɵfj = defaultOccAsmConfig;
-    exports.ɵfk = defaultOccCartConfig;
-    exports.ɵfl = OccSaveCartAdapter;
-    exports.ɵfm = defaultOccProductConfig;
-    exports.ɵfn = defaultOccSiteContextConfig;
-    exports.ɵfo = defaultOccStoreFinderConfig;
-    exports.ɵfp = defaultOccUserConfig;
-    exports.ɵfq = UserNotificationPreferenceAdapter;
-    exports.ɵfr = defaultPersonalizationConfig;
-    exports.ɵfs = interceptors$3;
-    exports.ɵft = OccPersonalizationIdInterceptor;
-    exports.ɵfu = OccPersonalizationTimeInterceptor;
-    exports.ɵfv = ProcessStoreModule;
-    exports.ɵfw = getReducers$a;
-    exports.ɵfx = reducerToken$a;
-    exports.ɵfy = reducerProvider$a;
-    exports.ɵfz = productStoreConfigFactory;
+    exports.ɵfa = reducerToken$9;
+    exports.ɵfb = reducerProvider$9;
+    exports.ɵfc = clearKymaState;
+    exports.ɵfd = metaReducers$5;
+    exports.ɵfe = effects$8;
+    exports.ɵff = OpenIdTokenEffect;
+    exports.ɵfg = OpenIdAuthenticationTokenService;
+    exports.ɵfh = defaultKymaConfig;
+    exports.ɵfi = defaultOccAsmConfig;
+    exports.ɵfj = defaultOccCartConfig;
+    exports.ɵfk = OccSaveCartAdapter;
+    exports.ɵfl = defaultOccProductConfig;
+    exports.ɵfm = defaultOccSiteContextConfig;
+    exports.ɵfn = defaultOccStoreFinderConfig;
+    exports.ɵfo = defaultOccUserConfig;
+    exports.ɵfp = UserNotificationPreferenceAdapter;
+    exports.ɵfq = defaultPersonalizationConfig;
+    exports.ɵfr = interceptors$3;
+    exports.ɵfs = OccPersonalizationIdInterceptor;
+    exports.ɵft = OccPersonalizationTimeInterceptor;
+    exports.ɵfu = ProcessStoreModule;
+    exports.ɵfv = getReducers$a;
+    exports.ɵfw = reducerToken$a;
+    exports.ɵfx = reducerProvider$a;
+    exports.ɵfy = productStoreConfigFactory;
+    exports.ɵfz = ProductStoreModule;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = ProductStoreModule;
-    exports.ɵgb = getReducers$b;
-    exports.ɵgc = reducerToken$b;
-    exports.ɵgd = reducerProvider$b;
-    exports.ɵge = clearProductsState;
-    exports.ɵgf = metaReducers$6;
-    exports.ɵgg = effects$9;
-    exports.ɵgh = ProductReferencesEffects;
-    exports.ɵgi = ProductReviewsEffects;
-    exports.ɵgj = ProductsSearchEffects;
-    exports.ɵgk = ProductEffects;
-    exports.ɵgl = reducer$i;
-    exports.ɵgm = entityScopedLoaderReducer;
-    exports.ɵgn = scopedLoaderReducer;
-    exports.ɵgo = reducer$k;
-    exports.ɵgp = reducer$j;
-    exports.ɵgq = PageMetaResolver;
-    exports.ɵgr = addExternalRoutesFactory;
-    exports.ɵgs = getReducers$7;
-    exports.ɵgt = reducer$d;
-    exports.ɵgu = reducerToken$7;
-    exports.ɵgv = reducerProvider$7;
-    exports.ɵgw = CustomSerializer;
-    exports.ɵgx = effects$6;
-    exports.ɵgy = RouterEffects;
-    exports.ɵgz = siteContextStoreConfigFactory;
+    exports.ɵga = getReducers$b;
+    exports.ɵgb = reducerToken$b;
+    exports.ɵgc = reducerProvider$b;
+    exports.ɵgd = clearProductsState;
+    exports.ɵge = metaReducers$6;
+    exports.ɵgf = effects$9;
+    exports.ɵgg = ProductReferencesEffects;
+    exports.ɵgh = ProductReviewsEffects;
+    exports.ɵgi = ProductsSearchEffects;
+    exports.ɵgj = ProductEffects;
+    exports.ɵgk = reducer$i;
+    exports.ɵgl = entityScopedLoaderReducer;
+    exports.ɵgm = scopedLoaderReducer;
+    exports.ɵgn = reducer$k;
+    exports.ɵgo = reducer$j;
+    exports.ɵgp = PageMetaResolver;
+    exports.ɵgq = addExternalRoutesFactory;
+    exports.ɵgr = getReducers$7;
+    exports.ɵgs = reducer$d;
+    exports.ɵgt = reducerToken$7;
+    exports.ɵgu = reducerProvider$7;
+    exports.ɵgv = CustomSerializer;
+    exports.ɵgw = effects$6;
+    exports.ɵgx = RouterEffects;
+    exports.ɵgy = siteContextStoreConfigFactory;
+    exports.ɵgz = SiteContextStoreModule;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = SiteContextStoreModule;
-    exports.ɵhb = getReducers$1;
-    exports.ɵhc = reducerToken$1;
-    exports.ɵhd = reducerProvider$1;
-    exports.ɵhe = effects$2;
-    exports.ɵhf = LanguagesEffects;
-    exports.ɵhg = CurrenciesEffects;
-    exports.ɵhh = BaseSiteEffects;
-    exports.ɵhi = reducer$3;
-    exports.ɵhj = reducer$2;
-    exports.ɵhk = reducer$1;
-    exports.ɵhl = defaultSiteContextConfigFactory;
-    exports.ɵhm = initializeContext;
-    exports.ɵhn = contextServiceProviders;
-    exports.ɵho = initSiteContextRoutesHandler;
-    exports.ɵhp = siteContextParamsProviders;
-    exports.ɵhq = SiteContextUrlSerializer;
-    exports.ɵhr = SiteContextRoutesHandler;
-    exports.ɵhs = baseSiteConfigValidator;
-    exports.ɵht = interceptors$4;
-    exports.ɵhu = CmsTicketInterceptor;
-    exports.ɵhv = StoreFinderStoreModule;
-    exports.ɵhw = getReducers$c;
-    exports.ɵhx = reducerToken$c;
-    exports.ɵhy = reducerProvider$c;
-    exports.ɵhz = effects$a;
+    exports.ɵha = getReducers$1;
+    exports.ɵhb = reducerToken$1;
+    exports.ɵhc = reducerProvider$1;
+    exports.ɵhd = effects$2;
+    exports.ɵhe = LanguagesEffects;
+    exports.ɵhf = CurrenciesEffects;
+    exports.ɵhg = BaseSiteEffects;
+    exports.ɵhh = reducer$3;
+    exports.ɵhi = reducer$2;
+    exports.ɵhj = reducer$1;
+    exports.ɵhk = defaultSiteContextConfigFactory;
+    exports.ɵhl = initializeContext;
+    exports.ɵhm = contextServiceProviders;
+    exports.ɵhn = initSiteContextRoutesHandler;
+    exports.ɵho = siteContextParamsProviders;
+    exports.ɵhp = SiteContextUrlSerializer;
+    exports.ɵhq = SiteContextRoutesHandler;
+    exports.ɵhr = baseSiteConfigValidator;
+    exports.ɵhs = interceptors$4;
+    exports.ɵht = CmsTicketInterceptor;
+    exports.ɵhu = StoreFinderStoreModule;
+    exports.ɵhv = getReducers$c;
+    exports.ɵhw = reducerToken$c;
+    exports.ɵhx = reducerProvider$c;
+    exports.ɵhy = effects$a;
+    exports.ɵhz = FindStoresEffect;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = FindStoresEffect;
-    exports.ɵib = ViewAllStoresEffect;
-    exports.ɵic = defaultStoreFinderConfig;
-    exports.ɵid = UserStoreModule;
-    exports.ɵie = getReducers$d;
-    exports.ɵif = reducerToken$d;
-    exports.ɵig = reducerProvider$d;
-    exports.ɵih = clearUserState;
-    exports.ɵii = metaReducers$8;
-    exports.ɵij = effects$b;
-    exports.ɵik = BillingCountriesEffect;
-    exports.ɵil = ClearMiscsDataEffect;
-    exports.ɵim = ConsignmentTrackingEffects;
-    exports.ɵin = DeliveryCountriesEffects;
-    exports.ɵio = NotificationPreferenceEffects;
-    exports.ɵip = OrderDetailsEffect;
-    exports.ɵiq = OrderReturnRequestEffect;
-    exports.ɵir = UserPaymentMethodsEffects;
-    exports.ɵis = RegionsEffects;
-    exports.ɵit = ResetPasswordEffects;
-    exports.ɵiu = TitlesEffects;
-    exports.ɵiv = UserAddressesEffects;
-    exports.ɵiw = UserConsentsEffect;
-    exports.ɵix = UserDetailsEffects;
-    exports.ɵiy = UserOrdersEffect;
-    exports.ɵiz = UserRegisterEffects;
+    exports.ɵia = ViewAllStoresEffect;
+    exports.ɵib = defaultStoreFinderConfig;
+    exports.ɵic = UserStoreModule;
+    exports.ɵid = getReducers$d;
+    exports.ɵie = reducerToken$d;
+    exports.ɵif = reducerProvider$d;
+    exports.ɵig = clearUserState;
+    exports.ɵih = metaReducers$8;
+    exports.ɵii = effects$b;
+    exports.ɵij = BillingCountriesEffect;
+    exports.ɵik = ClearMiscsDataEffect;
+    exports.ɵil = ConsignmentTrackingEffects;
+    exports.ɵim = DeliveryCountriesEffects;
+    exports.ɵin = NotificationPreferenceEffects;
+    exports.ɵio = OrderDetailsEffect;
+    exports.ɵip = OrderReturnRequestEffect;
+    exports.ɵiq = UserPaymentMethodsEffects;
+    exports.ɵir = RegionsEffects;
+    exports.ɵis = ResetPasswordEffects;
+    exports.ɵit = TitlesEffects;
+    exports.ɵiu = UserAddressesEffects;
+    exports.ɵiv = UserConsentsEffect;
+    exports.ɵiw = UserDetailsEffects;
+    exports.ɵix = UserOrdersEffect;
+    exports.ɵiy = UserRegisterEffects;
+    exports.ɵiz = CustomerCouponEffects;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = CustomerCouponEffects;
-    exports.ɵjb = ProductInterestsEffect;
-    exports.ɵjc = ForgotPasswordEffects;
-    exports.ɵjd = UpdateEmailEffects;
-    exports.ɵje = UpdatePasswordEffects;
-    exports.ɵjf = UserNotificationPreferenceConnector;
-    exports.ɵjg = reducer$w;
-    exports.ɵjh = reducer$u;
-    exports.ɵji = reducer$l;
-    exports.ɵjj = reducer$v;
-    exports.ɵjk = reducer$q;
-    exports.ɵjl = reducer$x;
-    exports.ɵjm = reducer$p;
-    exports.ɵjn = reducer$A;
-    exports.ɵjo = reducer$n;
-    exports.ɵjp = reducer$t;
-    exports.ɵjq = reducer$r;
-    exports.ɵjr = reducer$s;
-    exports.ɵjs = reducer$m;
-    exports.ɵjt = reducer$y;
-    exports.ɵju = reducer$o;
-    exports.ɵjv = reducer$z;
-    exports.ɵjw = FindProductPageMetaResolver;
-    exports.ɵjx = PageMetaResolver;
+    exports.ɵja = ProductInterestsEffect;
+    exports.ɵjb = ForgotPasswordEffects;
+    exports.ɵjc = UpdateEmailEffects;
+    exports.ɵjd = UpdatePasswordEffects;
+    exports.ɵje = UserNotificationPreferenceConnector;
+    exports.ɵjf = reducer$w;
+    exports.ɵjg = reducer$u;
+    exports.ɵjh = reducer$l;
+    exports.ɵji = reducer$v;
+    exports.ɵjj = reducer$q;
+    exports.ɵjk = reducer$x;
+    exports.ɵjl = reducer$p;
+    exports.ɵjm = reducer$A;
+    exports.ɵjn = reducer$n;
+    exports.ɵjo = reducer$t;
+    exports.ɵjp = reducer$r;
+    exports.ɵjq = reducer$s;
+    exports.ɵjr = reducer$m;
+    exports.ɵjs = reducer$y;
+    exports.ɵjt = reducer$o;
+    exports.ɵju = reducer$z;
+    exports.ɵjv = FindProductPageMetaResolver;
+    exports.ɵjw = PageMetaResolver;
     exports.ɵk = getStorageSyncReducer;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$2;

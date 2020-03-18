@@ -1,0 +1,18 @@
+import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
+import { GlobalMessageService } from '../../../facade/global-message.service';
+import { HttpResponseStatus } from '../../../models/response-status.model';
+import { HttpErrorHandler } from './../http-error.handler';
+/**
+ * Handles Oauth client errors when a 401 is returned. This is the case for failing
+ * authenticaton requests to OCC.
+ */
+import * as ɵngcc0 from '@angular/core';
+export declare class UnauthorizedErrorHandler extends HttpErrorHandler {
+    protected globalMessageService: GlobalMessageService;
+    responseStatus: HttpResponseStatus;
+    constructor(globalMessageService: GlobalMessageService);
+    handleError(_request: HttpRequest<any>, response: HttpErrorResponse): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UnauthorizedErrorHandler>;
+}
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidW5hdXRob3JpemVkLmhhbmRsZXIuZC50cyIsInNvdXJjZXMiOlsidW5hdXRob3JpemVkLmhhbmRsZXIuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Ozs7O0FBUUE7Ozs7OztBQUtBIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSHR0cEVycm9yUmVzcG9uc2UsIEh0dHBSZXF1ZXN0IH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uL2h0dHAnO1xuaW1wb3J0IHsgR2xvYmFsTWVzc2FnZVNlcnZpY2UgfSBmcm9tICcuLi8uLi8uLi9mYWNhZGUvZ2xvYmFsLW1lc3NhZ2Uuc2VydmljZSc7XG5pbXBvcnQgeyBIdHRwUmVzcG9uc2VTdGF0dXMgfSBmcm9tICcuLi8uLi8uLi9tb2RlbHMvcmVzcG9uc2Utc3RhdHVzLm1vZGVsJztcbmltcG9ydCB7IEh0dHBFcnJvckhhbmRsZXIgfSBmcm9tICcuLy4uL2h0dHAtZXJyb3IuaGFuZGxlcic7XG4vKipcbiAqIEhhbmRsZXMgT2F1dGggY2xpZW50IGVycm9ycyB3aGVuIGEgNDAxIGlzIHJldHVybmVkLiBUaGlzIGlzIHRoZSBjYXNlIGZvciBmYWlsaW5nXG4gKiBhdXRoZW50aWNhdG9uIHJlcXVlc3RzIHRvIE9DQy5cbiAqL1xuZXhwb3J0IGRlY2xhcmUgY2xhc3MgVW5hdXRob3JpemVkRXJyb3JIYW5kbGVyIGV4dGVuZHMgSHR0cEVycm9ySGFuZGxlciB7XG4gICAgcHJvdGVjdGVkIGdsb2JhbE1lc3NhZ2VTZXJ2aWNlOiBHbG9iYWxNZXNzYWdlU2VydmljZTtcbiAgICByZXNwb25zZVN0YXR1czogSHR0cFJlc3BvbnNlU3RhdHVzO1xuICAgIGNvbnN0cnVjdG9yKGdsb2JhbE1lc3NhZ2VTZXJ2aWNlOiBHbG9iYWxNZXNzYWdlU2VydmljZSk7XG4gICAgaGFuZGxlRXJyb3IoX3JlcXVlc3Q6IEh0dHBSZXF1ZXN0PGFueT4sIHJlc3BvbnNlOiBIdHRwRXJyb3JSZXNwb25zZSk6IHZvaWQ7XG59XG4iXX0=
