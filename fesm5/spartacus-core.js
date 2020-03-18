@@ -22898,8 +22898,6 @@ var ProductService = /** @class */ (function () {
     function ProductService(store, productLoading) {
         this.store = store;
         this.productLoading = productLoading;
-        /** @deprecated since 1.4 */
-        this.products = {};
     }
     /**
      * Returns the product observable. The product will be loaded
@@ -22915,23 +22913,7 @@ var ProductService = /** @class */ (function () {
      * @param scopes Scope or scopes of the product data
      */
     ProductService.prototype.get = function (productCode, scopes) {
-        var _this = this;
         if (scopes === void 0) { scopes = ''; }
-        // TODO: Remove, deprecated since 1.4
-        if (!this.productLoading) {
-            if (!this.products[productCode]) {
-                this.products[productCode] = this.store.pipe(select(getSelectedProductStateFactory(productCode)), observeOn(queueScheduler), tap(function (productState) {
-                    var attemptedLoad = productState.loading ||
-                        productState.success ||
-                        productState.error;
-                    if (!attemptedLoad) {
-                        _this.store.dispatch(new LoadProduct(productCode));
-                    }
-                }), map(function (productState) { return productState.value; }), shareReplay({ bufferSize: 1, refCount: true }));
-            }
-            return this.products[productCode];
-        }
-        // END OF (TODO: Remove, deprecated since 1.4)
         return this.productLoading.get(productCode, [].concat(scopes));
     };
     /**

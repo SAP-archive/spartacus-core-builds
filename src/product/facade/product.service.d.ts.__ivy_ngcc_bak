@@ -6,14 +6,8 @@ import { ProductLoadingService } from '../services/product-loading.service';
 import { ProductScope } from '../model/product-scope';
 export declare class ProductService {
     protected store: Store<StateWithProduct>;
-    protected productLoading?: ProductLoadingService;
+    protected productLoading: ProductLoadingService;
     constructor(store: Store<StateWithProduct>, productLoading: ProductLoadingService);
-    /**
-     * @deprecated since 1.4
-     */
-    constructor(store: Store<StateWithProduct>);
-    /** @deprecated since 1.4 */
-    private products;
     /**
      * Returns the product observable. The product will be loaded
      * whenever there's no value observed.

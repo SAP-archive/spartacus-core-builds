@@ -20336,8 +20336,6 @@ let ProductService = class ProductService {
     constructor(store, productLoading) {
         this.store = store;
         this.productLoading = productLoading;
-        /** @deprecated since 1.4 */
-        this.products = {};
     }
     /**
      * Returns the product observable. The product will be loaded
@@ -20353,21 +20351,6 @@ let ProductService = class ProductService {
      * @param scopes Scope or scopes of the product data
      */
     get(productCode, scopes = '') {
-        // TODO: Remove, deprecated since 1.4
-        if (!this.productLoading) {
-            if (!this.products[productCode]) {
-                this.products[productCode] = this.store.pipe(select(getSelectedProductStateFactory(productCode)), observeOn(queueScheduler), tap(productState => {
-                    const attemptedLoad = productState.loading ||
-                        productState.success ||
-                        productState.error;
-                    if (!attemptedLoad) {
-                        this.store.dispatch(new LoadProduct(productCode));
-                    }
-                }), map(productState => productState.value), shareReplay({ bufferSize: 1, refCount: true }));
-            }
-            return this.products[productCode];
-        }
-        // END OF (TODO: Remove, deprecated since 1.4)
         return this.productLoading.get(productCode, [].concat(scopes));
     }
     /**
