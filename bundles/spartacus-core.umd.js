@@ -14187,6 +14187,7 @@
 
     var MULTI_CART_FEATURE = 'multi-cart';
     var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
+    var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
 
     var getMultiCartState = store.createFeatureSelector(MULTI_CART_FEATURE);
     var ɵ0$v = function (state) { return state.carts; };
@@ -14275,10 +14276,6 @@
         return cartId.startsWith('temp-');
     }
 
-    var CART_FEATURE = 'cart';
-    var CART_DATA = '[Cart] Cart Data';
-    var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
-
     var CREATE_CART = '[Cart] Create Cart';
     var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
     var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
@@ -14295,96 +14292,69 @@
     var CLEAR_CART = '[Cart] Clear Cart';
     var DELETE_CART = '[Cart] Delete Cart';
     var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
-    var CreateCart = /** @class */ (function (_super) {
-        __extends(CreateCart, _super);
+    var CreateCart = /** @class */ (function () {
         function CreateCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART;
-            return _this;
+            this.payload = payload;
+            this.type = CREATE_CART;
         }
         return CreateCart;
-    }(LoaderLoadAction));
-    var CreateCartFail = /** @class */ (function (_super) {
-        __extends(CreateCartFail, _super);
+    }());
+    var CreateCartFail = /** @class */ (function () {
         function CreateCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART_FAIL;
-            return _this;
+            this.payload = payload;
+            this.type = CREATE_CART_FAIL;
         }
         return CreateCartFail;
-    }(LoaderFailAction));
-    var CreateCartSuccess = /** @class */ (function (_super) {
-        __extends(CreateCartSuccess, _super);
+    }());
+    var CreateCartSuccess = /** @class */ (function () {
         function CreateCartSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART_SUCCESS;
-            return _this;
+            this.payload = payload;
+            this.type = CREATE_CART_SUCCESS;
         }
         return CreateCartSuccess;
-    }(LoaderSuccessAction));
-    var AddEmailToCart = /** @class */ (function (_super) {
-        __extends(AddEmailToCart, _super);
+    }());
+    var AddEmailToCart = /** @class */ (function () {
         function AddEmailToCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART;
-            return _this;
+            this.payload = payload;
+            this.type = ADD_EMAIL_TO_CART;
         }
         return AddEmailToCart;
-    }(LoaderLoadAction));
-    var AddEmailToCartFail = /** @class */ (function (_super) {
-        __extends(AddEmailToCartFail, _super);
+    }());
+    var AddEmailToCartFail = /** @class */ (function () {
         function AddEmailToCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART_FAIL;
-            return _this;
+            this.payload = payload;
+            this.type = ADD_EMAIL_TO_CART_FAIL;
         }
         return AddEmailToCartFail;
-    }(LoaderFailAction));
-    var AddEmailToCartSuccess = /** @class */ (function (_super) {
-        __extends(AddEmailToCartSuccess, _super);
+    }());
+    var AddEmailToCartSuccess = /** @class */ (function () {
         function AddEmailToCartSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART_SUCCESS;
-            return _this;
+            this.payload = payload;
+            this.type = ADD_EMAIL_TO_CART_SUCCESS;
         }
         return AddEmailToCartSuccess;
-    }(LoaderSuccessAction));
-    var LoadCart = /** @class */ (function (_super) {
-        __extends(LoadCart, _super);
+    }());
+    var LoadCart = /** @class */ (function () {
         function LoadCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART;
-            return _this;
+            this.payload = payload;
+            this.type = LOAD_CART;
         }
         return LoadCart;
-    }(LoaderLoadAction));
-    var LoadCartFail = /** @class */ (function (_super) {
-        __extends(LoadCartFail, _super);
+    }());
+    var LoadCartFail = /** @class */ (function () {
         function LoadCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART_FAIL;
-            return _this;
+            this.payload = payload;
+            this.type = LOAD_CART_FAIL;
         }
         return LoadCartFail;
-    }(LoaderFailAction));
-    var LoadCartSuccess = /** @class */ (function (_super) {
-        __extends(LoadCartSuccess, _super);
+    }());
+    var LoadCartSuccess = /** @class */ (function () {
         function LoadCartSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART_SUCCESS;
-            return _this;
+            this.payload = payload;
+            this.type = LOAD_CART_SUCCESS;
         }
         return LoadCartSuccess;
-    }(LoaderSuccessAction));
+    }());
     var MergeCart = /** @class */ (function () {
         function MergeCart(payload) {
             this.payload = payload;
@@ -14412,35 +14382,26 @@
         }
         return ClearExpiredCoupons;
     }());
-    var ClearCart = /** @class */ (function (_super) {
-        __extends(ClearCart, _super);
+    var ClearCart = /** @class */ (function () {
         function ClearCart() {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.type = CLEAR_CART;
-            return _this;
+            this.type = CLEAR_CART;
         }
         return ClearCart;
-    }(LoaderResetAction));
-    var DeleteCart = /** @class */ (function (_super) {
-        __extends(DeleteCart, _super);
+    }());
+    var DeleteCart = /** @class */ (function () {
         function DeleteCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = DELETE_CART;
-            return _this;
+            this.payload = payload;
+            this.type = DELETE_CART;
         }
         return DeleteCart;
-    }(LoaderLoadAction));
-    var DeleteCartFail = /** @class */ (function (_super) {
-        __extends(DeleteCartFail, _super);
+    }());
+    var DeleteCartFail = /** @class */ (function () {
         function DeleteCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = DELETE_CART_FAIL;
-            return _this;
+            this.payload = payload;
+            this.type = DELETE_CART_FAIL;
         }
         return DeleteCartFail;
-    }(LoaderFailAction));
+    }());
 
     var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
     var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
@@ -14454,93 +14415,93 @@
     var CartAddEntry = /** @class */ (function (_super) {
         __extends(CartAddEntry, _super);
         function CartAddEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_ADD_ENTRY;
             return _this;
         }
         return CartAddEntry;
-    }(LoaderLoadAction));
+    }(EntityProcessesIncrementAction));
     var CartAddEntrySuccess = /** @class */ (function (_super) {
         __extends(CartAddEntrySuccess, _super);
         function CartAddEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_ADD_ENTRY_SUCCESS;
             return _this;
         }
         return CartAddEntrySuccess;
-    }(LoaderSuccessAction));
+    }(EntityProcessesDecrementAction));
     var CartAddEntryFail = /** @class */ (function (_super) {
         __extends(CartAddEntryFail, _super);
         function CartAddEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_ADD_ENTRY_FAIL;
             return _this;
         }
         return CartAddEntryFail;
-    }(LoaderFailAction));
+    }(EntityProcessesDecrementAction));
     var CartRemoveEntry = /** @class */ (function (_super) {
         __extends(CartRemoveEntry, _super);
         function CartRemoveEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_REMOVE_ENTRY;
             return _this;
         }
         return CartRemoveEntry;
-    }(LoaderLoadAction));
+    }(EntityProcessesIncrementAction));
     var CartRemoveEntrySuccess = /** @class */ (function (_super) {
         __extends(CartRemoveEntrySuccess, _super);
         function CartRemoveEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_REMOVE_ENTRY_SUCCESS;
             return _this;
         }
         return CartRemoveEntrySuccess;
-    }(LoaderSuccessAction));
+    }(EntityProcessesDecrementAction));
     var CartRemoveEntryFail = /** @class */ (function (_super) {
         __extends(CartRemoveEntryFail, _super);
         function CartRemoveEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_REMOVE_ENTRY_FAIL;
             return _this;
         }
         return CartRemoveEntryFail;
-    }(LoaderFailAction));
+    }(EntityProcessesDecrementAction));
     var CartUpdateEntry = /** @class */ (function (_super) {
         __extends(CartUpdateEntry, _super);
         function CartUpdateEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_UPDATE_ENTRY;
             return _this;
         }
         return CartUpdateEntry;
-    }(LoaderLoadAction));
+    }(EntityProcessesIncrementAction));
     var CartUpdateEntrySuccess = /** @class */ (function (_super) {
         __extends(CartUpdateEntrySuccess, _super);
         function CartUpdateEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_UPDATE_ENTRY_SUCCESS;
             return _this;
         }
         return CartUpdateEntrySuccess;
-    }(LoaderSuccessAction));
+    }(EntityProcessesDecrementAction));
     var CartUpdateEntryFail = /** @class */ (function (_super) {
         __extends(CartUpdateEntryFail, _super);
         function CartUpdateEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_UPDATE_ENTRY_FAIL;
             return _this;
         }
         return CartUpdateEntryFail;
-    }(LoaderFailAction));
+    }(EntityProcessesDecrementAction));
 
     var CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
     var CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
@@ -14593,33 +14554,33 @@
     var CartRemoveVoucher = /** @class */ (function (_super) {
         __extends(CartRemoveVoucher, _super);
         function CartRemoveVoucher(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_REMOVE_VOUCHER;
             return _this;
         }
         return CartRemoveVoucher;
-    }(LoaderLoadAction));
+    }(EntityProcessesIncrementAction));
     var CartRemoveVoucherFail = /** @class */ (function (_super) {
         __extends(CartRemoveVoucherFail, _super);
         function CartRemoveVoucherFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_REMOVE_VOUCHER_FAIL;
             return _this;
         }
         return CartRemoveVoucherFail;
-    }(LoaderFailAction));
+    }(EntityProcessesDecrementAction));
     var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
         __extends(CartRemoveVoucherSuccess, _super);
         function CartRemoveVoucherSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = CART_REMOVE_VOUCHER_SUCCESS;
             return _this;
         }
         return CartRemoveVoucherSuccess;
-    }(LoaderSuccessAction));
+    }(EntityProcessesDecrementAction));
 
     var REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
     var CREATE_MULTI_CART = '[Multi Cart] Create Cart';
@@ -14648,7 +14609,7 @@
     var RemoveTempCart = /** @class */ (function (_super) {
         __extends(RemoveTempCart, _super);
         function RemoveTempCart(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.tempCartId) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
             _this.payload = payload;
             _this.type = REMOVE_TEMP_CART;
             return _this;
@@ -14658,7 +14619,7 @@
     var SetTempCart = /** @class */ (function (_super) {
         __extends(SetTempCart, _super);
         function SetTempCart(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.tempCartId, payload.cart) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId, payload.cart) || this;
             _this.payload = payload;
             _this.type = SET_TEMP_CART;
             return _this;
@@ -14668,7 +14629,7 @@
     var CreateMultiCart = /** @class */ (function (_super) {
         __extends(CreateMultiCart, _super);
         function CreateMultiCart(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.tempCartId) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
             _this.payload = payload;
             _this.type = CREATE_MULTI_CART;
             return _this;
@@ -14678,7 +14639,7 @@
     var CreateMultiCartFail = /** @class */ (function (_super) {
         __extends(CreateMultiCartFail, _super);
         function CreateMultiCartFail(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.tempCartId) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
             _this.payload = payload;
             _this.type = CREATE_MULTI_CART_FAIL;
             return _this;
@@ -14688,7 +14649,7 @@
     var CreateMultiCartSuccess = /** @class */ (function (_super) {
         __extends(CreateMultiCartSuccess, _super);
         function CreateMultiCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
             _this.payload = payload;
             _this.type = CREATE_MULTI_CART_SUCCESS;
             return _this;
@@ -14698,7 +14659,7 @@
     var LoadMultiCart = /** @class */ (function (_super) {
         __extends(LoadMultiCart, _super);
         function LoadMultiCart(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = LOAD_MULTI_CART;
             return _this;
@@ -14708,7 +14669,7 @@
     var LoadMultiCartFail = /** @class */ (function (_super) {
         __extends(LoadMultiCartFail, _super);
         function LoadMultiCartFail(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId, payload.error) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
             _this.payload = payload;
             _this.type = LOAD_MULTI_CART_FAIL;
             return _this;
@@ -14718,7 +14679,7 @@
     var LoadMultiCartSuccess = /** @class */ (function (_super) {
         __extends(LoadMultiCartSuccess, _super);
         function LoadMultiCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
             _this.payload = payload;
             _this.type = LOAD_MULTI_CART_SUCCESS;
             return _this;
@@ -14735,7 +14696,7 @@
     var MergeMultiCartSuccess = /** @class */ (function (_super) {
         __extends(MergeMultiCartSuccess, _super);
         function MergeMultiCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.oldCartId) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
             _this.payload = payload;
             _this.type = MERGE_MULTI_CART_SUCCESS;
             return _this;
@@ -14745,7 +14706,7 @@
     var ResetMultiCartDetails = /** @class */ (function (_super) {
         __extends(ResetMultiCartDetails, _super);
         function ResetMultiCartDetails() {
-            var _this = _super.call(this, MULTI_CART_FEATURE, undefined) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, undefined) || this;
             _this.type = RESET_MULTI_CART_DETAILS;
             return _this;
         }
@@ -14754,7 +14715,7 @@
     var RemoveCart = /** @class */ (function (_super) {
         __extends(RemoveCart, _super);
         function RemoveCart(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload) || this;
             _this.payload = payload;
             _this.type = REMOVE_CART;
             return _this;
@@ -14764,7 +14725,7 @@
     var AddEmailToMultiCart = /** @class */ (function (_super) {
         __extends(AddEmailToMultiCart, _super);
         function AddEmailToMultiCart(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = ADD_EMAIL_TO_MULTI_CART;
             return _this;
@@ -14774,7 +14735,7 @@
     var AddEmailToMultiCartFail = /** @class */ (function (_super) {
         __extends(AddEmailToMultiCartFail, _super);
         function AddEmailToMultiCartFail(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId, payload.error) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
             _this.payload = payload;
             _this.type = ADD_EMAIL_TO_MULTI_CART_FAIL;
             return _this;
@@ -14784,7 +14745,7 @@
     var AddEmailToMultiCartSuccess = /** @class */ (function (_super) {
         __extends(AddEmailToMultiCartSuccess, _super);
         function AddEmailToMultiCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = ADD_EMAIL_TO_MULTI_CART_SUCCESS;
             return _this;
@@ -14794,7 +14755,7 @@
     var CartProcessesIncrement = /** @class */ (function (_super) {
         __extends(CartProcessesIncrement, _super);
         function CartProcessesIncrement(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload) || this;
             _this.payload = payload;
             _this.type = CART_PROCESSES_INCREMENT;
             return _this;
@@ -14804,7 +14765,7 @@
     var CartProcessesDecrement = /** @class */ (function (_super) {
         __extends(CartProcessesDecrement, _super);
         function CartProcessesDecrement(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload) || this;
             _this.payload = payload;
             _this.type = CART_PROCESSES_DECREMENT;
             return _this;
@@ -14821,7 +14782,7 @@
     var ClearMultiCartState = /** @class */ (function (_super) {
         __extends(ClearMultiCartState, _super);
         function ClearMultiCartState() {
-            var _this = _super.call(this, MULTI_CART_FEATURE, null) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, null) || this;
             _this.type = CLEAR_MULTI_CART_STATE;
             return _this;
         }
@@ -14844,7 +14805,7 @@
     var CreateWishListSuccess = /** @class */ (function (_super) {
         __extends(CreateWishListSuccess, _super);
         function CreateWishListSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
             _this.payload = payload;
             _this.type = CREATE_WISH_LIST_SUCCESS;
             return _this;
@@ -14854,7 +14815,7 @@
     var CreateWishListFail = /** @class */ (function (_super) {
         __extends(CreateWishListFail, _super);
         function CreateWishListFail(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId, payload.error) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
             _this.payload = payload;
             _this.type = CREATE_WISH_LIST_FAIL;
             return _this;
@@ -14871,7 +14832,7 @@
     var LoadWishListSuccess = /** @class */ (function (_super) {
         __extends(LoadWishListSuccess, _super);
         function LoadWishListSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
             _this.payload = payload;
             _this.type = LOAD_WISH_LIST_SUCCESS;
             return _this;
@@ -16751,8 +16712,11 @@
                     return new CartAddEntrySuccess(__assign(__assign({}, entry), { userId: payload.userId, cartId: payload.cartId }));
                 }), operators.catchError(function (error) {
                     return rxjs.from([
-                        new CartAddEntryFail(makeErrorSerializable(error)),
-                        new CartProcessesDecrement(payload.cartId),
+                        new CartAddEntryFail({
+                            error: makeErrorSerializable(error),
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                        }),
                         new LoadCart({
                             cartId: payload.cartId,
                             userId: payload.userId,
@@ -16770,8 +16734,11 @@
                     });
                 }), operators.catchError(function (error) {
                     return rxjs.from([
-                        new CartRemoveEntryFail(makeErrorSerializable(error)),
-                        new CartProcessesDecrement(payload.cartId),
+                        new CartRemoveEntryFail({
+                            error: makeErrorSerializable(error),
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                        }),
                         new LoadCart({
                             cartId: payload.cartId,
                             userId: payload.userId,
@@ -16789,8 +16756,11 @@
                     });
                 }), operators.catchError(function (error) {
                     return rxjs.from([
-                        new CartUpdateEntryFail(makeErrorSerializable(error)),
-                        new CartProcessesDecrement(payload.cartId),
+                        new CartUpdateEntryFail({
+                            error: makeErrorSerializable(error),
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                        }),
                         new LoadCart({
                             cartId: payload.cartId,
                             userId: payload.userId,
@@ -16874,11 +16844,16 @@
                     return new CartRemoveVoucherSuccess({
                         userId: payload.userId,
                         cartId: payload.cartId,
+                        voucherId: payload.voucherId,
                     });
                 }), operators.catchError(function (error) {
                     return rxjs.from([
-                        new CartRemoveVoucherFail(makeErrorSerializable(error)),
-                        new CartProcessesDecrement(payload.cartId),
+                        new CartRemoveVoucherFail({
+                            error: makeErrorSerializable(error),
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                            voucherId: payload.voucherId,
+                        }),
                         new LoadCart({
                             userId: payload.userId,
                             cartId: payload.cartId,
@@ -17616,7 +17591,7 @@
                     ];
                 }));
             }), withdrawOn(this.contextChange$));
-            this.refresh$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+            this.refresh$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
                 return rxjs.from([
                     new CartProcessesDecrement(payload.cartId),
                     new LoadCart({
@@ -17625,7 +17600,7 @@
                     }),
                 ]);
             }));
-            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
+            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
                 return new LoadCart({
                     userId: payload.userId,
                     cartId: payload.cartId,
@@ -17816,63 +17791,6 @@
         return WishListEffects;
     }());
 
-    var initialState$9 = {
-        content: {},
-        entries: {},
-        refresh: false,
-        cartMergeComplete: false,
-    };
-    function reducer$9(state, action) {
-        if (state === void 0) { state = initialState$9; }
-        switch (action.type) {
-            case MERGE_CART: {
-                return __assign(__assign({}, state), { cartMergeComplete: false });
-            }
-            case MERGE_CART_SUCCESS: {
-                return __assign(__assign({}, state), { cartMergeComplete: true, refresh: true });
-            }
-            case LOAD_CART_SUCCESS:
-            case CREATE_CART_SUCCESS: {
-                var content = __assign({}, action.payload);
-                var entries = {};
-                if (content.entries) {
-                    entries = content.entries.reduce(function (entryMap, entry) {
-                        var _a;
-                        return __assign(__assign({}, entryMap), (_a = {}, _a[entry.product.code] = state.entries && state.entries[entry.product.code]
-                            ? __assign(__assign({}, state.entries[entry.product.code]), entry) : entry, _a));
-                    }, __assign({}, entries));
-                    delete content['entries'];
-                }
-                return __assign(__assign({}, state), { content: content,
-                    entries: entries, refresh: false });
-            }
-            case CART_ADD_VOUCHER_SUCCESS:
-            case CART_REMOVE_VOUCHER_SUCCESS:
-            case CART_REMOVE_ENTRY_SUCCESS:
-            case CART_UPDATE_ENTRY_SUCCESS:
-            case CART_ADD_ENTRY_SUCCESS:
-            case ADD_EMAIL_TO_CART_SUCCESS: {
-                return __assign(__assign({}, state), { refresh: true });
-            }
-            case RESET_CART_DETAILS: {
-                return {
-                    content: {
-                        guid: state.content.guid,
-                        code: state.content.code,
-                        user: state.content.user,
-                    },
-                    entries: {},
-                    refresh: false,
-                    cartMergeComplete: false,
-                };
-            }
-            case CLEAR_CART: {
-                return initialState$9;
-            }
-        }
-        return state;
-    }
-
     var activeCartInitialState = '';
     var wishListInitialState = '';
     function activeCartReducer(state, action) {
@@ -17929,26 +17847,6 @@
         return state;
     }
 
-    function getReducers$5() {
-        return {
-            active: loaderReducer(CART_DATA, reducer$9),
-        };
-    }
-    var reducerToken$5 = new core.InjectionToken('CartReducers');
-    var reducerProvider$5 = {
-        provide: reducerToken$5,
-        useFactory: getReducers$5,
-    };
-    function clearCartState(reducer) {
-        return function (state, action) {
-            if (action.type === LOGOUT ||
-                action.type === PLACE_ORDER_SUCCESS) {
-                state = undefined;
-            }
-            return reducer(state, action);
-        };
-    }
-    var metaReducers$3 = [clearCartState];
     function clearMultiCartState(reducer) {
         return function (state, action) {
             if (action.type === LOGOUT) {
@@ -17961,7 +17859,7 @@
     var multiCartReducerToken = new core.InjectionToken('MultiCartReducers');
     function getMultiCartReducers() {
         return {
-            carts: entityProcessesLoaderReducer(MULTI_CART_FEATURE, cartEntitiesReducer),
+            carts: entityProcessesLoaderReducer(MULTI_CART_DATA, cartEntitiesReducer),
             active: activeCartReducer,
             wishList: wishListReducer,
         };
@@ -18014,48 +17912,6 @@
         return MultiCartStatePersistenceService;
     }());
 
-    var effects$4 = [
-        CartEffects,
-        CartEntryEffects,
-        CartVoucherEffects,
-        WishListEffects,
-    ];
-    function cartStoreConfigFactory() {
-        var _a;
-        var config = {
-            state: {
-                storageSync: {
-                    keys: (_a = {},
-                        _a[CART_FEATURE + ".active.value.content.guid"] = exports.StorageSyncType.LOCAL_STORAGE,
-                        _a[CART_FEATURE + ".active.value.content.code"] = exports.StorageSyncType.LOCAL_STORAGE,
-                        _a[CART_FEATURE + ".active.value.content.user"] = exports.StorageSyncType.LOCAL_STORAGE,
-                        _a),
-                },
-            },
-        };
-        return config;
-    }
-    var CartStoreModule = /** @class */ (function () {
-        function CartStoreModule() {
-        }
-        CartStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    StateModule,
-                    store.StoreModule.forFeature(CART_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
-                    effects$c.EffectsModule.forFeature(effects$4),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(cartStoreConfigFactory),
-                    reducerProvider$5,
-                ],
-            })
-        ], CartStoreModule);
-        return CartStoreModule;
-    }());
-
     var MultiCartEffects = /** @class */ (function () {
         function MultiCartEffects(actions$) {
             this.actions$ = actions$;
@@ -18077,7 +17933,7 @@
             this.removeCart$ = this.actions$.pipe(effects$c.ofType(DELETE_CART), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new RemoveCart(payload.cartId); }));
             // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
             // Change for 2.0 release
-            this.processesIncrement$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY, CART_UPDATE_ENTRY, CART_REMOVE_ENTRY, ADD_EMAIL_TO_CART, CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER, CART_REMOVE_VOUCHER), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
+            this.processesIncrement$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART, CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
         }
         MultiCartEffects.ctorParameters = function () { return [
             { type: effects$c.Actions }
@@ -18109,6 +17965,13 @@
         return MultiCartEffects;
     }());
 
+    var effects$4 = [
+        CartEffects,
+        CartEntryEffects,
+        CartVoucherEffects,
+        WishListEffects,
+        MultiCartEffects,
+    ];
     var MultiCartStoreModule = /** @class */ (function () {
         function MultiCartStoreModule() {
         }
@@ -18120,7 +17983,7 @@
                     store.StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
                         metaReducers: multiCartMetaReducers,
                     }),
-                    effects$c.EffectsModule.forFeature([MultiCartEffects]),
+                    effects$c.EffectsModule.forFeature(effects$4),
                 ],
                 providers: [multiCartReducerProvider],
             })
@@ -18166,17 +18029,17 @@
         var CartModule_1;
         CartModule = CartModule_1 = __decorate([
             core.NgModule({
-                imports: [CartStoreModule, MultiCartStoreModule],
+                imports: [MultiCartStoreModule],
             })
         ], CartModule);
         return CartModule;
     }());
 
-    var initialState$a = {
+    var initialState$9 = {
         results: {},
     };
-    function reducer$a(state, action) {
-        if (state === void 0) { state = initialState$a; }
+    function reducer$9(state, action) {
+        if (state === void 0) { state = initialState$9; }
         switch (action.type) {
             case VERIFY_ADDRESS_SUCCESS: {
                 var results = action.payload;
@@ -18246,11 +18109,11 @@
     var getAddressVerificationResultsState = store.createSelector(getCheckoutState, ɵ0$A);
     var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
-    var initialState$b = {
+    var initialState$a = {
         entities: {},
     };
-    function reducer$b(state, action) {
-        if (state === void 0) { state = initialState$b; }
+    function reducer$a(state, action) {
+        if (state === void 0) { state = initialState$a; }
         switch (action.type) {
             case LOAD_CARD_TYPES_SUCCESS: {
                 var cardTypes = action.payload;
@@ -18261,7 +18124,7 @@
                 return __assign(__assign({}, state), { entities: entities });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$b;
+                return initialState$a;
             }
         }
         return state;
@@ -18464,7 +18327,7 @@
         return CheckoutPageMetaResolver;
     }(PageMetaResolver));
 
-    var initialState$c = {
+    var initialState$b = {
         address: {},
         deliveryMode: {
             supported: {},
@@ -18473,8 +18336,8 @@
         paymentDetails: {},
         orderDetails: {},
     };
-    function reducer$c(state, action) {
-        if (state === void 0) { state = initialState$c; }
+    function reducer$b(state, action) {
+        if (state === void 0) { state = initialState$b; }
         switch (action.type) {
             case ADD_DELIVERY_ADDRESS_SUCCESS:
             case SET_DELIVERY_ADDRESS_SUCCESS: {
@@ -18512,7 +18375,7 @@
                 return __assign(__assign({}, state), { orderDetails: orderDetails });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return initialState$c;
+                return initialState$b;
             }
             case CLEAR_CHECKOUT_STEP: {
                 var stepNumber = action.payload;
@@ -18546,17 +18409,17 @@
         return state;
     }
 
-    function getReducers$6() {
+    function getReducers$5() {
         return {
-            steps: loaderReducer(CHECKOUT_DETAILS, reducer$c),
-            cardTypes: reducer$b,
-            addressVerification: reducer$a,
+            steps: loaderReducer(CHECKOUT_DETAILS, reducer$b),
+            cardTypes: reducer$a,
+            addressVerification: reducer$9,
         };
     }
-    var reducerToken$6 = new core.InjectionToken('CheckoutReducers');
-    var reducerProvider$6 = {
-        provide: reducerToken$6,
-        useFactory: getReducers$6,
+    var reducerToken$5 = new core.InjectionToken('CheckoutReducers');
+    var reducerProvider$5 = {
+        provide: reducerToken$5,
+        useFactory: getReducers$5,
     };
 
     var UserAddressConnector = /** @class */ (function () {
@@ -18963,10 +18826,10 @@
                 imports: [
                     common.CommonModule,
                     http.HttpClientModule,
-                    store.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$6),
+                    store.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5),
                     effects$c.EffectsModule.forFeature(effects$5),
                 ],
-                providers: [reducerProvider$6],
+                providers: [reducerProvider$5],
             })
         ], CheckoutStoreModule);
         return CheckoutStoreModule;
@@ -20563,7 +20426,7 @@
 
     var effects$6 = [RouterEffects];
 
-    var initialState$d = {
+    var initialState$c = {
         navigationId: 0,
         state: {
             url: '',
@@ -20576,13 +20439,13 @@
         },
         nextState: undefined,
     };
-    function getReducers$7() {
+    function getReducers$6() {
         return {
-            router: reducer$d,
+            router: reducer$c,
         };
     }
-    function reducer$d(state, action) {
-        if (state === void 0) { state = initialState$d; }
+    function reducer$c(state, action) {
+        if (state === void 0) { state = initialState$c; }
         switch (action.type) {
             case routerStore.ROUTER_NAVIGATION: {
                 return __assign(__assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -20603,10 +20466,10 @@
             }
         }
     }
-    var reducerToken$7 = new core.InjectionToken('RouterReducers');
-    var reducerProvider$7 = {
-        provide: reducerToken$7,
-        useFactory: getReducers$7,
+    var reducerToken$6 = new core.InjectionToken('RouterReducers');
+    var reducerProvider$6 = {
+        provide: reducerToken$6,
+        useFactory: getReducers$6,
     };
     /* The serializer is there to parse the RouterStateSnapshot,
     and to reduce the amount of properties to be passed to the reducer.
@@ -20690,7 +20553,7 @@
             return {
                 ngModule: RoutingModule_1,
                 providers: [
-                    reducerProvider$7,
+                    reducerProvider$6,
                     {
                         provide: routerStore.RouterStateSerializer,
                         useClass: CustomSerializer,
@@ -20709,7 +20572,7 @@
         RoutingModule = RoutingModule_1 = __decorate([
             core.NgModule({
                 imports: [
-                    store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$7),
+                    store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
                     effects$c.EffectsModule.forFeature(effects$6),
                     routerStore.StoreRouterConnectingModule.forRoot({
                         routerState: 1 /* Minimal */,
@@ -20931,7 +20794,7 @@
         NavigationEntryItemEffects,
     ];
 
-    var initialState$e = {
+    var initialState$d = {
         component: undefined,
         pageContext: {},
     };
@@ -20946,9 +20809,9 @@
         }
         return state;
     }
-    function reducer$e(state, action) {
+    function reducer$d(state, action) {
         var _a, _b, _c, _d;
-        if (state === void 0) { state = initialState$e; }
+        if (state === void 0) { state = initialState$d; }
         switch (action.type) {
             case LOAD_CMS_COMPONENT: {
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
@@ -20976,9 +20839,9 @@
         return state;
     }
 
-    var initialState$f = undefined;
-    function reducer$f(state, action) {
-        if (state === void 0) { state = initialState$f; }
+    var initialState$e = undefined;
+    function reducer$e(state, action) {
+        if (state === void 0) { state = initialState$e; }
         switch (action.type) {
             case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
                 if (action.payload.components) {
@@ -20994,10 +20857,10 @@
         return state;
     }
 
-    var initialState$g = { entities: {} };
-    function reducer$g(state, action) {
+    var initialState$f = { entities: {} };
+    function reducer$f(state, action) {
         var _a;
-        if (state === void 0) { state = initialState$g; }
+        if (state === void 0) { state = initialState$f; }
         switch (action.type) {
             case LOAD_CMS_PAGE_DATA_SUCCESS: {
                 var page = action.payload;
@@ -21007,17 +20870,17 @@
         return state;
     }
 
-    var initialState$h = undefined;
-    function reducer$h(entityType) {
+    var initialState$g = undefined;
+    function reducer$g(entityType) {
         return function (state, action) {
-            if (state === void 0) { state = initialState$h; }
+            if (state === void 0) { state = initialState$g; }
             if (action.meta && action.meta.entityType === entityType) {
                 switch (action.type) {
                     case LOAD_CMS_PAGE_DATA_SUCCESS: {
                         return action.payload.pageId;
                     }
                     case LOAD_CMS_PAGE_DATA_FAIL: {
-                        return initialState$h;
+                        return initialState$g;
                     }
                     case CMS_SET_PAGE_FAIL_INDEX: {
                         return action.payload;
@@ -21031,25 +20894,25 @@
         };
     }
 
-    function getReducers$8() {
+    function getReducers$7() {
         return {
             page: store.combineReducers({
-                pageData: reducer$g,
+                pageData: reducer$f,
                 index: store.combineReducers({
-                    content: entityLoaderReducer(exports.PageType.CONTENT_PAGE, reducer$h(exports.PageType.CONTENT_PAGE)),
-                    product: entityLoaderReducer(exports.PageType.PRODUCT_PAGE, reducer$h(exports.PageType.PRODUCT_PAGE)),
-                    category: entityLoaderReducer(exports.PageType.CATEGORY_PAGE, reducer$h(exports.PageType.CATEGORY_PAGE)),
-                    catalog: entityLoaderReducer(exports.PageType.CATALOG_PAGE, reducer$h(exports.PageType.CATALOG_PAGE)),
+                    content: entityLoaderReducer(exports.PageType.CONTENT_PAGE, reducer$g(exports.PageType.CONTENT_PAGE)),
+                    product: entityLoaderReducer(exports.PageType.PRODUCT_PAGE, reducer$g(exports.PageType.PRODUCT_PAGE)),
+                    category: entityLoaderReducer(exports.PageType.CATEGORY_PAGE, reducer$g(exports.PageType.CATEGORY_PAGE)),
+                    catalog: entityLoaderReducer(exports.PageType.CATALOG_PAGE, reducer$g(exports.PageType.CATALOG_PAGE)),
                 }),
             }),
-            components: entityReducer(COMPONENT_ENTITY, reducer$e),
-            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
+            components: entityReducer(COMPONENT_ENTITY, reducer$d),
+            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$e),
         };
     }
-    var reducerToken$8 = new core.InjectionToken('CmsReducers');
-    var reducerProvider$8 = {
-        provide: reducerToken$8,
-        useFactory: getReducers$8,
+    var reducerToken$7 = new core.InjectionToken('CmsReducers');
+    var reducerProvider$7 = {
+        provide: reducerToken$7,
+        useFactory: getReducers$7,
     };
     function clearCmsState(reducer) {
         return function (state, action) {
@@ -21061,7 +20924,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$4 = [clearCmsState];
+    var metaReducers$3 = [clearCmsState];
 
     function cmsStoreConfigFactory() {
         var _a;
@@ -21084,12 +20947,12 @@
                     common.CommonModule,
                     http.HttpClientModule,
                     StateModule,
-                    store.StoreModule.forFeature(CMS_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
+                    store.StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
                     effects$c.EffectsModule.forFeature(effects$7),
                 ],
                 providers: [
                     provideDefaultConfigFactory(cmsStoreConfigFactory),
-                    reducerProvider$8,
+                    reducerProvider$7,
                 ],
             })
         ], CmsStoreModule);
@@ -22012,15 +21875,15 @@
 
     var effects$8 = [OpenIdTokenEffect];
 
-    function getReducers$9() {
+    function getReducers$8() {
         return {
             openIdToken: loaderReducer(OPEN_ID_TOKEN_DATA),
         };
     }
-    var reducerToken$9 = new core.InjectionToken('KymaReducers');
-    var reducerProvider$9 = {
-        provide: reducerToken$9,
-        useFactory: getReducers$9,
+    var reducerToken$8 = new core.InjectionToken('KymaReducers');
+    var reducerProvider$8 = {
+        provide: reducerToken$8,
+        useFactory: getReducers$8,
     };
     function clearKymaState(reducer) {
         return function (state, action) {
@@ -22030,7 +21893,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$5 = [clearKymaState];
+    var metaReducers$4 = [clearKymaState];
 
     function kymaStoreConfigFactory() {
         // if we want to reuse KYMA_FEATURE const in config, we have to use factory instead of plain object
@@ -22054,12 +21917,12 @@
                     common.CommonModule,
                     http.HttpClientModule,
                     StateModule,
-                    store.StoreModule.forFeature(KYMA_FEATURE, reducerToken$9, { metaReducers: metaReducers$5 }),
+                    store.StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
                     effects$c.EffectsModule.forFeature(effects$8),
                 ],
                 providers: [
                     provideDefaultConfigFactory(kymaStoreConfigFactory),
-                    reducerProvider$9,
+                    reducerProvider$8,
                 ],
             })
         ], KymaStoreModule);
@@ -22298,13 +22161,13 @@
         return PersonalizationContextService;
     }());
 
-    function getReducers$a() {
+    function getReducers$9() {
         return entityLoaderReducer(PROCESS_FEATURE);
     }
-    var reducerToken$a = new core.InjectionToken('ProcessReducers');
-    var reducerProvider$a = {
-        provide: reducerToken$a,
-        useFactory: getReducers$a,
+    var reducerToken$9 = new core.InjectionToken('ProcessReducers');
+    var reducerProvider$9 = {
+        provide: reducerToken$9,
+        useFactory: getReducers$9,
     };
 
     var ProcessStoreModule = /** @class */ (function () {
@@ -22312,8 +22175,8 @@
         }
         ProcessStoreModule = __decorate([
             core.NgModule({
-                imports: [StateModule, store.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$a)],
-                providers: [reducerProvider$a],
+                imports: [StateModule, store.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
+                providers: [reducerProvider$9],
             })
         ], ProcessStoreModule);
         return ProcessStoreModule;
@@ -22742,13 +22605,13 @@
         });
     };
 
-    var initialState$i = {
+    var initialState$h = {
         results: {},
         suggestions: [],
         auxResults: {},
     };
-    function reducer$i(state, action) {
-        if (state === void 0) { state = initialState$i; }
+    function reducer$h(state, action) {
+        if (state === void 0) { state = initialState$h; }
         switch (action.type) {
             case SEARCH_PRODUCTS_SUCCESS: {
                 var results = action.payload;
@@ -23701,12 +23564,12 @@
         ProductReferencesEffects,
     ];
 
-    var initialState$j = {
+    var initialState$i = {
         productCode: '',
         list: [],
     };
-    function reducer$j(state, action) {
-        if (state === void 0) { state = initialState$j; }
+    function reducer$i(state, action) {
+        if (state === void 0) { state = initialState$i; }
         switch (action.type) {
             case LOAD_PRODUCT_REFERENCES_SUCCESS: {
                 var productCode = action.payload.productCode;
@@ -23722,7 +23585,7 @@
                     }, []), productCode: productCode });
             }
             case CLEAN_PRODUCT_REFERENCES: {
-                return initialState$j;
+                return initialState$i;
             }
         }
         return state;
@@ -23730,12 +23593,12 @@
     var getProductReferenceList = function (state) { return state.list; };
     var getProductReferenceProductCode = function (state) { return state.productCode; };
 
-    var initialState$k = {
+    var initialState$j = {
         productCode: '',
         list: [],
     };
-    function reducer$k(state, action) {
-        if (state === void 0) { state = initialState$k; }
+    function reducer$j(state, action) {
+        if (state === void 0) { state = initialState$j; }
         switch (action.type) {
             case LOAD_PRODUCT_REVIEWS_SUCCESS: {
                 var productCode = action.payload.productCode;
@@ -23790,18 +23653,18 @@
         return entityReducer(entityType, scopedLoaderReducer(entityType, reducer));
     }
 
-    function getReducers$b() {
+    function getReducers$a() {
         return {
-            search: reducer$i,
+            search: reducer$h,
             details: entityScopedLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$k,
-            references: reducer$j,
+            reviews: reducer$j,
+            references: reducer$i,
         };
     }
-    var reducerToken$b = new core.InjectionToken('ProductReducers');
-    var reducerProvider$b = {
-        provide: reducerToken$b,
-        useFactory: getReducers$b,
+    var reducerToken$a = new core.InjectionToken('ProductReducers');
+    var reducerProvider$a = {
+        provide: reducerToken$a,
+        useFactory: getReducers$a,
     };
     function clearProductsState(reducer) {
         return function (state, action) {
@@ -23812,7 +23675,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$6 = [clearProductsState];
+    var metaReducers$5 = [clearProductsState];
 
     function productStoreConfigFactory() {
         var _a;
@@ -23834,12 +23697,12 @@
                 imports: [
                     common.CommonModule,
                     http.HttpClientModule,
-                    store.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
+                    store.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
                     effects$c.EffectsModule.forFeature(effects$9),
                 ],
                 providers: [
                     provideDefaultConfigFactory(productStoreConfigFactory),
-                    reducerProvider$b,
+                    reducerProvider$a,
                 ],
             })
         ], ProductStoreModule);
@@ -24657,18 +24520,18 @@
         },
     };
 
-    function getReducers$c() {
+    function getReducers$b() {
         return {
             findStores: loaderReducer(STORE_FINDER_DATA),
             viewAllStores: loaderReducer(STORE_FINDER_DATA),
         };
     }
-    var reducerToken$c = new core.InjectionToken('StoreFinderReducers');
-    var reducerProvider$c = {
-        provide: reducerToken$c,
-        useFactory: getReducers$c,
+    var reducerToken$b = new core.InjectionToken('StoreFinderReducers');
+    var reducerProvider$b = {
+        provide: reducerToken$b,
+        useFactory: getReducers$b,
     };
-    var metaReducers$7 = [];
+    var metaReducers$6 = [];
 
     var FindStoresEffect = /** @class */ (function () {
         function FindStoresEffect(actions$, storeFinderConnector) {
@@ -24751,10 +24614,10 @@
                 imports: [
                     common.CommonModule,
                     http.HttpClientModule,
-                    store.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$c),
+                    store.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
                     effects$c.EffectsModule.forFeature(effects$a),
                 ],
-                providers: [reducerProvider$c],
+                providers: [reducerProvider$b],
             })
         ], StoreFinderStoreModule);
         return StoreFinderStoreModule;
@@ -25946,11 +25809,11 @@
         return UserInterestsService;
     }());
 
-    var initialState$l = {
+    var initialState$k = {
         entities: {},
     };
-    function reducer$l(state, action) {
-        if (state === void 0) { state = initialState$l; }
+    function reducer$k(state, action) {
+        if (state === void 0) { state = initialState$k; }
         switch (action.type) {
             case LOAD_BILLING_COUNTRIES_SUCCESS: {
                 var billingCountries = action.payload;
@@ -25961,15 +25824,15 @@
                 return __assign(__assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$l;
+                return initialState$k;
             }
         }
         return state;
     }
 
-    var initialState$m = {};
-    function reducer$m(state, action) {
-        if (state === void 0) { state = initialState$m; }
+    var initialState$l = {};
+    function reducer$l(state, action) {
+        if (state === void 0) { state = initialState$l; }
         switch (action.type) {
             case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
                 var tracking = action.payload;
@@ -25978,17 +25841,17 @@
                 };
             }
             case CLEAR_CONSIGNMENT_TRACKING: {
-                return initialState$m;
+                return initialState$l;
             }
         }
         return state;
     }
 
-    var initialState$n = {
+    var initialState$m = {
         entities: {},
     };
-    function reducer$n(state, action) {
-        if (state === void 0) { state = initialState$n; }
+    function reducer$m(state, action) {
+        if (state === void 0) { state = initialState$m; }
         switch (action.type) {
             case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
                 var deliveryCountries = action.payload;
@@ -25999,30 +25862,30 @@
                 return __assign(__assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$n;
+                return initialState$m;
             }
         }
         return state;
     }
 
-    var initialState$o = [];
-    function reducer$o(state, action) {
-        if (state === void 0) { state = initialState$o; }
+    var initialState$n = [];
+    function reducer$n(state, action) {
+        if (state === void 0) { state = initialState$n; }
         switch (action.type) {
             case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
-                return initialState$o;
+                return initialState$n;
             }
             case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
             case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
-                return action.payload ? action.payload : initialState$o;
+                return action.payload ? action.payload : initialState$n;
             }
         }
         return state;
     }
 
-    var initialState$p = {};
-    function reducer$p(state, action) {
-        if (state === void 0) { state = initialState$p; }
+    var initialState$o = {};
+    function reducer$o(state, action) {
+        if (state === void 0) { state = initialState$o; }
         switch (action.type) {
             case LOAD_ORDER_DETAILS_SUCCESS: {
                 var order = action.payload;
@@ -26032,26 +25895,26 @@
         return state;
     }
 
-    var initialState$q = [];
-    function reducer$q(state, action) {
-        if (state === void 0) { state = initialState$q; }
+    var initialState$p = [];
+    function reducer$p(state, action) {
+        if (state === void 0) { state = initialState$p; }
         switch (action.type) {
             case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-                return action.payload ? action.payload : initialState$q;
+                return action.payload ? action.payload : initialState$p;
             }
             case LOAD_USER_PAYMENT_METHODS_FAIL: {
-                return initialState$q;
+                return initialState$p;
             }
         }
         return state;
     }
 
-    var initialState$r = {
+    var initialState$q = {
         entities: [],
         country: null,
     };
-    function reducer$r(state, action) {
-        if (state === void 0) { state = initialState$r; }
+    function reducer$q(state, action) {
+        if (state === void 0) { state = initialState$q; }
         switch (action.type) {
             case LOAD_REGIONS_SUCCESS: {
                 var entities = action.payload.entities;
@@ -26060,15 +25923,15 @@
                     return __assign(__assign({}, state), { entities: entities,
                         country: country });
                 }
-                return initialState$r;
+                return initialState$q;
             }
         }
         return state;
     }
 
-    var initialState$s = false;
-    function reducer$s(state, action) {
-        if (state === void 0) { state = initialState$s; }
+    var initialState$r = false;
+    function reducer$r(state, action) {
+        if (state === void 0) { state = initialState$r; }
         switch (action.type) {
             case RESET_PASSWORD_SUCCESS: {
                 return true;
@@ -26077,11 +25940,11 @@
         return state;
     }
 
-    var initialState$t = {
+    var initialState$s = {
         entities: {},
     };
-    function reducer$t(state, action) {
-        if (state === void 0) { state = initialState$t; }
+    function reducer$s(state, action) {
+        if (state === void 0) { state = initialState$s; }
         switch (action.type) {
             case LOAD_TITLES_SUCCESS: {
                 var titles = action.payload;
@@ -26092,7 +25955,21 @@
                 return __assign(__assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
+                return initialState$s;
+            }
+        }
+        return state;
+    }
+
+    var initialState$t = [];
+    function reducer$t(state, action) {
+        if (state === void 0) { state = initialState$t; }
+        switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
                 return initialState$t;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$t;
             }
         }
         return state;
@@ -26102,23 +25979,9 @@
     function reducer$u(state, action) {
         if (state === void 0) { state = initialState$u; }
         switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
-                return initialState$u;
-            }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$u;
-            }
-        }
-        return state;
-    }
-
-    var initialState$v = [];
-    function reducer$v(state, action) {
-        if (state === void 0) { state = initialState$v; }
-        switch (action.type) {
             case LOAD_USER_CONSENTS_SUCCESS: {
                 var consents = action.payload;
-                return consents ? consents : initialState$v;
+                return consents ? consents : initialState$u;
             }
             case GIVE_USER_CONSENT_SUCCESS: {
                 var updatedConsentTemplate_1 = action.consentTemplate;
@@ -26132,9 +25995,9 @@
         return state;
     }
 
-    var initialState$w = {};
-    function reducer$w(state, action) {
-        if (state === void 0) { state = initialState$w; }
+    var initialState$v = {};
+    function reducer$v(state, action) {
+        if (state === void 0) { state = initialState$v; }
         switch (action.type) {
             case LOAD_USER_DETAILS_SUCCESS: {
                 return action.payload;
@@ -26147,31 +26010,31 @@
         return state;
     }
 
-    var initialState$x = {
+    var initialState$w = {
         orders: [],
         pagination: {},
         sorts: [],
     };
-    function reducer$x(state, action) {
-        if (state === void 0) { state = initialState$x; }
+    function reducer$w(state, action) {
+        if (state === void 0) { state = initialState$w; }
         switch (action.type) {
             case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$x;
+                return action.payload ? action.payload : initialState$w;
             }
             case LOAD_USER_ORDERS_FAIL: {
-                return initialState$x;
+                return initialState$w;
             }
         }
         return state;
     }
 
-    var initialState$y = {
+    var initialState$x = {
         coupons: [],
         sorts: [],
         pagination: {},
     };
-    function reducer$y(state, action) {
-        if (state === void 0) { state = initialState$y; }
+    function reducer$x(state, action) {
+        if (state === void 0) { state = initialState$x; }
         switch (action.type) {
             case LOAD_CUSTOMER_COUPONS_SUCCESS: {
                 return action.payload;
@@ -26200,66 +26063,66 @@
         return state;
     }
 
-    var initialState$z = {
+    var initialState$y = {
         results: [],
+        pagination: {},
+        sorts: [],
+    };
+    function reducer$y(state, action) {
+        if (state === void 0) { state = initialState$y; }
+        switch (action.type) {
+            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
+                return action.payload ? action.payload : initialState$y;
+            }
+            case LOAD_PRODUCT_INTERESTS_FAIL: {
+                return initialState$y;
+            }
+        }
+        return state;
+    }
+
+    var initialState$z = {
+        returnRequests: [],
         pagination: {},
         sorts: [],
     };
     function reducer$z(state, action) {
         if (state === void 0) { state = initialState$z; }
         switch (action.type) {
-            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
+            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
                 return action.payload ? action.payload : initialState$z;
             }
-            case LOAD_PRODUCT_INTERESTS_FAIL: {
-                return initialState$z;
-            }
         }
         return state;
     }
 
-    var initialState$A = {
-        returnRequests: [],
-        pagination: {},
-        sorts: [],
-    };
-    function reducer$A(state, action) {
-        if (state === void 0) { state = initialState$A; }
-        switch (action.type) {
-            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
-                return action.payload ? action.payload : initialState$A;
-            }
-        }
-        return state;
-    }
-
-    function getReducers$d() {
+    function getReducers$c() {
         return {
             account: store.combineReducers({
-                details: reducer$w,
+                details: reducer$v,
             }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$u),
-            billingCountries: reducer$l,
-            consents: loaderReducer(USER_CONSENTS, reducer$v),
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$q),
-            orders: loaderReducer(USER_ORDERS, reducer$x),
-            order: loaderReducer(USER_ORDER_DETAILS, reducer$p),
+            addresses: loaderReducer(USER_ADDRESSES, reducer$t),
+            billingCountries: reducer$k,
+            consents: loaderReducer(USER_CONSENTS, reducer$u),
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$p),
+            orders: loaderReducer(USER_ORDERS, reducer$w),
+            order: loaderReducer(USER_ORDER_DETAILS, reducer$o),
             orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
-            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$A),
-            countries: reducer$n,
-            titles: reducer$t,
-            regions: loaderReducer(REGIONS, reducer$r),
-            resetPassword: reducer$s,
-            consignmentTracking: reducer$m,
-            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$y),
-            notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$o),
-            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$z),
+            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$z),
+            countries: reducer$m,
+            titles: reducer$s,
+            regions: loaderReducer(REGIONS, reducer$q),
+            resetPassword: reducer$r,
+            consignmentTracking: reducer$l,
+            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$x),
+            notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$n),
+            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$y),
         };
     }
-    var reducerToken$d = new core.InjectionToken('UserReducers');
-    var reducerProvider$d = {
-        provide: reducerToken$d,
-        useFactory: getReducers$d,
+    var reducerToken$c = new core.InjectionToken('UserReducers');
+    var reducerProvider$c = {
+        provide: reducerToken$c,
+        useFactory: getReducers$c,
     };
     function clearUserState(reducer) {
         return function (state, action) {
@@ -26269,7 +26132,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$8 = [clearUserState];
+    var metaReducers$7 = [clearUserState];
 
     var BillingCountriesEffect = /** @class */ (function () {
         function BillingCountriesEffect(actions$, siteConnector) {
@@ -27182,11 +27045,11 @@
                     common.CommonModule,
                     forms.ReactiveFormsModule,
                     StateModule,
-                    store.StoreModule.forFeature(USER_FEATURE, reducerToken$d, { metaReducers: metaReducers$8 }),
+                    store.StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
                     effects$c.EffectsModule.forFeature(effects$b),
                     router.RouterModule,
                 ],
-                providers: [reducerProvider$d],
+                providers: [reducerProvider$c],
             })
         ], UserStoreModule);
         return UserStoreModule;
@@ -27345,8 +27208,6 @@
     exports.CANCEL_ORDER_PROCESS_ID = CANCEL_ORDER_PROCESS_ID;
     exports.CANCEL_RETURN_PROCESS_ID = CANCEL_RETURN_PROCESS_ID;
     exports.CARD_TYPE_NORMALIZER = CARD_TYPE_NORMALIZER;
-    exports.CART_DATA = CART_DATA;
-    exports.CART_FEATURE = CART_FEATURE;
     exports.CART_MODIFICATION_NORMALIZER = CART_MODIFICATION_NORMALIZER;
     exports.CART_NORMALIZER = CART_NORMALIZER;
     exports.CART_VOUCHER_NORMALIZER = CART_VOUCHER_NORMALIZER;
@@ -27785,208 +27646,200 @@
     exports.ɵch = ClientErrorHandlingService;
     exports.ɵci = TokenRevocationInterceptor;
     exports.ɵcj = AuthServices;
-    exports.ɵck = cartStoreConfigFactory;
-    exports.ɵcl = CartStoreModule;
-    exports.ɵcm = getReducers$5;
-    exports.ɵcn = reducerToken$5;
-    exports.ɵco = reducerProvider$5;
-    exports.ɵcp = clearCartState;
-    exports.ɵcq = metaReducers$3;
-    exports.ɵcr = clearMultiCartState;
-    exports.ɵcs = multiCartMetaReducers;
-    exports.ɵct = multiCartReducerToken;
-    exports.ɵcu = getMultiCartReducers;
-    exports.ɵcv = multiCartReducerProvider;
-    exports.ɵcw = CartEffects;
-    exports.ɵcx = CartEntryEffects;
-    exports.ɵcy = CartVoucherEffects;
-    exports.ɵcz = WishListEffects;
+    exports.ɵck = MultiCartStoreModule;
+    exports.ɵcl = clearMultiCartState;
+    exports.ɵcm = multiCartMetaReducers;
+    exports.ɵcn = multiCartReducerToken;
+    exports.ɵco = getMultiCartReducers;
+    exports.ɵcp = multiCartReducerProvider;
+    exports.ɵcq = CartEffects;
+    exports.ɵcr = CartEntryEffects;
+    exports.ɵcs = CartVoucherEffects;
+    exports.ɵct = WishListEffects;
+    exports.ɵcu = SaveCartConnector;
+    exports.ɵcv = SaveCartAdapter;
+    exports.ɵcw = MultiCartEffects;
+    exports.ɵcx = processesLoaderReducer;
+    exports.ɵcy = activeCartReducer;
+    exports.ɵcz = cartEntitiesReducer;
     exports.ɵd = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵda = SaveCartConnector;
-    exports.ɵdb = SaveCartAdapter;
-    exports.ɵdc = reducer$9;
-    exports.ɵdd = MultiCartStoreModule;
-    exports.ɵde = MultiCartEffects;
-    exports.ɵdf = processesLoaderReducer;
-    exports.ɵdg = activeCartReducer;
-    exports.ɵdh = cartEntitiesReducer;
-    exports.ɵdi = wishListReducer;
-    exports.ɵdj = CartPageMetaResolver;
-    exports.ɵdk = SiteContextParamsService;
-    exports.ɵdl = CheckoutStoreModule;
-    exports.ɵdm = getReducers$6;
-    exports.ɵdn = reducerToken$6;
-    exports.ɵdo = reducerProvider$6;
-    exports.ɵdp = effects$5;
-    exports.ɵdq = AddressVerificationEffect;
-    exports.ɵdr = CardTypesEffects;
-    exports.ɵds = CheckoutEffects;
-    exports.ɵdt = reducer$c;
-    exports.ɵdu = reducer$b;
-    exports.ɵdv = reducer$a;
-    exports.ɵdw = cmsStoreConfigFactory;
-    exports.ɵdx = CmsStoreModule;
-    exports.ɵdy = getReducers$8;
-    exports.ɵdz = reducerToken$8;
+    exports.ɵda = wishListReducer;
+    exports.ɵdb = CartPageMetaResolver;
+    exports.ɵdc = SiteContextParamsService;
+    exports.ɵdd = CheckoutStoreModule;
+    exports.ɵde = getReducers$5;
+    exports.ɵdf = reducerToken$5;
+    exports.ɵdg = reducerProvider$5;
+    exports.ɵdh = effects$5;
+    exports.ɵdi = AddressVerificationEffect;
+    exports.ɵdj = CardTypesEffects;
+    exports.ɵdk = CheckoutEffects;
+    exports.ɵdl = reducer$b;
+    exports.ɵdm = reducer$a;
+    exports.ɵdn = reducer$9;
+    exports.ɵdo = cmsStoreConfigFactory;
+    exports.ɵdp = CmsStoreModule;
+    exports.ɵdq = getReducers$7;
+    exports.ɵdr = reducerToken$7;
+    exports.ɵds = reducerProvider$7;
+    exports.ɵdt = clearCmsState;
+    exports.ɵdu = metaReducers$3;
+    exports.ɵdv = effects$7;
+    exports.ɵdw = ComponentsEffects;
+    exports.ɵdx = NavigationEntryItemEffects;
+    exports.ɵdy = PageEffects;
+    exports.ɵdz = reducer$f;
     exports.ɵe = initConfig;
-    exports.ɵea = reducerProvider$8;
-    exports.ɵeb = clearCmsState;
-    exports.ɵec = metaReducers$4;
-    exports.ɵed = effects$7;
-    exports.ɵee = ComponentsEffects;
-    exports.ɵef = NavigationEntryItemEffects;
-    exports.ɵeg = PageEffects;
-    exports.ɵeh = reducer$g;
-    exports.ɵei = reducer$h;
-    exports.ɵej = reducer$e;
-    exports.ɵek = reducer$f;
-    exports.ɵel = GlobalMessageStoreModule;
-    exports.ɵem = getReducers$4;
-    exports.ɵen = reducerToken$4;
-    exports.ɵeo = reducerProvider$4;
-    exports.ɵep = reducer$8;
-    exports.ɵeq = GlobalMessageEffect;
-    exports.ɵer = defaultGlobalMessageConfigFactory;
-    exports.ɵes = HttpErrorInterceptor;
-    exports.ɵet = defaultI18nConfig;
-    exports.ɵeu = i18nextProviders;
-    exports.ɵev = i18nextInit;
-    exports.ɵew = MockTranslationService;
-    exports.ɵex = kymaStoreConfigFactory;
-    exports.ɵey = KymaStoreModule;
-    exports.ɵez = getReducers$9;
+    exports.ɵea = reducer$g;
+    exports.ɵeb = reducer$d;
+    exports.ɵec = reducer$e;
+    exports.ɵed = GlobalMessageStoreModule;
+    exports.ɵee = getReducers$4;
+    exports.ɵef = reducerToken$4;
+    exports.ɵeg = reducerProvider$4;
+    exports.ɵeh = reducer$8;
+    exports.ɵei = GlobalMessageEffect;
+    exports.ɵej = defaultGlobalMessageConfigFactory;
+    exports.ɵek = HttpErrorInterceptor;
+    exports.ɵel = defaultI18nConfig;
+    exports.ɵem = i18nextProviders;
+    exports.ɵen = i18nextInit;
+    exports.ɵeo = MockTranslationService;
+    exports.ɵep = kymaStoreConfigFactory;
+    exports.ɵeq = KymaStoreModule;
+    exports.ɵer = getReducers$8;
+    exports.ɵes = reducerToken$8;
+    exports.ɵet = reducerProvider$8;
+    exports.ɵeu = clearKymaState;
+    exports.ɵev = metaReducers$4;
+    exports.ɵew = effects$8;
+    exports.ɵex = OpenIdTokenEffect;
+    exports.ɵey = OpenIdAuthenticationTokenService;
+    exports.ɵez = defaultKymaConfig;
     exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = reducerToken$9;
-    exports.ɵfb = reducerProvider$9;
-    exports.ɵfc = clearKymaState;
-    exports.ɵfd = metaReducers$5;
-    exports.ɵfe = effects$8;
-    exports.ɵff = OpenIdTokenEffect;
-    exports.ɵfg = OpenIdAuthenticationTokenService;
-    exports.ɵfh = defaultKymaConfig;
-    exports.ɵfi = defaultOccAsmConfig;
-    exports.ɵfj = defaultOccCartConfig;
-    exports.ɵfk = OccSaveCartAdapter;
-    exports.ɵfl = defaultOccProductConfig;
-    exports.ɵfm = defaultOccSiteContextConfig;
-    exports.ɵfn = defaultOccStoreFinderConfig;
-    exports.ɵfo = defaultOccUserConfig;
-    exports.ɵfp = UserNotificationPreferenceAdapter;
-    exports.ɵfq = defaultPersonalizationConfig;
-    exports.ɵfr = interceptors$3;
-    exports.ɵfs = OccPersonalizationIdInterceptor;
-    exports.ɵft = OccPersonalizationTimeInterceptor;
-    exports.ɵfu = ProcessStoreModule;
-    exports.ɵfv = getReducers$a;
-    exports.ɵfw = reducerToken$a;
-    exports.ɵfx = reducerProvider$a;
-    exports.ɵfy = productStoreConfigFactory;
-    exports.ɵfz = ProductStoreModule;
+    exports.ɵfa = defaultOccAsmConfig;
+    exports.ɵfb = defaultOccCartConfig;
+    exports.ɵfc = OccSaveCartAdapter;
+    exports.ɵfd = defaultOccProductConfig;
+    exports.ɵfe = defaultOccSiteContextConfig;
+    exports.ɵff = defaultOccStoreFinderConfig;
+    exports.ɵfg = defaultOccUserConfig;
+    exports.ɵfh = UserNotificationPreferenceAdapter;
+    exports.ɵfi = defaultPersonalizationConfig;
+    exports.ɵfj = interceptors$3;
+    exports.ɵfk = OccPersonalizationIdInterceptor;
+    exports.ɵfl = OccPersonalizationTimeInterceptor;
+    exports.ɵfm = ProcessStoreModule;
+    exports.ɵfn = getReducers$9;
+    exports.ɵfo = reducerToken$9;
+    exports.ɵfp = reducerProvider$9;
+    exports.ɵfq = productStoreConfigFactory;
+    exports.ɵfr = ProductStoreModule;
+    exports.ɵfs = getReducers$a;
+    exports.ɵft = reducerToken$a;
+    exports.ɵfu = reducerProvider$a;
+    exports.ɵfv = clearProductsState;
+    exports.ɵfw = metaReducers$5;
+    exports.ɵfx = effects$9;
+    exports.ɵfy = ProductReferencesEffects;
+    exports.ɵfz = ProductReviewsEffects;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = getReducers$b;
-    exports.ɵgb = reducerToken$b;
-    exports.ɵgc = reducerProvider$b;
-    exports.ɵgd = clearProductsState;
-    exports.ɵge = metaReducers$6;
-    exports.ɵgf = effects$9;
-    exports.ɵgg = ProductReferencesEffects;
-    exports.ɵgh = ProductReviewsEffects;
-    exports.ɵgi = ProductsSearchEffects;
-    exports.ɵgj = ProductEffects;
-    exports.ɵgk = reducer$i;
-    exports.ɵgl = entityScopedLoaderReducer;
-    exports.ɵgm = scopedLoaderReducer;
-    exports.ɵgn = reducer$k;
-    exports.ɵgo = reducer$j;
-    exports.ɵgp = PageMetaResolver;
-    exports.ɵgq = addExternalRoutesFactory;
-    exports.ɵgr = getReducers$7;
-    exports.ɵgs = reducer$d;
-    exports.ɵgt = reducerToken$7;
-    exports.ɵgu = reducerProvider$7;
-    exports.ɵgv = CustomSerializer;
-    exports.ɵgw = effects$6;
-    exports.ɵgx = RouterEffects;
-    exports.ɵgy = siteContextStoreConfigFactory;
-    exports.ɵgz = SiteContextStoreModule;
+    exports.ɵga = ProductsSearchEffects;
+    exports.ɵgb = ProductEffects;
+    exports.ɵgc = reducer$h;
+    exports.ɵgd = entityScopedLoaderReducer;
+    exports.ɵge = scopedLoaderReducer;
+    exports.ɵgf = reducer$j;
+    exports.ɵgg = reducer$i;
+    exports.ɵgh = PageMetaResolver;
+    exports.ɵgi = addExternalRoutesFactory;
+    exports.ɵgj = getReducers$6;
+    exports.ɵgk = reducer$c;
+    exports.ɵgl = reducerToken$6;
+    exports.ɵgm = reducerProvider$6;
+    exports.ɵgn = CustomSerializer;
+    exports.ɵgo = effects$6;
+    exports.ɵgp = RouterEffects;
+    exports.ɵgq = siteContextStoreConfigFactory;
+    exports.ɵgr = SiteContextStoreModule;
+    exports.ɵgs = getReducers$1;
+    exports.ɵgt = reducerToken$1;
+    exports.ɵgu = reducerProvider$1;
+    exports.ɵgv = effects$2;
+    exports.ɵgw = LanguagesEffects;
+    exports.ɵgx = CurrenciesEffects;
+    exports.ɵgy = BaseSiteEffects;
+    exports.ɵgz = reducer$3;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = getReducers$1;
-    exports.ɵhb = reducerToken$1;
-    exports.ɵhc = reducerProvider$1;
-    exports.ɵhd = effects$2;
-    exports.ɵhe = LanguagesEffects;
-    exports.ɵhf = CurrenciesEffects;
-    exports.ɵhg = BaseSiteEffects;
-    exports.ɵhh = reducer$3;
-    exports.ɵhi = reducer$2;
-    exports.ɵhj = reducer$1;
-    exports.ɵhk = defaultSiteContextConfigFactory;
-    exports.ɵhl = initializeContext;
-    exports.ɵhm = contextServiceProviders;
-    exports.ɵhn = initSiteContextRoutesHandler;
-    exports.ɵho = siteContextParamsProviders;
-    exports.ɵhp = SiteContextUrlSerializer;
-    exports.ɵhq = SiteContextRoutesHandler;
-    exports.ɵhr = baseSiteConfigValidator;
-    exports.ɵhs = interceptors$4;
-    exports.ɵht = CmsTicketInterceptor;
-    exports.ɵhu = StoreFinderStoreModule;
+    exports.ɵha = reducer$2;
+    exports.ɵhb = reducer$1;
+    exports.ɵhc = defaultSiteContextConfigFactory;
+    exports.ɵhd = initializeContext;
+    exports.ɵhe = contextServiceProviders;
+    exports.ɵhf = initSiteContextRoutesHandler;
+    exports.ɵhg = siteContextParamsProviders;
+    exports.ɵhh = SiteContextUrlSerializer;
+    exports.ɵhi = SiteContextRoutesHandler;
+    exports.ɵhj = baseSiteConfigValidator;
+    exports.ɵhk = interceptors$4;
+    exports.ɵhl = CmsTicketInterceptor;
+    exports.ɵhm = StoreFinderStoreModule;
+    exports.ɵhn = getReducers$b;
+    exports.ɵho = reducerToken$b;
+    exports.ɵhp = reducerProvider$b;
+    exports.ɵhq = effects$a;
+    exports.ɵhr = FindStoresEffect;
+    exports.ɵhs = ViewAllStoresEffect;
+    exports.ɵht = defaultStoreFinderConfig;
+    exports.ɵhu = UserStoreModule;
     exports.ɵhv = getReducers$c;
     exports.ɵhw = reducerToken$c;
     exports.ɵhx = reducerProvider$c;
-    exports.ɵhy = effects$a;
-    exports.ɵhz = FindStoresEffect;
+    exports.ɵhy = clearUserState;
+    exports.ɵhz = metaReducers$7;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = ViewAllStoresEffect;
-    exports.ɵib = defaultStoreFinderConfig;
-    exports.ɵic = UserStoreModule;
-    exports.ɵid = getReducers$d;
-    exports.ɵie = reducerToken$d;
-    exports.ɵif = reducerProvider$d;
-    exports.ɵig = clearUserState;
-    exports.ɵih = metaReducers$8;
-    exports.ɵii = effects$b;
-    exports.ɵij = BillingCountriesEffect;
-    exports.ɵik = ClearMiscsDataEffect;
-    exports.ɵil = ConsignmentTrackingEffects;
-    exports.ɵim = DeliveryCountriesEffects;
-    exports.ɵin = NotificationPreferenceEffects;
-    exports.ɵio = OrderDetailsEffect;
-    exports.ɵip = OrderReturnRequestEffect;
-    exports.ɵiq = UserPaymentMethodsEffects;
-    exports.ɵir = RegionsEffects;
-    exports.ɵis = ResetPasswordEffects;
-    exports.ɵit = TitlesEffects;
-    exports.ɵiu = UserAddressesEffects;
-    exports.ɵiv = UserConsentsEffect;
-    exports.ɵiw = UserDetailsEffects;
-    exports.ɵix = UserOrdersEffect;
-    exports.ɵiy = UserRegisterEffects;
-    exports.ɵiz = CustomerCouponEffects;
+    exports.ɵia = effects$b;
+    exports.ɵib = BillingCountriesEffect;
+    exports.ɵic = ClearMiscsDataEffect;
+    exports.ɵid = ConsignmentTrackingEffects;
+    exports.ɵie = DeliveryCountriesEffects;
+    exports.ɵif = NotificationPreferenceEffects;
+    exports.ɵig = OrderDetailsEffect;
+    exports.ɵih = OrderReturnRequestEffect;
+    exports.ɵii = UserPaymentMethodsEffects;
+    exports.ɵij = RegionsEffects;
+    exports.ɵik = ResetPasswordEffects;
+    exports.ɵil = TitlesEffects;
+    exports.ɵim = UserAddressesEffects;
+    exports.ɵin = UserConsentsEffect;
+    exports.ɵio = UserDetailsEffects;
+    exports.ɵip = UserOrdersEffect;
+    exports.ɵiq = UserRegisterEffects;
+    exports.ɵir = CustomerCouponEffects;
+    exports.ɵis = ProductInterestsEffect;
+    exports.ɵit = ForgotPasswordEffects;
+    exports.ɵiu = UpdateEmailEffects;
+    exports.ɵiv = UpdatePasswordEffects;
+    exports.ɵiw = UserNotificationPreferenceConnector;
+    exports.ɵix = reducer$v;
+    exports.ɵiy = reducer$t;
+    exports.ɵiz = reducer$k;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = ProductInterestsEffect;
-    exports.ɵjb = ForgotPasswordEffects;
-    exports.ɵjc = UpdateEmailEffects;
-    exports.ɵjd = UpdatePasswordEffects;
-    exports.ɵje = UserNotificationPreferenceConnector;
-    exports.ɵjf = reducer$w;
-    exports.ɵjg = reducer$u;
-    exports.ɵjh = reducer$l;
-    exports.ɵji = reducer$v;
-    exports.ɵjj = reducer$q;
+    exports.ɵja = reducer$u;
+    exports.ɵjb = reducer$p;
+    exports.ɵjc = reducer$w;
+    exports.ɵjd = reducer$o;
+    exports.ɵje = reducer$z;
+    exports.ɵjf = reducer$m;
+    exports.ɵjg = reducer$s;
+    exports.ɵjh = reducer$q;
+    exports.ɵji = reducer$r;
+    exports.ɵjj = reducer$l;
     exports.ɵjk = reducer$x;
-    exports.ɵjl = reducer$p;
-    exports.ɵjm = reducer$A;
-    exports.ɵjn = reducer$n;
-    exports.ɵjo = reducer$t;
-    exports.ɵjp = reducer$r;
-    exports.ɵjq = reducer$s;
-    exports.ɵjr = reducer$m;
-    exports.ɵjs = reducer$y;
-    exports.ɵjt = reducer$o;
-    exports.ɵju = reducer$z;
-    exports.ɵjv = FindProductPageMetaResolver;
-    exports.ɵjw = PageMetaResolver;
+    exports.ɵjl = reducer$n;
+    exports.ɵjm = reducer$y;
+    exports.ɵjn = FindProductPageMetaResolver;
+    exports.ɵjo = PageMetaResolver;
     exports.ɵk = getStorageSyncReducer;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$2;

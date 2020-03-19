@@ -1,4 +1,4 @@
-import { StateLoaderActions } from '../../../state/utils/index';
+import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 export declare const CART_ADD_ENTRY = "[Cart-entry] Add Entry";
 export declare const CART_ADD_ENTRY_SUCCESS = "[Cart-entry] Add Entry Success";
 export declare const CART_ADD_ENTRY_FAIL = "[Cart-entry] Add Entry Fail";
@@ -8,7 +8,7 @@ export declare const CART_REMOVE_ENTRY_FAIL = "[Cart-entry] Remove Entry Fail";
 export declare const CART_UPDATE_ENTRY = "[Cart-entry] Update Entry";
 export declare const CART_UPDATE_ENTRY_SUCCESS = "[Cart-entry] Update Entry Success";
 export declare const CART_UPDATE_ENTRY_FAIL = "[Cart-entry] Update Entry Fail";
-export declare class CartAddEntry extends StateLoaderActions.LoaderLoadAction {
+export declare class CartAddEntry extends EntityProcessesIncrementAction {
     payload: {
         cartId: string;
         userId: string;
@@ -23,7 +23,7 @@ export declare class CartAddEntry extends StateLoaderActions.LoaderLoadAction {
         quantity: number;
     });
 }
-export declare class CartAddEntrySuccess extends StateLoaderActions.LoaderSuccessAction {
+export declare class CartAddEntrySuccess extends EntityProcessesDecrementAction {
     payload: {
         userId: string;
         cartId: string;
@@ -36,12 +36,20 @@ export declare class CartAddEntrySuccess extends StateLoaderActions.LoaderSucces
         [key: string]: any;
     });
 }
-export declare class CartAddEntryFail extends StateLoaderActions.LoaderFailAction {
-    payload: any;
+export declare class CartAddEntryFail extends EntityProcessesDecrementAction {
+    payload: {
+        userId: string;
+        cartId: string;
+        error: any;
+    };
     readonly type = "[Cart-entry] Add Entry Fail";
-    constructor(payload: any);
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+        error: any;
+    });
 }
-export declare class CartRemoveEntry extends StateLoaderActions.LoaderLoadAction {
+export declare class CartRemoveEntry extends EntityProcessesIncrementAction {
     payload: {
         cartId: string;
         userId: string;
@@ -54,7 +62,7 @@ export declare class CartRemoveEntry extends StateLoaderActions.LoaderLoadAction
         entry: string;
     });
 }
-export declare class CartRemoveEntrySuccess extends StateLoaderActions.LoaderSuccessAction {
+export declare class CartRemoveEntrySuccess extends EntityProcessesDecrementAction {
     payload: {
         userId: string;
         cartId: string;
@@ -65,12 +73,20 @@ export declare class CartRemoveEntrySuccess extends StateLoaderActions.LoaderSuc
         cartId: string;
     });
 }
-export declare class CartRemoveEntryFail extends StateLoaderActions.LoaderFailAction {
-    payload: any;
+export declare class CartRemoveEntryFail extends EntityProcessesDecrementAction {
+    payload: {
+        error: any;
+        cartId: string;
+        userId: string;
+    };
     readonly type = "[Cart-entry] Remove Entry Fail";
-    constructor(payload: any);
+    constructor(payload: {
+        error: any;
+        cartId: string;
+        userId: string;
+    });
 }
-export declare class CartUpdateEntry extends StateLoaderActions.LoaderLoadAction {
+export declare class CartUpdateEntry extends EntityProcessesIncrementAction {
     payload: {
         userId: string;
         cartId: string;
@@ -85,7 +101,7 @@ export declare class CartUpdateEntry extends StateLoaderActions.LoaderLoadAction
         qty: number;
     });
 }
-export declare class CartUpdateEntrySuccess extends StateLoaderActions.LoaderSuccessAction {
+export declare class CartUpdateEntrySuccess extends EntityProcessesDecrementAction {
     payload: {
         userId: string;
         cartId: string;
@@ -96,9 +112,17 @@ export declare class CartUpdateEntrySuccess extends StateLoaderActions.LoaderSuc
         cartId: string;
     });
 }
-export declare class CartUpdateEntryFail extends StateLoaderActions.LoaderFailAction {
-    payload: any;
+export declare class CartUpdateEntryFail extends EntityProcessesDecrementAction {
+    payload: {
+        error: any;
+        userId: string;
+        cartId: string;
+    };
     readonly type = "[Cart-entry] Update Entry Fail";
-    constructor(payload: any);
+    constructor(payload: {
+        error: any;
+        userId: string;
+        cartId: string;
+    });
 }
 export declare type CartEntryAction = CartAddEntry | CartAddEntrySuccess | CartAddEntryFail | CartRemoveEntry | CartRemoveEntrySuccess | CartRemoveEntryFail | CartUpdateEntry | CartUpdateEntrySuccess | CartUpdateEntryFail;

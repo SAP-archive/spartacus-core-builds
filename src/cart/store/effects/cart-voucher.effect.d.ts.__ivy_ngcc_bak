@@ -9,6 +9,6 @@ export declare class CartVoucherEffects {
     private messageService;
     constructor(actions$: Actions, cartVoucherConnector: CartVoucherConnector, messageService: GlobalMessageService);
     addCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.LoadCart | CartActions.CartProcessesDecrement>;
-    removeCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.CartProcessesDecrement | CartActions.LoadCart>;
+    removeCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.LoadCart>;
     private showGlobalMessage;
 }

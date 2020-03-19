@@ -2,13 +2,12 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/index';
 import * as fromProcessStore from '../../process/store/process-state';
-import { StateWithCart } from '../store/cart-state';
 import { ActiveCartService } from './active-cart.service';
 export declare class CartVoucherService {
-    protected store: Store<StateWithCart | fromProcessStore.StateWithProcess<void>>;
+    protected store: Store<fromProcessStore.StateWithProcess<void>>;
     protected authService: AuthService;
     protected activeCartService: ActiveCartService;
-    constructor(store: Store<StateWithCart | fromProcessStore.StateWithProcess<void>>, authService: AuthService, activeCartService: ActiveCartService);
+    constructor(store: Store<fromProcessStore.StateWithProcess<void>>, authService: AuthService, activeCartService: ActiveCartService);
     addVoucher(voucherId: string, cartId?: string): void;
     removeVoucher(voucherId: string, cartId?: string): void;
     getAddVoucherResultError(): Observable<boolean>;
