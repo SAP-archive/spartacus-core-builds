@@ -22890,7 +22890,9 @@ var ProductService = /** @class */ (function () {
      */
     ProductService.prototype.get = function (productCode, scopes) {
         if (scopes === void 0) { scopes = ''; }
-        return this.productLoading.get(productCode, [].concat(scopes));
+        return productCode
+            ? this.productLoading.get(productCode, [].concat(scopes))
+            : of(undefined);
     };
     /**
      * Returns boolean observable for product's loading state

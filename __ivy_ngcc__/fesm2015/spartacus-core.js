@@ -19800,7 +19800,9 @@ let ProductService = class ProductService {
      * @param scopes Scope or scopes of the product data
      */
     get(productCode, scopes = '') {
-        return this.productLoading.get(productCode, [].concat(scopes));
+        return productCode
+            ? this.productLoading.get(productCode, [].concat(scopes))
+            : of(undefined);
     }
     /**
      * Returns boolean observable for product's loading state
