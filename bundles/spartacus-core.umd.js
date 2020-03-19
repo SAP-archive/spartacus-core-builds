@@ -5925,9 +5925,7 @@
                 else {
                     // multiple scopes per url
                     // we have to split the model per each scope
-                    var data$_1 = dataFactory(url).pipe(operators.shareReplay(1), 
-                    // TODO deprecated since 1.4, remove
-                    operators.map(function (data) { return JSON.parse(JSON.stringify(data)); }));
+                    var data$_1 = dataFactory(url).pipe(operators.shareReplay(1));
                     groupedModels.forEach(function (modelData) {
                         result.push(__assign(__assign({}, modelData.scopedData), { data$: data$_1.pipe(operators.map(function (data) { return extractFields(data, modelData.fields); })) }));
                     });

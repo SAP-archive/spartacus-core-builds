@@ -5734,9 +5734,7 @@ var OccRequestsOptimizerService = /** @class */ (function () {
             else {
                 // multiple scopes per url
                 // we have to split the model per each scope
-                var data$_1 = dataFactory(url).pipe(shareReplay(1), 
-                // TODO deprecated since 1.4, remove
-                map(function (data) { return JSON.parse(JSON.stringify(data)); }));
+                var data$_1 = dataFactory(url).pipe(shareReplay(1));
                 groupedModels.forEach(function (modelData) {
                     result.push(__assign(__assign({}, modelData.scopedData), { data$: data$_1.pipe(map(function (data) { return extractFields(data, modelData.fields); })) }));
                 });
