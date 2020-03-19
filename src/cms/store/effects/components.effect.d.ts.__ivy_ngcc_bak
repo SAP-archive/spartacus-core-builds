@@ -1,14 +1,12 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { FeatureConfigService } from '../../../features-config/services/feature-config.service';
 import { CmsComponent } from '../../../model/cms.model';
 import { CmsComponentConnector } from '../../connectors/component/cms-component.connector';
 import { CmsActions } from '../actions/index';
 export declare class ComponentsEffects {
     private actions$;
     private cmsComponentLoader;
-    private featureConfigService;
-    constructor(actions$: Actions, cmsComponentLoader: CmsComponentConnector, featureConfigService: FeatureConfigService);
+    constructor(actions$: Actions, cmsComponentLoader: CmsComponentConnector);
     private contextChange$;
     loadComponent$: (({ scheduler, debounce }?: any) => Observable<CmsActions.LoadCmsComponentFail | CmsActions.LoadCmsComponentSuccess<CmsComponent>>) & import("@ngrx/effects").CreateEffectMetadata;
     private loadComponentsEffect;

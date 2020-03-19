@@ -19564,11 +19564,10 @@ var CmsComponentConnector = /** @class */ (function () {
 }());
 
 var ComponentsEffects = /** @class */ (function () {
-    function ComponentsEffects(actions$, cmsComponentLoader, featureConfigService) {
+    function ComponentsEffects(actions$, cmsComponentLoader) {
         var _this = this;
         this.actions$ = actions$;
         this.cmsComponentLoader = cmsComponentLoader;
-        this.featureConfigService = featureConfigService;
         this.contextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
         this.loadComponent$ = createEffect(function () { return function (_a) {
             var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
@@ -19580,26 +19579,6 @@ var ComponentsEffects = /** @class */ (function () {
         }; });
     }
     ComponentsEffects.prototype.loadComponentsEffect = function (componentUids, pageContext) {
-        var _this = this;
-        // TODO: remove, deprecated behavior since 1.4
-        if (!this.featureConfigService.isLevel('1.4')) {
-            return merge.apply(void 0, __spread(componentUids.map(function (uid) {
-                return _this.cmsComponentLoader.get(uid, pageContext).pipe(map(function (component) {
-                    return new LoadCmsComponentSuccess({
-                        component: component,
-                        uid: component.uid,
-                        pageContext: pageContext,
-                    });
-                }), catchError(function (error) {
-                    return of(new LoadCmsComponentFail({
-                        uid: uid,
-                        error: makeErrorSerializable(error),
-                        pageContext: pageContext,
-                    }));
-                }));
-            })));
-        }
-        // END OF (TODO: remove, deprecated behavior since 1.4)
         return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap(function (components) {
             return from(components.map(function (component) {
                 return new LoadCmsComponentSuccess({
@@ -19620,8 +19599,7 @@ var ComponentsEffects = /** @class */ (function () {
     };
     ComponentsEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: CmsComponentConnector },
-        { type: FeatureConfigService }
+        { type: CmsComponentConnector }
     ]; };
     ComponentsEffects = __decorate([
         Injectable()

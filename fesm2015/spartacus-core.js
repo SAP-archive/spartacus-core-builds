@@ -17328,27 +17328,13 @@ CmsComponentConnector = __decorate([
 ], CmsComponentConnector);
 
 let ComponentsEffects = class ComponentsEffects {
-    constructor(actions$, cmsComponentLoader, featureConfigService) {
+    constructor(actions$, cmsComponentLoader) {
         this.actions$ = actions$;
         this.cmsComponentLoader = cmsComponentLoader;
-        this.featureConfigService = featureConfigService;
         this.contextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
         this.loadComponent$ = createEffect(() => ({ scheduler, debounce = 0 } = {}) => this.actions$.pipe(ofType(LOAD_CMS_COMPONENT), groupBy(actions => serializePageContext(actions.payload.pageContext)), mergeMap(actionGroup => actionGroup.pipe(bufferDebounceTime(debounce, scheduler), mergeMap(actions => this.loadComponentsEffect(actions.map(action => action.payload.uid), actions[0].payload.pageContext)))), withdrawOn(this.contextChange$)));
     }
     loadComponentsEffect(componentUids, pageContext) {
-        // TODO: remove, deprecated behavior since 1.4
-        if (!this.featureConfigService.isLevel('1.4')) {
-            return merge(...componentUids.map(uid => this.cmsComponentLoader.get(uid, pageContext).pipe(map(component => new LoadCmsComponentSuccess({
-                component,
-                uid: component.uid,
-                pageContext,
-            })), catchError(error => of(new LoadCmsComponentFail({
-                uid,
-                error: makeErrorSerializable(error),
-                pageContext,
-            }))))));
-        }
-        // END OF (TODO: remove, deprecated behavior since 1.4)
         return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap(components => from(components.map(component => new LoadCmsComponentSuccess({
             component,
             uid: component.uid,
@@ -17362,8 +17348,7 @@ let ComponentsEffects = class ComponentsEffects {
 };
 ComponentsEffects.ctorParameters = () => [
     { type: Actions },
-    { type: CmsComponentConnector },
-    { type: FeatureConfigService }
+    { type: CmsComponentConnector }
 ];
 ComponentsEffects = __decorate([
     Injectable()

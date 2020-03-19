@@ -19755,11 +19755,10 @@
     }());
 
     var ComponentsEffects = /** @class */ (function () {
-        function ComponentsEffects(actions$, cmsComponentLoader, featureConfigService) {
+        function ComponentsEffects(actions$, cmsComponentLoader) {
             var _this = this;
             this.actions$ = actions$;
             this.cmsComponentLoader = cmsComponentLoader;
-            this.featureConfigService = featureConfigService;
             this.contextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
             this.loadComponent$ = effects$c.createEffect(function () { return function (_a) {
                 var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
@@ -19771,26 +19770,6 @@
             }; });
         }
         ComponentsEffects.prototype.loadComponentsEffect = function (componentUids, pageContext) {
-            var _this = this;
-            // TODO: remove, deprecated behavior since 1.4
-            if (!this.featureConfigService.isLevel('1.4')) {
-                return rxjs.merge.apply(void 0, __spread(componentUids.map(function (uid) {
-                    return _this.cmsComponentLoader.get(uid, pageContext).pipe(operators.map(function (component) {
-                        return new LoadCmsComponentSuccess({
-                            component: component,
-                            uid: component.uid,
-                            pageContext: pageContext,
-                        });
-                    }), operators.catchError(function (error) {
-                        return rxjs.of(new LoadCmsComponentFail({
-                            uid: uid,
-                            error: makeErrorSerializable(error),
-                            pageContext: pageContext,
-                        }));
-                    }));
-                })));
-            }
-            // END OF (TODO: remove, deprecated behavior since 1.4)
             return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(operators.switchMap(function (components) {
                 return rxjs.from(components.map(function (component) {
                     return new LoadCmsComponentSuccess({
@@ -19811,8 +19790,7 @@
         };
         ComponentsEffects.ctorParameters = function () { return [
             { type: effects$c.Actions },
-            { type: CmsComponentConnector },
-            { type: FeatureConfigService }
+            { type: CmsComponentConnector }
         ]; };
         ComponentsEffects = __decorate([
             core.Injectable()

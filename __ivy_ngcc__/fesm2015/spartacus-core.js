@@ -16914,27 +16914,13 @@ CmsComponentConnector.ctorParameters = () => [
 CmsComponentConnector.ɵprov = ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(ɵɵinject(CmsStructureConfigService), ɵɵinject(CmsComponentAdapter), ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
 
 let ComponentsEffects = class ComponentsEffects {
-    constructor(actions$, cmsComponentLoader, featureConfigService) {
+    constructor(actions$, cmsComponentLoader) {
         this.actions$ = actions$;
         this.cmsComponentLoader = cmsComponentLoader;
-        this.featureConfigService = featureConfigService;
         this.contextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
         this.loadComponent$ = createEffect(() => ({ scheduler, debounce = 0 } = {}) => this.actions$.pipe(ofType(LOAD_CMS_COMPONENT), groupBy(actions => serializePageContext(actions.payload.pageContext)), mergeMap(actionGroup => actionGroup.pipe(bufferDebounceTime(debounce, scheduler), mergeMap(actions => this.loadComponentsEffect(actions.map(action => action.payload.uid), actions[0].payload.pageContext)))), withdrawOn(this.contextChange$)));
     }
     loadComponentsEffect(componentUids, pageContext) {
-        // TODO: remove, deprecated behavior since 1.4
-        if (!this.featureConfigService.isLevel('1.4')) {
-            return merge(...componentUids.map(uid => this.cmsComponentLoader.get(uid, pageContext).pipe(map(component => new LoadCmsComponentSuccess({
-                component,
-                uid: component.uid,
-                pageContext,
-            })), catchError(error => of(new LoadCmsComponentFail({
-                uid,
-                error: makeErrorSerializable(error),
-                pageContext,
-            }))))));
-        }
-        // END OF (TODO: remove, deprecated behavior since 1.4)
         return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap(components => from(components.map(component => new LoadCmsComponentSuccess({
             component,
             uid: component.uid,
@@ -16946,12 +16932,11 @@ let ComponentsEffects = class ComponentsEffects {
         })))));
     }
 };
-ComponentsEffects.ɵfac = function ComponentsEffects_Factory(t) { return new (t || ComponentsEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CmsComponentConnector), ɵngcc0.ɵɵinject(FeatureConfigService)); };
+ComponentsEffects.ɵfac = function ComponentsEffects_Factory(t) { return new (t || ComponentsEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CmsComponentConnector)); };
 ComponentsEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: ComponentsEffects, factory: ComponentsEffects.ɵfac });
 ComponentsEffects.ctorParameters = () => [
     { type: Actions },
-    { type: CmsComponentConnector },
-    { type: FeatureConfigService }
+    { type: CmsComponentConnector }
 ];
 
 /**
@@ -24538,7 +24523,7 @@ const ɵUnknownErrorHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Unknow
     }], function () { return [{ type: CmsStructureConfigService }, { type: CmsComponentAdapter }, { type: OccConfig }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ComponentsEffects, [{
         type: Injectable
-    }], function () { return [{ type: ɵngcc4.Actions }, { type: CmsComponentConnector }, { type: FeatureConfigService }]; }, null); })();
+    }], function () { return [{ type: ɵngcc4.Actions }, { type: CmsComponentConnector }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(GlobService, [{
         type: Injectable,
         args: [{ providedIn: 'root' }]
