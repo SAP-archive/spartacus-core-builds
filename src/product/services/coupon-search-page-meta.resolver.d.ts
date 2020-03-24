@@ -1,0 +1,32 @@
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/facade/auth.service';
+import { BreadcrumbMeta, Page } from '../../cms/model/page.model';
+import { PageBreadcrumbResolver, PageMetaResolver, PageTitleResolver } from '../../cms/page';
+import { TranslationService } from '../../i18n/translation.service';
+import { ProductSearchService } from '../../product/facade/product-search.service';
+import { SemanticPathService } from '../../routing/configurable-routes/url-translation/semantic-path.service';
+/**
+ * Resolves page meta data for the search result page, in case it's used
+ * to query coupons. This is done by adding a `couponcode` query parameter
+ * to the search page route.
+ *
+ * The page resolves an alternative page title and breadcrumb.
+ */
+import * as ɵngcc0 from '@angular/core';
+export declare class CouponSearchPageResolver extends PageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver {
+    protected productSearchService: ProductSearchService;
+    protected translation: TranslationService;
+    protected authService: AuthService;
+    protected route: ActivatedRoute;
+    protected semanticPathService: SemanticPathService;
+    protected total$: Observable<number>;
+    constructor(productSearchService: ProductSearchService, translation: TranslationService, authService: AuthService, route: ActivatedRoute, semanticPathService: SemanticPathService);
+    resolveBreadcrumbs(): Observable<BreadcrumbMeta[]>;
+    resolveTitle(): Observable<string>;
+    getScore(page: Page): number;
+    protected get couponCode(): string;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CouponSearchPageResolver>;
+}
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY291cG9uLXNlYXJjaC1wYWdlLW1ldGEucmVzb2x2ZXIuZC50cyIsInNvdXJjZXMiOlsiY291cG9uLXNlYXJjaC1wYWdlLW1ldGEucmVzb2x2ZXIuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Ozs7Ozs7Ozs7OztBQWVBOzs7Ozs7Ozs7Ozs7O0FBWUEiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBBY3RpdmF0ZWRSb3V0ZSB9IGZyb20gJ0Bhbmd1bGFyL3JvdXRlcic7XG5pbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBBdXRoU2VydmljZSB9IGZyb20gJy4uLy4uL2F1dGgvZmFjYWRlL2F1dGguc2VydmljZSc7XG5pbXBvcnQgeyBCcmVhZGNydW1iTWV0YSwgUGFnZSB9IGZyb20gJy4uLy4uL2Ntcy9tb2RlbC9wYWdlLm1vZGVsJztcbmltcG9ydCB7IFBhZ2VCcmVhZGNydW1iUmVzb2x2ZXIsIFBhZ2VNZXRhUmVzb2x2ZXIsIFBhZ2VUaXRsZVJlc29sdmVyIH0gZnJvbSAnLi4vLi4vY21zL3BhZ2UnO1xuaW1wb3J0IHsgVHJhbnNsYXRpb25TZXJ2aWNlIH0gZnJvbSAnLi4vLi4vaTE4bi90cmFuc2xhdGlvbi5zZXJ2aWNlJztcbmltcG9ydCB7IFByb2R1Y3RTZWFyY2hTZXJ2aWNlIH0gZnJvbSAnLi4vLi4vcHJvZHVjdC9mYWNhZGUvcHJvZHVjdC1zZWFyY2guc2VydmljZSc7XG5pbXBvcnQgeyBTZW1hbnRpY1BhdGhTZXJ2aWNlIH0gZnJvbSAnLi4vLi4vcm91dGluZy9jb25maWd1cmFibGUtcm91dGVzL3VybC10cmFuc2xhdGlvbi9zZW1hbnRpYy1wYXRoLnNlcnZpY2UnO1xuLyoqXG4gKiBSZXNvbHZlcyBwYWdlIG1ldGEgZGF0YSBmb3IgdGhlIHNlYXJjaCByZXN1bHQgcGFnZSwgaW4gY2FzZSBpdCdzIHVzZWRcbiAqIHRvIHF1ZXJ5IGNvdXBvbnMuIFRoaXMgaXMgZG9uZSBieSBhZGRpbmcgYSBgY291cG9uY29kZWAgcXVlcnkgcGFyYW1ldGVyXG4gKiB0byB0aGUgc2VhcmNoIHBhZ2Ugcm91dGUuXG4gKlxuICogVGhlIHBhZ2UgcmVzb2x2ZXMgYW4gYWx0ZXJuYXRpdmUgcGFnZSB0aXRsZSBhbmQgYnJlYWRjcnVtYi5cbiAqL1xuZXhwb3J0IGRlY2xhcmUgY2xhc3MgQ291cG9uU2VhcmNoUGFnZVJlc29sdmVyIGV4dGVuZHMgUGFnZU1ldGFSZXNvbHZlciBpbXBsZW1lbnRzIFBhZ2VUaXRsZVJlc29sdmVyLCBQYWdlQnJlYWRjcnVtYlJlc29sdmVyIHtcbiAgICBwcm90ZWN0ZWQgcHJvZHVjdFNlYXJjaFNlcnZpY2U6IFByb2R1Y3RTZWFyY2hTZXJ2aWNlO1xuICAgIHByb3RlY3RlZCB0cmFuc2xhdGlvbjogVHJhbnNsYXRpb25TZXJ2aWNlO1xuICAgIHByb3RlY3RlZCBhdXRoU2VydmljZTogQXV0aFNlcnZpY2U7XG4gICAgcHJvdGVjdGVkIHJvdXRlOiBBY3RpdmF0ZWRSb3V0ZTtcbiAgICBwcm90ZWN0ZWQgc2VtYW50aWNQYXRoU2VydmljZTogU2VtYW50aWNQYXRoU2VydmljZTtcbiAgICBwcm90ZWN0ZWQgdG90YWwkOiBPYnNlcnZhYmxlPG51bWJlcj47XG4gICAgY29uc3RydWN0b3IocHJvZHVjdFNlYXJjaFNlcnZpY2U6IFByb2R1Y3RTZWFyY2hTZXJ2aWNlLCB0cmFuc2xhdGlvbjogVHJhbnNsYXRpb25TZXJ2aWNlLCBhdXRoU2VydmljZTogQXV0aFNlcnZpY2UsIHJvdXRlOiBBY3RpdmF0ZWRSb3V0ZSwgc2VtYW50aWNQYXRoU2VydmljZTogU2VtYW50aWNQYXRoU2VydmljZSk7XG4gICAgcmVzb2x2ZUJyZWFkY3J1bWJzKCk6IE9ic2VydmFibGU8QnJlYWRjcnVtYk1ldGFbXT47XG4gICAgcmVzb2x2ZVRpdGxlKCk6IE9ic2VydmFibGU8c3RyaW5nPjtcbiAgICBnZXRTY29yZShwYWdlOiBQYWdlKTogbnVtYmVyO1xuICAgIHByb3RlY3RlZCBnZXQgY291cG9uQ29kZSgpOiBzdHJpbmc7XG59XG4iXX0=

@@ -5,7 +5,7 @@ import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, MET
 import { of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subject, BehaviorSubject, merge, Subscription, timer, queueScheduler, using, from, Observable, defer } from 'rxjs';
 import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, share, concatMap, mapTo, delay, debounce, observeOn, switchMapTo, groupBy, distinctUntilKeyChanged, auditTime, takeWhile } from 'rxjs/operators';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
+import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -12115,7 +12115,17 @@ AsmService.ctorParameters = () => [
 ];
 AsmService.ɵprov = ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(ɵɵinject(Store)); }, token: AsmService, providedIn: "root" });
 
+/**
+ * Abstract class that can be used to resolve meta data for specific pages.
+ * The `getScore` method is used to select the right resolver for a specific
+ * page, based on a score. The score is calculated by the (non)matching page
+ * type and page template.
+ */
 class PageMetaResolver {
+    /**
+     * Returns the matching score for a resolver class, based on
+     * the page type and page template.
+     */
     getScore(page) {
         let score = 0;
         if (this.pageType) {
@@ -14206,9 +14216,9 @@ var PageRobotsMeta;
 })(PageRobotsMeta || (PageRobotsMeta = {}));
 
 /**
- * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
- * and the `CartPageTemplate`. If the cart page matches this template, the more generic
- * `ContentPageMetaResolver` is overriden by this resolver.
+ * Resolves the page metadata for the Cart page (Using the `PageType.CONTENT_PAGE`
+ * and the `CartPageTemplate`). If the cart page matches this template, the more
+ * generic `ContentPageMetaResolver` is overriden by this resolver.
  *
  * The page title and robots are resolved in this implementation only.
  */
@@ -14223,18 +14233,14 @@ let CartPageMetaResolver = class CartPageMetaResolver extends PageMetaResolver {
         this.pageTemplate = 'CartPageTemplate';
     }
     /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
+     * Resolves the page title, which is driven by the backend.
      */
-    resolve() {
-        return this.cms$.pipe(switchMap(page => combineLatest([this.resolveTitle(page), this.resolveRobots()])), map(([title, robots]) => ({ title, robots })));
+    resolveTitle() {
+        return this.cms$.pipe(map(p => p.title));
     }
-    resolveTitle(page) {
-        return page ? of(page.title) : this.cms$.pipe(map(p => p.title));
-    }
+    /**
+     * Returns robots for the cart pages, which default to NOINDEX and NOFOLLOW.
+     */
     resolveRobots() {
         return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
     }
@@ -15658,19 +15664,8 @@ let CheckoutPageMetaResolver = class CheckoutPageMetaResolver extends PageMetaRe
         this.pageType = PageType.CONTENT_PAGE;
         this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
     }
-    /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
-     */
-    resolve() {
-        return this.cart$.pipe(switchMap(cart => combineLatest([this.resolveTitle(cart), this.resolveRobots()])), map(([title, robots]) => ({ title, robots })));
-    }
-    resolveTitle(cart) {
-        const cart$ = cart ? of(cart) : this.cart$;
-        return cart$.pipe(switchMap(c => this.translation.translate('pageMetaResolver.checkout.title', {
+    resolveTitle() {
+        return this.cart$.pipe(switchMap(c => this.translation.translate('pageMetaResolver.checkout.title', {
             count: c.totalItems,
         })));
     }
@@ -16560,43 +16555,27 @@ let ContentPageMetaResolver = class ContentPageMetaResolver extends PageMetaReso
         super();
         this.cms = cms;
         this.translation = translation;
+        /** helper to provie access to the current CMS page */
         this.cms$ = this.cms
             .getCurrentPage()
-            .pipe(filter(p => !!p));
+            .pipe(filter(p => Boolean(p)));
         this.pageType = PageType.CONTENT_PAGE;
     }
     /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
+     * Resolves the page title for the ContentPage by taking the title
+     * from the backend data.
      */
-    resolve() {
-        return this.cms$.pipe(switchMap((page) => combineLatest([
-            this.resolveTitle(page),
-            this.resolveBreadcrumbLabel().pipe(switchMap(label => this.resolveBreadcrumbs(page, label))),
-        ])), map(([title, breadcrumbs]) => ({ title, breadcrumbs })));
-    }
-    resolveTitle(page) {
-        return page ? of(page.title) : this.cms$.pipe(map(p => p.title));
+    resolveTitle() {
+        return this.cms$.pipe(map(p => p.title));
     }
     /**
-     * @deprecated since version 1.3
-     * This method will removed with with 2.0
+     * Resolves a single breacrumb item to the home page for each `ContentPage`.
+     * The home page label is resolved from the translation service.
      */
-    resolveBreadcrumbLabel() {
-        return this.translation.translate('common.home');
-    }
-    resolveBreadcrumbs(_page, breadcrumbLabel) {
-        if (breadcrumbLabel) {
-            return of([{ label: breadcrumbLabel, link: '/' }]);
-        }
-        else {
-            return this.translation
-                .translate('common.home')
-                .pipe(map(label => [{ label: label, link: '/' }]));
-        }
+    resolveBreadcrumbs() {
+        return this.translation
+            .translate('common.home')
+            .pipe(map(label => [{ label: label, link: '/' }]));
     }
 };
 ContentPageMetaResolver.ɵfac = function ContentPageMetaResolver_Factory(t) { return new (t || ContentPageMetaResolver)(ɵngcc0.ɵɵinject(CmsService), ɵngcc0.ɵɵinject(TranslationService)); };
@@ -18012,10 +17991,9 @@ CmsModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: CmsModule });
 CmsModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CmsModule_Factory(t) { return new (t || CmsModule)(); }, imports: [[CmsStoreModule, CmsPageTitleModule]] });
 
 let PageMetaService = class PageMetaService {
-    constructor(resolvers, cms, featureConfigService) {
+    constructor(resolvers, cms) {
         this.resolvers = resolvers;
         this.cms = cms;
-        this.featureConfigService = featureConfigService;
         /**
          * The list of resolver interfaces will be evaluated for the pageResolvers.
          *
@@ -18046,29 +18024,23 @@ let PageMetaService = class PageMetaService {
         }));
     }
     /**
-     * If a pageResolver has implemented a resolver interface, the resolved data
+     * If a `PageResolver` has implemented a resolver interface, the resolved data
      * is merged into the `PageMeta` object.
      * @param metaResolver
      */
     resolve(metaResolver) {
-        if (metaResolver.resolve &&
-            (!this.featureConfigService || !this.featureConfigService.isLevel('1.3'))) {
-            return metaResolver.resolve();
-        }
-        else {
-            // resolve individual resolvers to make the extension mechanism more flexible
-            const resolveMethods = Object.keys(this.resolverMethods)
-                .filter(key => metaResolver[this.resolverMethods[key]])
-                .map(key => metaResolver[this.resolverMethods[key]]().pipe(map(data => ({
-                [key]: data,
-            }))));
-            return combineLatest(resolveMethods).pipe(map(data => Object.assign({}, ...data)));
-        }
+        const resolveMethods = Object.keys(this.resolverMethods)
+            .filter(key => metaResolver[this.resolverMethods[key]])
+            .map(key => metaResolver[this.resolverMethods[key]]().pipe(map(data => ({
+            [key]: data,
+        }))));
+        return combineLatest(resolveMethods).pipe(map(data => Object.assign({}, ...data)));
     }
     /**
-     * return the resolver with the best match
-     * resovers can by default match on PageType and page template
-     * but custom match comparisors can be implemented.
+     * Return the resolver with the best match, based on a score
+     * generated by the resolver.
+     *
+     * Resolvers match by default on `PageType` and `page.template`.
      */
     getMetaResolver(page) {
         const matchingResolvers = this.resolvers.filter(resolver => resolver.getScore(page) > 0);
@@ -18078,13 +18050,12 @@ let PageMetaService = class PageMetaService {
         return matchingResolvers[0];
     }
 };
-PageMetaService.ɵfac = function PageMetaService_Factory(t) { return new (t || PageMetaService)(ɵngcc0.ɵɵinject(PageMetaResolver, 8), ɵngcc0.ɵɵinject(CmsService), ɵngcc0.ɵɵinject(FeatureConfigService)); };
+PageMetaService.ɵfac = function PageMetaService_Factory(t) { return new (t || PageMetaService)(ɵngcc0.ɵɵinject(PageMetaResolver, 8), ɵngcc0.ɵɵinject(CmsService)); };
 PageMetaService.ctorParameters = () => [
     { type: Array, decorators: [{ type: Optional }, { type: Inject, args: [PageMetaResolver,] }] },
-    { type: CmsService },
-    { type: FeatureConfigService }
+    { type: CmsService }
 ];
-PageMetaService.ɵprov = ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(ɵɵinject(PageMetaResolver, 8), ɵɵinject(CmsService), ɵɵinject(FeatureConfigService)); }, token: PageMetaService, providedIn: "root" });
+PageMetaService.ɵprov = ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(ɵɵinject(PageMetaResolver, 8), ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
 PageMetaService = __decorate([ __param(0, Optional()),
     __param(0, Inject(PageMetaResolver))
 ], PageMetaService);
@@ -19773,15 +19744,13 @@ SearchboxService.ɵfac = function SearchboxService_Factory(t) { return ɵSearchb
 SearchboxService.ɵprov = ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(ɵɵinject(Store)); }, token: SearchboxService, providedIn: "root" });
 
 /**
- * Resolves the page data for the Product Listing Page
- * based on the `PageType.CATEGORY_PAGE`.
+ * Resolves the page data for the Product Listing Page.
  *
  * The page title, and breadcrumbs are resolved in this implementation only.
  */
 let CategoryPageMetaResolver = class CategoryPageMetaResolver extends PageMetaResolver {
-    constructor(routingService, productSearchService, cms, translation) {
+    constructor(productSearchService, cms, translation) {
         super();
-        this.routingService = routingService;
         this.productSearchService = productSearchService;
         this.cms = cms;
         this.translation = translation;
@@ -19794,49 +19763,21 @@ let CategoryPageMetaResolver = class CategoryPageMetaResolver extends PageMetaRe
             : of(page)));
         this.pageType = PageType.CATEGORY_PAGE;
     }
-    /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
-     */
-    resolve() {
-        return this.cms.getCurrentPage().pipe(filter(Boolean), switchMap((page) => {
-            // only the existence of a plp component tells us if products
-            // are rendered or if this is an ordinary content page
-            if (this.hasProductListComponent(page)) {
-                return this.productSearchService.getResults().pipe(filter(data => data.breadcrumbs && data.breadcrumbs.length > 0), switchMap(data => combineLatest([
-                    this.resolveTitle(data),
-                    this.resolveBreadcrumbLabel().pipe(switchMap(label => this.resolveBreadcrumbs(data, label))),
-                ])), map(([title, breadcrumbs]) => ({ title, breadcrumbs })));
-            }
-            else {
-                return of({
-                    title: page.title || page.name,
-                });
-            }
+    resolveTitle() {
+        return this.searchPage$.pipe(filter((page) => !!page.pagination), switchMap((p) => {
+            var _a;
+            return this.translation.translate('pageMetaResolver.category.title', {
+                count: p.pagination.totalResults,
+                query: ((_a = p.breadcrumbs) === null || _a === void 0 ? void 0 : _a.length) ? p.breadcrumbs[0].facetValueName
+                    : undefined,
+            });
         }));
     }
-    resolveTitle(searchPage) {
-        const searchPage$ = searchPage ? of(searchPage) : this.searchPage$;
-        return searchPage$.pipe(filter((page) => !!page.pagination), switchMap(p => this.translation.translate('pageMetaResolver.category.title', {
-            count: p.pagination.totalResults,
-            query: p.breadcrumbs[0].facetValueName,
-        })));
-    }
-    /**
-     * @deprecated since version 1.3
-     * This method will removed with with 2.0
-     */
-    resolveBreadcrumbLabel() {
-        return this.translation.translate('common.home');
-    }
-    resolveBreadcrumbs(searchPage, breadcrumbLabel) {
-        const sources = searchPage && breadcrumbLabel
-            ? [of(searchPage), of(breadcrumbLabel)]
-            : [this.searchPage$.pipe(), this.translation.translate('common.home')];
-        return combineLatest(sources).pipe(map(([p, label]) => p.breadcrumbs
+    resolveBreadcrumbs() {
+        return combineLatest([
+            this.searchPage$.pipe(),
+            this.translation.translate('common.home'),
+        ]).pipe(map(([p, label]) => p.breadcrumbs
             ? this.resolveBreadcrumbData(p, label)
             : null));
     }
@@ -19864,14 +19805,75 @@ let CategoryPageMetaResolver = class CategoryPageMetaResolver extends PageMetaRe
             comp.typeCode === 'ProductGridComponent'));
     }
 };
-CategoryPageMetaResolver.ɵfac = function CategoryPageMetaResolver_Factory(t) { return new (t || CategoryPageMetaResolver)(ɵngcc0.ɵɵinject(RoutingService), ɵngcc0.ɵɵinject(ProductSearchService), ɵngcc0.ɵɵinject(CmsService), ɵngcc0.ɵɵinject(TranslationService)); };
+CategoryPageMetaResolver.ɵfac = function CategoryPageMetaResolver_Factory(t) { return new (t || CategoryPageMetaResolver)(ɵngcc0.ɵɵinject(ProductSearchService), ɵngcc0.ɵɵinject(CmsService), ɵngcc0.ɵɵinject(TranslationService)); };
 CategoryPageMetaResolver.ctorParameters = () => [
-    { type: RoutingService },
     { type: ProductSearchService },
     { type: CmsService },
     { type: TranslationService }
 ];
-CategoryPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+CategoryPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(ɵɵinject(ProductSearchService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+
+/**
+ * Resolves page meta data for the search result page, in case it's used
+ * to query coupons. This is done by adding a `couponcode` query parameter
+ * to the search page route.
+ *
+ * The page resolves an alternative page title and breadcrumb.
+ */
+let CouponSearchPageResolver = class CouponSearchPageResolver extends PageMetaResolver {
+    constructor(productSearchService, translation, authService, route, semanticPathService) {
+        super();
+        this.productSearchService = productSearchService;
+        this.translation = translation;
+        this.authService = authService;
+        this.route = route;
+        this.semanticPathService = semanticPathService;
+        this.total$ = this.productSearchService.getResults().pipe(filter(data => { var _a; return !!((_a = data) === null || _a === void 0 ? void 0 : _a.pagination); }), map(results => results.pagination.totalResults));
+        this.pageType = PageType.CONTENT_PAGE;
+        this.pageTemplate = 'SearchResultsListPageTemplate';
+    }
+    resolveBreadcrumbs() {
+        return combineLatest([
+            this.translation.translate('common.home'),
+            this.translation.translate('myCoupons.myCoupons'),
+            this.authService.isUserLoggedIn(),
+        ]).pipe(map(([homeLabel, couponLabel, isLoggedIn]) => {
+            const breadcrumbs = [];
+            breadcrumbs.push({ label: homeLabel, link: '/' });
+            if (isLoggedIn) {
+                breadcrumbs.push({
+                    label: couponLabel,
+                    link: this.semanticPathService.transform({
+                        cxRoute: 'coupons',
+                    }),
+                });
+            }
+            return breadcrumbs;
+        }));
+    }
+    resolveTitle() {
+        return this.total$.pipe(switchMap((total) => this.translation.translate('pageMetaResolver.search.findProductTitle', {
+            count: total,
+            coupon: this.couponCode,
+        })));
+    }
+    getScore(page) {
+        return super.getScore(page) + (this.couponCode ? 1 : -1);
+    }
+    get couponCode() {
+        var _a, _b;
+        return (_b = (_a = this.route.snapshot) === null || _a === void 0 ? void 0 : _a.queryParams) === null || _b === void 0 ? void 0 : _b.couponcode;
+    }
+};
+CouponSearchPageResolver.ɵfac = function CouponSearchPageResolver_Factory(t) { return new (t || CouponSearchPageResolver)(ɵngcc0.ɵɵinject(ProductSearchService), ɵngcc0.ɵɵinject(TranslationService), ɵngcc0.ɵɵinject(AuthService), ɵngcc0.ɵɵinject(ɵngcc2.ActivatedRoute), ɵngcc0.ɵɵinject(SemanticPathService)); };
+CouponSearchPageResolver.ctorParameters = () => [
+    { type: ProductSearchService },
+    { type: TranslationService },
+    { type: AuthService },
+    { type: ActivatedRoute },
+    { type: SemanticPathService }
+];
+CouponSearchPageResolver.ɵprov = ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(ɵɵinject(ProductSearchService), ɵɵinject(TranslationService), ɵɵinject(AuthService), ɵɵinject(ActivatedRoute), ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
 
 /**
  * Resolves the page data for the Product Detail Page
@@ -19881,50 +19883,32 @@ CategoryPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function Categ
  * first GALLERY image are resolved if available in the data.
  */
 let ProductPageMetaResolver = class ProductPageMetaResolver extends PageMetaResolver {
-    constructor(routingService, productService, translation, features) {
+    constructor(routingService, productService, translation) {
         super();
         this.routingService = routingService;
         this.productService = productService;
         this.translation = translation;
-        this.features = features;
-        this.PRODUCT_SCOPE = this.features && this.features.isLevel('1.4') ? ProductScope.DETAILS : '';
         // reusable observable for product data based on the current page
-        this.product$ = this.routingService.getRouterState().pipe(map(state => state.state.params['productCode']), filter(code => !!code), switchMap(code => this.productService.get(code, this.PRODUCT_SCOPE)), filter(Boolean));
+        this.product$ = this.routingService.getRouterState().pipe(map(state => state.state.params['productCode']), filter(code => !!code), switchMap(code => this.productService.get(code, ProductScope.DETAILS)), filter(Boolean));
         this.pageType = PageType.PRODUCT_PAGE;
     }
     /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
+     * Resolves the page heading for the Product Detail Page.
+     * The page heading is used in the UI (`<h1>`), where as the page
+     * title is used by the browser and crawlers.
      */
-    resolve() {
-        return this.product$.pipe(switchMap((p) => combineLatest([
-            this.resolveHeading(p),
-            this.resolveTitle(p),
-            this.resolveDescription(p),
-            this.resolveBreadcrumbLabel().pipe(switchMap(label => this.resolveBreadcrumbs(p, label))),
-            this.resolveImage(p),
-            this.resolveRobots(p),
-        ])), map(([heading, title, description, breadcrumbs, image, robots]) => ({
-            heading,
-            title,
-            description,
-            breadcrumbs,
-            image,
-            robots,
-        })));
-    }
-    resolveHeading(product) {
-        const product$ = product ? of(product) : this.product$;
-        return product$.pipe(switchMap((p) => this.translation.translate('pageMetaResolver.product.heading', {
+    resolveHeading() {
+        return this.product$.pipe(switchMap((p) => this.translation.translate('pageMetaResolver.product.heading', {
             heading: p.name,
         })));
     }
-    resolveTitle(product) {
-        const product$ = product ? of(product) : this.product$;
-        return product$.pipe(switchMap((p) => {
+    /**
+     * Resolves the page title for the Product Detail Page. The page title
+     * is resolved with the product name, the first category and the manufactorer.
+     * The page title used by the browser (history, tabs) and crawlers.
+     */
+    resolveTitle() {
+        return this.product$.pipe(switchMap((p) => {
             let title = p.name;
             title += this.resolveFirstCategory(p);
             title += this.resolveManufacturer(p);
@@ -19933,24 +19917,24 @@ let ProductPageMetaResolver = class ProductPageMetaResolver extends PageMetaReso
             });
         }));
     }
-    resolveDescription(product) {
-        const product$ = product ? of(product) : this.product$;
-        return product$.pipe(switchMap((p) => this.translation.translate('pageMetaResolver.product.description', {
+    /**
+     * Resolves the page description for the Product Detail Page. The description
+     * is based on the `product.summary`.
+     */
+    resolveDescription() {
+        return this.product$.pipe(switchMap((p) => this.translation.translate('pageMetaResolver.product.description', {
             description: p.summary,
         })));
     }
     /**
-     * @deprecated since version 1.3
-     * This method will be removed with with 2.0
+     * Resolves breadcrumbs for the Product Detail Page. The breadcrumbs are driven by
+     * a static home page crum and a crumb for each category.
      */
-    resolveBreadcrumbLabel() {
-        return this.translation.translate('common.home');
-    }
-    resolveBreadcrumbs(product, breadcrumbLabel) {
-        const sources = product && breadcrumbLabel
-            ? [of(product), of(breadcrumbLabel)]
-            : [this.product$.pipe(), this.translation.translate('common.home')];
-        return combineLatest(sources).pipe(map(([p, label]) => {
+    resolveBreadcrumbs() {
+        return combineLatest([
+            this.product$.pipe(),
+            this.translation.translate('common.home'),
+        ]).pipe(map(([p, label]) => {
             const breadcrumbs = [];
             breadcrumbs.push({ label: label, link: '/' });
             for (const { name, code, url } of p.categories || []) {
@@ -19962,18 +19946,21 @@ let ProductPageMetaResolver = class ProductPageMetaResolver extends PageMetaReso
             return breadcrumbs;
         }));
     }
-    resolveImage(product) {
-        const product$ = product ? of(product) : this.product$;
-        return product$.pipe(map((p) => p.images &&
-            p.images.PRIMARY &&
-            p.images.PRIMARY.zoom &&
-            p.images.PRIMARY.zoom.url
-            ? p.images.PRIMARY.zoom.url
-            : null));
+    /**
+     * Resolves the main page image for the Product Detail Page. The product image
+     * is based on the PRIMARY product image. The zoom format is used by default.
+     */
+    resolveImage() {
+        return this.product$.pipe(map((p) => {
+            var _a, _b;
+            return ((_b = ((_a = p.images) === null || _a === void 0 ? void 0 : _a.PRIMARY).zoom) === null || _b === void 0 ? void 0 : _b.url) ? p.images.PRIMARY.zoom.url
+                : null;
+        }));
     }
     resolveFirstCategory(product) {
+        var _a;
         let firstCategory;
-        if (product.categories && product.categories.length > 0) {
+        if (((_a = product.categories) === null || _a === void 0 ? void 0 : _a.length) > 0) {
             firstCategory = product.categories[0];
         }
         return firstCategory
@@ -19983,32 +19970,28 @@ let ProductPageMetaResolver = class ProductPageMetaResolver extends PageMetaReso
     resolveManufacturer(product) {
         return product.manufacturer ? ` | ${product.manufacturer}` : '';
     }
-    resolveRobots(product) {
-        const product$ = product ? of(product) : this.product$;
-        return product$.pipe(switchMap((p) => {
-            if (!p.purchasable) {
-                return of([PageRobotsMeta.FOLLOW, PageRobotsMeta.NOINDEX]);
-            }
-            else {
-                return of([PageRobotsMeta.FOLLOW, PageRobotsMeta.INDEX]);
-            }
-        }));
+    /**
+     * Resolves the robot information for the Product Detail Page. The
+     * robot instruction defaults to FOLLOW and INDEX for all product pages,
+     * regardless of whether they're purchasable or not.
+     */
+    resolveRobots() {
+        return of([PageRobotsMeta.FOLLOW, PageRobotsMeta.INDEX]);
     }
 };
-ProductPageMetaResolver.ɵfac = function ProductPageMetaResolver_Factory(t) { return new (t || ProductPageMetaResolver)(ɵngcc0.ɵɵinject(RoutingService), ɵngcc0.ɵɵinject(ProductService), ɵngcc0.ɵɵinject(TranslationService), ɵngcc0.ɵɵinject(FeatureConfigService)); };
+ProductPageMetaResolver.ɵfac = function ProductPageMetaResolver_Factory(t) { return new (t || ProductPageMetaResolver)(ɵngcc0.ɵɵinject(RoutingService), ɵngcc0.ɵɵinject(ProductService), ɵngcc0.ɵɵinject(TranslationService)); };
 ProductPageMetaResolver.ctorParameters = () => [
     { type: RoutingService },
     { type: ProductService },
-    { type: TranslationService },
-    { type: FeatureConfigService }
+    { type: TranslationService }
 ];
-ProductPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductService), ɵɵinject(TranslationService), ɵɵinject(FeatureConfigService)); }, token: ProductPageMetaResolver, providedIn: "root" });
+ProductPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductService), ɵɵinject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
 
 /**
  * Resolves the page data for the Search Result Page based on the
  * `PageType.CATEGORY_PAGE` and the `SearchResultsListPageTemplate` template.
  *
- * Only the page title is resolved in the implemenation.
+ * Only the page title is resolved in the standard implemenation.
  */
 let SearchPageMetaResolver = class SearchPageMetaResolver extends PageMetaResolver {
     constructor(routingService, productSearchService, translation) {
@@ -20016,25 +19999,15 @@ let SearchPageMetaResolver = class SearchPageMetaResolver extends PageMetaResolv
         this.routingService = routingService;
         this.productSearchService = productSearchService;
         this.translation = translation;
-        this.total$ = this.productSearchService.getResults().pipe(filter(data => !!(data && data.pagination)), map(results => results.pagination.totalResults));
+        this.total$ = this.productSearchService.getResults().pipe(filter(data => { var _a; return !!((_a = data) === null || _a === void 0 ? void 0 : _a.pagination); }), map(results => results.pagination.totalResults));
         this.query$ = this.routingService
             .getRouterState()
             .pipe(map(state => state.state.params['query']));
         this.pageType = PageType.CONTENT_PAGE;
         this.pageTemplate = 'SearchResultsListPageTemplate';
     }
-    /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
-     */
-    resolve() {
-        return this.resolveTitle();
-    }
-    resolveTitle(total, query) {
-        const sources = total && query ? [of(total), of(query)] : [this.total$, this.query$];
+    resolveTitle() {
+        const sources = [this.total$, this.query$];
         return combineLatest(sources).pipe(switchMap(([t, q]) => this.translation.translate('pageMetaResolver.search.title', {
             count: t,
             query: q,
@@ -20335,6 +20308,11 @@ const pageTitleResolvers = [
     {
         provide: PageMetaResolver,
         useExisting: SearchPageMetaResolver,
+        multi: true,
+    },
+    {
+        provide: PageMetaResolver,
+        useExisting: CouponSearchPageResolver,
         multi: true,
     },
 ];
@@ -23228,90 +23206,11 @@ UserStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserStore
             RouterModule,
         ]] });
 
-let FindProductPageMetaResolver = class FindProductPageMetaResolver extends PageMetaResolver {
-    constructor(routingService, productSearchService, translation, authService) {
-        super();
-        this.routingService = routingService;
-        this.productSearchService = productSearchService;
-        this.translation = translation;
-        this.authService = authService;
-        this.totalAndCode$ = combineLatest([
-            this.productSearchService.getResults().pipe(filter(data => !!(data && data.pagination)), map(results => results.pagination.totalResults)),
-            this.routingService.getRouterState().pipe(map(state => state.state.queryParams['couponcode']), filter(Boolean)),
-        ]);
-        this.pageType = PageType.CONTENT_PAGE;
-        this.pageTemplate = 'SearchResultsListPageTemplate';
-    }
-    /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
-     */
-    resolve() {
-        return combineLatest([this.resolveTitle(), this.resolveBreadcrumbs()]).pipe(map(([title, breadcrumbs]) => ({
-            title,
-            breadcrumbs,
-        })));
-    }
-    resolveBreadcrumbs() {
-        const breadcrumbs = [{ label: 'Home', link: '/' }];
-        this.authService.isUserLoggedIn().subscribe(login => {
-            if (login)
-                breadcrumbs.push({ label: 'My Coupons', link: '/my-account/coupons' });
-        });
-        return of(breadcrumbs);
-    }
-    resolveTitle() {
-        return this.totalAndCode$.pipe(switchMap(([total, code]) => this.translation.translate('pageMetaResolver.search.findProductTitle', {
-            count: total,
-            coupon: code,
-        })));
-    }
-    getScore(page) {
-        let score = 0;
-        if (this.pageType) {
-            score += page.type === this.pageType ? 1 : -1;
-        }
-        if (this.pageTemplate) {
-            score += page.template === this.pageTemplate ? 1 : -1;
-        }
-        this.routingService
-            .getRouterState()
-            .pipe(map(state => {
-            return state.state.queryParams;
-        }), filter(Boolean))
-            .subscribe((queryParams) => {
-            if (queryParams) {
-                score += queryParams['couponcode'] ? 1 : -1;
-            }
-        })
-            .unsubscribe();
-        return score;
-    }
-};
-FindProductPageMetaResolver.ɵfac = function FindProductPageMetaResolver_Factory(t) { return new (t || FindProductPageMetaResolver)(ɵngcc0.ɵɵinject(RoutingService), ɵngcc0.ɵɵinject(ProductSearchService), ɵngcc0.ɵɵinject(TranslationService), ɵngcc0.ɵɵinject(AuthService)); };
-FindProductPageMetaResolver.ctorParameters = () => [
-    { type: RoutingService },
-    { type: ProductSearchService },
-    { type: TranslationService },
-    { type: AuthService }
-];
-FindProductPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function FindProductPageMetaResolver_Factory() { return new FindProductPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(TranslationService), ɵɵinject(AuthService)); }, token: FindProductPageMetaResolver, providedIn: "root" });
-
 var UserModule_1;
 let UserModule = UserModule_1 = class UserModule {
     static forRoot() {
         return {
             ngModule: UserModule_1,
-            providers: [
-                {
-                    provide: PageMetaResolver,
-                    useExisting: FindProductPageMetaResolver,
-                    multi: true,
-                },
-            ],
         };
     }
 };
@@ -24540,7 +24439,7 @@ const ɵUnknownErrorHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Unknow
             }, {
                 type: Inject,
                 args: [PageMetaResolver]
-            }] }, { type: CmsService }, { type: FeatureConfigService }]; }, null); })();
+            }] }, { type: CmsService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(DynamicAttributeService, [{
         type: Injectable,
         args: [{
@@ -24749,13 +24648,19 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
         args: [{
                 providedIn: 'root'
             }]
-    }], function () { return [{ type: RoutingService }, { type: ProductSearchService }, { type: CmsService }, { type: TranslationService }]; }, null); })();
+    }], function () { return [{ type: ProductSearchService }, { type: CmsService }, { type: TranslationService }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CouponSearchPageResolver, [{
+        type: Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return [{ type: ProductSearchService }, { type: TranslationService }, { type: AuthService }, { type: ɵngcc2.ActivatedRoute }, { type: SemanticPathService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ProductPageMetaResolver, [{
         type: Injectable,
         args: [{
                 providedIn: 'root'
             }]
-    }], function () { return [{ type: RoutingService }, { type: ProductService }, { type: TranslationService }, { type: FeatureConfigService }]; }, null); })();
+    }], function () { return [{ type: RoutingService }, { type: ProductService }, { type: TranslationService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SearchPageMetaResolver, [{
         type: Injectable,
         args: [{
@@ -25024,12 +24929,6 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
                 providers: [reducerProvider$c]
             }]
     }], null, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(FindProductPageMetaResolver, [{
-        type: Injectable,
-        args: [{
-                providedIn: 'root'
-            }]
-    }], function () { return [{ type: RoutingService }, { type: ProductSearchService }, { type: TranslationService }, { type: AuthService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(UserModule, { imports: [UserStoreModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(UserModule, [{
         type: NgModule,
@@ -25046,6 +24945,6 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseEvent, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, StateEventService, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StatePersistenceService, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initialEntityState, initialLoaderState, initialProcessesState, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, getReducers$3 as ɵba, reducerToken$3 as ɵbb, reducerProvider$3 as ɵbc, clearCustomerSupportAgentAsmState as ɵbd, metaReducers$2 as ɵbe, effects$3 as ɵbf, CustomerEffects as ɵbg, CustomerSupportAgentTokenEffects as ɵbh, UserAuthenticationTokenService as ɵbi, reducer$7 as ɵbj, interceptors$2 as ɵbk, CustomerSupportAgentAuthErrorInterceptor as ɵbl, CustomerSupportAgentErrorHandlingService as ɵbm, defaultAsmConfig as ɵbn, authStoreConfigFactory as ɵbo, AuthStoreModule as ɵbp, getReducers as ɵbq, reducerToken as ɵbr, reducerProvider as ɵbs, clearAuthState as ɵbt, metaReducers as ɵbu, effects as ɵbv, ClientTokenEffect as ɵbw, UserTokenEffects as ɵbx, ClientAuthenticationTokenService as ɵby, reducer as ɵbz, configFromCookieFactory as ɵc, defaultAuthConfig as ɵca, interceptors as ɵcb, ClientTokenInterceptor as ɵcc, UserTokenInterceptor as ɵcd, AuthErrorInterceptor as ɵce, UserErrorHandlingService as ɵcf, UrlParsingService as ɵcg, ClientErrorHandlingService as ɵch, TokenRevocationInterceptor as ɵci, AuthServices as ɵcj, MultiCartStoreModule as ɵck, clearMultiCartState as ɵcl, multiCartMetaReducers as ɵcm, multiCartReducerToken as ɵcn, getMultiCartReducers as ɵco, multiCartReducerProvider as ɵcp, CartEffects as ɵcq, CartEntryEffects as ɵcr, CartVoucherEffects as ɵcs, WishListEffects as ɵct, SaveCartConnector as ɵcu, SaveCartAdapter as ɵcv, MultiCartEffects as ɵcw, processesLoaderReducer as ɵcx, activeCartReducer as ɵcy, cartEntitiesReducer as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, wishListReducer as ɵda, CartPageMetaResolver as ɵdb, SiteContextParamsService as ɵdc, CheckoutStoreModule as ɵdd, getReducers$5 as ɵde, reducerToken$5 as ɵdf, reducerProvider$5 as ɵdg, effects$5 as ɵdh, AddressVerificationEffect as ɵdi, CardTypesEffects as ɵdj, CheckoutEffects as ɵdk, reducer$b as ɵdl, reducer$a as ɵdm, reducer$9 as ɵdn, cmsStoreConfigFactory as ɵdo, CmsStoreModule as ɵdp, getReducers$7 as ɵdq, reducerToken$7 as ɵdr, reducerProvider$7 as ɵds, clearCmsState as ɵdt, metaReducers$3 as ɵdu, effects$7 as ɵdv, ComponentsEffects as ɵdw, NavigationEntryItemEffects as ɵdx, PageEffects as ɵdy, reducer$f as ɵdz, initConfig as ɵe, reducer$g as ɵea, reducer$d as ɵeb, reducer$e as ɵec, GlobalMessageStoreModule as ɵed, getReducers$4 as ɵee, reducerToken$4 as ɵef, reducerProvider$4 as ɵeg, reducer$8 as ɵeh, GlobalMessageEffect as ɵei, defaultGlobalMessageConfigFactory as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$8 as ɵer, reducerToken$8 as ɵes, reducerProvider$8 as ɵet, clearKymaState as ɵeu, metaReducers$4 as ɵev, effects$8 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, anonymousConsentsStoreConfigFactory as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$9 as ɵfn, reducerToken$9 as ɵfo, reducerProvider$9 as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$a as ɵfs, reducerToken$a as ɵft, reducerProvider$a as ɵfu, clearProductsState as ɵfv, metaReducers$5 as ɵfw, effects$9 as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, AnonymousConsentsStoreModule as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$h as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$j as ɵgf, reducer$i as ɵgg, PageMetaResolver as ɵgh, addExternalRoutesFactory as ɵgi, getReducers$6 as ɵgj, reducer$c as ɵgk, reducerToken$6 as ɵgl, reducerProvider$6 as ɵgm, CustomSerializer as ɵgn, effects$6 as ɵgo, RouterEffects as ɵgp, siteContextStoreConfigFactory as ɵgq, SiteContextStoreModule as ɵgr, getReducers$1 as ɵgs, reducerToken$1 as ɵgt, reducerProvider$1 as ɵgu, effects$2 as ɵgv, LanguagesEffects as ɵgw, CurrenciesEffects as ɵgx, BaseSiteEffects as ɵgy, reducer$3 as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, reducer$2 as ɵha, reducer$1 as ɵhb, defaultSiteContextConfigFactory as ɵhc, initializeContext as ɵhd, contextServiceProviders as ɵhe, initSiteContextRoutesHandler as ɵhf, siteContextParamsProviders as ɵhg, SiteContextUrlSerializer as ɵhh, SiteContextRoutesHandler as ɵhi, baseSiteConfigValidator as ɵhj, interceptors$4 as ɵhk, CmsTicketInterceptor as ɵhl, StoreFinderStoreModule as ɵhm, getReducers$b as ɵhn, reducerToken$b as ɵho, reducerProvider$b as ɵhp, effects$a as ɵhq, FindStoresEffect as ɵhr, ViewAllStoresEffect as ɵhs, defaultStoreFinderConfig as ɵht, UserStoreModule as ɵhu, getReducers$c as ɵhv, reducerToken$c as ɵhw, reducerProvider$c as ɵhx, clearUserState as ɵhy, metaReducers$7 as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, effects$b as ɵia, BillingCountriesEffect as ɵib, ClearMiscsDataEffect as ɵic, ConsignmentTrackingEffects as ɵid, DeliveryCountriesEffects as ɵie, NotificationPreferenceEffects as ɵif, OrderDetailsEffect as ɵig, OrderReturnRequestEffect as ɵih, UserPaymentMethodsEffects as ɵii, RegionsEffects as ɵij, ResetPasswordEffects as ɵik, TitlesEffects as ɵil, UserAddressesEffects as ɵim, UserConsentsEffect as ɵin, UserDetailsEffects as ɵio, UserOrdersEffect as ɵip, UserRegisterEffects as ɵiq, CustomerCouponEffects as ɵir, ProductInterestsEffect as ɵis, ForgotPasswordEffects as ɵit, UpdateEmailEffects as ɵiu, UpdatePasswordEffects as ɵiv, UserNotificationPreferenceConnector as ɵiw, reducer$v as ɵix, reducer$t as ɵiy, reducer$k as ɵiz, stateMetaReducers as ɵj, reducer$u as ɵja, reducer$p as ɵjb, reducer$w as ɵjc, reducer$o as ɵjd, reducer$z as ɵje, reducer$m as ɵjf, reducer$s as ɵjg, reducer$q as ɵjh, reducer$r as ɵji, reducer$l as ɵjj, reducer$x as ɵjk, reducer$n as ɵjl, reducer$y as ɵjm, FindProductPageMetaResolver as ɵjn, PageMetaResolver as ɵjo, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, reducer$6 as ɵt, reducer$4 as ɵu, reducer$5 as ɵv, interceptors$1 as ɵw, AnonymousConsentsInterceptor as ɵx, asmStoreConfigFactory as ɵy, AsmStoreModule as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseEvent, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, StateEventService, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StatePersistenceService, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initialEntityState, initialLoaderState, initialProcessesState, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, getReducers$3 as ɵba, reducerToken$3 as ɵbb, reducerProvider$3 as ɵbc, clearCustomerSupportAgentAsmState as ɵbd, metaReducers$2 as ɵbe, effects$3 as ɵbf, CustomerEffects as ɵbg, CustomerSupportAgentTokenEffects as ɵbh, UserAuthenticationTokenService as ɵbi, reducer$7 as ɵbj, interceptors$2 as ɵbk, CustomerSupportAgentAuthErrorInterceptor as ɵbl, CustomerSupportAgentErrorHandlingService as ɵbm, defaultAsmConfig as ɵbn, authStoreConfigFactory as ɵbo, AuthStoreModule as ɵbp, getReducers as ɵbq, reducerToken as ɵbr, reducerProvider as ɵbs, clearAuthState as ɵbt, metaReducers as ɵbu, effects as ɵbv, ClientTokenEffect as ɵbw, UserTokenEffects as ɵbx, ClientAuthenticationTokenService as ɵby, reducer as ɵbz, configFromCookieFactory as ɵc, defaultAuthConfig as ɵca, interceptors as ɵcb, ClientTokenInterceptor as ɵcc, UserTokenInterceptor as ɵcd, AuthErrorInterceptor as ɵce, UserErrorHandlingService as ɵcf, UrlParsingService as ɵcg, ClientErrorHandlingService as ɵch, TokenRevocationInterceptor as ɵci, AuthServices as ɵcj, MultiCartStoreModule as ɵck, clearMultiCartState as ɵcl, multiCartMetaReducers as ɵcm, multiCartReducerToken as ɵcn, getMultiCartReducers as ɵco, multiCartReducerProvider as ɵcp, CartEffects as ɵcq, CartEntryEffects as ɵcr, CartVoucherEffects as ɵcs, WishListEffects as ɵct, SaveCartConnector as ɵcu, SaveCartAdapter as ɵcv, MultiCartEffects as ɵcw, processesLoaderReducer as ɵcx, activeCartReducer as ɵcy, cartEntitiesReducer as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, wishListReducer as ɵda, CartPageMetaResolver as ɵdb, SiteContextParamsService as ɵdc, CheckoutStoreModule as ɵdd, getReducers$5 as ɵde, reducerToken$5 as ɵdf, reducerProvider$5 as ɵdg, effects$5 as ɵdh, AddressVerificationEffect as ɵdi, CardTypesEffects as ɵdj, CheckoutEffects as ɵdk, reducer$b as ɵdl, reducer$a as ɵdm, reducer$9 as ɵdn, ActiveCartService as ɵdo, cmsStoreConfigFactory as ɵdp, CmsStoreModule as ɵdq, getReducers$7 as ɵdr, reducerToken$7 as ɵds, reducerProvider$7 as ɵdt, clearCmsState as ɵdu, metaReducers$3 as ɵdv, effects$7 as ɵdw, ComponentsEffects as ɵdx, NavigationEntryItemEffects as ɵdy, PageEffects as ɵdz, initConfig as ɵe, reducer$f as ɵea, reducer$g as ɵeb, reducer$d as ɵec, reducer$e as ɵed, GlobalMessageStoreModule as ɵee, getReducers$4 as ɵef, reducerToken$4 as ɵeg, reducerProvider$4 as ɵeh, reducer$8 as ɵei, GlobalMessageEffect as ɵej, defaultGlobalMessageConfigFactory as ɵek, HttpErrorInterceptor as ɵel, defaultI18nConfig as ɵem, i18nextProviders as ɵen, i18nextInit as ɵeo, MockTranslationService as ɵep, kymaStoreConfigFactory as ɵeq, KymaStoreModule as ɵer, getReducers$8 as ɵes, reducerToken$8 as ɵet, reducerProvider$8 as ɵeu, clearKymaState as ɵev, metaReducers$4 as ɵew, effects$8 as ɵex, OpenIdTokenEffect as ɵey, OpenIdAuthenticationTokenService as ɵez, anonymousConsentsStoreConfigFactory as ɵf, defaultKymaConfig as ɵfa, defaultOccAsmConfig as ɵfb, defaultOccCartConfig as ɵfc, OccSaveCartAdapter as ɵfd, defaultOccProductConfig as ɵfe, defaultOccSiteContextConfig as ɵff, defaultOccStoreFinderConfig as ɵfg, defaultOccUserConfig as ɵfh, UserNotificationPreferenceAdapter as ɵfi, defaultPersonalizationConfig as ɵfj, interceptors$3 as ɵfk, OccPersonalizationIdInterceptor as ɵfl, OccPersonalizationTimeInterceptor as ɵfm, ProcessStoreModule as ɵfn, getReducers$9 as ɵfo, reducerToken$9 as ɵfp, reducerProvider$9 as ɵfq, productStoreConfigFactory as ɵfr, ProductStoreModule as ɵfs, getReducers$a as ɵft, reducerToken$a as ɵfu, reducerProvider$a as ɵfv, clearProductsState as ɵfw, metaReducers$5 as ɵfx, effects$9 as ɵfy, ProductReferencesEffects as ɵfz, AnonymousConsentsStoreModule as ɵg, ProductReviewsEffects as ɵga, ProductsSearchEffects as ɵgb, ProductEffects as ɵgc, reducer$h as ɵgd, entityScopedLoaderReducer as ɵge, scopedLoaderReducer as ɵgf, reducer$j as ɵgg, reducer$i as ɵgh, PageMetaResolver as ɵgi, CouponSearchPageResolver as ɵgj, PageMetaResolver as ɵgk, addExternalRoutesFactory as ɵgl, getReducers$6 as ɵgm, reducer$c as ɵgn, reducerToken$6 as ɵgo, reducerProvider$6 as ɵgp, CustomSerializer as ɵgq, effects$6 as ɵgr, RouterEffects as ɵgs, siteContextStoreConfigFactory as ɵgt, SiteContextStoreModule as ɵgu, getReducers$1 as ɵgv, reducerToken$1 as ɵgw, reducerProvider$1 as ɵgx, effects$2 as ɵgy, LanguagesEffects as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, CurrenciesEffects as ɵha, BaseSiteEffects as ɵhb, reducer$3 as ɵhc, reducer$2 as ɵhd, reducer$1 as ɵhe, defaultSiteContextConfigFactory as ɵhf, initializeContext as ɵhg, contextServiceProviders as ɵhh, initSiteContextRoutesHandler as ɵhi, siteContextParamsProviders as ɵhj, SiteContextUrlSerializer as ɵhk, SiteContextRoutesHandler as ɵhl, baseSiteConfigValidator as ɵhm, interceptors$4 as ɵhn, CmsTicketInterceptor as ɵho, StoreFinderStoreModule as ɵhp, getReducers$b as ɵhq, reducerToken$b as ɵhr, reducerProvider$b as ɵhs, effects$a as ɵht, FindStoresEffect as ɵhu, ViewAllStoresEffect as ɵhv, defaultStoreFinderConfig as ɵhw, UserStoreModule as ɵhx, getReducers$c as ɵhy, reducerToken$c as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, reducerProvider$c as ɵia, clearUserState as ɵib, metaReducers$7 as ɵic, effects$b as ɵid, BillingCountriesEffect as ɵie, ClearMiscsDataEffect as ɵif, ConsignmentTrackingEffects as ɵig, DeliveryCountriesEffects as ɵih, NotificationPreferenceEffects as ɵii, OrderDetailsEffect as ɵij, OrderReturnRequestEffect as ɵik, UserPaymentMethodsEffects as ɵil, RegionsEffects as ɵim, ResetPasswordEffects as ɵin, TitlesEffects as ɵio, UserAddressesEffects as ɵip, UserConsentsEffect as ɵiq, UserDetailsEffects as ɵir, UserOrdersEffect as ɵis, UserRegisterEffects as ɵit, CustomerCouponEffects as ɵiu, ProductInterestsEffect as ɵiv, ForgotPasswordEffects as ɵiw, UpdateEmailEffects as ɵix, UpdatePasswordEffects as ɵiy, UserNotificationPreferenceConnector as ɵiz, stateMetaReducers as ɵj, reducer$v as ɵja, reducer$t as ɵjb, reducer$k as ɵjc, reducer$u as ɵjd, reducer$p as ɵje, reducer$w as ɵjf, reducer$o as ɵjg, reducer$z as ɵjh, reducer$m as ɵji, reducer$s as ɵjj, reducer$q as ɵjk, reducer$r as ɵjl, reducer$l as ɵjm, reducer$x as ɵjn, reducer$n as ɵjo, reducer$y as ɵjp, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, reducer$6 as ɵt, reducer$4 as ɵu, reducer$5 as ɵv, interceptors$1 as ɵw, AnonymousConsentsInterceptor as ɵx, asmStoreConfigFactory as ɵy, AsmStoreModule as ɵz };
 
 //# sourceMappingURL=spartacus-core.js.map

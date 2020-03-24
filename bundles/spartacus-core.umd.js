@@ -14165,9 +14165,19 @@
         return AsmService;
     }());
 
+    /**
+     * Abstract class that can be used to resolve meta data for specific pages.
+     * The `getScore` method is used to select the right resolver for a specific
+     * page, based on a score. The score is calculated by the (non)matching page
+     * type and page template.
+     */
     var PageMetaResolver = /** @class */ (function () {
         function PageMetaResolver() {
         }
+        /**
+         * Returns the matching score for a resolver class, based on
+         * the page type and page template.
+         */
         PageMetaResolver.prototype.getScore = function (page) {
             var score = 0;
             if (this.pageType) {
@@ -16607,9 +16617,9 @@
     })(exports.PageRobotsMeta || (exports.PageRobotsMeta = {}));
 
     /**
-     * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
-     * and the `CartPageTemplate`. If the cart page matches this template, the more generic
-     * `ContentPageMetaResolver` is overriden by this resolver.
+     * Resolves the page metadata for the Cart page (Using the `PageType.CONTENT_PAGE`
+     * and the `CartPageTemplate`). If the cart page matches this template, the more
+     * generic `ContentPageMetaResolver` is overriden by this resolver.
      *
      * The page title and robots are resolved in this implementation only.
      */
@@ -16626,24 +16636,14 @@
             return _this;
         }
         /**
-         * @deprecated since version 1.3
-         *
-         * The resolve method is no longer preferred and will be removed with release 2.0.
-         * The caller `PageMetaService` service is improved to expect all individual resolvers
-         * instead, so that the code is easier extensible.
+         * Resolves the page title, which is driven by the backend.
          */
-        CartPageMetaResolver.prototype.resolve = function () {
-            var _this = this;
-            return this.cms$.pipe(operators.switchMap(function (page) {
-                return rxjs.combineLatest([_this.resolveTitle(page), _this.resolveRobots()]);
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 2), title = _b[0], robots = _b[1];
-                return ({ title: title, robots: robots });
-            }));
+        CartPageMetaResolver.prototype.resolveTitle = function () {
+            return this.cms$.pipe(operators.map(function (p) { return p.title; }));
         };
-        CartPageMetaResolver.prototype.resolveTitle = function (page) {
-            return page ? rxjs.of(page.title) : this.cms$.pipe(operators.map(function (p) { return p.title; }));
-        };
+        /**
+         * Returns robots for the cart pages, which default to NOINDEX and NOFOLLOW.
+         */
         CartPageMetaResolver.prototype.resolveRobots = function () {
             return rxjs.of([exports.PageRobotsMeta.NOFOLLOW, exports.PageRobotsMeta.NOINDEX]);
         };
@@ -18294,26 +18294,9 @@
             _this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
             return _this;
         }
-        /**
-         * @deprecated since version 1.3
-         *
-         * The resolve method is no longer preferred and will be removed with release 2.0.
-         * The caller `PageMetaService` service is improved to expect all individual resolvers
-         * instead, so that the code is easier extensible.
-         */
-        CheckoutPageMetaResolver.prototype.resolve = function () {
+        CheckoutPageMetaResolver.prototype.resolveTitle = function () {
             var _this = this;
-            return this.cart$.pipe(operators.switchMap(function (cart) {
-                return rxjs.combineLatest([_this.resolveTitle(cart), _this.resolveRobots()]);
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 2), title = _b[0], robots = _b[1];
-                return ({ title: title, robots: robots });
-            }));
-        };
-        CheckoutPageMetaResolver.prototype.resolveTitle = function (cart) {
-            var _this = this;
-            var cart$ = cart ? rxjs.of(cart) : this.cart$;
-            return cart$.pipe(operators.switchMap(function (c) {
+            return this.cart$.pipe(operators.switchMap(function (c) {
                 return _this.translation.translate('pageMetaResolver.checkout.title', {
                     count: c.totalItems,
                 });
@@ -19307,50 +19290,28 @@
             var _this = _super.call(this) || this;
             _this.cms = cms;
             _this.translation = translation;
+            /** helper to provie access to the current CMS page */
             _this.cms$ = _this.cms
                 .getCurrentPage()
-                .pipe(operators.filter(function (p) { return !!p; }));
+                .pipe(operators.filter(function (p) { return Boolean(p); }));
             _this.pageType = exports.PageType.CONTENT_PAGE;
             return _this;
         }
         /**
-         * @deprecated since version 1.3
-         *
-         * The resolve method is no longer preferred and will be removed with release 2.0.
-         * The caller `PageMetaService` service is improved to expect all individual resolvers
-         * instead, so that the code is easier extensible.
+         * Resolves the page title for the ContentPage by taking the title
+         * from the backend data.
          */
-        ContentPageMetaResolver.prototype.resolve = function () {
-            var _this = this;
-            return this.cms$.pipe(operators.switchMap(function (page) {
-                return rxjs.combineLatest([
-                    _this.resolveTitle(page),
-                    _this.resolveBreadcrumbLabel().pipe(operators.switchMap(function (label) { return _this.resolveBreadcrumbs(page, label); })),
-                ]);
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
-                return ({ title: title, breadcrumbs: breadcrumbs });
-            }));
-        };
-        ContentPageMetaResolver.prototype.resolveTitle = function (page) {
-            return page ? rxjs.of(page.title) : this.cms$.pipe(operators.map(function (p) { return p.title; }));
+        ContentPageMetaResolver.prototype.resolveTitle = function () {
+            return this.cms$.pipe(operators.map(function (p) { return p.title; }));
         };
         /**
-         * @deprecated since version 1.3
-         * This method will removed with with 2.0
+         * Resolves a single breacrumb item to the home page for each `ContentPage`.
+         * The home page label is resolved from the translation service.
          */
-        ContentPageMetaResolver.prototype.resolveBreadcrumbLabel = function () {
-            return this.translation.translate('common.home');
-        };
-        ContentPageMetaResolver.prototype.resolveBreadcrumbs = function (_page, breadcrumbLabel) {
-            if (breadcrumbLabel) {
-                return rxjs.of([{ label: breadcrumbLabel, link: '/' }]);
-            }
-            else {
-                return this.translation
-                    .translate('common.home')
-                    .pipe(operators.map(function (label) { return [{ label: label, link: '/' }]; }));
-            }
+        ContentPageMetaResolver.prototype.resolveBreadcrumbs = function () {
+            return this.translation
+                .translate('common.home')
+                .pipe(operators.map(function (label) { return [{ label: label, link: '/' }]; }));
         };
         ContentPageMetaResolver.ctorParameters = function () { return [
             { type: CmsService },
@@ -20992,10 +20953,9 @@
     }());
 
     var PageMetaService = /** @class */ (function () {
-        function PageMetaService(resolvers, cms, featureConfigService) {
+        function PageMetaService(resolvers, cms) {
             this.resolvers = resolvers;
             this.cms = cms;
-            this.featureConfigService = featureConfigService;
             /**
              * The list of resolver interfaces will be evaluated for the pageResolvers.
              *
@@ -21027,35 +20987,29 @@
             }));
         };
         /**
-         * If a pageResolver has implemented a resolver interface, the resolved data
+         * If a `PageResolver` has implemented a resolver interface, the resolved data
          * is merged into the `PageMeta` object.
          * @param metaResolver
          */
         PageMetaService.prototype.resolve = function (metaResolver) {
             var _this = this;
-            if (metaResolver.resolve &&
-                (!this.featureConfigService || !this.featureConfigService.isLevel('1.3'))) {
-                return metaResolver.resolve();
-            }
-            else {
-                // resolve individual resolvers to make the extension mechanism more flexible
-                var resolveMethods = Object.keys(this.resolverMethods)
-                    .filter(function (key) { return metaResolver[_this.resolverMethods[key]]; })
-                    .map(function (key) {
-                    return metaResolver[_this.resolverMethods[key]]().pipe(operators.map(function (data) {
-                        var _a;
-                        return (_a = {},
-                            _a[key] = data,
-                            _a);
-                    }));
-                });
-                return rxjs.combineLatest(resolveMethods).pipe(operators.map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
-            }
+            var resolveMethods = Object.keys(this.resolverMethods)
+                .filter(function (key) { return metaResolver[_this.resolverMethods[key]]; })
+                .map(function (key) {
+                return metaResolver[_this.resolverMethods[key]]().pipe(operators.map(function (data) {
+                    var _a;
+                    return (_a = {},
+                        _a[key] = data,
+                        _a);
+                }));
+            });
+            return rxjs.combineLatest(resolveMethods).pipe(operators.map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
         };
         /**
-         * return the resolver with the best match
-         * resovers can by default match on PageType and page template
-         * but custom match comparisors can be implemented.
+         * Return the resolver with the best match, based on a score
+         * generated by the resolver.
+         *
+         * Resolvers match by default on `PageType` and `page.template`.
          */
         PageMetaService.prototype.getMetaResolver = function (page) {
             var matchingResolvers = this.resolvers.filter(function (resolver) { return resolver.getScore(page) > 0; });
@@ -21066,10 +21020,9 @@
         };
         PageMetaService.ctorParameters = function () { return [
             { type: Array, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PageMetaResolver,] }] },
-            { type: CmsService },
-            { type: FeatureConfigService }
+            { type: CmsService }
         ]; };
-        PageMetaService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function PageMetaService_Factory() { return new PageMetaService(core["ɵɵinject"](PageMetaResolver, 8), core["ɵɵinject"](CmsService), core["ɵɵinject"](FeatureConfigService)); }, token: PageMetaService, providedIn: "root" });
+        PageMetaService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function PageMetaService_Factory() { return new PageMetaService(core["ɵɵinject"](PageMetaResolver, 8), core["ɵɵinject"](CmsService)); }, token: PageMetaService, providedIn: "root" });
         PageMetaService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23040,16 +22993,14 @@
     }(ProductSearchService));
 
     /**
-     * Resolves the page data for the Product Listing Page
-     * based on the `PageType.CATEGORY_PAGE`.
+     * Resolves the page data for the Product Listing Page.
      *
      * The page title, and breadcrumbs are resolved in this implementation only.
      */
     var CategoryPageMetaResolver = /** @class */ (function (_super) {
         __extends(CategoryPageMetaResolver, _super);
-        function CategoryPageMetaResolver(routingService, productSearchService, cms, translation) {
+        function CategoryPageMetaResolver(productSearchService, cms, translation) {
             var _this = _super.call(this) || this;
-            _this.routingService = routingService;
             _this.productSearchService = productSearchService;
             _this.cms = cms;
             _this.translation = translation;
@@ -23064,59 +23015,23 @@
             _this.pageType = exports.PageType.CATEGORY_PAGE;
             return _this;
         }
-        /**
-         * @deprecated since version 1.3
-         *
-         * The resolve method is no longer preferred and will be removed with release 2.0.
-         * The caller `PageMetaService` service is improved to expect all individual resolvers
-         * instead, so that the code is easier extensible.
-         */
-        CategoryPageMetaResolver.prototype.resolve = function () {
+        CategoryPageMetaResolver.prototype.resolveTitle = function () {
             var _this = this;
-            return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) {
-                // only the existence of a plp component tells us if products
-                // are rendered or if this is an ordinary content page
-                if (_this.hasProductListComponent(page)) {
-                    return _this.productSearchService.getResults().pipe(operators.filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), operators.switchMap(function (data) {
-                        return rxjs.combineLatest([
-                            _this.resolveTitle(data),
-                            _this.resolveBreadcrumbLabel().pipe(operators.switchMap(function (label) { return _this.resolveBreadcrumbs(data, label); })),
-                        ]);
-                    }), operators.map(function (_a) {
-                        var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
-                        return ({ title: title, breadcrumbs: breadcrumbs });
-                    }));
-                }
-                else {
-                    return rxjs.of({
-                        title: page.title || page.name,
-                    });
-                }
-            }));
-        };
-        CategoryPageMetaResolver.prototype.resolveTitle = function (searchPage) {
-            var _this = this;
-            var searchPage$ = searchPage ? rxjs.of(searchPage) : this.searchPage$;
-            return searchPage$.pipe(operators.filter(function (page) { return !!page.pagination; }), operators.switchMap(function (p) {
+            return this.searchPage$.pipe(operators.filter(function (page) { return !!page.pagination; }), operators.switchMap(function (p) {
+                var _a;
                 return _this.translation.translate('pageMetaResolver.category.title', {
                     count: p.pagination.totalResults,
-                    query: p.breadcrumbs[0].facetValueName,
+                    query: ((_a = p.breadcrumbs) === null || _a === void 0 ? void 0 : _a.length) ? p.breadcrumbs[0].facetValueName
+                        : undefined,
                 });
             }));
         };
-        /**
-         * @deprecated since version 1.3
-         * This method will removed with with 2.0
-         */
-        CategoryPageMetaResolver.prototype.resolveBreadcrumbLabel = function () {
-            return this.translation.translate('common.home');
-        };
-        CategoryPageMetaResolver.prototype.resolveBreadcrumbs = function (searchPage, breadcrumbLabel) {
+        CategoryPageMetaResolver.prototype.resolveBreadcrumbs = function () {
             var _this = this;
-            var sources = searchPage && breadcrumbLabel
-                ? [rxjs.of(searchPage), rxjs.of(breadcrumbLabel)]
-                : [this.searchPage$.pipe(), this.translation.translate('common.home')];
-            return rxjs.combineLatest(sources).pipe(operators.map(function (_a) {
+            return rxjs.combineLatest([
+                this.searchPage$.pipe(),
+                this.translation.translate('common.home'),
+            ]).pipe(operators.map(function (_a) {
                 var _b = __read(_a, 2), p = _b[0], label = _b[1];
                 return p.breadcrumbs
                     ? _this.resolveBreadcrumbData(p, label)
@@ -23162,18 +23077,95 @@
             });
         };
         CategoryPageMetaResolver.ctorParameters = function () { return [
-            { type: RoutingService },
             { type: ProductSearchService },
             { type: CmsService },
             { type: TranslationService }
         ]; };
-        CategoryPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(core["ɵɵinject"](RoutingService), core["ɵɵinject"](ProductSearchService), core["ɵɵinject"](CmsService), core["ɵɵinject"](TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+        CategoryPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(core["ɵɵinject"](ProductSearchService), core["ɵɵinject"](CmsService), core["ɵɵinject"](TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
         CategoryPageMetaResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
             })
         ], CategoryPageMetaResolver);
         return CategoryPageMetaResolver;
+    }(PageMetaResolver));
+
+    /**
+     * Resolves page meta data for the search result page, in case it's used
+     * to query coupons. This is done by adding a `couponcode` query parameter
+     * to the search page route.
+     *
+     * The page resolves an alternative page title and breadcrumb.
+     */
+    var CouponSearchPageResolver = /** @class */ (function (_super) {
+        __extends(CouponSearchPageResolver, _super);
+        function CouponSearchPageResolver(productSearchService, translation, authService, route, semanticPathService) {
+            var _this = _super.call(this) || this;
+            _this.productSearchService = productSearchService;
+            _this.translation = translation;
+            _this.authService = authService;
+            _this.route = route;
+            _this.semanticPathService = semanticPathService;
+            _this.total$ = _this.productSearchService.getResults().pipe(operators.filter(function (data) { var _a; return !!((_a = data) === null || _a === void 0 ? void 0 : _a.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
+            _this.pageType = exports.PageType.CONTENT_PAGE;
+            _this.pageTemplate = 'SearchResultsListPageTemplate';
+            return _this;
+        }
+        CouponSearchPageResolver.prototype.resolveBreadcrumbs = function () {
+            var _this = this;
+            return rxjs.combineLatest([
+                this.translation.translate('common.home'),
+                this.translation.translate('myCoupons.myCoupons'),
+                this.authService.isUserLoggedIn(),
+            ]).pipe(operators.map(function (_a) {
+                var _b = __read(_a, 3), homeLabel = _b[0], couponLabel = _b[1], isLoggedIn = _b[2];
+                var breadcrumbs = [];
+                breadcrumbs.push({ label: homeLabel, link: '/' });
+                if (isLoggedIn) {
+                    breadcrumbs.push({
+                        label: couponLabel,
+                        link: _this.semanticPathService.transform({
+                            cxRoute: 'coupons',
+                        }),
+                    });
+                }
+                return breadcrumbs;
+            }));
+        };
+        CouponSearchPageResolver.prototype.resolveTitle = function () {
+            var _this = this;
+            return this.total$.pipe(operators.switchMap(function (total) {
+                return _this.translation.translate('pageMetaResolver.search.findProductTitle', {
+                    count: total,
+                    coupon: _this.couponCode,
+                });
+            }));
+        };
+        CouponSearchPageResolver.prototype.getScore = function (page) {
+            return _super.prototype.getScore.call(this, page) + (this.couponCode ? 1 : -1);
+        };
+        Object.defineProperty(CouponSearchPageResolver.prototype, "couponCode", {
+            get: function () {
+                var _a, _b;
+                return (_b = (_a = this.route.snapshot) === null || _a === void 0 ? void 0 : _a.queryParams) === null || _b === void 0 ? void 0 : _b.couponcode;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        CouponSearchPageResolver.ctorParameters = function () { return [
+            { type: ProductSearchService },
+            { type: TranslationService },
+            { type: AuthService },
+            { type: router.ActivatedRoute },
+            { type: SemanticPathService }
+        ]; };
+        CouponSearchPageResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(core["ɵɵinject"](ProductSearchService), core["ɵɵinject"](TranslationService), core["ɵɵinject"](AuthService), core["ɵɵinject"](router.ActivatedRoute), core["ɵɵinject"](SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
+        CouponSearchPageResolver = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CouponSearchPageResolver);
+        return CouponSearchPageResolver;
     }(PageMetaResolver));
 
     /**
@@ -23185,61 +23177,37 @@
      */
     var ProductPageMetaResolver = /** @class */ (function (_super) {
         __extends(ProductPageMetaResolver, _super);
-        function ProductPageMetaResolver(routingService, productService, translation, features) {
+        function ProductPageMetaResolver(routingService, productService, translation) {
             var _this = _super.call(this) || this;
             _this.routingService = routingService;
             _this.productService = productService;
             _this.translation = translation;
-            _this.features = features;
-            _this.PRODUCT_SCOPE = _this.features && _this.features.isLevel('1.4') ? exports.ProductScope.DETAILS : '';
             // reusable observable for product data based on the current page
-            _this.product$ = _this.routingService.getRouterState().pipe(operators.map(function (state) { return state.state.params['productCode']; }), operators.filter(function (code) { return !!code; }), operators.switchMap(function (code) { return _this.productService.get(code, _this.PRODUCT_SCOPE); }), operators.filter(Boolean));
+            _this.product$ = _this.routingService.getRouterState().pipe(operators.map(function (state) { return state.state.params['productCode']; }), operators.filter(function (code) { return !!code; }), operators.switchMap(function (code) { return _this.productService.get(code, exports.ProductScope.DETAILS); }), operators.filter(Boolean));
             _this.pageType = exports.PageType.PRODUCT_PAGE;
             return _this;
         }
         /**
-         * @deprecated since version 1.3
-         *
-         * The resolve method is no longer preferred and will be removed with release 2.0.
-         * The caller `PageMetaService` service is improved to expect all individual resolvers
-         * instead, so that the code is easier extensible.
+         * Resolves the page heading for the Product Detail Page.
+         * The page heading is used in the UI (`<h1>`), where as the page
+         * title is used by the browser and crawlers.
          */
-        ProductPageMetaResolver.prototype.resolve = function () {
+        ProductPageMetaResolver.prototype.resolveHeading = function () {
             var _this = this;
             return this.product$.pipe(operators.switchMap(function (p) {
-                return rxjs.combineLatest([
-                    _this.resolveHeading(p),
-                    _this.resolveTitle(p),
-                    _this.resolveDescription(p),
-                    _this.resolveBreadcrumbLabel().pipe(operators.switchMap(function (label) { return _this.resolveBreadcrumbs(p, label); })),
-                    _this.resolveImage(p),
-                    _this.resolveRobots(p),
-                ]);
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 6), heading = _b[0], title = _b[1], description = _b[2], breadcrumbs = _b[3], image = _b[4], robots = _b[5];
-                return ({
-                    heading: heading,
-                    title: title,
-                    description: description,
-                    breadcrumbs: breadcrumbs,
-                    image: image,
-                    robots: robots,
-                });
-            }));
-        };
-        ProductPageMetaResolver.prototype.resolveHeading = function (product) {
-            var _this = this;
-            var product$ = product ? rxjs.of(product) : this.product$;
-            return product$.pipe(operators.switchMap(function (p) {
                 return _this.translation.translate('pageMetaResolver.product.heading', {
                     heading: p.name,
                 });
             }));
         };
-        ProductPageMetaResolver.prototype.resolveTitle = function (product) {
+        /**
+         * Resolves the page title for the Product Detail Page. The page title
+         * is resolved with the product name, the first category and the manufactorer.
+         * The page title used by the browser (history, tabs) and crawlers.
+         */
+        ProductPageMetaResolver.prototype.resolveTitle = function () {
             var _this = this;
-            var product$ = product ? rxjs.of(product) : this.product$;
-            return product$.pipe(operators.switchMap(function (p) {
+            return this.product$.pipe(operators.switchMap(function (p) {
                 var title = p.name;
                 title += _this.resolveFirstCategory(p);
                 title += _this.resolveManufacturer(p);
@@ -23248,27 +23216,27 @@
                 });
             }));
         };
-        ProductPageMetaResolver.prototype.resolveDescription = function (product) {
+        /**
+         * Resolves the page description for the Product Detail Page. The description
+         * is based on the `product.summary`.
+         */
+        ProductPageMetaResolver.prototype.resolveDescription = function () {
             var _this = this;
-            var product$ = product ? rxjs.of(product) : this.product$;
-            return product$.pipe(operators.switchMap(function (p) {
+            return this.product$.pipe(operators.switchMap(function (p) {
                 return _this.translation.translate('pageMetaResolver.product.description', {
                     description: p.summary,
                 });
             }));
         };
         /**
-         * @deprecated since version 1.3
-         * This method will be removed with with 2.0
+         * Resolves breadcrumbs for the Product Detail Page. The breadcrumbs are driven by
+         * a static home page crum and a crumb for each category.
          */
-        ProductPageMetaResolver.prototype.resolveBreadcrumbLabel = function () {
-            return this.translation.translate('common.home');
-        };
-        ProductPageMetaResolver.prototype.resolveBreadcrumbs = function (product, breadcrumbLabel) {
-            var sources = product && breadcrumbLabel
-                ? [rxjs.of(product), rxjs.of(breadcrumbLabel)]
-                : [this.product$.pipe(), this.translation.translate('common.home')];
-            return rxjs.combineLatest(sources).pipe(operators.map(function (_a) {
+        ProductPageMetaResolver.prototype.resolveBreadcrumbs = function () {
+            return rxjs.combineLatest([
+                this.product$.pipe(),
+                this.translation.translate('common.home'),
+            ]).pipe(operators.map(function (_a) {
                 var e_1, _b;
                 var _c = __read(_a, 2), p = _c[0], label = _c[1];
                 var breadcrumbs = [];
@@ -23292,20 +23260,21 @@
                 return breadcrumbs;
             }));
         };
-        ProductPageMetaResolver.prototype.resolveImage = function (product) {
-            var product$ = product ? rxjs.of(product) : this.product$;
-            return product$.pipe(operators.map(function (p) {
-                return p.images &&
-                    p.images.PRIMARY &&
-                    p.images.PRIMARY.zoom &&
-                    p.images.PRIMARY.zoom.url
-                    ? p.images.PRIMARY.zoom.url
+        /**
+         * Resolves the main page image for the Product Detail Page. The product image
+         * is based on the PRIMARY product image. The zoom format is used by default.
+         */
+        ProductPageMetaResolver.prototype.resolveImage = function () {
+            return this.product$.pipe(operators.map(function (p) {
+                var _a, _b;
+                return ((_b = ((_a = p.images) === null || _a === void 0 ? void 0 : _a.PRIMARY).zoom) === null || _b === void 0 ? void 0 : _b.url) ? p.images.PRIMARY.zoom.url
                     : null;
             }));
         };
         ProductPageMetaResolver.prototype.resolveFirstCategory = function (product) {
+            var _a;
             var firstCategory;
-            if (product.categories && product.categories.length > 0) {
+            if (((_a = product.categories) === null || _a === void 0 ? void 0 : _a.length) > 0) {
                 firstCategory = product.categories[0];
             }
             return firstCategory
@@ -23315,24 +23284,20 @@
         ProductPageMetaResolver.prototype.resolveManufacturer = function (product) {
             return product.manufacturer ? " | " + product.manufacturer : '';
         };
-        ProductPageMetaResolver.prototype.resolveRobots = function (product) {
-            var product$ = product ? rxjs.of(product) : this.product$;
-            return product$.pipe(operators.switchMap(function (p) {
-                if (!p.purchasable) {
-                    return rxjs.of([exports.PageRobotsMeta.FOLLOW, exports.PageRobotsMeta.NOINDEX]);
-                }
-                else {
-                    return rxjs.of([exports.PageRobotsMeta.FOLLOW, exports.PageRobotsMeta.INDEX]);
-                }
-            }));
+        /**
+         * Resolves the robot information for the Product Detail Page. The
+         * robot instruction defaults to FOLLOW and INDEX for all product pages,
+         * regardless of whether they're purchasable or not.
+         */
+        ProductPageMetaResolver.prototype.resolveRobots = function () {
+            return rxjs.of([exports.PageRobotsMeta.FOLLOW, exports.PageRobotsMeta.INDEX]);
         };
         ProductPageMetaResolver.ctorParameters = function () { return [
             { type: RoutingService },
             { type: ProductService },
-            { type: TranslationService },
-            { type: FeatureConfigService }
+            { type: TranslationService }
         ]; };
-        ProductPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(core["ɵɵinject"](RoutingService), core["ɵɵinject"](ProductService), core["ɵɵinject"](TranslationService), core["ɵɵinject"](FeatureConfigService)); }, token: ProductPageMetaResolver, providedIn: "root" });
+        ProductPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(core["ɵɵinject"](RoutingService), core["ɵɵinject"](ProductService), core["ɵɵinject"](TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
         ProductPageMetaResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23345,7 +23310,7 @@
      * Resolves the page data for the Search Result Page based on the
      * `PageType.CATEGORY_PAGE` and the `SearchResultsListPageTemplate` template.
      *
-     * Only the page title is resolved in the implemenation.
+     * Only the page title is resolved in the standard implemenation.
      */
     var SearchPageMetaResolver = /** @class */ (function (_super) {
         __extends(SearchPageMetaResolver, _super);
@@ -23354,7 +23319,7 @@
             _this.routingService = routingService;
             _this.productSearchService = productSearchService;
             _this.translation = translation;
-            _this.total$ = _this.productSearchService.getResults().pipe(operators.filter(function (data) { return !!(data && data.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
+            _this.total$ = _this.productSearchService.getResults().pipe(operators.filter(function (data) { var _a; return !!((_a = data) === null || _a === void 0 ? void 0 : _a.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
             _this.query$ = _this.routingService
                 .getRouterState()
                 .pipe(operators.map(function (state) { return state.state.params['query']; }));
@@ -23362,19 +23327,9 @@
             _this.pageTemplate = 'SearchResultsListPageTemplate';
             return _this;
         }
-        /**
-         * @deprecated since version 1.3
-         *
-         * The resolve method is no longer preferred and will be removed with release 2.0.
-         * The caller `PageMetaService` service is improved to expect all individual resolvers
-         * instead, so that the code is easier extensible.
-         */
-        SearchPageMetaResolver.prototype.resolve = function () {
-            return this.resolveTitle();
-        };
-        SearchPageMetaResolver.prototype.resolveTitle = function (total, query) {
+        SearchPageMetaResolver.prototype.resolveTitle = function () {
             var _this = this;
-            var sources = total && query ? [rxjs.of(total), rxjs.of(query)] : [this.total$, this.query$];
+            var sources = [this.total$, this.query$];
             return rxjs.combineLatest(sources).pipe(operators.switchMap(function (_a) {
                 var _b = __read(_a, 2), t = _b[0], q = _b[1];
                 return _this.translation.translate('pageMetaResolver.search.title', {
@@ -23731,6 +23686,11 @@
         {
             provide: PageMetaResolver,
             useExisting: SearchPageMetaResolver,
+            multi: true,
+        },
+        {
+            provide: PageMetaResolver,
+            useExisting: CouponSearchPageResolver,
             multi: true,
         },
     ];
@@ -27075,92 +27035,6 @@
         return UserStoreModule;
     }());
 
-    var FindProductPageMetaResolver = /** @class */ (function (_super) {
-        __extends(FindProductPageMetaResolver, _super);
-        function FindProductPageMetaResolver(routingService, productSearchService, translation, authService) {
-            var _this = _super.call(this) || this;
-            _this.routingService = routingService;
-            _this.productSearchService = productSearchService;
-            _this.translation = translation;
-            _this.authService = authService;
-            _this.totalAndCode$ = rxjs.combineLatest([
-                _this.productSearchService.getResults().pipe(operators.filter(function (data) { return !!(data && data.pagination); }), operators.map(function (results) { return results.pagination.totalResults; })),
-                _this.routingService.getRouterState().pipe(operators.map(function (state) { return state.state.queryParams['couponcode']; }), operators.filter(Boolean)),
-            ]);
-            _this.pageType = exports.PageType.CONTENT_PAGE;
-            _this.pageTemplate = 'SearchResultsListPageTemplate';
-            return _this;
-        }
-        /**
-         * @deprecated since version 1.3
-         *
-         * The resolve method is no longer preferred and will be removed with release 2.0.
-         * The caller `PageMetaService` service is improved to expect all individual resolvers
-         * instead, so that the code is easier extensible.
-         */
-        FindProductPageMetaResolver.prototype.resolve = function () {
-            return rxjs.combineLatest([this.resolveTitle(), this.resolveBreadcrumbs()]).pipe(operators.map(function (_a) {
-                var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
-                return ({
-                    title: title,
-                    breadcrumbs: breadcrumbs,
-                });
-            }));
-        };
-        FindProductPageMetaResolver.prototype.resolveBreadcrumbs = function () {
-            var breadcrumbs = [{ label: 'Home', link: '/' }];
-            this.authService.isUserLoggedIn().subscribe(function (login) {
-                if (login)
-                    breadcrumbs.push({ label: 'My Coupons', link: '/my-account/coupons' });
-            });
-            return rxjs.of(breadcrumbs);
-        };
-        FindProductPageMetaResolver.prototype.resolveTitle = function () {
-            var _this = this;
-            return this.totalAndCode$.pipe(operators.switchMap(function (_a) {
-                var _b = __read(_a, 2), total = _b[0], code = _b[1];
-                return _this.translation.translate('pageMetaResolver.search.findProductTitle', {
-                    count: total,
-                    coupon: code,
-                });
-            }));
-        };
-        FindProductPageMetaResolver.prototype.getScore = function (page) {
-            var score = 0;
-            if (this.pageType) {
-                score += page.type === this.pageType ? 1 : -1;
-            }
-            if (this.pageTemplate) {
-                score += page.template === this.pageTemplate ? 1 : -1;
-            }
-            this.routingService
-                .getRouterState()
-                .pipe(operators.map(function (state) {
-                return state.state.queryParams;
-            }), operators.filter(Boolean))
-                .subscribe(function (queryParams) {
-                if (queryParams) {
-                    score += queryParams['couponcode'] ? 1 : -1;
-                }
-            })
-                .unsubscribe();
-            return score;
-        };
-        FindProductPageMetaResolver.ctorParameters = function () { return [
-            { type: RoutingService },
-            { type: ProductSearchService },
-            { type: TranslationService },
-            { type: AuthService }
-        ]; };
-        FindProductPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function FindProductPageMetaResolver_Factory() { return new FindProductPageMetaResolver(core["ɵɵinject"](RoutingService), core["ɵɵinject"](ProductSearchService), core["ɵɵinject"](TranslationService), core["ɵɵinject"](AuthService)); }, token: FindProductPageMetaResolver, providedIn: "root" });
-        FindProductPageMetaResolver = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], FindProductPageMetaResolver);
-        return FindProductPageMetaResolver;
-    }(PageMetaResolver));
-
     var UserModule = /** @class */ (function () {
         function UserModule() {
         }
@@ -27168,13 +27042,6 @@
         UserModule.forRoot = function () {
             return {
                 ngModule: UserModule_1,
-                providers: [
-                    {
-                        provide: PageMetaResolver,
-                        useExisting: FindProductPageMetaResolver,
-                        multi: true,
-                    },
-                ],
             };
         };
         var UserModule_1;
@@ -27697,169 +27564,170 @@
     exports.ɵdl = reducer$b;
     exports.ɵdm = reducer$a;
     exports.ɵdn = reducer$9;
-    exports.ɵdo = cmsStoreConfigFactory;
-    exports.ɵdp = CmsStoreModule;
-    exports.ɵdq = getReducers$7;
-    exports.ɵdr = reducerToken$7;
-    exports.ɵds = reducerProvider$7;
-    exports.ɵdt = clearCmsState;
-    exports.ɵdu = metaReducers$3;
-    exports.ɵdv = effects$7;
-    exports.ɵdw = ComponentsEffects;
-    exports.ɵdx = NavigationEntryItemEffects;
-    exports.ɵdy = PageEffects;
-    exports.ɵdz = reducer$f;
+    exports.ɵdo = ActiveCartService;
+    exports.ɵdp = cmsStoreConfigFactory;
+    exports.ɵdq = CmsStoreModule;
+    exports.ɵdr = getReducers$7;
+    exports.ɵds = reducerToken$7;
+    exports.ɵdt = reducerProvider$7;
+    exports.ɵdu = clearCmsState;
+    exports.ɵdv = metaReducers$3;
+    exports.ɵdw = effects$7;
+    exports.ɵdx = ComponentsEffects;
+    exports.ɵdy = NavigationEntryItemEffects;
+    exports.ɵdz = PageEffects;
     exports.ɵe = initConfig;
-    exports.ɵea = reducer$g;
-    exports.ɵeb = reducer$d;
-    exports.ɵec = reducer$e;
-    exports.ɵed = GlobalMessageStoreModule;
-    exports.ɵee = getReducers$4;
-    exports.ɵef = reducerToken$4;
-    exports.ɵeg = reducerProvider$4;
-    exports.ɵeh = reducer$8;
-    exports.ɵei = GlobalMessageEffect;
-    exports.ɵej = defaultGlobalMessageConfigFactory;
-    exports.ɵek = HttpErrorInterceptor;
-    exports.ɵel = defaultI18nConfig;
-    exports.ɵem = i18nextProviders;
-    exports.ɵen = i18nextInit;
-    exports.ɵeo = MockTranslationService;
-    exports.ɵep = kymaStoreConfigFactory;
-    exports.ɵeq = KymaStoreModule;
-    exports.ɵer = getReducers$8;
-    exports.ɵes = reducerToken$8;
-    exports.ɵet = reducerProvider$8;
-    exports.ɵeu = clearKymaState;
-    exports.ɵev = metaReducers$4;
-    exports.ɵew = effects$8;
-    exports.ɵex = OpenIdTokenEffect;
-    exports.ɵey = OpenIdAuthenticationTokenService;
-    exports.ɵez = defaultKymaConfig;
+    exports.ɵea = reducer$f;
+    exports.ɵeb = reducer$g;
+    exports.ɵec = reducer$d;
+    exports.ɵed = reducer$e;
+    exports.ɵee = GlobalMessageStoreModule;
+    exports.ɵef = getReducers$4;
+    exports.ɵeg = reducerToken$4;
+    exports.ɵeh = reducerProvider$4;
+    exports.ɵei = reducer$8;
+    exports.ɵej = GlobalMessageEffect;
+    exports.ɵek = defaultGlobalMessageConfigFactory;
+    exports.ɵel = HttpErrorInterceptor;
+    exports.ɵem = defaultI18nConfig;
+    exports.ɵen = i18nextProviders;
+    exports.ɵeo = i18nextInit;
+    exports.ɵep = MockTranslationService;
+    exports.ɵeq = kymaStoreConfigFactory;
+    exports.ɵer = KymaStoreModule;
+    exports.ɵes = getReducers$8;
+    exports.ɵet = reducerToken$8;
+    exports.ɵeu = reducerProvider$8;
+    exports.ɵev = clearKymaState;
+    exports.ɵew = metaReducers$4;
+    exports.ɵex = effects$8;
+    exports.ɵey = OpenIdTokenEffect;
+    exports.ɵez = OpenIdAuthenticationTokenService;
     exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = defaultOccAsmConfig;
-    exports.ɵfb = defaultOccCartConfig;
-    exports.ɵfc = OccSaveCartAdapter;
-    exports.ɵfd = defaultOccProductConfig;
-    exports.ɵfe = defaultOccSiteContextConfig;
-    exports.ɵff = defaultOccStoreFinderConfig;
-    exports.ɵfg = defaultOccUserConfig;
-    exports.ɵfh = UserNotificationPreferenceAdapter;
-    exports.ɵfi = defaultPersonalizationConfig;
-    exports.ɵfj = interceptors$3;
-    exports.ɵfk = OccPersonalizationIdInterceptor;
-    exports.ɵfl = OccPersonalizationTimeInterceptor;
-    exports.ɵfm = ProcessStoreModule;
-    exports.ɵfn = getReducers$9;
-    exports.ɵfo = reducerToken$9;
-    exports.ɵfp = reducerProvider$9;
-    exports.ɵfq = productStoreConfigFactory;
-    exports.ɵfr = ProductStoreModule;
-    exports.ɵfs = getReducers$a;
-    exports.ɵft = reducerToken$a;
-    exports.ɵfu = reducerProvider$a;
-    exports.ɵfv = clearProductsState;
-    exports.ɵfw = metaReducers$5;
-    exports.ɵfx = effects$9;
-    exports.ɵfy = ProductReferencesEffects;
-    exports.ɵfz = ProductReviewsEffects;
+    exports.ɵfa = defaultKymaConfig;
+    exports.ɵfb = defaultOccAsmConfig;
+    exports.ɵfc = defaultOccCartConfig;
+    exports.ɵfd = OccSaveCartAdapter;
+    exports.ɵfe = defaultOccProductConfig;
+    exports.ɵff = defaultOccSiteContextConfig;
+    exports.ɵfg = defaultOccStoreFinderConfig;
+    exports.ɵfh = defaultOccUserConfig;
+    exports.ɵfi = UserNotificationPreferenceAdapter;
+    exports.ɵfj = defaultPersonalizationConfig;
+    exports.ɵfk = interceptors$3;
+    exports.ɵfl = OccPersonalizationIdInterceptor;
+    exports.ɵfm = OccPersonalizationTimeInterceptor;
+    exports.ɵfn = ProcessStoreModule;
+    exports.ɵfo = getReducers$9;
+    exports.ɵfp = reducerToken$9;
+    exports.ɵfq = reducerProvider$9;
+    exports.ɵfr = productStoreConfigFactory;
+    exports.ɵfs = ProductStoreModule;
+    exports.ɵft = getReducers$a;
+    exports.ɵfu = reducerToken$a;
+    exports.ɵfv = reducerProvider$a;
+    exports.ɵfw = clearProductsState;
+    exports.ɵfx = metaReducers$5;
+    exports.ɵfy = effects$9;
+    exports.ɵfz = ProductReferencesEffects;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = ProductsSearchEffects;
-    exports.ɵgb = ProductEffects;
-    exports.ɵgc = reducer$h;
-    exports.ɵgd = entityScopedLoaderReducer;
-    exports.ɵge = scopedLoaderReducer;
-    exports.ɵgf = reducer$j;
-    exports.ɵgg = reducer$i;
-    exports.ɵgh = PageMetaResolver;
-    exports.ɵgi = addExternalRoutesFactory;
-    exports.ɵgj = getReducers$6;
-    exports.ɵgk = reducer$c;
-    exports.ɵgl = reducerToken$6;
-    exports.ɵgm = reducerProvider$6;
-    exports.ɵgn = CustomSerializer;
-    exports.ɵgo = effects$6;
-    exports.ɵgp = RouterEffects;
-    exports.ɵgq = siteContextStoreConfigFactory;
-    exports.ɵgr = SiteContextStoreModule;
-    exports.ɵgs = getReducers$1;
-    exports.ɵgt = reducerToken$1;
-    exports.ɵgu = reducerProvider$1;
-    exports.ɵgv = effects$2;
-    exports.ɵgw = LanguagesEffects;
-    exports.ɵgx = CurrenciesEffects;
-    exports.ɵgy = BaseSiteEffects;
-    exports.ɵgz = reducer$3;
+    exports.ɵga = ProductReviewsEffects;
+    exports.ɵgb = ProductsSearchEffects;
+    exports.ɵgc = ProductEffects;
+    exports.ɵgd = reducer$h;
+    exports.ɵge = entityScopedLoaderReducer;
+    exports.ɵgf = scopedLoaderReducer;
+    exports.ɵgg = reducer$j;
+    exports.ɵgh = reducer$i;
+    exports.ɵgi = PageMetaResolver;
+    exports.ɵgj = CouponSearchPageResolver;
+    exports.ɵgk = PageMetaResolver;
+    exports.ɵgl = addExternalRoutesFactory;
+    exports.ɵgm = getReducers$6;
+    exports.ɵgn = reducer$c;
+    exports.ɵgo = reducerToken$6;
+    exports.ɵgp = reducerProvider$6;
+    exports.ɵgq = CustomSerializer;
+    exports.ɵgr = effects$6;
+    exports.ɵgs = RouterEffects;
+    exports.ɵgt = siteContextStoreConfigFactory;
+    exports.ɵgu = SiteContextStoreModule;
+    exports.ɵgv = getReducers$1;
+    exports.ɵgw = reducerToken$1;
+    exports.ɵgx = reducerProvider$1;
+    exports.ɵgy = effects$2;
+    exports.ɵgz = LanguagesEffects;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = reducer$2;
-    exports.ɵhb = reducer$1;
-    exports.ɵhc = defaultSiteContextConfigFactory;
-    exports.ɵhd = initializeContext;
-    exports.ɵhe = contextServiceProviders;
-    exports.ɵhf = initSiteContextRoutesHandler;
-    exports.ɵhg = siteContextParamsProviders;
-    exports.ɵhh = SiteContextUrlSerializer;
-    exports.ɵhi = SiteContextRoutesHandler;
-    exports.ɵhj = baseSiteConfigValidator;
-    exports.ɵhk = interceptors$4;
-    exports.ɵhl = CmsTicketInterceptor;
-    exports.ɵhm = StoreFinderStoreModule;
-    exports.ɵhn = getReducers$b;
-    exports.ɵho = reducerToken$b;
-    exports.ɵhp = reducerProvider$b;
-    exports.ɵhq = effects$a;
-    exports.ɵhr = FindStoresEffect;
-    exports.ɵhs = ViewAllStoresEffect;
-    exports.ɵht = defaultStoreFinderConfig;
-    exports.ɵhu = UserStoreModule;
-    exports.ɵhv = getReducers$c;
-    exports.ɵhw = reducerToken$c;
-    exports.ɵhx = reducerProvider$c;
-    exports.ɵhy = clearUserState;
-    exports.ɵhz = metaReducers$7;
+    exports.ɵha = CurrenciesEffects;
+    exports.ɵhb = BaseSiteEffects;
+    exports.ɵhc = reducer$3;
+    exports.ɵhd = reducer$2;
+    exports.ɵhe = reducer$1;
+    exports.ɵhf = defaultSiteContextConfigFactory;
+    exports.ɵhg = initializeContext;
+    exports.ɵhh = contextServiceProviders;
+    exports.ɵhi = initSiteContextRoutesHandler;
+    exports.ɵhj = siteContextParamsProviders;
+    exports.ɵhk = SiteContextUrlSerializer;
+    exports.ɵhl = SiteContextRoutesHandler;
+    exports.ɵhm = baseSiteConfigValidator;
+    exports.ɵhn = interceptors$4;
+    exports.ɵho = CmsTicketInterceptor;
+    exports.ɵhp = StoreFinderStoreModule;
+    exports.ɵhq = getReducers$b;
+    exports.ɵhr = reducerToken$b;
+    exports.ɵhs = reducerProvider$b;
+    exports.ɵht = effects$a;
+    exports.ɵhu = FindStoresEffect;
+    exports.ɵhv = ViewAllStoresEffect;
+    exports.ɵhw = defaultStoreFinderConfig;
+    exports.ɵhx = UserStoreModule;
+    exports.ɵhy = getReducers$c;
+    exports.ɵhz = reducerToken$c;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = effects$b;
-    exports.ɵib = BillingCountriesEffect;
-    exports.ɵic = ClearMiscsDataEffect;
-    exports.ɵid = ConsignmentTrackingEffects;
-    exports.ɵie = DeliveryCountriesEffects;
-    exports.ɵif = NotificationPreferenceEffects;
-    exports.ɵig = OrderDetailsEffect;
-    exports.ɵih = OrderReturnRequestEffect;
-    exports.ɵii = UserPaymentMethodsEffects;
-    exports.ɵij = RegionsEffects;
-    exports.ɵik = ResetPasswordEffects;
-    exports.ɵil = TitlesEffects;
-    exports.ɵim = UserAddressesEffects;
-    exports.ɵin = UserConsentsEffect;
-    exports.ɵio = UserDetailsEffects;
-    exports.ɵip = UserOrdersEffect;
-    exports.ɵiq = UserRegisterEffects;
-    exports.ɵir = CustomerCouponEffects;
-    exports.ɵis = ProductInterestsEffect;
-    exports.ɵit = ForgotPasswordEffects;
-    exports.ɵiu = UpdateEmailEffects;
-    exports.ɵiv = UpdatePasswordEffects;
-    exports.ɵiw = UserNotificationPreferenceConnector;
-    exports.ɵix = reducer$v;
-    exports.ɵiy = reducer$t;
-    exports.ɵiz = reducer$k;
+    exports.ɵia = reducerProvider$c;
+    exports.ɵib = clearUserState;
+    exports.ɵic = metaReducers$7;
+    exports.ɵid = effects$b;
+    exports.ɵie = BillingCountriesEffect;
+    exports.ɵif = ClearMiscsDataEffect;
+    exports.ɵig = ConsignmentTrackingEffects;
+    exports.ɵih = DeliveryCountriesEffects;
+    exports.ɵii = NotificationPreferenceEffects;
+    exports.ɵij = OrderDetailsEffect;
+    exports.ɵik = OrderReturnRequestEffect;
+    exports.ɵil = UserPaymentMethodsEffects;
+    exports.ɵim = RegionsEffects;
+    exports.ɵin = ResetPasswordEffects;
+    exports.ɵio = TitlesEffects;
+    exports.ɵip = UserAddressesEffects;
+    exports.ɵiq = UserConsentsEffect;
+    exports.ɵir = UserDetailsEffects;
+    exports.ɵis = UserOrdersEffect;
+    exports.ɵit = UserRegisterEffects;
+    exports.ɵiu = CustomerCouponEffects;
+    exports.ɵiv = ProductInterestsEffect;
+    exports.ɵiw = ForgotPasswordEffects;
+    exports.ɵix = UpdateEmailEffects;
+    exports.ɵiy = UpdatePasswordEffects;
+    exports.ɵiz = UserNotificationPreferenceConnector;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = reducer$u;
-    exports.ɵjb = reducer$p;
-    exports.ɵjc = reducer$w;
-    exports.ɵjd = reducer$o;
-    exports.ɵje = reducer$z;
-    exports.ɵjf = reducer$m;
-    exports.ɵjg = reducer$s;
-    exports.ɵjh = reducer$q;
-    exports.ɵji = reducer$r;
-    exports.ɵjj = reducer$l;
-    exports.ɵjk = reducer$x;
-    exports.ɵjl = reducer$n;
-    exports.ɵjm = reducer$y;
-    exports.ɵjn = FindProductPageMetaResolver;
-    exports.ɵjo = PageMetaResolver;
+    exports.ɵja = reducer$v;
+    exports.ɵjb = reducer$t;
+    exports.ɵjc = reducer$k;
+    exports.ɵjd = reducer$u;
+    exports.ɵje = reducer$p;
+    exports.ɵjf = reducer$w;
+    exports.ɵjg = reducer$o;
+    exports.ɵjh = reducer$z;
+    exports.ɵji = reducer$m;
+    exports.ɵjj = reducer$s;
+    exports.ɵjk = reducer$q;
+    exports.ɵjl = reducer$r;
+    exports.ɵjm = reducer$l;
+    exports.ɵjn = reducer$x;
+    exports.ɵjo = reducer$n;
+    exports.ɵjp = reducer$y;
     exports.ɵk = getStorageSyncReducer;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$2;

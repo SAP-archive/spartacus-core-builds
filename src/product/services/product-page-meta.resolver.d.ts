@@ -1,8 +1,7 @@
 import { Observable } from 'rxjs';
-import { PageMeta, PageRobotsMeta } from '../../cms/model/page.model';
+import { BreadcrumbMeta, PageRobotsMeta } from '../../cms/model/page.model';
 import { PageMetaResolver } from '../../cms/page/page-meta.resolver';
-import { PageBreadcrumbResolver, PageDescriptionResolver, PageHeadingResolver, PageImageResolver, PageTitleResolver } from '../../cms/page/page.resolvers';
-import { FeatureConfigService } from '../../features-config/services/feature-config.service';
+import { PageBreadcrumbResolver, PageDescriptionResolver, PageHeadingResolver, PageImageResolver, PageRobotsResolver, PageTitleResolver } from '../../cms/page/page.resolvers';
 import { TranslationService } from '../../i18n/translation.service';
 import { Product } from '../../model/product.model';
 import { RoutingService } from '../../routing/facade/routing.service';
@@ -15,70 +14,48 @@ import { ProductService } from '../facade/product.service';
  * first GALLERY image are resolved if available in the data.
  */
 import * as ɵngcc0 from '@angular/core';
-export declare class ProductPageMetaResolver extends PageMetaResolver implements PageHeadingResolver, PageTitleResolver, PageDescriptionResolver, PageBreadcrumbResolver, PageImageResolver {
+export declare class ProductPageMetaResolver extends PageMetaResolver implements PageHeadingResolver, PageTitleResolver, PageDescriptionResolver, PageBreadcrumbResolver, PageImageResolver, PageRobotsResolver {
     protected routingService: RoutingService;
     protected productService: ProductService;
     protected translation: TranslationService;
-    protected features?: FeatureConfigService;
-    protected readonly PRODUCT_SCOPE: string;
-    private product$;
-    constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService, features: FeatureConfigService);
-    /**
-     * @deprecated since 1.4
-     */
+    protected product$: Observable<unknown>;
     constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService);
     /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
+     * Resolves the page heading for the Product Detail Page.
+     * The page heading is used in the UI (`<h1>`), where as the page
+     * title is used by the browser and crawlers.
      */
-    resolve(): Observable<PageMeta> | any;
     resolveHeading(): Observable<string>;
     /**
-     * @deprecated since version 1.3
-     * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveHeading()` instead
+     * Resolves the page title for the Product Detail Page. The page title
+     * is resolved with the product name, the first category and the manufactorer.
+     * The page title used by the browser (history, tabs) and crawlers.
      */
-    resolveHeading(product: Product): Observable<string>;
     resolveTitle(): Observable<string>;
     /**
-     * @deprecated since version 1.3
-     * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveTitle()` instead
+     * Resolves the page description for the Product Detail Page. The description
+     * is based on the `product.summary`.
      */
-    resolveTitle(product: Product): Observable<string>;
     resolveDescription(): Observable<string>;
     /**
-     * @deprecated since version 1.3
-     * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveDescription()` instead
+     * Resolves breadcrumbs for the Product Detail Page. The breadcrumbs are driven by
+     * a static home page crum and a crumb for each category.
      */
-    resolveDescription(product: Product): Observable<string>;
+    resolveBreadcrumbs(): Observable<BreadcrumbMeta[]>;
     /**
-     * @deprecated since version 1.3
-     * This method will be removed with with 2.0
+     * Resolves the main page image for the Product Detail Page. The product image
+     * is based on the PRIMARY product image. The zoom format is used by default.
      */
-    resolveBreadcrumbLabel(): Observable<string>;
-    resolveBreadcrumbs(): Observable<any[]>;
-    /**
-     * @deprecated since version 1.3
-     * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveBreadcrumbs()` instead
-     */
-    resolveBreadcrumbs(product: Product, breadcrumbLabel: string): Observable<any[]>;
     resolveImage(): Observable<string>;
+    protected resolveFirstCategory(product: Product): string;
+    protected resolveManufacturer(product: Product): string;
     /**
-     * @deprecated since version 1.3
-     * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveImage()` instead
+     * Resolves the robot information for the Product Detail Page. The
+     * robot instruction defaults to FOLLOW and INDEX for all product pages,
+     * regardless of whether they're purchasable or not.
      */
-    resolveImage(product: Product): Observable<string>;
-    private resolveFirstCategory;
-    private resolveManufacturer;
     resolveRobots(): Observable<PageRobotsMeta[]>;
-    /**
-     * @deprecated since version 1.3
-     * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveRobots()` instead
-     */
-    resolveRobots(product: Product): Observable<PageRobotsMeta[]>;
     static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductPageMetaResolver>;
 }
 
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHJvZHVjdC1wYWdlLW1ldGEucmVzb2x2ZXIuZC50cyIsInNvdXJjZXMiOlsicHJvZHVjdC1wYWdlLW1ldGEucmVzb2x2ZXIuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFnQkE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUErREEiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBQYWdlTWV0YSwgUGFnZVJvYm90c01ldGEgfSBmcm9tICcuLi8uLi9jbXMvbW9kZWwvcGFnZS5tb2RlbCc7XG5pbXBvcnQgeyBQYWdlTWV0YVJlc29sdmVyIH0gZnJvbSAnLi4vLi4vY21zL3BhZ2UvcGFnZS1tZXRhLnJlc29sdmVyJztcbmltcG9ydCB7IFBhZ2VCcmVhZGNydW1iUmVzb2x2ZXIsIFBhZ2VEZXNjcmlwdGlvblJlc29sdmVyLCBQYWdlSGVhZGluZ1Jlc29sdmVyLCBQYWdlSW1hZ2VSZXNvbHZlciwgUGFnZVRpdGxlUmVzb2x2ZXIgfSBmcm9tICcuLi8uLi9jbXMvcGFnZS9wYWdlLnJlc29sdmVycyc7XG5pbXBvcnQgeyBGZWF0dXJlQ29uZmlnU2VydmljZSB9IGZyb20gJy4uLy4uL2ZlYXR1cmVzLWNvbmZpZy9zZXJ2aWNlcy9mZWF0dXJlLWNvbmZpZy5zZXJ2aWNlJztcbmltcG9ydCB7IFRyYW5zbGF0aW9uU2VydmljZSB9IGZyb20gJy4uLy4uL2kxOG4vdHJhbnNsYXRpb24uc2VydmljZSc7XG5pbXBvcnQgeyBQcm9kdWN0IH0gZnJvbSAnLi4vLi4vbW9kZWwvcHJvZHVjdC5tb2RlbCc7XG5pbXBvcnQgeyBSb3V0aW5nU2VydmljZSB9IGZyb20gJy4uLy4uL3JvdXRpbmcvZmFjYWRlL3JvdXRpbmcuc2VydmljZSc7XG5pbXBvcnQgeyBQcm9kdWN0U2VydmljZSB9IGZyb20gJy4uL2ZhY2FkZS9wcm9kdWN0LnNlcnZpY2UnO1xuLyoqXG4gKiBSZXNvbHZlcyB0aGUgcGFnZSBkYXRhIGZvciB0aGUgUHJvZHVjdCBEZXRhaWwgUGFnZVxuICogYmFzZWQgb24gdGhlIGBQYWdlVHlwZS5QUk9EVUNUX1BBR0VgLlxuICpcbiAqIFRoZSBwYWdlIHRpdGxlLCBoZWFkaW5nLCBkZXNjcmlwdGlvbiwgYnJlYWRjcnVtYnMgYW5kXG4gKiBmaXJzdCBHQUxMRVJZIGltYWdlIGFyZSByZXNvbHZlZCBpZiBhdmFpbGFibGUgaW4gdGhlIGRhdGEuXG4gKi9cbmV4cG9ydCBkZWNsYXJlIGNsYXNzIFByb2R1Y3RQYWdlTWV0YVJlc29sdmVyIGV4dGVuZHMgUGFnZU1ldGFSZXNvbHZlciBpbXBsZW1lbnRzIFBhZ2VIZWFkaW5nUmVzb2x2ZXIsIFBhZ2VUaXRsZVJlc29sdmVyLCBQYWdlRGVzY3JpcHRpb25SZXNvbHZlciwgUGFnZUJyZWFkY3J1bWJSZXNvbHZlciwgUGFnZUltYWdlUmVzb2x2ZXIge1xuICAgIHByb3RlY3RlZCByb3V0aW5nU2VydmljZTogUm91dGluZ1NlcnZpY2U7XG4gICAgcHJvdGVjdGVkIHByb2R1Y3RTZXJ2aWNlOiBQcm9kdWN0U2VydmljZTtcbiAgICBwcm90ZWN0ZWQgdHJhbnNsYXRpb246IFRyYW5zbGF0aW9uU2VydmljZTtcbiAgICBwcm90ZWN0ZWQgZmVhdHVyZXM/OiBGZWF0dXJlQ29uZmlnU2VydmljZTtcbiAgICBwcm90ZWN0ZWQgcmVhZG9ubHkgUFJPRFVDVF9TQ09QRTogc3RyaW5nO1xuICAgIHByaXZhdGUgcHJvZHVjdCQ7XG4gICAgY29uc3RydWN0b3Iocm91dGluZ1NlcnZpY2U6IFJvdXRpbmdTZXJ2aWNlLCBwcm9kdWN0U2VydmljZTogUHJvZHVjdFNlcnZpY2UsIHRyYW5zbGF0aW9uOiBUcmFuc2xhdGlvblNlcnZpY2UsIGZlYXR1cmVzOiBGZWF0dXJlQ29uZmlnU2VydmljZSk7XG4gICAgLyoqXG4gICAgICogQGRlcHJlY2F0ZWQgc2luY2UgMS40XG4gICAgICovXG4gICAgY29uc3RydWN0b3Iocm91dGluZ1NlcnZpY2U6IFJvdXRpbmdTZXJ2aWNlLCBwcm9kdWN0U2VydmljZTogUHJvZHVjdFNlcnZpY2UsIHRyYW5zbGF0aW9uOiBUcmFuc2xhdGlvblNlcnZpY2UpO1xuICAgIC8qKlxuICAgICAqIEBkZXByZWNhdGVkIHNpbmNlIHZlcnNpb24gMS4zXG4gICAgICpcbiAgICAgKiBUaGUgcmVzb2x2ZSBtZXRob2QgaXMgbm8gbG9uZ2VyIHByZWZlcnJlZCBhbmQgd2lsbCBiZSByZW1vdmVkIHdpdGggcmVsZWFzZSAyLjAuXG4gICAgICogVGhlIGNhbGxlciBgUGFnZU1ldGFTZXJ2aWNlYCBzZXJ2aWNlIGlzIGltcHJvdmVkIHRvIGV4cGVjdCBhbGwgaW5kaXZpZHVhbCByZXNvbHZlcnNcbiAgICAgKiBpbnN0ZWFkLCBzbyB0aGF0IHRoZSBjb2RlIGlzIGVhc2llciBleHRlbnNpYmxlLlxuICAgICAqL1xuICAgIHJlc29sdmUoKTogT2JzZXJ2YWJsZTxQYWdlTWV0YT4gfCBhbnk7XG4gICAgcmVzb2x2ZUhlYWRpbmcoKTogT2JzZXJ2YWJsZTxzdHJpbmc+O1xuICAgIC8qKlxuICAgICAqIEBkZXByZWNhdGVkIHNpbmNlIHZlcnNpb24gMS4zXG4gICAgICogV2l0aCAyLjAsIHRoZSBhcmd1bWVudChzKSB3aWxsIGJlIHJlbW92ZWQgYW5kIHRoZSByZXR1cm4gdHlwZSB3aWxsIGNoYW5nZS4gVXNlIGByZXNvbHZlSGVhZGluZygpYCBpbnN0ZWFkXG4gICAgICovXG4gICAgcmVzb2x2ZUhlYWRpbmcocHJvZHVjdDogUHJvZHVjdCk6IE9ic2VydmFibGU8c3RyaW5nPjtcbiAgICByZXNvbHZlVGl0bGUoKTogT2JzZXJ2YWJsZTxzdHJpbmc+O1xuICAgIC8qKlxuICAgICAqIEBkZXByZWNhdGVkIHNpbmNlIHZlcnNpb24gMS4zXG4gICAgICogV2l0aCAyLjAsIHRoZSBhcmd1bWVudChzKSB3aWxsIGJlIHJlbW92ZWQgYW5kIHRoZSByZXR1cm4gdHlwZSB3aWxsIGNoYW5nZS4gVXNlIGByZXNvbHZlVGl0bGUoKWAgaW5zdGVhZFxuICAgICAqL1xuICAgIHJlc29sdmVUaXRsZShwcm9kdWN0OiBQcm9kdWN0KTogT2JzZXJ2YWJsZTxzdHJpbmc+O1xuICAgIHJlc29sdmVEZXNjcmlwdGlvbigpOiBPYnNlcnZhYmxlPHN0cmluZz47XG4gICAgLyoqXG4gICAgICogQGRlcHJlY2F0ZWQgc2luY2UgdmVyc2lvbiAxLjNcbiAgICAgKiBXaXRoIDIuMCwgdGhlIGFyZ3VtZW50KHMpIHdpbGwgYmUgcmVtb3ZlZCBhbmQgdGhlIHJldHVybiB0eXBlIHdpbGwgY2hhbmdlLiBVc2UgYHJlc29sdmVEZXNjcmlwdGlvbigpYCBpbnN0ZWFkXG4gICAgICovXG4gICAgcmVzb2x2ZURlc2NyaXB0aW9uKHByb2R1Y3Q6IFByb2R1Y3QpOiBPYnNlcnZhYmxlPHN0cmluZz47XG4gICAgLyoqXG4gICAgICogQGRlcHJlY2F0ZWQgc2luY2UgdmVyc2lvbiAxLjNcbiAgICAgKiBUaGlzIG1ldGhvZCB3aWxsIGJlIHJlbW92ZWQgd2l0aCB3aXRoIDIuMFxuICAgICAqL1xuICAgIHJlc29sdmVCcmVhZGNydW1iTGFiZWwoKTogT2JzZXJ2YWJsZTxzdHJpbmc+O1xuICAgIHJlc29sdmVCcmVhZGNydW1icygpOiBPYnNlcnZhYmxlPGFueVtdPjtcbiAgICAvKipcbiAgICAgKiBAZGVwcmVjYXRlZCBzaW5jZSB2ZXJzaW9uIDEuM1xuICAgICAqIFdpdGggMi4wLCB0aGUgYXJndW1lbnQocykgd2lsbCBiZSByZW1vdmVkIGFuZCB0aGUgcmV0dXJuIHR5cGUgd2lsbCBjaGFuZ2UuIFVzZSBgcmVzb2x2ZUJyZWFkY3J1bWJzKClgIGluc3RlYWRcbiAgICAgKi9cbiAgICByZXNvbHZlQnJlYWRjcnVtYnMocHJvZHVjdDogUHJvZHVjdCwgYnJlYWRjcnVtYkxhYmVsOiBzdHJpbmcpOiBPYnNlcnZhYmxlPGFueVtdPjtcbiAgICByZXNvbHZlSW1hZ2UoKTogT2JzZXJ2YWJsZTxzdHJpbmc+O1xuICAgIC8qKlxuICAgICAqIEBkZXByZWNhdGVkIHNpbmNlIHZlcnNpb24gMS4zXG4gICAgICogV2l0aCAyLjAsIHRoZSBhcmd1bWVudChzKSB3aWxsIGJlIHJlbW92ZWQgYW5kIHRoZSByZXR1cm4gdHlwZSB3aWxsIGNoYW5nZS4gVXNlIGByZXNvbHZlSW1hZ2UoKWAgaW5zdGVhZFxuICAgICAqL1xuICAgIHJlc29sdmVJbWFnZShwcm9kdWN0OiBQcm9kdWN0KTogT2JzZXJ2YWJsZTxzdHJpbmc+O1xuICAgIHByaXZhdGUgcmVzb2x2ZUZpcnN0Q2F0ZWdvcnk7XG4gICAgcHJpdmF0ZSByZXNvbHZlTWFudWZhY3R1cmVyO1xuICAgIHJlc29sdmVSb2JvdHMoKTogT2JzZXJ2YWJsZTxQYWdlUm9ib3RzTWV0YVtdPjtcbiAgICAvKipcbiAgICAgKiBAZGVwcmVjYXRlZCBzaW5jZSB2ZXJzaW9uIDEuM1xuICAgICAqIFdpdGggMi4wLCB0aGUgYXJndW1lbnQocykgd2lsbCBiZSByZW1vdmVkIGFuZCB0aGUgcmV0dXJuIHR5cGUgd2lsbCBjaGFuZ2UuIFVzZSBgcmVzb2x2ZVJvYm90cygpYCBpbnN0ZWFkXG4gICAgICovXG4gICAgcmVzb2x2ZVJvYm90cyhwcm9kdWN0OiBQcm9kdWN0KTogT2JzZXJ2YWJsZTxQYWdlUm9ib3RzTWV0YVtdPjtcbn1cbiJdfQ==
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHJvZHVjdC1wYWdlLW1ldGEucmVzb2x2ZXIuZC50cyIsInNvdXJjZXMiOlsicHJvZHVjdC1wYWdlLW1ldGEucmVzb2x2ZXIuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Ozs7Ozs7Ozs7OztBQWVBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUF5Q0EiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBCcmVhZGNydW1iTWV0YSwgUGFnZVJvYm90c01ldGEgfSBmcm9tICcuLi8uLi9jbXMvbW9kZWwvcGFnZS5tb2RlbCc7XG5pbXBvcnQgeyBQYWdlTWV0YVJlc29sdmVyIH0gZnJvbSAnLi4vLi4vY21zL3BhZ2UvcGFnZS1tZXRhLnJlc29sdmVyJztcbmltcG9ydCB7IFBhZ2VCcmVhZGNydW1iUmVzb2x2ZXIsIFBhZ2VEZXNjcmlwdGlvblJlc29sdmVyLCBQYWdlSGVhZGluZ1Jlc29sdmVyLCBQYWdlSW1hZ2VSZXNvbHZlciwgUGFnZVJvYm90c1Jlc29sdmVyLCBQYWdlVGl0bGVSZXNvbHZlciB9IGZyb20gJy4uLy4uL2Ntcy9wYWdlL3BhZ2UucmVzb2x2ZXJzJztcbmltcG9ydCB7IFRyYW5zbGF0aW9uU2VydmljZSB9IGZyb20gJy4uLy4uL2kxOG4vdHJhbnNsYXRpb24uc2VydmljZSc7XG5pbXBvcnQgeyBQcm9kdWN0IH0gZnJvbSAnLi4vLi4vbW9kZWwvcHJvZHVjdC5tb2RlbCc7XG5pbXBvcnQgeyBSb3V0aW5nU2VydmljZSB9IGZyb20gJy4uLy4uL3JvdXRpbmcvZmFjYWRlL3JvdXRpbmcuc2VydmljZSc7XG5pbXBvcnQgeyBQcm9kdWN0U2VydmljZSB9IGZyb20gJy4uL2ZhY2FkZS9wcm9kdWN0LnNlcnZpY2UnO1xuLyoqXG4gKiBSZXNvbHZlcyB0aGUgcGFnZSBkYXRhIGZvciB0aGUgUHJvZHVjdCBEZXRhaWwgUGFnZVxuICogYmFzZWQgb24gdGhlIGBQYWdlVHlwZS5QUk9EVUNUX1BBR0VgLlxuICpcbiAqIFRoZSBwYWdlIHRpdGxlLCBoZWFkaW5nLCBkZXNjcmlwdGlvbiwgYnJlYWRjcnVtYnMgYW5kXG4gKiBmaXJzdCBHQUxMRVJZIGltYWdlIGFyZSByZXNvbHZlZCBpZiBhdmFpbGFibGUgaW4gdGhlIGRhdGEuXG4gKi9cbmV4cG9ydCBkZWNsYXJlIGNsYXNzIFByb2R1Y3RQYWdlTWV0YVJlc29sdmVyIGV4dGVuZHMgUGFnZU1ldGFSZXNvbHZlciBpbXBsZW1lbnRzIFBhZ2VIZWFkaW5nUmVzb2x2ZXIsIFBhZ2VUaXRsZVJlc29sdmVyLCBQYWdlRGVzY3JpcHRpb25SZXNvbHZlciwgUGFnZUJyZWFkY3J1bWJSZXNvbHZlciwgUGFnZUltYWdlUmVzb2x2ZXIsIFBhZ2VSb2JvdHNSZXNvbHZlciB7XG4gICAgcHJvdGVjdGVkIHJvdXRpbmdTZXJ2aWNlOiBSb3V0aW5nU2VydmljZTtcbiAgICBwcm90ZWN0ZWQgcHJvZHVjdFNlcnZpY2U6IFByb2R1Y3RTZXJ2aWNlO1xuICAgIHByb3RlY3RlZCB0cmFuc2xhdGlvbjogVHJhbnNsYXRpb25TZXJ2aWNlO1xuICAgIHByb3RlY3RlZCBwcm9kdWN0JDogT2JzZXJ2YWJsZTx1bmtub3duPjtcbiAgICBjb25zdHJ1Y3Rvcihyb3V0aW5nU2VydmljZTogUm91dGluZ1NlcnZpY2UsIHByb2R1Y3RTZXJ2aWNlOiBQcm9kdWN0U2VydmljZSwgdHJhbnNsYXRpb246IFRyYW5zbGF0aW9uU2VydmljZSk7XG4gICAgLyoqXG4gICAgICogUmVzb2x2ZXMgdGhlIHBhZ2UgaGVhZGluZyBmb3IgdGhlIFByb2R1Y3QgRGV0YWlsIFBhZ2UuXG4gICAgICogVGhlIHBhZ2UgaGVhZGluZyBpcyB1c2VkIGluIHRoZSBVSSAoYDxoMT5gKSwgd2hlcmUgYXMgdGhlIHBhZ2VcbiAgICAgKiB0aXRsZSBpcyB1c2VkIGJ5IHRoZSBicm93c2VyIGFuZCBjcmF3bGVycy5cbiAgICAgKi9cbiAgICByZXNvbHZlSGVhZGluZygpOiBPYnNlcnZhYmxlPHN0cmluZz47XG4gICAgLyoqXG4gICAgICogUmVzb2x2ZXMgdGhlIHBhZ2UgdGl0bGUgZm9yIHRoZSBQcm9kdWN0IERldGFpbCBQYWdlLiBUaGUgcGFnZSB0aXRsZVxuICAgICAqIGlzIHJlc29sdmVkIHdpdGggdGhlIHByb2R1Y3QgbmFtZSwgdGhlIGZpcnN0IGNhdGVnb3J5IGFuZCB0aGUgbWFudWZhY3RvcmVyLlxuICAgICAqIFRoZSBwYWdlIHRpdGxlIHVzZWQgYnkgdGhlIGJyb3dzZXIgKGhpc3RvcnksIHRhYnMpIGFuZCBjcmF3bGVycy5cbiAgICAgKi9cbiAgICByZXNvbHZlVGl0bGUoKTogT2JzZXJ2YWJsZTxzdHJpbmc+O1xuICAgIC8qKlxuICAgICAqIFJlc29sdmVzIHRoZSBwYWdlIGRlc2NyaXB0aW9uIGZvciB0aGUgUHJvZHVjdCBEZXRhaWwgUGFnZS4gVGhlIGRlc2NyaXB0aW9uXG4gICAgICogaXMgYmFzZWQgb24gdGhlIGBwcm9kdWN0LnN1bW1hcnlgLlxuICAgICAqL1xuICAgIHJlc29sdmVEZXNjcmlwdGlvbigpOiBPYnNlcnZhYmxlPHN0cmluZz47XG4gICAgLyoqXG4gICAgICogUmVzb2x2ZXMgYnJlYWRjcnVtYnMgZm9yIHRoZSBQcm9kdWN0IERldGFpbCBQYWdlLiBUaGUgYnJlYWRjcnVtYnMgYXJlIGRyaXZlbiBieVxuICAgICAqIGEgc3RhdGljIGhvbWUgcGFnZSBjcnVtIGFuZCBhIGNydW1iIGZvciBlYWNoIGNhdGVnb3J5LlxuICAgICAqL1xuICAgIHJlc29sdmVCcmVhZGNydW1icygpOiBPYnNlcnZhYmxlPEJyZWFkY3J1bWJNZXRhW10+O1xuICAgIC8qKlxuICAgICAqIFJlc29sdmVzIHRoZSBtYWluIHBhZ2UgaW1hZ2UgZm9yIHRoZSBQcm9kdWN0IERldGFpbCBQYWdlLiBUaGUgcHJvZHVjdCBpbWFnZVxuICAgICAqIGlzIGJhc2VkIG9uIHRoZSBQUklNQVJZIHByb2R1Y3QgaW1hZ2UuIFRoZSB6b29tIGZvcm1hdCBpcyB1c2VkIGJ5IGRlZmF1bHQuXG4gICAgICovXG4gICAgcmVzb2x2ZUltYWdlKCk6IE9ic2VydmFibGU8c3RyaW5nPjtcbiAgICBwcm90ZWN0ZWQgcmVzb2x2ZUZpcnN0Q2F0ZWdvcnkocHJvZHVjdDogUHJvZHVjdCk6IHN0cmluZztcbiAgICBwcm90ZWN0ZWQgcmVzb2x2ZU1hbnVmYWN0dXJlcihwcm9kdWN0OiBQcm9kdWN0KTogc3RyaW5nO1xuICAgIC8qKlxuICAgICAqIFJlc29sdmVzIHRoZSByb2JvdCBpbmZvcm1hdGlvbiBmb3IgdGhlIFByb2R1Y3QgRGV0YWlsIFBhZ2UuIFRoZVxuICAgICAqIHJvYm90IGluc3RydWN0aW9uIGRlZmF1bHRzIHRvIEZPTExPVyBhbmQgSU5ERVggZm9yIGFsbCBwcm9kdWN0IHBhZ2VzLFxuICAgICAqIHJlZ2FyZGxlc3Mgb2Ygd2hldGhlciB0aGV5J3JlIHB1cmNoYXNhYmxlIG9yIG5vdC5cbiAgICAgKi9cbiAgICByZXNvbHZlUm9ib3RzKCk6IE9ic2VydmFibGU8UGFnZVJvYm90c01ldGFbXT47XG59XG4iXX0=

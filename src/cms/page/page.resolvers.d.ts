@@ -1,37 +1,26 @@
 import { Observable } from 'rxjs';
-import { PageRobotsMeta } from '../model/page.model';
+import { BreadcrumbMeta, PageRobotsMeta } from '../model/page.model';
 /**
- * Resolves the page heading which is used in the UI. The page
- * heading might differ from the page title, which is used to address
- * the page in the browser (history, tabs) and outside the storefront
- * (Goolge, bots, etc).
+ * Resolves the page heading value which is used in the UI (typically
+ * the `<H1>`). The page heading might differ from the page title,
+ * which is used in the browser (history, tabs) and outside the storefront
+ * by search crawlers (Google Seach, Bing) and social crawlers (facebook,
+ * pinterest).
+ *
+ * While there are multiple standard resolvers available, nothing stops you
+ * from adding custom resolvers to the list of `PageMetaService.resolverMethods`.
  */
 export interface PageHeadingResolver {
-    /**
-     * Resolves the page heading.
-     *
-     * @deprecated since version 1.3
-     * Use `resolveHeading()` instead.
-     */
-    resolveHeading(...args: any[]): Observable<string>;
     /**
      * Resolves the page heading.
      */
     resolveHeading(): Observable<string>;
 }
 /**
- * Resolves the page title which is first and foremost used
- * for the page title tag, but could also be used for the
- * page heading in the UI.
+ * Resolves the page title which is first and foremost used for the page
+ * title tag, but could also be used as a fallback for the page heading.
  */
 export interface PageTitleResolver {
-    /**
-     * Resolves the page title.
-     *
-     * @deprecated since version 1.3
-     * Use `resolveTitle()` instead.
-     */
-    resolveTitle(...args: any[]): Observable<string>;
     /**
      * Resolves the page title.
      */
@@ -44,31 +33,18 @@ export interface PageTitleResolver {
 export interface PageDescriptionResolver {
     /**
      * Resolves the page description.
-     *
-     * @deprecated since version 1.3
-     * Use `resolveHeading()` instead.
-     */
-    resolveDescription(...args: any[]): Observable<string>;
-    /**
-     * Resolves the page description.
      */
     resolveDescription(): Observable<string>;
 }
 /**
- * Resolves breadcrumbs for the page, which is used in the `BreadcrumbComponent`
+ * Resolves breadcrumbs for the page, which are used in the
+ * `BreadcrumbComponent` and Structural Data.
  */
 export interface PageBreadcrumbResolver {
     /**
      * Resolves the breadcrumbs for the page.
-     *
-     * @deprecated since version 1.3
-     * Use `resolveBreadcrumbs()` instead.
      */
-    resolveBreadcrumbs(...args: any[]): Observable<any[]>;
-    /**
-     * Resolves the breadcrumbs for the page.
-     */
-    resolveBreadcrumbs(): Observable<any[]>;
+    resolveBreadcrumbs(): Observable<BreadcrumbMeta[]>;
 }
 /**
  * Provides a method to resolve the the main image for the page.
@@ -76,13 +52,6 @@ export interface PageBreadcrumbResolver {
  * the `og:image` metatag).
  */
 export interface PageImageResolver {
-    /**
-     * Resolves the main image for the page.
-     *
-     * @deprecated since version 1.3
-     * Use `resolveImage()` instead.
-     */
-    resolveImage(...args: any[]): Observable<string>;
     /**
      * Resolves the main image for the page.
      */
@@ -95,13 +64,6 @@ export interface PageImageResolver {
  *
  */
 export interface PageRobotsResolver {
-    /**
-     * Resolves the robots for the page.
-     *
-     * @deprecated since version 1.3
-     * Use `resolveRobots()` instead.
-     */
-    resolveRobots(...args: any[]): Observable<PageRobotsMeta[]>;
     /**
      * Resolves the robots for the page.
      */
