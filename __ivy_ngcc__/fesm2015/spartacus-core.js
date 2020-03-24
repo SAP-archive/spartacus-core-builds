@@ -3713,7 +3713,7 @@ let OccCartVoucherAdapter = class OccCartVoucherAdapter {
         const toAdd = JSON.stringify({});
         const params = new HttpParams().set('voucherId', voucherId);
         const headers = this.getHeaders(userId);
-        return this.http.post(url, toAdd, { headers, params }).pipe(catchError((error) => throwError(error.json())), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
+        return this.http.post(url, toAdd, { headers, params }).pipe(catchError((error) => throwError(error)), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
     }
     remove(userId, cartId, voucherId) {
         const url = this.getCartVoucherEndpoint(userId, cartId) +
@@ -14383,14 +14383,24 @@ let CartVoucherEffects = class CartVoucherEffects {
                     userId: payload.userId,
                     cartId: payload.cartId,
                 });
-            }), catchError(error => from([
-                new CartAddVoucherFail(makeErrorSerializable(error)),
-                new CartProcessesDecrement(payload.cartId),
-                new LoadCart({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
-            ])));
+            }), catchError(error => {
+                var _a, _b;
+                if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                    error.error.errors.forEach(err => {
+                        if (err.message) {
+                            this.messageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
+                        }
+                    });
+                }
+                return from([
+                    new CartAddVoucherFail(makeErrorSerializable(error)),
+                    new CartProcessesDecrement(payload.cartId),
+                    new LoadCart({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                ]);
+            }));
         }));
         this.removeCartVoucher$ = this.actions$.pipe(ofType(CART_REMOVE_VOUCHER), map((action) => action.payload), mergeMap(payload => {
             return this.cartVoucherConnector
@@ -22759,7 +22769,21 @@ let ResetPasswordEffects = class ResetPasswordEffects {
                     text: { key: 'forgottenPassword.passwordResetSuccess' },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
-            ]), catchError(error => of(new ResetPasswordFail(makeErrorSerializable(error)))));
+            ]), catchError(error => {
+                var _a, _b;
+                const actions = [new ResetPasswordFail(makeErrorSerializable(error))];
+                if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                    error.error.errors.forEach(err => {
+                        if (err.message) {
+                            actions.push(new AddMessage({
+                                text: { raw: err.message },
+                                type: GlobalMessageType.MSG_TYPE_ERROR,
+                            }));
+                        }
+                    });
+                }
+                return from(actions);
+            }));
         }));
     }
 };

@@ -4161,7 +4161,7 @@ var OccCartVoucherAdapter = /** @class */ (function () {
         var toAdd = JSON.stringify({});
         var params = new HttpParams().set('voucherId', voucherId);
         var headers = this.getHeaders(userId);
-        return this.http.post(url, toAdd, { headers: headers, params: params }).pipe(catchError(function (error) { return throwError(error.json()); }), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
+        return this.http.post(url, toAdd, { headers: headers, params: params }).pipe(catchError(function (error) { return throwError(error); }), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
     };
     OccCartVoucherAdapter.prototype.remove = function (userId, cartId, voucherId) {
         var url = this.getCartVoucherEndpoint(userId, cartId) +
@@ -16635,6 +16635,14 @@ var CartVoucherEffects = /** @class */ (function () {
                     cartId: payload.cartId,
                 });
             }), catchError(function (error) {
+                var _a, _b;
+                if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                    error.error.errors.forEach(function (err) {
+                        if (err.message) {
+                            _this.messageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
+                        }
+                    });
+                }
                 return from([
                     new CartAddVoucherFail(makeErrorSerializable(error)),
                     new CartProcessesDecrement(payload.cartId),
@@ -26309,7 +26317,19 @@ var ResetPasswordEffects = /** @class */ (function () {
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
             ]; }), catchError(function (error) {
-                return of(new ResetPasswordFail(makeErrorSerializable(error)));
+                var _a, _b;
+                var actions = [new ResetPasswordFail(makeErrorSerializable(error))];
+                if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                    error.error.errors.forEach(function (err) {
+                        if (err.message) {
+                            actions.push(new AddMessage({
+                                text: { raw: err.message },
+                                type: GlobalMessageType.MSG_TYPE_ERROR,
+                            }));
+                        }
+                    });
+                }
+                return from(actions);
             }));
         }));
     }

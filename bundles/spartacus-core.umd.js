@@ -4352,7 +4352,7 @@
             var toAdd = JSON.stringify({});
             var params = new http.HttpParams().set('voucherId', voucherId);
             var headers = this.getHeaders(userId);
-            return this.http.post(url, toAdd, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
+            return this.http.post(url, toAdd, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
         };
         OccCartVoucherAdapter.prototype.remove = function (userId, cartId, voucherId) {
             var url = this.getCartVoucherEndpoint(userId, cartId) +
@@ -16826,6 +16826,14 @@
                         cartId: payload.cartId,
                     });
                 }), operators.catchError(function (error) {
+                    var _a, _b;
+                    if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                        error.error.errors.forEach(function (err) {
+                            if (err.message) {
+                                _this.messageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR);
+                            }
+                        });
+                    }
                     return rxjs.from([
                         new CartAddVoucherFail(makeErrorSerializable(error)),
                         new CartProcessesDecrement(payload.cartId),
@@ -26500,7 +26508,19 @@
                         type: exports.GlobalMessageType.MSG_TYPE_CONFIRMATION,
                     }),
                 ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new ResetPasswordFail(makeErrorSerializable(error)));
+                    var _a, _b;
+                    var actions = [new ResetPasswordFail(makeErrorSerializable(error))];
+                    if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                        error.error.errors.forEach(function (err) {
+                            if (err.message) {
+                                actions.push(new AddMessage({
+                                    text: { raw: err.message },
+                                    type: exports.GlobalMessageType.MSG_TYPE_ERROR,
+                                }));
+                            }
+                        });
+                    }
+                    return rxjs.from(actions);
                 }));
             }));
         }
