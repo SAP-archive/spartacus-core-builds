@@ -35,7 +35,7 @@ export declare class ActiveCartService {
     /**
      * Returns true when cart is stable (not loading and not pending processes on cart)
      */
-    getLoaded(): Observable<boolean>;
+    isStable(): Observable<boolean>;
     private loadOrMerge;
     private load;
     private addEntriesGuestMerge;

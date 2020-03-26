@@ -15235,12 +15235,12 @@
         /**
          * Returns true when cart is stable (not loading and not pending processes on cart)
          */
-        ActiveCartService.prototype.getLoaded = function () {
+        ActiveCartService.prototype.isStable = function () {
             var _this = this;
             // Debounce is used here, to avoid flickering when we switch between different cart entities.
             // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
             // After load fails we might create new cart so we switch to `temp-${uuid}` cart entity used when creating cart.
-            // At the end we finally switch to cart `code` for cart id. Between those switches cart `getLoaded` function should not flicker.
+            // At the end we finally switch to cart `code` for cart id. Between those switches cart `isStable` function should not flicker.
             return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.isStable(cartId); }), operators.debounce(function (state) { return (state ? rxjs.timer(0) : rxjs.EMPTY); }), operators.distinctUntilChanged());
         };
         ActiveCartService.prototype.loadOrMerge = function (cartId) {
