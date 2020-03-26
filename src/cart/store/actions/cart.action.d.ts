@@ -1,4 +1,6 @@
 import { Action } from '@ngrx/store';
+import { Cart } from '../../../model/cart.model';
+import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 export declare const CREATE_CART = "[Cart] Create Cart";
 export declare const CREATE_CART_FAIL = "[Cart] Create Cart Fail";
 export declare const CREATE_CART_SUCCESS = "[Cart] Create Cart Success";
@@ -15,20 +17,39 @@ export declare const CLEAR_EXPIRED_COUPONS = "[Cart] Clear Expired Coupon";
 export declare const CLEAR_CART = "[Cart] Clear Cart";
 export declare const DELETE_CART = "[Cart] Delete Cart";
 export declare const DELETE_CART_FAIL = "[Cart] Delete Cart Fail";
-export declare class CreateCart {
-    payload: any;
+interface CreateCartPayload {
+    userId: string;
+    /** Used as a unique key in ngrx carts store (we don't know cartId at that time) */
+    tempCartId: string;
+    extraData?: {
+        active?: boolean;
+    };
+    /** Anonymous cart which should be merged to new cart */
+    oldCartId?: string;
+    /** Cart to which should we merge (not passing this will create new cart) */
+    toMergeCartGuid?: string;
+}
+export declare class CreateCart extends EntityLoadAction {
+    payload: CreateCartPayload;
     readonly type = "[Cart] Create Cart";
-    constructor(payload: any);
+    constructor(payload: CreateCartPayload);
 }
-export declare class CreateCartFail {
-    payload: any;
+interface CreateCartFailPayload extends CreateCartPayload {
+    error: any;
+}
+export declare class CreateCartFail extends EntityFailAction {
+    payload: CreateCartFailPayload;
     readonly type = "[Cart] Create Cart Fail";
-    constructor(payload: any);
+    constructor(payload: CreateCartFailPayload);
 }
-export declare class CreateCartSuccess {
-    payload: any;
+interface CreateCartSuccessPayload extends CreateCartPayload {
+    cart: Cart;
+    cartId: string;
+}
+export declare class CreateCartSuccess extends EntitySuccessAction {
+    payload: CreateCartSuccessPayload;
     readonly type = "[Cart] Create Cart Success";
-    constructor(payload: any);
+    constructor(payload: CreateCartSuccessPayload);
 }
 export declare class AddEmailToCart {
     payload: {
@@ -128,3 +149,4 @@ export declare class DeleteCartFail {
     constructor(payload: any);
 }
 export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails | AddEmailToCart | AddEmailToCartFail | AddEmailToCartSuccess | DeleteCart | DeleteCartFail | ClearExpiredCoupons | ClearCart;
+export {};

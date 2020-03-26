@@ -14111,27 +14111,36 @@ var CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
 var CLEAR_CART = '[Cart] Clear Cart';
 var DELETE_CART = '[Cart] Delete Cart';
 var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
-var CreateCart = /** @class */ (function () {
+var CreateCart = /** @class */ (function (_super) {
+    __extends(CreateCart, _super);
     function CreateCart(payload) {
-        this.payload = payload;
-        this.type = CREATE_CART;
+        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART;
+        return _this;
     }
     return CreateCart;
-}());
-var CreateCartFail = /** @class */ (function () {
+}(EntityLoadAction));
+var CreateCartFail = /** @class */ (function (_super) {
+    __extends(CreateCartFail, _super);
     function CreateCartFail(payload) {
-        this.payload = payload;
-        this.type = CREATE_CART_FAIL;
+        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART_FAIL;
+        return _this;
     }
     return CreateCartFail;
-}());
-var CreateCartSuccess = /** @class */ (function () {
+}(EntityFailAction));
+var CreateCartSuccess = /** @class */ (function (_super) {
+    __extends(CreateCartSuccess, _super);
     function CreateCartSuccess(payload) {
-        this.payload = payload;
-        this.type = CREATE_CART_SUCCESS;
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART_SUCCESS;
+        return _this;
     }
     return CreateCartSuccess;
-}());
+}(EntitySuccessAction));
 var AddEmailToCart = /** @class */ (function () {
     function AddEmailToCart(payload) {
         this.payload = payload;
@@ -14402,9 +14411,6 @@ var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
 }(EntityProcessesDecrementAction));
 
 var REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
-var CREATE_MULTI_CART = '[Multi Cart] Create Cart';
-var CREATE_MULTI_CART_FAIL = '[Multi Cart] Create Cart Fail';
-var CREATE_MULTI_CART_SUCCESS = '[Multi Cart] Create Cart Success';
 var LOAD_MULTI_CART = '[Multi Cart] Load Cart';
 var LOAD_MULTI_CART_FAIL = '[Multi Cart] Load Cart Fail';
 var LOAD_MULTI_CART_SUCCESS = '[Multi Cart] Load Cart Success';
@@ -14444,36 +14450,6 @@ var SetTempCart = /** @class */ (function (_super) {
         return _this;
     }
     return SetTempCart;
-}(EntitySuccessAction));
-var CreateMultiCart = /** @class */ (function (_super) {
-    __extends(CreateMultiCart, _super);
-    function CreateMultiCart(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
-        _this.payload = payload;
-        _this.type = CREATE_MULTI_CART;
-        return _this;
-    }
-    return CreateMultiCart;
-}(EntityLoadAction));
-var CreateMultiCartFail = /** @class */ (function (_super) {
-    __extends(CreateMultiCartFail, _super);
-    function CreateMultiCartFail(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
-        _this.payload = payload;
-        _this.type = CREATE_MULTI_CART_FAIL;
-        return _this;
-    }
-    return CreateMultiCartFail;
-}(EntityFailAction));
-var CreateMultiCartSuccess = /** @class */ (function (_super) {
-    __extends(CreateMultiCartSuccess, _super);
-    function CreateMultiCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
-        _this.payload = payload;
-        _this.type = CREATE_MULTI_CART_SUCCESS;
-        return _this;
-    }
-    return CreateMultiCartSuccess;
 }(EntitySuccessAction));
 var LoadMultiCart = /** @class */ (function (_super) {
     __extends(LoadMultiCart, _super);
@@ -14728,9 +14704,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     DeleteCart: DeleteCart,
     DeleteCartFail: DeleteCartFail,
     REMOVE_TEMP_CART: REMOVE_TEMP_CART,
-    CREATE_MULTI_CART: CREATE_MULTI_CART,
-    CREATE_MULTI_CART_FAIL: CREATE_MULTI_CART_FAIL,
-    CREATE_MULTI_CART_SUCCESS: CREATE_MULTI_CART_SUCCESS,
     LOAD_MULTI_CART: LOAD_MULTI_CART,
     LOAD_MULTI_CART_FAIL: LOAD_MULTI_CART_FAIL,
     LOAD_MULTI_CART_SUCCESS: LOAD_MULTI_CART_SUCCESS,
@@ -14748,9 +14721,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
     RemoveTempCart: RemoveTempCart,
     SetTempCart: SetTempCart,
-    CreateMultiCart: CreateMultiCart,
-    CreateMultiCartFail: CreateMultiCartFail,
-    CreateMultiCartSuccess: CreateMultiCartSuccess,
     LoadMultiCart: LoadMultiCart,
     LoadMultiCartFail: LoadMultiCartFail,
     LoadMultiCartSuccess: LoadMultiCartSuccess,
@@ -17369,16 +17339,15 @@ var CartEffects = /** @class */ (function () {
                         oldCartId: payload.oldCartId,
                     }));
                 }
-                // `cart` store branch should only be updated for active cart
-                // avoid dispatching CreateCartSuccess action on different cart loads
-                if (payload.extraData && payload.extraData.active) {
-                    conditionalActions.push(new CreateCartSuccess(cart));
-                }
                 return __spread([
-                    new CreateMultiCartSuccess({
+                    new CreateCartSuccess({
                         cart: cart,
                         userId: payload.userId,
                         extraData: payload.extraData,
+                        cartId: getCartIdByUserId(cart, payload.userId),
+                        tempCartId: payload.tempCartId,
+                        oldCartId: payload.oldCartId,
+                        toMergeCartGuid: payload.toMergeCartGuid,
                     }),
                     new SetTempCart({
                         cart: cart,
@@ -17386,13 +17355,14 @@ var CartEffects = /** @class */ (function () {
                     })
                 ], conditionalActions);
             }), catchError(function (error) {
-                return from([
-                    new CreateCartFail(makeErrorSerializable(error)),
-                    new CreateMultiCartFail({
-                        tempCartId: payload.tempCartId,
-                        error: makeErrorSerializable(error),
-                    }),
-                ]);
+                return of(new CreateCartFail({
+                    tempCartId: payload.tempCartId,
+                    error: makeErrorSerializable(error),
+                    userId: payload.userId,
+                    oldCartId: payload.oldCartId,
+                    toMergeCartGuid: payload.toMergeCartGuid,
+                    extraData: payload.extraData,
+                }));
             }));
         }), withdrawOn(this.contextChange$));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map(function (action) { return action.payload; }), mergeMap(function (payload) {
@@ -17612,14 +17582,13 @@ var activeCartInitialState = '';
 var wishListInitialState = '';
 function activeCartReducer(state, action) {
     if (state === void 0) { state = activeCartInitialState; }
+    var _a, _b, _c;
     switch (action.type) {
         case LOAD_MULTI_CART_SUCCESS:
-        case CREATE_MULTI_CART_SUCCESS:
+        case CREATE_CART_SUCCESS:
         // point to `temp-${uuid}` cart when we are creating/merging cart
-        case CREATE_MULTI_CART:
-            if (action.payload &&
-                action.payload.extraData &&
-                action.payload.extraData.active) {
+        case CREATE_CART:
+            if ((_c = (_b = (_a = action) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.extraData) === null || _c === void 0 ? void 0 : _c.active) {
                 return action.meta.entityId;
             }
             else {
@@ -17644,7 +17613,7 @@ function cartEntitiesReducer(state, action) {
     if (state === void 0) { state = cartEntitiesInitialState; }
     switch (action.type) {
         case LOAD_MULTI_CART_SUCCESS:
-        case CREATE_MULTI_CART_SUCCESS:
+        case CREATE_CART_SUCCESS:
         case CREATE_WISH_LIST_SUCCESS:
         case LOAD_WISH_LIST_SUCCESS:
         case SET_TEMP_CART:
@@ -17735,9 +17704,6 @@ var MultiCartEffects = /** @class */ (function () {
         this.loadCart2$ = this.actions$.pipe(ofType(LOAD_CART), map(function (action) {
             return new LoadMultiCart(action.payload);
         }));
-        this.createCart2$ = this.actions$.pipe(ofType(CREATE_CART), map(function (action) {
-            return new CreateMultiCart(action.payload);
-        }));
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map(function (action) {
             return new RemoveTempCart(action.payload);
         }));
@@ -17758,9 +17724,6 @@ var MultiCartEffects = /** @class */ (function () {
     __decorate([
         Effect()
     ], MultiCartEffects.prototype, "loadCart2$", void 0);
-    __decorate([
-        Effect()
-    ], MultiCartEffects.prototype, "createCart2$", void 0);
     __decorate([
         Effect()
     ], MultiCartEffects.prototype, "setTempCart$", void 0);

@@ -4,9 +4,6 @@ import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../.
 import { EntityProcessesDecrementAction, EntityProcessesIncrementAction, EntityProcessesLoaderResetAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 import { EntityRemoveAction } from '../../../state/utils/entity/entity.action';
 export declare const REMOVE_TEMP_CART = "[Multi Cart] Remove Temp Cart";
-export declare const CREATE_MULTI_CART = "[Multi Cart] Create Cart";
-export declare const CREATE_MULTI_CART_FAIL = "[Multi Cart] Create Cart Fail";
-export declare const CREATE_MULTI_CART_SUCCESS = "[Multi Cart] Create Cart Success";
 export declare const LOAD_MULTI_CART = "[Multi Cart] Load Cart";
 export declare const LOAD_MULTI_CART_FAIL = "[Multi Cart] Load Cart Fail";
 export declare const LOAD_MULTI_CART_SUCCESS = "[Multi Cart] Load Cart Success";
@@ -45,29 +42,6 @@ export declare class SetTempCart extends EntitySuccessAction {
     constructor(payload: {
         cart: Cart;
         tempCartId: string;
-    });
-}
-export declare class CreateMultiCart extends EntityLoadAction {
-    payload: any;
-    readonly type = "[Multi Cart] Create Cart";
-    constructor(payload: any);
-}
-export declare class CreateMultiCartFail extends EntityFailAction {
-    payload: any;
-    readonly type = "[Multi Cart] Create Cart Fail";
-    constructor(payload: any);
-}
-export declare class CreateMultiCartSuccess extends EntitySuccessAction {
-    payload: {
-        cart: Cart;
-        userId: string;
-        extraData?: any;
-    };
-    readonly type = "[Multi Cart] Create Cart Success";
-    constructor(payload: {
-        cart: Cart;
-        userId: string;
-        extraData?: any;
     });
 }
 export declare class LoadMultiCart extends EntityLoadAction {
@@ -188,4 +162,4 @@ export declare class ClearMultiCartState extends EntityRemoveAction {
     readonly type = "[Multi Cart] Clear Cart State";
     constructor();
 }
-export declare type MultiCartActions = RemoveTempCart | SetTempCart | CreateMultiCart | CreateMultiCartFail | CreateMultiCartSuccess | LoadMultiCart | LoadMultiCartFail | LoadMultiCartSuccess | MergeMultiCart | MergeMultiCartSuccess | ResetMultiCartDetails | RemoveCart | AddEmailToMultiCart | AddEmailToMultiCartFail | AddEmailToMultiCartSuccess | CartProcessesIncrement | CartProcessesDecrement | SetActiveCartId | ClearMultiCartState;
+export declare type MultiCartActions = RemoveTempCart | SetTempCart | LoadMultiCart | LoadMultiCartFail | LoadMultiCartSuccess | MergeMultiCart | MergeMultiCartSuccess | ResetMultiCartDetails | RemoveCart | AddEmailToMultiCart | AddEmailToMultiCartFail | AddEmailToMultiCartSuccess | CartProcessesIncrement | CartProcessesDecrement | SetActiveCartId | ClearMultiCartState;
