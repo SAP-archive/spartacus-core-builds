@@ -12451,7 +12451,7 @@ class PageMetaResolver {
 const EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
 const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
-const MULTI_CART_FEATURE = 'multi-cart';
+const MULTI_CART_FEATURE = 'cart';
 const MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
 const ADD_VOUCHER_PROCESS_ID = 'addVoucher';
 

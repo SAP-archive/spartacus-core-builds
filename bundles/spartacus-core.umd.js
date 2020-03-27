@@ -14195,7 +14195,7 @@
     var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
     var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
-    var MULTI_CART_FEATURE = 'multi-cart';
+    var MULTI_CART_FEATURE = 'cart';
     var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
     var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
 
