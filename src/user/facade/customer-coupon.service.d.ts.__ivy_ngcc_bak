@@ -1,8 +1,8 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { CustomerCouponSearchResult } from '../../model/customer-coupon.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
-import { CustomerCouponSearchResult } from '../../model/customer-coupon.model';
 export declare class CustomerCouponService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     constructor(store: Store<StateWithUser | StateWithProcess<void>>);
@@ -69,4 +69,8 @@ export declare class CustomerCouponService {
      * Returns the claim customer coupon notification process success flag
      */
     getClaimCustomerCouponResultSuccess(): Observable<boolean>;
+    /**
+     * Returns the claim customer coupon notification process loading flag
+     */
+    getClaimCustomerCouponResultLoading(): Observable<boolean>;
 }

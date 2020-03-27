@@ -22251,14 +22251,17 @@ let CustomerCouponService = class CustomerCouponService {
      * @param pageSize page size
      */
     getCustomerCoupons(pageSize) {
-        return this.store.pipe(select(getCustomerCouponsState), tap(customerCouponsState => {
+        return combineLatest([
+            this.store.pipe(select(getCustomerCouponsState)),
+            this.getClaimCustomerCouponResultLoading(),
+        ]).pipe(filter(([, loading]) => !loading), tap(([customerCouponsState]) => {
             const attemptedLoad = customerCouponsState.loading ||
                 customerCouponsState.success ||
                 customerCouponsState.error;
             if (!attemptedLoad) {
                 this.loadCustomerCoupons(pageSize);
             }
-        }), map(customerCouponsState => customerCouponsState.value));
+        }), map(([customerCouponsState]) => customerCouponsState.value));
     }
     /**
      * Returns a loaded flag for customer coupons
@@ -22343,6 +22346,12 @@ let CustomerCouponService = class CustomerCouponService {
      */
     getClaimCustomerCouponResultSuccess() {
         return this.store.pipe(select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the claim customer coupon notification process loading flag
+     */
+    getClaimCustomerCouponResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
     }
 };
 CustomerCouponService.ctorParameters = () => [

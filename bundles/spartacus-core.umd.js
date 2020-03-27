@@ -25204,14 +25204,24 @@
          */
         CustomerCouponService.prototype.getCustomerCoupons = function (pageSize) {
             var _this = this;
-            return this.store.pipe(store.select(getCustomerCouponsState), operators.tap(function (customerCouponsState) {
+            return rxjs.combineLatest([
+                this.store.pipe(store.select(getCustomerCouponsState)),
+                this.getClaimCustomerCouponResultLoading(),
+            ]).pipe(operators.filter(function (_a) {
+                var _b = __read(_a, 2), loading = _b[1];
+                return !loading;
+            }), operators.tap(function (_a) {
+                var _b = __read(_a, 1), customerCouponsState = _b[0];
                 var attemptedLoad = customerCouponsState.loading ||
                     customerCouponsState.success ||
                     customerCouponsState.error;
                 if (!attemptedLoad) {
                     _this.loadCustomerCoupons(pageSize);
                 }
-            }), operators.map(function (customerCouponsState) { return customerCouponsState.value; }));
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 1), customerCouponsState = _b[0];
+                return customerCouponsState.value;
+            }));
         };
         /**
          * Returns a loaded flag for customer coupons
@@ -25296,6 +25306,12 @@
          */
         CustomerCouponService.prototype.getClaimCustomerCouponResultSuccess = function () {
             return this.store.pipe(store.select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+        };
+        /**
+         * Returns the claim customer coupon notification process loading flag
+         */
+        CustomerCouponService.prototype.getClaimCustomerCouponResultLoading = function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
         };
         CustomerCouponService.ctorParameters = function () { return [
             { type: store.Store }
