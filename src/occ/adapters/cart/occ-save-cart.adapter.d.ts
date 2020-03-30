@@ -11,7 +11,7 @@ export declare class OccSaveCartAdapter implements SaveCartAdapter {
     protected converterService: ConverterService;
     constructor(http: HttpClient, occEndpointsService: OccEndpointsService, converterService: ConverterService);
     saveCart(userId: string, cartId: string, saveCartName?: string, saveCartDescription?: string): Observable<SaveCartResult>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccSaveCartAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccSaveCartAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccSaveCartAdapter>;
 }
 

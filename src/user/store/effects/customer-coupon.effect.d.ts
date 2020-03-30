@@ -11,7 +11,7 @@ export declare class CustomerCouponEffects {
     unsubscribeCustomerCoupon$: Observable<fromCustomerCouponsAction.CustomerCouponAction>;
     claimCustomerCoupon$: Observable<fromCustomerCouponsAction.CustomerCouponAction>;
     constructor(actions$: Actions, customerCouponConnector: CustomerCouponConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerCouponEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerCouponEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CustomerCouponEffects>;
 }
 

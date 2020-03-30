@@ -12,7 +12,7 @@ export declare class ProductReferenceNormalizer implements Converter<Occ.Product
      * - product.references.SIMILAR[0].code
      */
     protected normalize(source: Occ.ProductReference[]): ProductReferences;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReferenceNormalizer>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReferenceNormalizer, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductReferenceNormalizer>;
 }
 

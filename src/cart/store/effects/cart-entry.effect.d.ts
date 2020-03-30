@@ -12,7 +12,7 @@ export declare class CartEntryEffects {
     removeEntry$: Observable<CartActions.CartRemoveEntrySuccess | CartActions.CartRemoveEntryFail | DeprecatedCartActions.LoadCart>;
     updateEntry$: Observable<CartActions.CartUpdateEntrySuccess | CartActions.CartUpdateEntryFail | DeprecatedCartActions.LoadCart>;
     constructor(actions$: Actions, cartEntryConnector: CartEntryConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartEntryEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartEntryEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CartEntryEffects>;
 }
 

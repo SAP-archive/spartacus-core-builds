@@ -9,7 +9,7 @@ export declare class FindStoresEffect {
     constructor(actions$: Actions, storeFinderConnector: StoreFinderConnector);
     findStores$: Observable<StoreFinderActions.FindStoresSuccess | StoreFinderActions.FindStoresFail>;
     findStoreById$: Observable<StoreFinderActions.FindStoreByIdSuccess | StoreFinderActions.FindStoreByIdFail>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<FindStoresEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<FindStoresEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<FindStoresEffect>;
 }
 

@@ -16,7 +16,7 @@ export declare class CartVoucherService {
     getAddVoucherResultLoading(): Observable<boolean>;
     resetAddVoucherProcessingState(): void;
     private combineUserAndCartId;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartVoucherService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartVoucherService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CartVoucherService>;
 }
 

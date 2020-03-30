@@ -9,7 +9,7 @@ export declare class UserDetailsEffects {
     loadUserDetails$: Observable<UserActions.UserDetailsAction>;
     updateUserDetails$: Observable<UserActions.UpdateUserDetailsSuccess | UserActions.UpdateUserDetailsFail>;
     constructor(actions$: Actions, userConnector: UserConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserDetailsEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserDetailsEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserDetailsEffects>;
 }
 

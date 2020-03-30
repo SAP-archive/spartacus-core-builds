@@ -12,7 +12,7 @@ export declare class UserConsentsEffect {
     giveConsent$: Observable<UserActions.UserConsentsAction | GlobalMessageActions.RemoveMessagesByType>;
     withdrawConsent$: Observable<UserActions.UserConsentsAction>;
     constructor(actions$: Actions, userConsentConnector: UserConsentConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserConsentsEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserConsentsEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserConsentsEffect>;
 }
 

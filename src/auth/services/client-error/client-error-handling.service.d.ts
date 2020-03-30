@@ -8,7 +8,7 @@ export declare class ClientErrorHandlingService {
     constructor(authService: AuthService);
     handleExpiredClientToken(request: HttpRequest<any>, next: HttpHandler): Observable<any>;
     protected createNewRequestWithNewToken(request: HttpRequest<any>, token: ClientToken): HttpRequest<any>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientErrorHandlingService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientErrorHandlingService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ClientErrorHandlingService>;
 }
 

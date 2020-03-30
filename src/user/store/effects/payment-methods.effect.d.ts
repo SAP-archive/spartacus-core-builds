@@ -10,7 +10,7 @@ export declare class UserPaymentMethodsEffects {
     setDefaultUserPaymentMethod$: Observable<Action>;
     deleteUserPaymentMethod$: Observable<Action>;
     constructor(actions$: Actions, userPaymentMethodConnector: UserPaymentConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserPaymentMethodsEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserPaymentMethodsEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserPaymentMethodsEffects>;
 }
 

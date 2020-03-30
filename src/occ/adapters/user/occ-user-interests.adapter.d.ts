@@ -15,7 +15,7 @@ export declare class OccUserInterestsAdapter implements UserInterestsAdapter {
     getInterests(userId: string, pageSize?: number, currentPage?: number, sort?: string, productCode?: string, notificationType?: NotificationType): Observable<ProductInterestSearchResult>;
     removeInterest(userId: string, item: ProductInterestEntryRelation): Observable<any[]>;
     addInterest(userId: string, productCode: string, notificationType: NotificationType): Observable<any>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserInterestsAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserInterestsAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserInterestsAdapter>;
 }
 

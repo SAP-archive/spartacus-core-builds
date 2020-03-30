@@ -8,7 +8,7 @@ export declare class UpdateEmailEffects {
     private userAccountConnector;
     constructor(actions$: Actions, userAccountConnector: UserConnector);
     updateEmail$: Observable<UserActions.UpdateEmailSuccessAction | UserActions.UpdateEmailErrorAction>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UpdateEmailEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UpdateEmailEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UpdateEmailEffects>;
 }
 

@@ -14,7 +14,7 @@ export declare class RouterEffects {
     navigateBack$: Observable<Action>;
     navigateForward$: Observable<Action>;
     constructor(actions$: Actions, router: Router, location: Location);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<RouterEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<RouterEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<RouterEffects>;
 }
 

@@ -49,7 +49,7 @@ export declare class StoreFinderService {
      */
     viewStoreById(storeId: string): void;
     private clearWatchGeolocation;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<StoreFinderService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<StoreFinderService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<StoreFinderService>;
 }
 

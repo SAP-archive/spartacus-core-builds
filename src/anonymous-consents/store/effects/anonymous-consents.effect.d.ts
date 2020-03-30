@@ -19,7 +19,7 @@ export declare class AnonymousConsentsEffects {
     transferAnonymousConsentsToUser$: Observable<UserActions.TransferAnonymousConsent | Observable<never>>;
     giveRequiredConsentsToUser$: Observable<UserActions.GiveUserConsent | Observable<never>>;
     constructor(actions$: Actions, anonymousConsentTemplatesConnector: AnonymousConsentTemplatesConnector, authService: AuthService, anonymousConsentsConfig: AnonymousConsentsConfig, anonymousConsentService: AnonymousConsentsService, userConsentService: UserConsentService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AnonymousConsentsEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AnonymousConsentsEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<AnonymousConsentsEffects>;
 }
 

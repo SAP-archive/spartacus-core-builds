@@ -9,7 +9,7 @@ export declare class ForgotPasswordEffects {
     private userAccountConnector;
     requestForgotPasswordEmail$: Observable<UserActions.ForgotPasswordEmailRequestSuccess | GlobalMessageActions.AddMessage | UserActions.ForgotPasswordEmailRequestFail>;
     constructor(actions$: Actions, userAccountConnector: UserConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ForgotPasswordEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ForgotPasswordEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ForgotPasswordEffects>;
 }
 

@@ -8,8 +8,8 @@ export declare abstract class ContextServiceMap {
     [context: string]: Type<SiteContext<any>>;
 }
 export declare function serviceMapFactory(): {
-    [LANGUAGE_CONTEXT_ID]: typeof LanguageService;
-    [CURRENCY_CONTEXT_ID]: typeof CurrencyService;
-    [BASE_SITE_CONTEXT_ID]: typeof BaseSiteService;
+    language: typeof LanguageService;
+    currency: typeof CurrencyService;
+    baseSite: typeof BaseSiteService;
 };
 export declare const contextServiceMapProvider: Provider;

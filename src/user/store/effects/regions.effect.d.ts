@@ -10,7 +10,7 @@ export declare class RegionsEffects {
     loadRegions$: Observable<UserActions.RegionsAction>;
     resetRegions$: Observable<Action>;
     constructor(actions$: Actions, siteConnector: SiteConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<RegionsEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<RegionsEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<RegionsEffects>;
 }
 

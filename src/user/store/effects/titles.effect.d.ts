@@ -8,7 +8,7 @@ export declare class TitlesEffects {
     private userAccountConnector;
     loadTitles$: Observable<UserActions.TitlesAction>;
     constructor(actions$: Actions, userAccountConnector: UserConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<TitlesEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<TitlesEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<TitlesEffects>;
 }
 

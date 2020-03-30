@@ -18,7 +18,7 @@ export declare class OccStoreFinderAdapter implements StoreFinderAdapter {
     loadCounts(): Observable<StoreCount[]>;
     load(storeId: string): Observable<PointOfService>;
     protected callOccFindStores(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint): Observable<Occ.StoreFinderSearchPage>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccStoreFinderAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccStoreFinderAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccStoreFinderAdapter>;
 }
 

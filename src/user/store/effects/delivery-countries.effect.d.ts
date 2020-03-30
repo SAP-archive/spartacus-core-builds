@@ -8,7 +8,7 @@ export declare class DeliveryCountriesEffects {
     private siteConnector;
     loadDeliveryCountries$: Observable<UserActions.DeliveryCountriesAction>;
     constructor(actions$: Actions, siteConnector: SiteConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<DeliveryCountriesEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<DeliveryCountriesEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<DeliveryCountriesEffects>;
 }
 

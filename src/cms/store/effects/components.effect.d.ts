@@ -11,7 +11,7 @@ export declare class ComponentsEffects {
     private contextChange$;
     loadComponent$: (({ scheduler, debounce }?: any) => Observable<CmsActions.LoadCmsComponentFail | CmsActions.LoadCmsComponentSuccess<CmsComponent>>) & import("@ngrx/effects").CreateEffectMetadata;
     private loadComponentsEffect;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ComponentsEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ComponentsEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ComponentsEffects>;
 }
 

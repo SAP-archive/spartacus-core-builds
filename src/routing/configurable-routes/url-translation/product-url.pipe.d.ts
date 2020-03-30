@@ -6,7 +6,7 @@ export declare class ProductURLPipe implements PipeTransform {
     private semanticPath;
     constructor(semanticPath: SemanticPathService);
     transform(product: Product): any[];
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductURLPipe>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductURLPipe, never>;
     static ɵpipe: ɵngcc0.ɵɵPipeDefWithMeta<ProductURLPipe, "cxProductUrl">;
 }
 

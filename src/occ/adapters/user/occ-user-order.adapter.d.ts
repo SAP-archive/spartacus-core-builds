@@ -39,7 +39,7 @@ export declare class OccUserOrderAdapter implements UserOrderAdapter {
     loadReturnRequestList(userId: string, pageSize?: number, currentPage?: number, sort?: string): Observable<ReturnRequestList>;
     loadReturnRequestDetail(userId: string, returnRequestCode: string): Observable<ReturnRequest>;
     cancelReturnRequest(userId: string, returnRequestCode: string, returnRequestModification: ReturnRequestModification): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserOrderAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserOrderAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserOrderAdapter>;
 }
 

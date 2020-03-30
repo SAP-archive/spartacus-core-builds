@@ -8,7 +8,7 @@ export declare class ClientTokenEffect {
     private clientAuthenticationTokenService;
     loadClientToken$: Observable<AuthActions.ClientTokenAction>;
     constructor(actions$: Actions, clientAuthenticationTokenService: ClientAuthenticationTokenService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientTokenEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientTokenEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ClientTokenEffect>;
 }
 

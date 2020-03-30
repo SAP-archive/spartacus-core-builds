@@ -11,7 +11,7 @@ export declare class UserRegisterEffects {
     registerGuest$: Observable<UserActions.UserRegisterOrRemoveAction | AuthActions.LoadUserToken>;
     removeUser$: Observable<UserActions.UserRegisterOrRemoveAction | AuthActions.Logout>;
     constructor(actions$: Actions, userConnector: UserConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserRegisterEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserRegisterEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserRegisterEffects>;
 }
 

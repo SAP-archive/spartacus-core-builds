@@ -25,7 +25,7 @@ export declare class GlobalMessageService {
      * message will be removed from list by index.
      */
     remove(type: GlobalMessageType, index?: number): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<GlobalMessageService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<GlobalMessageService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<GlobalMessageService>;
 }
 

@@ -97,7 +97,7 @@ export declare class ActiveCartService {
     private guestCartMerge;
     private isEmpty;
     private isJustLoggedIn;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ActiveCartService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ActiveCartService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ActiveCartService>;
 }
 

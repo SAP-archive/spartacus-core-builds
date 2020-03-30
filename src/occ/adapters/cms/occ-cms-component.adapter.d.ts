@@ -19,7 +19,7 @@ export declare class OccCmsComponentAdapter implements CmsComponentAdapter {
     protected getComponentsEndpoint(requestParams: any, fields: string): string;
     private getPaginationParams;
     private getContextParams;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsComponentAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsComponentAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCmsComponentAdapter>;
 }
 

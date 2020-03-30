@@ -11,7 +11,7 @@ export declare class CurrenciesEffects {
     loadCurrencies$: Observable<SiteContextActions.LoadCurrenciesSuccess | SiteContextActions.LoadCurrenciesFail>;
     activateCurrency$: Observable<SiteContextActions.CurrencyChange>;
     constructor(actions$: Actions, siteConnector: SiteConnector, winRef: WindowRef);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CurrenciesEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CurrenciesEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CurrenciesEffects>;
 }
 

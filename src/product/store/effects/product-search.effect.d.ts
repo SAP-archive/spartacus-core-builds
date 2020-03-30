@@ -9,7 +9,7 @@ export declare class ProductsSearchEffects {
     searchProducts$: Observable<ProductActions.SearchProductsSuccess | ProductActions.SearchProductsFail>;
     getProductSuggestions$: Observable<ProductActions.GetProductSuggestionsSuccess | ProductActions.GetProductSuggestionsFail>;
     constructor(actions$: Actions, productSearchConnector: ProductSearchConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductsSearchEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductsSearchEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductsSearchEffects>;
 }
 

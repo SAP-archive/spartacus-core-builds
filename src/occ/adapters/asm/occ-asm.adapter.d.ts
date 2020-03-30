@@ -16,7 +16,7 @@ export declare class OccAsmAdapter implements AsmAdapter {
     private activeBaseSite;
     constructor(http: HttpClient, occEndpointsService: OccEndpointsService, converterService: ConverterService, config: AsmConfig, baseSiteService: BaseSiteService);
     customerSearch(options: CustomerSearchOptions): Observable<CustomerSearchPage>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccAsmAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccAsmAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccAsmAdapter>;
 }
 

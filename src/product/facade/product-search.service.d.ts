@@ -10,7 +10,7 @@ export declare class ProductSearchService {
     search(query: string, searchConfig?: SearchConfig): void;
     getResults(): Observable<ProductSearchPage>;
     clearResults(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductSearchService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductSearchService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductSearchService>;
 }
 

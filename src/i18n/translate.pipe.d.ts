@@ -14,7 +14,7 @@ export declare class TranslatePipe implements PipeTransform, OnDestroy {
     private translate;
     private markForCheck;
     ngOnDestroy(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<TranslatePipe>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<TranslatePipe, never>;
     static ɵpipe: ɵngcc0.ɵɵPipeDefWithMeta<TranslatePipe, "cxTranslate">;
 }
 

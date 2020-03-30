@@ -13,7 +13,7 @@ export declare class OccUserConsentAdapter implements UserConsentAdapter {
     loadConsents(userId: string): Observable<ConsentTemplate[]>;
     giveConsent(userId: string, consentTemplateId: string, consentTemplateVersion: number): Observable<ConsentTemplate>;
     withdrawConsent(userId: string, consentCode: string): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserConsentAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserConsentAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserConsentAdapter>;
 }
 

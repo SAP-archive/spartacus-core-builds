@@ -26,7 +26,7 @@ export declare class BaseSiteService implements SiteContext<string> {
      * Get the base site details data
      */
     getBaseSiteData(): Observable<BaseSite>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<BaseSiteService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<BaseSiteService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<BaseSiteService>;
 }
 

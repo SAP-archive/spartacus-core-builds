@@ -19,7 +19,7 @@ export declare class WishListService {
     removeEntry(entry: OrderEntry): void;
     getWishListLoading(): Observable<boolean>;
     protected getWishListId(): Observable<string>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<WishListService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<WishListService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<WishListService>;
 }
 

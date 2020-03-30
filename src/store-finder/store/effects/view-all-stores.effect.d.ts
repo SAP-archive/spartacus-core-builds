@@ -8,7 +8,7 @@ export declare class ViewAllStoresEffect {
     private storeFinderConnector;
     constructor(actions$: Actions, storeFinderConnector: StoreFinderConnector);
     viewAllStores$: Observable<StoreFinderActions.ViewAllStoresSuccess | StoreFinderActions.ViewAllStoresFail>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ViewAllStoresEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ViewAllStoresEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ViewAllStoresEffect>;
 }
 

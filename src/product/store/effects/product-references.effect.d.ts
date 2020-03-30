@@ -8,7 +8,7 @@ export declare class ProductReferencesEffects {
     private productReferencesConnector;
     loadProductReferences$: Observable<ProductActions.LoadProductReferencesSuccess | ProductActions.LoadProductReferencesFail>;
     constructor(actions$: Actions, productReferencesConnector: ProductReferencesConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReferencesEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReferencesEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductReferencesEffects>;
 }
 

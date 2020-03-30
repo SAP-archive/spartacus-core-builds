@@ -11,7 +11,7 @@ export declare class OpenIdTokenEffect {
     triggerOpenIdTokenLoading$: Observable<KymaActions.LoadOpenIdToken>;
     loadOpenIdToken$: Observable<KymaActions.OpenIdTokenActions>;
     constructor(actions$: Actions, openIdTokenService: OpenIdAuthenticationTokenService, config: KymaConfig);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OpenIdTokenEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OpenIdTokenEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OpenIdTokenEffect>;
 }
 

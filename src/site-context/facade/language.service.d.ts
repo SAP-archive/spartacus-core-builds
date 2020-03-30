@@ -32,7 +32,7 @@ export declare class LanguageService implements SiteContext<Language> {
      * default session language of the store.
      */
     initialize(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<LanguageService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<LanguageService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<LanguageService>;
 }
 

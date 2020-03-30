@@ -17,7 +17,7 @@ export declare class OccCheckoutDeliveryAdapter implements CheckoutDeliveryAdapt
     setMode(userId: string, cartId: string, deliveryModeId: string): Observable<any>;
     getMode(userId: string, cartId: string): Observable<any>;
     getSupportedModes(userId: string, cartId: string): Observable<DeliveryMode[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCheckoutDeliveryAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCheckoutDeliveryAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCheckoutDeliveryAdapter>;
 }
 

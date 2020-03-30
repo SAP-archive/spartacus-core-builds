@@ -32,7 +32,7 @@ export declare class CurrencyService implements SiteContext<Currency> {
      * default session currency of the store.
      */
     initialize(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CurrencyService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CurrencyService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CurrencyService>;
 }
 

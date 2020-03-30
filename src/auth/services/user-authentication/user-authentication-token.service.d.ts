@@ -17,7 +17,7 @@ export declare class UserAuthenticationTokenService {
     loadToken(userId: string, password: string): Observable<UserToken>;
     refreshToken(refreshToken: string): Observable<UserToken>;
     revoke(userToken: UserToken): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserAuthenticationTokenService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserAuthenticationTokenService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserAuthenticationTokenService>;
 }
 

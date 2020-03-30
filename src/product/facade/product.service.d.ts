@@ -41,7 +41,7 @@ export declare class ProductService {
      * explicit reload might be needed.
      */
     reload(productCode: string, scope?: ProductScope | string): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductService>;
 }
 

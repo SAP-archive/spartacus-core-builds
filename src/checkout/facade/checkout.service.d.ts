@@ -37,7 +37,7 @@ export declare class CheckoutService {
      */
     getOrderDetails(): Observable<Order>;
     protected actionAllowed(): boolean;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CheckoutService>;
 }
 

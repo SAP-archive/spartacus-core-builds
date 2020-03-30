@@ -12,7 +12,7 @@ export declare class TranslationChunkService {
     protected readonly KEY_SEPARATOR = ".";
     getChunkNameForKey(key: string): string;
     private warnDuplicates;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<TranslationChunkService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<TranslationChunkService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<TranslationChunkService>;
 }
 

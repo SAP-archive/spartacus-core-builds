@@ -15,7 +15,7 @@ export declare class ClientAuthenticationTokenService {
      */
     constructor(config: AuthConfig, http: HttpClient);
     loadClientAuthenticationToken(): Observable<ClientToken>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientAuthenticationTokenService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientAuthenticationTokenService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ClientAuthenticationTokenService>;
 }
 

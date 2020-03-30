@@ -15,7 +15,7 @@ export declare class NavigationEntryItemEffects {
         mediaIds: string[];
     };
     constructor(actions$: Actions, cmsComponentConnector: CmsComponentConnector, routingService: RoutingService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<NavigationEntryItemEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<NavigationEntryItemEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<NavigationEntryItemEffects>;
 }
 

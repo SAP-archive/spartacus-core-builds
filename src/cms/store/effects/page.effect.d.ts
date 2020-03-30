@@ -11,7 +11,7 @@ export declare class PageEffects {
     refreshPage$: Observable<Action>;
     loadPageData$: Observable<Action>;
     constructor(actions$: Actions, cmsPageConnector: CmsPageConnector, routingService: RoutingService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<PageEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<PageEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<PageEffects>;
 }
 

@@ -8,7 +8,7 @@ export declare class CustomerEffects {
     private asmConnector;
     customerSearch$: Observable<AsmActions.CustomerAction>;
     constructor(actions$: Actions, asmConnector: AsmConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CustomerEffects>;
 }
 

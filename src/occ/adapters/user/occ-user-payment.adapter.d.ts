@@ -13,7 +13,7 @@ export declare class OccUserPaymentAdapter implements UserPaymentAdapter {
     loadAll(userId: string): Observable<PaymentDetails[]>;
     delete(userId: string, paymentMethodID: string): Observable<{}>;
     setDefault(userId: string, paymentMethodID: string): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserPaymentAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserPaymentAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserPaymentAdapter>;
 }
 

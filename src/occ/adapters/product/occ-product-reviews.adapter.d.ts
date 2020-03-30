@@ -13,7 +13,7 @@ export declare class OccProductReviewsAdapter implements ProductReviewsAdapter {
     load(productCode: string, maxCount?: number): Observable<Review[]>;
     post(productCode: string, review: any): Observable<Review>;
     protected getEndpoint(code: string, maxCount?: number): string;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductReviewsAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductReviewsAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccProductReviewsAdapter>;
 }
 

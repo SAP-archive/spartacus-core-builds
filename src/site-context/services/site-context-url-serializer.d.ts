@@ -21,7 +21,7 @@ export declare class SiteContextUrlSerializer extends DefaultUrlSerializer {
     serialize(tree: UrlTreeWithSiteContext): string;
     urlTreeExtractContextParameters(urlTree: UrlTreeWithSiteContext): ParamValuesMap;
     private urlIncludeContextParameters;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<SiteContextUrlSerializer>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SiteContextUrlSerializer, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<SiteContextUrlSerializer>;
 }
 

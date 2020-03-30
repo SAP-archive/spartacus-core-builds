@@ -11,7 +11,7 @@ export declare class UserTokenEffects {
     refreshUserToken$: Observable<AuthActions.UserTokenAction>;
     revokeUserToken$: Observable<AuthActions.UserTokenAction>;
     constructor(actions$: Actions, userTokenService: UserAuthenticationTokenService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserTokenEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserTokenEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserTokenEffects>;
 }
 

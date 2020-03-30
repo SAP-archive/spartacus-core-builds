@@ -12,7 +12,7 @@ export declare class UserErrorHandlingService {
     handleExpiredRefreshToken(): void;
     protected handleExpiredToken(): Observable<UserToken>;
     protected createNewRequestWithNewToken(request: HttpRequest<any>, token: UserToken): HttpRequest<any>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserErrorHandlingService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserErrorHandlingService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserErrorHandlingService>;
 }
 

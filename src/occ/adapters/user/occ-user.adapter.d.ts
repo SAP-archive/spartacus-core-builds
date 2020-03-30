@@ -20,7 +20,7 @@ export declare class OccUserAdapter implements UserAdapter {
     updatePassword(userId: string, oldPassword: string, newPassword: string): Observable<{}>;
     remove(userId: string): Observable<{}>;
     loadTitles(): Observable<Title[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserAdapter>;
 }
 

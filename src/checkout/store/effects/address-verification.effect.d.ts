@@ -8,7 +8,7 @@ export declare class AddressVerificationEffect {
     private userAddressConnector;
     verifyAddress$: Observable<CheckoutActions.VerifyAddressSuccess | CheckoutActions.VerifyAddressFail>;
     constructor(actions$: Actions, userAddressConnector: UserAddressConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AddressVerificationEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AddressVerificationEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<AddressVerificationEffect>;
 }
 

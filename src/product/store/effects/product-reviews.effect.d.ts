@@ -12,7 +12,7 @@ export declare class ProductReviewsEffects {
     postProductReview: Observable<ProductActions.PostProductReviewSuccess | ProductActions.PostProductReviewFail>;
     showGlobalMessageOnPostProductReviewSuccess$: Observable<never>;
     constructor(actions$: Actions, productReviewsConnector: ProductReviewsConnector, globalMessageService: GlobalMessageService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReviewsEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReviewsEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductReviewsEffects>;
 }
 

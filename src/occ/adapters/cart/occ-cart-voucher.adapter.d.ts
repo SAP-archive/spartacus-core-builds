@@ -13,7 +13,7 @@ export declare class OccCartVoucherAdapter implements CartVoucherAdapter {
     protected getHeaders(userId: string): HttpHeaders;
     add(userId: string, cartId: string, voucherId: string): Observable<{}>;
     remove(userId: string, cartId: string, voucherId: string): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCartVoucherAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCartVoucherAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCartVoucherAdapter>;
 }
 

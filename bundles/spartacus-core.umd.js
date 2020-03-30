@@ -320,7 +320,7 @@
     function configurationFactory(configChunks, defaultConfigChunks) {
         if (configChunks === void 0) { configChunks = []; }
         if (defaultConfigChunks === void 0) { defaultConfigChunks = []; }
-        var config = deepMerge.apply(void 0, __spread([{}], ((defaultConfigChunks !== null && defaultConfigChunks !== void 0 ? defaultConfigChunks : [])), ((configChunks !== null && configChunks !== void 0 ? configChunks : []))));
+        var config = deepMerge.apply(void 0, __spread([{}], (defaultConfigChunks !== null && defaultConfigChunks !== void 0 ? defaultConfigChunks : []), (configChunks !== null && configChunks !== void 0 ? configChunks : [])));
         return config;
     }
     var ConfigModule = /** @class */ (function () {
@@ -9202,8 +9202,7 @@
          * Should be used only in dev mode.
          */
         EventService.prototype.validateEventType = function (eventType) {
-            var _a;
-            if (!((_a = eventType) === null || _a === void 0 ? void 0 : _a.constructor)) {
+            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
                 throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
             }
         };
@@ -9272,7 +9271,7 @@
          */
         StateEventService.prototype.createEvent = function (action, eventType, factory) {
             var _a;
-            return factory ? factory(action) : new eventType((_a = action.payload, (_a !== null && _a !== void 0 ? _a : {})));
+            return factory ? factory(action) : new eventType((_a = action.payload) !== null && _a !== void 0 ? _a : {});
         };
         StateEventService.ctorParameters = function () { return [
             { type: store.ActionsSubject },
@@ -16796,8 +16795,8 @@
                         cartId: payload.cartId,
                     });
                 }), operators.catchError(function (error) {
-                    var _a, _b;
-                    if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                    var _a;
+                    if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                         error.error.errors.forEach(function (err) {
                             if (err.message) {
                                 _this.messageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR);
@@ -17478,8 +17477,8 @@
                         }
                         return actions;
                     }), operators.catchError(function (error) {
-                        var _a, _b;
-                        if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                        var _a;
+                        if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                             var couponExpiredErrors = error.error.errors.filter(function (err) { return err.reason === 'invalid'; });
                             if (couponExpiredErrors.length > 0) {
                                 // clear coupons actions just wanted to reload cart again
@@ -17773,13 +17772,13 @@
     var wishListInitialState = '';
     function activeCartReducer(state, action) {
         if (state === void 0) { state = activeCartInitialState; }
-        var _a, _b, _c;
+        var _a, _b;
         switch (action.type) {
             case LOAD_MULTI_CART_SUCCESS:
             case CREATE_CART_SUCCESS:
             // point to `temp-${uuid}` cart when we are creating/merging cart
             case CREATE_CART:
-                if ((_c = (_b = (_a = action) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.extraData) === null || _c === void 0 ? void 0 : _c.active) {
+                if ((_b = (_a = action === null || action === void 0 ? void 0 : action.payload) === null || _a === void 0 ? void 0 : _a.extraData) === null || _b === void 0 ? void 0 : _b.active) {
                     return action.meta.entityId;
                 }
                 else {
@@ -19900,26 +19899,26 @@
          * @param route Angular `Route` object
          */
         ConfigurableRoutesService.prototype.configureRoute = function (route) {
-            var _a, _b, _c, _d, _e, _f, _g;
+            var _a;
             var routeName = this.getRouteName(route);
             if (routeName) {
                 var routeConfig = this.routingConfigService.getRouteConfig(routeName);
                 this.validateRouteConfig(routeConfig, routeName, route);
-                if ((_a = routeConfig) === null || _a === void 0 ? void 0 : _a.disabled) {
+                if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.disabled) {
                     delete route.path;
                     return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
                 }
-                else if ((_b = routeConfig) === null || _b === void 0 ? void 0 : _b.matchers) {
+                else if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) {
                     delete route.path;
-                    return __assign(__assign({}, route), { matcher: this.resolveUrlMatchers(route, (_c = routeConfig) === null || _c === void 0 ? void 0 : _c.matchers) });
+                    return __assign(__assign({}, route), { matcher: this.resolveUrlMatchers(route, routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) });
                 }
-                else if (((_e = (_d = routeConfig) === null || _d === void 0 ? void 0 : _d.paths) === null || _e === void 0 ? void 0 : _e.length) === 1) {
+                else if (((_a = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _a === void 0 ? void 0 : _a.length) === 1) {
                     delete route.matcher;
-                    return __assign(__assign({}, route), { path: (_f = routeConfig) === null || _f === void 0 ? void 0 : _f.paths[0] });
+                    return __assign(__assign({}, route), { path: routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths[0] });
                 }
                 else {
                     delete route.path;
-                    return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFromPaths(((_g = routeConfig) === null || _g === void 0 ? void 0 : _g.paths) || []) });
+                    return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFromPaths((routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) || []) });
                 }
             }
             return route; // if route doesn't have a name, just pass the original route
@@ -19958,16 +19957,15 @@
             return route.data && route.data.cxRoute;
         };
         ConfigurableRoutesService.prototype.validateRouteConfig = function (routeConfig, routeName, route) {
-            var _a, _b;
             if (core.isDevMode()) {
                 // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
                 // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
                 if (routeConfig === null ||
-                    routeConfig.paths === null || ((_a = routeConfig) === null || _a === void 0 ? void 0 : _a.matchers)) {
+                    routeConfig.paths === null || (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers)) {
                     return;
                 }
                 // undefined value of routeConfig or routeConfig.paths is a misconfiguration
-                if (!((_b = routeConfig) === null || _b === void 0 ? void 0 : _b.paths)) {
+                if (!(routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths)) {
                     this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined config or undefined 'paths' property for this route");
                     return;
                 }
@@ -23069,7 +23067,7 @@
             _this.authService = authService;
             _this.route = route;
             _this.semanticPathService = semanticPathService;
-            _this.total$ = _this.productSearchService.getResults().pipe(operators.filter(function (data) { var _a; return !!((_a = data) === null || _a === void 0 ? void 0 : _a.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
+            _this.total$ = _this.productSearchService.getResults().pipe(operators.filter(function (data) { return !!(data === null || data === void 0 ? void 0 : data.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
             _this.pageType = exports.PageType.CONTENT_PAGE;
             _this.pageTemplate = 'SearchResultsListPageTemplate';
             return _this;
@@ -23282,7 +23280,7 @@
             _this.routingService = routingService;
             _this.productSearchService = productSearchService;
             _this.translation = translation;
-            _this.total$ = _this.productSearchService.getResults().pipe(operators.filter(function (data) { var _a; return !!((_a = data) === null || _a === void 0 ? void 0 : _a.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
+            _this.total$ = _this.productSearchService.getResults().pipe(operators.filter(function (data) { return !!(data === null || data === void 0 ? void 0 : data.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
             _this.query$ = _this.routingService
                 .getRouterState()
                 .pipe(operators.map(function (state) { return state.state.params['query']; }));
@@ -26447,9 +26445,9 @@
                         type: exports.GlobalMessageType.MSG_TYPE_CONFIRMATION,
                     }),
                 ]; }), operators.catchError(function (error) {
-                    var _a, _b;
+                    var _a;
                     var actions = [new ResetPasswordFail(makeErrorSerializable(error))];
-                    if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                    if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                         error.error.errors.forEach(function (err) {
                             if (err.message) {
                                 actions.push(new AddMessage({

@@ -11,7 +11,7 @@ export declare class MultiCartEffects {
     removeCart$: Observable<CartActions.RemoveCart>;
     processesIncrement$: Observable<CartActions.CartProcessesIncrement>;
     constructor(actions$: Actions);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<MultiCartEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<MultiCartEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<MultiCartEffects>;
 }
 

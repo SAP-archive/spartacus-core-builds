@@ -16,7 +16,7 @@ export declare class OccCheckoutAdapter implements CheckoutAdapter {
     loadCheckoutDetails(userId: string, cartId: string): Observable<CheckoutDetails>;
     clearCheckoutDeliveryAddress(userId: string, cartId: string): Observable<any>;
     clearCheckoutDeliveryMode(userId: string, cartId: string): Observable<any>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCheckoutAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCheckoutAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCheckoutAdapter>;
 }
 

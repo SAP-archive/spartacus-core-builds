@@ -13,7 +13,7 @@ export declare class GlobalMessageEffect {
     removeDuplicated$: Observable<GlobalMessageActions.RemoveMessage>;
     hideAfterDelay$: Observable<GlobalMessageActions.RemoveMessage>;
     constructor(actions$: Actions, store: Store<StateWithGlobalMessage>, config: GlobalMessageConfig, platformId: any);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<GlobalMessageEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<GlobalMessageEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<GlobalMessageEffect>;
 }
 

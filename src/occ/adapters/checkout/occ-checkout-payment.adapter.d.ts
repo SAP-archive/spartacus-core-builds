@@ -21,7 +21,7 @@ export declare class OccCheckoutPaymentAdapter implements CheckoutPaymentAdapter
     private getParamsForPaymentProvider;
     private extractPaymentDetailsFromHtml;
     private convertToMap;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCheckoutPaymentAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCheckoutPaymentAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCheckoutPaymentAdapter>;
 }
 

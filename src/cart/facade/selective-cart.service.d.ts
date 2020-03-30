@@ -34,7 +34,7 @@ export declare class SelectiveCartService {
     private isEmpty;
     private isJustLoggedIn;
     private isLoggedIn;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<SelectiveCartService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SelectiveCartService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<SelectiveCartService>;
 }
 

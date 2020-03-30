@@ -8,7 +8,7 @@ export declare class ProductReviewService {
     constructor(store: Store<StateWithProduct>);
     getByProductCode(productCode: string): Observable<Review[]>;
     add(productCode: string, review: Review): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReviewService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReviewService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductReviewService>;
 }
 

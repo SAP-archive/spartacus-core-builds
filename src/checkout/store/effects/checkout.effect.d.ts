@@ -31,7 +31,7 @@ export declare class CheckoutEffects {
     clearCheckoutDeliveryAddress$: Observable<CheckoutActions.ClearCheckoutDeliveryAddressFail | CheckoutActions.ClearCheckoutDeliveryAddressSuccess>;
     clearCheckoutDeliveryMode$: Observable<CheckoutActions.ClearCheckoutDeliveryModeFail | CheckoutActions.ClearCheckoutDeliveryModeSuccess | CartActions.CartProcessesDecrement | CartActions.LoadCart>;
     constructor(actions$: Actions, checkoutDeliveryConnector: CheckoutDeliveryConnector, checkoutPaymentConnector: CheckoutPaymentConnector, checkoutConnector: CheckoutConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CheckoutEffects>;
 }
 

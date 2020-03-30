@@ -11,7 +11,7 @@ export declare class OrderReturnRequestEffect {
     cancelReturnRequest$: Observable<UserActions.OrderReturnRequestAction>;
     loadReturnRequestList$: Observable<UserActions.OrderReturnRequestAction>;
     constructor(actions$: Actions, orderConnector: UserOrderConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OrderReturnRequestEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OrderReturnRequestEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OrderReturnRequestEffect>;
 }
 

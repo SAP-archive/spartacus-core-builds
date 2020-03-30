@@ -125,7 +125,7 @@ export declare class MultiCartService {
      * @param userId
      */
     deleteCart(cartId: string, userId: string): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<MultiCartService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<MultiCartService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<MultiCartService>;
 }
 

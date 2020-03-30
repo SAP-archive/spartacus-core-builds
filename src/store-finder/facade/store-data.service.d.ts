@@ -41,7 +41,7 @@ export declare class StoreDataService {
      * @returns payload describing the store's schedule for the given day.
      */
     protected getSchedule(location: PointOfService, date: Date): any;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<StoreDataService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<StoreDataService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<StoreDataService>;
 }
 

@@ -14,7 +14,7 @@ export declare class ExternalJsFileLoader {
      * @param params object containing parameters
      */
     private parseParams;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ExternalJsFileLoader>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ExternalJsFileLoader, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ExternalJsFileLoader>;
 }
 

@@ -118,7 +118,7 @@ function provideDefaultConfigFactory(configFactory, deps) {
  *
  */
 function configurationFactory(configChunks = [], defaultConfigChunks = []) {
-    const config = deepMerge({}, ...((defaultConfigChunks !== null && defaultConfigChunks !== void 0 ? defaultConfigChunks : [])), ...((configChunks !== null && configChunks !== void 0 ? configChunks : [])));
+    const config = deepMerge({}, ...(defaultConfigChunks !== null && defaultConfigChunks !== void 0 ? defaultConfigChunks : []), ...(configChunks !== null && configChunks !== void 0 ? configChunks : []));
     return config;
 }
 let ConfigModule = ConfigModule_1 = class ConfigModule {
@@ -2122,8 +2122,7 @@ UserTokenInterceptor = __decorate([
 ], UserTokenInterceptor);
 
 let TokenRevocationInterceptor = class TokenRevocationInterceptor {
-    constructor() {
-    }
+    constructor() { }
     intercept(request, next) {
         const isTokenRevocationRequest = this.isTokenRevocationRequest(request);
         if (isTokenRevocationRequest) {
@@ -8287,8 +8286,7 @@ let EventService = class EventService {
      * Should be used only in dev mode.
      */
     validateEventType(eventType) {
-        var _a;
-        if (!((_a = eventType) === null || _a === void 0 ? void 0 : _a.constructor)) {
+        if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
             throw new Error(`EventService:  ${eventType} is not a valid event type. Please provide a class reference.`);
         }
     }
@@ -8353,7 +8351,7 @@ let StateEventService = class StateEventService {
      */
     createEvent(action, eventType, factory) {
         var _a;
-        return factory ? factory(action) : new eventType((_a = action.payload, (_a !== null && _a !== void 0 ? _a : {})));
+        return factory ? factory(action) : new eventType((_a = action.payload) !== null && _a !== void 0 ? _a : {});
     }
 };
 StateEventService.ctorParameters = () => [
@@ -14696,8 +14694,8 @@ let CartVoucherEffects = class CartVoucherEffects {
                     cartId: payload.cartId,
                 });
             }), catchError(error => {
-                var _a, _b;
-                if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                var _a;
+                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                     error.error.errors.forEach(err => {
                         if (err.message) {
                             this.messageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
@@ -15275,8 +15273,8 @@ let CartEffects = class CartEffects {
                 }
                 return actions;
             }), catchError(error => {
-                var _a, _b;
-                if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                var _a;
+                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                     const couponExpiredErrors = error.error.errors.filter(err => err.reason === 'invalid');
                     if (couponExpiredErrors.length > 0) {
                         // clear coupons actions just wanted to reload cart again
@@ -15544,13 +15542,13 @@ WishListEffects = __decorate([
 const activeCartInitialState = '';
 const wishListInitialState = '';
 function activeCartReducer(state = activeCartInitialState, action) {
-    var _a, _b, _c;
+    var _a, _b;
     switch (action.type) {
         case LOAD_MULTI_CART_SUCCESS:
         case CREATE_CART_SUCCESS:
         // point to `temp-${uuid}` cart when we are creating/merging cart
         case CREATE_CART:
-            if ((_c = (_b = (_a = action) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.extraData) === null || _c === void 0 ? void 0 : _c.active) {
+            if ((_b = (_a = action === null || action === void 0 ? void 0 : action.payload) === null || _a === void 0 ? void 0 : _a.extraData) === null || _b === void 0 ? void 0 : _b.active) {
                 return action.meta.entityId;
             }
             else {
@@ -17488,26 +17486,26 @@ let ConfigurableRoutesService = class ConfigurableRoutesService {
      * @param route Angular `Route` object
      */
     configureRoute(route) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a;
         const routeName = this.getRouteName(route);
         if (routeName) {
             const routeConfig = this.routingConfigService.getRouteConfig(routeName);
             this.validateRouteConfig(routeConfig, routeName, route);
-            if ((_a = routeConfig) === null || _a === void 0 ? void 0 : _a.disabled) {
+            if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.disabled) {
                 delete route.path;
                 return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
             }
-            else if ((_b = routeConfig) === null || _b === void 0 ? void 0 : _b.matchers) {
+            else if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) {
                 delete route.path;
-                return Object.assign(Object.assign({}, route), { matcher: this.resolveUrlMatchers(route, (_c = routeConfig) === null || _c === void 0 ? void 0 : _c.matchers) });
+                return Object.assign(Object.assign({}, route), { matcher: this.resolveUrlMatchers(route, routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) });
             }
-            else if (((_e = (_d = routeConfig) === null || _d === void 0 ? void 0 : _d.paths) === null || _e === void 0 ? void 0 : _e.length) === 1) {
+            else if (((_a = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _a === void 0 ? void 0 : _a.length) === 1) {
                 delete route.matcher;
-                return Object.assign(Object.assign({}, route), { path: (_f = routeConfig) === null || _f === void 0 ? void 0 : _f.paths[0] });
+                return Object.assign(Object.assign({}, route), { path: routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths[0] });
             }
             else {
                 delete route.path;
-                return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFromPaths(((_g = routeConfig) === null || _g === void 0 ? void 0 : _g.paths) || []) });
+                return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFromPaths((routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) || []) });
             }
         }
         return route; // if route doesn't have a name, just pass the original route
@@ -17545,16 +17543,15 @@ let ConfigurableRoutesService = class ConfigurableRoutesService {
         return route.data && route.data.cxRoute;
     }
     validateRouteConfig(routeConfig, routeName, route) {
-        var _a, _b;
         if (isDevMode()) {
             // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
             // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
             if (routeConfig === null ||
-                routeConfig.paths === null || ((_a = routeConfig) === null || _a === void 0 ? void 0 : _a.matchers)) {
+                routeConfig.paths === null || (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers)) {
                 return;
             }
             // undefined value of routeConfig or routeConfig.paths is a misconfiguration
-            if (!((_b = routeConfig) === null || _b === void 0 ? void 0 : _b.paths)) {
+            if (!(routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths)) {
                 this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined config or undefined 'paths' property for this route`);
                 return;
             }
@@ -20335,7 +20332,7 @@ let CouponSearchPageResolver = class CouponSearchPageResolver extends PageMetaRe
         this.authService = authService;
         this.route = route;
         this.semanticPathService = semanticPathService;
-        this.total$ = this.productSearchService.getResults().pipe(filter(data => { var _a; return !!((_a = data) === null || _a === void 0 ? void 0 : _a.pagination); }), map(results => results.pagination.totalResults));
+        this.total$ = this.productSearchService.getResults().pipe(filter(data => !!(data === null || data === void 0 ? void 0 : data.pagination)), map(results => results.pagination.totalResults));
         this.pageType = PageType.CONTENT_PAGE;
         this.pageTemplate = 'SearchResultsListPageTemplate';
     }
@@ -20514,7 +20511,7 @@ let SearchPageMetaResolver = class SearchPageMetaResolver extends PageMetaResolv
         this.routingService = routingService;
         this.productSearchService = productSearchService;
         this.translation = translation;
-        this.total$ = this.productSearchService.getResults().pipe(filter(data => { var _a; return !!((_a = data) === null || _a === void 0 ? void 0 : _a.pagination); }), map(results => results.pagination.totalResults));
+        this.total$ = this.productSearchService.getResults().pipe(filter(data => !!(data === null || data === void 0 ? void 0 : data.pagination)), map(results => results.pagination.totalResults));
         this.query$ = this.routingService
             .getRouterState()
             .pipe(map(state => state.state.params['query']));
@@ -23371,9 +23368,9 @@ let ResetPasswordEffects = class ResetPasswordEffects {
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
             ]), catchError(error => {
-                var _a, _b;
+                var _a;
                 const actions = [new ResetPasswordFail(makeErrorSerializable(error))];
-                if ((_b = (_a = error) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.errors) {
+                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                     error.error.errors.forEach(err => {
                         if (err.message) {
                             actions.push(new AddMessage({

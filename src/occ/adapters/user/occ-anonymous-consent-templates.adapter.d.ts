@@ -11,7 +11,7 @@ export declare class OccAnonymousConsentTemplatesAdapter implements AnonymousCon
     protected converter: ConverterService;
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
     loadAnonymousConsentTemplates(): Observable<ConsentTemplate[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccAnonymousConsentTemplatesAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccAnonymousConsentTemplatesAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccAnonymousConsentTemplatesAdapter>;
 }
 

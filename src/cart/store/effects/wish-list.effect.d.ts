@@ -17,7 +17,7 @@ export declare class WishListEffects {
     loadWishList$: Observable<CartActions.LoadWishListSuccess | CartActions.CreateWishList | CartActions.LoadCartFail>;
     resetWishList$: Observable<CartActions.LoadWishListSuccess | CartActions.LoadCartFail>;
     constructor(actions$: Actions, cartConnector: CartConnector, saveCartConnector: SaveCartConnector, authService: AuthService, store: Store<StateWithMultiCart>);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<WishListEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<WishListEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<WishListEffects>;
 }
 

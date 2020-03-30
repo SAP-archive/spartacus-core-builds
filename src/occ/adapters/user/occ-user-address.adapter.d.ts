@@ -15,7 +15,7 @@ export declare class OccUserAddressAdapter implements UserAddressAdapter {
     update(userId: string, addressId: string, address: Address): Observable<{}>;
     verify(userId: string, address: Address): Observable<AddressValidation>;
     delete(userId: string, addressId: string): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserAddressAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserAddressAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserAddressAdapter>;
 }
 

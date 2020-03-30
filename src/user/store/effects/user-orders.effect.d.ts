@@ -9,7 +9,7 @@ export declare class UserOrdersEffect {
     constructor(actions$: Actions, orderConnector: UserOrderConnector);
     loadUserOrders$: Observable<UserActions.UserOrdersAction>;
     resetUserOrders$: Observable<UserActions.ClearUserOrders>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserOrdersEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserOrdersEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserOrdersEffect>;
 }
 

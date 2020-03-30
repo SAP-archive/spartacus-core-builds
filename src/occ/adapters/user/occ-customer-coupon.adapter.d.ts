@@ -15,7 +15,7 @@ export declare class OccCustomerCouponAdapter implements CustomerCouponAdapter {
     turnOnNotification(userId: string, couponCode: string): Observable<CustomerCouponNotification>;
     claimCustomerCoupon(userId: string, couponCode: string): Observable<CustomerCoupon2Customer>;
     private newHttpHeader;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCustomerCouponAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCustomerCouponAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCustomerCouponAdapter>;
 }
 

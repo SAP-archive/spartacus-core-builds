@@ -9,7 +9,7 @@ export declare class NotificationPreferenceEffects {
     loadPreferences$: Observable<UserActions.NotificationPreferenceAction>;
     updatePreferences$: Observable<UserActions.NotificationPreferenceAction>;
     constructor(actions$: Actions, connector: UserNotificationPreferenceConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<NotificationPreferenceEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<NotificationPreferenceEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<NotificationPreferenceEffects>;
 }
 

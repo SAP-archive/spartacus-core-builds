@@ -8,7 +8,7 @@ export declare class BaseSiteEffects {
     private siteConnector;
     loadBaseSite$: Observable<SiteContextActions.LoadBaseSiteSuccess | SiteContextActions.LoadBaseSiteFail>;
     constructor(actions$: Actions, siteConnector: SiteConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<BaseSiteEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<BaseSiteEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<BaseSiteEffects>;
 }
 

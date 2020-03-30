@@ -41,7 +41,7 @@ export declare class OccCartAdapter implements CartAdapter {
      */
     private legacyCreate;
     addEmail(userId: string, cartId: string, email: string): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCartAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCartAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCartAdapter>;
 }
 

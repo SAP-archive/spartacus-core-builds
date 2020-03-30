@@ -11,7 +11,7 @@ export declare class LanguagesEffects {
     loadLanguages$: Observable<SiteContextActions.LoadLanguagesSuccess | SiteContextActions.LoadLanguagesFail>;
     activateLanguage$: Observable<SiteContextActions.LanguageChange>;
     constructor(actions$: Actions, siteConnector: SiteConnector, winRef: WindowRef);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<LanguagesEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<LanguagesEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<LanguagesEffects>;
 }
 

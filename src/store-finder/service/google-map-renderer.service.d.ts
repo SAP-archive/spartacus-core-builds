@@ -47,7 +47,7 @@ export declare class GoogleMapRendererService {
      * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
      */
     private drawMap;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<GoogleMapRendererService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<GoogleMapRendererService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<GoogleMapRendererService>;
 }
 

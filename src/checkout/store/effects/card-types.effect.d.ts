@@ -8,7 +8,7 @@ export declare class CardTypesEffects {
     private checkoutPaymentConnector;
     loadCardTypes$: Observable<CheckoutActions.LoadCardTypesSuccess | CheckoutActions.LoadCardTypesFail>;
     constructor(actions$: Actions, checkoutPaymentConnector: CheckoutPaymentConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CardTypesEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CardTypesEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CardTypesEffects>;
 }
 

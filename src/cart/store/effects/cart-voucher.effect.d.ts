@@ -12,7 +12,7 @@ export declare class CartVoucherEffects {
     addCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.LoadCart | CartActions.CartProcessesDecrement>;
     removeCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.LoadCart>;
     private showGlobalMessage;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartVoucherEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartVoucherEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CartVoucherEffects>;
 }
 

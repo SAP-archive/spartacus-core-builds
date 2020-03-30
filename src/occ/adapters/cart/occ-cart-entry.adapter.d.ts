@@ -39,7 +39,7 @@ export declare class OccCartEntryAdapter implements CartEntryAdapter {
      * Remove issue: #4125
      */
     private legacyRemove;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCartEntryAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCartEntryAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCartEntryAdapter>;
 }
 

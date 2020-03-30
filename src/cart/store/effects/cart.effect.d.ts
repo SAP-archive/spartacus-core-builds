@@ -20,7 +20,7 @@ export declare class CartEffects {
     addEmail$: Observable<DeprecatedCartActions.AddEmailToCartSuccess | DeprecatedCartActions.AddEmailToCartFail | CartActions.AddEmailToMultiCartFail | CartActions.AddEmailToMultiCartSuccess | CartActions.CartProcessesDecrement | DeprecatedCartActions.LoadCart>;
     deleteCart$: Observable<any>;
     constructor(actions$: Actions, cartConnector: CartConnector, store: Store<StateWithMultiCart>);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CartEffects>;
 }
 

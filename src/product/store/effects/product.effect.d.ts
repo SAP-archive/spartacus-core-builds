@@ -10,7 +10,7 @@ export declare class ProductEffects {
     loadProduct$: (({ scheduler, debounce }?: any) => Observable<ProductActions.LoadProductFail | ProductActions.LoadProductSuccess>) & import("@ngrx/effects").CreateEffectMetadata;
     private productLoadEffect;
     constructor(actions$: Actions, productConnector: ProductConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductEffects>;
 }
 

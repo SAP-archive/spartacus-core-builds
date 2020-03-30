@@ -9,7 +9,7 @@ export declare class CxDatePipe extends DatePipe implements PipeTransform {
     private getLang;
     private getActiveLang;
     private reportMissingLocaleData;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CxDatePipe>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CxDatePipe, never>;
     static ɵpipe: ɵngcc0.ɵɵPipeDefWithMeta<CxDatePipe, "cxDate">;
 }
 

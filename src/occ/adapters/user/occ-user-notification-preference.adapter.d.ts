@@ -12,7 +12,7 @@ export declare class OccUserNotificationPreferenceAdapter implements UserNotific
     constructor(http: HttpClient, converter: ConverterService, occEndpoints: OccEndpointsService);
     loadAll(userId: string): Observable<NotificationPreference[]>;
     update(userId: string, preferences: NotificationPreference[]): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserNotificationPreferenceAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserNotificationPreferenceAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserNotificationPreferenceAdapter>;
 }
 

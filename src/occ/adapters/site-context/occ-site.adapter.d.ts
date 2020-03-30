@@ -16,7 +16,7 @@ export declare class OccSiteAdapter implements SiteAdapter {
     loadCountries(type?: CountryType): Observable<Country[]>;
     loadRegions(countryIsoCode: string): Observable<Region[]>;
     loadBaseSite(): Observable<BaseSite>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccSiteAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccSiteAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccSiteAdapter>;
 }
 

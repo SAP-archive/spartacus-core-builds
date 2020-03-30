@@ -15,7 +15,7 @@ export declare class OccProductSearchAdapter implements ProductSearchAdapter {
     loadSuggestions(term: string, pageSize?: number): Observable<Suggestion[]>;
     protected getSearchEndpoint(query: string, searchConfig: SearchConfig): string;
     protected getSuggestionEndpoint(term: string, max: string): string;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductSearchAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductSearchAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccProductSearchAdapter>;
 }
 

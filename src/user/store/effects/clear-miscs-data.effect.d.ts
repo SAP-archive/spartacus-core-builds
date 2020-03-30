@@ -6,7 +6,7 @@ export declare class ClearMiscsDataEffect {
     private actions$;
     clearMiscsData$: Observable<Action>;
     constructor(actions$: Actions);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClearMiscsDataEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClearMiscsDataEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ClearMiscsDataEffect>;
 }
 

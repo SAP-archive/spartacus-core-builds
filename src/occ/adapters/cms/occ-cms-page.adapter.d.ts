@@ -15,7 +15,7 @@ export declare class OccCmsPageAdapter implements CmsPageAdapter {
     load(pageContext: PageContext, fields?: string): Observable<CmsStructureModel>;
     private getPagesEndpoint;
     private getPagesRequestParams;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsPageAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsPageAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCmsPageAdapter>;
 }
 

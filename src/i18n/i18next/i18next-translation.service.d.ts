@@ -18,7 +18,7 @@ export declare class I18nextTranslationService implements TranslationService {
     protected getFallbackValue(key: string): string;
     private reportMissingKey;
     private getNamespacedKey;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<I18nextTranslationService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<I18nextTranslationService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<I18nextTranslationService>;
 }
 

@@ -8,7 +8,7 @@ export declare class ProductReferenceService {
     constructor(store: Store<StateWithProduct>);
     get(productCode: string, referenceType?: string, pageSize?: number): Observable<ProductReference[]>;
     cleanReferences(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReferenceService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReferenceService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductReferenceService>;
 }
 

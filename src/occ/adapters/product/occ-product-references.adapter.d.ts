@@ -12,7 +12,7 @@ export declare class OccProductReferencesAdapter implements ProductReferencesAda
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
     load(productCode: string, referenceType?: string, pageSize?: number): Observable<ProductReference[]>;
     protected getEndpoint(code: string, reference?: string, pageSize?: number): string;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductReferencesAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductReferencesAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccProductReferencesAdapter>;
 }
 

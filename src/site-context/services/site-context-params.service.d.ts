@@ -24,7 +24,7 @@ export declare class SiteContextParamsService {
      * @returns Observable emitting array of all passed active context values
      */
     getValues(params: string[]): Observable<Array<string>>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<SiteContextParamsService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SiteContextParamsService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<SiteContextParamsService>;
 }
 

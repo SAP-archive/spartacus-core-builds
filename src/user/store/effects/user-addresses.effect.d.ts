@@ -32,7 +32,7 @@ export declare class UserAddressesEffects {
      */
     private showGlobalMessage;
     private loadAddresses;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserAddressesEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserAddressesEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<UserAddressesEffects>;
 }
 

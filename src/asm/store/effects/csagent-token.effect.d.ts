@@ -8,7 +8,7 @@ export declare class CustomerSupportAgentTokenEffects {
     private userTokenService;
     loadCustomerSupportAgentToken$: Observable<AsmActions.CustomerSupportAgentTokenAction>;
     constructor(actions$: Actions, userTokenService: UserAuthenticationTokenService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerSupportAgentTokenEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerSupportAgentTokenEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<CustomerSupportAgentTokenEffects>;
 }
 

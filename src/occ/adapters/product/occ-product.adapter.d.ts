@@ -16,7 +16,7 @@ export declare class OccProductAdapter implements ProductAdapter {
     load(productCode: string, scope?: string): Observable<Product>;
     loadMany(products: ScopedProductData[]): ScopedProductData[];
     protected getEndpoint(code: string, scope?: string): string;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductAdapter>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductAdapter, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OccProductAdapter>;
 }
 

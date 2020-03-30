@@ -9,7 +9,7 @@ export declare class OrderDetailsEffect {
     loadOrderDetails$: Observable<UserActions.OrderDetailsAction>;
     cancelOrder$: Observable<UserActions.OrderDetailsAction>;
     constructor(actions$: Actions, orderConnector: UserOrderConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OrderDetailsEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OrderDetailsEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OrderDetailsEffect>;
 }
 

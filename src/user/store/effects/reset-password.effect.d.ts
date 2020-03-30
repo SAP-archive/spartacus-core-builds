@@ -9,7 +9,7 @@ export declare class ResetPasswordEffects {
     private userAccountConnector;
     resetPassword$: Observable<UserActions.ResetPasswordSuccess | GlobalMessageActions.AddMessage | UserActions.ResetPasswordFail>;
     constructor(actions$: Actions, userAccountConnector: UserConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ResetPasswordEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ResetPasswordEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ResetPasswordEffects>;
 }
 

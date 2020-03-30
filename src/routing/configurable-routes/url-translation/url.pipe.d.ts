@@ -6,7 +6,7 @@ export declare class UrlPipe implements PipeTransform {
     private urlService;
     constructor(urlService: SemanticPathService);
     transform(commands: UrlCommands): any[];
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UrlPipe>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UrlPipe, never>;
     static ɵpipe: ɵngcc0.ɵɵPipeDefWithMeta<UrlPipe, "cxUrl">;
 }
 

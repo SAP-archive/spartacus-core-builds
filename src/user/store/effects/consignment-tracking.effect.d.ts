@@ -8,7 +8,7 @@ export declare class ConsignmentTrackingEffects {
     private userOrderConnector;
     loadConsignmentTracking$: Observable<UserActions.ConsignmentTrackingAction>;
     constructor(actions$: Actions, userOrderConnector: UserOrderConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConsignmentTrackingEffects>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConsignmentTrackingEffects, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ConsignmentTrackingEffects>;
 }
 

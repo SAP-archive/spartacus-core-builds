@@ -24,7 +24,7 @@ export declare class ExternalRoutesService {
      * Returns the URL matcher for the external route
      */
     protected getUrlMatcher(): UrlMatcher;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ExternalRoutesService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ExternalRoutesService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ExternalRoutesService>;
 }
 

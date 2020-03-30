@@ -9,7 +9,7 @@ export declare class OpenIdAuthenticationTokenService {
     constructor(config: KymaConfig, http: HttpClient);
     loadOpenIdAuthenticationToken(username: string, password: string): Observable<OpenIdToken>;
     private getOAuthEndpoint;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OpenIdAuthenticationTokenService>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OpenIdAuthenticationTokenService, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<OpenIdAuthenticationTokenService>;
 }
 

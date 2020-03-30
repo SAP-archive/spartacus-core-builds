@@ -11,7 +11,7 @@ export declare class ProductInterestsEffect {
     loadProductInteres$: Observable<UserActions.ProductInterestsAction>;
     removeProductInterest$: Observable<Action>;
     addProductInterest$: Observable<Action>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductInterestsEffect>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductInterestsEffect, never>;
     static ɵprov: ɵngcc0.ɵɵInjectableDef<ProductInterestsEffect>;
 }
 
