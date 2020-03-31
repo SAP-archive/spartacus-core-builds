@@ -811,7 +811,7 @@ function filterKeysByType(keys, type) {
     if (!keys) {
         return [];
     }
-    return Object.keys(keys).filter(key => keys[key] === type);
+    return Object.keys(keys).filter((key) => keys[key] === type);
 }
 
 function loaderValueSelector(state) {
@@ -1044,7 +1044,7 @@ let AuthService = class AuthService {
      * asm customer emulation session, the userId will be the customerId.
      */
     getOccUserId() {
-        return this.getUserToken().pipe(map(userToken => {
+        return this.getUserToken().pipe(map((userToken) => {
             if (!!userToken && !!userToken.userId) {
                 return userToken.userId;
             }
@@ -1080,7 +1080,7 @@ let AuthService = class AuthService {
     logout() {
         this.getUserToken()
             .pipe(take(1))
-            .subscribe(userToken => {
+            .subscribe((userToken) => {
             this.store.dispatch(new Logout());
             if (Boolean(userToken) && userToken.userId === OCC_USER_ID_CURRENT) {
                 this.store.dispatch(new RevokeUserToken(userToken));
@@ -1119,7 +1119,7 @@ let AuthService = class AuthService {
      * Returns `true` if the user is logged in; and `false` if the user is anonymous.
      */
     isUserLoggedIn() {
-        return this.getUserToken().pipe(map(userToken => Boolean(userToken) && Boolean(userToken.access_token)));
+        return this.getUserToken().pipe(map((userToken) => Boolean(userToken) && Boolean(userToken.access_token)));
     }
 };
 AuthService.ɵfac = function AuthService_Factory(t) { return new (t || AuthService)(ɵngcc0.ɵɵinject(ɵngcc1.Store)); };
@@ -1199,7 +1199,7 @@ let UrlParsingService = class UrlParsingService {
         return this._getPrimarySegmentsFromUrlTree(urlTree.root);
     }
     _getPrimarySegmentsFromUrlTree(tree) {
-        const segments = tree.segments.map(s => s.path);
+        const segments = tree.segments.map((s) => s.path);
         const childrenSegments = tree.children[PRIMARY_OUTLET]
             ? this._getPrimarySegmentsFromUrlTree(tree.children[PRIMARY_OUTLET])
             : [];
@@ -1320,7 +1320,7 @@ let SemanticPathService = class SemanticPathService {
         command.params = command.params || {};
     }
     provideParamsValues(path, params, paramsMapping) {
-        return this.urlParser.getPrimarySegments(path).map(segment => {
+        return this.urlParser.getPrimarySegments(path).map((segment) => {
             if (isParam(segment)) {
                 const paramName = getParamName(segment);
                 const mappedParamName = this.getMappedParamName(paramName, paramsMapping);
@@ -1330,7 +1330,7 @@ let SemanticPathService = class SemanticPathService {
         });
     }
     findPathWithFillableParams(routeConfig, params) {
-        const foundPath = routeConfig.paths.find(path => this.getParams(path).every(paramName => {
+        const foundPath = routeConfig.paths.find((path) => this.getParams(path).every((paramName) => {
             const mappedParamName = this.getMappedParamName(paramName, routeConfig.paramsMapping);
             return params[mappedParamName] !== undefined;
         }));
@@ -1409,13 +1409,13 @@ var routingGroup_actions = /*#__PURE__*/Object.freeze({
 const ROUTING_FEATURE = 'router';
 
 const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
-const ɵ0$2 = state => state.router;
+const ɵ0$2 = (state) => state.router;
 const getRouterState = createSelector(getRouterFeatureState, ɵ0$2);
 const ɵ1$1 = (routingState) => (routingState.state && routingState.state.context) || { id: '' };
 const getPageContext = createSelector(getRouterState, ɵ1$1);
 const ɵ2 = (routingState) => routingState.nextState && routingState.nextState.context;
 const getNextPageContext = createSelector(getRouterState, ɵ2);
-const ɵ3 = context => !!context;
+const ɵ3 = (context) => !!context;
 const isNavigating = createSelector(getNextPageContext, ɵ3);
 
 
@@ -1823,9 +1823,9 @@ const ɵ2$1 = (state) => state.currencies;
 const getCurrenciesState = createSelector(getSiteContextState, ɵ2$1);
 const getCurrenciesEntities = createSelector(getCurrenciesState, currenciesEntitiesSelector);
 const getActiveCurrency = createSelector(getCurrenciesState, activeCurrencySelector);
-const ɵ3$1 = entities => {
+const ɵ3$1 = (entities) => {
     return entities
-        ? Object.keys(entities).map(isocode => entities[isocode])
+        ? Object.keys(entities).map((isocode) => entities[isocode])
         : null;
 };
 const getAllCurrencies = createSelector(getCurrenciesEntities, ɵ3$1);
@@ -1838,9 +1838,9 @@ const ɵ2$2 = (state) => state.languages;
 const getLanguagesState = createSelector(getSiteContextState, ɵ2$2);
 const getLanguagesEntities = createSelector(getLanguagesState, languagesEntitiesSelector);
 const getActiveLanguage = createSelector(getLanguagesState, activeLanguageSelector);
-const ɵ3$2 = entities => {
+const ɵ3$2 = (entities) => {
     return entities
-        ? Object.keys(entities).map(isocode => entities[isocode])
+        ? Object.keys(entities).map((isocode) => entities[isocode])
         : null;
 };
 const getAllLanguages = createSelector(getLanguagesEntities, ɵ3$2);
@@ -1879,18 +1879,18 @@ let BaseSiteService = class BaseSiteService {
      * Represents the current baseSite uid.
      */
     getActive() {
-        return this.store.pipe(select(getActiveBaseSite), filter(active => Boolean(active)));
+        return this.store.pipe(select(getActiveBaseSite), filter((active) => Boolean(active)));
     }
     /**
      * We currently don't support switching baseSite at run time
      */
     getAll() {
-        return this.getActive().pipe(map(baseSite => [baseSite]));
+        return this.getActive().pipe(map((baseSite) => [baseSite]));
     }
     setActive(baseSite) {
         return this.store
             .pipe(select(getActiveBaseSite), take(1))
-            .subscribe(activeBaseSite => {
+            .subscribe((activeBaseSite) => {
             if (baseSite && activeBaseSite !== baseSite) {
                 this.store.dispatch(new SetActiveBaseSite(baseSite));
             }
@@ -1906,7 +1906,7 @@ let BaseSiteService = class BaseSiteService {
      * Get the base site details data
      */
     getBaseSiteData() {
-        return this.store.pipe(select(getBaseSiteData), tap(baseSite => {
+        return this.store.pipe(select(getBaseSiteData), tap((baseSite) => {
             if (Object.keys(baseSite).length === 0) {
                 this.store.dispatch(new LoadBaseSite());
             }
@@ -1930,7 +1930,7 @@ let OccEndpointsService = class OccEndpointsService {
         if (this.baseSiteService) {
             this.baseSiteService
                 .getActive()
-                .subscribe(value => (this.activeBaseSite = value));
+                .subscribe((value) => (this.activeBaseSite = value));
         }
     }
     /**
@@ -1978,7 +1978,7 @@ let OccEndpointsService = class OccEndpointsService {
     getUrl(endpoint, urlParams, queryParams, scope = '') {
         endpoint = this.getEndpointForScope(endpoint, scope);
         if (urlParams) {
-            Object.keys(urlParams).forEach(key => {
+            Object.keys(urlParams).forEach((key) => {
                 urlParams[key] = encodeURIComponent(urlParams[key]);
             });
             endpoint = DynamicTemplate.resolve(endpoint, urlParams);
@@ -1991,7 +1991,7 @@ let OccEndpointsService = class OccEndpointsService {
                 httpParamsOptions = { fromString: queryParamsFromEndpoint };
             }
             let httpParams = new HttpParams(httpParamsOptions);
-            Object.keys(queryParams).forEach(key => {
+            Object.keys(queryParams).forEach((key) => {
                 const value = queryParams[key];
                 if (value !== undefined) {
                     if (value === null) {
@@ -2072,7 +2072,7 @@ let UserTokenInterceptor = class UserTokenInterceptor {
         this.occEndpoints = occEndpoints;
     }
     intercept(request, next) {
-        return this.authService.getUserToken().pipe(take(1), switchMap(token => {
+        return this.authService.getUserToken().pipe(take(1), switchMap((token) => {
             if (token &&
                 this.isOccUrl(request.url) &&
                 !request.headers.get('Authorization')) {
@@ -2261,7 +2261,7 @@ function getStorageSyncReducer(winRef, config) {
         !config.state ||
         !config.state.storageSync ||
         !config.state.storageSync.keys) {
-        return reducer => reducer;
+        return (reducer) => reducer;
     }
     const storageSyncConfig = config.state.storageSync;
     return (reducer) => {
@@ -2355,7 +2355,7 @@ function getTransferStateReducer(platformId, transferState, config) {
             return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
         }
     }
-    return reducer => reducer;
+    return (reducer) => reducer;
 }
 function getServerTransferStateReducer(transferState, keys) {
     const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
@@ -2488,7 +2488,7 @@ let ClientTokenEffect = class ClientTokenEffect {
                 .loadClientAuthenticationToken()
                 .pipe(map((token) => {
                 return new LoadClientTokenSuccess(token);
-            }), catchError(error => of(new LoadClientTokenFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadClientTokenFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -2512,7 +2512,7 @@ let UserTokenEffects = class UserTokenEffects {
             token.expiration_time = date.toJSON();
             token.userId = OCC_USER_ID_CURRENT;
             return new LoadUserTokenSuccess(token);
-        }), catchError(error => of(new LoadUserTokenFail(makeErrorSerializable(error)))))));
+        }), catchError((error) => of(new LoadUserTokenFail(makeErrorSerializable(error)))))));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map(() => new Login()));
         this.refreshUserToken$ = this.actions$.pipe(ofType(REFRESH_USER_TOKEN), map((action) => action.payload), exhaustMap(({ refreshToken }) => {
             return this.userTokenService.refreshToken(refreshToken).pipe(map((token) => {
@@ -2520,12 +2520,12 @@ let UserTokenEffects = class UserTokenEffects {
                 date.setSeconds(date.getSeconds() + token.expires_in);
                 token.expiration_time = date.toJSON();
                 return new RefreshUserTokenSuccess(token);
-            }, catchError(error => of(new RefreshUserTokenFail(makeErrorSerializable(error))))));
+            }, catchError((error) => of(new RefreshUserTokenFail(makeErrorSerializable(error))))));
         }));
         this.revokeUserToken$ = this.actions$.pipe(ofType(REVOKE_USER_TOKEN), map((action) => {
             return action.payload;
         }), mergeMap((userToken) => {
-            return this.userTokenService.revoke(userToken).pipe(map(() => new RevokeUserTokenSuccess(userToken)), catchError(error => of(new RevokeUserTokenFail(error))));
+            return this.userTokenService.revoke(userToken).pipe(map(() => new RevokeUserTokenSuccess(userToken)), catchError((error) => of(new RevokeUserTokenFail(error))));
         }));
     }
 };
@@ -2739,7 +2739,7 @@ let NotAuthGuard = class NotAuthGuard {
     canActivate() {
         this.authRedirectService.reportNotAuthGuard();
         // redirect, if user is already logged in:
-        return this.authService.getUserToken().pipe(map(token => {
+        return this.authService.getUserToken().pipe(map((token) => {
             if (token.access_token) {
                 this.routingService.go({ cxRoute: 'home' });
             }
@@ -2934,28 +2934,28 @@ var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
 
 const getAnonymousConsentState = createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
 
-const ɵ0$8 = state => state.templates;
+const ɵ0$8 = (state) => state.templates;
 const getAnonymousConsentTemplatesState = createSelector(getAnonymousConsentState, ɵ0$8);
 const getAnonymousConsentTemplatesValue = createSelector(getAnonymousConsentTemplatesState, loaderValueSelector);
 const getAnonymousConsentTemplatesLoading = createSelector(getAnonymousConsentTemplatesState, loaderLoadingSelector);
 const getAnonymousConsentTemplatesSuccess = createSelector(getAnonymousConsentTemplatesState, loaderSuccessSelector);
 const getAnonymousConsentTemplatesError = createSelector(getAnonymousConsentTemplatesState, loaderErrorSelector);
 const getAnonymousConsentTemplate = (templateCode) => {
-    return createSelector(getAnonymousConsentTemplatesValue, templates => {
+    return createSelector(getAnonymousConsentTemplatesValue, (templates) => {
         return templates
-            ? templates.find(template => template.id === templateCode)
+            ? templates.find((template) => template.id === templateCode)
             : null;
     });
 };
 
-const ɵ0$9 = state => state.ui.updated;
+const ɵ0$9 = (state) => state.ui.updated;
 const getAnonymousConsentTemplatesUpdate = createSelector(getAnonymousConsentState, ɵ0$9);
-const ɵ1$6 = state => state.ui.bannerDismissed;
+const ɵ1$6 = (state) => state.ui.bannerDismissed;
 const getAnonymousConsentsBannerDismissed = createSelector(getAnonymousConsentState, ɵ1$6);
 
-const ɵ0$a = state => state.consents;
+const ɵ0$a = (state) => state.consents;
 const getAnonymousConsents = createSelector(getAnonymousConsentState, ɵ0$a);
-const getAnonymousConsentByTemplateCode = (templateCode) => createSelector(getAnonymousConsents, consents => consents.find(consent => consent.templateCode === templateCode));
+const getAnonymousConsentByTemplateCode = (templateCode) => createSelector(getAnonymousConsents, (consents) => consents.find((consent) => consent.templateCode === templateCode));
 
 
 
@@ -3054,7 +3054,7 @@ let AnonymousConsentsService = class AnonymousConsentsService {
      * @param templateId a template ID by which to filter anonymous consent templates.
      */
     getConsent(templateId) {
-        return this.authService.isUserLoggedIn().pipe(filter(authenticated => !authenticated), tap(_ => this.getTemplates(true)), switchMap(_ => this.store.pipe(select(getAnonymousConsentByTemplateCode(templateId)))));
+        return this.authService.isUserLoggedIn().pipe(filter((authenticated) => !authenticated), tap(() => this.getTemplates(true)), switchMap(() => this.store.pipe(select(getAnonymousConsentByTemplateCode(templateId)))));
     }
     /**
      * Give a consent for the given `templateCode`
@@ -3067,7 +3067,7 @@ let AnonymousConsentsService = class AnonymousConsentsService {
      * Sets all the anonymous consents' state to given.
      */
     giveAllConsents() {
-        return this.getTemplates(true).pipe(tap(templates => templates.forEach(template => this.giveConsent(template.id))));
+        return this.getTemplates(true).pipe(tap((templates) => templates.forEach((template) => this.giveConsent(template.id))));
     }
     /**
      * Returns `true` if the provided `consent` is given.
@@ -3087,7 +3087,7 @@ let AnonymousConsentsService = class AnonymousConsentsService {
      * Sets all the anonymous consents' state to withdrawn.
      */
     withdrawAllConsents() {
-        return this.getTemplates(true).pipe(tap(templates => templates.forEach(template => this.withdrawConsent(template.id))));
+        return this.getTemplates(true).pipe(tap((templates) => templates.forEach((template) => this.withdrawConsent(template.id))));
     }
     /**
      * Returns `true` if the provided `consent` is withdrawn.
@@ -3117,7 +3117,7 @@ let AnonymousConsentsService = class AnonymousConsentsService {
      * If the templates are not present in the store, it triggers the load.
      */
     getTemplatesUpdated() {
-        return this.getTemplates(true).pipe(switchMap(_ => this.store.pipe(select(getAnonymousConsentTemplatesUpdate))));
+        return this.getTemplates(true).pipe(switchMap(() => this.store.pipe(select(getAnonymousConsentTemplatesUpdate))));
     }
     /**
      * Toggles the `updated` slice of the state
@@ -3412,7 +3412,7 @@ let ConverterService = class ConverterService {
      */
     convertMany(sources, injectionToken) {
         if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
-            return sources.map(source => this.convertSource(source, injectionToken));
+            return sources.map((source) => this.convertSource(source, injectionToken));
         }
         else {
             return sources;
@@ -3439,7 +3439,7 @@ let OccAsmAdapter = class OccAsmAdapter {
         this.baseSiteService = baseSiteService;
         this.baseSiteService
             .getActive()
-            .subscribe(value => (this.activeBaseSite = value));
+            .subscribe((value) => (this.activeBaseSite = value));
     }
     customerSearch(options) {
         const headers = InterceptorUtil.createHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, true, new HttpHeaders());
@@ -3504,7 +3504,7 @@ let OccCartNormalizer = class OccCartNormalizer {
             target = Object.assign({}, source);
         }
         if (source && source.entries) {
-            target.entries = source.entries.map(entry => (Object.assign(Object.assign({}, entry), { product: this.converter.convert(entry.product, PRODUCT_NORMALIZER) })));
+            target.entries = source.entries.map((entry) => (Object.assign(Object.assign({}, entry), { product: this.converter.convert(entry.product, PRODUCT_NORMALIZER) })));
         }
         this.removeDuplicatePromotions(source, target);
         return target;
@@ -3528,7 +3528,7 @@ let OccCartNormalizer = class OccCartNormalizer {
     }
     removeDuplicateItems(itemList) {
         return itemList.filter((p, i, a) => {
-            const b = a.map(el => JSON.stringify(el));
+            const b = a.map((el) => JSON.stringify(el));
             return i === b.indexOf(JSON.stringify(p));
         });
     }
@@ -3765,9 +3765,9 @@ let OccCartAdapter = class OccCartAdapter {
     }
     load(userId, cartId) {
         if (cartId === OCC_CART_ID_CURRENT) {
-            return this.loadAll(userId).pipe(map(carts => {
+            return this.loadAll(userId).pipe(map((carts) => {
                 if (carts) {
-                    const activeCart = carts.find(cart => {
+                    const activeCart = carts.find((cart) => {
                         return cart['saveTime'] === undefined;
                     });
                     return activeCart;
@@ -4086,16 +4086,16 @@ let OccCheckoutPaymentAdapter = class OccCheckoutPaymentAdapter {
     }
     create(userId, cartId, paymentDetails) {
         paymentDetails = this.converter.convert(paymentDetails, PAYMENT_DETAILS_SERIALIZER);
-        return this.getProviderSubInfo(userId, cartId).pipe(map(data => {
+        return this.getProviderSubInfo(userId, cartId).pipe(map((data) => {
             const labelsMap = this.convertToMap(data.mappingLabels.entry);
             return {
                 url: data.postUrl,
                 parameters: this.getParamsForPaymentProvider(paymentDetails, data.parameters.entry, labelsMap),
                 mappingLabels: labelsMap,
             };
-        }), mergeMap(sub => {
+        }), mergeMap((sub) => {
             // create a subscription directly with payment provider
-            return this.createSubWithProvider(sub.url, sub.parameters).pipe(map(response => this.extractPaymentDetailsFromHtml(response)), mergeMap(fromPaymentProvider => {
+            return this.createSubWithProvider(sub.url, sub.parameters).pipe(map((response) => this.extractPaymentDetailsFromHtml(response)), mergeMap((fromPaymentProvider) => {
                 fromPaymentProvider['defaultPayment'] =
                     paymentDetails.defaultPayment;
                 fromPaymentProvider['savePaymentInfo'] = true;
@@ -4111,7 +4111,7 @@ let OccCheckoutPaymentAdapter = class OccCheckoutPaymentAdapter {
     loadCardTypes() {
         return this.http
             .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
-            .pipe(map(cardTypeList => cardTypeList.cardTypes), this.converter.pipeableMany(CARD_TYPE_NORMALIZER));
+            .pipe(map((cardTypeList) => cardTypeList.cardTypes), this.converter.pipeableMany(CARD_TYPE_NORMALIZER));
     }
     getProviderSubInfo(userId, cartId) {
         return this.http.get(this.getCartEndpoint(userId) +
@@ -4124,7 +4124,7 @@ let OccCheckoutPaymentAdapter = class OccCheckoutPaymentAdapter {
             Accept: 'text/html',
         });
         let httpParams = new HttpParams({ encoder: new CustomEncoder() });
-        Object.keys(parameters).forEach(key => {
+        Object.keys(parameters).forEach((key) => {
             httpParams = httpParams.append(key, parameters[key]);
         });
         return this.http.post(postUrl, httpParams, {
@@ -4134,7 +4134,7 @@ let OccCheckoutPaymentAdapter = class OccCheckoutPaymentAdapter {
     }
     createDetailsWithParameters(userId, cartId, parameters) {
         let httpParams = new HttpParams({ encoder: new CustomEncoder() });
-        Object.keys(parameters).forEach(key => {
+        Object.keys(parameters).forEach((key) => {
             httpParams = httpParams.append(key, parameters[key]);
         });
         const headers = new HttpHeaders({
@@ -4227,13 +4227,13 @@ let OccOrderNormalizer = class OccOrderNormalizer {
             target = Object.assign({}, source);
         }
         if (source.entries) {
-            target.entries = source.entries.map(entry => this.convertOrderEntry(entry));
+            target.entries = source.entries.map((entry) => this.convertOrderEntry(entry));
         }
         if (source.consignments) {
-            target.consignments = source.consignments.map(consignment => (Object.assign(Object.assign({}, consignment), { entries: consignment.entries.map(entry => (Object.assign(Object.assign({}, entry), { orderEntry: this.convertOrderEntry(entry.orderEntry) }))) })));
+            target.consignments = source.consignments.map((consignment) => (Object.assign(Object.assign({}, consignment), { entries: consignment.entries.map((entry) => (Object.assign(Object.assign({}, entry), { orderEntry: this.convertOrderEntry(entry.orderEntry) }))) })));
         }
         if (source.unconsignedEntries) {
-            target.unconsignedEntries = source.unconsignedEntries.map(entry => this.convertOrderEntry(entry));
+            target.unconsignedEntries = source.unconsignedEntries.map((entry) => this.convertOrderEntry(entry));
         }
         return target;
     }
@@ -4635,7 +4635,7 @@ let OccProductSearchPageNormalizer = class OccProductSearchPageNormalizer {
         target = Object.assign(Object.assign({}, target), source);
         this.normalizeFacets(target);
         if (source.products) {
-            target.products = source.products.map(product => this.converterService.convert(product, PRODUCT_NORMALIZER));
+            target.products = source.products.map((product) => this.converterService.convert(product, PRODUCT_NORMALIZER));
         }
         return target;
     }
@@ -4653,12 +4653,12 @@ let OccProductSearchPageNormalizer = class OccProductSearchPageNormalizer {
      * the facets.
      */
     normalizeUselessFacets(target) {
-        target.facets = target.facets.filter(facet => {
+        target.facets = target.facets.filter((facet) => {
             return (!target.pagination ||
                 !target.pagination.totalResults ||
                 ((!facet.hasOwnProperty('visible') || facet.visible) &&
                     facet.values &&
-                    facet.values.find(value => {
+                    facet.values.find((value) => {
                         return (value.selected || value.count < target.pagination.totalResults);
                     })));
         });
@@ -4699,7 +4699,7 @@ let OccProductReferencesListNormalizer = class OccProductReferencesListNormalize
             target = Object.assign({}, source);
         }
         if (source && source.references) {
-            target = source.references.map(reference => (Object.assign(Object.assign({}, reference), { target: this.converter.convert(reference.target, PRODUCT_NORMALIZER) })));
+            target = source.references.map((reference) => (Object.assign(Object.assign({}, reference), { target: this.converter.convert(reference.target, PRODUCT_NORMALIZER) })));
             return target;
         }
     }
@@ -4851,7 +4851,7 @@ OccProductSearchAdapter.ctorParameters = () => [
  * @param fields Fields definition as string or object
  */
 function mergeFields(fields) {
-    const parsedFields = fields.map(f => typeof f === 'string' ? parseFields(f) : f);
+    const parsedFields = fields.map((f) => typeof f === 'string' ? parseFields(f) : f);
     const mergedFields = optimizeFields(deepMerge({}, ...parsedFields));
     return stringifyFields(mergedFields);
 }
@@ -4869,7 +4869,7 @@ function optimizeFields(fields = {}) {
     else if (keys.includes('DEFAULT')) {
         delete fields['BASIC'];
     }
-    Object.keys(fields).forEach(key => {
+    Object.keys(fields).forEach((key) => {
         fields[key] = optimizeFields(fields[key]);
     });
     return fields;
@@ -4921,7 +4921,7 @@ function parseFields(fields, startIndex = 0) {
  */
 function stringifyFields(fields) {
     return Object.keys(fields)
-        .map(key => {
+        .map((key) => {
         const subFields = stringifyFields(fields[key]);
         return subFields ? `${key}(${subFields})` : key;
     })
@@ -4944,11 +4944,11 @@ function getObjectPart(data, fields) {
     const keys = Object.keys(fields);
     if (keys.length === 0 ||
         // we should not extract parts of the object with ambiguous fields definitions
-        keys.find(el => el === 'BASIC' || el === 'DEFAULT' || el === 'FULL')) {
+        keys.find((el) => el === 'BASIC' || el === 'DEFAULT' || el === 'FULL')) {
         return data;
     }
     const result = {};
-    keys.forEach(key => {
+    keys.forEach((key) => {
         if (data.hasOwnProperty(key)) {
             result[key] = getObjectPart(data[key], fields[key]);
         }
@@ -4985,7 +4985,7 @@ let OccFieldsService = class OccFieldsService {
         }
         const mergedUrls = {};
         for (const [url, group] of Object.entries(groupedByUrls)) {
-            const urlWithFields = this.getUrlWithFields(url, Object.values(group).map(lo => lo.fields));
+            const urlWithFields = this.getUrlWithFields(url, Object.values(group).map((lo) => lo.fields));
             mergedUrls[urlWithFields] = group;
         }
         return mergedUrls;
@@ -4999,7 +4999,7 @@ let OccFieldsService = class OccFieldsService {
         const [url, params] = urlWithFields.split('?');
         const paramsMap = {};
         if (params) {
-            params.split('&').map(param => {
+            params.split('&').map((param) => {
                 const keyValue = param.split('=');
                 paramsMap[keyValue[0]] = keyValue[1];
             });
@@ -5053,7 +5053,7 @@ let OccRequestsOptimizerService = class OccRequestsOptimizerService {
     scopedDataLoad(scopedDataWithUrls, dataFactory) {
         const result = [];
         if (!dataFactory) {
-            dataFactory = url => this.http.get(url);
+            dataFactory = (url) => this.http.get(url);
         }
         const mergedUrls = this.occFields.getOptimalUrlGroups(scopedDataWithUrls);
         Object.entries(mergedUrls).forEach(([url, groupedModelsSet]) => {
@@ -5066,8 +5066,8 @@ let OccRequestsOptimizerService = class OccRequestsOptimizerService {
                 // multiple scopes per url
                 // we have to split the model per each scope
                 const data$ = dataFactory(url).pipe(shareReplay(1));
-                groupedModels.forEach(modelData => {
-                    result.push(Object.assign(Object.assign({}, modelData.scopedData), { data$: data$.pipe(map(data => extractFields(data, modelData.fields))) }));
+                groupedModels.forEach((modelData) => {
+                    result.push(Object.assign(Object.assign({}, modelData.scopedData), { data$: data$.pipe(map((data) => extractFields(data, modelData.fields))) }));
                 });
             }
         });
@@ -5094,13 +5094,13 @@ let OccProductAdapter = class OccProductAdapter {
             .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
     }
     loadMany(products) {
-        const scopedDataWithUrls = products.map(model => ({
+        const scopedDataWithUrls = products.map((model) => ({
             scopedData: model,
             url: this.getEndpoint(model.code, model.scope),
         }));
         return this.requestsOptimizer
             .scopedDataLoad(scopedDataWithUrls)
-            .map(scopedProduct => (Object.assign(Object.assign({}, scopedProduct), { data$: scopedProduct.data$.pipe(this.converter.pipeable(PRODUCT_NORMALIZER)) })));
+            .map((scopedProduct) => (Object.assign(Object.assign({}, scopedProduct), { data$: scopedProduct.data$.pipe(this.converter.pipeable(PRODUCT_NORMALIZER)) })));
     }
     getEndpoint(code, scope) {
         return this.occEndpoints.getUrl('product', {
@@ -5226,22 +5226,22 @@ let OccSiteAdapter = class OccSiteAdapter {
     loadLanguages() {
         return this.http
             .get(this.occEndpointsService.getUrl('languages'))
-            .pipe(map(languageList => languageList.languages), this.converterService.pipeableMany(LANGUAGE_NORMALIZER));
+            .pipe(map((languageList) => languageList.languages), this.converterService.pipeableMany(LANGUAGE_NORMALIZER));
     }
     loadCurrencies() {
         return this.http
             .get(this.occEndpointsService.getUrl('currencies'))
-            .pipe(map(currencyList => currencyList.currencies), this.converterService.pipeableMany(CURRENCY_NORMALIZER));
+            .pipe(map((currencyList) => currencyList.currencies), this.converterService.pipeableMany(CURRENCY_NORMALIZER));
     }
     loadCountries(type) {
         return this.http
             .get(this.occEndpointsService.getUrl('countries', undefined, type ? { type } : undefined))
-            .pipe(map(countryList => countryList.countries), this.converterService.pipeableMany(COUNTRY_NORMALIZER));
+            .pipe(map((countryList) => countryList.countries), this.converterService.pipeableMany(COUNTRY_NORMALIZER));
     }
     loadRegions(countryIsoCode) {
         return this.http
             .get(this.occEndpointsService.getUrl('regions', { isoCode: countryIsoCode }))
-            .pipe(map(regionList => regionList.regions), this.converterService.pipeableMany(REGION_NORMALIZER));
+            .pipe(map((regionList) => regionList.regions), this.converterService.pipeableMany(REGION_NORMALIZER));
     }
     loadBaseSite() {
         const baseUrl = this.occEndpointsService.getBaseEndpoint();
@@ -5253,8 +5253,8 @@ let OccSiteAdapter = class OccSiteAdapter {
         });
         return this.http
             .get(url, { params: params })
-            .pipe(map(siteList => {
-            return siteList.baseSites.find(site => site.uid === activeSite);
+            .pipe(map((siteList) => {
+            return siteList.baseSites.find((site) => site.uid === activeSite);
         }));
     }
 };
@@ -5295,17 +5295,17 @@ let CurrencyService = class CurrencyService {
      * Represents all the currencies supported by the current store.
      */
     getAll() {
-        return this.store.pipe(select(getAllCurrencies), tap(currencies => {
+        return this.store.pipe(select(getAllCurrencies), tap((currencies) => {
             if (!currencies) {
                 this.store.dispatch(new LoadCurrencies());
             }
-        }), filter(currenies => Boolean(currenies)));
+        }), filter((currenies) => Boolean(currenies)));
     }
     /**
      * Represents the isocode of the active currency.
      */
     getActive() {
-        return this.store.pipe(select(getActiveCurrency), filter(active => Boolean(active)));
+        return this.store.pipe(select(getActiveCurrency), filter((active) => Boolean(active)));
     }
     /**
      * Sets the active language.
@@ -5313,7 +5313,7 @@ let CurrencyService = class CurrencyService {
     setActive(isocode) {
         return this.store
             .pipe(select(getActiveCurrency), take(1))
-            .subscribe(activeCurrency => {
+            .subscribe((activeCurrency) => {
             if (activeCurrency !== isocode) {
                 this.store.dispatch(new SetActiveCurrency(isocode));
             }
@@ -5356,17 +5356,17 @@ let LanguageService = class LanguageService {
      * Represents all the languages supported by the current store.
      */
     getAll() {
-        return this.store.pipe(select(getAllLanguages), tap(languages => {
+        return this.store.pipe(select(getAllLanguages), tap((languages) => {
             if (!languages) {
                 this.store.dispatch(new LoadLanguages());
             }
-        }), filter(languages => Boolean(languages)));
+        }), filter((languages) => Boolean(languages)));
     }
     /**
      * Represents the isocode of the active language.
      */
     getActive() {
-        return this.store.pipe(select(getActiveLanguage), filter(active => Boolean(active)));
+        return this.store.pipe(select(getActiveLanguage), filter((active) => Boolean(active)));
     }
     /**
      * Sets the active language.
@@ -5374,7 +5374,7 @@ let LanguageService = class LanguageService {
     setActive(isocode) {
         return this.store
             .pipe(select(getActiveLanguage), take(1))
-            .subscribe(activeLanguage => {
+            .subscribe((activeLanguage) => {
             if (activeLanguage !== isocode) {
                 this.store.dispatch(new SetActiveLanguage(isocode));
             }
@@ -5414,8 +5414,8 @@ let SiteContextInterceptor = class SiteContextInterceptor {
         this.activeCurr = getContextParameterDefault(this.config, CURRENCY_CONTEXT_ID);
         this.languageService
             .getActive()
-            .subscribe(data => (this.activeLang = data));
-        this.currencyService.getActive().subscribe(data => {
+            .subscribe((data) => (this.activeLang = data));
+        this.currencyService.getActive().subscribe((data) => {
             this.activeCurr = data;
         });
     }
@@ -5562,7 +5562,7 @@ let OccAnonymousConsentTemplatesAdapter = class OccAnonymousConsentTemplatesAdap
     }
     loadAnonymousConsentTemplates() {
         const url = this.occEndpoints.getUrl('anonymousConsentTemplates');
-        return this.http.get(url).pipe(catchError(error => throwError(error)), map(consentList => consentList.consentTemplates), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
+        return this.http.get(url).pipe(catchError((error) => throwError(error)), map((consentList) => consentList.consentTemplates), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
     }
 };
 OccAnonymousConsentTemplatesAdapter.ɵfac = function OccAnonymousConsentTemplatesAdapter_Factory(t) { return new (t || OccAnonymousConsentTemplatesAdapter)(ɵngcc0.ɵɵinject(ɵngcc3.HttpClient), ɵngcc0.ɵɵinject(OccEndpointsService), ɵngcc0.ɵɵinject(ConverterService)); };
@@ -5586,7 +5586,7 @@ let OccUserAddressAdapter = class OccUserAddressAdapter {
         });
         return this.http
             .get(url, { headers })
-            .pipe(catchError((error) => throwError(error)), map(addressList => addressList.addresses), this.converter.pipeableMany(ADDRESS_NORMALIZER));
+            .pipe(catchError((error) => throwError(error)), map((addressList) => addressList.addresses), this.converter.pipeableMany(ADDRESS_NORMALIZER));
     }
     add(userId, address) {
         const url = this.occEndpoints.getUrl('addresses', { userId });
@@ -5656,7 +5656,7 @@ let OccUserConsentAdapter = class OccUserConsentAdapter {
         const headers = new HttpHeaders({ 'Cache-Control': 'no-cache' });
         return this.http
             .get(url, { headers })
-            .pipe(catchError((error) => throwError(error)), map(consentList => consentList.consentTemplates), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
+            .pipe(catchError((error) => throwError(error)), map((consentList) => consentList.consentTemplates), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
     }
     giveConsent(userId, consentTemplateId, consentTemplateVersion) {
         const url = this.occEndpoints.getUrl('consents', { userId });
@@ -5669,7 +5669,7 @@ let OccUserConsentAdapter = class OccUserConsentAdapter {
         });
         return this.http
             .post(url, httpParams, { headers })
-            .pipe(catchError(error => throwError(error)), this.converter.pipeable(CONSENT_TEMPLATE_NORMALIZER));
+            .pipe(catchError((error) => throwError(error)), this.converter.pipeable(CONSENT_TEMPLATE_NORMALIZER));
     }
     withdrawConsent(userId, consentCode) {
         const headers = new HttpHeaders({
@@ -5878,7 +5878,7 @@ let OccUserPaymentAdapter = class OccUserPaymentAdapter {
         });
         return this.http
             .get(url, { headers })
-            .pipe(catchError((error) => throwError(error)), map(methodList => methodList.payments), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
+            .pipe(catchError((error) => throwError(error)), map((methodList) => methodList.payments), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
     }
     delete(userId, paymentMethodID) {
         const url = this.occEndpoints.getUrl('paymentDetail', {
@@ -6004,7 +6004,7 @@ let OccUserAdapter = class OccUserAdapter {
     }
     loadTitles() {
         const url = this.occEndpoints.getUrl('titles');
-        return this.http.get(url).pipe(map(titleList => titleList.titles), this.converter.pipeableMany(TITLE_NORMALIZER));
+        return this.http.get(url).pipe(map((titleList) => titleList.titles), this.converter.pipeableMany(TITLE_NORMALIZER));
     }
 };
 OccUserAdapter.ɵfac = function OccUserAdapter_Factory(t) { return new (t || OccUserAdapter)(ɵngcc0.ɵɵinject(ɵngcc3.HttpClient), ɵngcc0.ɵɵinject(OccEndpointsService), ɵngcc0.ɵɵinject(ConverterService)); };
@@ -6173,7 +6173,7 @@ let OccUserNotificationPreferenceAdapter = class OccUserNotificationPreferenceAd
             .get(this.occEndpoints.getUrl('notificationPreference', { userId }), {
             headers,
         })
-            .pipe(map(list => list.preferences), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), catchError((error) => throwError(error)));
+            .pipe(map((list) => list.preferences), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), catchError((error) => throwError(error)));
     }
     update(userId, preferences) {
         preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
@@ -6270,7 +6270,7 @@ let OccUserInterestsNormalizer = class OccUserInterestsNormalizer {
             target = Object.assign({}, source);
         }
         if (source && source.results) {
-            target.results = source.results.map(result => (Object.assign(Object.assign({}, result), { product: this.converter.convert(result.product, PRODUCT_NORMALIZER) })));
+            target.results = source.results.map((result) => (Object.assign(Object.assign({}, result), { product: this.converter.convert(result.product, PRODUCT_NORMALIZER) })));
         }
         return target;
     }
@@ -6290,7 +6290,7 @@ let OccReturnRequestNormalizer = class OccReturnRequestNormalizer {
             target = Object.assign({}, source);
         }
         if (source.returnEntries) {
-            target.returnEntries = source.returnEntries.map(entry => (Object.assign(Object.assign({}, entry), { orderEntry: this.convertOrderEntry(entry.orderEntry) })));
+            target.returnEntries = source.returnEntries.map((entry) => (Object.assign(Object.assign({}, entry), { orderEntry: this.convertOrderEntry(entry.orderEntry) })));
         }
         return target;
     }
@@ -6405,7 +6405,7 @@ let OccLoadedConfigConverter = class OccLoadedConfigConverter {
         this.javaRegExpConverter = javaRegExpConverter;
     }
     fromOccBaseSites(baseSites, currentUrl) {
-        const baseSite = baseSites.find(site => this.isCurrentBaseSite(site, currentUrl));
+        const baseSite = baseSites.find((site) => this.isCurrentBaseSite(site, currentUrl));
         if (!baseSite) {
             throw this.getError(`Current url (${currentUrl}) doesn't match with any of url patterns of any base site.`);
         }
@@ -6436,7 +6436,7 @@ let OccLoadedConfigConverter = class OccLoadedConfigConverter {
         return { i18n: { fallbackLang: languages[0] } };
     }
     isCurrentBaseSite(site, currentUrl) {
-        const index = (site.urlPatterns || []).findIndex(javaRegexp => {
+        const index = (site.urlPatterns || []).findIndex((javaRegexp) => {
             const jsRegexp = this.javaRegExpConverter.toJsRegExp(javaRegexp);
             if (jsRegexp) {
                 const result = jsRegexp.test(currentUrl);
@@ -6452,13 +6452,13 @@ let OccLoadedConfigConverter = class OccLoadedConfigConverter {
      */
     getUrlParams(params) {
         const STOREFRONT_PARAM = 'storefront';
-        return (params || []).map(param => param === STOREFRONT_PARAM ? BASE_SITE_CONTEXT_ID : param);
+        return (params || []).map((param) => param === STOREFRONT_PARAM ? BASE_SITE_CONTEXT_ID : param);
     }
     /**
      * Returns iso codes in a array, where the first element is the default iso code.
      */
     getIsoCodes(elements, defaultElement) {
-        const result = this.moveToFirst(elements, el => el.isocode === defaultElement.isocode).map(el => el.isocode);
+        const result = this.moveToFirst(elements, (el) => el.isocode === defaultElement.isocode).map((el) => el.isocode);
         return result;
     }
     /**
@@ -6541,7 +6541,7 @@ let OccConfigLoaderService = class OccConfigLoaderService {
      */
     loadConfig() {
         return this.get()
-            .pipe(tap(externalConfig => this.transfer(externalConfig)), map(externalConfig => deepMerge({}, ...this.getConfigChunks(externalConfig))))
+            .pipe(tap((externalConfig) => this.transfer(externalConfig)), map((externalConfig) => deepMerge({}, ...this.getConfigChunks(externalConfig))))
             .toPromise();
     }
     /**
@@ -6559,7 +6559,7 @@ let OccConfigLoaderService = class OccConfigLoaderService {
     load() {
         return this.sitesConfigLoader
             .load()
-            .pipe(map(baseSites => this.converter.fromOccBaseSites(baseSites, this.currentUrl)));
+            .pipe(map((baseSites) => this.converter.fromOccBaseSites(baseSites, this.currentUrl)));
     }
     /**
      * Tries to rehydrate external config in the browser from SSR
@@ -7906,7 +7906,7 @@ let AnonymousConsentsInterceptor = class AnonymousConsentsInterceptor {
                 return next.handle(request);
             }
             const clonedRequest = this.handleRequest(consents, request);
-            return next.handle(clonedRequest).pipe(tap(event => {
+            return next.handle(clonedRequest).pipe(tap((event) => {
                 if (event instanceof HttpResponse) {
                     this.handleResponse(isUserLoggedIn, event.headers.get(ANONYMOUS_CONSENTS_HEADER), consents);
                 }
@@ -8036,7 +8036,7 @@ let EventService = class EventService {
      */
     unregister(eventType, source$) {
         const event = this.getEventMeta(eventType);
-        const newSources = event.sources$.value.filter(s$ => s$ !== source$);
+        const newSources = event.sources$.value.filter((s$) => s$ !== source$);
         event.sources$.next(newSources);
     }
     /**
@@ -8115,7 +8115,7 @@ let EventService = class EventService {
      * Should be used only in dev mode.
      */
     validateEventStream(source$, eventType) {
-        return source$.pipe(tap(event => {
+        return source$.pipe(tap((event) => {
             if (!(event instanceof eventType)) {
                 console.warn(`EventService: The stream`, source$, `emitted the event`, event, `that is not an instance of the declared type`, eventType.name);
             }
@@ -8205,9 +8205,9 @@ let StatePersistenceService = class StatePersistenceService {
         const subscriptions = new Subscription();
         // Do not change order of subscription! Read should happen before write on context change.
         subscriptions.add(context$
-            .pipe(map(context => {
+            .pipe(map((context) => {
             return readFromStorage(storage, this.generateKeyWithContext(context, key));
-        }), tap(state => onRead(state)))
+        }), tap((state) => onRead(state)))
             .subscribe());
         subscriptions.add(state$.pipe(withLatestFrom(context$)).subscribe(([state, context]) => {
             persistToStorage(this.generateKeyWithContext(context, key), state, storage);
@@ -8231,16 +8231,16 @@ function getProcessState() {
 }
 
 function getProcessStateFactory(processId) {
-    return createSelector(getProcessState(), entityState => entityStateSelector(entityState, processId));
+    return createSelector(getProcessState(), (entityState) => entityStateSelector(entityState, processId));
 }
 function getProcessLoadingFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), loaderState => loaderLoadingSelector(loaderState));
+    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderLoadingSelector(loaderState));
 }
 function getProcessSuccessFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), loaderState => loaderSuccessSelector(loaderState));
+    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderSuccessSelector(loaderState));
 }
 function getProcessErrorFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), loaderState => loaderErrorSelector(loaderState));
+    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderErrorSelector(loaderState));
 }
 
 var process_selectors = /*#__PURE__*/Object.freeze({
@@ -9709,7 +9709,7 @@ const ɵ0$b = (state) => state.billingCountries;
 const getBillingCountriesState = createSelector(getUserState, ɵ0$b);
 const ɵ1$7 = (state) => state.entities;
 const getBillingCountriesEntites = createSelector(getBillingCountriesState, ɵ1$7);
-const ɵ2$3 = entites => Object.keys(entites).map(isocode => entites[isocode]);
+const ɵ2$3 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
 const getAllBillingCountries = createSelector(getBillingCountriesEntites, ɵ2$3);
 
 const ɵ0$c = (state) => state.consignmentTracking;
@@ -9721,9 +9721,9 @@ const ɵ0$d = (state) => state.countries;
 const getDeliveryCountriesState = createSelector(getUserState, ɵ0$d);
 const ɵ1$9 = (state) => state.entities;
 const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, ɵ1$9);
-const ɵ2$4 = entites => Object.keys(entites).map(isocode => entites[isocode]);
+const ɵ2$4 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
 const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, ɵ2$4);
-const countrySelectorFactory = (isocode) => createSelector(getDeliveryCountriesEntites, entities => Object.keys(entities).length !== 0 ? entities[isocode] : null);
+const countrySelectorFactory = (isocode) => createSelector(getDeliveryCountriesEntites, (entities) => Object.keys(entities).length !== 0 ? entities[isocode] : null);
 
 const ɵ0$e = (state) => state.order;
 const getOrderState = createSelector(getUserState, ɵ0$e);
@@ -9781,9 +9781,9 @@ const ɵ0$j = (state) => state.titles;
 const getTitlesState = createSelector(getUserState, ɵ0$j);
 const ɵ1$e = (state) => state.entities;
 const getTitlesEntites = createSelector(getTitlesState, ɵ1$e);
-const ɵ2$8 = entites => Object.keys(entites).map(code => entites[code]);
+const ɵ2$8 = (entites) => Object.keys(entites).map((code) => entites[code]);
 const getAllTitles = createSelector(getTitlesEntites, ɵ2$8);
-const titleSelectorFactory = (code) => createSelector(getTitlesEntites, entities => Object.keys(entities).length !== 0 ? entities[code] : null);
+const titleSelectorFactory = (code) => createSelector(getTitlesEntites, (entities) => Object.keys(entities).length !== 0 ? entities[code] : null);
 
 const ɵ0$k = (state) => state.addresses;
 const getAddressesLoaderState = createSelector(getUserState, ɵ0$k);
@@ -9798,7 +9798,7 @@ const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, ɵ3$6)
 const ɵ0$l = (state) => state.consents;
 const getConsentsState = createSelector(getUserState, ɵ0$l);
 const getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
-const getConsentByTemplateId = (templateId) => createSelector(getConsentsValue, templates => templates.find(template => template.id === templateId));
+const getConsentByTemplateId = (templateId) => createSelector(getConsentsValue, (templates) => templates.find((template) => template.id === templateId));
 const getConsentsLoading = createSelector(getConsentsState, loaderLoadingSelector);
 const getConsentsSuccess = createSelector(getConsentsState, loaderSuccessSelector);
 const getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
@@ -9828,7 +9828,7 @@ const ɵ0$p = (state) => state.notificationPreferences;
 const getPreferencesLoaderState = createSelector(getUserState, ɵ0$p);
 const ɵ1$j = (state) => loaderValueSelector(state);
 const getPreferences = createSelector(getPreferencesLoaderState, ɵ1$j);
-const ɵ2$c = (state) => loaderValueSelector(state).filter(p => p.enabled);
+const ɵ2$c = (state) => loaderValueSelector(state).filter((p) => p.enabled);
 const getEnabledPreferences = createSelector(getPreferencesLoaderState, ɵ2$c);
 const ɵ3$8 = (state) => loaderLoadingSelector(state);
 const getPreferencesLoading = createSelector(getPreferencesLoaderState, ɵ3$8);
@@ -9920,7 +9920,7 @@ let UserConsentService = class UserConsentService {
      * Retrieves all consents.
      */
     loadConsents() {
-        this.withUserId(userId => this.store.dispatch(new LoadUserConsents(userId)));
+        this.withUserId((userId) => this.store.dispatch(new LoadUserConsents(userId)));
     }
     /**
      * Returns all consent templates. If `loadIfMissing` parameter is set to `true`, the method triggers the load if consent templates.
@@ -9968,7 +9968,7 @@ let UserConsentService = class UserConsentService {
      * @param templateId a template ID by which to filter the registered templates.
      */
     getConsent(templateId) {
-        return this.authService.isUserLoggedIn().pipe(filter(Boolean), tap(_ => this.getConsents(true)), switchMap(_ => this.store.pipe(select(getConsentByTemplateId(templateId)))), filter(template => Boolean(template)), map(template => template.currentConsent));
+        return this.authService.isUserLoggedIn().pipe(filter(Boolean), tap(() => this.getConsents(true)), switchMap(() => this.store.pipe(select(getConsentByTemplateId(templateId)))), filter((template) => Boolean(template)), map((template) => template.currentConsent));
     }
     /**
      * Returns `true` if the consent is truthy and if `consentWithdrawnDate` doesn't exist.
@@ -9999,7 +9999,7 @@ let UserConsentService = class UserConsentService {
      * @param consentTemplateVersion a template version for which to give a consent
      */
     giveConsent(consentTemplateId, consentTemplateVersion) {
-        this.withUserId(userId => this.store.dispatch(new GiveUserConsent({
+        this.withUserId((userId) => this.store.dispatch(new GiveUserConsent({
             userId,
             consentTemplateId,
             consentTemplateVersion,
@@ -10034,7 +10034,7 @@ let UserConsentService = class UserConsentService {
      * @param consentCode for which to withdraw the consent
      */
     withdrawConsent(consentCode) {
-        this.withUserId(userId => this.store.dispatch(new WithdrawUserConsent({
+        this.withUserId((userId) => this.store.dispatch(new WithdrawUserConsent({
             userId,
             consentCode,
         })));
@@ -10090,7 +10090,7 @@ let UserConsentService = class UserConsentService {
         this.authService
             .getOccUserId()
             .pipe(take(1))
-            .subscribe(userId => callback(userId));
+            .subscribe((userId) => callback(userId));
     }
 };
 UserConsentService.ɵfac = function UserConsentService_Factory(t) { return new (t || UserConsentService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -10122,7 +10122,7 @@ let AnonymousConsentsEffects = class AnonymousConsentsEffects {
         this.anonymousConsentsConfig = anonymousConsentsConfig;
         this.anonymousConsentService = anonymousConsentService;
         this.userConsentService = userConsentService;
-        this.loadAnonymousConsentTemplates$ = this.actions$.pipe(ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), concatMap(_ => this.anonymousConsentTemplatesConnector
+        this.loadAnonymousConsentTemplates$ = this.actions$.pipe(ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), concatMap(() => this.anonymousConsentTemplatesConnector
             .loadAnonymousConsentTemplates()
             .pipe(withLatestFrom(this.anonymousConsentService.getTemplates()), mergeMap(([newConsentTemplates, currentConsentTemplates]) => {
             let updated = false;
@@ -10134,7 +10134,7 @@ let AnonymousConsentsEffects = class AnonymousConsentsEffects {
                 new LoadAnonymousConsentTemplatesSuccess(newConsentTemplates),
                 new ToggleAnonymousConsentTemplatesUpdated(updated),
             ];
-        }), catchError(error => of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error)))))));
+        }), catchError((error) => of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error)))))));
         this.transferAnonymousConsentsToUser$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), filter(() => isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(this.anonymousConsentsConfig.anonymousConsents)), withLatestFrom(this.actions$.pipe(ofType(REGISTER_USER_SUCCESS))), filter(([, registerAction]) => Boolean(registerAction)), switchMap(() => this.anonymousConsentService.getConsents().pipe(withLatestFrom(this.authService.getOccUserId(), this.anonymousConsentService.getTemplates(), this.authService.isUserLoggedIn()), filter(([, , , loggedIn]) => loggedIn), concatMap(([consents, userId, templates, _loggedIn]) => {
             const actions = [];
             for (const consent of consents) {
@@ -10159,7 +10159,7 @@ let AnonymousConsentsEffects = class AnonymousConsentsEffects {
             }
             return EMPTY;
         }))));
-        this.giveRequiredConsentsToUser$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), filter(action => isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) &&
+        this.giveRequiredConsentsToUser$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), filter((action) => isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) &&
             Boolean(this.anonymousConsentsConfig.anonymousConsents) &&
             Boolean(this.anonymousConsentsConfig.anonymousConsents.requiredConsents) &&
             Boolean(action)), concatMap(() => this.userConsentService.getConsentsResultSuccess().pipe(withLatestFrom(this.authService.getOccUserId(), this.userConsentService.getConsents(), this.authService.isUserLoggedIn()), filter(([, , , loggedIn]) => loggedIn), tap(([loaded, _userId, _templates, _loggedIn]) => {
@@ -10337,7 +10337,7 @@ let ConfigInitializerService = class ConfigInitializerService {
                 return this.config;
             }
             return this.ongoingScopes$
-                .pipe(filter(ongoingScopes => ongoingScopes && this.areReady(scopes, ongoingScopes)), take(1), mapTo(this.config))
+                .pipe(filter((ongoingScopes) => ongoingScopes && this.areReady(scopes, ongoingScopes)), take(1), mapTo(this.config))
                 .toPromise();
         });
     }
@@ -10472,7 +10472,7 @@ let SiteContextParamsService = class SiteContextParamsService {
     }
     getContextParameters() {
         if (this.config.context) {
-            return Object.keys(this.config.context).filter(param => param !== 'urlParameters');
+            return Object.keys(this.config.context).filter((param) => param !== 'urlParameters');
         }
         return [];
     }
@@ -10496,7 +10496,7 @@ let SiteContextParamsService = class SiteContextParamsService {
         if (service) {
             service
                 .getActive()
-                .subscribe(val => (value = val))
+                .subscribe((val) => (value = val))
                 .unsubscribe();
         }
         return value !== undefined ? value : this.getParamDefaultValue(param);
@@ -10518,9 +10518,9 @@ let SiteContextParamsService = class SiteContextParamsService {
         if (params.length === 0) {
             return of([]);
         }
-        return combineLatest(params.map(param => this.getSiteContextService(param)
+        return combineLatest(params.map((param) => this.getSiteContextService(param)
             .getActive()
-            .pipe(distinctUntilChanged()))).pipe(filter(value => value.every(param => !!param)));
+            .pipe(distinctUntilChanged()))).pipe(filter((value) => value.every((param) => !!param)));
     }
 };
 SiteContextParamsService.ɵfac = function SiteContextParamsService_Factory(t) { return new (t || SiteContextParamsService)(ɵngcc0.ɵɵinject(SiteContextConfig), ɵngcc0.ɵɵinject(ɵngcc0.Injector), ɵngcc0.ɵɵinject(ContextServiceMap)); };
@@ -10590,7 +10590,7 @@ let SiteContextUrlSerializer = class SiteContextUrlSerializer extends DefaultUrl
     }
     urlIncludeContextParameters(url, params) {
         const contextRoutePart = this.urlEncodingParameters
-            .map(param => {
+            .map((param) => {
             return params[param]
                 ? params[param]
                 : this.siteContextParams.getValue(param);
@@ -10625,10 +10625,10 @@ let SiteContextRoutesHandler = class SiteContextRoutesHandler {
         }
     }
     subscribeChanges(params) {
-        params.forEach(param => {
+        params.forEach((param) => {
             const service = this.siteContextParams.getSiteContextService(param);
             if (service) {
-                this.subscription.add(service.getActive().subscribe(value => {
+                this.subscription.add(service.getActive().subscribe((value) => {
                     if (!this.isNavigating &&
                         this.contextValues[param] &&
                         this.contextValues[param] !== value) {
@@ -10643,7 +10643,7 @@ let SiteContextRoutesHandler = class SiteContextRoutesHandler {
     }
     subscribeRouting() {
         this.subscription.add(this.router.events
-            .pipe(filter(event => event instanceof NavigationStart ||
+            .pipe(filter((event) => event instanceof NavigationStart ||
             event instanceof NavigationEnd ||
             event instanceof NavigationError ||
             event instanceof NavigationCancel))
@@ -10656,7 +10656,7 @@ let SiteContextRoutesHandler = class SiteContextRoutesHandler {
     }
     setContextParamsFromRoute(url) {
         const { params } = this.serializer.urlExtractContextParameters(url);
-        Object.keys(params).forEach(param => this.siteContextParams.setValue(param, params[param]));
+        Object.keys(params).forEach((param) => this.siteContextParams.setValue(param, params[param]));
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
@@ -10696,7 +10696,7 @@ let LanguagesEffects = class LanguagesEffects {
         this.siteConnector = siteConnector;
         this.winRef = winRef;
         this.loadLanguages$ = this.actions$.pipe(ofType(LOAD_LANGUAGES), exhaustMap(() => {
-            return this.siteConnector.getLanguages().pipe(map(languages => new LoadLanguagesSuccess(languages)), catchError(error => of(new LoadLanguagesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getLanguages().pipe(map((languages) => new LoadLanguagesSuccess(languages)), catchError((error) => of(new LoadLanguagesFail(makeErrorSerializable(error)))));
         }));
         this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((action) => {
             if (this.winRef.sessionStorage) {
@@ -10725,7 +10725,7 @@ let CurrenciesEffects = class CurrenciesEffects {
         this.siteConnector = siteConnector;
         this.winRef = winRef;
         this.loadCurrencies$ = this.actions$.pipe(ofType(LOAD_CURRENCIES), exhaustMap(() => {
-            return this.siteConnector.getCurrencies().pipe(map(currencies => new LoadCurrenciesSuccess(currencies)), catchError(error => of(new LoadCurrenciesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getCurrencies().pipe(map((currencies) => new LoadCurrenciesSuccess(currencies)), catchError((error) => of(new LoadCurrenciesFail(makeErrorSerializable(error)))));
         }));
         this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((action) => {
             if (this.winRef.sessionStorage) {
@@ -10753,7 +10753,7 @@ let BaseSiteEffects = class BaseSiteEffects {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
         this.loadBaseSite$ = this.actions$.pipe(ofType(LOAD_BASE_SITE), exhaustMap(() => {
-            return this.siteConnector.getBaseSite().pipe(map(baseSite => new LoadBaseSiteSuccess(baseSite)), catchError(error => of(new LoadBaseSiteFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getBaseSite().pipe(map((baseSite) => new LoadBaseSiteSuccess(baseSite)), catchError((error) => of(new LoadBaseSiteFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -10913,7 +10913,7 @@ function toggleConsentStatus(consents, templateCode, status) {
     if (!consents) {
         return [];
     }
-    return consents.map(consent => {
+    return consents.map((consent) => {
         if (consent.templateCode === templateCode) {
             consent = Object.assign(Object.assign({}, consent), { consentState: status });
         }
@@ -11134,9 +11134,9 @@ let CustomerEffects = class CustomerEffects {
     constructor(actions$, asmConnector) {
         this.actions$ = actions$;
         this.asmConnector = asmConnector;
-        this.customerSearch$ = this.actions$.pipe(ofType(CUSTOMER_SEARCH), map((action) => action.payload), switchMap(options => this.asmConnector.customerSearch(options).pipe(map((customerSearchResults) => {
+        this.customerSearch$ = this.actions$.pipe(ofType(CUSTOMER_SEARCH), map((action) => action.payload), switchMap((options) => this.asmConnector.customerSearch(options).pipe(map((customerSearchResults) => {
             return new CustomerSearchSuccess(customerSearchResults);
-        }), catchError(error => of(new CustomerSearchFail(makeErrorSerializable(error)))))));
+        }), catchError((error) => of(new CustomerSearchFail(makeErrorSerializable(error)))))));
     }
 };
 CustomerEffects.ɵfac = function CustomerEffects_Factory(t) { return new (t || CustomerEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(AsmConnector)); };
@@ -11158,7 +11158,7 @@ let CustomerSupportAgentTokenEffects = class CustomerSupportAgentTokenEffects {
             date.setSeconds(date.getSeconds() + token.expires_in);
             token.expiration_time = date.toJSON();
             return new LoadCustomerSupportAgentTokenSuccess(token);
-        }), catchError(error => of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error)))))));
+        }), catchError((error) => of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error)))))));
     }
 };
 CustomerSupportAgentTokenEffects.ɵfac = function CustomerSupportAgentTokenEffects_Factory(t) { return new (t || CustomerSupportAgentTokenEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserAuthenticationTokenService)); };
@@ -11251,16 +11251,16 @@ const getAsmUi = createSelector(getAsmState, ɵ0$r);
 
 const ɵ0$s = (state) => state.customerSearchResult;
 const getCustomerSearchResultsLoaderState = createSelector(getAsmState, ɵ0$s);
-const ɵ1$l = state => loaderValueSelector(state);
+const ɵ1$l = (state) => loaderValueSelector(state);
 const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, ɵ1$l);
-const ɵ2$e = state => loaderLoadingSelector(state);
+const ɵ2$e = (state) => loaderLoadingSelector(state);
 const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, ɵ2$e);
 
 const ɵ0$t = (state) => state.csagentToken;
 const getCustomerSupportAgentTokenState = createSelector(getAsmState, ɵ0$t);
-const ɵ1$m = state => loaderValueSelector(state);
+const ɵ1$m = (state) => loaderValueSelector(state);
 const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, ɵ1$m);
-const ɵ2$f = state => loaderLoadingSelector(state);
+const ɵ2$f = (state) => loaderLoadingSelector(state);
 const getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
 
 
@@ -11332,7 +11332,7 @@ let AsmAuthService = class AsmAuthService {
     logoutCustomerSupportAgent() {
         this.getCustomerSupportAgentToken()
             .pipe(take(1))
-            .subscribe(userToken => {
+            .subscribe((userToken) => {
             this.store.dispatch(new LogoutCustomerSupportAgent());
             this.store.dispatch(new RevokeUserToken(userToken));
         });
@@ -11426,10 +11426,10 @@ const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 const ɵ0$u = (state) => state.entities;
 const getGlobalMessageEntities = createSelector(getGlobalMessageState, ɵ0$u);
 const getGlobalMessageEntitiesByType = (type) => {
-    return createSelector(getGlobalMessageEntities, entities => entities && entities[type]);
+    return createSelector(getGlobalMessageEntities, (entities) => entities && entities[type]);
 };
 const getGlobalMessageCountByType = (type) => {
-    return createSelector(getGlobalMessageEntitiesByType(type), entities => entities && entities.length);
+    return createSelector(getGlobalMessageEntitiesByType(type), (entities) => entities && entities.length);
 };
 
 
@@ -11451,7 +11451,7 @@ let GlobalMessageService = class GlobalMessageService {
      * Get all global messages
      */
     get() {
-        return this.store.pipe(select(getGlobalMessageEntities), filter(data => data !== undefined));
+        return this.store.pipe(select(getGlobalMessageEntities), filter((data) => data !== undefined));
     }
     /**
      * Add one message into store
@@ -11551,15 +11551,15 @@ let BadRequestHandler = class BadRequestHandler extends HttpErrorHandler {
     }
     handleBadLoginResponse(_request, response) {
         this.getErrors(response)
-            .filter(error => error.type === 'PasswordMismatchError')
+            .filter((error) => error.type === 'PasswordMismatchError')
             .forEach(() => {
             this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, GlobalMessageType.MSG_TYPE_ERROR);
         });
     }
     handleValidationError(_request, response) {
         this.getErrors(response)
-            .filter(e => e.type === 'ValidationError')
-            .forEach(error => {
+            .filter((e) => e.type === 'ValidationError')
+            .forEach((error) => {
             this.globalMessageService.add({
                 key: `httpHandlers.validationErrors.${error.reason}.${error.subject}`,
             }, GlobalMessageType.MSG_TYPE_ERROR);
@@ -11567,14 +11567,14 @@ let BadRequestHandler = class BadRequestHandler extends HttpErrorHandler {
     }
     handleBadCartRequest(_request, response) {
         this.getErrors(response)
-            .filter(e => e.subjectType === 'cart' && e.reason === 'notFound')
+            .filter((e) => e.subjectType === 'cart' && e.reason === 'notFound')
             .forEach(() => {
             this.globalMessageService.add({ key: 'httpHandlers.cartNotFound' }, GlobalMessageType.MSG_TYPE_ERROR);
         });
     }
     getErrors(response) {
         var _a;
-        return (((_a = response.error) === null || _a === void 0 ? void 0 : _a.errors) || []).filter(error => error.type !== 'JaloObjectNoLongerValidError');
+        return (((_a = response.error) === null || _a === void 0 ? void 0 : _a.errors) || []).filter((error) => error.type !== 'JaloObjectNoLongerValidError');
     }
 };
 BadRequestHandler.ɵfac = function BadRequestHandler_Factory(t) { return ɵBadRequestHandler_BaseFactory(t || BadRequestHandler); };
@@ -11711,9 +11711,9 @@ let HttpErrorInterceptor = class HttpErrorInterceptor {
      */
     getResponseHandler(response) {
         const status = response.status;
-        let handler = this.handlers.find(h => h.responseStatus === status);
+        let handler = this.handlers.find((h) => h.responseStatus === status);
         if (!handler) {
-            handler = this.handlers.find(h => h.responseStatus === HttpResponseStatus.UNKNOWN);
+            handler = this.handlers.find((h) => h.responseStatus === HttpResponseStatus.UNKNOWN);
         }
         return handler;
     }
@@ -12167,7 +12167,7 @@ const getCartEntriesSelectorFactory = (cartId) => {
 const getCartEntrySelectorFactory = (cartId, productCode) => {
     return createSelector(getCartEntriesSelectorFactory(cartId), (state) => {
         return state
-            ? state.find(entry => entry.product.code === productCode)
+            ? state.find((entry) => entry.product.code === productCode)
             : undefined;
     });
 };
@@ -12782,15 +12782,13 @@ let MultiCartService = class MultiCartService {
         // This flickering should only be avoided when switching from false to true
         // Start of loading should be showed instantly (no debounce)
         // Extra actions are only dispatched after some loading
-        debounce(isStable => (isStable ? timer(0) : EMPTY)), distinctUntilChanged());
+        debounce((isStable) => (isStable ? timer(0) : EMPTY)), distinctUntilChanged());
     }
     /**
      * Simple random temp cart id generator
      */
     generateTempCartId() {
-        const pseudoUuid = Math.random()
-            .toString(36)
-            .substr(2, 9);
+        const pseudoUuid = Math.random().toString(36).substr(2, 9);
         return `temp-${pseudoUuid}`;
     }
     /**
@@ -12868,7 +12866,7 @@ let MultiCartService = class MultiCartService {
      * @param products Array with items (productCode and quantity)
      */
     addEntries(userId, cartId, products) {
-        products.forEach(product => {
+        products.forEach((product) => {
             this.store.dispatch(new CartAddEntry({
                 userId,
                 cartId,
@@ -12962,14 +12960,14 @@ let ActiveCartService = class ActiveCartService {
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
         this.userId = OCC_USER_ID_ANONYMOUS;
-        this.activeCartId$ = this.store.pipe(select(getActiveCartId), map(cartId => {
+        this.activeCartId$ = this.store.pipe(select(getActiveCartId), map((cartId) => {
             if (!cartId) {
                 return OCC_CART_ID_CURRENT;
             }
             return cartId;
         }));
-        this.cartSelector$ = this.activeCartId$.pipe(switchMap(cartId => this.multiCartService.getCartEntity(cartId)));
-        this.authService.getOccUserId().subscribe(userId => {
+        this.cartSelector$ = this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getCartEntity(cartId)));
+        this.authService.getOccUserId().subscribe((userId) => {
             this.userId = userId;
             if (this.userId !== OCC_USER_ID_ANONYMOUS) {
                 if (this.isJustLoggedIn(userId)) {
@@ -12978,7 +12976,7 @@ let ActiveCartService = class ActiveCartService {
             }
             this.previousUserId = userId;
         });
-        this.activeCartId$.subscribe(cartId => {
+        this.activeCartId$.subscribe((cartId) => {
             this.cartId = cartId;
         });
         this.initActiveCart();
@@ -13002,7 +13000,7 @@ let ActiveCartService = class ActiveCartService {
                 !isTempCartId(cartId)) {
                 this.load(cartId);
             }
-        }), map(({ cart }) => (cart ? cart : {})), tap(cart => {
+        }), map(({ cart }) => (cart ? cart : {})), tap((cart) => {
             if (cart) {
                 this.cartUser = cart.user;
             }
@@ -13018,13 +13016,13 @@ let ActiveCartService = class ActiveCartService {
      * Returns active cart id
      */
     getActiveCartId() {
-        return this.activeCart$.pipe(map(cart => getCartIdByUserId(cart, this.userId)), distinctUntilChanged());
+        return this.activeCart$.pipe(map((cart) => getCartIdByUserId(cart, this.userId)), distinctUntilChanged());
     }
     /**
      * Returns cart entries
      */
     getEntries() {
-        return this.activeCartId$.pipe(switchMap(cartId => this.multiCartService.getEntries(cartId)), distinctUntilChanged());
+        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getEntries(cartId)), distinctUntilChanged());
     }
     /**
      * Returns true when cart is stable (not loading and not pending processes on cart)
@@ -13034,7 +13032,7 @@ let ActiveCartService = class ActiveCartService {
         // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
         // After load fails we might create new cart so we switch to `temp-${uuid}` cart entity used when creating cart.
         // At the end we finally switch to cart `code` for cart id. Between those switches cart `isStable` function should not flicker.
-        return this.activeCartId$.pipe(switchMap(cartId => this.multiCartService.isStable(cartId)), debounce(state => (state ? timer(0) : EMPTY)), distinctUntilChanged());
+        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.isStable(cartId)), debounce((state) => (state ? timer(0) : EMPTY)), distinctUntilChanged());
     }
     loadOrMerge(cartId) {
         // for login user, whenever there's an existing cart, we will load the user
@@ -13082,11 +13080,11 @@ let ActiveCartService = class ActiveCartService {
         }
     }
     addEntriesGuestMerge(cartEntries) {
-        const entriesToAdd = cartEntries.map(entry => ({
+        const entriesToAdd = cartEntries.map((entry) => ({
             productCode: entry.product.code,
             quantity: entry.quantity,
         }));
-        this.requireLoadedCartForGuestMerge().subscribe(cartState => {
+        this.requireLoadedCartForGuestMerge().subscribe((cartState) => {
             this.multiCartService.addEntries(this.userId, getCartIdByUserId(cartState.value, this.userId), entriesToAdd);
         });
     }
@@ -13107,20 +13105,20 @@ let ActiveCartService = class ActiveCartService {
         const cartSelector$ = customCartSelector$
             ? customCartSelector$
             : this.cartSelector$;
-        return cartSelector$.pipe(filter(cartState => !cartState.loading), 
+        return cartSelector$.pipe(filter((cartState) => !cartState.loading), 
         // Avoid load/create call when there are new cart creating at the moment
-        filter(cartState => !this.isCartCreating(cartState)), take(1), switchMap(cartState => {
+        filter((cartState) => !this.isCartCreating(cartState)), take(1), switchMap((cartState) => {
             // Try to load the cart, because it might have been created on another device between our login and add entry call
             if (this.isEmpty(cartState.value) &&
                 this.userId !== OCC_USER_ID_ANONYMOUS) {
                 this.load(undefined);
             }
             return cartSelector$;
-        }), filter(cartState => !cartState.loading), 
+        }), filter((cartState) => !cartState.loading), 
         // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
-        filter(cartState => this.userId === OCC_USER_ID_ANONYMOUS ||
+        filter((cartState) => this.userId === OCC_USER_ID_ANONYMOUS ||
             cartState.success ||
-            cartState.error), take(1), switchMap(cartState => {
+            cartState.error), take(1), switchMap((cartState) => {
             if (this.isEmpty(cartState.value)) {
                 this.multiCartService.createCart({
                     userId: this.userId,
@@ -13130,9 +13128,9 @@ let ActiveCartService = class ActiveCartService {
                 });
             }
             return cartSelector$;
-        }), filter(cartState => !cartState.loading), filter(cartState => cartState.success || cartState.error), 
+        }), filter((cartState) => !cartState.loading), filter((cartState) => cartState.success || cartState.error), 
         // wait for active cart id to point to code/guid to avoid some work on temp cart entity
-        filter(cartState => !this.isCartCreating(cartState)), filter(cartState => !this.isEmpty(cartState.value)), take(1));
+        filter((cartState) => !this.isCartCreating(cartState)), filter((cartState) => !this.isEmpty(cartState.value)), take(1));
     }
     /**
      * Add entry to active cart
@@ -13141,7 +13139,7 @@ let ActiveCartService = class ActiveCartService {
      * @param quantity
      */
     addEntry(productCode, quantity) {
-        this.requireLoadedCart().subscribe(cartState => {
+        this.requireLoadedCart().subscribe((cartState) => {
             this.multiCartService.addEntry(this.userId, getCartIdByUserId(cartState.value, this.userId), productCode, quantity);
         });
     }
@@ -13168,7 +13166,7 @@ let ActiveCartService = class ActiveCartService {
      * @param productCode
      */
     getEntry(productCode) {
-        return this.activeCartId$.pipe(switchMap(cartId => this.multiCartService.getEntry(cartId, productCode)), distinctUntilChanged());
+        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getEntry(cartId, productCode)), distinctUntilChanged());
     }
     /**
      * Assign email to cart
@@ -13182,7 +13180,7 @@ let ActiveCartService = class ActiveCartService {
      * Get assigned user to cart
      */
     getAssignedUser() {
-        return this.getActive().pipe(map(cart => cart.user));
+        return this.getActive().pipe(map((cart) => cart.user));
     }
     /**
      * Returns true for guest cart
@@ -13190,10 +13188,7 @@ let ActiveCartService = class ActiveCartService {
     isGuestCart() {
         return (this.cartUser &&
             (this.cartUser.name === OCC_USER_ID_GUEST ||
-                this.isEmail(this.cartUser.uid
-                    .split('|')
-                    .slice(1)
-                    .join('|'))));
+                this.isEmail(this.cartUser.uid.split('|').slice(1).join('|'))));
     }
     /**
      * Add multiple entries to a cart
@@ -13201,7 +13196,7 @@ let ActiveCartService = class ActiveCartService {
      * @param cartEntries : list of entries to add (OrderEntry[])
      */
     addEntries(cartEntries) {
-        cartEntries.forEach(entry => {
+        cartEntries.forEach((entry) => {
             this.addEntry(entry.product.code, entry.quantity);
         });
     }
@@ -13220,7 +13215,7 @@ let ActiveCartService = class ActiveCartService {
         let cartEntries;
         this.getEntries()
             .pipe(take(1))
-            .subscribe(entries => {
+            .subscribe((entries) => {
             cartEntries = entries;
         });
         this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
@@ -13277,7 +13272,7 @@ let CartVoucherService = class CartVoucherService {
     }
     combineUserAndCartId(cartId) {
         if (cartId) {
-            return this.authService.getOccUserId().pipe(take(1), map(userId => [userId, cartId]));
+            return this.authService.getOccUserId().pipe(take(1), map((userId) => [userId, cartId]));
         }
         else {
             return combineLatest([
@@ -13304,7 +13299,7 @@ let UserService = class UserService {
      * Returns a user
      */
     get() {
-        return this.store.pipe(select(getDetails), tap(details => {
+        return this.store.pipe(select(getDetails), tap((details) => {
             if (Object.keys(details).length === 0) {
                 this.load();
             }
@@ -13314,7 +13309,7 @@ let UserService = class UserService {
      * Loads the user's details
      */
     load() {
-        this.withUserId(userId => {
+        this.withUserId((userId) => {
             if (userId !== OCC_USER_ID_ANONYMOUS) {
                 this.store.dispatch(new LoadUserDetails(userId));
             }
@@ -13365,7 +13360,7 @@ let UserService = class UserService {
      * Remove user account, that's also called close user's account
      */
     remove() {
-        this.withUserId(userId => this.store.dispatch(new RemoveUser(userId)));
+        this.withUserId((userId) => this.store.dispatch(new RemoveUser(userId)));
     }
     /**
      * Returns the remove user loading flag
@@ -13415,7 +13410,7 @@ let UserService = class UserService {
      * @param userDetails to be updated
      */
     updatePersonalDetails(userDetails) {
-        this.withUserId(userId => this.store.dispatch(new UpdateUserDetails({
+        this.withUserId((userId) => this.store.dispatch(new UpdateUserDetails({
             username: userId,
             userDetails,
         })));
@@ -13462,7 +13457,7 @@ let UserService = class UserService {
      * Updates the user's email
      */
     updateEmail(password, newUid) {
-        this.withUserId(userId => this.store.dispatch(new UpdateEmailAction({
+        this.withUserId((userId) => this.store.dispatch(new UpdateEmailAction({
             uid: userId,
             password,
             newUid,
@@ -13498,7 +13493,7 @@ let UserService = class UserService {
      * @param newPassword the new password
      */
     updatePassword(oldPassword, newPassword) {
-        this.withUserId(userId => this.store.dispatch(new UpdatePassword({
+        this.withUserId((userId) => this.store.dispatch(new UpdatePassword({
             userId,
             oldPassword,
             newPassword,
@@ -13536,7 +13531,7 @@ let UserService = class UserService {
         this.authService
             .getOccUserId()
             .pipe(take(1))
-            .subscribe(userId => callback(userId));
+            .subscribe((userId) => callback(userId));
     }
 };
 UserService.ɵfac = function UserService_Factory(t) { return new (t || UserService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -13556,7 +13551,7 @@ let SelectiveCartService = class SelectiveCartService {
         this.cartId$ = new BehaviorSubject(undefined);
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
-        this.cartSelector$ = this.cartId$.pipe(switchMap(cartId => {
+        this.cartSelector$ = this.cartId$.pipe(switchMap((cartId) => {
             this.cartId = cartId;
             return this.multiCartService.getCartEntity(cartId);
         }));
@@ -13572,7 +13567,7 @@ let SelectiveCartService = class SelectiveCartService {
                 this.cartId$.next(undefined);
             }
         });
-        this.authService.getOccUserId().subscribe(userId => {
+        this.authService.getOccUserId().subscribe((userId) => {
             this.userId = userId;
             if (this.isJustLoggedIn(userId)) {
                 this.load();
@@ -13598,7 +13593,7 @@ let SelectiveCartService = class SelectiveCartService {
         return this.multiCartService.getEntries(this.cartId);
     }
     getLoaded() {
-        return this.cartSelector$.pipe(map(cart => (cart.success || cart.error) && !cart.loading));
+        return this.cartSelector$.pipe(map((cart) => (cart.success || cart.error) && !cart.loading));
     }
     load() {
         if (this.isLoggedIn(this.userId) && this.cartId) {
@@ -13611,14 +13606,14 @@ let SelectiveCartService = class SelectiveCartService {
     addEntry(productCode, quantity) {
         let loadAttempted = false;
         this.cartSelector$
-            .pipe(filter(() => !loadAttempted), switchMap(cartState => {
+            .pipe(filter(() => !loadAttempted), switchMap((cartState) => {
             if (this.isEmpty(cartState.value) && !cartState.loading) {
                 loadAttempted = true;
                 this.load();
             }
             return of(cartState);
-        }), filter(cartState => !this.isEmpty(cartState.value)), take(1))
-            .subscribe(_ => {
+        }), filter((cartState) => !this.isEmpty(cartState.value)), take(1))
+            .subscribe(() => {
             this.multiCartService.addEntry(this.userId, this.cartId, productCode, quantity);
         });
     }
@@ -13704,7 +13699,9 @@ let WishListService = class WishListService {
             .subscribe(([wishListId, userId]) => this.multiCartService.removeEntry(userId, wishListId, entry.entryNumber));
     }
     getWishListLoading() {
-        return this.getWishListId().pipe(switchMap(wishListId => this.multiCartService.isStable(wishListId).pipe(map(stable => !stable))));
+        return this.getWishListId().pipe(switchMap((wishListId) => this.multiCartService
+            .isStable(wishListId)
+            .pipe(map((stable) => !stable))));
     }
     getWishListId() {
         return this.store.pipe(select(getWishListId));
@@ -13750,7 +13747,7 @@ class LoadCmsComponentSuccess extends EntitySuccessAction {
 }
 class CmsGetComponentFromPage extends EntitySuccessAction {
     constructor(payload) {
-        super(COMPONENT_ENTITY, [].concat(payload).map(cmp => cmp.component.uid));
+        super(COMPONENT_ENTITY, [].concat(payload).map((cmp) => cmp.component.uid));
         this.payload = payload;
         this.type = CMS_GET_COMPONENT_FROM_PAGE;
     }
@@ -13851,22 +13848,22 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getCmsState = createFeatureSelector(CMS_FEATURE);
 
-const ɵ0$w = state => state.components;
+const ɵ0$w = (state) => state.components;
 const getComponentsState = createSelector(getCmsState, ɵ0$w);
 const componentsContextSelectorFactory = (uid) => {
-    return createSelector(getComponentsState, componentsState => entitySelector(componentsState, uid));
+    return createSelector(getComponentsState, (componentsState) => entitySelector(componentsState, uid));
 };
 const componentsLoaderStateSelectorFactory = (uid, context) => {
-    return createSelector(componentsContextSelectorFactory(uid), componentsContext => (componentsContext &&
+    return createSelector(componentsContextSelectorFactory(uid), (componentsContext) => (componentsContext &&
         componentsContext.pageContext &&
         componentsContext.pageContext[context]) ||
         initialLoaderState);
 };
 const componentsContextExistsSelectorFactory = (uid, context) => {
-    return createSelector(componentsLoaderStateSelectorFactory(uid, context), loaderState => loaderValueSelector(loaderState) || false);
+    return createSelector(componentsLoaderStateSelectorFactory(uid, context), (loaderState) => loaderValueSelector(loaderState) || false);
 };
 const componentsDataSelectorFactory = (uid) => {
-    return createSelector(componentsContextSelectorFactory(uid), state => state ? state.component : undefined);
+    return createSelector(componentsContextSelectorFactory(uid), (state) => state ? state.component : undefined);
 };
 const componentsSelectorFactory = (uid, context) => {
     return createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), (componentState, exists) => {
@@ -13882,10 +13879,10 @@ const componentsSelectorFactory = (uid, context) => {
 const ɵ0$x = (state) => state.navigation;
 const getNavigationEntryItemState = createSelector(getCmsState, ɵ0$x);
 const getSelectedNavigationEntryItemState = (nodeId) => {
-    return createSelector(getNavigationEntryItemState, nodes => entityStateSelector(nodes, nodeId));
+    return createSelector(getNavigationEntryItemState, (nodes) => entityStateSelector(nodes, nodeId));
 };
 const getNavigationEntryItems = (nodeId) => {
-    return createSelector(getSelectedNavigationEntryItemState(nodeId), itemState => loaderValueSelector(itemState));
+    return createSelector(getSelectedNavigationEntryItemState(nodeId), (itemState) => loaderValueSelector(itemState));
 };
 
 const getPageEntitiesSelector = (state) => state.pageData.entities;
@@ -13925,13 +13922,13 @@ const getPageState = createSelector(getCmsState, ɵ3$9);
 const ɵ4$2 = (page) => page.index;
 const getPageStateIndex = createSelector(getPageState, ɵ4$2);
 const getPageStateIndexEntityLoaderState = (pageContext) => createSelector(getPageStateIndex, (index) => getIndexByType(index, pageContext.type));
-const getPageStateIndexLoaderState = (pageContext) => createSelector(getPageStateIndexEntityLoaderState(pageContext), indexState => entityStateSelector(indexState, pageContext.id));
-const getPageStateIndexValue = (pageContext) => createSelector(getPageStateIndexLoaderState(pageContext), entity => loaderValueSelector(entity));
+const getPageStateIndexLoaderState = (pageContext) => createSelector(getPageStateIndexEntityLoaderState(pageContext), (indexState) => entityStateSelector(indexState, pageContext.id));
+const getPageStateIndexValue = (pageContext) => createSelector(getPageStateIndexLoaderState(pageContext), (entity) => loaderValueSelector(entity));
 const getPageEntities = createSelector(getPageState, getPageEntitiesSelector);
 const getPageData = (pageContext) => createSelector(getPageEntities, getPageStateIndexValue(pageContext), (entities, indexValue) => entities[indexValue]);
-const getPageComponentTypes = (pageContext) => createSelector(getPageData(pageContext), pageData => getPageComponentTypesSelector(pageData));
+const getPageComponentTypes = (pageContext) => createSelector(getPageData(pageContext), (pageData) => getPageComponentTypesSelector(pageData));
 const getCurrentSlotSelectorFactory = (pageContext, position) => {
-    return createSelector(getPageData(pageContext), entity => {
+    return createSelector(getPageData(pageContext), (entity) => {
         if (entity) {
             return entity.slots[position] || { components: [] };
         }
@@ -14013,7 +14010,7 @@ let CmsService = class CmsService {
     getCurrentPage() {
         return this.routingService
             .getPageContext()
-            .pipe(switchMap(pageContext => this.store.select(getPageData(pageContext))));
+            .pipe(switchMap((pageContext) => this.store.select(getPageData(pageContext))));
     }
     /**
      * Get CMS component data by uid
@@ -14043,7 +14040,7 @@ let CmsService = class CmsService {
     }
     createComponentData(uid, pageContext) {
         if (!pageContext) {
-            return this.routingService.getPageContext().pipe(filter(currentContext => !!currentContext), switchMap(currentContext => this.getComponentData(uid, currentContext)));
+            return this.routingService.getPageContext().pipe(filter((currentContext) => !!currentContext), switchMap((currentContext) => this.getComponentData(uid, currentContext)));
         }
         const context = serializePageContext(pageContext, true);
         const loading$ = combineLatest([
@@ -14067,7 +14064,7 @@ let CmsService = class CmsService {
         // Removing it causes some components to fail, because they are not checking
         // if the data is actually there. I noticed these that this component is failing, but there are possibly more:
         // - `tab-paragraph-container.component.ts` when visiting any PDP page
-        filter(component => !!component));
+        filter((component) => !!component));
         return using(() => loading$.subscribe(), () => component$).pipe(shareReplay({ bufferSize: 1, refCount: true }));
     }
     /**
@@ -14077,7 +14074,7 @@ let CmsService = class CmsService {
     getContentSlot(position) {
         return this.routingService
             .getPageContext()
-            .pipe(switchMap(pageContext => this.store.pipe(select(getCurrentSlotSelectorFactory(pageContext, position)), filter(Boolean))));
+            .pipe(switchMap((pageContext) => this.store.pipe(select(getCurrentSlotSelectorFactory(pageContext, position)), filter(Boolean))));
     }
     /**
      * Given navigation node uid, get items (with id and type) inside the navigation entries
@@ -14104,7 +14101,7 @@ let CmsService = class CmsService {
         this.routingService
             .getPageContext()
             .pipe(take(1))
-            .subscribe(pageContext => this.store.dispatch(new LoadCmsPageData(pageContext)));
+            .subscribe((pageContext) => this.store.dispatch(new LoadCmsPageData(pageContext)));
     }
     /**
      * Refresh the cms page content by page Id
@@ -14149,7 +14146,7 @@ let CmsService = class CmsService {
                 this.store.dispatch(new LoadCmsPageData(pageContext));
                 forceReload = false;
             }
-        }), filter(entity => {
+        }), filter((entity) => {
             if (!entity.hasOwnProperty('value')) {
                 // if we have incomplete state from SSR failed load transfer state,
                 // we should wait for reload and actual value
@@ -14162,7 +14159,7 @@ let CmsService = class CmsService {
      * Given pageContext, return the CMS page data
      **/
     getPage(pageContext, forceReload = false) {
-        return this.hasPage(pageContext, forceReload).pipe(switchMap(hasPage => hasPage ? this.getPageState(pageContext) : of(null)));
+        return this.hasPage(pageContext, forceReload).pipe(switchMap((hasPage) => hasPage ? this.getPageState(pageContext) : of(null)));
     }
     getPageIndex(pageContext) {
         return this.store.pipe(select(getPageStateIndexValue(pageContext)));
@@ -14199,7 +14196,7 @@ let CartPageMetaResolver = class CartPageMetaResolver extends PageMetaResolver {
         this.cms = cms;
         this.cms$ = this.cms
             .getCurrentPage()
-            .pipe(filter(page => !!page));
+            .pipe(filter((page) => !!page));
         this.pageType = PageType.CONTENT_PAGE;
         this.pageTemplate = 'CartPageTemplate';
     }
@@ -14207,7 +14204,7 @@ let CartPageMetaResolver = class CartPageMetaResolver extends PageMetaResolver {
      * Resolves the page title, which is driven by the backend.
      */
     resolveTitle() {
-        return this.cms$.pipe(map(p => p.title));
+        return this.cms$.pipe(map((p) => p.title));
     }
     /**
      * Returns robots for the cart pages, which default to NOINDEX and NOFOLLOW.
@@ -14260,10 +14257,10 @@ let CartEntryEffects = class CartEntryEffects {
         this.actions$ = actions$;
         this.cartEntryConnector = cartEntryConnector;
         this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-        this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((action) => action.payload), concatMap(payload => {
+        this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((action) => action.payload), concatMap((payload) => {
             return this.cartEntryConnector
                 .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
-                .pipe(map((entry) => new CartAddEntrySuccess(Object.assign(Object.assign({}, entry), { userId: payload.userId, cartId: payload.cartId }))), catchError(error => from([
+                .pipe(map((entry) => new CartAddEntrySuccess(Object.assign(Object.assign({}, entry), { userId: payload.userId, cartId: payload.cartId }))), catchError((error) => from([
                 new CartAddEntryFail({
                     error: makeErrorSerializable(error),
                     cartId: payload.cartId,
@@ -14275,14 +14272,14 @@ let CartEntryEffects = class CartEntryEffects {
                 }),
             ])));
         }), withdrawOn(this.contextChange$));
-        this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((action) => action.payload), concatMap(payload => this.cartEntryConnector
+        this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((action) => action.payload), concatMap((payload) => this.cartEntryConnector
             .remove(payload.userId, payload.cartId, payload.entry)
             .pipe(map(() => {
             return new CartRemoveEntrySuccess({
                 userId: payload.userId,
                 cartId: payload.cartId,
             });
-        }), catchError(error => from([
+        }), catchError((error) => from([
             new CartRemoveEntryFail({
                 error: makeErrorSerializable(error),
                 cartId: payload.cartId,
@@ -14293,14 +14290,14 @@ let CartEntryEffects = class CartEntryEffects {
                 userId: payload.userId,
             }),
         ])))), withdrawOn(this.contextChange$));
-        this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((action) => action.payload), concatMap(payload => this.cartEntryConnector
+        this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((action) => action.payload), concatMap((payload) => this.cartEntryConnector
             .update(payload.userId, payload.cartId, payload.entry, payload.qty)
             .pipe(map(() => {
             return new CartUpdateEntrySuccess({
                 userId: payload.userId,
                 cartId: payload.cartId,
             });
-        }), catchError(error => from([
+        }), catchError((error) => from([
             new CartUpdateEntryFail({
                 error: makeErrorSerializable(error),
                 cartId: payload.cartId,
@@ -14351,7 +14348,7 @@ let CartVoucherEffects = class CartVoucherEffects {
         this.actions$ = actions$;
         this.cartVoucherConnector = cartVoucherConnector;
         this.messageService = messageService;
-        this.addCartVoucher$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER), map((action) => action.payload), mergeMap(payload => {
+        this.addCartVoucher$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER), map((action) => action.payload), mergeMap((payload) => {
             return this.cartVoucherConnector
                 .add(payload.userId, payload.cartId, payload.voucherId)
                 .pipe(map(() => {
@@ -14360,10 +14357,10 @@ let CartVoucherEffects = class CartVoucherEffects {
                     userId: payload.userId,
                     cartId: payload.cartId,
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 var _a;
                 if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                    error.error.errors.forEach(err => {
+                    error.error.errors.forEach((err) => {
                         if (err.message) {
                             this.messageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
                         }
@@ -14379,7 +14376,7 @@ let CartVoucherEffects = class CartVoucherEffects {
                 ]);
             }));
         }));
-        this.removeCartVoucher$ = this.actions$.pipe(ofType(CART_REMOVE_VOUCHER), map((action) => action.payload), mergeMap(payload => {
+        this.removeCartVoucher$ = this.actions$.pipe(ofType(CART_REMOVE_VOUCHER), map((action) => action.payload), mergeMap((payload) => {
             return this.cartVoucherConnector
                 .remove(payload.userId, payload.cartId, payload.voucherId)
                 .pipe(map(() => {
@@ -14389,7 +14386,7 @@ let CartVoucherEffects = class CartVoucherEffects {
                     cartId: payload.cartId,
                     voucherId: payload.voucherId,
                 });
-            }), catchError(error => from([
+            }), catchError((error) => from([
                 new CartRemoveVoucherFail({
                     error: makeErrorSerializable(error),
                     cartId: payload.cartId,
@@ -14900,9 +14897,9 @@ let CartEffects = class CartEffects {
         this.cartConnector = cartConnector;
         this.store = store;
         this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-        this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((action) => action.payload), groupBy(payload => payload.cartId), mergeMap(group$ => group$.pipe(switchMap(payload => {
+        this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((action) => action.payload), groupBy((payload) => payload.cartId), mergeMap((group$) => group$.pipe(switchMap((payload) => {
             return of(payload).pipe(withLatestFrom(this.store.pipe(select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
-        }), filter(([_, hasPendingProcesses]) => !hasPendingProcesses), map(([payload]) => payload), switchMap(payload => {
+        }), filter(([_, hasPendingProcesses]) => !hasPendingProcesses), map(([payload]) => payload), switchMap((payload) => {
             return this.cartConnector.load(payload.userId, payload.cartId).pipe(
             // TODO: remove with the `cart` store feature
             withLatestFrom(this.store.pipe(select(getActiveCartId))), mergeMap(([cart, activeCartId]) => {
@@ -14934,10 +14931,10 @@ let CartEffects = class CartEffects {
                     ];
                 }
                 return actions;
-            }), catchError(error => {
+            }), catchError((error) => {
                 var _a;
                 if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                    const couponExpiredErrors = error.error.errors.filter(err => err.reason === 'invalid');
+                    const couponExpiredErrors = error.error.errors.filter((err) => err.reason === 'invalid');
                     if (couponExpiredErrors.length > 0) {
                         // clear coupons actions just wanted to reload cart again
                         // no need to do it in refresh or keep that action
@@ -14949,7 +14946,7 @@ let CartEffects = class CartEffects {
                             new ClearExpiredCoupons({}),
                         ]);
                     }
-                    const cartNotFoundErrors = error.error.errors.filter(err => err.reason === 'notFound' || 'UnknownResourceError');
+                    const cartNotFoundErrors = error.error.errors.filter((err) => err.reason === 'notFound' || 'UnknownResourceError');
                     if (cartNotFoundErrors.length > 0 &&
                         payload.extraData &&
                         payload.extraData.active) {
@@ -14970,7 +14967,7 @@ let CartEffects = class CartEffects {
                 ]);
             }));
         }))), withdrawOn(this.contextChange$));
-        this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((action) => action.payload), mergeMap(payload => {
+        this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((action) => action.payload), mergeMap((payload) => {
             return this.cartConnector
                 .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
                 .pipe(switchMap((cart) => {
@@ -15002,7 +14999,7 @@ let CartEffects = class CartEffects {
                     }),
                     ...conditionalActions,
                 ];
-            }), catchError(error => of(new CreateCartFail({
+            }), catchError((error) => of(new CreateCartFail({
                 tempCartId: payload.tempCartId,
                 error: makeErrorSerializable(error),
                 userId: payload.userId,
@@ -15011,8 +15008,8 @@ let CartEffects = class CartEffects {
                 extraData: payload.extraData,
             }))));
         }), withdrawOn(this.contextChange$));
-        this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => action.payload), mergeMap(payload => {
-            return this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(mergeMap(currentCart => {
+        this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => action.payload), mergeMap((payload) => {
+            return this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(mergeMap((currentCart) => {
                 return [
                     new CreateCart({
                         userId: payload.userId,
@@ -15024,14 +15021,14 @@ let CartEffects = class CartEffects {
                 ];
             }));
         }), withdrawOn(this.contextChange$));
-        this.refresh$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), map((action) => action.payload), concatMap(payload => from([
+        this.refresh$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), map((action) => action.payload), concatMap((payload) => from([
             new CartProcessesDecrement(payload.cartId),
             new LoadCart({
                 userId: payload.userId,
                 cartId: payload.cartId,
             }),
         ])));
-        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map((action) => action.payload), map(payload => new LoadCart({
+        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map((action) => action.payload), map((payload) => new LoadCart({
             userId: payload.userId,
             cartId: payload.cartId,
         })));
@@ -15041,7 +15038,7 @@ let CartEffects = class CartEffects {
                 new ResetMultiCartDetails(),
             ];
         }));
-        this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((action) => action.payload), mergeMap(payload => this.cartConnector
+        this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((action) => action.payload), mergeMap((payload) => this.cartConnector
             .addEmail(payload.userId, payload.cartId, payload.email)
             .pipe(mergeMap(() => {
             return [
@@ -15054,7 +15051,7 @@ let CartEffects = class CartEffects {
                     cartId: payload.cartId,
                 }),
             ];
-        }), catchError(error => from([
+        }), catchError((error) => from([
             new AddEmailToCartFail(makeErrorSerializable(error)),
             new AddEmailToMultiCartFail({
                 error: makeErrorSerializable(error),
@@ -15067,9 +15064,9 @@ let CartEffects = class CartEffects {
                 cartId: payload.cartId,
             }),
         ])))), withdrawOn(this.contextChange$));
-        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), exhaustMap(payload => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map(() => {
+        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), exhaustMap((payload) => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map(() => {
             return new ClearCart();
-        }), catchError(error => of(new DeleteCartFail(makeErrorSerializable(error)))))));
+        }), catchError((error) => of(new DeleteCartFail(makeErrorSerializable(error)))))));
     }
 };
 CartEffects.ɵfac = function CartEffects_Factory(t) { return new (t || CartEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartConnector), ɵngcc0.ɵɵinject(ɵngcc1.Store)); };
@@ -15125,16 +15122,16 @@ let WishListEffects = class WishListEffects {
         this.saveCartConnector = saveCartConnector;
         this.authService = authService;
         this.store = store;
-        this.createWishList$ = this.actions$.pipe(ofType(CREATE_WISH_LIST), map((action) => action.payload), switchMap(payload => {
-            return this.cartConnector.create(payload.userId).pipe(switchMap(cart => {
+        this.createWishList$ = this.actions$.pipe(ofType(CREATE_WISH_LIST), map((action) => action.payload), switchMap((payload) => {
+            return this.cartConnector.create(payload.userId).pipe(switchMap((cart) => {
                 return this.saveCartConnector
                     .saveCart(payload.userId, cart.code, payload.name, payload.description)
-                    .pipe(switchMap(saveCartResult => [
+                    .pipe(switchMap((saveCartResult) => [
                     new CreateWishListSuccess({
                         cart: saveCartResult.savedCartData,
                         userId: payload.userId,
                     }),
-                ]), catchError(error => from([
+                ]), catchError((error) => from([
                     new CreateWishListFail({
                         cartId: cart.code,
                         error: makeErrorSerializable(error),
@@ -15142,11 +15139,11 @@ let WishListEffects = class WishListEffects {
                 ])));
             }));
         }));
-        this.loadWishList$ = this.actions$.pipe(ofType(LOAD_WISH_LIST), map((action) => action.payload), concatMap(payload => {
+        this.loadWishList$ = this.actions$.pipe(ofType(LOAD_WISH_LIST), map((action) => action.payload), concatMap((payload) => {
             const { userId, customerId } = payload;
-            return this.cartConnector.loadAll(userId).pipe(switchMap(carts => {
+            return this.cartConnector.loadAll(userId).pipe(switchMap((carts) => {
                 if (carts) {
-                    const wishList = carts.find(cart => cart.name === `wishlist${customerId}`);
+                    const wishList = carts.find((cart) => cart.name === `wishlist${customerId}`);
                     if (Boolean(wishList)) {
                         return [
                             new LoadWishListSuccess({
@@ -15164,13 +15161,13 @@ let WishListEffects = class WishListEffects {
                         ];
                     }
                 }
-            }), catchError(error => from([new LoadCartFail(makeErrorSerializable(error))])));
+            }), catchError((error) => from([new LoadCartFail(makeErrorSerializable(error))])));
         }));
         this.resetWishList$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), withLatestFrom(this.authService.getOccUserId(), this.store.pipe(select(getWishListId))), switchMap(([, userId, wishListId]) => {
             if (Boolean(wishListId)) {
-                return this.cartConnector.load(userId, wishListId).pipe(switchMap(wishList => [
+                return this.cartConnector.load(userId, wishListId).pipe(switchMap((wishList) => [
                     new LoadWishListSuccess({ cart: wishList, userId }),
-                ]), catchError(error => from([new LoadCartFail(makeErrorSerializable(error))])));
+                ]), catchError((error) => from([new LoadCartFail(makeErrorSerializable(error))])));
             }
             return EMPTY;
         }));
@@ -15280,11 +15277,11 @@ let MultiCartStatePersistenceService = class MultiCartStatePersistenceService {
             key: 'cart',
             state$: this.getCartState(),
             context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]),
-            onRead: state => this.onRead(state),
+            onRead: (state) => this.onRead(state),
         });
     }
     getCartState() {
-        return this.store.pipe(select(getMultiCartState), filter(state => !!state), distinctUntilKeyChanged('active'), map(state => {
+        return this.store.pipe(select(getMultiCartState), filter((state) => !!state), distinctUntilKeyChanged('active'), map((state) => {
             return {
                 active: state.active,
             };
@@ -15315,10 +15312,10 @@ let MultiCartEffects = class MultiCartEffects {
         }));
         this.mergeCart2$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => new MergeMultiCart(action.payload)));
         this.addEmail2$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((action) => new AddEmailToMultiCart(action.payload)));
-        this.removeCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), map(payload => new RemoveCart(payload.cartId)));
+        this.removeCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), map((payload) => new RemoveCart(payload.cartId)));
         // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
         // Change for 2.0 release
-        this.processesIncrement$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART, CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), map((action) => action.payload), map(payload => new CartProcessesIncrement(payload.cartId)));
+        this.processesIncrement$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART, CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), map((action) => action.payload), map((payload) => new CartProcessesIncrement(payload.cartId)));
     }
 };
 MultiCartEffects.ɵfac = function MultiCartEffects_Factory(t) { return new (t || MultiCartEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions)); };
@@ -15430,20 +15427,20 @@ const ɵ3$a = getOrderDetailsSelector;
 const getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
 const ɵ4$3 = (checkoutState) => checkoutState.steps;
 const getCheckoutStepsState = createSelector(getCheckoutState, ɵ4$3);
-const ɵ5$2 = state => loaderValueSelector(state);
+const ɵ5$2 = (state) => loaderValueSelector(state);
 const getCheckoutSteps = createSelector(getCheckoutStepsState, ɵ5$2);
 const getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
 const getDeliveryMode = createSelector(getCheckoutSteps, getDeliveryModeSelector);
-const ɵ6 = deliveryMode => {
+const ɵ6 = (deliveryMode) => {
     return (deliveryMode &&
-        Object.keys(deliveryMode.supported).map(code => deliveryMode.supported[code]));
+        Object.keys(deliveryMode.supported).map((code) => deliveryMode.supported[code]));
 };
 const getSupportedDeliveryModes = createSelector(getDeliveryMode, ɵ6);
-const ɵ7 = deliveryMode => {
+const ɵ7 = (deliveryMode) => {
     return deliveryMode && deliveryMode.selected;
 };
 const getSelectedDeliveryModeCode = createSelector(getDeliveryMode, ɵ7);
-const ɵ8 = deliveryMode => {
+const ɵ8 = (deliveryMode) => {
     if (deliveryMode.selected !== '') {
         if (Object.keys(deliveryMode.supported).length === 0) {
             return null;
@@ -15454,7 +15451,7 @@ const ɵ8 = deliveryMode => {
 const getSelectedDeliveryMode = createSelector(getDeliveryMode, ɵ8);
 const getPaymentDetails = createSelector(getCheckoutSteps, getPaymentDetailsSelector);
 const getCheckoutOrderDetails = createSelector(getCheckoutSteps, getOrderDetailsSelector);
-const ɵ9 = state => loaderSuccessSelector(state) &&
+const ɵ9 = (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
 const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, ɵ9);
 
@@ -15485,8 +15482,8 @@ const getCardTypesEntites = (state) => state.entities;
 const ɵ0$B = (state) => state.cardTypes;
 const getCardTypesState = createSelector(getCheckoutState, ɵ0$B);
 const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-const ɵ1$q = entites => {
-    return Object.keys(entites).map(code => entites[code]);
+const ɵ1$q = (entites) => {
+    return Object.keys(entites).map((code) => entites[code]);
 };
 const getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$q);
 
@@ -15536,12 +15533,12 @@ let CheckoutService = class CheckoutService {
             let userId;
             this.authService
                 .getOccUserId()
-                .subscribe(occUserId => (userId = occUserId))
+                .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
             this.activeCartService
                 .getActiveCartId()
-                .subscribe(activeCartId => (cartId = activeCartId))
+                .subscribe((activeCartId) => (cartId = activeCartId))
                 .unsubscribe();
             if (userId && cartId) {
                 this.checkoutStore.dispatch(new PlaceOrder({
@@ -15572,7 +15569,7 @@ let CheckoutService = class CheckoutService {
         let userId;
         this.authService
             .getOccUserId()
-            .subscribe(occUserId => (userId = occUserId))
+            .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         if (userId) {
             this.checkoutStore.dispatch(new LoadCheckoutDetails({
@@ -15597,7 +15594,7 @@ let CheckoutService = class CheckoutService {
         let userId;
         this.authService
             .getOccUserId()
-            .subscribe(occUserId => (userId = occUserId))
+            .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
@@ -15631,7 +15628,7 @@ let CheckoutPageMetaResolver = class CheckoutPageMetaResolver extends PageMetaRe
         this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
     }
     resolveTitle() {
-        return this.cart$.pipe(switchMap(c => this.translation.translate('pageMetaResolver.checkout.title', {
+        return this.cart$.pipe(switchMap((c) => this.translation.translate('pageMetaResolver.checkout.title', {
             count: c.totalItems,
         })));
     }
@@ -15769,7 +15766,7 @@ let AddressVerificationEffect = class AddressVerificationEffect {
     constructor(actions$, userAddressConnector) {
         this.actions$ = actions$;
         this.userAddressConnector = userAddressConnector;
-        this.verifyAddress$ = this.actions$.pipe(ofType(VERIFY_ADDRESS), map(action => action.payload), mergeMap(payload => this.userAddressConnector.verify(payload.userId, payload.address).pipe(map(data => new VerifyAddressSuccess(data)), catchError(error => of(new VerifyAddressFail(makeErrorSerializable(error)))))));
+        this.verifyAddress$ = this.actions$.pipe(ofType(VERIFY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.userAddressConnector.verify(payload.userId, payload.address).pipe(map((data) => new VerifyAddressSuccess(data)), catchError((error) => of(new VerifyAddressFail(makeErrorSerializable(error)))))));
     }
 };
 AddressVerificationEffect.ɵfac = function AddressVerificationEffect_Factory(t) { return new (t || AddressVerificationEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserAddressConnector)); };
@@ -15807,7 +15804,7 @@ let CardTypesEffects = class CardTypesEffects {
         this.actions$ = actions$;
         this.checkoutPaymentConnector = checkoutPaymentConnector;
         this.loadCardTypes$ = this.actions$.pipe(ofType(LOAD_CARD_TYPES), switchMap(() => {
-            return this.checkoutPaymentConnector.getCardTypes().pipe(map(cardTypes => new LoadCardTypesSuccess(cardTypes)), catchError(error => of(new LoadCardTypesFail(makeErrorSerializable(error)))));
+            return this.checkoutPaymentConnector.getCardTypes().pipe(map((cardTypes) => new LoadCardTypesSuccess(cardTypes)), catchError((error) => of(new LoadCardTypesFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -15877,9 +15874,9 @@ let CheckoutEffects = class CheckoutEffects {
         this.checkoutPaymentConnector = checkoutPaymentConnector;
         this.checkoutConnector = checkoutConnector;
         this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-        this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap(payload => this.checkoutDeliveryConnector
+        this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.checkoutDeliveryConnector
             .createAddress(payload.userId, payload.cartId, payload.address)
-            .pipe(mergeMap(address => {
+            .pipe(mergeMap((address) => {
             address['titleCode'] = payload.address.titleCode;
             if (payload.address.region && payload.address.region.isocodeShort) {
                 Object.assign(address.region, {
@@ -15905,8 +15902,8 @@ let CheckoutEffects = class CheckoutEffects {
                     }),
                 ];
             }
-        }), catchError(error => of(new AddDeliveryAddressFail(makeErrorSerializable(error)))))), withdrawOn(this.contextChange$));
-        this.setDeliveryAddress$ = this.actions$.pipe(ofType(SET_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap(payload => {
+        }), catchError((error) => of(new AddDeliveryAddressFail(makeErrorSerializable(error)))))), withdrawOn(this.contextChange$));
+        this.setDeliveryAddress$ = this.actions$.pipe(ofType(SET_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
             return this.checkoutDeliveryConnector
                 .setAddress(payload.userId, payload.cartId, payload.address.id)
                 .pipe(mergeMap(() => [
@@ -15921,14 +15918,14 @@ let CheckoutEffects = class CheckoutEffects {
                     userId: payload.userId,
                     cartId: payload.cartId,
                 }),
-            ]), catchError(error => of(new SetDeliveryAddressFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new SetDeliveryAddressFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));
-        this.loadSupportedDeliveryModes$ = this.actions$.pipe(ofType(LOAD_SUPPORTED_DELIVERY_MODES), map((action) => action.payload), mergeMap(payload => {
+        this.loadSupportedDeliveryModes$ = this.actions$.pipe(ofType(LOAD_SUPPORTED_DELIVERY_MODES), map((action) => action.payload), mergeMap((payload) => {
             return this.checkoutDeliveryConnector
                 .getSupportedModes(payload.userId, payload.cartId)
-                .pipe(map(data => {
+                .pipe(map((data) => {
                 return new LoadSupportedDeliveryModesSuccess(data);
-            }), catchError(error => of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));
         this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), mergeMap(() => [
             new CheckoutClearMiscsData(),
@@ -15937,7 +15934,7 @@ let CheckoutEffects = class CheckoutEffects {
         this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE), map(() => new ClearSupportedDeliveryModes()));
         this.clearCheckoutDataOnLogout$ = this.actions$.pipe(ofType(LOGOUT), map(() => new ClearCheckoutData()));
         this.clearCheckoutDataOnLogin$ = this.actions$.pipe(ofType(LOGIN), map(() => new ClearCheckoutData()));
-        this.setDeliveryMode$ = this.actions$.pipe(ofType(SET_DELIVERY_MODE), map((action) => action.payload), mergeMap(payload => {
+        this.setDeliveryMode$ = this.actions$.pipe(ofType(SET_DELIVERY_MODE), map((action) => action.payload), mergeMap((payload) => {
             return this.checkoutDeliveryConnector
                 .setMode(payload.userId, payload.cartId, payload.selectedModeId)
                 .pipe(mergeMap(() => {
@@ -15948,13 +15945,13 @@ let CheckoutEffects = class CheckoutEffects {
                         cartId: payload.cartId,
                     }),
                 ];
-            }), catchError(error => of(new SetDeliveryModeFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new SetDeliveryModeFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));
-        this.createPaymentDetails$ = this.actions$.pipe(ofType(CREATE_PAYMENT_DETAILS), map((action) => action.payload), mergeMap(payload => {
+        this.createPaymentDetails$ = this.actions$.pipe(ofType(CREATE_PAYMENT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
             // get information for creating a subscription directly with payment provider
             return this.checkoutPaymentConnector
                 .create(payload.userId, payload.cartId, payload.paymentDetails)
-                .pipe(mergeMap(details => {
+                .pipe(mergeMap((details) => {
                 if (payload.userId === OCC_USER_ID_ANONYMOUS) {
                     return [new CreatePaymentDetailsSuccess(details)];
                 }
@@ -15964,44 +15961,44 @@ let CheckoutEffects = class CheckoutEffects {
                         new CreatePaymentDetailsSuccess(details),
                     ];
                 }
-            }), catchError(error => of(new CreatePaymentDetailsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new CreatePaymentDetailsFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));
-        this.setPaymentDetails$ = this.actions$.pipe(ofType(SET_PAYMENT_DETAILS), map((action) => action.payload), mergeMap(payload => {
+        this.setPaymentDetails$ = this.actions$.pipe(ofType(SET_PAYMENT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
             return this.checkoutPaymentConnector
                 .set(payload.userId, payload.cartId, payload.paymentDetails.id)
-                .pipe(map(() => new SetPaymentDetailsSuccess(payload.paymentDetails)), catchError(error => of(new SetPaymentDetailsFail(makeErrorSerializable(error)))));
+                .pipe(map(() => new SetPaymentDetailsSuccess(payload.paymentDetails)), catchError((error) => of(new SetPaymentDetailsFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));
-        this.placeOrder$ = this.actions$.pipe(ofType(PLACE_ORDER), map((action) => action.payload), mergeMap(payload => {
+        this.placeOrder$ = this.actions$.pipe(ofType(PLACE_ORDER), map((action) => action.payload), mergeMap((payload) => {
             return this.checkoutConnector
                 .placeOrder(payload.userId, payload.cartId)
-                .pipe(switchMap(data => [
+                .pipe(switchMap((data) => [
                 new RemoveCart(payload.cartId),
                 new PlaceOrderSuccess(data),
-            ]), catchError(error => of(new PlaceOrderFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new PlaceOrderFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));
-        this.loadCheckoutDetails$ = this.actions$.pipe(ofType(LOAD_CHECKOUT_DETAILS), map((action) => action.payload), mergeMap(payload => {
+        this.loadCheckoutDetails$ = this.actions$.pipe(ofType(LOAD_CHECKOUT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
             return this.checkoutConnector
                 .loadCheckoutDetails(payload.userId, payload.cartId)
-                .pipe(map((data) => new LoadCheckoutDetailsSuccess(data)), catchError(error => of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)))));
+                .pipe(map((data) => new LoadCheckoutDetailsSuccess(data)), catchError((error) => of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));
-        this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((action) => action.payload), map(payload => {
+        this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((action) => action.payload), map((payload) => {
             return new LoadCheckoutDetails({
                 userId: payload.userId,
                 cartId: payload.cartId ? payload.cartId : OCC_CART_ID_CURRENT,
             });
         }));
-        this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), map((action) => action.payload), filter(payload => Boolean(payload.cartId)), switchMap(payload => {
+        this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), map((action) => action.payload), filter((payload) => Boolean(payload.cartId)), switchMap((payload) => {
             return this.checkoutConnector
                 .clearCheckoutDeliveryAddress(payload.userId, payload.cartId)
-                .pipe(map(() => new ClearCheckoutDeliveryAddressSuccess()), catchError(error => of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error)))));
+                .pipe(map(() => new ClearCheckoutDeliveryAddressSuccess()), catchError((error) => of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));
-        this.clearCheckoutDeliveryMode$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE), map((action) => action.payload), filter(payload => Boolean(payload.cartId)), concatMap(payload => {
+        this.clearCheckoutDeliveryMode$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE), map((action) => action.payload), filter((payload) => Boolean(payload.cartId)), concatMap((payload) => {
             return this.checkoutConnector
                 .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
                 .pipe(map(() => new ClearCheckoutDeliveryModeSuccess({
                 userId: payload.userId,
                 cartId: payload.cartId,
-            })), catchError(error => from([
+            })), catchError((error) => from([
                 new ClearCheckoutDeliveryModeFail(makeErrorSerializable(error)),
                 new CartProcessesDecrement(payload.cartId),
                 new LoadCart({
@@ -16181,7 +16178,7 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
      * Get address verification results
      */
     getAddressVerificationResults() {
-        return this.checkoutStore.pipe(select(getAddressVerificationResults$1), filter(results => Object.keys(results).length !== 0));
+        return this.checkoutStore.pipe(select(getAddressVerificationResults$1), filter((results) => Object.keys(results).length !== 0));
     }
     /**
      * Create and set a delivery address using the address param
@@ -16192,12 +16189,12 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
             let userId;
             this.authService
                 .getOccUserId()
-                .subscribe(occUserId => (userId = occUserId))
+                .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
             this.activeCartService
                 .getActiveCartId()
-                .subscribe(activeCartId => (cartId = activeCartId))
+                .subscribe((activeCartId) => (cartId = activeCartId))
                 .unsubscribe();
             if (userId && cartId) {
                 this.checkoutStore.dispatch(new AddDeliveryAddress({
@@ -16216,12 +16213,12 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
             let userId;
             this.authService
                 .getOccUserId()
-                .subscribe(occUserId => (userId = occUserId))
+                .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
             this.activeCartService
                 .getActiveCartId()
-                .subscribe(activeCartId => (cartId = activeCartId))
+                .subscribe((activeCartId) => (cartId = activeCartId))
                 .unsubscribe();
             if (userId && cartId) {
                 this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
@@ -16240,12 +16237,12 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
             let userId;
             this.authService
                 .getOccUserId()
-                .subscribe(occUserId => (userId = occUserId))
+                .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
             this.activeCartService
                 .getActiveCartId()
-                .subscribe(activeCartId => (cartId = activeCartId))
+                .subscribe((activeCartId) => (cartId = activeCartId))
                 .unsubscribe();
             if (userId && cartId) {
                 this.checkoutStore.dispatch(new SetDeliveryMode({
@@ -16265,7 +16262,7 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
             let userId;
             this.authService
                 .getOccUserId()
-                .subscribe(occUserId => (userId = occUserId))
+                .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             if (userId) {
                 this.checkoutStore.dispatch(new VerifyAddress({
@@ -16284,12 +16281,12 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
             let userId;
             this.authService
                 .getOccUserId()
-                .subscribe(occUserId => (userId = occUserId))
+                .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cart;
             this.activeCartService
                 .getActive()
-                .subscribe(activeCart => (cart = activeCart))
+                .subscribe((activeCart) => (cart = activeCart))
                 .unsubscribe();
             if (cart && userId) {
                 this.checkoutStore.dispatch(new SetDeliveryAddress({
@@ -16313,12 +16310,12 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
         let userId;
         this.authService
             .getOccUserId()
-            .subscribe(occUserId => (userId = occUserId))
+            .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         let cartId;
         this.activeCartService
             .getActiveCartId()
-            .subscribe(activeCartId => (cartId = activeCartId))
+            .subscribe((activeCartId) => (cartId = activeCartId))
             .unsubscribe();
         if (userId && cartId) {
             this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
@@ -16334,12 +16331,12 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
         let userId;
         this.authService
             .getOccUserId()
-            .subscribe(occUserId => (userId = occUserId))
+            .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         let cartId;
         this.activeCartService
             .getActiveCartId()
-            .subscribe(activeCartId => (cartId = activeCartId))
+            .subscribe((activeCartId) => (cartId = activeCartId))
             .unsubscribe();
         if (userId && cartId) {
             this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
@@ -16360,7 +16357,7 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
         let userId;
         this.authService
             .getOccUserId()
-            .subscribe(occUserId => (userId = occUserId))
+            .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
@@ -16419,12 +16416,12 @@ let CheckoutPaymentService = class CheckoutPaymentService {
             let userId;
             this.authService
                 .getOccUserId()
-                .subscribe(occUserId => (userId = occUserId))
+                .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
             this.activeCartService
                 .getActiveCartId()
-                .subscribe(activeCartId => (cartId = activeCartId))
+                .subscribe((activeCartId) => (cartId = activeCartId))
                 .unsubscribe();
             if (userId && cartId) {
                 this.checkoutStore.dispatch(new CreatePaymentDetails({
@@ -16444,12 +16441,12 @@ let CheckoutPaymentService = class CheckoutPaymentService {
             let userId;
             this.authService
                 .getOccUserId()
-                .subscribe(occUserId => (userId = occUserId))
+                .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cart;
             this.activeCartService
                 .getActive()
-                .subscribe(activeCart => (cart = activeCart))
+                .subscribe((activeCart) => (cart = activeCart))
                 .unsubscribe();
             if (userId && cart) {
                 this.checkoutStore.dispatch(new SetPaymentDetails({
@@ -16470,7 +16467,7 @@ let CheckoutPaymentService = class CheckoutPaymentService {
         let userId;
         this.authService
             .getOccUserId()
-            .subscribe(occUserId => (userId = occUserId))
+            .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
@@ -16524,7 +16521,7 @@ let ContentPageMetaResolver = class ContentPageMetaResolver extends PageMetaReso
         /** helper to provie access to the current CMS page */
         this.cms$ = this.cms
             .getCurrentPage()
-            .pipe(filter(p => Boolean(p)));
+            .pipe(filter((p) => Boolean(p)));
         this.pageType = PageType.CONTENT_PAGE;
     }
     /**
@@ -16532,7 +16529,7 @@ let ContentPageMetaResolver = class ContentPageMetaResolver extends PageMetaReso
      * from the backend data.
      */
     resolveTitle() {
-        return this.cms$.pipe(map(p => p.title));
+        return this.cms$.pipe(map((p) => p.title));
     }
     /**
      * Resolves a single breacrumb item to the home page for each `ContentPage`.
@@ -16541,7 +16538,7 @@ let ContentPageMetaResolver = class ContentPageMetaResolver extends PageMetaReso
     resolveBreadcrumbs() {
         return this.translation
             .translate('common.home')
-            .pipe(map(label => [{ label: label, link: '/' }]));
+            .pipe(map((label) => [{ label: label, link: '/' }]));
     }
 };
 ContentPageMetaResolver.ɵfac = function ContentPageMetaResolver_Factory(t) { return new (t || ContentPageMetaResolver)(ɵngcc0.ɵɵinject(CmsService), ɵngcc0.ɵɵinject(TranslationService)); };
@@ -16565,7 +16562,7 @@ CmsPageTitleModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CmsPag
 function bufferDebounceTime(time = 0, scheduler) {
     return (source) => {
         let bufferedValues = [];
-        return source.pipe(tap(value => bufferedValues.push(value)), debounceTime(time, scheduler), map(() => bufferedValues), tap(() => (bufferedValues = [])));
+        return source.pipe(tap((value) => bufferedValues.push(value)), debounceTime(time, scheduler), map(() => bufferedValues), tap(() => (bufferedValues = [])));
     };
 }
 
@@ -16588,7 +16585,7 @@ let CmsStructureConfigService = class CmsStructureConfigService {
      * might apply to all pages (such has header coponents).
      */
     mergePageStructure(pageId, pageStructure) {
-        return this.mergePage(pageId, pageStructure).pipe(switchMap(page => this.mergeSlots(page)));
+        return this.mergePage(pageId, pageStructure).pipe(switchMap((page) => this.mergeSlots(page)));
     }
     /**
      *
@@ -16600,7 +16597,7 @@ let CmsStructureConfigService = class CmsStructureConfigService {
      * in order to allow for fast loading pages (preventing network delays).
      */
     shouldIgnoreBackend(pageId) {
-        return this.getPageFromConfig(pageId).pipe(map(page => !!page && !!page.ignoreBackend));
+        return this.getPageFromConfig(pageId).pipe(map((page) => !!page && !!page.ignoreBackend));
     }
     /**
      * returns an Observable component data from the static configuration.
@@ -16612,14 +16609,14 @@ let CmsStructureConfigService = class CmsStructureConfigService {
      * returns an Observable components data from the static configuration.
      */
     getComponentsFromConfig(ids) {
-        return of(ids.map(id => this.getComponentById(id)));
+        return of(ids.map((id) => this.getComponentById(id)));
     }
     /**
      * returns an observable with the `PageConfig`.
      */
     getPageFromConfig(pageId) {
         return of(this.cmsDataConfig.cmsStructure && this.cmsDataConfig.cmsStructure.pages
-            ? this.cmsDataConfig.cmsStructure.pages.find(p => p.pageId === pageId)
+            ? this.cmsDataConfig.cmsStructure.pages.find((p) => p.pageId === pageId)
             : null);
     }
     /**
@@ -16628,7 +16625,7 @@ let CmsStructureConfigService = class CmsStructureConfigService {
      * are merged into the page.
      */
     mergePage(pageId, pageStructure) {
-        return this.getPageFromConfig(pageId).pipe(switchMap(page => {
+        return this.getPageFromConfig(pageId).pipe(switchMap((page) => {
             if (page) {
                 // serialize page data
                 if (!pageStructure.page) {
@@ -16721,12 +16718,12 @@ let CmsComponentConnector = class CmsComponentConnector {
     get(id, pageContext) {
         return this.cmsStructureConfigService
             .getComponentFromConfig(id)
-            .pipe(switchMap(configuredComponent => configuredComponent
+            .pipe(switchMap((configuredComponent) => configuredComponent
             ? of(configuredComponent)
             : this.adapter.load(id, pageContext)));
     }
     getList(ids, pageContext) {
-        return this.cmsStructureConfigService.getComponentsFromConfig(ids).pipe(switchMap(configuredComponents => {
+        return this.cmsStructureConfigService.getComponentsFromConfig(ids).pipe(switchMap((configuredComponents) => {
             // check if we have some components that are not loaded from configuration
             const missingIds = configuredComponents.reduce((acc, component, index) => {
                 if (component === undefined) {
@@ -16737,7 +16734,7 @@ let CmsComponentConnector = class CmsComponentConnector {
             if (missingIds.length > 0) {
                 return (this.config.backend.occ.legacy
                     ? this.adapter.findComponentsByIdsLegacy(missingIds, pageContext)
-                    : this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(map(loadedComponents => [
+                    : this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(map((loadedComponents) => [
                     ...configuredComponents.filter(Boolean),
                     ...loadedComponents,
                 ]));
@@ -16761,14 +16758,14 @@ let ComponentsEffects = class ComponentsEffects {
         this.actions$ = actions$;
         this.cmsComponentLoader = cmsComponentLoader;
         this.contextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
-        this.loadComponent$ = createEffect(() => ({ scheduler, debounce = 0 } = {}) => this.actions$.pipe(ofType(LOAD_CMS_COMPONENT), groupBy(actions => serializePageContext(actions.payload.pageContext)), mergeMap(actionGroup => actionGroup.pipe(bufferDebounceTime(debounce, scheduler), mergeMap(actions => this.loadComponentsEffect(actions.map(action => action.payload.uid), actions[0].payload.pageContext)))), withdrawOn(this.contextChange$)));
+        this.loadComponent$ = createEffect(() => ({ scheduler, debounce = 0 } = {}) => this.actions$.pipe(ofType(LOAD_CMS_COMPONENT), groupBy((actions) => serializePageContext(actions.payload.pageContext)), mergeMap((actionGroup) => actionGroup.pipe(bufferDebounceTime(debounce, scheduler), mergeMap((actions) => this.loadComponentsEffect(actions.map((action) => action.payload.uid), actions[0].payload.pageContext)))), withdrawOn(this.contextChange$)));
     }
     loadComponentsEffect(componentUids, pageContext) {
-        return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap(components => from(components.map(component => new LoadCmsComponentSuccess({
+        return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap((components) => from(components.map((component) => new LoadCmsComponentSuccess({
             component,
             uid: component.uid,
             pageContext,
-        })))), catchError(error => from(componentUids.map(uid => new LoadCmsComponentFail({
+        })))), catchError((error) => from(componentUids.map((uid) => new LoadCmsComponentFail({
             uid,
             error: makeErrorSerializable(error),
             pageContext,
@@ -16856,16 +16853,16 @@ function getGlobMatcher(patterns) {
         positive,
         regex: new RegExp(regex),
     }));
-    const includePatterns = processedPatterns.filter(spec => spec.positive);
-    const excludePatterns = processedPatterns.filter(spec => !spec.positive);
-    return (url) => includePatterns.some(pattern => pattern.regex.test(url)) &&
-        !excludePatterns.some(pattern => pattern.regex.test(url));
+    const includePatterns = processedPatterns.filter((spec) => spec.positive);
+    const excludePatterns = processedPatterns.filter((spec) => !spec.positive);
+    return (url) => includePatterns.some((pattern) => pattern.regex.test(url)) &&
+        !excludePatterns.some((pattern) => pattern.regex.test(url));
 }
 /**
  * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
  */
 function processGlobPatterns(urls) {
-    return urls.map(url => {
+    return urls.map((url) => {
         const positive = !url.startsWith('!');
         url = positive ? url : url.substr(1);
         return { positive, regex: `^${globToRegex(url)}$` };
@@ -16883,10 +16880,10 @@ let GlobService = class GlobService {
             positive,
             regex: new RegExp(regex),
         }));
-        const includePatterns = processedPatterns.filter(spec => spec.positive);
-        const excludePatterns = processedPatterns.filter(spec => !spec.positive);
-        return (url) => includePatterns.some(pattern => pattern.regex.test(url)) &&
-            !excludePatterns.some(pattern => pattern.regex.test(url));
+        const includePatterns = processedPatterns.filter((spec) => spec.positive);
+        const excludePatterns = processedPatterns.filter((spec) => !spec.positive);
+        return (url) => includePatterns.some((pattern) => pattern.regex.test(url)) &&
+            !excludePatterns.some((pattern) => pattern.regex.test(url));
     }
 };
 GlobService.ɵfac = function GlobService_Factory(t) { return new (t || GlobService)(); };
@@ -16908,7 +16905,7 @@ let UrlMatcherService = class UrlMatcherService {
      * Returns a matcher for given list of paths
      */
     getFromPaths(paths) {
-        const matchers = paths.map(path => this.getFromPath(path));
+        const matchers = paths.map((path) => this.getFromPath(path));
         const matcher = this.getCombined(matchers);
         if (isDevMode()) {
             matcher['_paths'] = paths; // property added for easier debugging of routes
@@ -17007,7 +17004,7 @@ let UrlMatcherService = class UrlMatcherService {
     getFromGlob(globPatterns) {
         const globValidator = this.globService.getValidator(globPatterns);
         const matcher = function globUrlMatcher(segments) {
-            const fullPath = `/${segments.map(s => s.path).join('/')}`;
+            const fullPath = `/${segments.map((s) => s.path).join('/')}`;
             return globValidator(fullPath)
                 ? { consumed: segments, posParams: {} }
                 : null;
@@ -17055,7 +17052,7 @@ let ConfigurableRoutesService = class ConfigurableRoutesService {
      * @param routes list of Angular `Route` objects
      */
     configureRoutes(routes) {
-        return routes.map(route => {
+        return routes.map((route) => {
             const configuredRoute = this.configureRoute(route);
             if (route.children && route.children.length) {
                 configuredRoute.children = this.configureRoutes(route.children);
@@ -17103,7 +17100,7 @@ let ConfigurableRoutesService = class ConfigurableRoutesService {
      *  that create UrlMatchers based on the given route.
      */
     resolveUrlMatchers(route, matchersOrFactories) {
-        const matchers = matchersOrFactories.map(matcherOrFactory => {
+        const matchers = matchersOrFactories.map((matcherOrFactory) => {
             return typeof matcherOrFactory === 'function'
                 ? matcherOrFactory // matcher
                 : this.resolveUrlMatcherFactory(route, matcherOrFactory); // factory injection token
@@ -17323,7 +17320,7 @@ let ProtectedRoutesService = class ProtectedRoutesService {
         this.nonProtectedPaths = []; // arrays of paths' segments list
         if (this.shouldProtect) {
             // pre-process config for performance:
-            this.nonProtectedPaths = this.getNonProtectedPaths().map(path => this.getSegments(path));
+            this.nonProtectedPaths = this.getNonProtectedPaths().map((path) => this.getSegments(path));
         }
     }
     get routingConfig() {
@@ -17348,7 +17345,7 @@ let ProtectedRoutesService = class ProtectedRoutesService {
      * Tells whether the url matches at least one of the paths
      */
     matchAnyPath(urlSegments, pathsSegments) {
-        return pathsSegments.some(pathSegments => this.matchPath(urlSegments, pathSegments));
+        return pathsSegments.some((pathSegments) => this.matchPath(urlSegments, pathSegments));
     }
     /**
      * Tells whether the url matches the path
@@ -17399,7 +17396,7 @@ let ProtectedRoutesGuard = class ProtectedRoutesGuard {
      * When the anticipated url is protected, it switches to the AuthGuard. Otherwise emits true.
      */
     canActivate(route) {
-        let urlSegments = route.url.map(seg => seg.path);
+        let urlSegments = route.url.map((seg) => seg.path);
         // For the root path `/` ActivatedRoute contains an empty array of segments:
         urlSegments = urlSegments.length ? urlSegments : [''];
         if (this.service.isUrlProtected(urlSegments)) {
@@ -17423,10 +17420,10 @@ let RouterEffects = class RouterEffects {
         this.navigate$ = this.actions$.pipe(ofType(ROUTER_GO), map((action) => action.payload), tap(({ path, query: queryParams, extras }) => {
             this.router.navigate(path, Object.assign({ queryParams }, extras));
         }));
-        this.navigateBuUrl$ = this.actions$.pipe(ofType(ROUTER_GO_BY_URL), map((action) => action.payload), tap(url => {
+        this.navigateBuUrl$ = this.actions$.pipe(ofType(ROUTER_GO_BY_URL), map((action) => action.payload), tap((url) => {
             this.router.navigateByUrl(url);
         }));
-        this.clearCmsRoutes$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), tap(_ => {
+        this.clearCmsRoutes$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), tap(() => {
             const filteredConfig = this.router.config.filter((route) => !(route.data && route.data.cxCmsRouteContext));
             if (filteredConfig.length !== this.router.config.length) {
                 this.router.resetConfig(filteredConfig);
@@ -17527,7 +17524,7 @@ class CustomSerializer {
                 (context ||
                     (state.routeConfig &&
                         state.routeConfig.canActivate &&
-                        state.routeConfig.canActivate.find(x => x && x.guardName === 'CmsPageGuard')))) {
+                        state.routeConfig.canActivate.find((x) => x && x.guardName === 'CmsPageGuard')))) {
                 cmsRequired = true;
             }
         }
@@ -17554,7 +17551,7 @@ class CustomSerializer {
             }
             else if (!context) {
                 if (state.url.length > 0) {
-                    const pageLabel = '/' + state.url.map(urlSegment => urlSegment.path).join('/');
+                    const pageLabel = '/' + state.url.map((urlSegment) => urlSegment.path).join('/');
                     context = {
                         id: pageLabel,
                         type: PageType.CONTENT_PAGE,
@@ -17636,21 +17633,21 @@ let NavigationEntryItemEffects = class NavigationEntryItemEffects {
         this.actions$ = actions$;
         this.cmsComponentConnector = cmsComponentConnector;
         this.routingService = routingService;
-        this.loadNavigationItems$ = this.actions$.pipe(ofType(LOAD_CMS_NAVIGATION_ITEMS), map((action) => action.payload), map(payload => {
+        this.loadNavigationItems$ = this.actions$.pipe(ofType(LOAD_CMS_NAVIGATION_ITEMS), map((action) => action.payload), map((payload) => {
             return {
                 ids: this.getIdListByItemType(payload.items),
                 nodeId: payload.nodeId,
             };
-        }), mergeMap(data => {
+        }), mergeMap((data) => {
             if (data.ids.componentIds.length > 0) {
-                return this.routingService.getRouterState().pipe(filter(routerState => routerState !== undefined), map(routerState => routerState.state.context), take(1), mergeMap(pageContext => 
+                return this.routingService.getRouterState().pipe(filter((routerState) => routerState !== undefined), map((routerState) => routerState.state.context), take(1), mergeMap((pageContext) => 
                 // download all items in one request
                 this.cmsComponentConnector
                     .getList(data.ids.componentIds, pageContext)
-                    .pipe(map(components => new LoadCmsNavigationItemsSuccess({
+                    .pipe(map((components) => new LoadCmsNavigationItemsSuccess({
                     nodeId: data.nodeId,
                     components: components,
-                })), catchError(error => of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)))))));
+                })), catchError((error) => of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)))))));
             }
             else if (data.ids.pageIds.length > 0) {
                 // TODO: future work
@@ -17670,7 +17667,7 @@ let NavigationEntryItemEffects = class NavigationEntryItemEffects {
         const pageIds = [];
         const componentIds = [];
         const mediaIds = [];
-        itemList.forEach(item => {
+        itemList.forEach((item) => {
             if (item.superType === 'AbstractCMSComponent') {
                 componentIds.push(item.id);
             }
@@ -17708,9 +17705,9 @@ let CmsPageConnector = class CmsPageConnector {
     get(pageContext) {
         return this.cmsStructureConfigService
             .shouldIgnoreBackend(pageContext.id)
-            .pipe(switchMap(loadFromConfig => {
+            .pipe(switchMap((loadFromConfig) => {
             if (!loadFromConfig) {
-                return this.cmsPageAdapter.load(pageContext).pipe(catchError(error => {
+                return this.cmsPageAdapter.load(pageContext).pipe(catchError((error) => {
                     if (error instanceof HttpErrorResponse &&
                         error.status === 400) {
                         return of({});
@@ -17723,7 +17720,7 @@ let CmsPageConnector = class CmsPageConnector {
             else {
                 return of({});
             }
-        }), switchMap(page => this.mergeDefaultPageStructure(pageContext, page)));
+        }), switchMap((page) => this.mergeDefaultPageStructure(pageContext, page)));
     }
     /**
      *
@@ -17747,13 +17744,13 @@ let PageEffects = class PageEffects {
         this.actions$ = actions$;
         this.cmsPageConnector = cmsPageConnector;
         this.routingService = routingService;
-        this.refreshPage$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), switchMap(_ => this.routingService.getRouterState().pipe(filter(routerState => routerState &&
+        this.refreshPage$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), switchMap(() => this.routingService.getRouterState().pipe(filter((routerState) => routerState &&
             routerState.state &&
             routerState.state.cmsRequired &&
-            !routerState.nextState), take(1), map(routerState => routerState.state.context), mergeMap(context => of(new LoadCmsPageData(context))))));
-        this.loadPageData$ = this.actions$.pipe(ofType(LOAD_CMS_PAGE_DATA), map((action) => action.payload), groupBy(pageContext => serializePageContext(pageContext)), mergeMap(group => group.pipe(switchMap(pageContext => this.cmsPageConnector.get(pageContext).pipe(mergeMap((cmsStructure) => {
+            !routerState.nextState), take(1), map((routerState) => routerState.state.context), mergeMap((context) => of(new LoadCmsPageData(context))))));
+        this.loadPageData$ = this.actions$.pipe(ofType(LOAD_CMS_PAGE_DATA), map((action) => action.payload), groupBy((pageContext) => serializePageContext(pageContext)), mergeMap((group) => group.pipe(switchMap((pageContext) => this.cmsPageConnector.get(pageContext).pipe(mergeMap((cmsStructure) => {
             const actions = [
-                new CmsGetComponentFromPage(cmsStructure.components.map(component => ({
+                new CmsGetComponentFromPage(cmsStructure.components.map((component) => ({
                     component,
                     pageContext,
                 }))),
@@ -17766,7 +17763,7 @@ let PageEffects = class PageEffects {
                 actions.unshift(new CmsSetPageSuccessIndex({ id: pageLabel, type: pageContext.type }, cmsStructure.page));
             }
             return actions;
-        }), catchError(error => of(new LoadCmsPageDataFail(pageContext, makeErrorSerializable(error)))))))));
+        }), catchError((error) => of(new LoadCmsPageDataFail(pageContext, makeErrorSerializable(error)))))))));
     }
 };
 PageEffects.ɵfac = function PageEffects_Factory(t) { return new (t || PageEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CmsPageConnector), ɵngcc0.ɵɵinject(RoutingService)); };
@@ -17995,11 +17992,11 @@ let PageMetaService = class PageMetaService {
      */
     resolve(metaResolver) {
         const resolveMethods = Object.keys(this.resolverMethods)
-            .filter(key => metaResolver[this.resolverMethods[key]])
-            .map(key => metaResolver[this.resolverMethods[key]]().pipe(map(data => ({
+            .filter((key) => metaResolver[this.resolverMethods[key]])
+            .map((key) => metaResolver[this.resolverMethods[key]]().pipe(map((data) => ({
             [key]: data,
         }))));
-        return combineLatest(resolveMethods).pipe(map(data => Object.assign({}, ...data)));
+        return combineLatest(resolveMethods).pipe(map((data) => Object.assign({}, ...data)));
     }
     /**
      * Return the resolver with the best match, based on a score
@@ -18008,7 +18005,7 @@ let PageMetaService = class PageMetaService {
      * Resolvers match by default on `PageType` and `page.template`.
      */
     getMetaResolver(page) {
-        const matchingResolvers = this.resolvers.filter(resolver => resolver.getScore(page) > 0);
+        const matchingResolvers = this.resolvers.filter((resolver) => resolver.getScore(page) > 0);
         matchingResolvers.sort(function (a, b) {
             return b.getScore(page) - a.getScore(page);
         });
@@ -18037,15 +18034,15 @@ let DynamicAttributeService = class DynamicAttributeService {
     addDynamicAttributes(properties, element, renderer) {
         if (properties) {
             // check each group of properties, e.g. smartedit
-            Object.keys(properties).forEach(group => {
+            Object.keys(properties).forEach((group) => {
                 const name = 'data-' + group + '-';
                 const groupProps = properties[group];
                 // check each property in the group
-                Object.keys(groupProps).forEach(propName => {
+                Object.keys(groupProps).forEach((propName) => {
                     const propValue = groupProps[propName];
                     if (propName === 'classes') {
                         const classes = propValue.split(' ');
-                        classes.forEach(classItem => {
+                        classes.forEach((classItem) => {
                             element.classList.add(classItem);
                         });
                     }
@@ -18126,7 +18123,7 @@ function configValidatorFactory(configInitializer, validators) {
         if (isDevMode()) {
             configInitializer
                 .getStableConfig()
-                .then(config => validateConfig(config, validators || []));
+                .then((config) => validateConfig(config, validators || []));
         }
     };
     return validate;
@@ -18212,7 +18209,7 @@ let CxDatePipe = class CxDatePipe extends DatePipe {
         let result;
         this.language
             .getActive()
-            .subscribe(lang => (result = lang))
+            .subscribe((lang) => (result = lang))
             .unsubscribe();
         return result;
     }
@@ -18254,7 +18251,7 @@ let TranslatePipe = class TranslatePipe {
             }
             this.sub = this.service
                 .translate(key, options, true)
-                .subscribe(val => this.markForCheck(val));
+                .subscribe((val) => this.markForCheck(val));
         }
     }
     markForCheck(value) {
@@ -18284,8 +18281,8 @@ let TranslationChunkService = class TranslationChunkService {
         this.chunks = {};
         this.KEY_SEPARATOR = '.';
         const chunks = (config.i18n && config.i18n.chunks) || {};
-        Object.keys(chunks).forEach(chunk => {
-            chunks[chunk].forEach(key => {
+        Object.keys(chunks).forEach((chunk) => {
+            chunks[chunk].forEach((key) => {
                 if (this.chunks.hasOwnProperty(key)) {
                     if (!this.duplicates[key]) {
                         this.duplicates[key] = [this.chunks[key]];
@@ -18311,7 +18308,7 @@ let TranslationChunkService = class TranslationChunkService {
     }
     warnDuplicates(items) {
         const dupes = [];
-        Object.keys(items).forEach(key => {
+        Object.keys(items).forEach((key) => {
             dupes.push(`* '${key}' found in chunks: ${items[key].join(', ')}. Used '${this.chunks[key]}.${key}'.`);
         });
         console.warn(`Duplicated keys has been found in the config of i18n chunks:\n${dupes.join('\n')}`);
@@ -18324,7 +18321,7 @@ TranslationChunkService.ctorParameters = () => [
 ];
 
 function i18nextInit(configInit, languageService, httpClient, serverRequestOrigin) {
-    return () => configInit.getStableConfig('i18n').then(config => {
+    return () => configInit.getStableConfig('i18n').then((config) => {
         let i18nextConfig = {
             ns: [],
             fallbackLng: config.i18n.fallbackLang,
@@ -18351,15 +18348,15 @@ function i18nextInit(configInit, languageService, httpClient, serverRequestOrigi
     });
 }
 function i18nextAddTranslations(resources = {}) {
-    Object.keys(resources).forEach(lang => {
-        Object.keys(resources[lang]).forEach(chunkName => {
+    Object.keys(resources).forEach((lang) => {
+        Object.keys(resources[lang]).forEach((chunkName) => {
             i18next.addResourceBundle(lang, chunkName, resources[lang][chunkName], true, true);
         });
     });
 }
 function syncI18nextWithSiteContext(language) {
     // always update language of i18next on site context (language) change
-    language.getActive().subscribe(lang => i18next.changeLanguage(lang));
+    language.getActive().subscribe((lang) => i18next.changeLanguage(lang));
 }
 /**
  * Returns a function appropriate for i18next to make http calls for JSON files.
@@ -18370,7 +18367,7 @@ function syncI18nextWithSiteContext(language) {
  */
 function i18nextGetHttpClient(httpClient) {
     return (url, _options, callback, _data) => {
-        httpClient.get(url, { responseType: 'text' }).subscribe(data => callback(data, { status: 200 }), error => callback(null, { status: error.status }));
+        httpClient.get(url, { responseType: 'text' }).subscribe((data) => callback(data, { status: 200 }), (error) => callback(null, { status: error.status }));
     };
 }
 /**
@@ -18433,7 +18430,7 @@ let I18nextTranslationService = class I18nextTranslationService {
         // which together with `switchMap` operator may lead to an infinite loop.
         const chunkName = this.translationChunk.getChunkNameForKey(key);
         const namespacedKey = this.getNamespacedKey(key, chunkName);
-        return new Observable(subscriber => {
+        return new Observable((subscriber) => {
             const translate = () => {
                 if (i18next.exists(namespacedKey, options)) {
                     subscriber.next(i18next.t(namespacedKey, options));
@@ -18505,7 +18502,7 @@ I18nModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function I18nModule_Fac
 function mockTranslate(key, options = {}) {
     const optionsString = Object.keys(options)
         .sort()
-        .map(optionName => `${optionName}:${options[optionName]}`)
+        .map((optionName) => `${optionName}:${options[optionName]}`)
         .join(' ');
     return optionsString ? `${key} ${optionsString}` : key;
 }
@@ -18527,7 +18524,7 @@ MockTranslatePipe.ɵpipe = ɵngcc0.ɵɵdefinePipe({ name: "cxTranslate", type: M
 
 let MockTranslationService = class MockTranslationService {
     translate(key, options = {}, _whitespaceUntilLoaded = false) {
-        return new Observable(subscriber => {
+        return new Observable((subscriber) => {
             const value = mockTranslate(key, options);
             subscriber.next(value);
             subscriber.complete();
@@ -18600,7 +18597,7 @@ var kymaGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getKymaState = createFeatureSelector(KYMA_FEATURE);
 
-const ɵ0$D = state => state.openIdToken;
+const ɵ0$D = (state) => state.openIdToken;
 const getOpenIdTokenState = createSelector(getKymaState, ɵ0$D);
 const getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelector);
 const getOpenIdTokenLoading = createSelector(getOpenIdTokenState, loaderLoadingSelector);
@@ -18674,7 +18671,7 @@ let OpenIdAuthenticationTokenService = class OpenIdAuthenticationTokenService {
         });
         return this.http
             .post(url, params, { headers })
-            .pipe(catchError(error => throwError(error)));
+            .pipe(catchError((error) => throwError(error)));
     }
     getOAuthEndpoint() {
         return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
@@ -18698,9 +18695,9 @@ let OpenIdTokenEffect = class OpenIdTokenEffect {
             username: loginAction.payload.userId,
             password: loginAction.payload.password,
         }))));
-        this.loadOpenIdToken$ = this.actions$.pipe(ofType(LOAD_OPEN_ID_TOKEN), map((action) => action.payload), exhaustMap(payload => this.openIdTokenService
+        this.loadOpenIdToken$ = this.actions$.pipe(ofType(LOAD_OPEN_ID_TOKEN), map((action) => action.payload), exhaustMap((payload) => this.openIdTokenService
             .loadOpenIdAuthenticationToken(payload.username, payload.password)
-            .pipe(map(token => new LoadOpenIdTokenSuccess(token)), catchError(error => of(new LoadOpenIdTokenFail(makeErrorSerializable(error)))))));
+            .pipe(map((token) => new LoadOpenIdTokenSuccess(token)), catchError((error) => of(new LoadOpenIdTokenFail(makeErrorSerializable(error)))))));
     }
 };
 OpenIdTokenEffect.ɵfac = function OpenIdTokenEffect_Factory(t) { return new (t || OpenIdTokenEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(OpenIdAuthenticationTokenService), ɵngcc0.ɵɵinject(KymaConfig)); };
@@ -18825,7 +18822,7 @@ let OccPersonalizationIdInterceptor = class OccPersonalizationIdInterceptor {
                 },
             });
         }
-        return next.handle(request).pipe(tap(event => {
+        return next.handle(request).pipe(tap((event) => {
             if (event instanceof HttpResponse) {
                 if (event.headers.keys().includes(this.requestHeader)) {
                     const receivedId = event.headers.get(this.requestHeader);
@@ -18882,7 +18879,7 @@ let OccPersonalizationTimeInterceptor = class OccPersonalizationTimeInterceptor 
                 },
             });
         }
-        return next.handle(request).pipe(tap(event => {
+        return next.handle(request).pipe(tap((event) => {
             if (event instanceof HttpResponse) {
                 if (event.headers.keys().includes(this.requestHeader)) {
                     const receivedTimestamp = event.headers.get(this.requestHeader);
@@ -18940,12 +18937,12 @@ let PersonalizationContextService = class PersonalizationContextService {
         this.cmsService = cmsService;
     }
     getPersonalizationContext() {
-        return this.cmsService.getCurrentPage().pipe(filter(Boolean), map((page) => page.slots[this.config.personalization.context.slotPosition]), filter(Boolean), map((slot) => slot.components.find(i => i.uid === this.config.personalization.context.componentId)), filter(Boolean), map((component) => this.buildPersonalizationContext(component.properties.script.data)));
+        return this.cmsService.getCurrentPage().pipe(filter(Boolean), map((page) => page.slots[this.config.personalization.context.slotPosition]), filter(Boolean), map((slot) => slot.components.find((i) => i.uid === this.config.personalization.context.componentId)), filter(Boolean), map((component) => this.buildPersonalizationContext(component.properties.script.data)));
     }
     buildPersonalizationContext(data) {
         const context = JSON.parse(atob(data));
-        context.actions.forEach(action => {
-            Object.keys(action).forEach(key => {
+        context.actions.forEach((action) => {
+            Object.keys(action).forEach((key) => {
                 action[key] = atob(action[key]);
             });
         });
@@ -18997,7 +18994,7 @@ let ProductConnector = class ProductConnector {
     }
     getMany(products) {
         if (!this.adapter.loadMany) {
-            return products.map(product => (Object.assign(Object.assign({}, product), { data$: this.adapter.load(product.code, product.scope) })));
+            return products.map((product) => (Object.assign(Object.assign({}, product), { data$: this.adapter.load(product.code, product.scope) })));
         }
         return this.adapter.loadMany(products);
     }
@@ -19311,11 +19308,11 @@ const getProductsState = createFeatureSelector(PRODUCT_FEATURE);
 const ɵ0$E = (state) => state.references;
 const getProductReferencesState = createSelector(getProductsState, ɵ0$E);
 const getSelectedProductReferencesFactory = (productCode, referenceType) => {
-    return createSelector(getProductReferencesState, referenceTypeData => {
+    return createSelector(getProductReferencesState, (referenceTypeData) => {
         if (referenceTypeData.productCode === productCode) {
             if (!!referenceTypeData.list) {
                 if (referenceType) {
-                    return referenceTypeData.list.filter(item => item.referenceType === referenceType);
+                    return referenceTypeData.list.filter((item) => item.referenceType === referenceType);
                 }
                 return referenceTypeData.list;
             }
@@ -19329,7 +19326,7 @@ const getSelectedProductReferencesFactory = (productCode, referenceType) => {
 const ɵ0$F = (state) => state.reviews;
 const getProductReviewsState = createSelector(getProductsState, ɵ0$F);
 const getSelectedProductReviewsFactory = (productCode) => {
-    return createSelector(getProductReviewsState, reviewData => {
+    return createSelector(getProductReviewsState, (reviewData) => {
         if (reviewData.productCode === productCode) {
             return reviewData.list;
         }
@@ -19377,29 +19374,29 @@ const getProductState = createSelector(getProductsState, ɵ0$H);
 const getSelectedProductsFactory = (codes) => {
     return createSelector(getProductState, (details) => {
         return codes
-            .map(code => details.entities[code] ? details.entities[code].value : undefined)
-            .filter(product => product !== undefined);
+            .map((code) => details.entities[code] ? details.entities[code].value : undefined)
+            .filter((product) => product !== undefined);
     });
 };
 const getSelectedProductStateFactory = (code, scope) => {
-    return createSelector(getProductState, details => scope
+    return createSelector(getProductState, (details) => scope
         ? entityStateSelector(details, code)[scope] ||
             initialLoaderState
         : entityStateSelector(details, code));
 };
 const getSelectedProductFactory = (code, scope) => {
-    return createSelector(getSelectedProductStateFactory(code, scope), productState => loaderValueSelector(productState));
+    return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderValueSelector(productState));
 };
 const getSelectedProductLoadingFactory = (code, scope) => {
-    return createSelector(getSelectedProductStateFactory(code, scope), productState => loaderLoadingSelector(productState));
+    return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderLoadingSelector(productState));
 };
 const getSelectedProductSuccessFactory = (code, scope) => {
-    return createSelector(getSelectedProductStateFactory(code, scope), productState => loaderSuccessSelector(productState));
+    return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderSuccessSelector(productState));
 };
 const getSelectedProductErrorFactory = (code, scope) => {
-    return createSelector(getSelectedProductStateFactory(code, scope), productState => loaderErrorSelector(productState));
+    return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderErrorSelector(productState));
 };
-const ɵ1$r = details => {
+const ɵ1$r = (details) => {
     return Object.keys(details.entities);
 };
 const getAllProductCodes = createSelector(getProductState, ɵ1$r);
@@ -19434,7 +19431,7 @@ let ProductReferenceService = class ProductReferenceService {
         this.store = store;
     }
     get(productCode, referenceType, pageSize) {
-        return this.store.pipe(select(getSelectedProductReferencesFactory(productCode, referenceType)), tap(references => {
+        return this.store.pipe(select(getSelectedProductReferencesFactory(productCode, referenceType)), tap((references) => {
             if (references === undefined && productCode !== undefined) {
                 this.store.dispatch(new LoadProductReferences({
                     productCode,
@@ -19459,7 +19456,7 @@ let ProductReviewService = class ProductReviewService {
         this.store = store;
     }
     getByProductCode(productCode) {
-        return this.store.pipe(select(getSelectedProductReviewsFactory(productCode)), tap(reviews => {
+        return this.store.pipe(select(getSelectedProductReviewsFactory(productCode)), tap((reviews) => {
             if (reviews === undefined && productCode !== undefined) {
                 this.store.dispatch(new LoadProductReviews(productCode));
             }
@@ -19526,7 +19523,7 @@ let ProductLoadingService = class ProductLoadingService {
             }
         }
         if (scopes.length > 1) {
-            this.products[productCode][this.getScopesIndex(scopes)] = combineLatest(scopes.map(scope => this.products[productCode][scope])).pipe(auditTime(0), map(productParts => productParts.every(Boolean)
+            this.products[productCode][this.getScopesIndex(scopes)] = combineLatest(scopes.map((scope) => this.products[productCode][scope])).pipe(auditTime(0), map((productParts) => productParts.every(Boolean)
                 ? deepMerge({}, ...productParts)
                 : undefined), distinctUntilChanged());
         }
@@ -19541,7 +19538,7 @@ let ProductLoadingService = class ProductLoadingService {
      * @param scope
      */
     getProductForScope(productCode, scope) {
-        const shouldLoad$ = this.store.pipe(select(getSelectedProductStateFactory(productCode, scope)), map(productState => !productState.loading && !productState.success && !productState.error), distinctUntilChanged(), filter(x => x));
+        const shouldLoad$ = this.store.pipe(select(getSelectedProductStateFactory(productCode, scope)), map((productState) => !productState.loading && !productState.success && !productState.error), distinctUntilChanged(), filter((x) => x));
         const isLoading$ = this.store.pipe(select(getSelectedProductLoadingFactory(productCode, scope)));
         const productLoadLogic$ = merge(shouldLoad$, ...this.getProductReloadTriggers(productCode, scope)).pipe(debounceTime(0), withLatestFrom(isLoading$), tap(([, isLoading]) => {
             if (!isLoading) {
@@ -19766,7 +19763,7 @@ let CategoryPageMetaResolver = class CategoryPageMetaResolver extends PageMetaRe
         return breadcrumbs;
     }
     hasProductListComponent(page) {
-        return !!Object.keys(page.slots).find(key => !!page.slots[key].components.find(comp => comp.typeCode === 'CMSProductListComponent' ||
+        return !!Object.keys(page.slots).find((key) => !!page.slots[key].components.find((comp) => comp.typeCode === 'CMSProductListComponent' ||
             comp.typeCode === 'ProductGridComponent'));
     }
 };
@@ -19793,7 +19790,7 @@ let CouponSearchPageResolver = class CouponSearchPageResolver extends PageMetaRe
         this.authService = authService;
         this.route = route;
         this.semanticPathService = semanticPathService;
-        this.total$ = this.productSearchService.getResults().pipe(filter(data => !!(data === null || data === void 0 ? void 0 : data.pagination)), map(results => results.pagination.totalResults));
+        this.total$ = this.productSearchService.getResults().pipe(filter((data) => !!(data === null || data === void 0 ? void 0 : data.pagination)), map((results) => results.pagination.totalResults));
         this.pageType = PageType.CONTENT_PAGE;
         this.pageTemplate = 'SearchResultsListPageTemplate';
     }
@@ -19854,7 +19851,7 @@ let ProductPageMetaResolver = class ProductPageMetaResolver extends PageMetaReso
         this.productService = productService;
         this.translation = translation;
         // reusable observable for product data based on the current page
-        this.product$ = this.routingService.getRouterState().pipe(map(state => state.state.params['productCode']), filter(code => !!code), switchMap(code => this.productService.get(code, ProductScope.DETAILS)), filter(Boolean));
+        this.product$ = this.routingService.getRouterState().pipe(map((state) => state.state.params['productCode']), filter((code) => !!code), switchMap((code) => this.productService.get(code, ProductScope.DETAILS)), filter(Boolean));
         this.pageType = PageType.PRODUCT_PAGE;
     }
     /**
@@ -19964,10 +19961,10 @@ let SearchPageMetaResolver = class SearchPageMetaResolver extends PageMetaResolv
         this.routingService = routingService;
         this.productSearchService = productSearchService;
         this.translation = translation;
-        this.total$ = this.productSearchService.getResults().pipe(filter(data => !!(data === null || data === void 0 ? void 0 : data.pagination)), map(results => results.pagination.totalResults));
+        this.total$ = this.productSearchService.getResults().pipe(filter((data) => !!(data === null || data === void 0 ? void 0 : data.pagination)), map((results) => results.pagination.totalResults));
         this.query$ = this.routingService
             .getRouterState()
-            .pipe(map(state => state.state.params['query']));
+            .pipe(map((state) => state.state.params['query']));
         this.pageType = PageType.CONTENT_PAGE;
         this.pageTemplate = 'SearchResultsListPageTemplate';
     }
@@ -19991,15 +19988,15 @@ let ProductReferencesEffects = class ProductReferencesEffects {
     constructor(actions$, productReferencesConnector) {
         this.actions$ = actions$;
         this.productReferencesConnector = productReferencesConnector;
-        this.loadProductReferences$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REFERENCES), map((action) => action.payload), mergeMap(payload => {
+        this.loadProductReferences$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REFERENCES), map((action) => action.payload), mergeMap((payload) => {
             return this.productReferencesConnector
                 .get(payload.productCode, payload.referenceType, payload.pageSize)
-                .pipe(map(data => {
+                .pipe(map((data) => {
                 return new LoadProductReferencesSuccess({
                     productCode: payload.productCode,
                     list: data,
                 });
-            }), catchError(_error => of(new LoadProductReferencesFail({
+            }), catchError((_error) => of(new LoadProductReferencesFail({
                 message: payload.productCode,
             }))));
         }));
@@ -20020,22 +20017,22 @@ let ProductReviewsEffects = class ProductReviewsEffects {
         this.actions$ = actions$;
         this.productReviewsConnector = productReviewsConnector;
         this.globalMessageService = globalMessageService;
-        this.loadProductReviews$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REVIEWS), map((action) => action.payload), mergeMap(productCode => {
-            return this.productReviewsConnector.get(productCode).pipe(map(data => {
+        this.loadProductReviews$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REVIEWS), map((action) => action.payload), mergeMap((productCode) => {
+            return this.productReviewsConnector.get(productCode).pipe(map((data) => {
                 return new LoadProductReviewsSuccess({
                     productCode,
                     list: data,
                 });
-            }), catchError(_error => of(new LoadProductReviewsFail({
+            }), catchError((_error) => of(new LoadProductReviewsFail({
                 message: productCode,
             }))));
         }));
-        this.postProductReview = this.actions$.pipe(ofType(POST_PRODUCT_REVIEW), map((action) => action.payload), mergeMap(payload => {
+        this.postProductReview = this.actions$.pipe(ofType(POST_PRODUCT_REVIEW), map((action) => action.payload), mergeMap((payload) => {
             return this.productReviewsConnector
                 .add(payload.productCode, payload.review)
-                .pipe(map(reviewResponse => {
+                .pipe(map((reviewResponse) => {
                 return new PostProductReviewSuccess(reviewResponse);
-            }), catchError(_error => of(new PostProductReviewFail(payload.productCode))));
+            }), catchError((_error) => of(new PostProductReviewFail(payload.productCode))));
         }));
         this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(ofType(POST_PRODUCT_REVIEW_SUCCESS), tap(() => {
             this.globalMessageService.add({ key: 'productReview.thankYouForReview' }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
@@ -20063,22 +20060,22 @@ let ProductsSearchEffects = class ProductsSearchEffects {
     constructor(actions$, productSearchConnector) {
         this.actions$ = actions$;
         this.productSearchConnector = productSearchConnector;
-        this.searchProducts$ = this.actions$.pipe(ofType(SEARCH_PRODUCTS), groupBy((action) => action.auxiliary), mergeMap(group => group.pipe(switchMap((action) => {
+        this.searchProducts$ = this.actions$.pipe(ofType(SEARCH_PRODUCTS), groupBy((action) => action.auxiliary), mergeMap((group) => group.pipe(switchMap((action) => {
             return this.productSearchConnector
                 .search(action.payload.queryText, action.payload.searchConfig)
-                .pipe(map(data => {
+                .pipe(map((data) => {
                 return new SearchProductsSuccess(data, action.auxiliary);
-            }), catchError(error => of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary))));
+            }), catchError((error) => of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary))));
         }))));
-        this.getProductSuggestions$ = this.actions$.pipe(ofType(GET_PRODUCT_SUGGESTIONS), map((action) => action.payload), switchMap(payload => {
+        this.getProductSuggestions$ = this.actions$.pipe(ofType(GET_PRODUCT_SUGGESTIONS), map((action) => action.payload), switchMap((payload) => {
             return this.productSearchConnector
                 .getSuggestions(payload.term, payload.searchConfig.pageSize)
-                .pipe(map(suggestions => {
+                .pipe(map((suggestions) => {
                 if (suggestions === undefined) {
                     return new GetProductSuggestionsSuccess([]);
                 }
                 return new GetProductSuggestionsSuccess(suggestions);
-            }), catchError(error => of(new GetProductSuggestionsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new GetProductSuggestionsFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -20107,12 +20104,12 @@ let ProductEffects = class ProductEffects {
         })), 
         // we are grouping all load actions that happens at the same time
         // to optimize loading and pass them all to productConnector.getMany
-        bufferDebounceTime(debounce, scheduler), mergeMap(products => merge(...this.productConnector
+        bufferDebounceTime(debounce, scheduler), mergeMap((products) => merge(...this.productConnector
             .getMany(products)
             .map(this.productLoadEffect))), withdrawOn(this.contextChange$)));
     }
     productLoadEffect(productLoad) {
-        return productLoad.data$.pipe(map(data => new LoadProductSuccess(Object.assign({ code: productLoad.code }, data), productLoad.scope)), catchError(error => {
+        return productLoad.data$.pipe(map((data) => new LoadProductSuccess(Object.assign({ code: productLoad.code }, data), productLoad.scope)), catchError((error) => {
             return of(new LoadProductFail(productLoad.code, makeErrorSerializable(error), productLoad.scope));
         }));
     }
@@ -20141,7 +20138,7 @@ function reducer$i(state = initialState$i, action) {
             const productCode = action.payload.productCode;
             const list = action.payload.list;
             return Object.assign(Object.assign({}, state), { list: [...state.list, ...(list ? list : [])].reduce((productReferences, productReference) => {
-                    if (!productReferences.some(obj => obj.referenceType === productReference.referenceType &&
+                    if (!productReferences.some((obj) => obj.referenceType === productReference.referenceType &&
                         obj.target.code === productReference.target.code)) {
                         productReferences.push(productReference);
                     }
@@ -20336,7 +20333,7 @@ let SmartEditService = class SmartEditService {
             }
             return false;
         }), take(1))
-            .subscribe(_ => {
+            .subscribe(() => {
             this.cmsService.launchInSmartEdit = true;
             this.getDefaultPreviewCode();
         });
@@ -20344,27 +20341,27 @@ let SmartEditService = class SmartEditService {
     getDefaultPreviewCode() {
         this.baseSiteService
             .getBaseSiteData()
-            .pipe(filter(site => Object.keys(site).length !== 0), take(1))
-            .subscribe(site => {
+            .pipe(filter((site) => Object.keys(site).length !== 0), take(1))
+            .subscribe((site) => {
             this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
             this.defaultPreviewProductCode = site.defaultPreviewProductCode;
             this.addPageContract();
         });
     }
     addPageContract() {
-        this.cmsService.getCurrentPage().subscribe(cmsPage => {
+        this.cmsService.getCurrentPage().subscribe((cmsPage) => {
             if (cmsPage && this._cmsTicketId) {
                 this._currentPageId = cmsPage.pageId;
                 // before adding contract to page, we need redirect to that page
                 this.goToPreviewPage(cmsPage);
                 // remove old page contract
                 const previousContract = [];
-                Array.from(this.winRef.document.body.classList).forEach(attr => previousContract.push(attr));
-                previousContract.forEach(attr => this.winRef.document.body.classList.remove(attr));
+                Array.from(this.winRef.document.body.classList).forEach((attr) => previousContract.push(attr));
+                previousContract.forEach((attr) => this.winRef.document.body.classList.remove(attr));
                 // add new page contract
                 if (cmsPage.properties && cmsPage.properties.smartedit) {
                     const seClasses = cmsPage.properties.smartedit.classes.split(' ');
-                    seClasses.forEach(classItem => {
+                    seClasses.forEach((classItem) => {
                         this.winRef.document.body.classList.add(classItem);
                     });
                 }
@@ -20628,16 +20625,16 @@ const getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
 
 const ɵ0$I = (storesState) => storesState.findStores;
 const getFindStoresState = createSelector(getStoreFinderState, ɵ0$I);
-const ɵ1$s = state => loaderValueSelector(state);
+const ɵ1$s = (state) => loaderValueSelector(state);
 const getFindStoresEntities = createSelector(getFindStoresState, ɵ1$s);
-const ɵ2$j = state => loaderLoadingSelector(state);
+const ɵ2$j = (state) => loaderLoadingSelector(state);
 const getStoresLoading = createSelector(getFindStoresState, ɵ2$j);
 
 const ɵ0$J = (storesState) => storesState.viewAllStores;
 const getViewAllStoresState = createSelector(getStoreFinderState, ɵ0$J);
-const ɵ1$t = state => loaderValueSelector(state);
+const ɵ1$t = (state) => loaderValueSelector(state);
 const getViewAllStoresEntities = createSelector(getViewAllStoresState, ɵ1$t);
-const ɵ2$k = state => loaderLoadingSelector(state);
+const ɵ2$k = (state) => loaderLoadingSelector(state);
 const getViewAllStoresLoading = createSelector(getViewAllStoresState, ɵ2$k);
 
 
@@ -20820,7 +20817,7 @@ let StoreDataService = class StoreDataService {
      */
     getSchedule(location, date) {
         const weekday = this.weekDays[date.getDay()];
-        return location.openingHours.weekDayOpeningList.find(weekDayOpeningListItem => weekDayOpeningListItem.weekDay === weekday);
+        return location.openingHours.weekDayOpeningList.find((weekDayOpeningListItem) => weekDayOpeningListItem.weekDay === weekday);
     }
 };
 StoreDataService.ɵfac = function StoreDataService_Factory(t) { return new (t || StoreDataService)(); };
@@ -20863,7 +20860,7 @@ let ExternalJsFileLoader = class ExternalJsFileLoader {
             result =
                 '?' +
                     keysArray
-                        .map(key => encodeURI(key) + '=' + encodeURI(params[key]))
+                        .map((key) => encodeURI(key) + '=' + encodeURI(params[key]))
                         .join('&');
         }
         return result;
@@ -21004,16 +21001,16 @@ let FindStoresEffect = class FindStoresEffect {
     constructor(actions$, storeFinderConnector) {
         this.actions$ = actions$;
         this.storeFinderConnector = storeFinderConnector;
-        this.findStores$ = this.actions$.pipe(ofType(FIND_STORES), map((action) => action.payload), mergeMap(payload => this.storeFinderConnector
+        this.findStores$ = this.actions$.pipe(ofType(FIND_STORES), map((action) => action.payload), mergeMap((payload) => this.storeFinderConnector
             .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
-            .pipe(map(data => {
+            .pipe(map((data) => {
             if (payload.countryIsoCode) {
-                data.stores = data.stores.filter(store => store.address.country.isocode === payload.countryIsoCode);
+                data.stores = data.stores.filter((store) => store.address.country.isocode === payload.countryIsoCode);
                 data.stores.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
             }
             return new FindStoresSuccess(data);
-        }), catchError(error => of(new FindStoresFail(makeErrorSerializable(error)))))));
-        this.findStoreById$ = this.actions$.pipe(ofType(FIND_STORE_BY_ID), map((action) => action.payload), switchMap(payload => this.storeFinderConnector.get(payload.storeId).pipe(map(data => new FindStoreByIdSuccess(data)), catchError(error => of(new FindStoreByIdFail(makeErrorSerializable(error)))))));
+        }), catchError((error) => of(new FindStoresFail(makeErrorSerializable(error)))))));
+        this.findStoreById$ = this.actions$.pipe(ofType(FIND_STORE_BY_ID), map((action) => action.payload), switchMap((payload) => this.storeFinderConnector.get(payload.storeId).pipe(map((data) => new FindStoreByIdSuccess(data)), catchError((error) => of(new FindStoreByIdFail(makeErrorSerializable(error)))))));
     }
 };
 FindStoresEffect.ɵfac = function FindStoresEffect_Factory(t) { return new (t || FindStoresEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(StoreFinderConnector)); };
@@ -21034,10 +21031,10 @@ let ViewAllStoresEffect = class ViewAllStoresEffect {
         this.actions$ = actions$;
         this.storeFinderConnector = storeFinderConnector;
         this.viewAllStores$ = this.actions$.pipe(ofType(VIEW_ALL_STORES), switchMap(() => {
-            return this.storeFinderConnector.getCounts().pipe(map(data => {
+            return this.storeFinderConnector.getCounts().pipe(map((data) => {
                 data.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
                 return new ViewAllStoresSuccess(data);
-            }), catchError(error => of(new ViewAllStoresFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new ViewAllStoresFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -21256,7 +21253,7 @@ let ConsentService = class ConsentService {
      * @param templateId of a template which's consent should be checked
      */
     checkConsentGivenByTemplateId(templateId) {
-        return this.getConsent(templateId).pipe(map(consent => {
+        return this.getConsent(templateId).pipe(map((consent) => {
             if (!consent) {
                 return false;
             }
@@ -21272,7 +21269,7 @@ let ConsentService = class ConsentService {
      * @param templateId of a template which's consent should be checked
      */
     checkConsentWithdrawnByTemplateId(templateId) {
-        return this.getConsent(templateId).pipe(map(consent => {
+        return this.getConsent(templateId).pipe(map((consent) => {
             if (!consent) {
                 return true;
             }
@@ -21338,14 +21335,14 @@ let UserAddressService = class UserAddressService {
      * Retrieves user's addresses
      */
     loadAddresses() {
-        this.withUserId(userId => this.store.dispatch(new LoadUserAddresses(userId)));
+        this.withUserId((userId) => this.store.dispatch(new LoadUserAddresses(userId)));
     }
     /**
      * Adds user address
      * @param address a user address
      */
     addUserAddress(address) {
-        this.withUserId(userId => this.store.dispatch(new AddUserAddress({
+        this.withUserId((userId) => this.store.dispatch(new AddUserAddress({
             userId,
             address,
         })));
@@ -21355,7 +21352,7 @@ let UserAddressService = class UserAddressService {
      * @param addressId a user address ID
      */
     setAddressAsDefault(addressId) {
-        this.withUserId(userId => this.store.dispatch(new UpdateUserAddress({
+        this.withUserId((userId) => this.store.dispatch(new UpdateUserAddress({
             userId,
             addressId,
             address: { defaultAddress: true },
@@ -21367,7 +21364,7 @@ let UserAddressService = class UserAddressService {
      * @param address a user address
      */
     updateUserAddress(addressId, address) {
-        this.withUserId(userId => this.store.dispatch(new UpdateUserAddress({
+        this.withUserId((userId) => this.store.dispatch(new UpdateUserAddress({
             userId,
             addressId,
             address,
@@ -21378,7 +21375,7 @@ let UserAddressService = class UserAddressService {
      * @param addressId a user address ID
      */
     deleteUserAddress(addressId) {
-        this.withUserId(userId => this.store.dispatch(new DeleteUserAddress({
+        this.withUserId((userId) => this.store.dispatch(new DeleteUserAddress({
             userId,
             addressId,
         })));
@@ -21461,7 +21458,7 @@ let UserAddressService = class UserAddressService {
         this.authService
             .getOccUserId()
             .pipe(take(1))
-            .subscribe(userId => callback(userId));
+            .subscribe((userId) => callback(userId));
     }
 };
 UserAddressService.ɵfac = function UserAddressService_Factory(t) { return new (t || UserAddressService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -21488,7 +21485,7 @@ let UserOrderService = class UserOrderService {
      * @param orderCode an order code
      */
     loadOrderDetails(orderCode) {
-        this.withUserId(userId => this.store.dispatch(new LoadOrderDetails({
+        this.withUserId((userId) => this.store.dispatch(new LoadOrderDetails({
             userId,
             orderCode,
         })));
@@ -21503,14 +21500,14 @@ let UserOrderService = class UserOrderService {
      * Returns order history list
      */
     getOrderHistoryList(pageSize) {
-        return this.store.pipe(select(getOrdersState), tap(orderListState => {
+        return this.store.pipe(select(getOrdersState), tap((orderListState) => {
             const attemptedLoad = orderListState.loading ||
                 orderListState.success ||
                 orderListState.error;
             if (!attemptedLoad) {
                 this.loadOrderList(pageSize);
             }
-        }), map(orderListState => orderListState.value));
+        }), map((orderListState) => orderListState.value));
     }
     /**
      * Returns a loaded flag for order history list
@@ -21525,7 +21522,7 @@ let UserOrderService = class UserOrderService {
      * @param sort sort
      */
     loadOrderList(pageSize, currentPage, sort) {
-        this.withUserId(userId => this.store.dispatch(new LoadUserOrders({
+        this.withUserId((userId) => this.store.dispatch(new LoadUserOrders({
             userId,
             pageSize,
             currentPage,
@@ -21550,7 +21547,7 @@ let UserOrderService = class UserOrderService {
      * @param consignmentCode a consignment code
      */
     loadConsignmentTracking(orderCode, consignmentCode) {
-        this.withUserId(userId => this.store.dispatch(new LoadConsignmentTracking({
+        this.withUserId((userId) => this.store.dispatch(new LoadConsignmentTracking({
             userId,
             orderCode,
             consignmentCode,
@@ -21566,7 +21563,7 @@ let UserOrderService = class UserOrderService {
      * Cancel an order
      */
     cancelOrder(orderCode, cancelRequestInput) {
-        this.withUserId(userId => {
+        this.withUserId((userId) => {
             this.store.dispatch(new CancelOrder({
                 userId,
                 orderCode,
@@ -21599,7 +21596,7 @@ let UserOrderService = class UserOrderService {
         this.authService
             .getOccUserId()
             .pipe(take(1))
-            .subscribe(userId => callback(userId));
+            .subscribe((userId) => callback(userId));
     }
 };
 UserOrderService.ɵfac = function UserOrderService_Factory(t) { return new (t || UserOrderService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -21750,7 +21747,7 @@ let UserPaymentService = class UserPaymentService {
      * Loads all user's payment methods.
      */
     loadPaymentMethods() {
-        this.withUserId(userId => this.store.dispatch(new LoadUserPaymentMethods(userId)));
+        this.withUserId((userId) => this.store.dispatch(new LoadUserPaymentMethods(userId)));
     }
     /**
      * Returns all user's payment methods
@@ -21772,7 +21769,7 @@ let UserPaymentService = class UserPaymentService {
      * @param paymentMethodId a payment method ID
      */
     setPaymentMethodAsDefault(paymentMethodId) {
-        this.withUserId(userId => this.store.dispatch(new SetDefaultUserPaymentMethod({
+        this.withUserId((userId) => this.store.dispatch(new SetDefaultUserPaymentMethod({
             userId,
             paymentMethodId,
         })));
@@ -21783,7 +21780,7 @@ let UserPaymentService = class UserPaymentService {
      * @param paymentMethodId a payment method ID
      */
     deletePaymentMethod(paymentMethodId) {
-        this.withUserId(userId => this.store.dispatch(new DeleteUserPaymentMethod({
+        this.withUserId((userId) => this.store.dispatch(new DeleteUserPaymentMethod({
             userId,
             paymentMethodId,
         })));
@@ -21807,7 +21804,7 @@ let UserPaymentService = class UserPaymentService {
         this.authService
             .getOccUserId()
             .pipe(take(1))
-            .subscribe(userId => callback(userId));
+            .subscribe((userId) => callback(userId));
     }
 };
 UserPaymentService.ɵfac = function UserPaymentService_Factory(t) { return new (t || UserPaymentService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -21828,7 +21825,7 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      * @param returnRequestInput order return request entry input
      */
     createOrderReturnRequest(returnRequestInput) {
-        this.withUserId(userId => {
+        this.withUserId((userId) => {
             this.store.dispatch(new CreateOrderReturnRequest({
                 userId,
                 returnRequestInput,
@@ -21845,21 +21842,21 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      * Gets order return request list
      */
     getOrderReturnRequestList(pageSize) {
-        return this.store.pipe(select(getOrderReturnRequestListState), tap(returnListState => {
+        return this.store.pipe(select(getOrderReturnRequestListState), tap((returnListState) => {
             const attemptedLoad = returnListState.loading ||
                 returnListState.success ||
                 returnListState.error;
             if (!attemptedLoad) {
                 this.loadOrderReturnRequestList(pageSize);
             }
-        }), map(returnListState => returnListState.value));
+        }), map((returnListState) => returnListState.value));
     }
     /**
      * Loads order return request detail
      * @param returnRequestCode
      */
     loadOrderReturnRequestDetail(returnRequestCode) {
-        this.withUserId(userId => {
+        this.withUserId((userId) => {
             this.store.dispatch(new LoadOrderReturnRequest({
                 userId: userId,
                 returnRequestCode,
@@ -21873,7 +21870,7 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      * @param sort sort
      */
     loadOrderReturnRequestList(pageSize, currentPage, sort) {
-        this.withUserId(userId => {
+        this.withUserId((userId) => {
             this.store.dispatch(new LoadOrderReturnRequestList({
                 userId: userId,
                 pageSize: pageSize,
@@ -21910,7 +21907,7 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      * Cancel order return request
      */
     cancelOrderReturnRequest(returnRequestCode, returnRequestModification) {
-        this.withUserId(userId => {
+        this.withUserId((userId) => {
             this.store.dispatch(new CancelOrderReturnRequest({
                 userId,
                 returnRequestCode,
@@ -21943,7 +21940,7 @@ let OrderReturnRequestService = class OrderReturnRequestService {
         this.authService
             .getOccUserId()
             .pipe(take(1))
-            .subscribe(userId => callback(userId));
+            .subscribe((userId) => callback(userId));
     }
 };
 OrderReturnRequestService.ɵfac = function OrderReturnRequestService_Factory(t) { return new (t || OrderReturnRequestService)(ɵngcc0.ɵɵinject(ɵngcc1.Store), ɵngcc0.ɵɵinject(AuthService)); };
@@ -22048,14 +22045,14 @@ let UserInterestsService = class UserInterestsService {
      * @param pageSize the page size
      */
     getAndLoadProductInterests(pageSize) {
-        return this.store.pipe(select(getInterestsState), tap(interestListState => {
+        return this.store.pipe(select(getInterestsState), tap((interestListState) => {
             const attemptedLoad = interestListState.loading ||
                 interestListState.success ||
                 interestListState.error;
             if (!attemptedLoad) {
                 this.loadProductInterests(pageSize);
             }
-        }), map(interestListState => interestListState.value));
+        }), map((interestListState) => interestListState.value));
     }
     /**
      * Returns a loading flag for product interests
@@ -22299,7 +22296,7 @@ function reducer$u(state = initialState$u, action) {
         }
         case GIVE_USER_CONSENT_SUCCESS: {
             const updatedConsentTemplate = action.consentTemplate;
-            return state.map(consentTemplate => consentTemplate.id === updatedConsentTemplate.id
+            return state.map((consentTemplate) => consentTemplate.id === updatedConsentTemplate.id
                 ? updatedConsentTemplate
                 : consentTemplate);
         }
@@ -22442,7 +22439,7 @@ let BillingCountriesEffect = class BillingCountriesEffect {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
         this.loadBillingCountries$ = this.actions$.pipe(ofType(LOAD_BILLING_COUNTRIES), switchMap(() => {
-            return this.siteConnector.getCountries(CountryType.BILLING).pipe(map(countries => new LoadBillingCountriesSuccess(countries)), catchError(error => of(new LoadBillingCountriesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getCountries(CountryType.BILLING).pipe(map((countries) => new LoadBillingCountriesSuccess(countries)), catchError((error) => of(new LoadBillingCountriesFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -22477,10 +22474,10 @@ let ConsignmentTrackingEffects = class ConsignmentTrackingEffects {
     constructor(actions$, userOrderConnector) {
         this.actions$ = actions$;
         this.userOrderConnector = userOrderConnector;
-        this.loadConsignmentTracking$ = this.actions$.pipe(ofType(LOAD_CONSIGNMENT_TRACKING), map((action) => action.payload), switchMap(payload => {
+        this.loadConsignmentTracking$ = this.actions$.pipe(ofType(LOAD_CONSIGNMENT_TRACKING), map((action) => action.payload), switchMap((payload) => {
             return this.userOrderConnector
                 .getConsignmentTracking(payload.orderCode, payload.consignmentCode, payload.userId)
-                .pipe(map((tracking) => new LoadConsignmentTrackingSuccess(tracking)), catchError(error => of(new LoadConsignmentTrackingFail(makeErrorSerializable(error)))));
+                .pipe(map((tracking) => new LoadConsignmentTrackingSuccess(tracking)), catchError((error) => of(new LoadConsignmentTrackingFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -22499,7 +22496,7 @@ let DeliveryCountriesEffects = class DeliveryCountriesEffects {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
         this.loadDeliveryCountries$ = this.actions$.pipe(ofType(LOAD_DELIVERY_COUNTRIES), switchMap(() => {
-            return this.siteConnector.getCountries(CountryType.SHIPPING).pipe(map(countries => new LoadDeliveryCountriesSuccess(countries)), catchError(error => of(new LoadDeliveryCountriesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getCountries(CountryType.SHIPPING).pipe(map((countries) => new LoadDeliveryCountriesSuccess(countries)), catchError((error) => of(new LoadDeliveryCountriesFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -22519,7 +22516,7 @@ let ForgotPasswordEffects = class ForgotPasswordEffects {
         this.userAccountConnector = userAccountConnector;
         this.requestForgotPasswordEmail$ = this.actions$.pipe(ofType(FORGOT_PASSWORD_EMAIL_REQUEST), map((action) => {
             return action.payload;
-        }), concatMap(userEmailAddress => {
+        }), concatMap((userEmailAddress) => {
             return this.userAccountConnector
                 .requestForgotPasswordEmail(userEmailAddress)
                 .pipe(switchMap(() => [
@@ -22528,7 +22525,7 @@ let ForgotPasswordEffects = class ForgotPasswordEffects {
                     text: { key: 'forgottenPassword.passwordResetEmailSent' },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
-            ]), catchError(error => of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -22546,8 +22543,8 @@ let NotificationPreferenceEffects = class NotificationPreferenceEffects {
     constructor(actions$, connector) {
         this.actions$ = actions$;
         this.connector = connector;
-        this.loadPreferences$ = this.actions$.pipe(ofType(LOAD_NOTIFICATION_PREFERENCES), map((action) => action.payload), switchMap(payload => this.connector.loadAll(payload).pipe(map(preferences => new LoadNotificationPreferencesSuccess(preferences)), catchError(error => of(new LoadNotificationPreferencesFail(makeErrorSerializable(error)))))));
-        this.updatePreferences$ = this.actions$.pipe(ofType(UPDATE_NOTIFICATION_PREFERENCES), map((action) => action.payload), mergeMap(payload => this.connector.update(payload.userId, payload.preferences).pipe(map(() => new UpdateNotificationPreferencesSuccess(payload.preferences)), catchError(error => of(new UpdateNotificationPreferencesFail(makeErrorSerializable(error)))))));
+        this.loadPreferences$ = this.actions$.pipe(ofType(LOAD_NOTIFICATION_PREFERENCES), map((action) => action.payload), switchMap((payload) => this.connector.loadAll(payload).pipe(map((preferences) => new LoadNotificationPreferencesSuccess(preferences)), catchError((error) => of(new LoadNotificationPreferencesFail(makeErrorSerializable(error)))))));
+        this.updatePreferences$ = this.actions$.pipe(ofType(UPDATE_NOTIFICATION_PREFERENCES), map((action) => action.payload), mergeMap((payload) => this.connector.update(payload.userId, payload.preferences).pipe(map(() => new UpdateNotificationPreferencesSuccess(payload.preferences)), catchError((error) => of(new UpdateNotificationPreferencesFail(makeErrorSerializable(error)))))));
     }
 };
 NotificationPreferenceEffects.ɵfac = function NotificationPreferenceEffects_Factory(t) { return new (t || NotificationPreferenceEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserNotificationPreferenceConnector)); };
@@ -22567,15 +22564,15 @@ let OrderDetailsEffect = class OrderDetailsEffect {
     constructor(actions$, orderConnector) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
-        this.loadOrderDetails$ = this.actions$.pipe(ofType(LOAD_ORDER_DETAILS), map((action) => action.payload), switchMap(payload => {
+        this.loadOrderDetails$ = this.actions$.pipe(ofType(LOAD_ORDER_DETAILS), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector.get(payload.userId, payload.orderCode).pipe(map((order) => {
                 return new LoadOrderDetailsSuccess(order);
-            }), catchError(error => of(new LoadOrderDetailsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadOrderDetailsFail(makeErrorSerializable(error)))));
         }));
-        this.cancelOrder$ = this.actions$.pipe(ofType(CANCEL_ORDER), map((action) => action.payload), switchMap(payload => {
+        this.cancelOrder$ = this.actions$.pipe(ofType(CANCEL_ORDER), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .cancel(payload.userId, payload.orderCode, payload.cancelRequestInput)
-                .pipe(map(_ => new CancelOrderSuccess()), catchError(error => of(new CancelOrderFail(makeErrorSerializable(error)))));
+                .pipe(map(() => new CancelOrderSuccess()), catchError((error) => of(new CancelOrderFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -22596,25 +22593,25 @@ let OrderReturnRequestEffect = class OrderReturnRequestEffect {
     constructor(actions$, orderConnector) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
-        this.createReturnRequest$ = this.actions$.pipe(ofType(CREATE_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap(payload => {
+        this.createReturnRequest$ = this.actions$.pipe(ofType(CREATE_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .return(payload.userId, payload.returnRequestInput)
-                .pipe(map((returnRequest) => new CreateOrderReturnRequestSuccess(returnRequest)), catchError(error => of(new CreateOrderReturnRequestFail(makeErrorSerializable(error)))));
+                .pipe(map((returnRequest) => new CreateOrderReturnRequestSuccess(returnRequest)), catchError((error) => of(new CreateOrderReturnRequestFail(makeErrorSerializable(error)))));
         }));
-        this.loadReturnRequest$ = this.actions$.pipe(ofType(LOAD_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap(payload => {
+        this.loadReturnRequest$ = this.actions$.pipe(ofType(LOAD_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .getReturnRequestDetail(payload.userId, payload.returnRequestCode)
-                .pipe(map((returnRequest) => new LoadOrderReturnRequestSuccess(returnRequest)), catchError(error => of(new LoadOrderReturnRequestFail(makeErrorSerializable(error)))));
+                .pipe(map((returnRequest) => new LoadOrderReturnRequestSuccess(returnRequest)), catchError((error) => of(new LoadOrderReturnRequestFail(makeErrorSerializable(error)))));
         }));
-        this.cancelReturnRequest$ = this.actions$.pipe(ofType(CANCEL_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap(payload => {
+        this.cancelReturnRequest$ = this.actions$.pipe(ofType(CANCEL_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .cancelReturnRequest(payload.userId, payload.returnRequestCode, payload.returnRequestModification)
-                .pipe(map(_ => new CancelOrderReturnRequestSuccess()), catchError(error => of(new CancelOrderReturnRequestFail(makeErrorSerializable(error)))));
+                .pipe(map(() => new CancelOrderReturnRequestSuccess()), catchError((error) => of(new CancelOrderReturnRequestFail(makeErrorSerializable(error)))));
         }));
-        this.loadReturnRequestList$ = this.actions$.pipe(ofType(LOAD_ORDER_RETURN_REQUEST_LIST), map((action) => action.payload), switchMap(payload => {
+        this.loadReturnRequestList$ = this.actions$.pipe(ofType(LOAD_ORDER_RETURN_REQUEST_LIST), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .getReturnRequestList(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
-                .pipe(map((returnRequestList) => new LoadOrderReturnRequestListSuccess(returnRequestList)), catchError(error => of(new LoadOrderReturnRequestListFail(makeErrorSerializable(error)))));
+                .pipe(map((returnRequestList) => new LoadOrderReturnRequestListSuccess(returnRequestList)), catchError((error) => of(new LoadOrderReturnRequestListFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -22641,26 +22638,26 @@ let UserPaymentMethodsEffects = class UserPaymentMethodsEffects {
     constructor(actions$, userPaymentMethodConnector) {
         this.actions$ = actions$;
         this.userPaymentMethodConnector = userPaymentMethodConnector;
-        this.loadUserPaymentMethods$ = this.actions$.pipe(ofType(LOAD_USER_PAYMENT_METHODS), map((action) => action.payload), mergeMap(payload => {
+        this.loadUserPaymentMethods$ = this.actions$.pipe(ofType(LOAD_USER_PAYMENT_METHODS), map((action) => action.payload), mergeMap((payload) => {
             return this.userPaymentMethodConnector.getAll(payload).pipe(map((payments) => {
                 return new LoadUserPaymentMethodsSuccess(payments);
-            }), catchError(error => of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)))));
         }));
-        this.setDefaultUserPaymentMethod$ = this.actions$.pipe(ofType(SET_DEFAULT_USER_PAYMENT_METHOD), map((action) => action.payload), mergeMap(payload => {
+        this.setDefaultUserPaymentMethod$ = this.actions$.pipe(ofType(SET_DEFAULT_USER_PAYMENT_METHOD), map((action) => action.payload), mergeMap((payload) => {
             return this.userPaymentMethodConnector
                 .setDefault(payload.userId, payload.paymentMethodId)
-                .pipe(switchMap(data => [
+                .pipe(switchMap((data) => [
                 new SetDefaultUserPaymentMethodSuccess(data),
                 new LoadUserPaymentMethods(payload.userId),
-            ]), catchError(error => of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)))));
         }));
-        this.deleteUserPaymentMethod$ = this.actions$.pipe(ofType(DELETE_USER_PAYMENT_METHOD), map((action) => action.payload), mergeMap(payload => {
+        this.deleteUserPaymentMethod$ = this.actions$.pipe(ofType(DELETE_USER_PAYMENT_METHOD), map((action) => action.payload), mergeMap((payload) => {
             return this.userPaymentMethodConnector
                 .delete(payload.userId, payload.paymentMethodId)
-                .pipe(switchMap(data => [
+                .pipe(switchMap((data) => [
                 new DeleteUserPaymentMethodSuccess(data),
                 new LoadUserPaymentMethods(payload.userId),
-            ]), catchError(error => of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -22687,10 +22684,10 @@ let RegionsEffects = class RegionsEffects {
         this.loadRegions$ = this.actions$.pipe(ofType(LOAD_REGIONS), map((action) => {
             return action.payload;
         }), switchMap((countryCode) => {
-            return this.siteConnector.getRegions(countryCode).pipe(map(regions => new LoadRegionsSuccess({
+            return this.siteConnector.getRegions(countryCode).pipe(map((regions) => new LoadRegionsSuccess({
                 entities: regions,
                 country: countryCode,
-            })), catchError(error => of(new LoadRegionsFail(makeErrorSerializable(error)))));
+            })), catchError((error) => of(new LoadRegionsFail(makeErrorSerializable(error)))));
         }));
         this.resetRegions$ = this.actions$.pipe(ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), map(() => {
             return new LoaderResetAction(REGIONS);
@@ -22721,11 +22718,11 @@ let ResetPasswordEffects = class ResetPasswordEffects {
                     text: { key: 'forgottenPassword.passwordResetSuccess' },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
-            ]), catchError(error => {
+            ]), catchError((error) => {
                 var _a;
                 const actions = [new ResetPasswordFail(makeErrorSerializable(error))];
                 if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                    error.error.errors.forEach(err => {
+                    error.error.errors.forEach((err) => {
                         if (err.message) {
                             actions.push(new AddMessage({
                                 text: { raw: err.message },
@@ -22754,9 +22751,9 @@ let TitlesEffects = class TitlesEffects {
         this.actions$ = actions$;
         this.userAccountConnector = userAccountConnector;
         this.loadTitles$ = this.actions$.pipe(ofType(LOAD_TITLES), switchMap(() => {
-            return this.userAccountConnector.getTitles().pipe(map(titles => {
+            return this.userAccountConnector.getTitles().pipe(map((titles) => {
                 return new LoadTitlesSuccess(titles);
-            }), catchError(error => of(new LoadTitlesFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadTitlesFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -22774,9 +22771,9 @@ let UpdateEmailEffects = class UpdateEmailEffects {
     constructor(actions$, userAccountConnector) {
         this.actions$ = actions$;
         this.userAccountConnector = userAccountConnector;
-        this.updateEmail$ = this.actions$.pipe(ofType(UPDATE_EMAIL), map((action) => action.payload), concatMap(payload => this.userAccountConnector
+        this.updateEmail$ = this.actions$.pipe(ofType(UPDATE_EMAIL), map((action) => action.payload), concatMap((payload) => this.userAccountConnector
             .updateEmail(payload.uid, payload.password, payload.newUid)
-            .pipe(map(() => new UpdateEmailSuccessAction(payload.newUid)), catchError(error => of(new UpdateEmailErrorAction(makeErrorSerializable(error)))))));
+            .pipe(map(() => new UpdateEmailSuccessAction(payload.newUid)), catchError((error) => of(new UpdateEmailErrorAction(makeErrorSerializable(error)))))));
     }
 };
 UpdateEmailEffects.ɵfac = function UpdateEmailEffects_Factory(t) { return new (t || UpdateEmailEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserConnector)); };
@@ -22793,9 +22790,9 @@ let UpdatePasswordEffects = class UpdatePasswordEffects {
     constructor(actions$, userAccountConnector) {
         this.actions$ = actions$;
         this.userAccountConnector = userAccountConnector;
-        this.updatePassword$ = this.actions$.pipe(ofType(UPDATE_PASSWORD), map((action) => action.payload), concatMap(payload => this.userAccountConnector
+        this.updatePassword$ = this.actions$.pipe(ofType(UPDATE_PASSWORD), map((action) => action.payload), concatMap((payload) => this.userAccountConnector
             .updatePassword(payload.userId, payload.oldPassword, payload.newPassword)
-            .pipe(map(_ => new UpdatePasswordSuccess()), catchError(error => of(new UpdatePasswordFail(makeErrorSerializable(error)))))));
+            .pipe(map(() => new UpdatePasswordSuccess()), catchError((error) => of(new UpdatePasswordFail(makeErrorSerializable(error)))))));
     }
 };
 UpdatePasswordEffects.ɵfac = function UpdatePasswordEffects_Factory(t) { return new (t || UpdatePasswordEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserConnector)); };
@@ -22814,22 +22811,22 @@ let UserAddressesEffects = class UserAddressesEffects {
         this.userAddressConnector = userAddressConnector;
         this.userAddressService = userAddressService;
         this.messageService = messageService;
-        this.loadUserAddresses$ = this.actions$.pipe(ofType(LOAD_USER_ADDRESSES), map((action) => action.payload), mergeMap(payload => {
+        this.loadUserAddresses$ = this.actions$.pipe(ofType(LOAD_USER_ADDRESSES), map((action) => action.payload), mergeMap((payload) => {
             return this.userAddressConnector.getAll(payload).pipe(map((addresses) => {
                 return new LoadUserAddressesSuccess(addresses);
-            }), catchError(error => of(new LoadUserAddressesFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadUserAddressesFail(makeErrorSerializable(error)))));
         }));
-        this.addUserAddress$ = this.actions$.pipe(ofType(ADD_USER_ADDRESS), map((action) => action.payload), mergeMap(payload => {
+        this.addUserAddress$ = this.actions$.pipe(ofType(ADD_USER_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
             return this.userAddressConnector
                 .add(payload.userId, payload.address)
                 .pipe(map((data) => {
                 return new AddUserAddressSuccess(data);
-            }), catchError(error => of(new AddUserAddressFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new AddUserAddressFail(makeErrorSerializable(error)))));
         }));
-        this.updateUserAddress$ = this.actions$.pipe(ofType(UPDATE_USER_ADDRESS), map((action) => action.payload), mergeMap(payload => {
+        this.updateUserAddress$ = this.actions$.pipe(ofType(UPDATE_USER_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
             return this.userAddressConnector
                 .update(payload.userId, payload.addressId, payload.address)
-                .pipe(map(data => {
+                .pipe(map((data) => {
                 // don't show the message if just setting address as default
                 if (payload.address &&
                     Object.keys(payload.address).length === 1 &&
@@ -22839,14 +22836,14 @@ let UserAddressesEffects = class UserAddressesEffects {
                 else {
                     return new UpdateUserAddressSuccess(data);
                 }
-            }), catchError(error => of(new UpdateUserAddressFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new UpdateUserAddressFail(makeErrorSerializable(error)))));
         }));
-        this.deleteUserAddress$ = this.actions$.pipe(ofType(DELETE_USER_ADDRESS), map((action) => action.payload), mergeMap(payload => {
+        this.deleteUserAddress$ = this.actions$.pipe(ofType(DELETE_USER_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
             return this.userAddressConnector
                 .delete(payload.userId, payload.addressId)
-                .pipe(map(data => {
+                .pipe(map((data) => {
                 return new DeleteUserAddressSuccess(data);
-            }), catchError(error => of(new DeleteUserAddressFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new DeleteUserAddressFail(makeErrorSerializable(error)))));
         }));
         /**
          *  Reload addresses and notify about add success
@@ -22915,10 +22912,10 @@ let UserConsentsEffect = class UserConsentsEffect {
         this.actions$ = actions$;
         this.userConsentConnector = userConsentConnector;
         this.resetConsents$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map(() => new ResetLoadUserConsents()));
-        this.getConsents$ = this.actions$.pipe(ofType(LOAD_USER_CONSENTS), map((action) => action.payload), concatMap(userId => this.userConsentConnector.loadConsents(userId).pipe(map(consents => new LoadUserConsentsSuccess(consents)), catchError(error => of(new LoadUserConsentsFail(makeErrorSerializable(error)))))));
-        this.giveConsent$ = this.actions$.pipe(ofType(GIVE_USER_CONSENT, TRANSFER_ANONYMOUS_CONSENT), concatMap(action => this.userConsentConnector
+        this.getConsents$ = this.actions$.pipe(ofType(LOAD_USER_CONSENTS), map((action) => action.payload), concatMap((userId) => this.userConsentConnector.loadConsents(userId).pipe(map((consents) => new LoadUserConsentsSuccess(consents)), catchError((error) => of(new LoadUserConsentsFail(makeErrorSerializable(error)))))));
+        this.giveConsent$ = this.actions$.pipe(ofType(GIVE_USER_CONSENT, TRANSFER_ANONYMOUS_CONSENT), concatMap((action) => this.userConsentConnector
             .giveConsent(action.payload.userId, action.payload.consentTemplateId, action.payload.consentTemplateVersion)
-            .pipe(map(consent => new GiveUserConsentSuccess(consent)), catchError(error => {
+            .pipe(map((consent) => new GiveUserConsentSuccess(consent)), catchError((error) => {
             const errors = [
                 new GiveUserConsentFail(makeErrorSerializable(error)),
             ];
@@ -22928,7 +22925,7 @@ let UserConsentsEffect = class UserConsentsEffect {
             }
             return of(...errors);
         }))));
-        this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map((action) => action.payload), concatMap(({ userId, consentCode }) => this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(map(() => new WithdrawUserConsentSuccess()), catchError(error => of(new WithdrawUserConsentFail(makeErrorSerializable(error)))))));
+        this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map((action) => action.payload), concatMap(({ userId, consentCode }) => this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(map(() => new WithdrawUserConsentSuccess()), catchError((error) => of(new WithdrawUserConsentFail(makeErrorSerializable(error)))))));
     }
 };
 UserConsentsEffect.ɵfac = function UserConsentsEffect_Factory(t) { return new (t || UserConsentsEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserConsentConnector)); };
@@ -22954,12 +22951,12 @@ let UserDetailsEffects = class UserDetailsEffects {
     constructor(actions$, userConnector) {
         this.actions$ = actions$;
         this.userConnector = userConnector;
-        this.loadUserDetails$ = this.actions$.pipe(ofType(LOAD_USER_DETAILS), map((action) => action.payload), mergeMap(userId => {
+        this.loadUserDetails$ = this.actions$.pipe(ofType(LOAD_USER_DETAILS), map((action) => action.payload), mergeMap((userId) => {
             return this.userConnector.get(userId).pipe(map((user) => {
                 return new LoadUserDetailsSuccess(user);
-            }), catchError(error => of(new LoadUserDetailsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadUserDetailsFail(makeErrorSerializable(error)))));
         }));
-        this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map((action) => action.payload), concatMap(payload => this.userConnector.update(payload.username, payload.userDetails).pipe(map(_ => new UpdateUserDetailsSuccess(payload.userDetails)), catchError(error => of(new UpdateUserDetailsFail(makeErrorSerializable(error)))))));
+        this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map((action) => action.payload), concatMap((payload) => this.userConnector.update(payload.username, payload.userDetails).pipe(map(() => new UpdateUserDetailsSuccess(payload.userDetails)), catchError((error) => of(new UpdateUserDetailsFail(makeErrorSerializable(error)))))));
     }
 };
 UserDetailsEffects.ɵfac = function UserDetailsEffects_Factory(t) { return new (t || UserDetailsEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserConnector)); };
@@ -22979,12 +22976,12 @@ let UserOrdersEffect = class UserOrdersEffect {
     constructor(actions$, orderConnector) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
-        this.loadUserOrders$ = this.actions$.pipe(ofType(LOAD_USER_ORDERS), map((action) => action.payload), switchMap(payload => {
+        this.loadUserOrders$ = this.actions$.pipe(ofType(LOAD_USER_ORDERS), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .getHistory(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
                 .pipe(map((orders) => {
                 return new LoadUserOrdersSuccess(orders);
-            }), catchError(error => of(new LoadUserOrdersFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadUserOrdersFail(makeErrorSerializable(error)))));
         }));
         this.resetUserOrders$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map(() => {
             return new ClearUserOrders();
@@ -23008,19 +23005,19 @@ let UserRegisterEffects = class UserRegisterEffects {
     constructor(actions$, userConnector) {
         this.actions$ = actions$;
         this.userConnector = userConnector;
-        this.registerUser$ = this.actions$.pipe(ofType(REGISTER_USER), map((action) => action.payload), mergeMap((user) => this.userConnector.register(user).pipe(map(() => new RegisterUserSuccess()), catchError(error => of(new RegisterUserFail(makeErrorSerializable(error)))))));
-        this.registerGuest$ = this.actions$.pipe(ofType(REGISTER_GUEST), map((action) => action.payload), mergeMap(({ guid, password }) => this.userConnector.registerGuest(guid, password).pipe(switchMap(user => [
+        this.registerUser$ = this.actions$.pipe(ofType(REGISTER_USER), map((action) => action.payload), mergeMap((user) => this.userConnector.register(user).pipe(map(() => new RegisterUserSuccess()), catchError((error) => of(new RegisterUserFail(makeErrorSerializable(error)))))));
+        this.registerGuest$ = this.actions$.pipe(ofType(REGISTER_GUEST), map((action) => action.payload), mergeMap(({ guid, password }) => this.userConnector.registerGuest(guid, password).pipe(switchMap((user) => [
             new LoadUserToken({
                 userId: user.uid,
                 password: password,
             }),
             new RegisterGuestSuccess(),
-        ]), catchError(error => of(new RegisterGuestFail(makeErrorSerializable(error)))))));
+        ]), catchError((error) => of(new RegisterGuestFail(makeErrorSerializable(error)))))));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((action) => action.payload), mergeMap((userId) => {
-            return this.userConnector.remove(userId).pipe(switchMap(_result => [
+            return this.userConnector.remove(userId).pipe(switchMap(() => [
                 new RemoveUserSuccess(),
                 new Logout(),
-            ]), catchError(error => of(new RemoveUserFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new RemoveUserFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -23044,33 +23041,33 @@ let CustomerCouponEffects = class CustomerCouponEffects {
     constructor(actions$, customerCouponConnector) {
         this.actions$ = actions$;
         this.customerCouponConnector = customerCouponConnector;
-        this.loadCustomerCoupons$ = this.actions$.pipe(ofType(LOAD_CUSTOMER_COUPONS), map((action) => action.payload), mergeMap(payload => {
+        this.loadCustomerCoupons$ = this.actions$.pipe(ofType(LOAD_CUSTOMER_COUPONS), map((action) => action.payload), mergeMap((payload) => {
             return this.customerCouponConnector
                 .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
                 .pipe(map((coupons) => {
                 return new LoadCustomerCouponsSuccess(coupons);
-            }), catchError(error => of(new LoadCustomerCouponsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadCustomerCouponsFail(makeErrorSerializable(error)))));
         }));
-        this.subscribeCustomerCoupon$ = this.actions$.pipe(ofType(SUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap(payload => {
+        this.subscribeCustomerCoupon$ = this.actions$.pipe(ofType(SUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
             return this.customerCouponConnector
                 .turnOnNotification(payload.userId, payload.couponCode)
                 .pipe(map((data) => {
                 return new SubscribeCustomerCouponSuccess(data);
-            }), catchError(error => of(new SubscribeCustomerCouponFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new SubscribeCustomerCouponFail(makeErrorSerializable(error)))));
         }));
-        this.unsubscribeCustomerCoupon$ = this.actions$.pipe(ofType(UNSUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap(payload => {
+        this.unsubscribeCustomerCoupon$ = this.actions$.pipe(ofType(UNSUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
             return this.customerCouponConnector
                 .turnOffNotification(payload.userId, payload.couponCode)
                 .pipe(map(() => {
                 return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
-            }), catchError(error => of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error)))));
         }));
-        this.claimCustomerCoupon$ = this.actions$.pipe(ofType(CLAIM_CUSTOMER_COUPON), map((action) => action.payload), mergeMap(payload => {
+        this.claimCustomerCoupon$ = this.actions$.pipe(ofType(CLAIM_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
             return this.customerCouponConnector
                 .claimCustomerCoupon(payload.userId, payload.couponCode)
-                .pipe(map(data => {
+                .pipe(map((data) => {
                 return new ClaimCustomerCouponSuccess(data);
-            }), catchError(error => of(new ClaimCustomerCouponFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new ClaimCustomerCouponFail(makeErrorSerializable(error)))));
         }));
     }
 };
@@ -23097,16 +23094,16 @@ let ProductInterestsEffect = class ProductInterestsEffect {
     constructor(actions$, userInterestsConnector) {
         this.actions$ = actions$;
         this.userInterestsConnector = userInterestsConnector;
-        this.loadProductInteres$ = this.actions$.pipe(ofType(LOAD_PRODUCT_INTERESTS), map((action) => action.payload), switchMap(payload => {
+        this.loadProductInteres$ = this.actions$.pipe(ofType(LOAD_PRODUCT_INTERESTS), map((action) => action.payload), switchMap((payload) => {
             return this.userInterestsConnector
                 .getInterests(payload.userId, payload.pageSize, payload.currentPage, payload.sort, payload.productCode, payload.notificationType)
                 .pipe(map((interests) => {
                 return new LoadProductInterestsSuccess(interests);
-            }), catchError(error => of(new LoadProductInterestsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadProductInterestsFail(makeErrorSerializable(error)))));
         }));
-        this.removeProductInterest$ = this.actions$.pipe(ofType(REMOVE_PRODUCT_INTEREST), map((action) => action.payload), switchMap(payload => this.userInterestsConnector
+        this.removeProductInterest$ = this.actions$.pipe(ofType(REMOVE_PRODUCT_INTEREST), map((action) => action.payload), switchMap((payload) => this.userInterestsConnector
             .removeInterest(payload.userId, payload.item)
-            .pipe(switchMap(data => [
+            .pipe(switchMap((data) => [
             new LoadProductInterests(payload.singleDelete
                 ? {
                     userId: payload.userId,
@@ -23115,8 +23112,8 @@ let ProductInterestsEffect = class ProductInterestsEffect {
                 }
                 : { userId: payload.userId }),
             new RemoveProductInterestSuccess(data),
-        ]), catchError(error => of(new RemoveProductInterestFail(makeErrorSerializable(error)))))));
-        this.addProductInterest$ = this.actions$.pipe(ofType(ADD_PRODUCT_INTEREST), map((action) => action.payload), switchMap(payload => this.userInterestsConnector
+        ]), catchError((error) => of(new RemoveProductInterestFail(makeErrorSerializable(error)))))));
+        this.addProductInterest$ = this.actions$.pipe(ofType(ADD_PRODUCT_INTEREST), map((action) => action.payload), switchMap((payload) => this.userInterestsConnector
             .addInterest(payload.userId, payload.productCode, payload.notificationType)
             .pipe(switchMap((res) => [
             new LoadProductInterests({
@@ -23125,7 +23122,7 @@ let ProductInterestsEffect = class ProductInterestsEffect {
                 notificationType: payload.notificationType,
             }),
             new AddProductInterestSuccess(res),
-        ]), catchError(error => of(new AddProductInterestFail(makeErrorSerializable(error)))))));
+        ]), catchError((error) => of(new AddProductInterestFail(makeErrorSerializable(error)))))));
     }
 };
 ProductInterestsEffect.ɵfac = function ProductInterestsEffect_Factory(t) { return new (t || ProductInterestsEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserInterestsConnector)); };

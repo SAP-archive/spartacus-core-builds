@@ -3599,7 +3599,7 @@
          */
         AnonymousConsentsService.prototype.getConsent = function (templateId) {
             var _this = this;
-            return this.authService.isUserLoggedIn().pipe(operators.filter(function (authenticated) { return !authenticated; }), operators.tap(function (_) { return _this.getTemplates(true); }), operators.switchMap(function (_) {
+            return this.authService.isUserLoggedIn().pipe(operators.filter(function (authenticated) { return !authenticated; }), operators.tap(function () { return _this.getTemplates(true); }), operators.switchMap(function () {
                 return _this.store.pipe(store.select(getAnonymousConsentByTemplateCode(templateId)));
             }));
         };
@@ -3671,7 +3671,7 @@
          */
         AnonymousConsentsService.prototype.getTemplatesUpdated = function () {
             var _this = this;
-            return this.getTemplates(true).pipe(operators.switchMap(function (_) {
+            return this.getTemplates(true).pipe(operators.switchMap(function () {
                 return _this.store.pipe(store.select(getAnonymousConsentTemplatesUpdate));
             }));
         };
@@ -4017,7 +4017,9 @@
         ConverterService.prototype.convertMany = function (sources, injectionToken) {
             var _this = this;
             if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
-                return sources.map(function (source) { return _this.convertSource(source, injectionToken); });
+                return sources.map(function (source) {
+                    return _this.convertSource(source, injectionToken);
+                });
             }
             else {
                 return sources;
@@ -11552,7 +11554,7 @@
          */
         UserConsentService.prototype.getConsent = function (templateId) {
             var _this = this;
-            return this.authService.isUserLoggedIn().pipe(operators.filter(Boolean), operators.tap(function (_) { return _this.getConsents(true); }), operators.switchMap(function (_) {
+            return this.authService.isUserLoggedIn().pipe(operators.filter(Boolean), operators.tap(function () { return _this.getConsents(true); }), operators.switchMap(function () {
                 return _this.store.pipe(store.select(getConsentByTemplateId(templateId)));
             }), operators.filter(function (template) { return Boolean(template); }), operators.map(function (template) { return template.currentConsent; }));
         };
@@ -11737,7 +11739,7 @@
             this.anonymousConsentsConfig = anonymousConsentsConfig;
             this.anonymousConsentService = anonymousConsentService;
             this.userConsentService = userConsentService;
-            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$c.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.concatMap(function (_) {
+            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$c.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.concatMap(function () {
                 return _this.anonymousConsentTemplatesConnector
                     .loadAnonymousConsentTemplates()
                     .pipe(operators.withLatestFrom(_this.anonymousConsentService.getTemplates()), operators.mergeMap(function (_a) {
@@ -12032,7 +12034,9 @@
                         return [2 /*return*/, this.config];
                     }
                     return [2 /*return*/, this.ongoingScopes$
-                            .pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config))
+                            .pipe(operators.filter(function (ongoingScopes) {
+                            return ongoingScopes && _this.areReady(scopes, ongoingScopes);
+                        }), operators.take(1), operators.mapTo(this.config))
                             .toPromise()];
                 });
             });
@@ -12530,7 +12534,9 @@
             this.siteConnector = siteConnector;
             this.winRef = winRef;
             this.loadCurrencies$ = this.actions$.pipe(effects$c.ofType(LOAD_CURRENCIES), operators.exhaustMap(function () {
-                return _this.siteConnector.getCurrencies().pipe(operators.map(function (currencies) { return new LoadCurrenciesSuccess(currencies); }), operators.catchError(function (error) {
+                return _this.siteConnector.getCurrencies().pipe(operators.map(function (currencies) {
+                    return new LoadCurrenciesSuccess(currencies);
+                }), operators.catchError(function (error) {
                     return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error)));
                 }));
             }));
@@ -14975,9 +14981,7 @@
          * Simple random temp cart id generator
          */
         MultiCartService.prototype.generateTempCartId = function () {
-            var pseudoUuid = Math.random()
-                .toString(36)
-                .substr(2, 9);
+            var pseudoUuid = Math.random().toString(36).substr(2, 9);
             return "temp-" + pseudoUuid;
         };
         /**
@@ -15381,7 +15385,9 @@
          */
         ActiveCartService.prototype.getEntry = function (productCode) {
             var _this = this;
-            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getEntry(cartId, productCode); }), operators.distinctUntilChanged());
+            return this.activeCartId$.pipe(operators.switchMap(function (cartId) {
+                return _this.multiCartService.getEntry(cartId, productCode);
+            }), operators.distinctUntilChanged());
         };
         /**
          * Assign email to cart
@@ -15403,10 +15409,7 @@
         ActiveCartService.prototype.isGuestCart = function () {
             return (this.cartUser &&
                 (this.cartUser.name === OCC_USER_ID_GUEST ||
-                    this.isEmail(this.cartUser.uid
-                        .split('|')
-                        .slice(1)
-                        .join('|'))));
+                    this.isEmail(this.cartUser.uid.split('|').slice(1).join('|'))));
         };
         /**
          * Add multiple entries to a cart
@@ -15871,7 +15874,7 @@
                 }
                 return rxjs.of(cartState);
             }), operators.filter(function (cartState) { return !_this.isEmpty(cartState.value); }), operators.take(1))
-                .subscribe(function (_) {
+                .subscribe(function () {
                 _this.multiCartService.addEntry(_this.userId, _this.cartId, productCode, quantity);
             });
         };
@@ -15985,7 +15988,9 @@
         WishListService.prototype.getWishListLoading = function () {
             var _this = this;
             return this.getWishListId().pipe(operators.switchMap(function (wishListId) {
-                return _this.multiCartService.isStable(wishListId).pipe(operators.map(function (stable) { return !stable; }));
+                return _this.multiCartService
+                    .isStable(wishListId)
+                    .pipe(operators.map(function (stable) { return !stable; }));
             }));
         };
         WishListService.prototype.getWishListId = function () {
@@ -20319,7 +20324,7 @@
             this.navigateBuUrl$ = this.actions$.pipe(effects$c.ofType(ROUTER_GO_BY_URL), operators.map(function (action) { return action.payload; }), operators.tap(function (url) {
                 _this.router.navigateByUrl(url);
             }));
-            this.clearCmsRoutes$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap(function (_) {
+            this.clearCmsRoutes$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap(function () {
                 var filteredConfig = _this.router.config.filter(function (route) { return !(route.data && route.data.cxCmsRouteContext); });
                 if (filteredConfig.length !== _this.router.config.length) {
                     _this.router.resetConfig(filteredConfig);
@@ -20670,7 +20675,7 @@
             this.actions$ = actions$;
             this.cmsPageConnector = cmsPageConnector;
             this.routingService = routingService;
-            this.refreshPage$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap(function (_) {
+            this.refreshPage$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap(function () {
                 return _this.routingService.getRouterState().pipe(operators.filter(function (routerState) {
                     return routerState &&
                         routerState.state &&
@@ -23727,7 +23732,7 @@
                 }
                 return false;
             }), operators.take(1))
-                .subscribe(function (_) {
+                .subscribe(function () {
                 _this.cmsService.launchInSmartEdit = true;
                 _this.getDefaultPreviewCode();
             });
@@ -26259,7 +26264,7 @@
             this.cancelOrder$ = this.actions$.pipe(effects$c.ofType(CANCEL_ORDER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .cancel(payload.userId, payload.orderCode, payload.cancelRequestInput)
-                    .pipe(operators.map(function (_) { return new CancelOrderSuccess(); }), operators.catchError(function (error) {
+                    .pipe(operators.map(function () { return new CancelOrderSuccess(); }), operators.catchError(function (error) {
                     return rxjs.of(new CancelOrderFail(makeErrorSerializable(error)));
                 }));
             }));
@@ -26306,7 +26311,7 @@
             this.cancelReturnRequest$ = this.actions$.pipe(effects$c.ofType(CANCEL_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .cancelReturnRequest(payload.userId, payload.returnRequestCode, payload.returnRequestModification)
-                    .pipe(operators.map(function (_) { return new CancelOrderReturnRequestSuccess(); }), operators.catchError(function (error) {
+                    .pipe(operators.map(function () { return new CancelOrderReturnRequestSuccess(); }), operators.catchError(function (error) {
                     return rxjs.of(new CancelOrderReturnRequestFail(makeErrorSerializable(error)));
                 }));
             }));
@@ -26534,7 +26539,7 @@
             this.updatePassword$ = this.actions$.pipe(effects$c.ofType(UPDATE_PASSWORD), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
                 return _this.userAccountConnector
                     .updatePassword(payload.userId, payload.oldPassword, payload.newPassword)
-                    .pipe(operators.map(function (_) { return new UpdatePasswordSuccess(); }), operators.catchError(function (error) {
+                    .pipe(operators.map(function () { return new UpdatePasswordSuccess(); }), operators.catchError(function (error) {
                     return rxjs.of(new UpdatePasswordFail(makeErrorSerializable(error)));
                 }));
             }));
@@ -26732,7 +26737,7 @@
                 }));
             }));
             this.updateUserDetails$ = this.actions$.pipe(effects$c.ofType(UPDATE_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.userConnector.update(payload.username, payload.userDetails).pipe(operators.map(function (_) { return new UpdateUserDetailsSuccess(payload.userDetails); }), operators.catchError(function (error) {
+                return _this.userConnector.update(payload.username, payload.userDetails).pipe(operators.map(function () { return new UpdateUserDetailsSuccess(payload.userDetails); }), operators.catchError(function (error) {
                     return rxjs.of(new UpdateUserDetailsFail(makeErrorSerializable(error)));
                 }));
             }));
@@ -26810,7 +26815,7 @@
                 }));
             }));
             this.removeUser$ = this.actions$.pipe(effects$c.ofType(REMOVE_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
-                return _this.userConnector.remove(userId).pipe(operators.switchMap(function (_result) { return [
+                return _this.userConnector.remove(userId).pipe(operators.switchMap(function () { return [
                     new RemoveUserSuccess(),
                     new Logout(),
                 ]; }), operators.catchError(function (error) {
