@@ -7744,6 +7744,50 @@
         }
     }
 
+    /**
+     * Http interceptor to add cookies to all cross-site requests.
+     */
+    var WithCredentialsInterceptor = /** @class */ (function () {
+        function WithCredentialsInterceptor(config) {
+            this.config = config;
+        }
+        /**
+         * Intercepts each request and adds the `withCredential` flag to it
+         * if it hasn't been added already.
+         */
+        WithCredentialsInterceptor.prototype.intercept = function (request, next) {
+            if (this.requiresWithCredentials(request)) {
+                request = request.clone({
+                    withCredentials: true,
+                });
+            }
+            return next.handle(request);
+        };
+        /**
+         * indicates whether the request should use the WithCredentials flag.
+         */
+        WithCredentialsInterceptor.prototype.requiresWithCredentials = function (request) {
+            var _a, _b;
+            return (((_a = this.occConfig) === null || _a === void 0 ? void 0 : _a.useWithCredentials) &&
+                request.url.indexOf((_b = this.occConfig) === null || _b === void 0 ? void 0 : _b.prefix) > -1);
+        };
+        Object.defineProperty(WithCredentialsInterceptor.prototype, "occConfig", {
+            get: function () {
+                return this.config.backend.occ;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        WithCredentialsInterceptor.ctorParameters = function () { return [
+            { type: OccConfig }
+        ]; };
+        WithCredentialsInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function WithCredentialsInterceptor_Factory() { return new WithCredentialsInterceptor(core["ɵɵinject"](OccConfig)); }, token: WithCredentialsInterceptor, providedIn: "root" });
+        WithCredentialsInterceptor = __decorate([
+            core.Injectable({ providedIn: 'root' })
+        ], WithCredentialsInterceptor);
+        return WithCredentialsInterceptor;
+    }());
+
 
     (function (Occ) {
         /**
@@ -8870,6 +8914,11 @@
             return {
                 ngModule: OccModule_1,
                 providers: [
+                    {
+                        provide: http.HTTP_INTERCEPTORS,
+                        useExisting: WithCredentialsInterceptor,
+                        multi: true,
+                    },
                     { provide: OccConfig, useExisting: Config },
                     provideDefaultConfig(defaultOccConfig),
                     provideConfigValidator(occConfigValidator),
@@ -13151,153 +13200,6 @@
         return AsmStoreModule;
     }());
 
-    var getAsmState = store.createFeatureSelector(ASM_FEATURE);
-
-    var ɵ0$r = function (state) { return state.asmUi; };
-    var getAsmUi = store.createSelector(getAsmState, ɵ0$r);
-
-    var ɵ0$s = function (state) { return state.customerSearchResult; };
-    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, ɵ0$s);
-    var ɵ1$l = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, ɵ1$l);
-    var ɵ2$e = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getCustomerSearchResultsLoading = store.createSelector(getCustomerSearchResultsLoaderState, ɵ2$e);
-
-    var ɵ0$t = function (state) { return state.csagentToken; };
-    var getCustomerSupportAgentTokenState = store.createSelector(getAsmState, ɵ0$t);
-    var ɵ1$m = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, ɵ1$m);
-    var ɵ2$f = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
-
-
-
-    var asmGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getAsmUi: getAsmUi,
-        ɵ0: ɵ0$r,
-        getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
-        getCustomerSearchResults: getCustomerSearchResults,
-        getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
-        ɵ1: ɵ1$l,
-        ɵ2: ɵ2$e,
-        getAsmState: getAsmState,
-        getCustomerSupportAgentTokenState: getCustomerSupportAgentTokenState,
-        getCustomerSupportAgentToken: getCustomerSupportAgentToken,
-        getCustomerSupportAgentTokenLoading: getCustomerSupportAgentTokenLoading
-    });
-
-    var AsmAuthService = /** @class */ (function () {
-        function AsmAuthService(store, authService) {
-            this.store = store;
-            this.authService = authService;
-        }
-        /**
-         * Loads a user token for a customer support agent
-         * @param userId
-         * @param password
-         */
-        AsmAuthService.prototype.authorizeCustomerSupportAgent = function (userId, password) {
-            this.store.dispatch(new LoadCustomerSupportAgentToken({
-                userId: userId,
-                password: password,
-            }));
-        };
-        /**
-         * Starts an ASM customer emulation session.
-         * A customer emulation session is stoped by calling logout().
-         * @param customerSupportAgentToken
-         * @param customerId
-         */
-        AsmAuthService.prototype.startCustomerEmulationSession = function (customerSupportAgentToken, customerId) {
-            this.authService.authorizeWithToken(__assign(__assign({}, customerSupportAgentToken), { userId: customerId }));
-        };
-        /**
-         * Utility function to determine if a given token is a customer emulation session token.
-         * @param userToken
-         */
-        AsmAuthService.prototype.isCustomerEmulationToken = function (userToken) {
-            return (Boolean(userToken) &&
-                Boolean(userToken.userId) &&
-                userToken.userId !== OCC_USER_ID_CURRENT);
-        };
-        /**
-         * Returns the customer support agent's token
-         */
-        AsmAuthService.prototype.getCustomerSupportAgentToken = function () {
-            return this.store.pipe(store.select(getCustomerSupportAgentToken));
-        };
-        /**
-         * Returns the customer support agent's token loading status
-         */
-        AsmAuthService.prototype.getCustomerSupportAgentTokenLoading = function () {
-            return this.store.pipe(store.select(getCustomerSupportAgentTokenLoading));
-        };
-        /**
-         * Logout a customer support agent
-         */
-        AsmAuthService.prototype.logoutCustomerSupportAgent = function () {
-            var _this = this;
-            this.getCustomerSupportAgentToken()
-                .pipe(operators.take(1))
-                .subscribe(function (userToken) {
-                _this.store.dispatch(new LogoutCustomerSupportAgent());
-                _this.store.dispatch(new RevokeUserToken(userToken));
-            });
-        };
-        AsmAuthService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        AsmAuthService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AsmAuthService_Factory() { return new AsmAuthService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: AsmAuthService, providedIn: "root" });
-        AsmAuthService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], AsmAuthService);
-        return AsmAuthService;
-    }());
-
-    var CustomerSupportAgentTokenInterceptor = /** @class */ (function () {
-        function CustomerSupportAgentTokenInterceptor(asmAuthService) {
-            this.asmAuthService = asmAuthService;
-        }
-        CustomerSupportAgentTokenInterceptor.prototype.intercept = function (request, next) {
-            return this.getCustomerSupportAgentToken(request).pipe(operators.take(1), operators.switchMap(function (token) {
-                if (token) {
-                    request = request.clone({
-                        setHeaders: {
-                            Authorization: token.token_type + " " + token.access_token,
-                        },
-                    });
-                }
-                return next.handle(request);
-            }));
-        };
-        CustomerSupportAgentTokenInterceptor.prototype.getCustomerSupportAgentToken = function (request) {
-            if (InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers)) {
-                return this.asmAuthService.getCustomerSupportAgentToken();
-            }
-            return rxjs.of(null);
-        };
-        CustomerSupportAgentTokenInterceptor.ctorParameters = function () { return [
-            { type: AsmAuthService }
-        ]; };
-        CustomerSupportAgentTokenInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(core["ɵɵinject"](AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
-        CustomerSupportAgentTokenInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], CustomerSupportAgentTokenInterceptor);
-        return CustomerSupportAgentTokenInterceptor;
-    }());
-
 
     (function (GlobalMessageType) {
         GlobalMessageType["MSG_TYPE_CONFIRMATION"] = "[GlobalMessage] Confirmation";
@@ -13353,8 +13255,8 @@
 
     var getGlobalMessageState = store.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
-    var ɵ0$u = function (state) { return state.entities; };
-    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, ɵ0$u);
+    var ɵ0$r = function (state) { return state.entities; };
+    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, ɵ0$r);
     var getGlobalMessageEntitiesByType = function (type) {
         return store.createSelector(getGlobalMessageEntities, function (entities) { return entities && entities[type]; });
     };
@@ -13370,7 +13272,7 @@
         getGlobalMessageEntities: getGlobalMessageEntities,
         getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
         getGlobalMessageCountByType: getGlobalMessageCountByType,
-        ɵ0: ɵ0$u
+        ɵ0: ɵ0$r
     });
 
     var GlobalMessageService = /** @class */ (function () {
@@ -14024,6 +13926,121 @@
         return GlobalMessageModule;
     }());
 
+    var getAsmState = store.createFeatureSelector(ASM_FEATURE);
+
+    var ɵ0$s = function (state) { return state.asmUi; };
+    var getAsmUi = store.createSelector(getAsmState, ɵ0$s);
+
+    var ɵ0$t = function (state) { return state.customerSearchResult; };
+    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, ɵ0$t);
+    var ɵ1$l = function (state) {
+        return loaderValueSelector(state);
+    };
+    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, ɵ1$l);
+    var ɵ2$e = function (state) {
+        return loaderLoadingSelector(state);
+    };
+    var getCustomerSearchResultsLoading = store.createSelector(getCustomerSearchResultsLoaderState, ɵ2$e);
+
+    var ɵ0$u = function (state) { return state.csagentToken; };
+    var getCustomerSupportAgentTokenState = store.createSelector(getAsmState, ɵ0$u);
+    var ɵ1$m = function (state) {
+        return loaderValueSelector(state);
+    };
+    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, ɵ1$m);
+    var ɵ2$f = function (state) {
+        return loaderLoadingSelector(state);
+    };
+    var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
+
+
+
+    var asmGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getAsmUi: getAsmUi,
+        ɵ0: ɵ0$s,
+        getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
+        getCustomerSearchResults: getCustomerSearchResults,
+        getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
+        ɵ1: ɵ1$l,
+        ɵ2: ɵ2$e,
+        getAsmState: getAsmState,
+        getCustomerSupportAgentTokenState: getCustomerSupportAgentTokenState,
+        getCustomerSupportAgentToken: getCustomerSupportAgentToken,
+        getCustomerSupportAgentTokenLoading: getCustomerSupportAgentTokenLoading
+    });
+
+    var AsmAuthService = /** @class */ (function () {
+        function AsmAuthService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * Loads a user token for a customer support agent
+         * @param userId
+         * @param password
+         */
+        AsmAuthService.prototype.authorizeCustomerSupportAgent = function (userId, password) {
+            this.store.dispatch(new LoadCustomerSupportAgentToken({
+                userId: userId,
+                password: password,
+            }));
+        };
+        /**
+         * Starts an ASM customer emulation session.
+         * A customer emulation session is stoped by calling logout().
+         * @param customerSupportAgentToken
+         * @param customerId
+         */
+        AsmAuthService.prototype.startCustomerEmulationSession = function (customerSupportAgentToken, customerId) {
+            this.authService.authorizeWithToken(__assign(__assign({}, customerSupportAgentToken), { userId: customerId }));
+        };
+        /**
+         * Utility function to determine if a given token is a customer emulation session token.
+         * @param userToken
+         */
+        AsmAuthService.prototype.isCustomerEmulationToken = function (userToken) {
+            return (Boolean(userToken) &&
+                Boolean(userToken.userId) &&
+                userToken.userId !== OCC_USER_ID_CURRENT);
+        };
+        /**
+         * Returns the customer support agent's token
+         */
+        AsmAuthService.prototype.getCustomerSupportAgentToken = function () {
+            return this.store.pipe(store.select(getCustomerSupportAgentToken));
+        };
+        /**
+         * Returns the customer support agent's token loading status
+         */
+        AsmAuthService.prototype.getCustomerSupportAgentTokenLoading = function () {
+            return this.store.pipe(store.select(getCustomerSupportAgentTokenLoading));
+        };
+        /**
+         * Logout a customer support agent
+         */
+        AsmAuthService.prototype.logoutCustomerSupportAgent = function () {
+            var _this = this;
+            this.getCustomerSupportAgentToken()
+                .pipe(operators.take(1))
+                .subscribe(function (userToken) {
+                _this.store.dispatch(new LogoutCustomerSupportAgent());
+                _this.store.dispatch(new RevokeUserToken(userToken));
+            });
+        };
+        AsmAuthService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService }
+        ]; };
+        AsmAuthService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AsmAuthService_Factory() { return new AsmAuthService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: AsmAuthService, providedIn: "root" });
+        AsmAuthService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], AsmAuthService);
+        return AsmAuthService;
+    }());
+
     var CustomerSupportAgentErrorHandlingService = /** @class */ (function () {
         function CustomerSupportAgentErrorHandlingService(asmAuthService, globalMessageService) {
             this.asmAuthService = asmAuthService;
@@ -14079,6 +14096,38 @@
             core.Injectable({ providedIn: 'root' })
         ], CustomerSupportAgentAuthErrorInterceptor);
         return CustomerSupportAgentAuthErrorInterceptor;
+    }());
+
+    var CustomerSupportAgentTokenInterceptor = /** @class */ (function () {
+        function CustomerSupportAgentTokenInterceptor(asmAuthService) {
+            this.asmAuthService = asmAuthService;
+        }
+        CustomerSupportAgentTokenInterceptor.prototype.intercept = function (request, next) {
+            return this.getCustomerSupportAgentToken(request).pipe(operators.take(1), operators.switchMap(function (token) {
+                if (token) {
+                    request = request.clone({
+                        setHeaders: {
+                            Authorization: token.token_type + " " + token.access_token,
+                        },
+                    });
+                }
+                return next.handle(request);
+            }));
+        };
+        CustomerSupportAgentTokenInterceptor.prototype.getCustomerSupportAgentToken = function (request) {
+            if (InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers)) {
+                return this.asmAuthService.getCustomerSupportAgentToken();
+            }
+            return rxjs.of(null);
+        };
+        CustomerSupportAgentTokenInterceptor.ctorParameters = function () { return [
+            { type: AsmAuthService }
+        ]; };
+        CustomerSupportAgentTokenInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(core["ɵɵinject"](AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
+        CustomerSupportAgentTokenInterceptor = __decorate([
+            core.Injectable({ providedIn: 'root' })
+        ], CustomerSupportAgentTokenInterceptor);
+        return CustomerSupportAgentTokenInterceptor;
     }());
 
     var interceptors$2 = [
@@ -27437,6 +27486,7 @@
     exports.WITHDRAW_CONSENT_PROCESS_ID = WITHDRAW_CONSENT_PROCESS_ID;
     exports.WindowRef = WindowRef;
     exports.WishListService = WishListService;
+    exports.WithCredentialsInterceptor = WithCredentialsInterceptor;
     exports.configInitializerFactory = configInitializerFactory;
     exports.configValidatorFactory = configValidatorFactory;
     exports.configurationFactory = configurationFactory;
