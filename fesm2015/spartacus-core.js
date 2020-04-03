@@ -12565,6 +12565,9 @@ function getCartIdByUserId(cart, userId) {
     }
     return cart.code;
 }
+function getWishlistName(customerId) {
+    return `wishlist${customerId}`;
+}
 /**
  * What is a temporary cart?
  * - frontend only cart entity!
@@ -12642,20 +12645,23 @@ class AddEmailToCartSuccess {
         this.type = ADD_EMAIL_TO_CART_SUCCESS;
     }
 }
-class LoadCart {
+class LoadCart extends EntityLoadAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = LOAD_CART;
     }
 }
-class LoadCartFail {
+class LoadCartFail extends EntityFailAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId, payload.error);
         this.payload = payload;
         this.type = LOAD_CART_FAIL;
     }
 }
-class LoadCartSuccess {
+class LoadCartSuccess extends EntitySuccessAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = LOAD_CART_SUCCESS;
     }
@@ -12833,9 +12839,6 @@ class CartRemoveVoucherSuccess extends EntityProcessesDecrementAction {
 }
 
 const REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
-const LOAD_MULTI_CART = '[Multi Cart] Load Cart';
-const LOAD_MULTI_CART_FAIL = '[Multi Cart] Load Cart Fail';
-const LOAD_MULTI_CART_SUCCESS = '[Multi Cart] Load Cart Success';
 const MERGE_MULTI_CART = '[Multi Cart] Merge Cart';
 const MERGE_MULTI_CART_SUCCESS = '[Multi Cart] Merge Cart Success';
 const RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
@@ -12865,27 +12868,6 @@ class SetTempCart extends EntitySuccessAction {
         super(MULTI_CART_DATA, payload.tempCartId, payload.cart);
         this.payload = payload;
         this.type = SET_TEMP_CART;
-    }
-}
-class LoadMultiCart extends EntityLoadAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = LOAD_MULTI_CART;
-    }
-}
-class LoadMultiCartFail extends EntityFailAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId, payload.error);
-        this.payload = payload;
-        this.type = LOAD_MULTI_CART_FAIL;
-    }
-}
-class LoadMultiCartSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId));
-        this.payload = payload;
-        this.type = LOAD_MULTI_CART_SUCCESS;
     }
 }
 class MergeMultiCart {
@@ -12967,6 +12949,7 @@ const CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
 const CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
 const LOAD_WISH_LIST = '[Wish List] Load Wish List';
 const LOAD_WISH_LIST_SUCCESS = '[Wish List] Load Wish List Success';
+const LOAD_WISH_LIST_FAIL = '[Wish List] Load Wish List Fail';
 const RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
 class CreateWishList {
     constructor(payload) {
@@ -12988,17 +12971,25 @@ class CreateWishListFail extends EntityFailAction {
         this.type = CREATE_WISH_LIST_FAIL;
     }
 }
-class LoadWishList {
+class LoadWishList extends EntityLoadAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.tempCartId);
         this.payload = payload;
         this.type = LOAD_WISH_LIST;
     }
 }
 class LoadWishListSuccess extends EntitySuccessAction {
     constructor(payload) {
-        super(MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId));
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = LOAD_WISH_LIST_SUCCESS;
+    }
+}
+class LoadWishListFail extends EntityFailAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId, payload.error);
+        this.payload = payload;
+        this.type = LOAD_WISH_LIST_FAIL;
     }
 }
 
@@ -13071,9 +13062,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     DeleteCart: DeleteCart,
     DeleteCartFail: DeleteCartFail,
     REMOVE_TEMP_CART: REMOVE_TEMP_CART,
-    LOAD_MULTI_CART: LOAD_MULTI_CART,
-    LOAD_MULTI_CART_FAIL: LOAD_MULTI_CART_FAIL,
-    LOAD_MULTI_CART_SUCCESS: LOAD_MULTI_CART_SUCCESS,
     MERGE_MULTI_CART: MERGE_MULTI_CART,
     MERGE_MULTI_CART_SUCCESS: MERGE_MULTI_CART_SUCCESS,
     RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
@@ -13088,9 +13076,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
     RemoveTempCart: RemoveTempCart,
     SetTempCart: SetTempCart,
-    LoadMultiCart: LoadMultiCart,
-    LoadMultiCartFail: LoadMultiCartFail,
-    LoadMultiCartSuccess: LoadMultiCartSuccess,
     MergeMultiCart: MergeMultiCart,
     MergeMultiCartSuccess: MergeMultiCartSuccess,
     ResetMultiCartDetails: ResetMultiCartDetails,
@@ -13107,12 +13092,14 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
     LOAD_WISH_LIST: LOAD_WISH_LIST,
     LOAD_WISH_LIST_SUCCESS: LOAD_WISH_LIST_SUCCESS,
+    LOAD_WISH_LIST_FAIL: LOAD_WISH_LIST_FAIL,
     RESET_WISH_LIST_DETAILS: RESET_WISH_LIST_DETAILS,
     CreateWishList: CreateWishList,
     CreateWishListSuccess: CreateWishListSuccess,
     CreateWishListFail: CreateWishListFail,
     LoadWishList: LoadWishList,
-    LoadWishListSuccess: LoadWishListSuccess
+    LoadWishListSuccess: LoadWishListSuccess,
+    LoadWishListFail: LoadWishListFail
 });
 
 let MultiCartService = class MultiCartService {
@@ -14043,7 +14030,11 @@ let WishListService = class WishListService {
         }), filter(([wishListId]) => Boolean(wishListId)), switchMap(([wishListId]) => this.multiCartService.getCart(wishListId)));
     }
     loadWishList(userId, customerId) {
-        this.store.dispatch(new LoadWishList({ userId, customerId }));
+        this.store.dispatch(new LoadWishList({
+            userId,
+            customerId,
+            tempCartId: getWishlistName(customerId),
+        }));
     }
     addEntry(productCode) {
         this.getWishListId()
@@ -15292,22 +15283,10 @@ let CartEffects = class CartEffects {
         this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((action) => action.payload), groupBy((payload) => payload.cartId), mergeMap((group$) => group$.pipe(switchMap((payload) => {
             return of(payload).pipe(withLatestFrom(this.store.pipe(select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
         }), filter(([_, hasPendingProcesses]) => !hasPendingProcesses), map(([payload]) => payload), switchMap((payload) => {
-            return this.cartConnector.load(payload.userId, payload.cartId).pipe(
-            // TODO: remove with the `cart` store feature
-            withLatestFrom(this.store.pipe(select(getActiveCartId))), mergeMap(([cart, activeCartId]) => {
+            return this.cartConnector.load(payload.userId, payload.cartId).pipe(mergeMap((cart) => {
                 let actions = [];
                 if (cart) {
-                    // `cart` store branch should only be updated for active cart
-                    // avoid dispatching LoadCartSuccess action on different cart loads
-                    if (payload.cartId === activeCartId ||
-                        payload.cartId === OCC_CART_ID_CURRENT) {
-                        actions.push(new LoadCartSuccess(cart));
-                    }
-                    actions.push(new LoadMultiCartSuccess({
-                        cart,
-                        userId: payload.userId,
-                        extraData: payload.extraData,
-                    }));
+                    actions.push(new LoadCartSuccess(Object.assign(Object.assign({}, payload), { cart, cartId: getCartIdByUserId(cart, payload.userId) })));
                     if (payload.cartId === OCC_CART_ID_CURRENT) {
                         // Removing cart from entity object under `current` key as it is no longer needed.
                         // Current cart is loaded under it's code entity.
@@ -15316,10 +15295,7 @@ let CartEffects = class CartEffects {
                 }
                 else {
                     actions = [
-                        new LoadCartFail({}),
-                        new LoadMultiCartFail({
-                            cartId: payload.cartId,
-                        }),
+                        new LoadCartFail(Object.assign(Object.assign({}, payload), { error: {} })),
                     ];
                 }
                 return actions;
@@ -15351,11 +15327,7 @@ let CartEffects = class CartEffects {
                     }
                 }
                 return from([
-                    new LoadCartFail(makeErrorSerializable(error)),
-                    new LoadMultiCartFail({
-                        cartId: payload.cartId,
-                        error: makeErrorSerializable(error),
-                    }),
+                    new LoadCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
                 ]);
             }));
         }))), withdrawOn(this.contextChange$));
@@ -15376,29 +15348,14 @@ let CartEffects = class CartEffects {
                     }));
                 }
                 return [
-                    new CreateCartSuccess({
-                        cart,
-                        userId: payload.userId,
-                        extraData: payload.extraData,
-                        cartId: getCartIdByUserId(cart, payload.userId),
-                        tempCartId: payload.tempCartId,
-                        oldCartId: payload.oldCartId,
-                        toMergeCartGuid: payload.toMergeCartGuid,
-                    }),
+                    new CreateCartSuccess(Object.assign(Object.assign({}, payload), { cart, cartId: getCartIdByUserId(cart, payload.userId) })),
                     new SetTempCart({
                         cart,
                         tempCartId: payload.tempCartId,
                     }),
                     ...conditionalActions,
                 ];
-            }), catchError((error) => of(new CreateCartFail({
-                tempCartId: payload.tempCartId,
-                error: makeErrorSerializable(error),
-                userId: payload.userId,
-                oldCartId: payload.oldCartId,
-                toMergeCartGuid: payload.toMergeCartGuid,
-                extraData: payload.extraData,
-            }))));
+            }), catchError((error) => of(new CreateCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })))));
         }), withdrawOn(this.contextChange$));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => action.payload), mergeMap((payload) => {
             return this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(mergeMap((currentCart) => {
@@ -15537,15 +15494,21 @@ let WishListEffects = class WishListEffects {
             }));
         }));
         this.loadWishList$ = this.actions$.pipe(ofType(LOAD_WISH_LIST), map((action) => action.payload), concatMap((payload) => {
-            const { userId, customerId } = payload;
+            const { userId, customerId, tempCartId } = payload;
             return this.cartConnector.loadAll(userId).pipe(switchMap((carts) => {
                 if (carts) {
-                    const wishList = carts.find((cart) => cart.name === `wishlist${customerId}`);
+                    const wishList = carts.find((cart) => cart.name === getWishlistName(customerId));
                     if (Boolean(wishList)) {
                         return [
                             new LoadWishListSuccess({
                                 cart: wishList,
                                 userId,
+                                tempCartId,
+                                customerId,
+                                cartId: getCartIdByUserId(wishList, userId),
+                            }),
+                            new RemoveTempCart({
+                                tempCartId,
                             }),
                         ];
                     }
@@ -15553,18 +15516,35 @@ let WishListEffects = class WishListEffects {
                         return [
                             new CreateWishList({
                                 userId,
-                                name: `wishlist${customerId}`,
+                                name: getWishlistName(customerId),
                             }),
                         ];
                     }
                 }
-            }), catchError((error) => from([new LoadCartFail(makeErrorSerializable(error))])));
+            }), catchError((error) => from([
+                new LoadWishListFail({
+                    userId,
+                    cartId: tempCartId,
+                    customerId,
+                    error: makeErrorSerializable(error),
+                }),
+            ])));
         }));
         this.resetWishList$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), withLatestFrom(this.authService.getOccUserId(), this.store.pipe(select(getWishListId))), switchMap(([, userId, wishListId]) => {
             if (Boolean(wishListId)) {
                 return this.cartConnector.load(userId, wishListId).pipe(switchMap((wishList) => [
-                    new LoadWishListSuccess({ cart: wishList, userId }),
-                ]), catchError((error) => from([new LoadCartFail(makeErrorSerializable(error))])));
+                    new LoadWishListSuccess({
+                        cart: wishList,
+                        userId,
+                        cartId: getCartIdByUserId(wishList, userId),
+                    }),
+                ]), catchError((error) => from([
+                    new LoadWishListFail({
+                        userId,
+                        cartId: wishListId,
+                        error: makeErrorSerializable(error),
+                    }),
+                ])));
             }
             return EMPTY;
         }));
@@ -15595,7 +15575,7 @@ const wishListInitialState = '';
 function activeCartReducer(state = activeCartInitialState, action) {
     var _a, _b;
     switch (action.type) {
-        case LOAD_MULTI_CART_SUCCESS:
+        case LOAD_CART_SUCCESS:
         case CREATE_CART_SUCCESS:
         // point to `temp-${uuid}` cart when we are creating/merging cart
         case CREATE_CART:
@@ -15622,7 +15602,7 @@ function activeCartReducer(state = activeCartInitialState, action) {
 const cartEntitiesInitialState = undefined;
 function cartEntitiesReducer(state = cartEntitiesInitialState, action) {
     switch (action.type) {
-        case LOAD_MULTI_CART_SUCCESS:
+        case LOAD_CART_SUCCESS:
         case CREATE_CART_SUCCESS:
         case CREATE_WISH_LIST_SUCCESS:
         case LOAD_WISH_LIST_SUCCESS:
@@ -15708,7 +15688,6 @@ MultiCartStatePersistenceService = __decorate([
 let MultiCartEffects = class MultiCartEffects {
     constructor(actions$) {
         this.actions$ = actions$;
-        this.loadCart2$ = this.actions$.pipe(ofType(LOAD_CART), map((action) => new LoadMultiCart(action.payload)));
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map((action) => {
             return new RemoveTempCart(action.payload);
         }));
@@ -15723,9 +15702,6 @@ let MultiCartEffects = class MultiCartEffects {
 MultiCartEffects.ctorParameters = () => [
     { type: Actions }
 ];
-__decorate([
-    Effect()
-], MultiCartEffects.prototype, "loadCart2$", void 0);
 __decorate([
     Effect()
 ], MultiCartEffects.prototype, "setTempCart$", void 0);

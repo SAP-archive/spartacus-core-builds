@@ -1,5 +1,6 @@
 import { Cart } from '../../model/cart.model';
 export declare function getCartIdByUserId(cart: Cart, userId: string): string;
+export declare function getWishlistName(customerId: string): string;
 /**
  * What is a temporary cart?
  * - frontend only cart entity!

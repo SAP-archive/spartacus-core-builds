@@ -10,13 +10,13 @@ export declare class CartEffects {
     private cartConnector;
     private store;
     private contextChange$;
-    loadCart$: Observable<DeprecatedCartActions.LoadCartFail | CartActions.LoadMultiCartFail | DeprecatedCartActions.LoadCartSuccess | CartActions.LoadMultiCartSuccess | CartActions.ClearExpiredCoupons | DeprecatedCartActions.ClearCart | CartActions.RemoveCart>;
+    loadCart$: Observable<CartActions.LoadCartFail | CartActions.LoadCartSuccess | CartActions.ClearExpiredCoupons | DeprecatedCartActions.ClearCart | CartActions.RemoveCart>;
     createCart$: Observable<DeprecatedCartActions.MergeCartSuccess | CartActions.MergeMultiCartSuccess | CartActions.CreateCartSuccess | CartActions.CreateCartFail | CartActions.SetTempCart>;
     mergeCart$: Observable<CartActions.CreateCart>;
-    refresh$: Observable<DeprecatedCartActions.LoadCart | CartActions.CartProcessesDecrement>;
-    refreshWithoutProcesses$: Observable<DeprecatedCartActions.LoadCart>;
+    refresh$: Observable<CartActions.LoadCart | CartActions.CartProcessesDecrement>;
+    refreshWithoutProcesses$: Observable<CartActions.LoadCart>;
     resetCartDetailsOnSiteContextChange$: Observable<DeprecatedCartActions.ResetCartDetails | CartActions.ResetMultiCartDetails>;
-    addEmail$: Observable<DeprecatedCartActions.AddEmailToCartSuccess | DeprecatedCartActions.AddEmailToCartFail | CartActions.AddEmailToMultiCartFail | CartActions.AddEmailToMultiCartSuccess | CartActions.CartProcessesDecrement | DeprecatedCartActions.LoadCart>;
+    addEmail$: Observable<DeprecatedCartActions.AddEmailToCartSuccess | DeprecatedCartActions.AddEmailToCartFail | CartActions.AddEmailToMultiCartFail | CartActions.AddEmailToMultiCartSuccess | CartActions.CartProcessesDecrement | CartActions.LoadCart>;
     deleteCart$: Observable<any>;
     constructor(actions$: Actions, cartConnector: CartConnector, store: Store<StateWithMultiCart>);
 }

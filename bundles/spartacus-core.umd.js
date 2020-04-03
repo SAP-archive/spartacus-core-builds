@@ -14323,6 +14323,9 @@
         }
         return cart.code;
     }
+    function getWishlistName(customerId) {
+        return "wishlist" + customerId;
+    }
     /**
      * What is a temporary cart?
      * - frontend only cart entity!
@@ -14412,27 +14415,36 @@
         }
         return AddEmailToCartSuccess;
     }());
-    var LoadCart = /** @class */ (function () {
+    var LoadCart = /** @class */ (function (_super) {
+        __extends(LoadCart, _super);
         function LoadCart(payload) {
-            this.payload = payload;
-            this.type = LOAD_CART;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART;
+            return _this;
         }
         return LoadCart;
-    }());
-    var LoadCartFail = /** @class */ (function () {
+    }(EntityLoadAction));
+    var LoadCartFail = /** @class */ (function (_super) {
+        __extends(LoadCartFail, _super);
         function LoadCartFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_CART_FAIL;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART_FAIL;
+            return _this;
         }
         return LoadCartFail;
-    }());
-    var LoadCartSuccess = /** @class */ (function () {
+    }(EntityFailAction));
+    var LoadCartSuccess = /** @class */ (function (_super) {
+        __extends(LoadCartSuccess, _super);
         function LoadCartSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_CART_SUCCESS;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART_SUCCESS;
+            return _this;
         }
         return LoadCartSuccess;
-    }());
+    }(EntitySuccessAction));
     var MergeCart = /** @class */ (function () {
         function MergeCart(payload) {
             this.payload = payload;
@@ -14661,9 +14673,6 @@
     }(EntityProcessesDecrementAction));
 
     var REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
-    var LOAD_MULTI_CART = '[Multi Cart] Load Cart';
-    var LOAD_MULTI_CART_FAIL = '[Multi Cart] Load Cart Fail';
-    var LOAD_MULTI_CART_SUCCESS = '[Multi Cart] Load Cart Success';
     var MERGE_MULTI_CART = '[Multi Cart] Merge Cart';
     var MERGE_MULTI_CART_SUCCESS = '[Multi Cart] Merge Cart Success';
     var RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
@@ -14700,36 +14709,6 @@
             return _this;
         }
         return SetTempCart;
-    }(EntitySuccessAction));
-    var LoadMultiCart = /** @class */ (function (_super) {
-        __extends(LoadMultiCart, _super);
-        function LoadMultiCart(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_MULTI_CART;
-            return _this;
-        }
-        return LoadMultiCart;
-    }(EntityLoadAction));
-    var LoadMultiCartFail = /** @class */ (function (_super) {
-        __extends(LoadMultiCartFail, _super);
-        function LoadMultiCartFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
-            _this.payload = payload;
-            _this.type = LOAD_MULTI_CART_FAIL;
-            return _this;
-        }
-        return LoadMultiCartFail;
-    }(EntityFailAction));
-    var LoadMultiCartSuccess = /** @class */ (function (_super) {
-        __extends(LoadMultiCartSuccess, _super);
-        function LoadMultiCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
-            _this.payload = payload;
-            _this.type = LOAD_MULTI_CART_SUCCESS;
-            return _this;
-        }
-        return LoadMultiCartSuccess;
     }(EntitySuccessAction));
     var MergeMultiCart = /** @class */ (function () {
         function MergeMultiCart(payload) {
@@ -14839,6 +14818,7 @@
     var CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
     var LOAD_WISH_LIST = '[Wish List] Load Wish List';
     var LOAD_WISH_LIST_SUCCESS = '[Wish List] Load Wish List Success';
+    var LOAD_WISH_LIST_FAIL = '[Wish List] Load Wish List Fail';
     var RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
     var CreateWishList = /** @class */ (function () {
         function CreateWishList(payload) {
@@ -14867,23 +14847,36 @@
         }
         return CreateWishListFail;
     }(EntityFailAction));
-    var LoadWishList = /** @class */ (function () {
+    var LoadWishList = /** @class */ (function (_super) {
+        __extends(LoadWishList, _super);
         function LoadWishList(payload) {
-            this.payload = payload;
-            this.type = LOAD_WISH_LIST;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_WISH_LIST;
+            return _this;
         }
         return LoadWishList;
-    }());
+    }(EntityLoadAction));
     var LoadWishListSuccess = /** @class */ (function (_super) {
         __extends(LoadWishListSuccess, _super);
         function LoadWishListSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
             _this.payload = payload;
             _this.type = LOAD_WISH_LIST_SUCCESS;
             return _this;
         }
         return LoadWishListSuccess;
     }(EntitySuccessAction));
+    var LoadWishListFail = /** @class */ (function (_super) {
+        __extends(LoadWishListFail, _super);
+        function LoadWishListFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
+            _this.payload = payload;
+            _this.type = LOAD_WISH_LIST_FAIL;
+            return _this;
+        }
+        return LoadWishListFail;
+    }(EntityFailAction));
 
 
 
@@ -14954,9 +14947,6 @@
         DeleteCart: DeleteCart,
         DeleteCartFail: DeleteCartFail,
         REMOVE_TEMP_CART: REMOVE_TEMP_CART,
-        LOAD_MULTI_CART: LOAD_MULTI_CART,
-        LOAD_MULTI_CART_FAIL: LOAD_MULTI_CART_FAIL,
-        LOAD_MULTI_CART_SUCCESS: LOAD_MULTI_CART_SUCCESS,
         MERGE_MULTI_CART: MERGE_MULTI_CART,
         MERGE_MULTI_CART_SUCCESS: MERGE_MULTI_CART_SUCCESS,
         RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
@@ -14971,9 +14961,6 @@
         CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
         RemoveTempCart: RemoveTempCart,
         SetTempCart: SetTempCart,
-        LoadMultiCart: LoadMultiCart,
-        LoadMultiCartFail: LoadMultiCartFail,
-        LoadMultiCartSuccess: LoadMultiCartSuccess,
         MergeMultiCart: MergeMultiCart,
         MergeMultiCartSuccess: MergeMultiCartSuccess,
         ResetMultiCartDetails: ResetMultiCartDetails,
@@ -14990,12 +14977,14 @@
         CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
         LOAD_WISH_LIST: LOAD_WISH_LIST,
         LOAD_WISH_LIST_SUCCESS: LOAD_WISH_LIST_SUCCESS,
+        LOAD_WISH_LIST_FAIL: LOAD_WISH_LIST_FAIL,
         RESET_WISH_LIST_DETAILS: RESET_WISH_LIST_DETAILS,
         CreateWishList: CreateWishList,
         CreateWishListSuccess: CreateWishListSuccess,
         CreateWishListFail: CreateWishListFail,
         LoadWishList: LoadWishList,
-        LoadWishListSuccess: LoadWishListSuccess
+        LoadWishListSuccess: LoadWishListSuccess,
+        LoadWishListFail: LoadWishListFail
     });
 
     var MultiCartService = /** @class */ (function () {
@@ -15990,7 +15979,11 @@
             }));
         };
         WishListService.prototype.loadWishList = function (userId, customerId) {
-            this.store.dispatch(new LoadWishList({ userId: userId, customerId: customerId }));
+            this.store.dispatch(new LoadWishList({
+                userId: userId,
+                customerId: customerId,
+                tempCartId: getWishlistName(customerId),
+            }));
         };
         WishListService.prototype.addEntry = function (productCode) {
             var _this = this;
@@ -17494,23 +17487,10 @@
                     var _b = __read(_a, 1), payload = _b[0];
                     return payload;
                 }), operators.switchMap(function (payload) {
-                    return _this.cartConnector.load(payload.userId, payload.cartId).pipe(
-                    // TODO: remove with the `cart` store feature
-                    operators.withLatestFrom(_this.store.pipe(store.select(getActiveCartId))), operators.mergeMap(function (_a) {
-                        var _b = __read(_a, 2), cart = _b[0], activeCartId = _b[1];
+                    return _this.cartConnector.load(payload.userId, payload.cartId).pipe(operators.mergeMap(function (cart) {
                         var actions = [];
                         if (cart) {
-                            // `cart` store branch should only be updated for active cart
-                            // avoid dispatching LoadCartSuccess action on different cart loads
-                            if (payload.cartId === activeCartId ||
-                                payload.cartId === OCC_CART_ID_CURRENT) {
-                                actions.push(new LoadCartSuccess(cart));
-                            }
-                            actions.push(new LoadMultiCartSuccess({
-                                cart: cart,
-                                userId: payload.userId,
-                                extraData: payload.extraData,
-                            }));
+                            actions.push(new LoadCartSuccess(__assign(__assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })));
                             if (payload.cartId === OCC_CART_ID_CURRENT) {
                                 // Removing cart from entity object under `current` key as it is no longer needed.
                                 // Current cart is loaded under it's code entity.
@@ -17519,10 +17499,7 @@
                         }
                         else {
                             actions = [
-                                new LoadCartFail({}),
-                                new LoadMultiCartFail({
-                                    cartId: payload.cartId,
-                                }),
+                                new LoadCartFail(__assign(__assign({}, payload), { error: {} })),
                             ];
                         }
                         return actions;
@@ -17554,11 +17531,7 @@
                             }
                         }
                         return rxjs.from([
-                            new LoadCartFail(makeErrorSerializable(error)),
-                            new LoadMultiCartFail({
-                                cartId: payload.cartId,
-                                error: makeErrorSerializable(error),
-                            }),
+                            new LoadCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
                         ]);
                     }));
                 }));
@@ -17580,29 +17553,14 @@
                         }));
                     }
                     return __spread([
-                        new CreateCartSuccess({
-                            cart: cart,
-                            userId: payload.userId,
-                            extraData: payload.extraData,
-                            cartId: getCartIdByUserId(cart, payload.userId),
-                            tempCartId: payload.tempCartId,
-                            oldCartId: payload.oldCartId,
-                            toMergeCartGuid: payload.toMergeCartGuid,
-                        }),
+                        new CreateCartSuccess(__assign(__assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })),
                         new SetTempCart({
                             cart: cart,
                             tempCartId: payload.tempCartId,
                         })
                     ], conditionalActions);
                 }), operators.catchError(function (error) {
-                    return rxjs.of(new CreateCartFail({
-                        tempCartId: payload.tempCartId,
-                        error: makeErrorSerializable(error),
-                        userId: payload.userId,
-                        oldCartId: payload.oldCartId,
-                        toMergeCartGuid: payload.toMergeCartGuid,
-                        extraData: payload.extraData,
-                    }));
+                    return rxjs.of(new CreateCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })));
                 }));
             }), withdrawOn(this.contextChange$));
             this.mergeCart$ = this.actions$.pipe(effects$c.ofType(MERGE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
@@ -17759,15 +17717,21 @@
                 }));
             }));
             this.loadWishList$ = this.actions$.pipe(effects$c.ofType(LOAD_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                var userId = payload.userId, customerId = payload.customerId;
+                var userId = payload.userId, customerId = payload.customerId, tempCartId = payload.tempCartId;
                 return _this.cartConnector.loadAll(userId).pipe(operators.switchMap(function (carts) {
                     if (carts) {
-                        var wishList = carts.find(function (cart) { return cart.name === "wishlist" + customerId; });
+                        var wishList = carts.find(function (cart) { return cart.name === getWishlistName(customerId); });
                         if (Boolean(wishList)) {
                             return [
                                 new LoadWishListSuccess({
                                     cart: wishList,
                                     userId: userId,
+                                    tempCartId: tempCartId,
+                                    customerId: customerId,
+                                    cartId: getCartIdByUserId(wishList, userId),
+                                }),
+                                new RemoveTempCart({
+                                    tempCartId: tempCartId,
                                 }),
                             ];
                         }
@@ -17775,22 +17739,39 @@
                             return [
                                 new CreateWishList({
                                     userId: userId,
-                                    name: "wishlist" + customerId,
+                                    name: getWishlistName(customerId),
                                 }),
                             ];
                         }
                     }
                 }), operators.catchError(function (error) {
-                    return rxjs.from([new LoadCartFail(makeErrorSerializable(error))]);
+                    return rxjs.from([
+                        new LoadWishListFail({
+                            userId: userId,
+                            cartId: tempCartId,
+                            customerId: customerId,
+                            error: makeErrorSerializable(error),
+                        }),
+                    ]);
                 }));
             }));
             this.resetWishList$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(store.select(getWishListId))), operators.switchMap(function (_a) {
                 var _b = __read(_a, 3), userId = _b[1], wishListId = _b[2];
                 if (Boolean(wishListId)) {
                     return _this.cartConnector.load(userId, wishListId).pipe(operators.switchMap(function (wishList) { return [
-                        new LoadWishListSuccess({ cart: wishList, userId: userId }),
+                        new LoadWishListSuccess({
+                            cart: wishList,
+                            userId: userId,
+                            cartId: getCartIdByUserId(wishList, userId),
+                        }),
                     ]; }), operators.catchError(function (error) {
-                        return rxjs.from([new LoadCartFail(makeErrorSerializable(error))]);
+                        return rxjs.from([
+                            new LoadWishListFail({
+                                userId: userId,
+                                cartId: wishListId,
+                                error: makeErrorSerializable(error),
+                            }),
+                        ]);
                     }));
                 }
                 return rxjs.EMPTY;
@@ -17824,7 +17805,7 @@
         if (state === void 0) { state = activeCartInitialState; }
         var _a, _b;
         switch (action.type) {
-            case LOAD_MULTI_CART_SUCCESS:
+            case LOAD_CART_SUCCESS:
             case CREATE_CART_SUCCESS:
             // point to `temp-${uuid}` cart when we are creating/merging cart
             case CREATE_CART:
@@ -17852,7 +17833,7 @@
     function cartEntitiesReducer(state, action) {
         if (state === void 0) { state = cartEntitiesInitialState; }
         switch (action.type) {
-            case LOAD_MULTI_CART_SUCCESS:
+            case LOAD_CART_SUCCESS:
             case CREATE_CART_SUCCESS:
             case CREATE_WISH_LIST_SUCCESS:
             case LOAD_WISH_LIST_SUCCESS:
@@ -17941,9 +17922,6 @@
     var MultiCartEffects = /** @class */ (function () {
         function MultiCartEffects(actions$) {
             this.actions$ = actions$;
-            this.loadCart2$ = this.actions$.pipe(effects$c.ofType(LOAD_CART), operators.map(function (action) {
-                return new LoadMultiCart(action.payload);
-            }));
             this.setTempCart$ = this.actions$.pipe(effects$c.ofType(SET_TEMP_CART), operators.map(function (action) {
                 return new RemoveTempCart(action.payload);
             }));
@@ -17961,9 +17939,6 @@
         MultiCartEffects.ctorParameters = function () { return [
             { type: effects$c.Actions }
         ]; };
-        __decorate([
-            effects$c.Effect()
-        ], MultiCartEffects.prototype, "loadCart2$", void 0);
         __decorate([
             effects$c.Effect()
         ], MultiCartEffects.prototype, "setTempCart$", void 0);

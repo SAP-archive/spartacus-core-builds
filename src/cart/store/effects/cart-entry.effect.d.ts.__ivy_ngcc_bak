@@ -1,14 +1,13 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { CartEntryConnector } from '../../connectors/entry/cart-entry.connector';
-import * as DeprecatedCartActions from '../actions/cart.action';
 import { CartActions } from '../actions/index';
 export declare class CartEntryEffects {
     private actions$;
     private cartEntryConnector;
     private contextChange$;
-    addEntry$: Observable<CartActions.CartAddEntrySuccess | CartActions.CartAddEntryFail | DeprecatedCartActions.LoadCart>;
-    removeEntry$: Observable<CartActions.CartRemoveEntrySuccess | CartActions.CartRemoveEntryFail | DeprecatedCartActions.LoadCart>;
-    updateEntry$: Observable<CartActions.CartUpdateEntrySuccess | CartActions.CartUpdateEntryFail | DeprecatedCartActions.LoadCart>;
+    addEntry$: Observable<CartActions.CartAddEntrySuccess | CartActions.CartAddEntryFail | CartActions.LoadCart>;
+    removeEntry$: Observable<CartActions.CartRemoveEntrySuccess | CartActions.CartRemoveEntryFail | CartActions.LoadCart>;
+    updateEntry$: Observable<CartActions.CartUpdateEntrySuccess | CartActions.CartUpdateEntryFail | CartActions.LoadCart>;
     constructor(actions$: Actions, cartEntryConnector: CartEntryConnector);
 }

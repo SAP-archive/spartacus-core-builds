@@ -80,28 +80,33 @@ export declare class AddEmailToCartSuccess {
         cartId: string;
     });
 }
-export declare class LoadCart {
-    payload: {
-        userId: string;
-        cartId: string;
-        extraData?: any;
+interface LoadCartPayload {
+    userId: string;
+    cartId: string;
+    extraData?: {
+        active?: boolean;
     };
+}
+export declare class LoadCart extends EntityLoadAction {
+    payload: LoadCartPayload;
     readonly type = "[Cart] Load Cart";
-    constructor(payload: {
-        userId: string;
-        cartId: string;
-        extraData?: any;
-    });
+    constructor(payload: LoadCartPayload);
 }
-export declare class LoadCartFail {
-    payload: any;
+interface LoadCartFailPayload extends LoadCartPayload {
+    error: any;
+}
+export declare class LoadCartFail extends EntityFailAction {
+    payload: LoadCartFailPayload;
     readonly type = "[Cart] Load Cart Fail";
-    constructor(payload: any);
+    constructor(payload: LoadCartFailPayload);
 }
-export declare class LoadCartSuccess {
-    payload: any;
+interface LoadCartSuccessPayload extends LoadCartPayload {
+    cart: Cart;
+}
+export declare class LoadCartSuccess extends EntitySuccessAction {
+    payload: LoadCartSuccessPayload;
     readonly type = "[Cart] Load Cart Success";
-    constructor(payload: any);
+    constructor(payload: LoadCartSuccessPayload);
 }
 export declare class MergeCart implements Action {
     payload: any;
