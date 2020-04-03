@@ -1,9 +1,9 @@
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import { Observable } from 'rxjs';
+import { CustomerCoupon2Customer, CustomerCouponNotification, CustomerCouponSearchResult } from '../../../model/customer-coupon.model';
 import { CustomerCouponAdapter } from '../../../user/connectors/customer-coupon/customer-coupon.adapter';
-import { CustomerCouponSearchResult, CustomerCouponNotification, CustomerCoupon2Customer } from '../../../model/customer-coupon.model';
 import { ConverterService } from '../../../util/converter.service';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccCustomerCouponAdapter implements CustomerCouponAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;

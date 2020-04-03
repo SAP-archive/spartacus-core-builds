@@ -106,5 +106,4 @@ export declare class UserConsentService {
      * @param hideTemplateIds template IDs to hide
      */
     filterConsentTemplates(templateList: ConsentTemplate[], hideTemplateIds?: string[]): ConsentTemplate[];
-    private withUserId;
 }

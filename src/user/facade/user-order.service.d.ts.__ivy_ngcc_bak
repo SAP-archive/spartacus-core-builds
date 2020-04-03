@@ -69,5 +69,4 @@ export declare class UserOrderService {
      * Resets the cancel order process flags
      */
     resetCancelOrderProcessState(): void;
-    private withUserId;
 }

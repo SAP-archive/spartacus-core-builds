@@ -149,5 +149,4 @@ export declare class UserService {
      * concludes, regardless if it's a success or an error
      */
     resetUpdatePasswordProcessState(): void;
-    private withUserId;
 }

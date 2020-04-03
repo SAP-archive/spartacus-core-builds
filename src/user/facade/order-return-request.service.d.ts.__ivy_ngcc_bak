@@ -63,5 +63,4 @@ export declare class OrderReturnRequestService {
      * Resets the cancel return request process flags
      */
     resetCancelReturnRequestProcessState(): void;
-    private withUserId;
 }

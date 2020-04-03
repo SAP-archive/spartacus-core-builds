@@ -1167,6 +1167,16 @@ var AuthService = /** @class */ (function () {
         }));
     };
     /**
+     * Calls provided callback with current user id.
+     *
+     * @param cb callback function to invoke
+     */
+    AuthService.prototype.invokeWithUserId = function (cb) {
+        return this.getOccUserId()
+            .pipe(take(1))
+            .subscribe(function (id) { return cb(id); });
+    };
+    /**
      * Returns the user's token
      */
     AuthService.prototype.getUserToken = function () {
@@ -6860,6 +6870,10 @@ var OccCustomerCouponAdapter = /** @class */ (function () {
         this.converter = converter;
     }
     OccCustomerCouponAdapter.prototype.getCustomerCoupons = function (userId, pageSize, currentPage, sort) {
+        // Currently OCC only supports calls for customer coupons in case of logged users
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            return of({});
+        }
         var url = this.occEndpoints.getUrl('customerCoupons', { userId: userId });
         var params = new HttpParams().set('sort', sort ? sort : 'startDate:asc');
         if (pageSize) {
@@ -11349,8 +11363,8 @@ var UserConsentService = /** @class */ (function () {
      */
     UserConsentService.prototype.loadConsents = function () {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new LoadUserConsents(userId));
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadUserConsents(userId));
         });
     };
     /**
@@ -11446,8 +11460,8 @@ var UserConsentService = /** @class */ (function () {
      */
     UserConsentService.prototype.giveConsent = function (consentTemplateId, consentTemplateVersion) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new GiveUserConsent({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new GiveUserConsent({
                 userId: userId,
                 consentTemplateId: consentTemplateId,
                 consentTemplateVersion: consentTemplateVersion,
@@ -11484,8 +11498,8 @@ var UserConsentService = /** @class */ (function () {
      */
     UserConsentService.prototype.withdrawConsent = function (consentCode) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new WithdrawUserConsent({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new WithdrawUserConsent({
                 userId: userId,
                 consentCode: consentCode,
             }));
@@ -11546,15 +11560,6 @@ var UserConsentService = /** @class */ (function () {
             finally { if (e_1) throw e_1.error; }
         }
         return updatedTemplateList;
-    };
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    UserConsentService.prototype.withUserId = function (callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe(function (userId) { return callback(userId); });
     };
     UserConsentService.ctorParameters = function () { return [
         { type: Store },
@@ -15403,7 +15408,7 @@ var UserService = /** @class */ (function () {
      */
     UserService.prototype.load = function () {
         var _this = this;
-        this.withUserId(function (userId) {
+        this.authService.invokeWithUserId(function (userId) {
             if (userId !== OCC_USER_ID_ANONYMOUS) {
                 _this.store.dispatch(new LoadUserDetails(userId));
             }
@@ -15455,8 +15460,8 @@ var UserService = /** @class */ (function () {
      */
     UserService.prototype.remove = function () {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new RemoveUser(userId));
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new RemoveUser(userId));
         });
     };
     /**
@@ -15508,8 +15513,8 @@ var UserService = /** @class */ (function () {
      */
     UserService.prototype.updatePersonalDetails = function (userDetails) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new UpdateUserDetails({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdateUserDetails({
                 username: userId,
                 userDetails: userDetails,
             }));
@@ -15558,8 +15563,8 @@ var UserService = /** @class */ (function () {
      */
     UserService.prototype.updateEmail = function (password, newUid) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new UpdateEmailAction({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdateEmailAction({
                 uid: userId,
                 password: password,
                 newUid: newUid,
@@ -15597,8 +15602,8 @@ var UserService = /** @class */ (function () {
      */
     UserService.prototype.updatePassword = function (oldPassword, newPassword) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new UpdatePassword({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdatePassword({
                 userId: userId,
                 oldPassword: oldPassword,
                 newPassword: newPassword,
@@ -15629,15 +15634,6 @@ var UserService = /** @class */ (function () {
      */
     UserService.prototype.resetUpdatePasswordProcessState = function () {
         this.store.dispatch(new UpdatePasswordReset());
-    };
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    UserService.prototype.withUserId = function (callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe(function (userId) { return callback(userId); });
     };
     UserService.ctorParameters = function () { return [
         { type: Store },
@@ -24733,8 +24729,8 @@ var UserAddressService = /** @class */ (function () {
      */
     UserAddressService.prototype.loadAddresses = function () {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new LoadUserAddresses(userId));
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadUserAddresses(userId));
         });
     };
     /**
@@ -24743,8 +24739,8 @@ var UserAddressService = /** @class */ (function () {
      */
     UserAddressService.prototype.addUserAddress = function (address) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new AddUserAddress({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new AddUserAddress({
                 userId: userId,
                 address: address,
             }));
@@ -24756,8 +24752,8 @@ var UserAddressService = /** @class */ (function () {
      */
     UserAddressService.prototype.setAddressAsDefault = function (addressId) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new UpdateUserAddress({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdateUserAddress({
                 userId: userId,
                 addressId: addressId,
                 address: { defaultAddress: true },
@@ -24771,8 +24767,8 @@ var UserAddressService = /** @class */ (function () {
      */
     UserAddressService.prototype.updateUserAddress = function (addressId, address) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new UpdateUserAddress({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdateUserAddress({
                 userId: userId,
                 addressId: addressId,
                 address: address,
@@ -24785,8 +24781,8 @@ var UserAddressService = /** @class */ (function () {
      */
     UserAddressService.prototype.deleteUserAddress = function (addressId) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new DeleteUserAddress({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new DeleteUserAddress({
                 userId: userId,
                 addressId: addressId,
             }));
@@ -24865,15 +24861,6 @@ var UserAddressService = /** @class */ (function () {
             return regions;
         }));
     };
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    UserAddressService.prototype.withUserId = function (callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe(function (userId) { return callback(userId); });
-    };
     UserAddressService.ctorParameters = function () { return [
         { type: Store },
         { type: AuthService }
@@ -24905,8 +24892,8 @@ var UserOrderService = /** @class */ (function () {
      */
     UserOrderService.prototype.loadOrderDetails = function (orderCode) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new LoadOrderDetails({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadOrderDetails({
                 userId: userId,
                 orderCode: orderCode,
             }));
@@ -24946,8 +24933,8 @@ var UserOrderService = /** @class */ (function () {
      */
     UserOrderService.prototype.loadOrderList = function (pageSize, currentPage, sort) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new LoadUserOrders({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadUserOrders({
                 userId: userId,
                 pageSize: pageSize,
                 currentPage: currentPage,
@@ -24974,8 +24961,8 @@ var UserOrderService = /** @class */ (function () {
      */
     UserOrderService.prototype.loadConsignmentTracking = function (orderCode, consignmentCode) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new LoadConsignmentTracking({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadConsignmentTracking({
                 userId: userId,
                 orderCode: orderCode,
                 consignmentCode: consignmentCode,
@@ -24993,7 +24980,7 @@ var UserOrderService = /** @class */ (function () {
      */
     UserOrderService.prototype.cancelOrder = function (orderCode, cancelRequestInput) {
         var _this = this;
-        this.withUserId(function (userId) {
+        this.authService.invokeWithUserId(function (userId) {
             _this.store.dispatch(new CancelOrder({
                 userId: userId,
                 orderCode: orderCode,
@@ -25019,15 +25006,6 @@ var UserOrderService = /** @class */ (function () {
     UserOrderService.prototype.resetCancelOrderProcessState = function () {
         return this.store.dispatch(new ResetCancelOrderProcess());
     };
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    UserOrderService.prototype.withUserId = function (callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe(function (userId) { return callback(userId); });
-    };
     UserOrderService.ctorParameters = function () { return [
         { type: Store },
         { type: AuthService }
@@ -25042,8 +25020,9 @@ var UserOrderService = /** @class */ (function () {
 }());
 
 var CustomerCouponService = /** @class */ (function () {
-    function CustomerCouponService(store) {
+    function CustomerCouponService(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Retrieves customer's coupons
@@ -25052,12 +25031,15 @@ var CustomerCouponService = /** @class */ (function () {
      * @param sort sort
      */
     CustomerCouponService.prototype.loadCustomerCoupons = function (pageSize, currentPage, sort) {
-        this.store.dispatch(new LoadCustomerCoupons({
-            userId: OCC_USER_ID_CURRENT,
-            pageSize: pageSize,
-            currentPage: currentPage,
-            sort: sort,
-        }));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadCustomerCoupons({
+                userId: userId,
+                pageSize: pageSize,
+                currentPage: currentPage,
+                sort: sort,
+            }));
+        });
     };
     /**
      * Returns customer coupon search result
@@ -25101,10 +25083,13 @@ var CustomerCouponService = /** @class */ (function () {
      * @param couponCode a customer coupon code
      */
     CustomerCouponService.prototype.subscribeCustomerCoupon = function (couponCode) {
-        this.store.dispatch(new SubscribeCustomerCoupon({
-            userId: OCC_USER_ID_CURRENT,
-            couponCode: couponCode,
-        }));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new SubscribeCustomerCoupon({
+                userId: userId,
+                couponCode: couponCode,
+            }));
+        });
     };
     /**
      * Returns the subscribe customer coupon notification process loading flag
@@ -25129,10 +25114,13 @@ var CustomerCouponService = /** @class */ (function () {
      * @param couponCode a customer coupon code
      */
     CustomerCouponService.prototype.unsubscribeCustomerCoupon = function (couponCode) {
-        this.store.dispatch(new UnsubscribeCustomerCoupon({
-            userId: OCC_USER_ID_CURRENT,
-            couponCode: couponCode,
-        }));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UnsubscribeCustomerCoupon({
+                userId: userId,
+                couponCode: couponCode,
+            }));
+        });
     };
     /**
      * Returns the unsubscribe customer coupon notification process loading flag
@@ -25157,10 +25145,13 @@ var CustomerCouponService = /** @class */ (function () {
      * @param couponCode a customer coupon code
      */
     CustomerCouponService.prototype.claimCustomerCoupon = function (couponCode) {
-        this.store.dispatch(new ClaimCustomerCoupon({
-            userId: OCC_USER_ID_CURRENT,
-            couponCode: couponCode,
-        }));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new ClaimCustomerCoupon({
+                userId: userId,
+                couponCode: couponCode,
+            }));
+        });
     };
     /**
      * Returns the claim customer coupon notification process success flag
@@ -25175,9 +25166,10 @@ var CustomerCouponService = /** @class */ (function () {
         return this.store.pipe(select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
     };
     CustomerCouponService.ctorParameters = function () { return [
-        { type: Store }
+        { type: Store },
+        { type: AuthService }
     ]; };
-    CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store)); }, token: CustomerCouponService, providedIn: "root" });
+    CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
     CustomerCouponService = __decorate([
         Injectable({
             providedIn: 'root',
@@ -25196,8 +25188,8 @@ var UserPaymentService = /** @class */ (function () {
      */
     UserPaymentService.prototype.loadPaymentMethods = function () {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new LoadUserPaymentMethods(userId));
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadUserPaymentMethods(userId));
         });
     };
     /**
@@ -25221,8 +25213,8 @@ var UserPaymentService = /** @class */ (function () {
      */
     UserPaymentService.prototype.setPaymentMethodAsDefault = function (paymentMethodId) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new SetDefaultUserPaymentMethod({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new SetDefaultUserPaymentMethod({
                 userId: userId,
                 paymentMethodId: paymentMethodId,
             }));
@@ -25235,8 +25227,8 @@ var UserPaymentService = /** @class */ (function () {
      */
     UserPaymentService.prototype.deletePaymentMethod = function (paymentMethodId) {
         var _this = this;
-        this.withUserId(function (userId) {
-            return _this.store.dispatch(new DeleteUserPaymentMethod({
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new DeleteUserPaymentMethod({
                 userId: userId,
                 paymentMethodId: paymentMethodId,
             }));
@@ -25253,15 +25245,6 @@ var UserPaymentService = /** @class */ (function () {
      */
     UserPaymentService.prototype.loadBillingCountries = function () {
         this.store.dispatch(new LoadBillingCountries());
-    };
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    UserPaymentService.prototype.withUserId = function (callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe(function (userId) { return callback(userId); });
     };
     UserPaymentService.ctorParameters = function () { return [
         { type: Store },
@@ -25288,7 +25271,7 @@ var OrderReturnRequestService = /** @class */ (function () {
      */
     OrderReturnRequestService.prototype.createOrderReturnRequest = function (returnRequestInput) {
         var _this = this;
-        this.withUserId(function (userId) {
+        this.authService.invokeWithUserId(function (userId) {
             _this.store.dispatch(new CreateOrderReturnRequest({
                 userId: userId,
                 returnRequestInput: returnRequestInput,
@@ -25321,7 +25304,7 @@ var OrderReturnRequestService = /** @class */ (function () {
      */
     OrderReturnRequestService.prototype.loadOrderReturnRequestDetail = function (returnRequestCode) {
         var _this = this;
-        this.withUserId(function (userId) {
+        this.authService.invokeWithUserId(function (userId) {
             _this.store.dispatch(new LoadOrderReturnRequest({
                 userId: userId,
                 returnRequestCode: returnRequestCode,
@@ -25336,7 +25319,7 @@ var OrderReturnRequestService = /** @class */ (function () {
      */
     OrderReturnRequestService.prototype.loadOrderReturnRequestList = function (pageSize, currentPage, sort) {
         var _this = this;
-        this.withUserId(function (userId) {
+        this.authService.invokeWithUserId(function (userId) {
             _this.store.dispatch(new LoadOrderReturnRequestList({
                 userId: userId,
                 pageSize: pageSize,
@@ -25374,7 +25357,7 @@ var OrderReturnRequestService = /** @class */ (function () {
      */
     OrderReturnRequestService.prototype.cancelOrderReturnRequest = function (returnRequestCode, returnRequestModification) {
         var _this = this;
-        this.withUserId(function (userId) {
+        this.authService.invokeWithUserId(function (userId) {
             _this.store.dispatch(new CancelOrderReturnRequest({
                 userId: userId,
                 returnRequestCode: returnRequestCode,
@@ -25400,15 +25383,6 @@ var OrderReturnRequestService = /** @class */ (function () {
     OrderReturnRequestService.prototype.resetCancelReturnRequestProcessState = function () {
         return this.store.dispatch(new ResetCancelReturnProcess());
     };
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    OrderReturnRequestService.prototype.withUserId = function (callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe(function (userId) { return callback(userId); });
-    };
     OrderReturnRequestService.ctorParameters = function () { return [
         { type: Store },
         { type: AuthService }
@@ -25423,8 +25397,9 @@ var OrderReturnRequestService = /** @class */ (function () {
 }());
 
 var UserNotificationPreferenceService = /** @class */ (function () {
-    function UserNotificationPreferenceService(store) {
+    function UserNotificationPreferenceService(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Returns all notification preferences.
@@ -25442,7 +25417,10 @@ var UserNotificationPreferenceService = /** @class */ (function () {
      * Loads all notification preferences.
      */
     UserNotificationPreferenceService.prototype.loadPreferences = function () {
-        this.store.dispatch(new LoadNotificationPreferences(OCC_USER_ID_CURRENT));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadNotificationPreferences(userId));
+        });
     };
     /**
      * Clear all notification preferences.
@@ -25461,10 +25439,13 @@ var UserNotificationPreferenceService = /** @class */ (function () {
      * @param preferences a preference list
      */
     UserNotificationPreferenceService.prototype.updatePreferences = function (preferences) {
-        this.store.dispatch(new UpdateNotificationPreferences({
-            userId: OCC_USER_ID_CURRENT,
-            preferences: preferences,
-        }));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdateNotificationPreferences({
+                userId: userId,
+                preferences: preferences,
+            }));
+        });
     };
     /**
      * Returns a loading flag for updating preferences.
@@ -25480,9 +25461,10 @@ var UserNotificationPreferenceService = /** @class */ (function () {
         this.store.dispatch(new ResetNotificationPreferences());
     };
     UserNotificationPreferenceService.ctorParameters = function () { return [
-        { type: Store }
+        { type: Store },
+        { type: AuthService }
     ]; };
-    UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+    UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
     UserNotificationPreferenceService = __decorate([
         Injectable({
             providedIn: 'root',
@@ -25492,8 +25474,9 @@ var UserNotificationPreferenceService = /** @class */ (function () {
 }());
 
 var UserInterestsService = /** @class */ (function () {
-    function UserInterestsService(store) {
+    function UserInterestsService(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Retrieves an product interest list
@@ -25502,14 +25485,17 @@ var UserInterestsService = /** @class */ (function () {
      * @param sort sort
      */
     UserInterestsService.prototype.loadProductInterests = function (pageSize, currentPage, sort, productCode, notificationType) {
-        this.store.dispatch(new LoadProductInterests({
-            userId: OCC_USER_ID_CURRENT,
-            pageSize: pageSize,
-            currentPage: currentPage,
-            sort: sort,
-            productCode: productCode,
-            notificationType: notificationType,
-        }));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new LoadProductInterests({
+                userId: userId,
+                pageSize: pageSize,
+                currentPage: currentPage,
+                sort: sort,
+                productCode: productCode,
+                notificationType: notificationType,
+            }));
+        });
     };
     /**
      * Returns product interests
@@ -25544,11 +25530,14 @@ var UserInterestsService = /** @class */ (function () {
      * @param singleDelete flag to delete only one interest
      */
     UserInterestsService.prototype.removeProdutInterest = function (item, singleDelete) {
-        this.store.dispatch(new RemoveProductInterest({
-            userId: OCC_USER_ID_CURRENT,
-            item: item,
-            singleDelete: singleDelete,
-        }));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new RemoveProductInterest({
+                userId: userId,
+                item: item,
+                singleDelete: singleDelete,
+            }));
+        });
     };
     /**
      * Returns a loading flag for removing product interests.
@@ -25569,11 +25558,14 @@ var UserInterestsService = /** @class */ (function () {
      * @param notificationType the notification type
      */
     UserInterestsService.prototype.addProductInterest = function (productCode, notificationType) {
-        this.store.dispatch(new AddProductInterest({
-            userId: OCC_USER_ID_CURRENT,
-            productCode: productCode,
-            notificationType: notificationType,
-        }));
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new AddProductInterest({
+                userId: userId,
+                productCode: productCode,
+                notificationType: notificationType,
+            }));
+        });
     };
     /**
      * Returns a success flag for adding a product interest.
@@ -25606,9 +25598,10 @@ var UserInterestsService = /** @class */ (function () {
         this.store.dispatch(new ClearProductInterests());
     };
     UserInterestsService.ctorParameters = function () { return [
-        { type: Store }
+        { type: Store },
+        { type: AuthService }
     ]; };
-    UserInterestsService.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(ɵɵinject(Store)); }, token: UserInterestsService, providedIn: "root" });
+    UserInterestsService.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
     UserInterestsService = __decorate([
         Injectable({
             providedIn: 'root',

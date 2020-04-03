@@ -1,11 +1,13 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/facade/auth.service';
 import { CustomerCouponSearchResult } from '../../model/customer-coupon.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
 export declare class CustomerCouponService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>);
+    protected authService: AuthService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
     /**
      * Retrieves customer's coupons
      * @param pageSize page size

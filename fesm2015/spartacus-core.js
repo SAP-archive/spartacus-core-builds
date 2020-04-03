@@ -1050,6 +1050,16 @@ let AuthService = class AuthService {
         }));
     }
     /**
+     * Calls provided callback with current user id.
+     *
+     * @param cb callback function to invoke
+     */
+    invokeWithUserId(cb) {
+        return this.getOccUserId()
+            .pipe(take(1))
+            .subscribe((id) => cb(id));
+    }
+    /**
      * Returns the user's token
      */
     getUserToken() {
@@ -6234,6 +6244,10 @@ let OccCustomerCouponAdapter = class OccCustomerCouponAdapter {
         this.converter = converter;
     }
     getCustomerCoupons(userId, pageSize, currentPage, sort) {
+        // Currently OCC only supports calls for customer coupons in case of logged users
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            return of({});
+        }
         const url = this.occEndpoints.getUrl('customerCoupons', { userId });
         let params = new HttpParams().set('sort', sort ? sort : 'startDate:asc');
         if (pageSize) {
@@ -10157,7 +10171,9 @@ let UserConsentService = class UserConsentService {
      * Retrieves all consents.
      */
     loadConsents() {
-        this.withUserId((userId) => this.store.dispatch(new LoadUserConsents(userId)));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadUserConsents(userId));
+        });
     }
     /**
      * Returns all consent templates. If `loadIfMissing` parameter is set to `true`, the method triggers the load if consent templates.
@@ -10236,11 +10252,13 @@ let UserConsentService = class UserConsentService {
      * @param consentTemplateVersion a template version for which to give a consent
      */
     giveConsent(consentTemplateId, consentTemplateVersion) {
-        this.withUserId((userId) => this.store.dispatch(new GiveUserConsent({
-            userId,
-            consentTemplateId,
-            consentTemplateVersion,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new GiveUserConsent({
+                userId,
+                consentTemplateId,
+                consentTemplateVersion,
+            }));
+        });
     }
     /**
      * Returns the give consent process loading flag
@@ -10271,10 +10289,12 @@ let UserConsentService = class UserConsentService {
      * @param consentCode for which to withdraw the consent
      */
     withdrawConsent(consentCode) {
-        this.withUserId((userId) => this.store.dispatch(new WithdrawUserConsent({
-            userId,
-            consentCode,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new WithdrawUserConsent({
+                userId,
+                consentCode,
+            }));
+        });
     }
     /**
      * Returns the withdraw consent process loading flag
@@ -10319,15 +10339,6 @@ let UserConsentService = class UserConsentService {
             }
         }
         return updatedTemplateList;
-    }
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    withUserId(callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe((userId) => callback(userId));
     }
 };
 UserConsentService.ctorParameters = () => [
@@ -13665,7 +13676,7 @@ let UserService = class UserService {
      * Loads the user's details
      */
     load() {
-        this.withUserId((userId) => {
+        this.authService.invokeWithUserId((userId) => {
             if (userId !== OCC_USER_ID_ANONYMOUS) {
                 this.store.dispatch(new LoadUserDetails(userId));
             }
@@ -13716,7 +13727,9 @@ let UserService = class UserService {
      * Remove user account, that's also called close user's account
      */
     remove() {
-        this.withUserId((userId) => this.store.dispatch(new RemoveUser(userId)));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new RemoveUser(userId));
+        });
     }
     /**
      * Returns the remove user loading flag
@@ -13766,10 +13779,12 @@ let UserService = class UserService {
      * @param userDetails to be updated
      */
     updatePersonalDetails(userDetails) {
-        this.withUserId((userId) => this.store.dispatch(new UpdateUserDetails({
-            username: userId,
-            userDetails,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdateUserDetails({
+                username: userId,
+                userDetails,
+            }));
+        });
     }
     /**
      * Returns the update user's personal details loading flag
@@ -13813,11 +13828,13 @@ let UserService = class UserService {
      * Updates the user's email
      */
     updateEmail(password, newUid) {
-        this.withUserId((userId) => this.store.dispatch(new UpdateEmailAction({
-            uid: userId,
-            password,
-            newUid,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdateEmailAction({
+                uid: userId,
+                password,
+                newUid,
+            }));
+        });
     }
     /**
      * Returns the update user's email success flag
@@ -13849,11 +13866,13 @@ let UserService = class UserService {
      * @param newPassword the new password
      */
     updatePassword(oldPassword, newPassword) {
-        this.withUserId((userId) => this.store.dispatch(new UpdatePassword({
-            userId,
-            oldPassword,
-            newPassword,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdatePassword({
+                userId,
+                oldPassword,
+                newPassword,
+            }));
+        });
     }
     /**
      * Returns the update password loading flag
@@ -13879,15 +13898,6 @@ let UserService = class UserService {
      */
     resetUpdatePasswordProcessState() {
         this.store.dispatch(new UpdatePasswordReset());
-    }
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    withUserId(callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe((userId) => callback(userId));
     }
 };
 UserService.ctorParameters = () => [
@@ -21987,28 +21997,34 @@ let UserAddressService = class UserAddressService {
      * Retrieves user's addresses
      */
     loadAddresses() {
-        this.withUserId((userId) => this.store.dispatch(new LoadUserAddresses(userId)));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadUserAddresses(userId));
+        });
     }
     /**
      * Adds user address
      * @param address a user address
      */
     addUserAddress(address) {
-        this.withUserId((userId) => this.store.dispatch(new AddUserAddress({
-            userId,
-            address,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new AddUserAddress({
+                userId,
+                address,
+            }));
+        });
     }
     /**
      * Sets user address as default
      * @param addressId a user address ID
      */
     setAddressAsDefault(addressId) {
-        this.withUserId((userId) => this.store.dispatch(new UpdateUserAddress({
-            userId,
-            addressId,
-            address: { defaultAddress: true },
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdateUserAddress({
+                userId,
+                addressId,
+                address: { defaultAddress: true },
+            }));
+        });
     }
     /**
      * Updates existing user address
@@ -22016,21 +22032,25 @@ let UserAddressService = class UserAddressService {
      * @param address a user address
      */
     updateUserAddress(addressId, address) {
-        this.withUserId((userId) => this.store.dispatch(new UpdateUserAddress({
-            userId,
-            addressId,
-            address,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdateUserAddress({
+                userId,
+                addressId,
+                address,
+            }));
+        });
     }
     /**
      * Deletes existing user address
      * @param addressId a user address ID
      */
     deleteUserAddress(addressId) {
-        this.withUserId((userId) => this.store.dispatch(new DeleteUserAddress({
-            userId,
-            addressId,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new DeleteUserAddress({
+                userId,
+                addressId,
+            }));
+        });
     }
     /**
      * Returns addresses
@@ -22103,15 +22123,6 @@ let UserAddressService = class UserAddressService {
             return regions;
         }));
     }
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    withUserId(callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe((userId) => callback(userId));
-    }
 };
 UserAddressService.ctorParameters = () => [
     { type: Store },
@@ -22141,10 +22152,12 @@ let UserOrderService = class UserOrderService {
      * @param orderCode an order code
      */
     loadOrderDetails(orderCode) {
-        this.withUserId((userId) => this.store.dispatch(new LoadOrderDetails({
-            userId,
-            orderCode,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadOrderDetails({
+                userId,
+                orderCode,
+            }));
+        });
     }
     /**
      * Clears order's details
@@ -22178,12 +22191,14 @@ let UserOrderService = class UserOrderService {
      * @param sort sort
      */
     loadOrderList(pageSize, currentPage, sort) {
-        this.withUserId((userId) => this.store.dispatch(new LoadUserOrders({
-            userId,
-            pageSize,
-            currentPage,
-            sort,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadUserOrders({
+                userId,
+                pageSize,
+                currentPage,
+                sort,
+            }));
+        });
     }
     /**
      * Cleaning order list
@@ -22203,11 +22218,13 @@ let UserOrderService = class UserOrderService {
      * @param consignmentCode a consignment code
      */
     loadConsignmentTracking(orderCode, consignmentCode) {
-        this.withUserId((userId) => this.store.dispatch(new LoadConsignmentTracking({
-            userId,
-            orderCode,
-            consignmentCode,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadConsignmentTracking({
+                userId,
+                orderCode,
+                consignmentCode,
+            }));
+        });
     }
     /**
      * Cleaning consignment tracking
@@ -22219,7 +22236,7 @@ let UserOrderService = class UserOrderService {
      * Cancel an order
      */
     cancelOrder(orderCode, cancelRequestInput) {
-        this.withUserId((userId) => {
+        this.authService.invokeWithUserId((userId) => {
             this.store.dispatch(new CancelOrder({
                 userId,
                 orderCode,
@@ -22245,15 +22262,6 @@ let UserOrderService = class UserOrderService {
     resetCancelOrderProcessState() {
         return this.store.dispatch(new ResetCancelOrderProcess());
     }
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    withUserId(callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe((userId) => callback(userId));
-    }
 };
 UserOrderService.ctorParameters = () => [
     { type: Store },
@@ -22267,8 +22275,9 @@ UserOrderService = __decorate([
 ], UserOrderService);
 
 let CustomerCouponService = class CustomerCouponService {
-    constructor(store) {
+    constructor(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Retrieves customer's coupons
@@ -22277,12 +22286,14 @@ let CustomerCouponService = class CustomerCouponService {
      * @param sort sort
      */
     loadCustomerCoupons(pageSize, currentPage, sort) {
-        this.store.dispatch(new LoadCustomerCoupons({
-            userId: OCC_USER_ID_CURRENT,
-            pageSize: pageSize,
-            currentPage: currentPage,
-            sort: sort,
-        }));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadCustomerCoupons({
+                userId,
+                pageSize: pageSize,
+                currentPage: currentPage,
+                sort: sort,
+            }));
+        });
     }
     /**
      * Returns customer coupon search result
@@ -22318,10 +22329,12 @@ let CustomerCouponService = class CustomerCouponService {
      * @param couponCode a customer coupon code
      */
     subscribeCustomerCoupon(couponCode) {
-        this.store.dispatch(new SubscribeCustomerCoupon({
-            userId: OCC_USER_ID_CURRENT,
-            couponCode: couponCode,
-        }));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new SubscribeCustomerCoupon({
+                userId,
+                couponCode: couponCode,
+            }));
+        });
     }
     /**
      * Returns the subscribe customer coupon notification process loading flag
@@ -22346,10 +22359,12 @@ let CustomerCouponService = class CustomerCouponService {
      * @param couponCode a customer coupon code
      */
     unsubscribeCustomerCoupon(couponCode) {
-        this.store.dispatch(new UnsubscribeCustomerCoupon({
-            userId: OCC_USER_ID_CURRENT,
-            couponCode: couponCode,
-        }));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UnsubscribeCustomerCoupon({
+                userId,
+                couponCode: couponCode,
+            }));
+        });
     }
     /**
      * Returns the unsubscribe customer coupon notification process loading flag
@@ -22374,10 +22389,12 @@ let CustomerCouponService = class CustomerCouponService {
      * @param couponCode a customer coupon code
      */
     claimCustomerCoupon(couponCode) {
-        this.store.dispatch(new ClaimCustomerCoupon({
-            userId: OCC_USER_ID_CURRENT,
-            couponCode: couponCode,
-        }));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new ClaimCustomerCoupon({
+                userId,
+                couponCode,
+            }));
+        });
     }
     /**
      * Returns the claim customer coupon notification process success flag
@@ -22393,9 +22410,10 @@ let CustomerCouponService = class CustomerCouponService {
     }
 };
 CustomerCouponService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: AuthService }
 ];
-CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store)); }, token: CustomerCouponService, providedIn: "root" });
+CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
 CustomerCouponService = __decorate([
     Injectable({
         providedIn: 'root',
@@ -22411,7 +22429,9 @@ let UserPaymentService = class UserPaymentService {
      * Loads all user's payment methods.
      */
     loadPaymentMethods() {
-        this.withUserId((userId) => this.store.dispatch(new LoadUserPaymentMethods(userId)));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadUserPaymentMethods(userId));
+        });
     }
     /**
      * Returns all user's payment methods
@@ -22433,10 +22453,12 @@ let UserPaymentService = class UserPaymentService {
      * @param paymentMethodId a payment method ID
      */
     setPaymentMethodAsDefault(paymentMethodId) {
-        this.withUserId((userId) => this.store.dispatch(new SetDefaultUserPaymentMethod({
-            userId,
-            paymentMethodId,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new SetDefaultUserPaymentMethod({
+                userId,
+                paymentMethodId,
+            }));
+        });
     }
     /**
      * Deletes the payment method
@@ -22444,10 +22466,12 @@ let UserPaymentService = class UserPaymentService {
      * @param paymentMethodId a payment method ID
      */
     deletePaymentMethod(paymentMethodId) {
-        this.withUserId((userId) => this.store.dispatch(new DeleteUserPaymentMethod({
-            userId,
-            paymentMethodId,
-        })));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new DeleteUserPaymentMethod({
+                userId,
+                paymentMethodId,
+            }));
+        });
     }
     /**
      * Returns all billing countries
@@ -22460,15 +22484,6 @@ let UserPaymentService = class UserPaymentService {
      */
     loadBillingCountries() {
         this.store.dispatch(new LoadBillingCountries());
-    }
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    withUserId(callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe((userId) => callback(userId));
     }
 };
 UserPaymentService.ctorParameters = () => [
@@ -22493,7 +22508,7 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      * @param returnRequestInput order return request entry input
      */
     createOrderReturnRequest(returnRequestInput) {
-        this.withUserId((userId) => {
+        this.authService.invokeWithUserId((userId) => {
             this.store.dispatch(new CreateOrderReturnRequest({
                 userId,
                 returnRequestInput,
@@ -22524,9 +22539,9 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      * @param returnRequestCode
      */
     loadOrderReturnRequestDetail(returnRequestCode) {
-        this.withUserId((userId) => {
+        this.authService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadOrderReturnRequest({
-                userId: userId,
+                userId,
                 returnRequestCode,
             }));
         });
@@ -22538,12 +22553,12 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      * @param sort sort
      */
     loadOrderReturnRequestList(pageSize, currentPage, sort) {
-        this.withUserId((userId) => {
+        this.authService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadOrderReturnRequestList({
-                userId: userId,
-                pageSize: pageSize,
-                currentPage: currentPage,
-                sort: sort,
+                userId,
+                pageSize,
+                currentPage,
+                sort,
             }));
         });
     }
@@ -22575,7 +22590,7 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      * Cancel order return request
      */
     cancelOrderReturnRequest(returnRequestCode, returnRequestModification) {
-        this.withUserId((userId) => {
+        this.authService.invokeWithUserId((userId) => {
             this.store.dispatch(new CancelOrderReturnRequest({
                 userId,
                 returnRequestCode,
@@ -22601,15 +22616,6 @@ let OrderReturnRequestService = class OrderReturnRequestService {
     resetCancelReturnRequestProcessState() {
         return this.store.dispatch(new ResetCancelReturnProcess());
     }
-    /*
-     * Utility method to distinquish user id in a convenient way
-     */
-    withUserId(callback) {
-        this.authService
-            .getOccUserId()
-            .pipe(take(1))
-            .subscribe((userId) => callback(userId));
-    }
 };
 OrderReturnRequestService.ctorParameters = () => [
     { type: Store },
@@ -22623,8 +22629,9 @@ OrderReturnRequestService = __decorate([
 ], OrderReturnRequestService);
 
 let UserNotificationPreferenceService = class UserNotificationPreferenceService {
-    constructor(store) {
+    constructor(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Returns all notification preferences.
@@ -22642,7 +22649,9 @@ let UserNotificationPreferenceService = class UserNotificationPreferenceService 
      * Loads all notification preferences.
      */
     loadPreferences() {
-        this.store.dispatch(new LoadNotificationPreferences(OCC_USER_ID_CURRENT));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadNotificationPreferences(userId));
+        });
     }
     /**
      * Clear all notification preferences.
@@ -22661,10 +22670,12 @@ let UserNotificationPreferenceService = class UserNotificationPreferenceService 
      * @param preferences a preference list
      */
     updatePreferences(preferences) {
-        this.store.dispatch(new UpdateNotificationPreferences({
-            userId: OCC_USER_ID_CURRENT,
-            preferences: preferences,
-        }));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdateNotificationPreferences({
+                userId,
+                preferences: preferences,
+            }));
+        });
     }
     /**
      * Returns a loading flag for updating preferences.
@@ -22681,9 +22692,10 @@ let UserNotificationPreferenceService = class UserNotificationPreferenceService 
     }
 };
 UserNotificationPreferenceService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: AuthService }
 ];
-UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
 UserNotificationPreferenceService = __decorate([
     Injectable({
         providedIn: 'root',
@@ -22691,8 +22703,9 @@ UserNotificationPreferenceService = __decorate([
 ], UserNotificationPreferenceService);
 
 let UserInterestsService = class UserInterestsService {
-    constructor(store) {
+    constructor(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Retrieves an product interest list
@@ -22701,14 +22714,16 @@ let UserInterestsService = class UserInterestsService {
      * @param sort sort
      */
     loadProductInterests(pageSize, currentPage, sort, productCode, notificationType) {
-        this.store.dispatch(new LoadProductInterests({
-            userId: OCC_USER_ID_CURRENT,
-            pageSize: pageSize,
-            currentPage: currentPage,
-            sort: sort,
-            productCode: productCode,
-            notificationType: notificationType,
-        }));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadProductInterests({
+                userId,
+                pageSize: pageSize,
+                currentPage: currentPage,
+                sort: sort,
+                productCode: productCode,
+                notificationType: notificationType,
+            }));
+        });
     }
     /**
      * Returns product interests
@@ -22742,11 +22757,13 @@ let UserInterestsService = class UserInterestsService {
      * @param singleDelete flag to delete only one interest
      */
     removeProdutInterest(item, singleDelete) {
-        this.store.dispatch(new RemoveProductInterest({
-            userId: OCC_USER_ID_CURRENT,
-            item: item,
-            singleDelete: singleDelete,
-        }));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new RemoveProductInterest({
+                userId,
+                item: item,
+                singleDelete: singleDelete,
+            }));
+        });
     }
     /**
      * Returns a loading flag for removing product interests.
@@ -22767,11 +22784,13 @@ let UserInterestsService = class UserInterestsService {
      * @param notificationType the notification type
      */
     addProductInterest(productCode, notificationType) {
-        this.store.dispatch(new AddProductInterest({
-            userId: OCC_USER_ID_CURRENT,
-            productCode: productCode,
-            notificationType: notificationType,
-        }));
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new AddProductInterest({
+                userId,
+                productCode: productCode,
+                notificationType: notificationType,
+            }));
+        });
     }
     /**
      * Returns a success flag for adding a product interest.
@@ -22805,9 +22824,10 @@ let UserInterestsService = class UserInterestsService {
     }
 };
 UserInterestsService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: AuthService }
 ];
-UserInterestsService.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(ɵɵinject(Store)); }, token: UserInterestsService, providedIn: "root" });
+UserInterestsService.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
 UserInterestsService = __decorate([
     Injectable({
         providedIn: 'root',

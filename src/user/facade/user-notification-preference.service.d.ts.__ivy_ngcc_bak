@@ -1,11 +1,13 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/facade/auth.service';
+import { NotificationPreference } from '../../model/notification-preference.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
-import { NotificationPreference } from '../../model/notification-preference.model';
 export declare class UserNotificationPreferenceService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>);
+    protected authService: AuthService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
     /**
      * Returns all notification preferences.
      */
