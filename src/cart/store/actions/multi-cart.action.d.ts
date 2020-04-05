@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Cart } from '../../../model/cart.model';
-import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
+import { EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 import { EntityProcessesDecrementAction, EntityProcessesIncrementAction, EntityProcessesLoaderResetAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 import { EntityRemoveAction } from '../../../state/utils/entity/entity.action';
 export declare const REMOVE_TEMP_CART = "[Multi Cart] Remove Temp Cart";
@@ -9,9 +9,6 @@ export declare const MERGE_MULTI_CART_SUCCESS = "[Multi Cart] Merge Cart Success
 export declare const RESET_MULTI_CART_DETAILS = "[Multi Cart] Reset Cart Details";
 export declare const SET_TEMP_CART = "[Multi Cart] Set Temp Cart";
 export declare const REMOVE_CART = "[Multi Cart] Remove Cart";
-export declare const ADD_EMAIL_TO_MULTI_CART = "[Multi Cart] Add Email";
-export declare const ADD_EMAIL_TO_MULTI_CART_FAIL = "[Multi Cart] Add Email Fail";
-export declare const ADD_EMAIL_TO_MULTI_CART_SUCCESS = "[Multi Cart] Add Email Success";
 export declare const CART_PROCESSES_INCREMENT = "[Multi Cart] Cart Processes Increment";
 export declare const CART_PROCESSES_DECREMENT = "[Multi Cart] Cart Processes Decrement";
 export declare const SET_ACTIVE_CART_ID = "[Multi Cart] Set Active Cart Id";
@@ -68,43 +65,6 @@ export declare class RemoveCart extends EntityRemoveAction {
     readonly type = "[Multi Cart] Remove Cart";
     constructor(payload: string);
 }
-export declare class AddEmailToMultiCart extends EntityLoadAction {
-    payload: {
-        userId: string;
-        cartId: string;
-        email: string;
-    };
-    readonly type = "[Multi Cart] Add Email";
-    constructor(payload: {
-        userId: string;
-        cartId: string;
-        email: string;
-    });
-}
-export declare class AddEmailToMultiCartFail extends EntityFailAction {
-    payload: {
-        userId: string;
-        cartId: string;
-        error: any;
-    };
-    readonly type = "[Multi Cart] Add Email Fail";
-    constructor(payload: {
-        userId: string;
-        cartId: string;
-        error: any;
-    });
-}
-export declare class AddEmailToMultiCartSuccess extends EntitySuccessAction {
-    payload: {
-        userId: string;
-        cartId: string;
-    };
-    readonly type = "[Multi Cart] Add Email Success";
-    constructor(payload: {
-        userId: string;
-        cartId: string;
-    });
-}
 export declare class CartProcessesIncrement extends EntityProcessesIncrementAction {
     payload: string;
     readonly type = "[Multi Cart] Cart Processes Increment";
@@ -124,4 +84,4 @@ export declare class ClearMultiCartState extends EntityRemoveAction {
     readonly type = "[Multi Cart] Clear Cart State";
     constructor();
 }
-export declare type MultiCartActions = RemoveTempCart | SetTempCart | MergeMultiCart | MergeMultiCartSuccess | ResetMultiCartDetails | RemoveCart | AddEmailToMultiCart | AddEmailToMultiCartFail | AddEmailToMultiCartSuccess | CartProcessesIncrement | CartProcessesDecrement | SetActiveCartId | ClearMultiCartState;
+export declare type MultiCartActions = RemoveTempCart | SetTempCart | MergeMultiCart | MergeMultiCartSuccess | ResetMultiCartDetails | RemoveCart | CartProcessesIncrement | CartProcessesDecrement | SetActiveCartId | ClearMultiCartState;

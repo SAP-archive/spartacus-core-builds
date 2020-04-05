@@ -5,7 +5,6 @@ export declare class MultiCartEffects {
     private actions$;
     setTempCart$: Observable<CartActions.RemoveTempCart>;
     mergeCart2$: Observable<CartActions.MergeMultiCart>;
-    addEmail2$: Observable<CartActions.AddEmailToMultiCart>;
     removeCart$: Observable<CartActions.RemoveCart>;
     processesIncrement$: Observable<CartActions.CartProcessesIncrement>;
     constructor(actions$: Actions);

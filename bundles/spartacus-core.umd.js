@@ -14394,27 +14394,36 @@
         }
         return CreateCartSuccess;
     }(EntitySuccessAction));
-    var AddEmailToCart = /** @class */ (function () {
+    var AddEmailToCart = /** @class */ (function (_super) {
+        __extends(AddEmailToCart, _super);
         function AddEmailToCart(payload) {
-            this.payload = payload;
-            this.type = ADD_EMAIL_TO_CART;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART;
+            return _this;
         }
         return AddEmailToCart;
-    }());
-    var AddEmailToCartFail = /** @class */ (function () {
+    }(EntityProcessesIncrementAction));
+    var AddEmailToCartFail = /** @class */ (function (_super) {
+        __extends(AddEmailToCartFail, _super);
         function AddEmailToCartFail(payload) {
-            this.payload = payload;
-            this.type = ADD_EMAIL_TO_CART_FAIL;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART_FAIL;
+            return _this;
         }
         return AddEmailToCartFail;
-    }());
-    var AddEmailToCartSuccess = /** @class */ (function () {
+    }(EntityProcessesDecrementAction));
+    var AddEmailToCartSuccess = /** @class */ (function (_super) {
+        __extends(AddEmailToCartSuccess, _super);
         function AddEmailToCartSuccess(payload) {
-            this.payload = payload;
-            this.type = ADD_EMAIL_TO_CART_SUCCESS;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART_SUCCESS;
+            return _this;
         }
         return AddEmailToCartSuccess;
-    }());
+    }(EntityProcessesDecrementAction));
     var LoadCart = /** @class */ (function (_super) {
         __extends(LoadCart, _super);
         function LoadCart(payload) {
@@ -14678,9 +14687,6 @@
     var RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
     var SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
     var REMOVE_CART = '[Multi Cart] Remove Cart';
-    var ADD_EMAIL_TO_MULTI_CART = '[Multi Cart] Add Email';
-    var ADD_EMAIL_TO_MULTI_CART_FAIL = '[Multi Cart] Add Email Fail';
-    var ADD_EMAIL_TO_MULTI_CART_SUCCESS = '[Multi Cart] Add Email Success';
     var CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
     var CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
     var SET_ACTIVE_CART_ID = '[Multi Cart] Set Active Cart Id';
@@ -14746,36 +14752,6 @@
         }
         return RemoveCart;
     }(EntityRemoveAction));
-    var AddEmailToMultiCart = /** @class */ (function (_super) {
-        __extends(AddEmailToMultiCart, _super);
-        function AddEmailToMultiCart(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_MULTI_CART;
-            return _this;
-        }
-        return AddEmailToMultiCart;
-    }(EntityLoadAction));
-    var AddEmailToMultiCartFail = /** @class */ (function (_super) {
-        __extends(AddEmailToMultiCartFail, _super);
-        function AddEmailToMultiCartFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_MULTI_CART_FAIL;
-            return _this;
-        }
-        return AddEmailToMultiCartFail;
-    }(EntityFailAction));
-    var AddEmailToMultiCartSuccess = /** @class */ (function (_super) {
-        __extends(AddEmailToMultiCartSuccess, _super);
-        function AddEmailToMultiCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_MULTI_CART_SUCCESS;
-            return _this;
-        }
-        return AddEmailToMultiCartSuccess;
-    }(EntitySuccessAction));
     var CartProcessesIncrement = /** @class */ (function (_super) {
         __extends(CartProcessesIncrement, _super);
         function CartProcessesIncrement(payload) {
@@ -14952,9 +14928,6 @@
         RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
         SET_TEMP_CART: SET_TEMP_CART,
         REMOVE_CART: REMOVE_CART,
-        ADD_EMAIL_TO_MULTI_CART: ADD_EMAIL_TO_MULTI_CART,
-        ADD_EMAIL_TO_MULTI_CART_FAIL: ADD_EMAIL_TO_MULTI_CART_FAIL,
-        ADD_EMAIL_TO_MULTI_CART_SUCCESS: ADD_EMAIL_TO_MULTI_CART_SUCCESS,
         CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
         CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
         SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
@@ -14965,9 +14938,6 @@
         MergeMultiCartSuccess: MergeMultiCartSuccess,
         ResetMultiCartDetails: ResetMultiCartDetails,
         RemoveCart: RemoveCart,
-        AddEmailToMultiCart: AddEmailToMultiCart,
-        AddEmailToMultiCartFail: AddEmailToMultiCartFail,
-        AddEmailToMultiCartSuccess: AddEmailToMultiCartSuccess,
         CartProcessesIncrement: CartProcessesIncrement,
         CartProcessesDecrement: CartProcessesDecrement,
         SetActiveCartId: SetActiveCartId,
@@ -17576,7 +17546,7 @@
                     ];
                 }));
             }), withdrawOn(this.contextChange$));
-            this.refresh$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+            this.refresh$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
                 return rxjs.from([
                     new CartProcessesDecrement(payload.cartId),
                     new LoadCart({
@@ -17602,24 +17572,15 @@
                     .addEmail(payload.userId, payload.cartId, payload.email)
                     .pipe(operators.mergeMap(function () {
                     return [
-                        new AddEmailToCartSuccess({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                        new AddEmailToMultiCartSuccess({
+                        new AddEmailToCartSuccess(__assign({}, payload)),
+                        new LoadCart({
                             userId: payload.userId,
                             cartId: payload.cartId,
                         }),
                     ];
                 }), operators.catchError(function (error) {
                     return rxjs.from([
-                        new AddEmailToCartFail(makeErrorSerializable(error)),
-                        new AddEmailToMultiCartFail({
-                            error: makeErrorSerializable(error),
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                        new CartProcessesDecrement(payload.cartId),
+                        new AddEmailToCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
                         new LoadCart({
                             userId: payload.userId,
                             cartId: payload.cartId,
@@ -17928,13 +17889,10 @@
             this.mergeCart2$ = this.actions$.pipe(effects$c.ofType(MERGE_CART), operators.map(function (action) {
                 return new MergeMultiCart(action.payload);
             }));
-            this.addEmail2$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART), operators.map(function (action) {
-                return new AddEmailToMultiCart(action.payload);
-            }));
             this.removeCart$ = this.actions$.pipe(effects$c.ofType(DELETE_CART), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new RemoveCart(payload.cartId); }));
             // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
             // Change for 2.0 release
-            this.processesIncrement$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART, CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
+            this.processesIncrement$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
         }
         MultiCartEffects.ctorParameters = function () { return [
             { type: effects$c.Actions }
@@ -17945,9 +17903,6 @@
         __decorate([
             effects$c.Effect()
         ], MultiCartEffects.prototype, "mergeCart2$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], MultiCartEffects.prototype, "addEmail2$", void 0);
         __decorate([
             effects$c.Effect()
         ], MultiCartEffects.prototype, "removeCart$", void 0);

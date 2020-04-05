@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Cart } from '../../../model/cart.model';
 import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
+import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 export declare const CREATE_CART = "[Cart] Create Cart";
 export declare const CREATE_CART_FAIL = "[Cart] Create Cart Fail";
 export declare const CREATE_CART_SUCCESS = "[Cart] Create Cart Success";
@@ -51,7 +52,7 @@ export declare class CreateCartSuccess extends EntitySuccessAction {
     readonly type = "[Cart] Create Cart Success";
     constructor(payload: CreateCartSuccessPayload);
 }
-export declare class AddEmailToCart {
+export declare class AddEmailToCart extends EntityProcessesIncrementAction {
     payload: {
         userId: string;
         cartId: string;
@@ -64,20 +65,32 @@ export declare class AddEmailToCart {
         email: string;
     });
 }
-export declare class AddEmailToCartFail {
-    payload: any;
-    readonly type = "[Cart] Add Email to Cart Fail";
-    constructor(payload: any);
-}
-export declare class AddEmailToCartSuccess {
+export declare class AddEmailToCartFail extends EntityProcessesDecrementAction {
     payload: {
         userId: string;
         cartId: string;
+        error: any;
+        email: string;
+    };
+    readonly type = "[Cart] Add Email to Cart Fail";
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+        error: any;
+        email: string;
+    });
+}
+export declare class AddEmailToCartSuccess extends EntityProcessesDecrementAction {
+    payload: {
+        userId: string;
+        cartId: string;
+        email: string;
     };
     readonly type = "[Cart] Add Email to Cart Success";
     constructor(payload: {
         userId: string;
         cartId: string;
+        email: string;
     });
 }
 interface LoadCartPayload {

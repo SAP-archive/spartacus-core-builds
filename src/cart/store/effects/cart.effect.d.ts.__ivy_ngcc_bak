@@ -16,7 +16,7 @@ export declare class CartEffects {
     refresh$: Observable<CartActions.LoadCart | CartActions.CartProcessesDecrement>;
     refreshWithoutProcesses$: Observable<CartActions.LoadCart>;
     resetCartDetailsOnSiteContextChange$: Observable<DeprecatedCartActions.ResetCartDetails | CartActions.ResetMultiCartDetails>;
-    addEmail$: Observable<DeprecatedCartActions.AddEmailToCartSuccess | DeprecatedCartActions.AddEmailToCartFail | CartActions.AddEmailToMultiCartFail | CartActions.AddEmailToMultiCartSuccess | CartActions.CartProcessesDecrement | CartActions.LoadCart>;
+    addEmail$: Observable<CartActions.AddEmailToCartSuccess | CartActions.AddEmailToCartFail | CartActions.LoadCart>;
     deleteCart$: Observable<any>;
     constructor(actions$: Actions, cartConnector: CartConnector, store: Store<StateWithMultiCart>);
 }

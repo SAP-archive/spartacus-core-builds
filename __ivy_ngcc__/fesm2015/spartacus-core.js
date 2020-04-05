@@ -12316,20 +12316,23 @@ class CreateCartSuccess extends EntitySuccessAction {
         this.type = CREATE_CART_SUCCESS;
     }
 }
-class AddEmailToCart {
+class AddEmailToCart extends EntityProcessesIncrementAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = ADD_EMAIL_TO_CART;
     }
 }
-class AddEmailToCartFail {
+class AddEmailToCartFail extends EntityProcessesDecrementAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = ADD_EMAIL_TO_CART_FAIL;
     }
 }
-class AddEmailToCartSuccess {
+class AddEmailToCartSuccess extends EntityProcessesDecrementAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = ADD_EMAIL_TO_CART_SUCCESS;
     }
@@ -12533,9 +12536,6 @@ const MERGE_MULTI_CART_SUCCESS = '[Multi Cart] Merge Cart Success';
 const RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
 const SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
 const REMOVE_CART = '[Multi Cart] Remove Cart';
-const ADD_EMAIL_TO_MULTI_CART = '[Multi Cart] Add Email';
-const ADD_EMAIL_TO_MULTI_CART_FAIL = '[Multi Cart] Add Email Fail';
-const ADD_EMAIL_TO_MULTI_CART_SUCCESS = '[Multi Cart] Add Email Success';
 const CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
 const CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
 const SET_ACTIVE_CART_ID = '[Multi Cart] Set Active Cart Id';
@@ -12583,27 +12583,6 @@ class RemoveCart extends EntityRemoveAction {
         super(MULTI_CART_DATA, payload);
         this.payload = payload;
         this.type = REMOVE_CART;
-    }
-}
-class AddEmailToMultiCart extends EntityLoadAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_MULTI_CART;
-    }
-}
-class AddEmailToMultiCartFail extends EntityFailAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId, payload.error);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_MULTI_CART_FAIL;
-    }
-}
-class AddEmailToMultiCartSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_MULTI_CART_SUCCESS;
     }
 }
 class CartProcessesIncrement extends EntityProcessesIncrementAction {
@@ -12756,9 +12735,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
     SET_TEMP_CART: SET_TEMP_CART,
     REMOVE_CART: REMOVE_CART,
-    ADD_EMAIL_TO_MULTI_CART: ADD_EMAIL_TO_MULTI_CART,
-    ADD_EMAIL_TO_MULTI_CART_FAIL: ADD_EMAIL_TO_MULTI_CART_FAIL,
-    ADD_EMAIL_TO_MULTI_CART_SUCCESS: ADD_EMAIL_TO_MULTI_CART_SUCCESS,
     CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
     CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
     SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
@@ -12769,9 +12745,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MergeMultiCartSuccess: MergeMultiCartSuccess,
     ResetMultiCartDetails: ResetMultiCartDetails,
     RemoveCart: RemoveCart,
-    AddEmailToMultiCart: AddEmailToMultiCart,
-    AddEmailToMultiCartFail: AddEmailToMultiCartFail,
-    AddEmailToMultiCartSuccess: AddEmailToMultiCartSuccess,
     CartProcessesIncrement: CartProcessesIncrement,
     CartProcessesDecrement: CartProcessesDecrement,
     SetActiveCartId: SetActiveCartId,
@@ -15030,7 +15003,7 @@ let CartEffects = class CartEffects {
                 ];
             }));
         }), withdrawOn(this.contextChange$));
-        this.refresh$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), map((action) => action.payload), concatMap((payload) => from([
+        this.refresh$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), map((action) => action.payload), concatMap((payload) => from([
             new CartProcessesDecrement(payload.cartId),
             new LoadCart({
                 userId: payload.userId,
@@ -15051,23 +15024,14 @@ let CartEffects = class CartEffects {
             .addEmail(payload.userId, payload.cartId, payload.email)
             .pipe(mergeMap(() => {
             return [
-                new AddEmailToCartSuccess({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
-                new AddEmailToMultiCartSuccess({
+                new AddEmailToCartSuccess(Object.assign({}, payload)),
+                new LoadCart({
                     userId: payload.userId,
                     cartId: payload.cartId,
                 }),
             ];
         }), catchError((error) => from([
-            new AddEmailToCartFail(makeErrorSerializable(error)),
-            new AddEmailToMultiCartFail({
-                error: makeErrorSerializable(error),
-                userId: payload.userId,
-                cartId: payload.cartId,
-            }),
-            new CartProcessesDecrement(payload.cartId),
+            new AddEmailToCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
             new LoadCart({
                 userId: payload.userId,
                 cartId: payload.cartId,
@@ -15342,11 +15306,10 @@ let MultiCartEffects = class MultiCartEffects {
             return new RemoveTempCart(action.payload);
         }));
         this.mergeCart2$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => new MergeMultiCart(action.payload)));
-        this.addEmail2$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((action) => new AddEmailToMultiCart(action.payload)));
         this.removeCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), map((payload) => new RemoveCart(payload.cartId)));
         // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
         // Change for 2.0 release
-        this.processesIncrement$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART, CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), map((action) => action.payload), map((payload) => new CartProcessesIncrement(payload.cartId)));
+        this.processesIncrement$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), map((action) => action.payload), map((payload) => new CartProcessesIncrement(payload.cartId)));
     }
 };
 MultiCartEffects.ɵfac = function MultiCartEffects_Factory(t) { return new (t || MultiCartEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions)); };
@@ -15360,9 +15323,6 @@ __decorate([
 __decorate([
     Effect()
 ], MultiCartEffects.prototype, "mergeCart2$", void 0);
-__decorate([
-    Effect()
-], MultiCartEffects.prototype, "addEmail2$", void 0);
 __decorate([
     Effect()
 ], MultiCartEffects.prototype, "removeCart$", void 0);
