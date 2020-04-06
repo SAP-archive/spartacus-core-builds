@@ -8,7 +8,6 @@ import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClie
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ROUTER_NAVIGATED, ROUTER_CANCEL, ROUTER_ERROR, ROUTER_NAVIGATION, RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import i18next from 'i18next';
 import i18nextXhrBackend from 'i18next-xhr-backend';
@@ -11036,7 +11035,6 @@ AnonymousConsentsStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: funct
         reducerProvider$2,
     ], imports: [[
             CommonModule,
-            ReactiveFormsModule,
             StateModule,
             StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
                 metaReducers: metaReducers$1
@@ -23168,7 +23166,6 @@ let UserStoreModule = class UserStoreModule {
 UserStoreModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: UserStoreModule });
 UserStoreModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserStoreModule_Factory(t) { return new (t || UserStoreModule)(); }, providers: [reducerProvider$c], imports: [[
             CommonModule,
-            ReactiveFormsModule,
             StateModule,
             StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
             EffectsModule.forFeature(effects$b),
@@ -23883,14 +23880,12 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
             }]
     }], null, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(AnonymousConsentsStoreModule, { imports: function () { return [CommonModule,
-        ReactiveFormsModule,
         StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(AnonymousConsentsStoreModule, [{
         type: NgModule,
         args: [{
                 imports: [
                     CommonModule,
-                    ReactiveFormsModule,
                     StateModule,
                     StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
                         metaReducers: metaReducers$1
@@ -24886,14 +24881,12 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: UserInterestsConnector }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(UserStoreModule, { imports: function () { return [CommonModule,
-        ReactiveFormsModule,
         StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule, RouterModule]; } }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(UserStoreModule, [{
         type: NgModule,
         args: [{
                 imports: [
                     CommonModule,
-                    ReactiveFormsModule,
                     StateModule,
                     StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
                     EffectsModule.forFeature(effects$b),

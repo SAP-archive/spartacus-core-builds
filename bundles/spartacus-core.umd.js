@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/forms'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@angular/forms', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.store, global.rxjs, global.rxjs.operators, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.ng.forms, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, (function (exports, core, common, store, rxjs, operators, http, router, effects$c, platformBrowser, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.store, global.rxjs, global.rxjs.operators, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, (function (exports, core, common, store, rxjs, operators, http, router, effects$c, platformBrowser, routerStore, i18next, i18nextXhrBackend) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -12879,7 +12879,6 @@
             core.NgModule({
                 imports: [
                     common.CommonModule,
-                    forms.ReactiveFormsModule,
                     StateModule,
                     store.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
                         metaReducers: metaReducers$1,
@@ -26977,7 +26976,6 @@
             core.NgModule({
                 imports: [
                     common.CommonModule,
-                    forms.ReactiveFormsModule,
                     StateModule,
                     store.StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
                     effects$c.EffectsModule.forFeature(effects$b),

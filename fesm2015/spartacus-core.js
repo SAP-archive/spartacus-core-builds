@@ -8,7 +8,6 @@ import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClie
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ROUTER_NAVIGATED, ROUTER_CANCEL, ROUTER_ERROR, ROUTER_NAVIGATION, RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import i18next from 'i18next';
 import i18nextXhrBackend from 'i18next-xhr-backend';
@@ -11261,7 +11260,6 @@ AnonymousConsentsStoreModule = __decorate([
     NgModule({
         imports: [
             CommonModule,
-            ReactiveFormsModule,
             StateModule,
             StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
                 metaReducers: metaReducers$1,
@@ -23828,7 +23826,6 @@ UserStoreModule = __decorate([
     NgModule({
         imports: [
             CommonModule,
-            ReactiveFormsModule,
             StateModule,
             StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
             EffectsModule.forFeature(effects$b),
