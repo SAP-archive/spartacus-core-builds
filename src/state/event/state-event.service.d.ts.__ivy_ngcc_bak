@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
 import { ActionsSubject } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { EventService } from '../../event/index';
+import { EventService } from '../../event/event.service';
 import { ActionToEventMapping } from './action-to-event-mapping';
 /**
  * Registers streams of ngrx actions as events source streams

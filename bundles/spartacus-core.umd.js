@@ -9023,28 +9023,6 @@
     ];
 
     /**
-     * Base class for events.
-     *
-     * For convenience it copies all properties of the argument object into the properties of the class instance.
-     *
-     * Provides type safety both for the argument and the result class instance. For example:
-     *
-     * ```
-     * export class CreateCartSuccess extends BaseEvent<CreateCartSuccess> {
-     *   cart: Cart;
-     * }
-     * const event = new CreateCartSuccess({ cart: ... });
-     * event.cart
-     * ```
-     */
-    var BaseEvent = /** @class */ (function () {
-        function BaseEvent(data) {
-            Object.assign(this, data);
-        }
-        return BaseEvent;
-    }());
-
-    /**
      * A service to register and observe event sources. Events are driven by event types, which are class signatures
      * for the given event.
      *
@@ -9148,7 +9126,7 @@
             var output$ = sources$.pipe(operators.switchMap(function (sources) { return rxjs.merge.apply(void 0, __spread(sources)); }), operators.share() // share the result observable to avoid merging sources for each subscriber
             );
             if (core.isDevMode()) {
-                output$ = this.validateEventStream(output$, eventType);
+                output$ = this.getValidatedEventStream(output$, eventType);
             }
             this.eventsMeta.set(eventType, {
                 inputSubject$: null,
@@ -9171,7 +9149,7 @@
          *
          * Should be used only in dev mode.
          */
-        EventService.prototype.validateEventStream = function (source$, eventType) {
+        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
             return source$.pipe(operators.tap(function (event) {
                 if (!(event instanceof eventType)) {
                     console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
@@ -9186,6 +9164,16 @@
         ], EventService);
         return EventService;
     }());
+
+    /**
+     * Creates an instance of the given class and fills its properties with the given data.
+     *
+     * @param type reference to the class
+     * @param data object with properties to be copied to the class
+     */
+    function createFrom(type, data) {
+        return Object.assign(new type(), data);
+    }
 
     /**
      * Registers streams of ngrx actions as events source streams
@@ -9231,7 +9219,9 @@
          */
         StateEventService.prototype.createEvent = function (action, eventType, factory) {
             var _a;
-            return factory ? factory(action) : new eventType((_a = action.payload) !== null && _a !== void 0 ? _a : {});
+            return factory
+                ? factory(action)
+                : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
         };
         StateEventService.ctorParameters = function () { return [
             { type: store.ActionsSubject },
@@ -15366,6 +15356,1297 @@
         return ActiveCartService;
     }());
 
+    /**
+     *
+     * Withdraw from the source observable when notifier emits a value
+     *
+     * Withdraw will result in resubscribing to the source observable
+     * Operator is useful to kill ongoing emission transformation on notifier emission
+     *
+     * @param notifier
+     */
+    function withdrawOn(notifier) {
+        return function (source) {
+            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
+        };
+    }
+
+    var CartEntryConnector = /** @class */ (function () {
+        function CartEntryConnector(adapter) {
+            this.adapter = adapter;
+        }
+        CartEntryConnector.prototype.add = function (userId, cartId, productCode, quantity) {
+            return this.adapter.add(userId, cartId, productCode, quantity);
+        };
+        CartEntryConnector.prototype.update = function (userId, cartId, entryNumber, qty, pickupStore) {
+            return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
+        };
+        CartEntryConnector.prototype.remove = function (userId, cartId, entryNumber) {
+            return this.adapter.remove(userId, cartId, entryNumber);
+        };
+        CartEntryConnector.ctorParameters = function () { return [
+            { type: CartEntryAdapter }
+        ]; };
+        CartEntryConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core["ɵɵinject"](CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+        CartEntryConnector = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CartEntryConnector);
+        return CartEntryConnector;
+    }());
+
+    var CartEntryEffects = /** @class */ (function () {
+        function CartEntryEffects(actions$, cartEntryConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.cartEntryConnector = cartEntryConnector;
+            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.addEntry$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+                return _this.cartEntryConnector
+                    .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
+                    .pipe(operators.map(function (cartModification) {
+                    return new CartAddEntrySuccess(__assign(__assign({}, payload), cartModification));
+                }), operators.catchError(function (error) {
+                    return rxjs.from([
+                        new CartAddEntryFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
+                        new LoadCart({
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                        }),
+                    ]);
+                }));
+            }), withdrawOn(this.contextChange$));
+            this.removeEntry$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+                return _this.cartEntryConnector
+                    .remove(payload.userId, payload.cartId, payload.entry)
+                    .pipe(operators.map(function () {
+                    return new CartRemoveEntrySuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    });
+                }), operators.catchError(function (error) {
+                    return rxjs.from([
+                        new CartRemoveEntryFail({
+                            error: makeErrorSerializable(error),
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                        }),
+                        new LoadCart({
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                        }),
+                    ]);
+                }));
+            }), withdrawOn(this.contextChange$));
+            this.updateEntry$ = this.actions$.pipe(effects$c.ofType(CART_UPDATE_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+                return _this.cartEntryConnector
+                    .update(payload.userId, payload.cartId, payload.entry, payload.qty)
+                    .pipe(operators.map(function () {
+                    return new CartUpdateEntrySuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    });
+                }), operators.catchError(function (error) {
+                    return rxjs.from([
+                        new CartUpdateEntryFail({
+                            error: makeErrorSerializable(error),
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                        }),
+                        new LoadCart({
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                        }),
+                    ]);
+                }));
+            }), withdrawOn(this.contextChange$));
+        }
+        CartEntryEffects.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: CartEntryConnector }
+        ]; };
+        __decorate([
+            effects$c.Effect()
+        ], CartEntryEffects.prototype, "addEntry$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEntryEffects.prototype, "removeEntry$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEntryEffects.prototype, "updateEntry$", void 0);
+        CartEntryEffects = __decorate([
+            core.Injectable()
+        ], CartEntryEffects);
+        return CartEntryEffects;
+    }());
+
+    var CartVoucherConnector = /** @class */ (function () {
+        function CartVoucherConnector(adapter) {
+            this.adapter = adapter;
+        }
+        CartVoucherConnector.prototype.add = function (userId, cartId, voucherId) {
+            return this.adapter.add(userId, cartId, voucherId);
+        };
+        CartVoucherConnector.prototype.remove = function (userId, cartId, voucherId) {
+            return this.adapter.remove(userId, cartId, voucherId);
+        };
+        CartVoucherConnector.ctorParameters = function () { return [
+            { type: CartVoucherAdapter }
+        ]; };
+        CartVoucherConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(core["ɵɵinject"](CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
+        CartVoucherConnector = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CartVoucherConnector);
+        return CartVoucherConnector;
+    }());
+
+    var CartVoucherEffects = /** @class */ (function () {
+        function CartVoucherEffects(actions$, cartVoucherConnector, messageService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.cartVoucherConnector = cartVoucherConnector;
+            this.messageService = messageService;
+            this.addCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.cartVoucherConnector
+                    .add(payload.userId, payload.cartId, payload.voucherId)
+                    .pipe(operators.map(function () {
+                    _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, exports.GlobalMessageType.MSG_TYPE_CONFIRMATION);
+                    return new CartAddVoucherSuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    });
+                }), operators.catchError(function (error) {
+                    var _a;
+                    if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
+                        error.error.errors.forEach(function (err) {
+                            if (err.message) {
+                                _this.messageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR);
+                            }
+                        });
+                    }
+                    return rxjs.from([
+                        new CartAddVoucherFail(makeErrorSerializable(error)),
+                        new CartProcessesDecrement(payload.cartId),
+                        new LoadCart({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                        }),
+                    ]);
+                }));
+            }));
+            this.removeCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_VOUCHER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.cartVoucherConnector
+                    .remove(payload.userId, payload.cartId, payload.voucherId)
+                    .pipe(operators.map(function () {
+                    _this.showGlobalMessage('voucher.removeVoucherSuccess', payload.voucherId, exports.GlobalMessageType.MSG_TYPE_INFO);
+                    return new CartRemoveVoucherSuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                        voucherId: payload.voucherId,
+                    });
+                }), operators.catchError(function (error) {
+                    return rxjs.from([
+                        new CartRemoveVoucherFail({
+                            error: makeErrorSerializable(error),
+                            cartId: payload.cartId,
+                            userId: payload.userId,
+                            voucherId: payload.voucherId,
+                        }),
+                        new LoadCart({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                        }),
+                    ]);
+                }));
+            }));
+        }
+        CartVoucherEffects.prototype.showGlobalMessage = function (text, param, messageType) {
+            this.messageService.add({ key: text, params: { voucherCode: param } }, messageType);
+        };
+        CartVoucherEffects.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: CartVoucherConnector },
+            { type: GlobalMessageService }
+        ]; };
+        __decorate([
+            effects$c.Effect()
+        ], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
+        CartVoucherEffects = __decorate([
+            core.Injectable()
+        ], CartVoucherEffects);
+        return CartVoucherEffects;
+    }());
+
+    var VERIFY_ADDRESS = '[Checkout] Verify Address';
+    var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
+    var VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
+    var CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
+    var VerifyAddress = /** @class */ (function () {
+        function VerifyAddress(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS;
+        }
+        return VerifyAddress;
+    }());
+    var VerifyAddressFail = /** @class */ (function () {
+        function VerifyAddressFail(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS_FAIL;
+        }
+        return VerifyAddressFail;
+    }());
+    var VerifyAddressSuccess = /** @class */ (function () {
+        function VerifyAddressSuccess(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS_SUCCESS;
+        }
+        return VerifyAddressSuccess;
+    }());
+    var ClearAddressVerificationResults = /** @class */ (function () {
+        function ClearAddressVerificationResults() {
+            this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
+        }
+        return ClearAddressVerificationResults;
+    }());
+
+    var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
+    var LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
+    var LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
+    var LoadCardTypes = /** @class */ (function () {
+        function LoadCardTypes() {
+            this.type = LOAD_CARD_TYPES;
+        }
+        return LoadCardTypes;
+    }());
+    var LoadCardTypesFail = /** @class */ (function () {
+        function LoadCardTypesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_CARD_TYPES_FAIL;
+        }
+        return LoadCardTypesFail;
+    }());
+    var LoadCardTypesSuccess = /** @class */ (function () {
+        function LoadCardTypesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_CARD_TYPES_SUCCESS;
+        }
+        return LoadCardTypesSuccess;
+    }());
+
+    var CHECKOUT_FEATURE = 'checkout';
+    var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+    var SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
+    var SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
+    var SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
+    var SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
+
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
+    var CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
+    var CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
+    var CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
+    var ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
+    var ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
+    var ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
+    var SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
+    var SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
+    var SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
+    var RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
+    var LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
+    var LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
+    var LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
+    var CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
+    var SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
+    var SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
+    var SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
+    var RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
+    var SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
+    var SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
+    var SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
+    var RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
+    var CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
+    var CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
+    var CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
+    var SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
+    var SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
+    var SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
+    var RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
+    var PLACE_ORDER = '[Checkout] Place Order';
+    var PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
+    var PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
+    var CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
+    var CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
+    var LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
+    var LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
+    var LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
+    var CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
+    var PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
+    var AddDeliveryAddress = /** @class */ (function () {
+        function AddDeliveryAddress(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS;
+        }
+        return AddDeliveryAddress;
+    }());
+    var AddDeliveryAddressFail = /** @class */ (function () {
+        function AddDeliveryAddressFail(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS_FAIL;
+        }
+        return AddDeliveryAddressFail;
+    }());
+    var AddDeliveryAddressSuccess = /** @class */ (function () {
+        function AddDeliveryAddressSuccess(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
+        }
+        return AddDeliveryAddressSuccess;
+    }());
+    var SetDeliveryAddress = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddress, _super);
+        function SetDeliveryAddress(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS;
+            return _this;
+        }
+        return SetDeliveryAddress;
+    }(EntityLoadAction));
+    var SetDeliveryAddressFail = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddressFail, _super);
+        function SetDeliveryAddressFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS_FAIL;
+            return _this;
+        }
+        return SetDeliveryAddressFail;
+    }(EntityFailAction));
+    var SetDeliveryAddressSuccess = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddressSuccess, _super);
+        function SetDeliveryAddressSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS_SUCCESS;
+            return _this;
+        }
+        return SetDeliveryAddressSuccess;
+    }(EntitySuccessAction));
+    var ResetSetDeliveryAddressProcess = /** @class */ (function (_super) {
+        __extends(ResetSetDeliveryAddressProcess, _super);
+        function ResetSetDeliveryAddressProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
+            return _this;
+        }
+        return ResetSetDeliveryAddressProcess;
+    }(EntityResetAction));
+    var LoadSupportedDeliveryModes = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModes, _super);
+        function LoadSupportedDeliveryModes(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES;
+            return _this;
+        }
+        return LoadSupportedDeliveryModes;
+    }(EntityLoadAction));
+    var LoadSupportedDeliveryModesFail = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModesFail, _super);
+        function LoadSupportedDeliveryModesFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
+            return _this;
+        }
+        return LoadSupportedDeliveryModesFail;
+    }(EntityFailAction));
+    var LoadSupportedDeliveryModesSuccess = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModesSuccess, _super);
+        function LoadSupportedDeliveryModesSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
+            return _this;
+        }
+        return LoadSupportedDeliveryModesSuccess;
+    }(EntitySuccessAction));
+    var ResetLoadSupportedDeliveryModesProcess = /** @class */ (function (_super) {
+        __extends(ResetLoadSupportedDeliveryModesProcess, _super);
+        function ResetLoadSupportedDeliveryModesProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
+            return _this;
+        }
+        return ResetLoadSupportedDeliveryModesProcess;
+    }(EntityResetAction));
+    var SetDeliveryMode = /** @class */ (function (_super) {
+        __extends(SetDeliveryMode, _super);
+        function SetDeliveryMode(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE;
+            return _this;
+        }
+        return SetDeliveryMode;
+    }(EntityLoadAction));
+    var SetDeliveryModeFail = /** @class */ (function (_super) {
+        __extends(SetDeliveryModeFail, _super);
+        function SetDeliveryModeFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE_FAIL;
+            return _this;
+        }
+        return SetDeliveryModeFail;
+    }(EntityFailAction));
+    var SetDeliveryModeSuccess = /** @class */ (function (_super) {
+        __extends(SetDeliveryModeSuccess, _super);
+        function SetDeliveryModeSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE_SUCCESS;
+            return _this;
+        }
+        return SetDeliveryModeSuccess;
+    }(EntitySuccessAction));
+    var ResetSetDeliveryModeProcess = /** @class */ (function (_super) {
+        __extends(ResetSetDeliveryModeProcess, _super);
+        function ResetSetDeliveryModeProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.type = RESET_SET_DELIVERY_MODE_PROCESS;
+            return _this;
+        }
+        return ResetSetDeliveryModeProcess;
+    }(EntityResetAction));
+    var CreatePaymentDetails = /** @class */ (function (_super) {
+        __extends(CreatePaymentDetails, _super);
+        function CreatePaymentDetails(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CREATE_PAYMENT_DETAILS;
+            return _this;
+        }
+        return CreatePaymentDetails;
+    }(EntityLoadAction));
+    var CreatePaymentDetailsFail = /** @class */ (function (_super) {
+        __extends(CreatePaymentDetailsFail, _super);
+        function CreatePaymentDetailsFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CREATE_PAYMENT_DETAILS_FAIL;
+            return _this;
+        }
+        return CreatePaymentDetailsFail;
+    }(EntityFailAction));
+    var CreatePaymentDetailsSuccess = /** @class */ (function () {
+        function CreatePaymentDetailsSuccess(payload) {
+            this.payload = payload;
+            this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
+        }
+        return CreatePaymentDetailsSuccess;
+    }());
+    var PaymentProcessSuccess = /** @class */ (function (_super) {
+        __extends(PaymentProcessSuccess, _super);
+        function PaymentProcessSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.type = PAYMENT_PROCESS_SUCCESS;
+            return _this;
+        }
+        return PaymentProcessSuccess;
+    }(EntitySuccessAction));
+    var SetPaymentDetails = /** @class */ (function (_super) {
+        __extends(SetPaymentDetails, _super);
+        function SetPaymentDetails(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS;
+            return _this;
+        }
+        return SetPaymentDetails;
+    }(EntityLoadAction));
+    var SetPaymentDetailsFail = /** @class */ (function (_super) {
+        __extends(SetPaymentDetailsFail, _super);
+        function SetPaymentDetailsFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS_FAIL;
+            return _this;
+        }
+        return SetPaymentDetailsFail;
+    }(EntityFailAction));
+    var SetPaymentDetailsSuccess = /** @class */ (function (_super) {
+        __extends(SetPaymentDetailsSuccess, _super);
+        function SetPaymentDetailsSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS_SUCCESS;
+            return _this;
+        }
+        return SetPaymentDetailsSuccess;
+    }(EntitySuccessAction));
+    var ResetSetPaymentDetailsProcess = /** @class */ (function (_super) {
+        __extends(ResetSetPaymentDetailsProcess, _super);
+        function ResetSetPaymentDetailsProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
+            return _this;
+        }
+        return ResetSetPaymentDetailsProcess;
+    }(EntityResetAction));
+    var PlaceOrder = /** @class */ (function () {
+        function PlaceOrder(payload) {
+            this.payload = payload;
+            this.type = PLACE_ORDER;
+        }
+        return PlaceOrder;
+    }());
+    var PlaceOrderFail = /** @class */ (function () {
+        function PlaceOrderFail(payload) {
+            this.payload = payload;
+            this.type = PLACE_ORDER_FAIL;
+        }
+        return PlaceOrderFail;
+    }());
+    var PlaceOrderSuccess = /** @class */ (function () {
+        function PlaceOrderSuccess(payload) {
+            this.payload = payload;
+            this.type = PLACE_ORDER_SUCCESS;
+        }
+        return PlaceOrderSuccess;
+    }());
+    var ClearSupportedDeliveryModes = /** @class */ (function () {
+        function ClearSupportedDeliveryModes() {
+            this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
+        }
+        return ClearSupportedDeliveryModes;
+    }());
+    var ClearCheckoutStep = /** @class */ (function () {
+        function ClearCheckoutStep(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_STEP;
+        }
+        return ClearCheckoutStep;
+    }());
+    var ClearCheckoutData = /** @class */ (function () {
+        function ClearCheckoutData() {
+            this.type = CLEAR_CHECKOUT_DATA;
+        }
+        return ClearCheckoutData;
+    }());
+    var LoadCheckoutDetails = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetails, _super);
+        function LoadCheckoutDetails(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS;
+            return _this;
+        }
+        return LoadCheckoutDetails;
+    }(LoaderLoadAction));
+    var LoadCheckoutDetailsFail = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetailsFail, _super);
+        function LoadCheckoutDetailsFail(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS_FAIL;
+            return _this;
+        }
+        return LoadCheckoutDetailsFail;
+    }(LoaderFailAction));
+    var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetailsSuccess, _super);
+        function LoadCheckoutDetailsSuccess(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
+            return _this;
+        }
+        return LoadCheckoutDetailsSuccess;
+    }(LoaderSuccessAction));
+    var CheckoutClearMiscsData = /** @class */ (function () {
+        function CheckoutClearMiscsData() {
+            this.type = CHECKOUT_CLEAR_MISCS_DATA;
+        }
+        return CheckoutClearMiscsData;
+    }());
+    var ClearCheckoutDeliveryAddress = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddress(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
+        }
+        return ClearCheckoutDeliveryAddress;
+    }());
+    var ClearCheckoutDeliveryAddressSuccess = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddressSuccess() {
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
+        }
+        return ClearCheckoutDeliveryAddressSuccess;
+    }());
+    var ClearCheckoutDeliveryAddressFail = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddressFail(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
+        }
+        return ClearCheckoutDeliveryAddressFail;
+    }());
+    var ClearCheckoutDeliveryMode = /** @class */ (function () {
+        function ClearCheckoutDeliveryMode(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
+        }
+        return ClearCheckoutDeliveryMode;
+    }());
+    var ClearCheckoutDeliveryModeSuccess = /** @class */ (function () {
+        function ClearCheckoutDeliveryModeSuccess(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
+        }
+        return ClearCheckoutDeliveryModeSuccess;
+    }());
+    var ClearCheckoutDeliveryModeFail = /** @class */ (function () {
+        function ClearCheckoutDeliveryModeFail(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
+        }
+        return ClearCheckoutDeliveryModeFail;
+    }());
+
+
+
+    var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        VERIFY_ADDRESS: VERIFY_ADDRESS,
+        VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
+        VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
+        CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
+        VerifyAddress: VerifyAddress,
+        VerifyAddressFail: VerifyAddressFail,
+        VerifyAddressSuccess: VerifyAddressSuccess,
+        ClearAddressVerificationResults: ClearAddressVerificationResults,
+        LOAD_CARD_TYPES: LOAD_CARD_TYPES,
+        LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
+        LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
+        LoadCardTypes: LoadCardTypes,
+        LoadCardTypesFail: LoadCardTypesFail,
+        LoadCardTypesSuccess: LoadCardTypesSuccess,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
+        CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
+        CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
+        CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
+        ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
+        ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
+        ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
+        SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
+        SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
+        SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
+        RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
+        LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
+        LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
+        LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
+        CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
+        SET_DELIVERY_MODE: SET_DELIVERY_MODE,
+        SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
+        SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
+        RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
+        SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
+        SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
+        SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
+        RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
+        CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
+        CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
+        CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
+        SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
+        SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
+        SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
+        RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
+        PLACE_ORDER: PLACE_ORDER,
+        PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
+        PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
+        CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
+        CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
+        LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
+        LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
+        LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
+        CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
+        PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
+        AddDeliveryAddress: AddDeliveryAddress,
+        AddDeliveryAddressFail: AddDeliveryAddressFail,
+        AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
+        SetDeliveryAddress: SetDeliveryAddress,
+        SetDeliveryAddressFail: SetDeliveryAddressFail,
+        SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
+        ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
+        LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
+        LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
+        LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
+        ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
+        SetDeliveryMode: SetDeliveryMode,
+        SetDeliveryModeFail: SetDeliveryModeFail,
+        SetDeliveryModeSuccess: SetDeliveryModeSuccess,
+        ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
+        CreatePaymentDetails: CreatePaymentDetails,
+        CreatePaymentDetailsFail: CreatePaymentDetailsFail,
+        CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
+        PaymentProcessSuccess: PaymentProcessSuccess,
+        SetPaymentDetails: SetPaymentDetails,
+        SetPaymentDetailsFail: SetPaymentDetailsFail,
+        SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
+        ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
+        PlaceOrder: PlaceOrder,
+        PlaceOrderFail: PlaceOrderFail,
+        PlaceOrderSuccess: PlaceOrderSuccess,
+        ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
+        ClearCheckoutStep: ClearCheckoutStep,
+        ClearCheckoutData: ClearCheckoutData,
+        LoadCheckoutDetails: LoadCheckoutDetails,
+        LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
+        LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
+        CheckoutClearMiscsData: CheckoutClearMiscsData,
+        ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
+        ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
+        ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
+        ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
+        ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
+        ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail
+    });
+
+    var CartConnector = /** @class */ (function () {
+        function CartConnector(adapter) {
+            this.adapter = adapter;
+        }
+        CartConnector.prototype.loadAll = function (userId) {
+            return this.adapter.loadAll(userId);
+        };
+        CartConnector.prototype.load = function (userId, cartId) {
+            return this.adapter.load(userId, cartId);
+        };
+        CartConnector.prototype.create = function (userId, oldCartId, toMergeCartGuid) {
+            return this.adapter.create(userId, oldCartId, toMergeCartGuid);
+        };
+        CartConnector.prototype.delete = function (userId, cartId) {
+            return this.adapter.delete(userId, cartId);
+        };
+        CartConnector.prototype.addEmail = function (userId, cartId, email) {
+            return this.adapter.addEmail(userId, cartId, email);
+        };
+        CartConnector.ctorParameters = function () { return [
+            { type: CartAdapter }
+        ]; };
+        CartConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConnector_Factory() { return new CartConnector(core["ɵɵinject"](CartAdapter)); }, token: CartConnector, providedIn: "root" });
+        CartConnector = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CartConnector);
+        return CartConnector;
+    }());
+
+    var CartEffects = /** @class */ (function () {
+        function CartEffects(actions$, cartConnector, store$1) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.cartConnector = cartConnector;
+            this.store = store$1;
+            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.loadCart$ = this.actions$.pipe(effects$c.ofType(LOAD_CART), operators.map(function (action) { return action.payload; }), operators.groupBy(function (payload) { return payload.cartId; }), operators.mergeMap(function (group$) {
+                return group$.pipe(operators.switchMap(function (payload) {
+                    return rxjs.of(payload).pipe(operators.withLatestFrom(_this.store.pipe(store.select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
+                }), operators.filter(function (_a) {
+                    var _b = __read(_a, 2), _ = _b[0], hasPendingProcesses = _b[1];
+                    return !hasPendingProcesses;
+                }), operators.map(function (_a) {
+                    var _b = __read(_a, 1), payload = _b[0];
+                    return payload;
+                }), operators.switchMap(function (payload) {
+                    return _this.cartConnector.load(payload.userId, payload.cartId).pipe(operators.mergeMap(function (cart) {
+                        var actions = [];
+                        if (cart) {
+                            actions.push(new LoadCartSuccess(__assign(__assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })));
+                            if (payload.cartId === OCC_CART_ID_CURRENT) {
+                                // Removing cart from entity object under `current` key as it is no longer needed.
+                                // Current cart is loaded under it's code entity.
+                                actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
+                            }
+                        }
+                        else {
+                            actions = [
+                                new LoadCartFail(__assign(__assign({}, payload), { error: {} })),
+                            ];
+                        }
+                        return actions;
+                    }), operators.catchError(function (error) {
+                        var _a;
+                        if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
+                            var couponExpiredErrors = error.error.errors.filter(function (err) { return err.reason === 'invalid'; });
+                            if (couponExpiredErrors.length > 0) {
+                                // clear coupons actions just wanted to reload cart again
+                                // no need to do it in refresh or keep that action
+                                // however removing this action will be a breaking change
+                                // remove that action in 2.0 release
+                                // @deprecated since 1.4
+                                return rxjs.from([
+                                    new LoadCart(__assign({}, payload)),
+                                    new ClearExpiredCoupons({}),
+                                ]);
+                            }
+                            var cartNotFoundErrors = error.error.errors.filter(function (err) { return err.reason === 'notFound' || 'UnknownResourceError'; });
+                            if (cartNotFoundErrors.length > 0 &&
+                                payload.extraData &&
+                                payload.extraData.active) {
+                                // Clear cart is responsible for removing cart in `cart` store feature.
+                                // Remove cart does the same thing, but in `multi-cart` store feature.
+                                return rxjs.from([
+                                    new ClearCart(),
+                                    new RemoveCart(payload.cartId),
+                                ]);
+                            }
+                        }
+                        return rxjs.from([
+                            new LoadCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
+                        ]);
+                    }));
+                }));
+            }), withdrawOn(this.contextChange$));
+            this.createCart$ = this.actions$.pipe(effects$c.ofType(CREATE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.cartConnector
+                    .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
+                    .pipe(operators.switchMap(function (cart) {
+                    var conditionalActions = [];
+                    if (payload.oldCartId) {
+                        conditionalActions.push(new MergeCartSuccess({
+                            userId: payload.userId,
+                            cartId: cart.code,
+                        }));
+                        conditionalActions.push(new MergeMultiCartSuccess({
+                            userId: payload.userId,
+                            cartId: cart.code,
+                            oldCartId: payload.oldCartId,
+                        }));
+                    }
+                    return __spread([
+                        new CreateCartSuccess(__assign(__assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })),
+                        new SetTempCart({
+                            cart: cart,
+                            tempCartId: payload.tempCartId,
+                        })
+                    ], conditionalActions);
+                }), operators.catchError(function (error) {
+                    return rxjs.of(new CreateCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })));
+                }));
+            }), withdrawOn(this.contextChange$));
+            this.mergeCart$ = this.actions$.pipe(effects$c.ofType(MERGE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(operators.mergeMap(function (currentCart) {
+                    return [
+                        new CreateCart({
+                            userId: payload.userId,
+                            oldCartId: payload.cartId,
+                            toMergeCartGuid: currentCart ? currentCart.guid : undefined,
+                            extraData: payload.extraData,
+                            tempCartId: payload.tempCartId,
+                        }),
+                    ];
+                }));
+            }), withdrawOn(this.contextChange$));
+            this.refresh$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+                return rxjs.from([
+                    new CartProcessesDecrement(payload.cartId),
+                    new LoadCart({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                ]);
+            }));
+            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
+                return new LoadCart({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                });
+            }));
+            this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.mergeMap(function () {
+                return [
+                    new ResetCartDetails(),
+                    new ResetMultiCartDetails(),
+                ];
+            }));
+            this.addEmail$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.cartConnector
+                    .addEmail(payload.userId, payload.cartId, payload.email)
+                    .pipe(operators.mergeMap(function () {
+                    return [
+                        new AddEmailToCartSuccess(__assign({}, payload)),
+                        new LoadCart({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                        }),
+                    ];
+                }), operators.catchError(function (error) {
+                    return rxjs.from([
+                        new AddEmailToCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
+                        new LoadCart({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                        }),
+                    ]);
+                }));
+            }), withdrawOn(this.contextChange$));
+            this.deleteCart$ = this.actions$.pipe(effects$c.ofType(DELETE_CART), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) {
+                return _this.cartConnector.delete(payload.userId, payload.cartId).pipe(operators.map(function () {
+                    return new ClearCart();
+                }), operators.catchError(function (error) {
+                    return rxjs.of(new DeleteCartFail(makeErrorSerializable(error)));
+                }));
+            }));
+        }
+        CartEffects.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: CartConnector },
+            { type: store.Store }
+        ]; };
+        __decorate([
+            effects$c.Effect()
+        ], CartEffects.prototype, "loadCart$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEffects.prototype, "createCart$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEffects.prototype, "mergeCart$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEffects.prototype, "refresh$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEffects.prototype, "refreshWithoutProcesses$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEffects.prototype, "addEmail$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CartEffects.prototype, "deleteCart$", void 0);
+        CartEffects = __decorate([
+            core.Injectable()
+        ], CartEffects);
+        return CartEffects;
+    }());
+
+    var SaveCartConnector = /** @class */ (function () {
+        function SaveCartConnector(adapter) {
+            this.adapter = adapter;
+        }
+        SaveCartConnector.prototype.saveCart = function (userId, cartId, saveCartName, saveCartDescription) {
+            return this.adapter.saveCart(userId, cartId, saveCartName, saveCartDescription);
+        };
+        SaveCartConnector.ctorParameters = function () { return [
+            { type: SaveCartAdapter }
+        ]; };
+        SaveCartConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(core["ɵɵinject"](SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
+        SaveCartConnector = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], SaveCartConnector);
+        return SaveCartConnector;
+    }());
+
+    var WishListEffects = /** @class */ (function () {
+        function WishListEffects(actions$, cartConnector, saveCartConnector, authService, store$1) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.cartConnector = cartConnector;
+            this.saveCartConnector = saveCartConnector;
+            this.authService = authService;
+            this.store = store$1;
+            this.createWishList$ = this.actions$.pipe(effects$c.ofType(CREATE_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.cartConnector.create(payload.userId).pipe(operators.switchMap(function (cart) {
+                    return _this.saveCartConnector
+                        .saveCart(payload.userId, cart.code, payload.name, payload.description)
+                        .pipe(operators.switchMap(function (saveCartResult) { return [
+                        new CreateWishListSuccess({
+                            cart: saveCartResult.savedCartData,
+                            userId: payload.userId,
+                        }),
+                    ]; }), operators.catchError(function (error) {
+                        return rxjs.from([
+                            new CreateWishListFail({
+                                cartId: cart.code,
+                                error: makeErrorSerializable(error),
+                            }),
+                        ]);
+                    }));
+                }));
+            }));
+            this.loadWishList$ = this.actions$.pipe(effects$c.ofType(LOAD_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+                var userId = payload.userId, customerId = payload.customerId, tempCartId = payload.tempCartId;
+                return _this.cartConnector.loadAll(userId).pipe(operators.switchMap(function (carts) {
+                    if (carts) {
+                        var wishList = carts.find(function (cart) { return cart.name === getWishlistName(customerId); });
+                        if (Boolean(wishList)) {
+                            return [
+                                new LoadWishListSuccess({
+                                    cart: wishList,
+                                    userId: userId,
+                                    tempCartId: tempCartId,
+                                    customerId: customerId,
+                                    cartId: getCartIdByUserId(wishList, userId),
+                                }),
+                                new RemoveTempCart({
+                                    tempCartId: tempCartId,
+                                }),
+                            ];
+                        }
+                        else {
+                            return [
+                                new CreateWishList({
+                                    userId: userId,
+                                    name: getWishlistName(customerId),
+                                }),
+                            ];
+                        }
+                    }
+                }), operators.catchError(function (error) {
+                    return rxjs.from([
+                        new LoadWishListFail({
+                            userId: userId,
+                            cartId: tempCartId,
+                            customerId: customerId,
+                            error: makeErrorSerializable(error),
+                        }),
+                    ]);
+                }));
+            }));
+            this.resetWishList$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(store.select(getWishListId))), operators.switchMap(function (_a) {
+                var _b = __read(_a, 3), userId = _b[1], wishListId = _b[2];
+                if (Boolean(wishListId)) {
+                    return _this.cartConnector.load(userId, wishListId).pipe(operators.switchMap(function (wishList) { return [
+                        new LoadWishListSuccess({
+                            cart: wishList,
+                            userId: userId,
+                            cartId: getCartIdByUserId(wishList, userId),
+                        }),
+                    ]; }), operators.catchError(function (error) {
+                        return rxjs.from([
+                            new LoadWishListFail({
+                                userId: userId,
+                                cartId: wishListId,
+                                error: makeErrorSerializable(error),
+                            }),
+                        ]);
+                    }));
+                }
+                return rxjs.EMPTY;
+            }));
+        }
+        WishListEffects.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: CartConnector },
+            { type: SaveCartConnector },
+            { type: AuthService },
+            { type: store.Store }
+        ]; };
+        __decorate([
+            effects$c.Effect()
+        ], WishListEffects.prototype, "createWishList$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], WishListEffects.prototype, "loadWishList$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], WishListEffects.prototype, "resetWishList$", void 0);
+        WishListEffects = __decorate([
+            core.Injectable()
+        ], WishListEffects);
+        return WishListEffects;
+    }());
+
+    var activeCartInitialState = '';
+    var wishListInitialState = '';
+    function activeCartReducer(state, action) {
+        if (state === void 0) { state = activeCartInitialState; }
+        var _a, _b;
+        switch (action.type) {
+            case LOAD_CART_SUCCESS:
+            case CREATE_CART_SUCCESS:
+            // point to `temp-${uuid}` cart when we are creating/merging cart
+            case CREATE_CART:
+                if ((_b = (_a = action === null || action === void 0 ? void 0 : action.payload) === null || _a === void 0 ? void 0 : _a.extraData) === null || _b === void 0 ? void 0 : _b.active) {
+                    return action.meta.entityId;
+                }
+                else {
+                    return state;
+                }
+            case SET_ACTIVE_CART_ID:
+                return action.payload;
+            case REMOVE_CART:
+                if (action.payload === state) {
+                    return activeCartInitialState;
+                }
+                else {
+                    return state;
+                }
+            case CLEAR_MULTI_CART_STATE:
+                return activeCartInitialState;
+        }
+        return state;
+    }
+    var cartEntitiesInitialState = undefined;
+    function cartEntitiesReducer(state, action) {
+        if (state === void 0) { state = cartEntitiesInitialState; }
+        switch (action.type) {
+            case LOAD_CART_SUCCESS:
+            case CREATE_CART_SUCCESS:
+            case CREATE_WISH_LIST_SUCCESS:
+            case LOAD_WISH_LIST_SUCCESS:
+            case SET_TEMP_CART:
+                return action.payload.cart;
+        }
+        return state;
+    }
+    function wishListReducer(state, action) {
+        if (state === void 0) { state = wishListInitialState; }
+        switch (action.type) {
+            case CREATE_WISH_LIST_SUCCESS:
+            case LOAD_WISH_LIST_SUCCESS:
+                return action.meta.entityId;
+            case CLEAR_MULTI_CART_STATE:
+                return wishListInitialState;
+        }
+        return state;
+    }
+
+    function clearMultiCartState(reducer) {
+        return function (state, action) {
+            if (action.type === LOGOUT) {
+                state = undefined;
+            }
+            return reducer(state, action);
+        };
+    }
+    var multiCartMetaReducers = [clearMultiCartState];
+    var multiCartReducerToken = new core.InjectionToken('MultiCartReducers');
+    function getMultiCartReducers() {
+        return {
+            carts: entityProcessesLoaderReducer(MULTI_CART_DATA, cartEntitiesReducer),
+            active: activeCartReducer,
+            wishList: wishListReducer,
+        };
+    }
+    var multiCartReducerProvider = {
+        provide: multiCartReducerToken,
+        useFactory: getMultiCartReducers,
+    };
+
+    // =====================================================================
+    var CartAddEntryEvent = /** @class */ (function () {
+        function CartAddEntryEvent() {
+        }
+        return CartAddEntryEvent;
+    }());
+    var CartAddEntrySuccessEvent = /** @class */ (function () {
+        function CartAddEntrySuccessEvent() {
+        }
+        return CartAddEntrySuccessEvent;
+    }());
+    var CartAddEntryFailEvent = /** @class */ (function () {
+        function CartAddEntryFailEvent() {
+        }
+        return CartAddEntryFailEvent;
+    }());
+
+    /**
+     * Registers events for the active cart
+     */
+    var CartEventBuilder = /** @class */ (function () {
+        function CartEventBuilder(actionsSubject, event, activeCartService) {
+            this.actionsSubject = actionsSubject;
+            this.event = event;
+            this.activeCartService = activeCartService;
+            this.register();
+        }
+        /**
+         * Registers events for the active cart
+         */
+        CartEventBuilder.prototype.register = function () {
+            this.registerAddEntry();
+        };
+        /**
+         * Register events for adding entry to the active cart
+         */
+        CartEventBuilder.prototype.registerAddEntry = function () {
+            this.registerMapped({
+                action: CART_ADD_ENTRY,
+                event: CartAddEntryEvent,
+            });
+            this.registerMapped({
+                action: CART_ADD_ENTRY_SUCCESS,
+                event: CartAddEntrySuccessEvent,
+            });
+            this.registerMapped({
+                action: CART_ADD_ENTRY_FAIL,
+                event: CartAddEntryFailEvent,
+            });
+        };
+        /**
+         * Registers a stream of target events mapped from the source actions that contain the cart id equal to the active cart id.
+         *
+         * @param mapping mapping declaration - from `action` string type to `event` class type
+         *   (an with optional `factory` function - by default `action.payload` will be assigned to the properties of the event instance).
+         */
+        CartEventBuilder.prototype.registerMapped = function (mapping) {
+            var eventStream$ = this.getAction(mapping.action).pipe(operators.withLatestFrom(this.activeCartService.getActiveCartId()), operators.filter(function (_a) {
+                var _b = __read(_a, 2), action = _b[0], activeCartId = _b[1];
+                return action.payload['cartId'] === activeCartId;
+            } // assuming that action's payload contains the cart id
+            ), operators.map(function (_a) {
+                var _b = __read(_a, 1), action = _b[0];
+                return createFrom(mapping.event, action.payload);
+            }));
+            return this.event.register(mapping.event, eventStream$);
+        };
+        /**
+         * Returns a stream of actions only of a given type(s)
+         *
+         * @param actionType type(s) of actions
+         */
+        CartEventBuilder.prototype.getAction = function (actionType) {
+            return this.actionsSubject.pipe(effects$c.ofType.apply(void 0, __spread([].concat(actionType))));
+        };
+        CartEventBuilder.ctorParameters = function () { return [
+            { type: store.ActionsSubject },
+            { type: EventService },
+            { type: ActiveCartService }
+        ]; };
+        CartEventBuilder.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(core["ɵɵinject"](store.ActionsSubject), core["ɵɵinject"](EventService), core["ɵɵinject"](ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
+        CartEventBuilder = __decorate([
+            core.Injectable({ providedIn: 'root' })
+        ], CartEventBuilder);
+        return CartEventBuilder;
+    }());
+
+    var CartEventModule = /** @class */ (function () {
+        function CartEventModule(_CartEventBuilder) {
+        }
+        CartEventModule.ctorParameters = function () { return [
+            { type: CartEventBuilder }
+        ]; };
+        CartEventModule = __decorate([
+            core.NgModule({})
+        ], CartEventModule);
+        return CartEventModule;
+    }());
+
     var CartVoucherService = /** @class */ (function () {
         function CartVoucherService(store, authService, activeCartService) {
             this.store = store;
@@ -16532,1202 +17813,6 @@
         return CartPageMetaResolver;
     }(PageMetaResolver));
 
-    /**
-     *
-     * Withdraw from the source observable when notifier emits a value
-     *
-     * Withdraw will result in resubscribing to the source observable
-     * Operator is useful to kill ongoing emission transformation on notifier emission
-     *
-     * @param notifier
-     */
-    function withdrawOn(notifier) {
-        return function (source) {
-            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
-        };
-    }
-
-    var CartEntryConnector = /** @class */ (function () {
-        function CartEntryConnector(adapter) {
-            this.adapter = adapter;
-        }
-        CartEntryConnector.prototype.add = function (userId, cartId, productCode, quantity) {
-            return this.adapter.add(userId, cartId, productCode, quantity);
-        };
-        CartEntryConnector.prototype.update = function (userId, cartId, entryNumber, qty, pickupStore) {
-            return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
-        };
-        CartEntryConnector.prototype.remove = function (userId, cartId, entryNumber) {
-            return this.adapter.remove(userId, cartId, entryNumber);
-        };
-        CartEntryConnector.ctorParameters = function () { return [
-            { type: CartEntryAdapter }
-        ]; };
-        CartEntryConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core["ɵɵinject"](CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
-        CartEntryConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartEntryConnector);
-        return CartEntryConnector;
-    }());
-
-    var CartEntryEffects = /** @class */ (function () {
-        function CartEntryEffects(actions$, cartEntryConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.cartEntryConnector = cartEntryConnector;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.addEntry$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.cartEntryConnector
-                    .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
-                    .pipe(operators.map(function (entry) {
-                    return new CartAddEntrySuccess(__assign(__assign({}, entry), { userId: payload.userId, cartId: payload.cartId }));
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartAddEntryFail({
-                            error: makeErrorSerializable(error),
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                        new LoadCart({
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                    ]);
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.removeEntry$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.cartEntryConnector
-                    .remove(payload.userId, payload.cartId, payload.entry)
-                    .pipe(operators.map(function () {
-                    return new CartRemoveEntrySuccess({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    });
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartRemoveEntryFail({
-                            error: makeErrorSerializable(error),
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                        new LoadCart({
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                    ]);
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.updateEntry$ = this.actions$.pipe(effects$c.ofType(CART_UPDATE_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.cartEntryConnector
-                    .update(payload.userId, payload.cartId, payload.entry, payload.qty)
-                    .pipe(operators.map(function () {
-                    return new CartUpdateEntrySuccess({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    });
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartUpdateEntryFail({
-                            error: makeErrorSerializable(error),
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                        new LoadCart({
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                    ]);
-                }));
-            }), withdrawOn(this.contextChange$));
-        }
-        CartEntryEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartEntryConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CartEntryEffects.prototype, "addEntry$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEntryEffects.prototype, "removeEntry$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEntryEffects.prototype, "updateEntry$", void 0);
-        CartEntryEffects = __decorate([
-            core.Injectable()
-        ], CartEntryEffects);
-        return CartEntryEffects;
-    }());
-
-    var CartVoucherConnector = /** @class */ (function () {
-        function CartVoucherConnector(adapter) {
-            this.adapter = adapter;
-        }
-        CartVoucherConnector.prototype.add = function (userId, cartId, voucherId) {
-            return this.adapter.add(userId, cartId, voucherId);
-        };
-        CartVoucherConnector.prototype.remove = function (userId, cartId, voucherId) {
-            return this.adapter.remove(userId, cartId, voucherId);
-        };
-        CartVoucherConnector.ctorParameters = function () { return [
-            { type: CartVoucherAdapter }
-        ]; };
-        CartVoucherConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(core["ɵɵinject"](CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
-        CartVoucherConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartVoucherConnector);
-        return CartVoucherConnector;
-    }());
-
-    var CartVoucherEffects = /** @class */ (function () {
-        function CartVoucherEffects(actions$, cartVoucherConnector, messageService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.cartVoucherConnector = cartVoucherConnector;
-            this.messageService = messageService;
-            this.addCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartVoucherConnector
-                    .add(payload.userId, payload.cartId, payload.voucherId)
-                    .pipe(operators.map(function () {
-                    _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, exports.GlobalMessageType.MSG_TYPE_CONFIRMATION);
-                    return new CartAddVoucherSuccess({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    });
-                }), operators.catchError(function (error) {
-                    var _a;
-                    if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                        error.error.errors.forEach(function (err) {
-                            if (err.message) {
-                                _this.messageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR);
-                            }
-                        });
-                    }
-                    return rxjs.from([
-                        new CartAddVoucherFail(makeErrorSerializable(error)),
-                        new CartProcessesDecrement(payload.cartId),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ]);
-                }));
-            }));
-            this.removeCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_VOUCHER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartVoucherConnector
-                    .remove(payload.userId, payload.cartId, payload.voucherId)
-                    .pipe(operators.map(function () {
-                    _this.showGlobalMessage('voucher.removeVoucherSuccess', payload.voucherId, exports.GlobalMessageType.MSG_TYPE_INFO);
-                    return new CartRemoveVoucherSuccess({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                        voucherId: payload.voucherId,
-                    });
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartRemoveVoucherFail({
-                            error: makeErrorSerializable(error),
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                            voucherId: payload.voucherId,
-                        }),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ]);
-                }));
-            }));
-        }
-        CartVoucherEffects.prototype.showGlobalMessage = function (text, param, messageType) {
-            this.messageService.add({ key: text, params: { voucherCode: param } }, messageType);
-        };
-        CartVoucherEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartVoucherConnector },
-            { type: GlobalMessageService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
-        CartVoucherEffects = __decorate([
-            core.Injectable()
-        ], CartVoucherEffects);
-        return CartVoucherEffects;
-    }());
-
-    var VERIFY_ADDRESS = '[Checkout] Verify Address';
-    var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
-    var VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
-    var CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
-    var VerifyAddress = /** @class */ (function () {
-        function VerifyAddress(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS;
-        }
-        return VerifyAddress;
-    }());
-    var VerifyAddressFail = /** @class */ (function () {
-        function VerifyAddressFail(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS_FAIL;
-        }
-        return VerifyAddressFail;
-    }());
-    var VerifyAddressSuccess = /** @class */ (function () {
-        function VerifyAddressSuccess(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS_SUCCESS;
-        }
-        return VerifyAddressSuccess;
-    }());
-    var ClearAddressVerificationResults = /** @class */ (function () {
-        function ClearAddressVerificationResults() {
-            this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
-        }
-        return ClearAddressVerificationResults;
-    }());
-
-    var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
-    var LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
-    var LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
-    var LoadCardTypes = /** @class */ (function () {
-        function LoadCardTypes() {
-            this.type = LOAD_CARD_TYPES;
-        }
-        return LoadCardTypes;
-    }());
-    var LoadCardTypesFail = /** @class */ (function () {
-        function LoadCardTypesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_CARD_TYPES_FAIL;
-        }
-        return LoadCardTypesFail;
-    }());
-    var LoadCardTypesSuccess = /** @class */ (function () {
-        function LoadCardTypesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_CARD_TYPES_SUCCESS;
-        }
-        return LoadCardTypesSuccess;
-    }());
-
-    var CHECKOUT_FEATURE = 'checkout';
-    var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
-    var SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
-    var SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
-    var SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
-    var SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
-
-    var CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
-    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
-    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
-    var CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
-    var CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
-    var CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
-    var ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
-    var ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
-    var ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
-    var SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
-    var SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
-    var SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
-    var RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
-    var LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
-    var LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
-    var LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
-    var CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
-    var SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
-    var SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
-    var SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
-    var RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
-    var SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
-    var SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
-    var SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
-    var RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
-    var CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
-    var CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
-    var CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
-    var SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
-    var SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
-    var SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
-    var RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
-    var PLACE_ORDER = '[Checkout] Place Order';
-    var PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
-    var PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
-    var CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
-    var CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
-    var LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
-    var LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
-    var LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
-    var CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
-    var PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
-    var AddDeliveryAddress = /** @class */ (function () {
-        function AddDeliveryAddress(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS;
-        }
-        return AddDeliveryAddress;
-    }());
-    var AddDeliveryAddressFail = /** @class */ (function () {
-        function AddDeliveryAddressFail(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS_FAIL;
-        }
-        return AddDeliveryAddressFail;
-    }());
-    var AddDeliveryAddressSuccess = /** @class */ (function () {
-        function AddDeliveryAddressSuccess(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
-        }
-        return AddDeliveryAddressSuccess;
-    }());
-    var SetDeliveryAddress = /** @class */ (function (_super) {
-        __extends(SetDeliveryAddress, _super);
-        function SetDeliveryAddress(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_ADDRESS;
-            return _this;
-        }
-        return SetDeliveryAddress;
-    }(EntityLoadAction));
-    var SetDeliveryAddressFail = /** @class */ (function (_super) {
-        __extends(SetDeliveryAddressFail, _super);
-        function SetDeliveryAddressFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_ADDRESS_FAIL;
-            return _this;
-        }
-        return SetDeliveryAddressFail;
-    }(EntityFailAction));
-    var SetDeliveryAddressSuccess = /** @class */ (function (_super) {
-        __extends(SetDeliveryAddressSuccess, _super);
-        function SetDeliveryAddressSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_ADDRESS_SUCCESS;
-            return _this;
-        }
-        return SetDeliveryAddressSuccess;
-    }(EntitySuccessAction));
-    var ResetSetDeliveryAddressProcess = /** @class */ (function (_super) {
-        __extends(ResetSetDeliveryAddressProcess, _super);
-        function ResetSetDeliveryAddressProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
-            _this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
-            return _this;
-        }
-        return ResetSetDeliveryAddressProcess;
-    }(EntityResetAction));
-    var LoadSupportedDeliveryModes = /** @class */ (function (_super) {
-        __extends(LoadSupportedDeliveryModes, _super);
-        function LoadSupportedDeliveryModes(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = LOAD_SUPPORTED_DELIVERY_MODES;
-            return _this;
-        }
-        return LoadSupportedDeliveryModes;
-    }(EntityLoadAction));
-    var LoadSupportedDeliveryModesFail = /** @class */ (function (_super) {
-        __extends(LoadSupportedDeliveryModesFail, _super);
-        function LoadSupportedDeliveryModesFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
-            return _this;
-        }
-        return LoadSupportedDeliveryModesFail;
-    }(EntityFailAction));
-    var LoadSupportedDeliveryModesSuccess = /** @class */ (function (_super) {
-        __extends(LoadSupportedDeliveryModesSuccess, _super);
-        function LoadSupportedDeliveryModesSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
-            return _this;
-        }
-        return LoadSupportedDeliveryModesSuccess;
-    }(EntitySuccessAction));
-    var ResetLoadSupportedDeliveryModesProcess = /** @class */ (function (_super) {
-        __extends(ResetLoadSupportedDeliveryModesProcess, _super);
-        function ResetLoadSupportedDeliveryModesProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
-            return _this;
-        }
-        return ResetLoadSupportedDeliveryModesProcess;
-    }(EntityResetAction));
-    var SetDeliveryMode = /** @class */ (function (_super) {
-        __extends(SetDeliveryMode, _super);
-        function SetDeliveryMode(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_MODE;
-            return _this;
-        }
-        return SetDeliveryMode;
-    }(EntityLoadAction));
-    var SetDeliveryModeFail = /** @class */ (function (_super) {
-        __extends(SetDeliveryModeFail, _super);
-        function SetDeliveryModeFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_MODE_FAIL;
-            return _this;
-        }
-        return SetDeliveryModeFail;
-    }(EntityFailAction));
-    var SetDeliveryModeSuccess = /** @class */ (function (_super) {
-        __extends(SetDeliveryModeSuccess, _super);
-        function SetDeliveryModeSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_MODE_SUCCESS;
-            return _this;
-        }
-        return SetDeliveryModeSuccess;
-    }(EntitySuccessAction));
-    var ResetSetDeliveryModeProcess = /** @class */ (function (_super) {
-        __extends(ResetSetDeliveryModeProcess, _super);
-        function ResetSetDeliveryModeProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.type = RESET_SET_DELIVERY_MODE_PROCESS;
-            return _this;
-        }
-        return ResetSetDeliveryModeProcess;
-    }(EntityResetAction));
-    var CreatePaymentDetails = /** @class */ (function (_super) {
-        __extends(CreatePaymentDetails, _super);
-        function CreatePaymentDetails(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CREATE_PAYMENT_DETAILS;
-            return _this;
-        }
-        return CreatePaymentDetails;
-    }(EntityLoadAction));
-    var CreatePaymentDetailsFail = /** @class */ (function (_super) {
-        __extends(CreatePaymentDetailsFail, _super);
-        function CreatePaymentDetailsFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CREATE_PAYMENT_DETAILS_FAIL;
-            return _this;
-        }
-        return CreatePaymentDetailsFail;
-    }(EntityFailAction));
-    var CreatePaymentDetailsSuccess = /** @class */ (function () {
-        function CreatePaymentDetailsSuccess(payload) {
-            this.payload = payload;
-            this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
-        }
-        return CreatePaymentDetailsSuccess;
-    }());
-    var PaymentProcessSuccess = /** @class */ (function (_super) {
-        __extends(PaymentProcessSuccess, _super);
-        function PaymentProcessSuccess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.type = PAYMENT_PROCESS_SUCCESS;
-            return _this;
-        }
-        return PaymentProcessSuccess;
-    }(EntitySuccessAction));
-    var SetPaymentDetails = /** @class */ (function (_super) {
-        __extends(SetPaymentDetails, _super);
-        function SetPaymentDetails(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_PAYMENT_DETAILS;
-            return _this;
-        }
-        return SetPaymentDetails;
-    }(EntityLoadAction));
-    var SetPaymentDetailsFail = /** @class */ (function (_super) {
-        __extends(SetPaymentDetailsFail, _super);
-        function SetPaymentDetailsFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SET_PAYMENT_DETAILS_FAIL;
-            return _this;
-        }
-        return SetPaymentDetailsFail;
-    }(EntityFailAction));
-    var SetPaymentDetailsSuccess = /** @class */ (function (_super) {
-        __extends(SetPaymentDetailsSuccess, _super);
-        function SetPaymentDetailsSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_PAYMENT_DETAILS_SUCCESS;
-            return _this;
-        }
-        return SetPaymentDetailsSuccess;
-    }(EntitySuccessAction));
-    var ResetSetPaymentDetailsProcess = /** @class */ (function (_super) {
-        __extends(ResetSetPaymentDetailsProcess, _super);
-        function ResetSetPaymentDetailsProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
-            return _this;
-        }
-        return ResetSetPaymentDetailsProcess;
-    }(EntityResetAction));
-    var PlaceOrder = /** @class */ (function () {
-        function PlaceOrder(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER;
-        }
-        return PlaceOrder;
-    }());
-    var PlaceOrderFail = /** @class */ (function () {
-        function PlaceOrderFail(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER_FAIL;
-        }
-        return PlaceOrderFail;
-    }());
-    var PlaceOrderSuccess = /** @class */ (function () {
-        function PlaceOrderSuccess(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER_SUCCESS;
-        }
-        return PlaceOrderSuccess;
-    }());
-    var ClearSupportedDeliveryModes = /** @class */ (function () {
-        function ClearSupportedDeliveryModes() {
-            this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
-        }
-        return ClearSupportedDeliveryModes;
-    }());
-    var ClearCheckoutStep = /** @class */ (function () {
-        function ClearCheckoutStep(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_STEP;
-        }
-        return ClearCheckoutStep;
-    }());
-    var ClearCheckoutData = /** @class */ (function () {
-        function ClearCheckoutData() {
-            this.type = CLEAR_CHECKOUT_DATA;
-        }
-        return ClearCheckoutData;
-    }());
-    var LoadCheckoutDetails = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetails, _super);
-        function LoadCheckoutDetails(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS;
-            return _this;
-        }
-        return LoadCheckoutDetails;
-    }(LoaderLoadAction));
-    var LoadCheckoutDetailsFail = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetailsFail, _super);
-        function LoadCheckoutDetailsFail(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS_FAIL;
-            return _this;
-        }
-        return LoadCheckoutDetailsFail;
-    }(LoaderFailAction));
-    var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetailsSuccess, _super);
-        function LoadCheckoutDetailsSuccess(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
-            return _this;
-        }
-        return LoadCheckoutDetailsSuccess;
-    }(LoaderSuccessAction));
-    var CheckoutClearMiscsData = /** @class */ (function () {
-        function CheckoutClearMiscsData() {
-            this.type = CHECKOUT_CLEAR_MISCS_DATA;
-        }
-        return CheckoutClearMiscsData;
-    }());
-    var ClearCheckoutDeliveryAddress = /** @class */ (function () {
-        function ClearCheckoutDeliveryAddress(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
-        }
-        return ClearCheckoutDeliveryAddress;
-    }());
-    var ClearCheckoutDeliveryAddressSuccess = /** @class */ (function () {
-        function ClearCheckoutDeliveryAddressSuccess() {
-            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
-        }
-        return ClearCheckoutDeliveryAddressSuccess;
-    }());
-    var ClearCheckoutDeliveryAddressFail = /** @class */ (function () {
-        function ClearCheckoutDeliveryAddressFail(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
-        }
-        return ClearCheckoutDeliveryAddressFail;
-    }());
-    var ClearCheckoutDeliveryMode = /** @class */ (function () {
-        function ClearCheckoutDeliveryMode(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
-        }
-        return ClearCheckoutDeliveryMode;
-    }());
-    var ClearCheckoutDeliveryModeSuccess = /** @class */ (function () {
-        function ClearCheckoutDeliveryModeSuccess(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
-        }
-        return ClearCheckoutDeliveryModeSuccess;
-    }());
-    var ClearCheckoutDeliveryModeFail = /** @class */ (function () {
-        function ClearCheckoutDeliveryModeFail(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
-        }
-        return ClearCheckoutDeliveryModeFail;
-    }());
-
-
-
-    var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        VERIFY_ADDRESS: VERIFY_ADDRESS,
-        VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
-        VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
-        CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
-        VerifyAddress: VerifyAddress,
-        VerifyAddressFail: VerifyAddressFail,
-        VerifyAddressSuccess: VerifyAddressSuccess,
-        ClearAddressVerificationResults: ClearAddressVerificationResults,
-        LOAD_CARD_TYPES: LOAD_CARD_TYPES,
-        LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
-        LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
-        LoadCardTypes: LoadCardTypes,
-        LoadCardTypesFail: LoadCardTypesFail,
-        LoadCardTypesSuccess: LoadCardTypesSuccess,
-        CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
-        CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
-        CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
-        CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
-        CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
-        CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
-        ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
-        ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
-        ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
-        SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
-        SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
-        SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
-        RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
-        LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
-        LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
-        LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
-        CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
-        SET_DELIVERY_MODE: SET_DELIVERY_MODE,
-        SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
-        SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
-        RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
-        SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
-        SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
-        SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
-        RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
-        CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
-        CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
-        CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
-        SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
-        SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
-        SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
-        RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
-        PLACE_ORDER: PLACE_ORDER,
-        PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
-        PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
-        CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
-        CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
-        LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
-        LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
-        LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
-        CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
-        PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
-        AddDeliveryAddress: AddDeliveryAddress,
-        AddDeliveryAddressFail: AddDeliveryAddressFail,
-        AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
-        SetDeliveryAddress: SetDeliveryAddress,
-        SetDeliveryAddressFail: SetDeliveryAddressFail,
-        SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
-        ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
-        LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
-        LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
-        LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
-        ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
-        SetDeliveryMode: SetDeliveryMode,
-        SetDeliveryModeFail: SetDeliveryModeFail,
-        SetDeliveryModeSuccess: SetDeliveryModeSuccess,
-        ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
-        CreatePaymentDetails: CreatePaymentDetails,
-        CreatePaymentDetailsFail: CreatePaymentDetailsFail,
-        CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
-        PaymentProcessSuccess: PaymentProcessSuccess,
-        SetPaymentDetails: SetPaymentDetails,
-        SetPaymentDetailsFail: SetPaymentDetailsFail,
-        SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
-        ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
-        PlaceOrder: PlaceOrder,
-        PlaceOrderFail: PlaceOrderFail,
-        PlaceOrderSuccess: PlaceOrderSuccess,
-        ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
-        ClearCheckoutStep: ClearCheckoutStep,
-        ClearCheckoutData: ClearCheckoutData,
-        LoadCheckoutDetails: LoadCheckoutDetails,
-        LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
-        LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
-        CheckoutClearMiscsData: CheckoutClearMiscsData,
-        ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
-        ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
-        ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
-        ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
-        ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
-        ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail
-    });
-
-    var CartConnector = /** @class */ (function () {
-        function CartConnector(adapter) {
-            this.adapter = adapter;
-        }
-        CartConnector.prototype.loadAll = function (userId) {
-            return this.adapter.loadAll(userId);
-        };
-        CartConnector.prototype.load = function (userId, cartId) {
-            return this.adapter.load(userId, cartId);
-        };
-        CartConnector.prototype.create = function (userId, oldCartId, toMergeCartGuid) {
-            return this.adapter.create(userId, oldCartId, toMergeCartGuid);
-        };
-        CartConnector.prototype.delete = function (userId, cartId) {
-            return this.adapter.delete(userId, cartId);
-        };
-        CartConnector.prototype.addEmail = function (userId, cartId, email) {
-            return this.adapter.addEmail(userId, cartId, email);
-        };
-        CartConnector.ctorParameters = function () { return [
-            { type: CartAdapter }
-        ]; };
-        CartConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConnector_Factory() { return new CartConnector(core["ɵɵinject"](CartAdapter)); }, token: CartConnector, providedIn: "root" });
-        CartConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartConnector);
-        return CartConnector;
-    }());
-
-    var CartEffects = /** @class */ (function () {
-        function CartEffects(actions$, cartConnector, store$1) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.cartConnector = cartConnector;
-            this.store = store$1;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.loadCart$ = this.actions$.pipe(effects$c.ofType(LOAD_CART), operators.map(function (action) { return action.payload; }), operators.groupBy(function (payload) { return payload.cartId; }), operators.mergeMap(function (group$) {
-                return group$.pipe(operators.switchMap(function (payload) {
-                    return rxjs.of(payload).pipe(operators.withLatestFrom(_this.store.pipe(store.select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
-                }), operators.filter(function (_a) {
-                    var _b = __read(_a, 2), _ = _b[0], hasPendingProcesses = _b[1];
-                    return !hasPendingProcesses;
-                }), operators.map(function (_a) {
-                    var _b = __read(_a, 1), payload = _b[0];
-                    return payload;
-                }), operators.switchMap(function (payload) {
-                    return _this.cartConnector.load(payload.userId, payload.cartId).pipe(operators.mergeMap(function (cart) {
-                        var actions = [];
-                        if (cart) {
-                            actions.push(new LoadCartSuccess(__assign(__assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })));
-                            if (payload.cartId === OCC_CART_ID_CURRENT) {
-                                // Removing cart from entity object under `current` key as it is no longer needed.
-                                // Current cart is loaded under it's code entity.
-                                actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
-                            }
-                        }
-                        else {
-                            actions = [
-                                new LoadCartFail(__assign(__assign({}, payload), { error: {} })),
-                            ];
-                        }
-                        return actions;
-                    }), operators.catchError(function (error) {
-                        var _a;
-                        if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                            var couponExpiredErrors = error.error.errors.filter(function (err) { return err.reason === 'invalid'; });
-                            if (couponExpiredErrors.length > 0) {
-                                // clear coupons actions just wanted to reload cart again
-                                // no need to do it in refresh or keep that action
-                                // however removing this action will be a breaking change
-                                // remove that action in 2.0 release
-                                // @deprecated since 1.4
-                                return rxjs.from([
-                                    new LoadCart(__assign({}, payload)),
-                                    new ClearExpiredCoupons({}),
-                                ]);
-                            }
-                            var cartNotFoundErrors = error.error.errors.filter(function (err) { return err.reason === 'notFound' || 'UnknownResourceError'; });
-                            if (cartNotFoundErrors.length > 0 &&
-                                payload.extraData &&
-                                payload.extraData.active) {
-                                // Clear cart is responsible for removing cart in `cart` store feature.
-                                // Remove cart does the same thing, but in `multi-cart` store feature.
-                                return rxjs.from([
-                                    new ClearCart(),
-                                    new RemoveCart(payload.cartId),
-                                ]);
-                            }
-                        }
-                        return rxjs.from([
-                            new LoadCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        ]);
-                    }));
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.createCart$ = this.actions$.pipe(effects$c.ofType(CREATE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartConnector
-                    .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
-                    .pipe(operators.switchMap(function (cart) {
-                    var conditionalActions = [];
-                    if (payload.oldCartId) {
-                        conditionalActions.push(new MergeCartSuccess({
-                            userId: payload.userId,
-                            cartId: cart.code,
-                        }));
-                        conditionalActions.push(new MergeMultiCartSuccess({
-                            userId: payload.userId,
-                            cartId: cart.code,
-                            oldCartId: payload.oldCartId,
-                        }));
-                    }
-                    return __spread([
-                        new CreateCartSuccess(__assign(__assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })),
-                        new SetTempCart({
-                            cart: cart,
-                            tempCartId: payload.tempCartId,
-                        })
-                    ], conditionalActions);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new CreateCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })));
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.mergeCart$ = this.actions$.pipe(effects$c.ofType(MERGE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(operators.mergeMap(function (currentCart) {
-                    return [
-                        new CreateCart({
-                            userId: payload.userId,
-                            oldCartId: payload.cartId,
-                            toMergeCartGuid: currentCart ? currentCart.guid : undefined,
-                            extraData: payload.extraData,
-                            tempCartId: payload.tempCartId,
-                        }),
-                    ];
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.refresh$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return rxjs.from([
-                    new CartProcessesDecrement(payload.cartId),
-                    new LoadCart({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                ]);
-            }));
-            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
-                return new LoadCart({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                });
-            }));
-            this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.mergeMap(function () {
-                return [
-                    new ResetCartDetails(),
-                    new ResetMultiCartDetails(),
-                ];
-            }));
-            this.addEmail$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartConnector
-                    .addEmail(payload.userId, payload.cartId, payload.email)
-                    .pipe(operators.mergeMap(function () {
-                    return [
-                        new AddEmailToCartSuccess(__assign({}, payload)),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ];
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new AddEmailToCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ]);
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.deleteCart$ = this.actions$.pipe(effects$c.ofType(DELETE_CART), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) {
-                return _this.cartConnector.delete(payload.userId, payload.cartId).pipe(operators.map(function () {
-                    return new ClearCart();
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new DeleteCartFail(makeErrorSerializable(error)));
-                }));
-            }));
-        }
-        CartEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartConnector },
-            { type: store.Store }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "loadCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "createCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "mergeCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "refresh$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "refreshWithoutProcesses$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "addEmail$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "deleteCart$", void 0);
-        CartEffects = __decorate([
-            core.Injectable()
-        ], CartEffects);
-        return CartEffects;
-    }());
-
-    var SaveCartConnector = /** @class */ (function () {
-        function SaveCartConnector(adapter) {
-            this.adapter = adapter;
-        }
-        SaveCartConnector.prototype.saveCart = function (userId, cartId, saveCartName, saveCartDescription) {
-            return this.adapter.saveCart(userId, cartId, saveCartName, saveCartDescription);
-        };
-        SaveCartConnector.ctorParameters = function () { return [
-            { type: SaveCartAdapter }
-        ]; };
-        SaveCartConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(core["ɵɵinject"](SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
-        SaveCartConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SaveCartConnector);
-        return SaveCartConnector;
-    }());
-
-    var WishListEffects = /** @class */ (function () {
-        function WishListEffects(actions$, cartConnector, saveCartConnector, authService, store$1) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.cartConnector = cartConnector;
-            this.saveCartConnector = saveCartConnector;
-            this.authService = authService;
-            this.store = store$1;
-            this.createWishList$ = this.actions$.pipe(effects$c.ofType(CREATE_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.cartConnector.create(payload.userId).pipe(operators.switchMap(function (cart) {
-                    return _this.saveCartConnector
-                        .saveCart(payload.userId, cart.code, payload.name, payload.description)
-                        .pipe(operators.switchMap(function (saveCartResult) { return [
-                        new CreateWishListSuccess({
-                            cart: saveCartResult.savedCartData,
-                            userId: payload.userId,
-                        }),
-                    ]; }), operators.catchError(function (error) {
-                        return rxjs.from([
-                            new CreateWishListFail({
-                                cartId: cart.code,
-                                error: makeErrorSerializable(error),
-                            }),
-                        ]);
-                    }));
-                }));
-            }));
-            this.loadWishList$ = this.actions$.pipe(effects$c.ofType(LOAD_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                var userId = payload.userId, customerId = payload.customerId, tempCartId = payload.tempCartId;
-                return _this.cartConnector.loadAll(userId).pipe(operators.switchMap(function (carts) {
-                    if (carts) {
-                        var wishList = carts.find(function (cart) { return cart.name === getWishlistName(customerId); });
-                        if (Boolean(wishList)) {
-                            return [
-                                new LoadWishListSuccess({
-                                    cart: wishList,
-                                    userId: userId,
-                                    tempCartId: tempCartId,
-                                    customerId: customerId,
-                                    cartId: getCartIdByUserId(wishList, userId),
-                                }),
-                                new RemoveTempCart({
-                                    tempCartId: tempCartId,
-                                }),
-                            ];
-                        }
-                        else {
-                            return [
-                                new CreateWishList({
-                                    userId: userId,
-                                    name: getWishlistName(customerId),
-                                }),
-                            ];
-                        }
-                    }
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new LoadWishListFail({
-                            userId: userId,
-                            cartId: tempCartId,
-                            customerId: customerId,
-                            error: makeErrorSerializable(error),
-                        }),
-                    ]);
-                }));
-            }));
-            this.resetWishList$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(store.select(getWishListId))), operators.switchMap(function (_a) {
-                var _b = __read(_a, 3), userId = _b[1], wishListId = _b[2];
-                if (Boolean(wishListId)) {
-                    return _this.cartConnector.load(userId, wishListId).pipe(operators.switchMap(function (wishList) { return [
-                        new LoadWishListSuccess({
-                            cart: wishList,
-                            userId: userId,
-                            cartId: getCartIdByUserId(wishList, userId),
-                        }),
-                    ]; }), operators.catchError(function (error) {
-                        return rxjs.from([
-                            new LoadWishListFail({
-                                userId: userId,
-                                cartId: wishListId,
-                                error: makeErrorSerializable(error),
-                            }),
-                        ]);
-                    }));
-                }
-                return rxjs.EMPTY;
-            }));
-        }
-        WishListEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartConnector },
-            { type: SaveCartConnector },
-            { type: AuthService },
-            { type: store.Store }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], WishListEffects.prototype, "createWishList$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], WishListEffects.prototype, "loadWishList$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], WishListEffects.prototype, "resetWishList$", void 0);
-        WishListEffects = __decorate([
-            core.Injectable()
-        ], WishListEffects);
-        return WishListEffects;
-    }());
-
-    var activeCartInitialState = '';
-    var wishListInitialState = '';
-    function activeCartReducer(state, action) {
-        if (state === void 0) { state = activeCartInitialState; }
-        var _a, _b;
-        switch (action.type) {
-            case LOAD_CART_SUCCESS:
-            case CREATE_CART_SUCCESS:
-            // point to `temp-${uuid}` cart when we are creating/merging cart
-            case CREATE_CART:
-                if ((_b = (_a = action === null || action === void 0 ? void 0 : action.payload) === null || _a === void 0 ? void 0 : _a.extraData) === null || _b === void 0 ? void 0 : _b.active) {
-                    return action.meta.entityId;
-                }
-                else {
-                    return state;
-                }
-            case SET_ACTIVE_CART_ID:
-                return action.payload;
-            case REMOVE_CART:
-                if (action.payload === state) {
-                    return activeCartInitialState;
-                }
-                else {
-                    return state;
-                }
-            case CLEAR_MULTI_CART_STATE:
-                return activeCartInitialState;
-        }
-        return state;
-    }
-    var cartEntitiesInitialState = undefined;
-    function cartEntitiesReducer(state, action) {
-        if (state === void 0) { state = cartEntitiesInitialState; }
-        switch (action.type) {
-            case LOAD_CART_SUCCESS:
-            case CREATE_CART_SUCCESS:
-            case CREATE_WISH_LIST_SUCCESS:
-            case LOAD_WISH_LIST_SUCCESS:
-            case SET_TEMP_CART:
-                return action.payload.cart;
-        }
-        return state;
-    }
-    function wishListReducer(state, action) {
-        if (state === void 0) { state = wishListInitialState; }
-        switch (action.type) {
-            case CREATE_WISH_LIST_SUCCESS:
-            case LOAD_WISH_LIST_SUCCESS:
-                return action.meta.entityId;
-            case CLEAR_MULTI_CART_STATE:
-                return wishListInitialState;
-        }
-        return state;
-    }
-
-    function clearMultiCartState(reducer) {
-        return function (state, action) {
-            if (action.type === LOGOUT) {
-                state = undefined;
-            }
-            return reducer(state, action);
-        };
-    }
-    var multiCartMetaReducers = [clearMultiCartState];
-    var multiCartReducerToken = new core.InjectionToken('MultiCartReducers');
-    function getMultiCartReducers() {
-        return {
-            carts: entityProcessesLoaderReducer(MULTI_CART_DATA, cartEntitiesReducer),
-            active: activeCartReducer,
-            wishList: wishListReducer,
-        };
-    }
-    var multiCartReducerProvider = {
-        provide: multiCartReducerToken,
-        useFactory: getMultiCartReducers,
-    };
-
     var MultiCartStatePersistenceService = /** @class */ (function () {
         function MultiCartStatePersistenceService(statePersistenceService, store, siteContextParamsService) {
             this.statePersistenceService = statePersistenceService;
@@ -17870,7 +17955,7 @@
         var CartModule_1;
         CartModule = CartModule_1 = __decorate([
             core.NgModule({
-                imports: [MultiCartStoreModule],
+                imports: [MultiCartStoreModule, CartEventModule],
             })
         ], CartModule);
         return CartModule;
@@ -27037,7 +27122,6 @@
     exports.BASE_SITE_CONTEXT_ID = BASE_SITE_CONTEXT_ID;
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
-    exports.BaseEvent = BaseEvent;
     exports.BaseSiteService = BaseSiteService;
     exports.CANCEL_ORDER_PROCESS_ID = CANCEL_ORDER_PROCESS_ID;
     exports.CANCEL_RETURN_PROCESS_ID = CANCEL_RETURN_PROCESS_ID;
@@ -27067,9 +27151,14 @@
     exports.CUSTOMER_SEARCH_PAGE_NORMALIZER = CUSTOMER_SEARCH_PAGE_NORMALIZER;
     exports.CartActions = cartGroup_actions;
     exports.CartAdapter = CartAdapter;
+    exports.CartAddEntryEvent = CartAddEntryEvent;
+    exports.CartAddEntryFailEvent = CartAddEntryFailEvent;
+    exports.CartAddEntrySuccessEvent = CartAddEntrySuccessEvent;
     exports.CartConnector = CartConnector;
     exports.CartEntryAdapter = CartEntryAdapter;
     exports.CartEntryConnector = CartEntryConnector;
+    exports.CartEventBuilder = CartEventBuilder;
+    exports.CartEventModule = CartEventModule;
     exports.CartModule = CartModule;
     exports.CartOccModule = CartOccModule;
     exports.CartVoucherAdapter = CartVoucherAdapter;
@@ -27407,6 +27496,7 @@
     exports.configValidatorFactory = configValidatorFactory;
     exports.configurationFactory = configurationFactory;
     exports.contextServiceMapProvider = contextServiceMapProvider;
+    exports.createFrom = createFrom;
     exports.defaultAnonymousConsentsConfig = defaultAnonymousConsentsConfig;
     exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
     exports.defaultOccConfig = defaultOccConfig;

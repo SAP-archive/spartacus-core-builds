@@ -2,8 +2,8 @@ import { __decorate, __param, __rest, __awaiter } from 'tslib';
 import { InjectionToken, Optional, NgModule, isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, PLATFORM_ID, Injector, INJECTOR, APP_INITIALIZER, Pipe, inject, TemplateRef, ViewContainerRef, Input, Directive, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule, ActionsSubject } from '@ngrx/store';
-import { of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subject, BehaviorSubject, merge, Subscription, timer, queueScheduler, using, from, Observable, defer } from 'rxjs';
-import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, share, concatMap, mapTo, delay, debounce, observeOn, switchMapTo, groupBy, distinctUntilKeyChanged, auditTime, takeWhile } from 'rxjs/operators';
+import { of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subject, BehaviorSubject, merge, Subscription, timer, from, queueScheduler, using, Observable, defer } from 'rxjs';
+import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, share, concatMap, mapTo, delay, debounce, switchMapTo, groupBy, observeOn, distinctUntilKeyChanged, auditTime, takeWhile } from 'rxjs/operators';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
@@ -7942,27 +7942,6 @@ const interceptors$1 = [
 ];
 
 /**
- * Base class for events.
- *
- * For convenience it copies all properties of the argument object into the properties of the class instance.
- *
- * Provides type safety both for the argument and the result class instance. For example:
- *
- * ```
- * export class CreateCartSuccess extends BaseEvent<CreateCartSuccess> {
- *   cart: Cart;
- * }
- * const event = new CreateCartSuccess({ cart: ... });
- * event.cart
- * ```
- */
-class BaseEvent {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-}
-
-/**
  * A service to register and observe event sources. Events are driven by event types, which are class signatures
  * for the given event.
  *
@@ -8065,7 +8044,7 @@ let EventService = class EventService {
         let output$ = sources$.pipe(switchMap((sources) => merge(...sources)), share() // share the result observable to avoid merging sources for each subscriber
         );
         if (isDevMode()) {
-            output$ = this.validateEventStream(output$, eventType);
+            output$ = this.getValidatedEventStream(output$, eventType);
         }
         this.eventsMeta.set(eventType, {
             inputSubject$: null,
@@ -8088,7 +8067,7 @@ let EventService = class EventService {
      *
      * Should be used only in dev mode.
      */
-    validateEventStream(source$, eventType) {
+    getValidatedEventStream(source$, eventType) {
         return source$.pipe(tap((event) => {
             if (!(event instanceof eventType)) {
                 console.warn(`EventService: The stream`, source$, `emitted the event`, event, `that is not an instance of the declared type`, eventType.name);
@@ -8098,6 +8077,16 @@ let EventService = class EventService {
 };
 EventService.ɵfac = function EventService_Factory(t) { return new (t || EventService)(); };
 EventService.ɵprov = ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+
+/**
+ * Creates an instance of the given class and fills its properties with the given data.
+ *
+ * @param type reference to the class
+ * @param data object with properties to be copied to the class
+ */
+function createFrom(type, data) {
+    return Object.assign(new type(), data);
+}
 
 /**
  * Registers streams of ngrx actions as events source streams
@@ -8140,7 +8129,9 @@ let StateEventService = class StateEventService {
      */
     createEvent(action, eventType, factory) {
         var _a;
-        return factory ? factory(action) : new eventType((_a = action.payload) !== null && _a !== void 0 ? _a : {});
+        return factory
+            ? factory(action)
+            : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
     }
 };
 StateEventService.ɵfac = function StateEventService_Factory(t) { return new (t || StateEventService)(ɵngcc0.ɵɵinject(ɵngcc1.ActionsSubject), ɵngcc0.ɵɵinject(EventService)); };
@@ -13167,6 +13158,1107 @@ ActiveCartService.ctorParameters = () => [
     { type: MultiCartService }
 ];
 
+/**
+ *
+ * Withdraw from the source observable when notifier emits a value
+ *
+ * Withdraw will result in resubscribing to the source observable
+ * Operator is useful to kill ongoing emission transformation on notifier emission
+ *
+ * @param notifier
+ */
+function withdrawOn(notifier) {
+    return (source) => notifier.pipe(startWith(undefined), switchMapTo(source));
+}
+
+let CartEntryConnector = class CartEntryConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    add(userId, cartId, productCode, quantity) {
+        return this.adapter.add(userId, cartId, productCode, quantity);
+    }
+    update(userId, cartId, entryNumber, qty, pickupStore) {
+        return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
+    }
+    remove(userId, cartId, entryNumber) {
+        return this.adapter.remove(userId, cartId, entryNumber);
+    }
+};
+CartEntryConnector.ɵfac = function CartEntryConnector_Factory(t) { return new (t || CartEntryConnector)(ɵngcc0.ɵɵinject(CartEntryAdapter)); };
+CartEntryConnector.ctorParameters = () => [
+    { type: CartEntryAdapter }
+];
+CartEntryConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+
+let CartEntryEffects = class CartEntryEffects {
+    constructor(actions$, cartEntryConnector) {
+        this.actions$ = actions$;
+        this.cartEntryConnector = cartEntryConnector;
+        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+        this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((action) => action.payload), concatMap((payload) => {
+            return this.cartEntryConnector
+                .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
+                .pipe(map((cartModification) => new CartAddEntrySuccess(Object.assign(Object.assign({}, payload), cartModification))), catchError((error) => from([
+                new CartAddEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new LoadCart({
+                    cartId: payload.cartId,
+                    userId: payload.userId,
+                }),
+            ])));
+        }), withdrawOn(this.contextChange$));
+        this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((action) => action.payload), concatMap((payload) => this.cartEntryConnector
+            .remove(payload.userId, payload.cartId, payload.entry)
+            .pipe(map(() => {
+            return new CartRemoveEntrySuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        }), catchError((error) => from([
+            new CartRemoveEntryFail({
+                error: makeErrorSerializable(error),
+                cartId: payload.cartId,
+                userId: payload.userId,
+            }),
+            new LoadCart({
+                cartId: payload.cartId,
+                userId: payload.userId,
+            }),
+        ])))), withdrawOn(this.contextChange$));
+        this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((action) => action.payload), concatMap((payload) => this.cartEntryConnector
+            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
+            .pipe(map(() => {
+            return new CartUpdateEntrySuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        }), catchError((error) => from([
+            new CartUpdateEntryFail({
+                error: makeErrorSerializable(error),
+                cartId: payload.cartId,
+                userId: payload.userId,
+            }),
+            new LoadCart({
+                cartId: payload.cartId,
+                userId: payload.userId,
+            }),
+        ])))), withdrawOn(this.contextChange$));
+    }
+};
+CartEntryEffects.ɵfac = function CartEntryEffects_Factory(t) { return new (t || CartEntryEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartEntryConnector)); };
+CartEntryEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: CartEntryEffects, factory: CartEntryEffects.ɵfac });
+CartEntryEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartEntryConnector }
+];
+__decorate([
+    Effect()
+], CartEntryEffects.prototype, "addEntry$", void 0);
+__decorate([
+    Effect()
+], CartEntryEffects.prototype, "removeEntry$", void 0);
+__decorate([
+    Effect()
+], CartEntryEffects.prototype, "updateEntry$", void 0);
+
+let CartVoucherConnector = class CartVoucherConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    add(userId, cartId, voucherId) {
+        return this.adapter.add(userId, cartId, voucherId);
+    }
+    remove(userId, cartId, voucherId) {
+        return this.adapter.remove(userId, cartId, voucherId);
+    }
+};
+CartVoucherConnector.ɵfac = function CartVoucherConnector_Factory(t) { return new (t || CartVoucherConnector)(ɵngcc0.ɵɵinject(CartVoucherAdapter)); };
+CartVoucherConnector.ctorParameters = () => [
+    { type: CartVoucherAdapter }
+];
+CartVoucherConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
+
+let CartVoucherEffects = class CartVoucherEffects {
+    constructor(actions$, cartVoucherConnector, messageService) {
+        this.actions$ = actions$;
+        this.cartVoucherConnector = cartVoucherConnector;
+        this.messageService = messageService;
+        this.addCartVoucher$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER), map((action) => action.payload), mergeMap((payload) => {
+            return this.cartVoucherConnector
+                .add(payload.userId, payload.cartId, payload.voucherId)
+                .pipe(map(() => {
+                this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_CONFIRMATION);
+                return new CartAddVoucherSuccess({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                });
+            }), catchError((error) => {
+                var _a;
+                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
+                    error.error.errors.forEach((err) => {
+                        if (err.message) {
+                            this.messageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
+                        }
+                    });
+                }
+                return from([
+                    new CartAddVoucherFail(makeErrorSerializable(error)),
+                    new CartProcessesDecrement(payload.cartId),
+                    new LoadCart({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                ]);
+            }));
+        }));
+        this.removeCartVoucher$ = this.actions$.pipe(ofType(CART_REMOVE_VOUCHER), map((action) => action.payload), mergeMap((payload) => {
+            return this.cartVoucherConnector
+                .remove(payload.userId, payload.cartId, payload.voucherId)
+                .pipe(map(() => {
+                this.showGlobalMessage('voucher.removeVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_INFO);
+                return new CartRemoveVoucherSuccess({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                    voucherId: payload.voucherId,
+                });
+            }), catchError((error) => from([
+                new CartRemoveVoucherFail({
+                    error: makeErrorSerializable(error),
+                    cartId: payload.cartId,
+                    userId: payload.userId,
+                    voucherId: payload.voucherId,
+                }),
+                new LoadCart({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+            ])));
+        }));
+    }
+    showGlobalMessage(text, param, messageType) {
+        this.messageService.add({ key: text, params: { voucherCode: param } }, messageType);
+    }
+};
+CartVoucherEffects.ɵfac = function CartVoucherEffects_Factory(t) { return new (t || CartVoucherEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartVoucherConnector), ɵngcc0.ɵɵinject(GlobalMessageService)); };
+CartVoucherEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: CartVoucherEffects, factory: CartVoucherEffects.ɵfac });
+CartVoucherEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartVoucherConnector },
+    { type: GlobalMessageService }
+];
+__decorate([
+    Effect()
+], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
+__decorate([
+    Effect()
+], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
+
+const VERIFY_ADDRESS = '[Checkout] Verify Address';
+const VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
+const VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
+const CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
+class VerifyAddress {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = VERIFY_ADDRESS;
+    }
+}
+class VerifyAddressFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = VERIFY_ADDRESS_FAIL;
+    }
+}
+class VerifyAddressSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = VERIFY_ADDRESS_SUCCESS;
+    }
+}
+class ClearAddressVerificationResults {
+    constructor() {
+        this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
+    }
+}
+
+const LOAD_CARD_TYPES = '[Checkout] Load Card Types';
+const LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
+const LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
+class LoadCardTypes {
+    constructor() {
+        this.type = LOAD_CARD_TYPES;
+    }
+}
+class LoadCardTypesFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CARD_TYPES_FAIL;
+    }
+}
+class LoadCardTypesSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CARD_TYPES_SUCCESS;
+    }
+}
+
+const CHECKOUT_FEATURE = 'checkout';
+const CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+const SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
+const SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
+const SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
+const SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
+
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
+const CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
+const CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
+const CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
+const ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
+const ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
+const ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
+const SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
+const SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
+const SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
+const RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
+const LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
+const LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
+const LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
+const CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
+const SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
+const SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
+const SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
+const RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
+const SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
+const SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
+const SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
+const RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
+const CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
+const CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
+const CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
+const SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
+const SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
+const SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
+const RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
+const PLACE_ORDER = '[Checkout] Place Order';
+const PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
+const PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
+const CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
+const CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
+const LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
+const LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
+const LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
+const CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
+const PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
+class AddDeliveryAddress {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_DELIVERY_ADDRESS;
+    }
+}
+class AddDeliveryAddressFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_DELIVERY_ADDRESS_FAIL;
+    }
+}
+class AddDeliveryAddressSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
+    }
+}
+class SetDeliveryAddress extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_DELIVERY_ADDRESS;
+    }
+}
+class SetDeliveryAddressFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SET_DELIVERY_ADDRESS_FAIL;
+    }
+}
+class SetDeliveryAddressSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_DELIVERY_ADDRESS_SUCCESS;
+    }
+}
+class ResetSetDeliveryAddressProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
+        this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
+    }
+}
+class LoadSupportedDeliveryModes extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = LOAD_SUPPORTED_DELIVERY_MODES;
+    }
+}
+class LoadSupportedDeliveryModesFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
+    }
+}
+class LoadSupportedDeliveryModesSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
+    }
+}
+class ResetLoadSupportedDeliveryModesProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
+    }
+}
+class SetDeliveryMode extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_DELIVERY_MODE;
+    }
+}
+class SetDeliveryModeFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SET_DELIVERY_MODE_FAIL;
+    }
+}
+class SetDeliveryModeSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_DELIVERY_MODE_SUCCESS;
+    }
+}
+class ResetSetDeliveryModeProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
+        this.type = RESET_SET_DELIVERY_MODE_PROCESS;
+    }
+}
+class CreatePaymentDetails extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = CREATE_PAYMENT_DETAILS;
+    }
+}
+class CreatePaymentDetailsFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = CREATE_PAYMENT_DETAILS_FAIL;
+    }
+}
+class CreatePaymentDetailsSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
+    }
+}
+class PaymentProcessSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.type = PAYMENT_PROCESS_SUCCESS;
+    }
+}
+class SetPaymentDetails extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_PAYMENT_DETAILS;
+    }
+}
+class SetPaymentDetailsFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SET_PAYMENT_DETAILS_FAIL;
+    }
+}
+class SetPaymentDetailsSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_PAYMENT_DETAILS_SUCCESS;
+    }
+}
+class ResetSetPaymentDetailsProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
+    }
+}
+class PlaceOrder {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = PLACE_ORDER;
+    }
+}
+class PlaceOrderFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = PLACE_ORDER_FAIL;
+    }
+}
+class PlaceOrderSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = PLACE_ORDER_SUCCESS;
+    }
+}
+class ClearSupportedDeliveryModes {
+    constructor() {
+        this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
+    }
+}
+class ClearCheckoutStep {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_STEP;
+    }
+}
+class ClearCheckoutData {
+    constructor() {
+        this.type = CLEAR_CHECKOUT_DATA;
+    }
+}
+class LoadCheckoutDetails extends LoaderLoadAction {
+    constructor(payload) {
+        super(CHECKOUT_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_CHECKOUT_DETAILS;
+    }
+}
+class LoadCheckoutDetailsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(CHECKOUT_DETAILS, payload);
+        this.payload = payload;
+        this.type = LOAD_CHECKOUT_DETAILS_FAIL;
+    }
+}
+class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(CHECKOUT_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
+    }
+}
+class CheckoutClearMiscsData {
+    constructor() {
+        this.type = CHECKOUT_CLEAR_MISCS_DATA;
+    }
+}
+class ClearCheckoutDeliveryAddress {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
+    }
+}
+class ClearCheckoutDeliveryAddressSuccess {
+    constructor() {
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
+    }
+}
+class ClearCheckoutDeliveryAddressFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
+    }
+}
+class ClearCheckoutDeliveryMode {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
+    }
+}
+class ClearCheckoutDeliveryModeSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
+    }
+}
+class ClearCheckoutDeliveryModeFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
+    }
+}
+
+
+
+var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    VERIFY_ADDRESS: VERIFY_ADDRESS,
+    VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
+    VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
+    CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
+    VerifyAddress: VerifyAddress,
+    VerifyAddressFail: VerifyAddressFail,
+    VerifyAddressSuccess: VerifyAddressSuccess,
+    ClearAddressVerificationResults: ClearAddressVerificationResults,
+    LOAD_CARD_TYPES: LOAD_CARD_TYPES,
+    LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
+    LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
+    LoadCardTypes: LoadCardTypes,
+    LoadCardTypesFail: LoadCardTypesFail,
+    LoadCardTypesSuccess: LoadCardTypesSuccess,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
+    CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
+    CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
+    CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
+    ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
+    ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
+    ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
+    SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
+    SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
+    SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
+    RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
+    LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
+    LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
+    LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
+    CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
+    SET_DELIVERY_MODE: SET_DELIVERY_MODE,
+    SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
+    SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
+    RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
+    SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
+    SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
+    SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
+    RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
+    CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
+    CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
+    CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
+    SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
+    SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
+    SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
+    RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
+    PLACE_ORDER: PLACE_ORDER,
+    PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
+    PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
+    CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
+    CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
+    LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
+    LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
+    LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
+    CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
+    PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
+    AddDeliveryAddress: AddDeliveryAddress,
+    AddDeliveryAddressFail: AddDeliveryAddressFail,
+    AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
+    SetDeliveryAddress: SetDeliveryAddress,
+    SetDeliveryAddressFail: SetDeliveryAddressFail,
+    SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
+    ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
+    LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
+    LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
+    LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
+    ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
+    SetDeliveryMode: SetDeliveryMode,
+    SetDeliveryModeFail: SetDeliveryModeFail,
+    SetDeliveryModeSuccess: SetDeliveryModeSuccess,
+    ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
+    CreatePaymentDetails: CreatePaymentDetails,
+    CreatePaymentDetailsFail: CreatePaymentDetailsFail,
+    CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
+    PaymentProcessSuccess: PaymentProcessSuccess,
+    SetPaymentDetails: SetPaymentDetails,
+    SetPaymentDetailsFail: SetPaymentDetailsFail,
+    SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
+    ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
+    PlaceOrder: PlaceOrder,
+    PlaceOrderFail: PlaceOrderFail,
+    PlaceOrderSuccess: PlaceOrderSuccess,
+    ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
+    ClearCheckoutStep: ClearCheckoutStep,
+    ClearCheckoutData: ClearCheckoutData,
+    LoadCheckoutDetails: LoadCheckoutDetails,
+    LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
+    LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
+    CheckoutClearMiscsData: CheckoutClearMiscsData,
+    ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
+    ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
+    ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
+    ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
+    ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
+    ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail
+});
+
+let CartConnector = class CartConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    loadAll(userId) {
+        return this.adapter.loadAll(userId);
+    }
+    load(userId, cartId) {
+        return this.adapter.load(userId, cartId);
+    }
+    create(userId, oldCartId, toMergeCartGuid) {
+        return this.adapter.create(userId, oldCartId, toMergeCartGuid);
+    }
+    delete(userId, cartId) {
+        return this.adapter.delete(userId, cartId);
+    }
+    addEmail(userId, cartId, email) {
+        return this.adapter.addEmail(userId, cartId, email);
+    }
+};
+CartConnector.ɵfac = function CartConnector_Factory(t) { return new (t || CartConnector)(ɵngcc0.ɵɵinject(CartAdapter)); };
+CartConnector.ctorParameters = () => [
+    { type: CartAdapter }
+];
+CartConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
+
+let CartEffects = class CartEffects {
+    constructor(actions$, cartConnector, store) {
+        this.actions$ = actions$;
+        this.cartConnector = cartConnector;
+        this.store = store;
+        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+        this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((action) => action.payload), groupBy((payload) => payload.cartId), mergeMap((group$) => group$.pipe(switchMap((payload) => {
+            return of(payload).pipe(withLatestFrom(this.store.pipe(select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
+        }), filter(([_, hasPendingProcesses]) => !hasPendingProcesses), map(([payload]) => payload), switchMap((payload) => {
+            return this.cartConnector.load(payload.userId, payload.cartId).pipe(mergeMap((cart) => {
+                let actions = [];
+                if (cart) {
+                    actions.push(new LoadCartSuccess(Object.assign(Object.assign({}, payload), { cart, cartId: getCartIdByUserId(cart, payload.userId) })));
+                    if (payload.cartId === OCC_CART_ID_CURRENT) {
+                        // Removing cart from entity object under `current` key as it is no longer needed.
+                        // Current cart is loaded under it's code entity.
+                        actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
+                    }
+                }
+                else {
+                    actions = [
+                        new LoadCartFail(Object.assign(Object.assign({}, payload), { error: {} })),
+                    ];
+                }
+                return actions;
+            }), catchError((error) => {
+                var _a;
+                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
+                    const couponExpiredErrors = error.error.errors.filter((err) => err.reason === 'invalid');
+                    if (couponExpiredErrors.length > 0) {
+                        // clear coupons actions just wanted to reload cart again
+                        // no need to do it in refresh or keep that action
+                        // however removing this action will be a breaking change
+                        // remove that action in 2.0 release
+                        // @deprecated since 1.4
+                        return from([
+                            new LoadCart(Object.assign({}, payload)),
+                            new ClearExpiredCoupons({}),
+                        ]);
+                    }
+                    const cartNotFoundErrors = error.error.errors.filter((err) => err.reason === 'notFound' || 'UnknownResourceError');
+                    if (cartNotFoundErrors.length > 0 &&
+                        payload.extraData &&
+                        payload.extraData.active) {
+                        // Clear cart is responsible for removing cart in `cart` store feature.
+                        // Remove cart does the same thing, but in `multi-cart` store feature.
+                        return from([
+                            new ClearCart(),
+                            new RemoveCart(payload.cartId),
+                        ]);
+                    }
+                }
+                return from([
+                    new LoadCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                ]);
+            }));
+        }))), withdrawOn(this.contextChange$));
+        this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((action) => action.payload), mergeMap((payload) => {
+            return this.cartConnector
+                .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
+                .pipe(switchMap((cart) => {
+                const conditionalActions = [];
+                if (payload.oldCartId) {
+                    conditionalActions.push(new MergeCartSuccess({
+                        userId: payload.userId,
+                        cartId: cart.code,
+                    }));
+                    conditionalActions.push(new MergeMultiCartSuccess({
+                        userId: payload.userId,
+                        cartId: cart.code,
+                        oldCartId: payload.oldCartId,
+                    }));
+                }
+                return [
+                    new CreateCartSuccess(Object.assign(Object.assign({}, payload), { cart, cartId: getCartIdByUserId(cart, payload.userId) })),
+                    new SetTempCart({
+                        cart,
+                        tempCartId: payload.tempCartId,
+                    }),
+                    ...conditionalActions,
+                ];
+            }), catchError((error) => of(new CreateCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })))));
+        }), withdrawOn(this.contextChange$));
+        this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => action.payload), mergeMap((payload) => {
+            return this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(mergeMap((currentCart) => {
+                return [
+                    new CreateCart({
+                        userId: payload.userId,
+                        oldCartId: payload.cartId,
+                        toMergeCartGuid: currentCart ? currentCart.guid : undefined,
+                        extraData: payload.extraData,
+                        tempCartId: payload.tempCartId,
+                    }),
+                ];
+            }));
+        }), withdrawOn(this.contextChange$));
+        this.refresh$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), map((action) => action.payload), concatMap((payload) => from([
+            new CartProcessesDecrement(payload.cartId),
+            new LoadCart({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            }),
+        ])));
+        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map((action) => action.payload), map((payload) => new LoadCart({
+            userId: payload.userId,
+            cartId: payload.cartId,
+        })));
+        this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), mergeMap(() => {
+            return [
+                new ResetCartDetails(),
+                new ResetMultiCartDetails(),
+            ];
+        }));
+        this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((action) => action.payload), mergeMap((payload) => this.cartConnector
+            .addEmail(payload.userId, payload.cartId, payload.email)
+            .pipe(mergeMap(() => {
+            return [
+                new AddEmailToCartSuccess(Object.assign({}, payload)),
+                new LoadCart({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+            ];
+        }), catchError((error) => from([
+            new AddEmailToCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+            new LoadCart({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            }),
+        ])))), withdrawOn(this.contextChange$));
+        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), exhaustMap((payload) => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map(() => {
+            return new ClearCart();
+        }), catchError((error) => of(new DeleteCartFail(makeErrorSerializable(error)))))));
+    }
+};
+CartEffects.ɵfac = function CartEffects_Factory(t) { return new (t || CartEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartConnector), ɵngcc0.ɵɵinject(ɵngcc1.Store)); };
+CartEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: CartEffects, factory: CartEffects.ɵfac });
+CartEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartConnector },
+    { type: Store }
+];
+__decorate([
+    Effect()
+], CartEffects.prototype, "loadCart$", void 0);
+__decorate([
+    Effect()
+], CartEffects.prototype, "createCart$", void 0);
+__decorate([
+    Effect()
+], CartEffects.prototype, "mergeCart$", void 0);
+__decorate([
+    Effect()
+], CartEffects.prototype, "refresh$", void 0);
+__decorate([
+    Effect()
+], CartEffects.prototype, "refreshWithoutProcesses$", void 0);
+__decorate([
+    Effect()
+], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+__decorate([
+    Effect()
+], CartEffects.prototype, "addEmail$", void 0);
+__decorate([
+    Effect()
+], CartEffects.prototype, "deleteCart$", void 0);
+
+let SaveCartConnector = class SaveCartConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    saveCart(userId, cartId, saveCartName, saveCartDescription) {
+        return this.adapter.saveCart(userId, cartId, saveCartName, saveCartDescription);
+    }
+};
+SaveCartConnector.ɵfac = function SaveCartConnector_Factory(t) { return new (t || SaveCartConnector)(ɵngcc0.ɵɵinject(SaveCartAdapter)); };
+SaveCartConnector.ctorParameters = () => [
+    { type: SaveCartAdapter }
+];
+SaveCartConnector.ɵprov = ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(ɵɵinject(SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
+
+let WishListEffects = class WishListEffects {
+    constructor(actions$, cartConnector, saveCartConnector, authService, store) {
+        this.actions$ = actions$;
+        this.cartConnector = cartConnector;
+        this.saveCartConnector = saveCartConnector;
+        this.authService = authService;
+        this.store = store;
+        this.createWishList$ = this.actions$.pipe(ofType(CREATE_WISH_LIST), map((action) => action.payload), switchMap((payload) => {
+            return this.cartConnector.create(payload.userId).pipe(switchMap((cart) => {
+                return this.saveCartConnector
+                    .saveCart(payload.userId, cart.code, payload.name, payload.description)
+                    .pipe(switchMap((saveCartResult) => [
+                    new CreateWishListSuccess({
+                        cart: saveCartResult.savedCartData,
+                        userId: payload.userId,
+                    }),
+                ]), catchError((error) => from([
+                    new CreateWishListFail({
+                        cartId: cart.code,
+                        error: makeErrorSerializable(error),
+                    }),
+                ])));
+            }));
+        }));
+        this.loadWishList$ = this.actions$.pipe(ofType(LOAD_WISH_LIST), map((action) => action.payload), concatMap((payload) => {
+            const { userId, customerId, tempCartId } = payload;
+            return this.cartConnector.loadAll(userId).pipe(switchMap((carts) => {
+                if (carts) {
+                    const wishList = carts.find((cart) => cart.name === getWishlistName(customerId));
+                    if (Boolean(wishList)) {
+                        return [
+                            new LoadWishListSuccess({
+                                cart: wishList,
+                                userId,
+                                tempCartId,
+                                customerId,
+                                cartId: getCartIdByUserId(wishList, userId),
+                            }),
+                            new RemoveTempCart({
+                                tempCartId,
+                            }),
+                        ];
+                    }
+                    else {
+                        return [
+                            new CreateWishList({
+                                userId,
+                                name: getWishlistName(customerId),
+                            }),
+                        ];
+                    }
+                }
+            }), catchError((error) => from([
+                new LoadWishListFail({
+                    userId,
+                    cartId: tempCartId,
+                    customerId,
+                    error: makeErrorSerializable(error),
+                }),
+            ])));
+        }));
+        this.resetWishList$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), withLatestFrom(this.authService.getOccUserId(), this.store.pipe(select(getWishListId))), switchMap(([, userId, wishListId]) => {
+            if (Boolean(wishListId)) {
+                return this.cartConnector.load(userId, wishListId).pipe(switchMap((wishList) => [
+                    new LoadWishListSuccess({
+                        cart: wishList,
+                        userId,
+                        cartId: getCartIdByUserId(wishList, userId),
+                    }),
+                ]), catchError((error) => from([
+                    new LoadWishListFail({
+                        userId,
+                        cartId: wishListId,
+                        error: makeErrorSerializable(error),
+                    }),
+                ])));
+            }
+            return EMPTY;
+        }));
+    }
+};
+WishListEffects.ɵfac = function WishListEffects_Factory(t) { return new (t || WishListEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartConnector), ɵngcc0.ɵɵinject(SaveCartConnector), ɵngcc0.ɵɵinject(AuthService), ɵngcc0.ɵɵinject(ɵngcc1.Store)); };
+WishListEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: WishListEffects, factory: WishListEffects.ɵfac });
+WishListEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartConnector },
+    { type: SaveCartConnector },
+    { type: AuthService },
+    { type: Store }
+];
+__decorate([
+    Effect()
+], WishListEffects.prototype, "createWishList$", void 0);
+__decorate([
+    Effect()
+], WishListEffects.prototype, "loadWishList$", void 0);
+__decorate([
+    Effect()
+], WishListEffects.prototype, "resetWishList$", void 0);
+
+const activeCartInitialState = '';
+const wishListInitialState = '';
+function activeCartReducer(state = activeCartInitialState, action) {
+    var _a, _b;
+    switch (action.type) {
+        case LOAD_CART_SUCCESS:
+        case CREATE_CART_SUCCESS:
+        // point to `temp-${uuid}` cart when we are creating/merging cart
+        case CREATE_CART:
+            if ((_b = (_a = action === null || action === void 0 ? void 0 : action.payload) === null || _a === void 0 ? void 0 : _a.extraData) === null || _b === void 0 ? void 0 : _b.active) {
+                return action.meta.entityId;
+            }
+            else {
+                return state;
+            }
+        case SET_ACTIVE_CART_ID:
+            return action.payload;
+        case REMOVE_CART:
+            if (action.payload === state) {
+                return activeCartInitialState;
+            }
+            else {
+                return state;
+            }
+        case CLEAR_MULTI_CART_STATE:
+            return activeCartInitialState;
+    }
+    return state;
+}
+const cartEntitiesInitialState = undefined;
+function cartEntitiesReducer(state = cartEntitiesInitialState, action) {
+    switch (action.type) {
+        case LOAD_CART_SUCCESS:
+        case CREATE_CART_SUCCESS:
+        case CREATE_WISH_LIST_SUCCESS:
+        case LOAD_WISH_LIST_SUCCESS:
+        case SET_TEMP_CART:
+            return action.payload.cart;
+    }
+    return state;
+}
+function wishListReducer(state = wishListInitialState, action) {
+    switch (action.type) {
+        case CREATE_WISH_LIST_SUCCESS:
+        case LOAD_WISH_LIST_SUCCESS:
+            return action.meta.entityId;
+        case CLEAR_MULTI_CART_STATE:
+            return wishListInitialState;
+    }
+    return state;
+}
+
+function clearMultiCartState(reducer) {
+    return function (state, action) {
+        if (action.type === LOGOUT) {
+            state = undefined;
+        }
+        return reducer(state, action);
+    };
+}
+const multiCartMetaReducers = [clearMultiCartState];
+const multiCartReducerToken = new InjectionToken('MultiCartReducers');
+function getMultiCartReducers() {
+    return {
+        carts: entityProcessesLoaderReducer(MULTI_CART_DATA, cartEntitiesReducer),
+        active: activeCartReducer,
+        wishList: wishListReducer,
+    };
+}
+const multiCartReducerProvider = {
+    provide: multiCartReducerToken,
+    useFactory: getMultiCartReducers,
+};
+
+// =====================================================================
+class CartAddEntryEvent {
+}
+class CartAddEntrySuccessEvent {
+}
+class CartAddEntryFailEvent {
+}
+
+/**
+ * Registers events for the active cart
+ */
+let CartEventBuilder = class CartEventBuilder {
+    constructor(actionsSubject, event, activeCartService) {
+        this.actionsSubject = actionsSubject;
+        this.event = event;
+        this.activeCartService = activeCartService;
+        this.register();
+    }
+    /**
+     * Registers events for the active cart
+     */
+    register() {
+        this.registerAddEntry();
+    }
+    /**
+     * Register events for adding entry to the active cart
+     */
+    registerAddEntry() {
+        this.registerMapped({
+            action: CART_ADD_ENTRY,
+            event: CartAddEntryEvent,
+        });
+        this.registerMapped({
+            action: CART_ADD_ENTRY_SUCCESS,
+            event: CartAddEntrySuccessEvent,
+        });
+        this.registerMapped({
+            action: CART_ADD_ENTRY_FAIL,
+            event: CartAddEntryFailEvent,
+        });
+    }
+    /**
+     * Registers a stream of target events mapped from the source actions that contain the cart id equal to the active cart id.
+     *
+     * @param mapping mapping declaration - from `action` string type to `event` class type
+     *   (an with optional `factory` function - by default `action.payload` will be assigned to the properties of the event instance).
+     */
+    registerMapped(mapping) {
+        const eventStream$ = this.getAction(mapping.action).pipe(withLatestFrom(this.activeCartService.getActiveCartId()), filter(([action, activeCartId]) => action.payload['cartId'] === activeCartId // assuming that action's payload contains the cart id
+        ), map(([action]) => createFrom(mapping.event, action.payload)));
+        return this.event.register(mapping.event, eventStream$);
+    }
+    /**
+     * Returns a stream of actions only of a given type(s)
+     *
+     * @param actionType type(s) of actions
+     */
+    getAction(actionType) {
+        return this.actionsSubject.pipe(ofType(...[].concat(actionType)));
+    }
+};
+CartEventBuilder.ɵfac = function CartEventBuilder_Factory(t) { return new (t || CartEventBuilder)(ɵngcc0.ɵɵinject(ɵngcc1.ActionsSubject), ɵngcc0.ɵɵinject(EventService), ɵngcc0.ɵɵinject(ActiveCartService)); };
+CartEventBuilder.ctorParameters = () => [
+    { type: ActionsSubject },
+    { type: EventService },
+    { type: ActiveCartService }
+];
+CartEventBuilder.ɵprov = ɵɵdefineInjectable({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(ɵɵinject(ActionsSubject), ɵɵinject(EventService), ɵɵinject(ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
+
+let CartEventModule = class CartEventModule {
+    constructor(_CartEventBuilder) { }
+};
+CartEventModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: CartEventModule });
+CartEventModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CartEventModule_Factory(t) { return new (t || CartEventModule)(ɵngcc0.ɵɵinject(CartEventBuilder)); } });
+CartEventModule.ctorParameters = () => [
+    { type: CartEventBuilder }
+];
+
 let CartVoucherService = class CartVoucherService {
     constructor(store, authService, activeCartService) {
         this.store = store;
@@ -14151,1033 +15243,6 @@ CartPageMetaResolver.ctorParameters = () => [
 ];
 CartPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
 
-/**
- *
- * Withdraw from the source observable when notifier emits a value
- *
- * Withdraw will result in resubscribing to the source observable
- * Operator is useful to kill ongoing emission transformation on notifier emission
- *
- * @param notifier
- */
-function withdrawOn(notifier) {
-    return (source) => notifier.pipe(startWith(undefined), switchMapTo(source));
-}
-
-let CartEntryConnector = class CartEntryConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    add(userId, cartId, productCode, quantity) {
-        return this.adapter.add(userId, cartId, productCode, quantity);
-    }
-    update(userId, cartId, entryNumber, qty, pickupStore) {
-        return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
-    }
-    remove(userId, cartId, entryNumber) {
-        return this.adapter.remove(userId, cartId, entryNumber);
-    }
-};
-CartEntryConnector.ɵfac = function CartEntryConnector_Factory(t) { return new (t || CartEntryConnector)(ɵngcc0.ɵɵinject(CartEntryAdapter)); };
-CartEntryConnector.ctorParameters = () => [
-    { type: CartEntryAdapter }
-];
-CartEntryConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
-
-let CartEntryEffects = class CartEntryEffects {
-    constructor(actions$, cartEntryConnector) {
-        this.actions$ = actions$;
-        this.cartEntryConnector = cartEntryConnector;
-        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-        this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((action) => action.payload), concatMap((payload) => {
-            return this.cartEntryConnector
-                .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
-                .pipe(map((entry) => new CartAddEntrySuccess(Object.assign(Object.assign({}, entry), { userId: payload.userId, cartId: payload.cartId }))), catchError((error) => from([
-                new CartAddEntryFail({
-                    error: makeErrorSerializable(error),
-                    cartId: payload.cartId,
-                    userId: payload.userId,
-                }),
-                new LoadCart({
-                    cartId: payload.cartId,
-                    userId: payload.userId,
-                }),
-            ])));
-        }), withdrawOn(this.contextChange$));
-        this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((action) => action.payload), concatMap((payload) => this.cartEntryConnector
-            .remove(payload.userId, payload.cartId, payload.entry)
-            .pipe(map(() => {
-            return new CartRemoveEntrySuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
-        }), catchError((error) => from([
-            new CartRemoveEntryFail({
-                error: makeErrorSerializable(error),
-                cartId: payload.cartId,
-                userId: payload.userId,
-            }),
-            new LoadCart({
-                cartId: payload.cartId,
-                userId: payload.userId,
-            }),
-        ])))), withdrawOn(this.contextChange$));
-        this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((action) => action.payload), concatMap((payload) => this.cartEntryConnector
-            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
-            .pipe(map(() => {
-            return new CartUpdateEntrySuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
-        }), catchError((error) => from([
-            new CartUpdateEntryFail({
-                error: makeErrorSerializable(error),
-                cartId: payload.cartId,
-                userId: payload.userId,
-            }),
-            new LoadCart({
-                cartId: payload.cartId,
-                userId: payload.userId,
-            }),
-        ])))), withdrawOn(this.contextChange$));
-    }
-};
-CartEntryEffects.ɵfac = function CartEntryEffects_Factory(t) { return new (t || CartEntryEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartEntryConnector)); };
-CartEntryEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: CartEntryEffects, factory: CartEntryEffects.ɵfac });
-CartEntryEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartEntryConnector }
-];
-__decorate([
-    Effect()
-], CartEntryEffects.prototype, "addEntry$", void 0);
-__decorate([
-    Effect()
-], CartEntryEffects.prototype, "removeEntry$", void 0);
-__decorate([
-    Effect()
-], CartEntryEffects.prototype, "updateEntry$", void 0);
-
-let CartVoucherConnector = class CartVoucherConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    add(userId, cartId, voucherId) {
-        return this.adapter.add(userId, cartId, voucherId);
-    }
-    remove(userId, cartId, voucherId) {
-        return this.adapter.remove(userId, cartId, voucherId);
-    }
-};
-CartVoucherConnector.ɵfac = function CartVoucherConnector_Factory(t) { return new (t || CartVoucherConnector)(ɵngcc0.ɵɵinject(CartVoucherAdapter)); };
-CartVoucherConnector.ctorParameters = () => [
-    { type: CartVoucherAdapter }
-];
-CartVoucherConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
-
-let CartVoucherEffects = class CartVoucherEffects {
-    constructor(actions$, cartVoucherConnector, messageService) {
-        this.actions$ = actions$;
-        this.cartVoucherConnector = cartVoucherConnector;
-        this.messageService = messageService;
-        this.addCartVoucher$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER), map((action) => action.payload), mergeMap((payload) => {
-            return this.cartVoucherConnector
-                .add(payload.userId, payload.cartId, payload.voucherId)
-                .pipe(map(() => {
-                this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_CONFIRMATION);
-                return new CartAddVoucherSuccess({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                });
-            }), catchError((error) => {
-                var _a;
-                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                    error.error.errors.forEach((err) => {
-                        if (err.message) {
-                            this.messageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
-                        }
-                    });
-                }
-                return from([
-                    new CartAddVoucherFail(makeErrorSerializable(error)),
-                    new CartProcessesDecrement(payload.cartId),
-                    new LoadCart({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                ]);
-            }));
-        }));
-        this.removeCartVoucher$ = this.actions$.pipe(ofType(CART_REMOVE_VOUCHER), map((action) => action.payload), mergeMap((payload) => {
-            return this.cartVoucherConnector
-                .remove(payload.userId, payload.cartId, payload.voucherId)
-                .pipe(map(() => {
-                this.showGlobalMessage('voucher.removeVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_INFO);
-                return new CartRemoveVoucherSuccess({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                    voucherId: payload.voucherId,
-                });
-            }), catchError((error) => from([
-                new CartRemoveVoucherFail({
-                    error: makeErrorSerializable(error),
-                    cartId: payload.cartId,
-                    userId: payload.userId,
-                    voucherId: payload.voucherId,
-                }),
-                new LoadCart({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
-            ])));
-        }));
-    }
-    showGlobalMessage(text, param, messageType) {
-        this.messageService.add({ key: text, params: { voucherCode: param } }, messageType);
-    }
-};
-CartVoucherEffects.ɵfac = function CartVoucherEffects_Factory(t) { return new (t || CartVoucherEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartVoucherConnector), ɵngcc0.ɵɵinject(GlobalMessageService)); };
-CartVoucherEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: CartVoucherEffects, factory: CartVoucherEffects.ɵfac });
-CartVoucherEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartVoucherConnector },
-    { type: GlobalMessageService }
-];
-__decorate([
-    Effect()
-], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
-__decorate([
-    Effect()
-], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
-
-const VERIFY_ADDRESS = '[Checkout] Verify Address';
-const VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
-const VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
-const CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
-class VerifyAddress {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = VERIFY_ADDRESS;
-    }
-}
-class VerifyAddressFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = VERIFY_ADDRESS_FAIL;
-    }
-}
-class VerifyAddressSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = VERIFY_ADDRESS_SUCCESS;
-    }
-}
-class ClearAddressVerificationResults {
-    constructor() {
-        this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
-    }
-}
-
-const LOAD_CARD_TYPES = '[Checkout] Load Card Types';
-const LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
-const LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
-class LoadCardTypes {
-    constructor() {
-        this.type = LOAD_CARD_TYPES;
-    }
-}
-class LoadCardTypesFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CARD_TYPES_FAIL;
-    }
-}
-class LoadCardTypesSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CARD_TYPES_SUCCESS;
-    }
-}
-
-const CHECKOUT_FEATURE = 'checkout';
-const CHECKOUT_DETAILS = '[Checkout] Checkout Details';
-const SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
-const SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
-const SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
-const SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
-
-const CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
-const CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
-const CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
-const CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
-const CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
-const CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
-const ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
-const ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
-const ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
-const SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
-const SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
-const SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
-const RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
-const LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
-const LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
-const LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
-const CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
-const SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
-const SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
-const SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
-const RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
-const SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
-const SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
-const SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
-const RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
-const CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
-const CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
-const CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
-const SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
-const SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
-const SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
-const RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
-const PLACE_ORDER = '[Checkout] Place Order';
-const PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
-const PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
-const CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
-const CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
-const LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
-const LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
-const LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
-const CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
-const PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
-class AddDeliveryAddress {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_DELIVERY_ADDRESS;
-    }
-}
-class AddDeliveryAddressFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_DELIVERY_ADDRESS_FAIL;
-    }
-}
-class AddDeliveryAddressSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
-    }
-}
-class SetDeliveryAddress extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_DELIVERY_ADDRESS;
-    }
-}
-class SetDeliveryAddressFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SET_DELIVERY_ADDRESS_FAIL;
-    }
-}
-class SetDeliveryAddressSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_DELIVERY_ADDRESS_SUCCESS;
-    }
-}
-class ResetSetDeliveryAddressProcess extends EntityResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
-        this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
-    }
-}
-class LoadSupportedDeliveryModes extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = LOAD_SUPPORTED_DELIVERY_MODES;
-    }
-}
-class LoadSupportedDeliveryModesFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
-    }
-}
-class LoadSupportedDeliveryModesSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
-    }
-}
-class ResetLoadSupportedDeliveryModesProcess extends EntityResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
-        this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
-    }
-}
-class SetDeliveryMode extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_DELIVERY_MODE;
-    }
-}
-class SetDeliveryModeFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SET_DELIVERY_MODE_FAIL;
-    }
-}
-class SetDeliveryModeSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_DELIVERY_MODE_SUCCESS;
-    }
-}
-class ResetSetDeliveryModeProcess extends EntityResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
-        this.type = RESET_SET_DELIVERY_MODE_PROCESS;
-    }
-}
-class CreatePaymentDetails extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = CREATE_PAYMENT_DETAILS;
-    }
-}
-class CreatePaymentDetailsFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = CREATE_PAYMENT_DETAILS_FAIL;
-    }
-}
-class CreatePaymentDetailsSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
-    }
-}
-class PaymentProcessSuccess extends EntitySuccessAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.type = PAYMENT_PROCESS_SUCCESS;
-    }
-}
-class SetPaymentDetails extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_PAYMENT_DETAILS;
-    }
-}
-class SetPaymentDetailsFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SET_PAYMENT_DETAILS_FAIL;
-    }
-}
-class SetPaymentDetailsSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_PAYMENT_DETAILS_SUCCESS;
-    }
-}
-class ResetSetPaymentDetailsProcess extends EntityResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
-    }
-}
-class PlaceOrder {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = PLACE_ORDER;
-    }
-}
-class PlaceOrderFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = PLACE_ORDER_FAIL;
-    }
-}
-class PlaceOrderSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = PLACE_ORDER_SUCCESS;
-    }
-}
-class ClearSupportedDeliveryModes {
-    constructor() {
-        this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
-    }
-}
-class ClearCheckoutStep {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_STEP;
-    }
-}
-class ClearCheckoutData {
-    constructor() {
-        this.type = CLEAR_CHECKOUT_DATA;
-    }
-}
-class LoadCheckoutDetails extends LoaderLoadAction {
-    constructor(payload) {
-        super(CHECKOUT_DETAILS);
-        this.payload = payload;
-        this.type = LOAD_CHECKOUT_DETAILS;
-    }
-}
-class LoadCheckoutDetailsFail extends LoaderFailAction {
-    constructor(payload) {
-        super(CHECKOUT_DETAILS, payload);
-        this.payload = payload;
-        this.type = LOAD_CHECKOUT_DETAILS_FAIL;
-    }
-}
-class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(CHECKOUT_DETAILS);
-        this.payload = payload;
-        this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
-    }
-}
-class CheckoutClearMiscsData {
-    constructor() {
-        this.type = CHECKOUT_CLEAR_MISCS_DATA;
-    }
-}
-class ClearCheckoutDeliveryAddress {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
-    }
-}
-class ClearCheckoutDeliveryAddressSuccess {
-    constructor() {
-        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
-    }
-}
-class ClearCheckoutDeliveryAddressFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
-    }
-}
-class ClearCheckoutDeliveryMode {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
-    }
-}
-class ClearCheckoutDeliveryModeSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
-    }
-}
-class ClearCheckoutDeliveryModeFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
-    }
-}
-
-
-
-var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    VERIFY_ADDRESS: VERIFY_ADDRESS,
-    VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
-    VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
-    CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
-    VerifyAddress: VerifyAddress,
-    VerifyAddressFail: VerifyAddressFail,
-    VerifyAddressSuccess: VerifyAddressSuccess,
-    ClearAddressVerificationResults: ClearAddressVerificationResults,
-    LOAD_CARD_TYPES: LOAD_CARD_TYPES,
-    LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
-    LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
-    LoadCardTypes: LoadCardTypes,
-    LoadCardTypesFail: LoadCardTypesFail,
-    LoadCardTypesSuccess: LoadCardTypesSuccess,
-    CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
-    CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
-    CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
-    CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
-    CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
-    CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
-    ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
-    ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
-    ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
-    SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
-    SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
-    SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
-    RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
-    LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
-    LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
-    LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
-    CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
-    SET_DELIVERY_MODE: SET_DELIVERY_MODE,
-    SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
-    SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
-    RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
-    SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
-    SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
-    SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
-    RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
-    CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
-    CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
-    CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
-    SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
-    SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
-    SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
-    RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
-    PLACE_ORDER: PLACE_ORDER,
-    PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
-    PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
-    CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
-    CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
-    LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
-    LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
-    LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
-    CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
-    PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
-    AddDeliveryAddress: AddDeliveryAddress,
-    AddDeliveryAddressFail: AddDeliveryAddressFail,
-    AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
-    SetDeliveryAddress: SetDeliveryAddress,
-    SetDeliveryAddressFail: SetDeliveryAddressFail,
-    SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
-    ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
-    LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
-    LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
-    LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
-    ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
-    SetDeliveryMode: SetDeliveryMode,
-    SetDeliveryModeFail: SetDeliveryModeFail,
-    SetDeliveryModeSuccess: SetDeliveryModeSuccess,
-    ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
-    CreatePaymentDetails: CreatePaymentDetails,
-    CreatePaymentDetailsFail: CreatePaymentDetailsFail,
-    CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
-    PaymentProcessSuccess: PaymentProcessSuccess,
-    SetPaymentDetails: SetPaymentDetails,
-    SetPaymentDetailsFail: SetPaymentDetailsFail,
-    SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
-    ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
-    PlaceOrder: PlaceOrder,
-    PlaceOrderFail: PlaceOrderFail,
-    PlaceOrderSuccess: PlaceOrderSuccess,
-    ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
-    ClearCheckoutStep: ClearCheckoutStep,
-    ClearCheckoutData: ClearCheckoutData,
-    LoadCheckoutDetails: LoadCheckoutDetails,
-    LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
-    LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
-    CheckoutClearMiscsData: CheckoutClearMiscsData,
-    ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
-    ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
-    ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
-    ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
-    ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
-    ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail
-});
-
-let CartConnector = class CartConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    loadAll(userId) {
-        return this.adapter.loadAll(userId);
-    }
-    load(userId, cartId) {
-        return this.adapter.load(userId, cartId);
-    }
-    create(userId, oldCartId, toMergeCartGuid) {
-        return this.adapter.create(userId, oldCartId, toMergeCartGuid);
-    }
-    delete(userId, cartId) {
-        return this.adapter.delete(userId, cartId);
-    }
-    addEmail(userId, cartId, email) {
-        return this.adapter.addEmail(userId, cartId, email);
-    }
-};
-CartConnector.ɵfac = function CartConnector_Factory(t) { return new (t || CartConnector)(ɵngcc0.ɵɵinject(CartAdapter)); };
-CartConnector.ctorParameters = () => [
-    { type: CartAdapter }
-];
-CartConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
-
-let CartEffects = class CartEffects {
-    constructor(actions$, cartConnector, store) {
-        this.actions$ = actions$;
-        this.cartConnector = cartConnector;
-        this.store = store;
-        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-        this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((action) => action.payload), groupBy((payload) => payload.cartId), mergeMap((group$) => group$.pipe(switchMap((payload) => {
-            return of(payload).pipe(withLatestFrom(this.store.pipe(select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
-        }), filter(([_, hasPendingProcesses]) => !hasPendingProcesses), map(([payload]) => payload), switchMap((payload) => {
-            return this.cartConnector.load(payload.userId, payload.cartId).pipe(mergeMap((cart) => {
-                let actions = [];
-                if (cart) {
-                    actions.push(new LoadCartSuccess(Object.assign(Object.assign({}, payload), { cart, cartId: getCartIdByUserId(cart, payload.userId) })));
-                    if (payload.cartId === OCC_CART_ID_CURRENT) {
-                        // Removing cart from entity object under `current` key as it is no longer needed.
-                        // Current cart is loaded under it's code entity.
-                        actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
-                    }
-                }
-                else {
-                    actions = [
-                        new LoadCartFail(Object.assign(Object.assign({}, payload), { error: {} })),
-                    ];
-                }
-                return actions;
-            }), catchError((error) => {
-                var _a;
-                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                    const couponExpiredErrors = error.error.errors.filter((err) => err.reason === 'invalid');
-                    if (couponExpiredErrors.length > 0) {
-                        // clear coupons actions just wanted to reload cart again
-                        // no need to do it in refresh or keep that action
-                        // however removing this action will be a breaking change
-                        // remove that action in 2.0 release
-                        // @deprecated since 1.4
-                        return from([
-                            new LoadCart(Object.assign({}, payload)),
-                            new ClearExpiredCoupons({}),
-                        ]);
-                    }
-                    const cartNotFoundErrors = error.error.errors.filter((err) => err.reason === 'notFound' || 'UnknownResourceError');
-                    if (cartNotFoundErrors.length > 0 &&
-                        payload.extraData &&
-                        payload.extraData.active) {
-                        // Clear cart is responsible for removing cart in `cart` store feature.
-                        // Remove cart does the same thing, but in `multi-cart` store feature.
-                        return from([
-                            new ClearCart(),
-                            new RemoveCart(payload.cartId),
-                        ]);
-                    }
-                }
-                return from([
-                    new LoadCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
-                ]);
-            }));
-        }))), withdrawOn(this.contextChange$));
-        this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((action) => action.payload), mergeMap((payload) => {
-            return this.cartConnector
-                .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
-                .pipe(switchMap((cart) => {
-                const conditionalActions = [];
-                if (payload.oldCartId) {
-                    conditionalActions.push(new MergeCartSuccess({
-                        userId: payload.userId,
-                        cartId: cart.code,
-                    }));
-                    conditionalActions.push(new MergeMultiCartSuccess({
-                        userId: payload.userId,
-                        cartId: cart.code,
-                        oldCartId: payload.oldCartId,
-                    }));
-                }
-                return [
-                    new CreateCartSuccess(Object.assign(Object.assign({}, payload), { cart, cartId: getCartIdByUserId(cart, payload.userId) })),
-                    new SetTempCart({
-                        cart,
-                        tempCartId: payload.tempCartId,
-                    }),
-                    ...conditionalActions,
-                ];
-            }), catchError((error) => of(new CreateCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })))));
-        }), withdrawOn(this.contextChange$));
-        this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => action.payload), mergeMap((payload) => {
-            return this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(mergeMap((currentCart) => {
-                return [
-                    new CreateCart({
-                        userId: payload.userId,
-                        oldCartId: payload.cartId,
-                        toMergeCartGuid: currentCart ? currentCart.guid : undefined,
-                        extraData: payload.extraData,
-                        tempCartId: payload.tempCartId,
-                    }),
-                ];
-            }));
-        }), withdrawOn(this.contextChange$));
-        this.refresh$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), map((action) => action.payload), concatMap((payload) => from([
-            new CartProcessesDecrement(payload.cartId),
-            new LoadCart({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            }),
-        ])));
-        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map((action) => action.payload), map((payload) => new LoadCart({
-            userId: payload.userId,
-            cartId: payload.cartId,
-        })));
-        this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), mergeMap(() => {
-            return [
-                new ResetCartDetails(),
-                new ResetMultiCartDetails(),
-            ];
-        }));
-        this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((action) => action.payload), mergeMap((payload) => this.cartConnector
-            .addEmail(payload.userId, payload.cartId, payload.email)
-            .pipe(mergeMap(() => {
-            return [
-                new AddEmailToCartSuccess(Object.assign({}, payload)),
-                new LoadCart({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
-            ];
-        }), catchError((error) => from([
-            new AddEmailToCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
-            new LoadCart({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            }),
-        ])))), withdrawOn(this.contextChange$));
-        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), exhaustMap((payload) => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map(() => {
-            return new ClearCart();
-        }), catchError((error) => of(new DeleteCartFail(makeErrorSerializable(error)))))));
-    }
-};
-CartEffects.ɵfac = function CartEffects_Factory(t) { return new (t || CartEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartConnector), ɵngcc0.ɵɵinject(ɵngcc1.Store)); };
-CartEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: CartEffects, factory: CartEffects.ɵfac });
-CartEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartConnector },
-    { type: Store }
-];
-__decorate([
-    Effect()
-], CartEffects.prototype, "loadCart$", void 0);
-__decorate([
-    Effect()
-], CartEffects.prototype, "createCart$", void 0);
-__decorate([
-    Effect()
-], CartEffects.prototype, "mergeCart$", void 0);
-__decorate([
-    Effect()
-], CartEffects.prototype, "refresh$", void 0);
-__decorate([
-    Effect()
-], CartEffects.prototype, "refreshWithoutProcesses$", void 0);
-__decorate([
-    Effect()
-], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
-__decorate([
-    Effect()
-], CartEffects.prototype, "addEmail$", void 0);
-__decorate([
-    Effect()
-], CartEffects.prototype, "deleteCart$", void 0);
-
-let SaveCartConnector = class SaveCartConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    saveCart(userId, cartId, saveCartName, saveCartDescription) {
-        return this.adapter.saveCart(userId, cartId, saveCartName, saveCartDescription);
-    }
-};
-SaveCartConnector.ɵfac = function SaveCartConnector_Factory(t) { return new (t || SaveCartConnector)(ɵngcc0.ɵɵinject(SaveCartAdapter)); };
-SaveCartConnector.ctorParameters = () => [
-    { type: SaveCartAdapter }
-];
-SaveCartConnector.ɵprov = ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(ɵɵinject(SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
-
-let WishListEffects = class WishListEffects {
-    constructor(actions$, cartConnector, saveCartConnector, authService, store) {
-        this.actions$ = actions$;
-        this.cartConnector = cartConnector;
-        this.saveCartConnector = saveCartConnector;
-        this.authService = authService;
-        this.store = store;
-        this.createWishList$ = this.actions$.pipe(ofType(CREATE_WISH_LIST), map((action) => action.payload), switchMap((payload) => {
-            return this.cartConnector.create(payload.userId).pipe(switchMap((cart) => {
-                return this.saveCartConnector
-                    .saveCart(payload.userId, cart.code, payload.name, payload.description)
-                    .pipe(switchMap((saveCartResult) => [
-                    new CreateWishListSuccess({
-                        cart: saveCartResult.savedCartData,
-                        userId: payload.userId,
-                    }),
-                ]), catchError((error) => from([
-                    new CreateWishListFail({
-                        cartId: cart.code,
-                        error: makeErrorSerializable(error),
-                    }),
-                ])));
-            }));
-        }));
-        this.loadWishList$ = this.actions$.pipe(ofType(LOAD_WISH_LIST), map((action) => action.payload), concatMap((payload) => {
-            const { userId, customerId, tempCartId } = payload;
-            return this.cartConnector.loadAll(userId).pipe(switchMap((carts) => {
-                if (carts) {
-                    const wishList = carts.find((cart) => cart.name === getWishlistName(customerId));
-                    if (Boolean(wishList)) {
-                        return [
-                            new LoadWishListSuccess({
-                                cart: wishList,
-                                userId,
-                                tempCartId,
-                                customerId,
-                                cartId: getCartIdByUserId(wishList, userId),
-                            }),
-                            new RemoveTempCart({
-                                tempCartId,
-                            }),
-                        ];
-                    }
-                    else {
-                        return [
-                            new CreateWishList({
-                                userId,
-                                name: getWishlistName(customerId),
-                            }),
-                        ];
-                    }
-                }
-            }), catchError((error) => from([
-                new LoadWishListFail({
-                    userId,
-                    cartId: tempCartId,
-                    customerId,
-                    error: makeErrorSerializable(error),
-                }),
-            ])));
-        }));
-        this.resetWishList$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), withLatestFrom(this.authService.getOccUserId(), this.store.pipe(select(getWishListId))), switchMap(([, userId, wishListId]) => {
-            if (Boolean(wishListId)) {
-                return this.cartConnector.load(userId, wishListId).pipe(switchMap((wishList) => [
-                    new LoadWishListSuccess({
-                        cart: wishList,
-                        userId,
-                        cartId: getCartIdByUserId(wishList, userId),
-                    }),
-                ]), catchError((error) => from([
-                    new LoadWishListFail({
-                        userId,
-                        cartId: wishListId,
-                        error: makeErrorSerializable(error),
-                    }),
-                ])));
-            }
-            return EMPTY;
-        }));
-    }
-};
-WishListEffects.ɵfac = function WishListEffects_Factory(t) { return new (t || WishListEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartConnector), ɵngcc0.ɵɵinject(SaveCartConnector), ɵngcc0.ɵɵinject(AuthService), ɵngcc0.ɵɵinject(ɵngcc1.Store)); };
-WishListEffects.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: WishListEffects, factory: WishListEffects.ɵfac });
-WishListEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartConnector },
-    { type: SaveCartConnector },
-    { type: AuthService },
-    { type: Store }
-];
-__decorate([
-    Effect()
-], WishListEffects.prototype, "createWishList$", void 0);
-__decorate([
-    Effect()
-], WishListEffects.prototype, "loadWishList$", void 0);
-__decorate([
-    Effect()
-], WishListEffects.prototype, "resetWishList$", void 0);
-
-const activeCartInitialState = '';
-const wishListInitialState = '';
-function activeCartReducer(state = activeCartInitialState, action) {
-    var _a, _b;
-    switch (action.type) {
-        case LOAD_CART_SUCCESS:
-        case CREATE_CART_SUCCESS:
-        // point to `temp-${uuid}` cart when we are creating/merging cart
-        case CREATE_CART:
-            if ((_b = (_a = action === null || action === void 0 ? void 0 : action.payload) === null || _a === void 0 ? void 0 : _a.extraData) === null || _b === void 0 ? void 0 : _b.active) {
-                return action.meta.entityId;
-            }
-            else {
-                return state;
-            }
-        case SET_ACTIVE_CART_ID:
-            return action.payload;
-        case REMOVE_CART:
-            if (action.payload === state) {
-                return activeCartInitialState;
-            }
-            else {
-                return state;
-            }
-        case CLEAR_MULTI_CART_STATE:
-            return activeCartInitialState;
-    }
-    return state;
-}
-const cartEntitiesInitialState = undefined;
-function cartEntitiesReducer(state = cartEntitiesInitialState, action) {
-    switch (action.type) {
-        case LOAD_CART_SUCCESS:
-        case CREATE_CART_SUCCESS:
-        case CREATE_WISH_LIST_SUCCESS:
-        case LOAD_WISH_LIST_SUCCESS:
-        case SET_TEMP_CART:
-            return action.payload.cart;
-    }
-    return state;
-}
-function wishListReducer(state = wishListInitialState, action) {
-    switch (action.type) {
-        case CREATE_WISH_LIST_SUCCESS:
-        case LOAD_WISH_LIST_SUCCESS:
-            return action.meta.entityId;
-        case CLEAR_MULTI_CART_STATE:
-            return wishListInitialState;
-    }
-    return state;
-}
-
-function clearMultiCartState(reducer) {
-    return function (state, action) {
-        if (action.type === LOGOUT) {
-            state = undefined;
-        }
-        return reducer(state, action);
-    };
-}
-const multiCartMetaReducers = [clearMultiCartState];
-const multiCartReducerToken = new InjectionToken('MultiCartReducers');
-function getMultiCartReducers() {
-    return {
-        carts: entityProcessesLoaderReducer(MULTI_CART_DATA, cartEntitiesReducer),
-        active: activeCartReducer,
-        wishList: wishListReducer,
-    };
-}
-const multiCartReducerProvider = {
-    provide: multiCartReducerToken,
-    useFactory: getMultiCartReducers,
-};
-
 let MultiCartStatePersistenceService = class MultiCartStatePersistenceService {
     constructor(statePersistenceService, store, siteContextParamsService) {
         this.statePersistenceService = statePersistenceService;
@@ -15298,7 +15363,7 @@ let CartModule = CartModule_1 = class CartModule {
     }
 };
 CartModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: CartModule });
-CartModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CartModule_Factory(t) { return new (t || CartModule)(); }, imports: [[MultiCartStoreModule]] });
+CartModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function CartModule_Factory(t) { return new (t || CartModule)(); }, imports: [[MultiCartStoreModule, CartEventModule]] });
 
 const initialState$9 = {
     results: {},
@@ -24056,31 +24121,6 @@ const ɵUnknownErrorHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Unknow
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(ActiveCartService, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }, { type: MultiCartService }]; }, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartVoucherService, [{
-        type: Injectable
-    }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }, { type: ActiveCartService }]; }, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(UserService, [{
-        type: Injectable,
-        args: [{ providedIn: 'root' }]
-    }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }]; }, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SelectiveCartService, [{
-        type: Injectable
-    }], function () { return [{ type: ɵngcc1.Store }, { type: UserService }, { type: AuthService }, { type: MultiCartService }, { type: BaseSiteService }]; }, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(WishListService, [{
-        type: Injectable
-    }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }, { type: UserService }, { type: MultiCartService }]; }, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CmsService, [{
-        type: Injectable,
-        args: [{
-                providedIn: 'root'
-            }]
-    }], function () { return [{ type: ɵngcc1.Store }, { type: RoutingService }]; }, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartPageMetaResolver, [{
-        type: Injectable,
-        args: [{
-                providedIn: 'root'
-            }]
-    }], function () { return [{ type: CmsService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartEntryConnector, [{
         type: Injectable,
         args: [{
@@ -24117,6 +24157,39 @@ const ɵUnknownErrorHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Unknow
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(WishListEffects, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: CartConnector }, { type: SaveCartConnector }, { type: AuthService }, { type: ɵngcc1.Store }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartEventBuilder, [{
+        type: Injectable,
+        args: [{ providedIn: 'root' }]
+    }], function () { return [{ type: ɵngcc1.ActionsSubject }, { type: EventService }, { type: ActiveCartService }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartEventModule, [{
+        type: NgModule,
+        args: [{}]
+    }], function () { return [{ type: CartEventBuilder }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartVoucherService, [{
+        type: Injectable
+    }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }, { type: ActiveCartService }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(UserService, [{
+        type: Injectable,
+        args: [{ providedIn: 'root' }]
+    }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SelectiveCartService, [{
+        type: Injectable
+    }], function () { return [{ type: ɵngcc1.Store }, { type: UserService }, { type: AuthService }, { type: MultiCartService }, { type: BaseSiteService }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(WishListService, [{
+        type: Injectable
+    }], function () { return [{ type: ɵngcc1.Store }, { type: AuthService }, { type: UserService }, { type: MultiCartService }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CmsService, [{
+        type: Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return [{ type: ɵngcc1.Store }, { type: RoutingService }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartPageMetaResolver, [{
+        type: Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return [{ type: CmsService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(MultiCartStatePersistenceService, [{
         type: Injectable,
         args: [{
@@ -24142,11 +24215,12 @@ const ɵUnknownErrorHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Unknow
                 providers: [multiCartReducerProvider]
             }]
     }], null, null); })();
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CartModule, { imports: [MultiCartStoreModule] }); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(CartModule, { imports: [MultiCartStoreModule,
+        CartEventModule] }); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CartModule, [{
         type: NgModule,
         args: [{
-                imports: [MultiCartStoreModule]
+                imports: [MultiCartStoreModule, CartEventModule]
             }]
     }], null, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CheckoutService, [{
@@ -24909,6 +24983,6 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseEvent, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, StateEventService, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StatePersistenceService, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initialEntityState, initialLoaderState, initialProcessesState, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, getReducers$3 as ɵba, reducerToken$3 as ɵbb, reducerProvider$3 as ɵbc, clearCustomerSupportAgentAsmState as ɵbd, metaReducers$2 as ɵbe, effects$3 as ɵbf, CustomerEffects as ɵbg, CustomerSupportAgentTokenEffects as ɵbh, UserAuthenticationTokenService as ɵbi, reducer$7 as ɵbj, interceptors$2 as ɵbk, CustomerSupportAgentAuthErrorInterceptor as ɵbl, CustomerSupportAgentErrorHandlingService as ɵbm, defaultAsmConfig as ɵbn, authStoreConfigFactory as ɵbo, AuthStoreModule as ɵbp, getReducers as ɵbq, reducerToken as ɵbr, reducerProvider as ɵbs, clearAuthState as ɵbt, metaReducers as ɵbu, effects as ɵbv, ClientTokenEffect as ɵbw, UserTokenEffects as ɵbx, ClientAuthenticationTokenService as ɵby, reducer as ɵbz, configFromCookieFactory as ɵc, defaultAuthConfig as ɵca, interceptors as ɵcb, ClientTokenInterceptor as ɵcc, UserTokenInterceptor as ɵcd, AuthErrorInterceptor as ɵce, UserErrorHandlingService as ɵcf, UrlParsingService as ɵcg, ClientErrorHandlingService as ɵch, TokenRevocationInterceptor as ɵci, AuthServices as ɵcj, MultiCartStoreModule as ɵck, clearMultiCartState as ɵcl, multiCartMetaReducers as ɵcm, multiCartReducerToken as ɵcn, getMultiCartReducers as ɵco, multiCartReducerProvider as ɵcp, CartEffects as ɵcq, CartEntryEffects as ɵcr, CartVoucherEffects as ɵcs, WishListEffects as ɵct, SaveCartConnector as ɵcu, SaveCartAdapter as ɵcv, MultiCartEffects as ɵcw, processesLoaderReducer as ɵcx, activeCartReducer as ɵcy, cartEntitiesReducer as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, wishListReducer as ɵda, CartPageMetaResolver as ɵdb, SiteContextParamsService as ɵdc, CheckoutStoreModule as ɵdd, getReducers$5 as ɵde, reducerToken$5 as ɵdf, reducerProvider$5 as ɵdg, effects$5 as ɵdh, AddressVerificationEffect as ɵdi, CardTypesEffects as ɵdj, CheckoutEffects as ɵdk, reducer$b as ɵdl, reducer$a as ɵdm, reducer$9 as ɵdn, ActiveCartService as ɵdo, cmsStoreConfigFactory as ɵdp, CmsStoreModule as ɵdq, getReducers$7 as ɵdr, reducerToken$7 as ɵds, reducerProvider$7 as ɵdt, clearCmsState as ɵdu, metaReducers$3 as ɵdv, effects$7 as ɵdw, ComponentsEffects as ɵdx, NavigationEntryItemEffects as ɵdy, PageEffects as ɵdz, initConfig as ɵe, reducer$f as ɵea, reducer$g as ɵeb, reducer$d as ɵec, reducer$e as ɵed, GlobalMessageStoreModule as ɵee, getReducers$4 as ɵef, reducerToken$4 as ɵeg, reducerProvider$4 as ɵeh, reducer$8 as ɵei, GlobalMessageEffect as ɵej, defaultGlobalMessageConfigFactory as ɵek, HttpErrorInterceptor as ɵel, defaultI18nConfig as ɵem, i18nextProviders as ɵen, i18nextInit as ɵeo, MockTranslationService as ɵep, kymaStoreConfigFactory as ɵeq, KymaStoreModule as ɵer, getReducers$8 as ɵes, reducerToken$8 as ɵet, reducerProvider$8 as ɵeu, clearKymaState as ɵev, metaReducers$4 as ɵew, effects$8 as ɵex, OpenIdTokenEffect as ɵey, OpenIdAuthenticationTokenService as ɵez, anonymousConsentsStoreConfigFactory as ɵf, defaultKymaConfig as ɵfa, defaultOccAsmConfig as ɵfb, defaultOccCartConfig as ɵfc, OccSaveCartAdapter as ɵfd, defaultOccProductConfig as ɵfe, defaultOccSiteContextConfig as ɵff, defaultOccStoreFinderConfig as ɵfg, defaultOccUserConfig as ɵfh, UserNotificationPreferenceAdapter as ɵfi, defaultPersonalizationConfig as ɵfj, interceptors$3 as ɵfk, OccPersonalizationIdInterceptor as ɵfl, OccPersonalizationTimeInterceptor as ɵfm, ProcessStoreModule as ɵfn, getReducers$9 as ɵfo, reducerToken$9 as ɵfp, reducerProvider$9 as ɵfq, productStoreConfigFactory as ɵfr, ProductStoreModule as ɵfs, getReducers$a as ɵft, reducerToken$a as ɵfu, reducerProvider$a as ɵfv, clearProductsState as ɵfw, metaReducers$5 as ɵfx, effects$9 as ɵfy, ProductReferencesEffects as ɵfz, AnonymousConsentsStoreModule as ɵg, ProductReviewsEffects as ɵga, ProductsSearchEffects as ɵgb, ProductEffects as ɵgc, reducer$h as ɵgd, entityScopedLoaderReducer as ɵge, scopedLoaderReducer as ɵgf, reducer$j as ɵgg, reducer$i as ɵgh, PageMetaResolver as ɵgi, CouponSearchPageResolver as ɵgj, PageMetaResolver as ɵgk, addExternalRoutesFactory as ɵgl, getReducers$6 as ɵgm, reducer$c as ɵgn, reducerToken$6 as ɵgo, reducerProvider$6 as ɵgp, CustomSerializer as ɵgq, effects$6 as ɵgr, RouterEffects as ɵgs, siteContextStoreConfigFactory as ɵgt, SiteContextStoreModule as ɵgu, getReducers$1 as ɵgv, reducerToken$1 as ɵgw, reducerProvider$1 as ɵgx, effects$2 as ɵgy, LanguagesEffects as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, CurrenciesEffects as ɵha, BaseSiteEffects as ɵhb, reducer$3 as ɵhc, reducer$2 as ɵhd, reducer$1 as ɵhe, defaultSiteContextConfigFactory as ɵhf, initializeContext as ɵhg, contextServiceProviders as ɵhh, initSiteContextRoutesHandler as ɵhi, siteContextParamsProviders as ɵhj, SiteContextUrlSerializer as ɵhk, SiteContextRoutesHandler as ɵhl, baseSiteConfigValidator as ɵhm, interceptors$4 as ɵhn, CmsTicketInterceptor as ɵho, StoreFinderStoreModule as ɵhp, getReducers$b as ɵhq, reducerToken$b as ɵhr, reducerProvider$b as ɵhs, effects$a as ɵht, FindStoresEffect as ɵhu, ViewAllStoresEffect as ɵhv, defaultStoreFinderConfig as ɵhw, UserStoreModule as ɵhx, getReducers$c as ɵhy, reducerToken$c as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, reducerProvider$c as ɵia, clearUserState as ɵib, metaReducers$7 as ɵic, effects$b as ɵid, BillingCountriesEffect as ɵie, ClearMiscsDataEffect as ɵif, ConsignmentTrackingEffects as ɵig, DeliveryCountriesEffects as ɵih, NotificationPreferenceEffects as ɵii, OrderDetailsEffect as ɵij, OrderReturnRequestEffect as ɵik, UserPaymentMethodsEffects as ɵil, RegionsEffects as ɵim, ResetPasswordEffects as ɵin, TitlesEffects as ɵio, UserAddressesEffects as ɵip, UserConsentsEffect as ɵiq, UserDetailsEffects as ɵir, UserOrdersEffect as ɵis, UserRegisterEffects as ɵit, CustomerCouponEffects as ɵiu, ProductInterestsEffect as ɵiv, ForgotPasswordEffects as ɵiw, UpdateEmailEffects as ɵix, UpdatePasswordEffects as ɵiy, UserNotificationPreferenceConnector as ɵiz, stateMetaReducers as ɵj, reducer$v as ɵja, reducer$t as ɵjb, reducer$k as ɵjc, reducer$u as ɵjd, reducer$p as ɵje, reducer$w as ɵjf, reducer$o as ɵjg, reducer$z as ɵjh, reducer$m as ɵji, reducer$s as ɵjj, reducer$q as ɵjk, reducer$r as ɵjl, reducer$l as ɵjm, reducer$x as ɵjn, reducer$n as ɵjo, reducer$y as ɵjp, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, reducer$6 as ɵt, reducer$4 as ɵu, reducer$5 as ɵv, interceptors$1 as ɵw, AnonymousConsentsInterceptor as ɵx, asmStoreConfigFactory as ɵy, AsmStoreModule as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, StateEventService, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StatePersistenceService, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, createFrom, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initialEntityState, initialLoaderState, initialProcessesState, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, getReducers$3 as ɵba, reducerToken$3 as ɵbb, reducerProvider$3 as ɵbc, clearCustomerSupportAgentAsmState as ɵbd, metaReducers$2 as ɵbe, effects$3 as ɵbf, CustomerEffects as ɵbg, CustomerSupportAgentTokenEffects as ɵbh, UserAuthenticationTokenService as ɵbi, reducer$7 as ɵbj, interceptors$2 as ɵbk, CustomerSupportAgentAuthErrorInterceptor as ɵbl, CustomerSupportAgentErrorHandlingService as ɵbm, defaultAsmConfig as ɵbn, authStoreConfigFactory as ɵbo, AuthStoreModule as ɵbp, getReducers as ɵbq, reducerToken as ɵbr, reducerProvider as ɵbs, clearAuthState as ɵbt, metaReducers as ɵbu, effects as ɵbv, ClientTokenEffect as ɵbw, UserTokenEffects as ɵbx, ClientAuthenticationTokenService as ɵby, reducer as ɵbz, configFromCookieFactory as ɵc, defaultAuthConfig as ɵca, interceptors as ɵcb, ClientTokenInterceptor as ɵcc, UserTokenInterceptor as ɵcd, AuthErrorInterceptor as ɵce, UserErrorHandlingService as ɵcf, UrlParsingService as ɵcg, ClientErrorHandlingService as ɵch, TokenRevocationInterceptor as ɵci, AuthServices as ɵcj, MultiCartStoreModule as ɵck, clearMultiCartState as ɵcl, multiCartMetaReducers as ɵcm, multiCartReducerToken as ɵcn, getMultiCartReducers as ɵco, multiCartReducerProvider as ɵcp, CartEffects as ɵcq, CartEntryEffects as ɵcr, CartVoucherEffects as ɵcs, WishListEffects as ɵct, SaveCartConnector as ɵcu, SaveCartAdapter as ɵcv, MultiCartEffects as ɵcw, processesLoaderReducer as ɵcx, activeCartReducer as ɵcy, cartEntitiesReducer as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, wishListReducer as ɵda, CartPageMetaResolver as ɵdb, SiteContextParamsService as ɵdc, CheckoutStoreModule as ɵdd, getReducers$5 as ɵde, reducerToken$5 as ɵdf, reducerProvider$5 as ɵdg, effects$5 as ɵdh, AddressVerificationEffect as ɵdi, CardTypesEffects as ɵdj, CheckoutEffects as ɵdk, reducer$b as ɵdl, reducer$a as ɵdm, reducer$9 as ɵdn, ActiveCartService as ɵdo, cmsStoreConfigFactory as ɵdp, CmsStoreModule as ɵdq, getReducers$7 as ɵdr, reducerToken$7 as ɵds, reducerProvider$7 as ɵdt, clearCmsState as ɵdu, metaReducers$3 as ɵdv, effects$7 as ɵdw, ComponentsEffects as ɵdx, NavigationEntryItemEffects as ɵdy, PageEffects as ɵdz, initConfig as ɵe, reducer$f as ɵea, reducer$g as ɵeb, reducer$d as ɵec, reducer$e as ɵed, GlobalMessageStoreModule as ɵee, getReducers$4 as ɵef, reducerToken$4 as ɵeg, reducerProvider$4 as ɵeh, reducer$8 as ɵei, GlobalMessageEffect as ɵej, defaultGlobalMessageConfigFactory as ɵek, HttpErrorInterceptor as ɵel, defaultI18nConfig as ɵem, i18nextProviders as ɵen, i18nextInit as ɵeo, MockTranslationService as ɵep, kymaStoreConfigFactory as ɵeq, KymaStoreModule as ɵer, getReducers$8 as ɵes, reducerToken$8 as ɵet, reducerProvider$8 as ɵeu, clearKymaState as ɵev, metaReducers$4 as ɵew, effects$8 as ɵex, OpenIdTokenEffect as ɵey, OpenIdAuthenticationTokenService as ɵez, anonymousConsentsStoreConfigFactory as ɵf, defaultKymaConfig as ɵfa, defaultOccAsmConfig as ɵfb, defaultOccCartConfig as ɵfc, OccSaveCartAdapter as ɵfd, defaultOccProductConfig as ɵfe, defaultOccSiteContextConfig as ɵff, defaultOccStoreFinderConfig as ɵfg, defaultOccUserConfig as ɵfh, UserNotificationPreferenceAdapter as ɵfi, defaultPersonalizationConfig as ɵfj, interceptors$3 as ɵfk, OccPersonalizationIdInterceptor as ɵfl, OccPersonalizationTimeInterceptor as ɵfm, ProcessStoreModule as ɵfn, getReducers$9 as ɵfo, reducerToken$9 as ɵfp, reducerProvider$9 as ɵfq, productStoreConfigFactory as ɵfr, ProductStoreModule as ɵfs, getReducers$a as ɵft, reducerToken$a as ɵfu, reducerProvider$a as ɵfv, clearProductsState as ɵfw, metaReducers$5 as ɵfx, effects$9 as ɵfy, ProductReferencesEffects as ɵfz, AnonymousConsentsStoreModule as ɵg, ProductReviewsEffects as ɵga, ProductsSearchEffects as ɵgb, ProductEffects as ɵgc, reducer$h as ɵgd, entityScopedLoaderReducer as ɵge, scopedLoaderReducer as ɵgf, reducer$j as ɵgg, reducer$i as ɵgh, PageMetaResolver as ɵgi, CouponSearchPageResolver as ɵgj, PageMetaResolver as ɵgk, addExternalRoutesFactory as ɵgl, getReducers$6 as ɵgm, reducer$c as ɵgn, reducerToken$6 as ɵgo, reducerProvider$6 as ɵgp, CustomSerializer as ɵgq, effects$6 as ɵgr, RouterEffects as ɵgs, siteContextStoreConfigFactory as ɵgt, SiteContextStoreModule as ɵgu, getReducers$1 as ɵgv, reducerToken$1 as ɵgw, reducerProvider$1 as ɵgx, effects$2 as ɵgy, LanguagesEffects as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, CurrenciesEffects as ɵha, BaseSiteEffects as ɵhb, reducer$3 as ɵhc, reducer$2 as ɵhd, reducer$1 as ɵhe, defaultSiteContextConfigFactory as ɵhf, initializeContext as ɵhg, contextServiceProviders as ɵhh, initSiteContextRoutesHandler as ɵhi, siteContextParamsProviders as ɵhj, SiteContextUrlSerializer as ɵhk, SiteContextRoutesHandler as ɵhl, baseSiteConfigValidator as ɵhm, interceptors$4 as ɵhn, CmsTicketInterceptor as ɵho, StoreFinderStoreModule as ɵhp, getReducers$b as ɵhq, reducerToken$b as ɵhr, reducerProvider$b as ɵhs, effects$a as ɵht, FindStoresEffect as ɵhu, ViewAllStoresEffect as ɵhv, defaultStoreFinderConfig as ɵhw, UserStoreModule as ɵhx, getReducers$c as ɵhy, reducerToken$c as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, reducerProvider$c as ɵia, clearUserState as ɵib, metaReducers$7 as ɵic, effects$b as ɵid, BillingCountriesEffect as ɵie, ClearMiscsDataEffect as ɵif, ConsignmentTrackingEffects as ɵig, DeliveryCountriesEffects as ɵih, NotificationPreferenceEffects as ɵii, OrderDetailsEffect as ɵij, OrderReturnRequestEffect as ɵik, UserPaymentMethodsEffects as ɵil, RegionsEffects as ɵim, ResetPasswordEffects as ɵin, TitlesEffects as ɵio, UserAddressesEffects as ɵip, UserConsentsEffect as ɵiq, UserDetailsEffects as ɵir, UserOrdersEffect as ɵis, UserRegisterEffects as ɵit, CustomerCouponEffects as ɵiu, ProductInterestsEffect as ɵiv, ForgotPasswordEffects as ɵiw, UpdateEmailEffects as ɵix, UpdatePasswordEffects as ɵiy, UserNotificationPreferenceConnector as ɵiz, stateMetaReducers as ɵj, reducer$v as ɵja, reducer$t as ɵjb, reducer$k as ɵjc, reducer$u as ɵjd, reducer$p as ɵje, reducer$w as ɵjf, reducer$o as ɵjg, reducer$z as ɵjh, reducer$m as ɵji, reducer$s as ɵjj, reducer$q as ɵjk, reducer$r as ɵjl, reducer$l as ɵjm, reducer$x as ɵjn, reducer$n as ɵjo, reducer$y as ɵjp, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, reducer$6 as ɵt, reducer$4 as ɵu, reducer$5 as ɵv, interceptors$1 as ɵw, AnonymousConsentsInterceptor as ɵx, asmStoreConfigFactory as ɵy, AsmStoreModule as ɵz };
 
 //# sourceMappingURL=spartacus-core.js.map

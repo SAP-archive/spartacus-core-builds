@@ -71,5 +71,5 @@ export declare class EventService {
      *
      * Should be used only in dev mode.
      */
-    private validateEventStream;
+    private getValidatedEventStream;
 }

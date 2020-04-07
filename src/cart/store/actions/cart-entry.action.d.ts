@@ -1,3 +1,4 @@
+import { OrderEntry } from '../../../model/order.model';
 import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 export declare const CART_ADD_ENTRY = "[Cart-entry] Add Entry";
 export declare const CART_ADD_ENTRY_SUCCESS = "[Cart-entry] Add Entry Success";
@@ -27,25 +28,41 @@ export declare class CartAddEntrySuccess extends EntityProcessesDecrementAction 
     payload: {
         userId: string;
         cartId: string;
-        [key: string]: any;
+        productCode: string;
+        quantity: number;
+        deliveryModeChanged: boolean;
+        entry: OrderEntry;
+        quantityAdded: number;
+        statusCode: string;
+        statusMessage: string;
     };
     readonly type = "[Cart-entry] Add Entry Success";
     constructor(payload: {
         userId: string;
         cartId: string;
-        [key: string]: any;
+        productCode: string;
+        quantity: number;
+        deliveryModeChanged: boolean;
+        entry: OrderEntry;
+        quantityAdded: number;
+        statusCode: string;
+        statusMessage: string;
     });
 }
 export declare class CartAddEntryFail extends EntityProcessesDecrementAction {
     payload: {
         userId: string;
         cartId: string;
+        productCode: string;
+        quantity: number;
         error: any;
     };
     readonly type = "[Cart-entry] Add Entry Fail";
     constructor(payload: {
         userId: string;
         cartId: string;
+        productCode: string;
+        quantity: number;
         error: any;
     });
 }
