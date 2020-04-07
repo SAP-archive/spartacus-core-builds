@@ -3768,176 +3768,6 @@
         return AnonymousConsentsService;
     }());
 
-    var FeaturesConfig = /** @class */ (function () {
-        function FeaturesConfig() {
-        }
-        return FeaturesConfig;
-    }());
-    var ANONYMOUS_CONSENTS_FEATURE = 'anonymousConsents';
-
-    function isFeatureConfig(config) {
-        return typeof config === 'object' && config.features;
-    }
-    function isInLevel(level, version) {
-        if (level === '*') {
-            return true;
-        }
-        var levelParts = level.split('.');
-        var versionParts = version.split('.');
-        for (var i = 0; i < versionParts.length; i++) {
-            var versionNumberPart = Number(versionParts[i]);
-            var levelNumberPart = Number(levelParts[i]) || 0;
-            if (versionNumberPart !== levelNumberPart) {
-                return levelNumberPart > versionNumberPart;
-            }
-        }
-        return true;
-    }
-    function isFeatureLevel(config, level) {
-        if (isFeatureConfig(config)) {
-            return level[0] === '!'
-                ? !isInLevel(config.features.level, level.substr(1, level.length))
-                : isInLevel(config.features.level, level);
-        }
-    }
-    function isFeatureEnabled(config, feature) {
-        if (isFeatureConfig(config)) {
-            var featureConfig = feature[0] === '!'
-                ? config.features[feature.substr(1, feature.length)]
-                : config.features[feature];
-            var result = typeof featureConfig === 'string'
-                ? isFeatureLevel(config, featureConfig)
-                : featureConfig;
-            return feature[0] === '!' ? !result : result;
-        }
-    }
-
-    var FeatureConfigService = /** @class */ (function () {
-        function FeatureConfigService(config) {
-            this.config = config;
-        }
-        FeatureConfigService.prototype.isLevel = function (version) {
-            return isFeatureLevel(this.config, version);
-        };
-        FeatureConfigService.prototype.isEnabled = function (feature) {
-            return isFeatureEnabled(this.config, feature);
-        };
-        FeatureConfigService.ctorParameters = function () { return [
-            { type: FeaturesConfig }
-        ]; };
-        FeatureConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core["ɵɵinject"](FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-        FeatureConfigService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], FeatureConfigService);
-        return FeatureConfigService;
-    }());
-
-    var FeatureLevelDirective = /** @class */ (function () {
-        function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
-            this.templateRef = templateRef;
-            this.viewContainer = viewContainer;
-            this.featureConfig = featureConfig;
-            this.hasView = false;
-        }
-        Object.defineProperty(FeatureLevelDirective.prototype, "cxFeatureLevel", {
-            set: function (level) {
-                if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
-                    this.viewContainer.createEmbeddedView(this.templateRef);
-                    this.hasView = true;
-                }
-                else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
-                    this.viewContainer.clear();
-                    this.hasView = false;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FeatureLevelDirective.ctorParameters = function () { return [
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: FeatureConfigService }
-        ]; };
-        __decorate([
-            core.Input()
-        ], FeatureLevelDirective.prototype, "cxFeatureLevel", null);
-        FeatureLevelDirective = __decorate([
-            core.Directive({
-                selector: '[cxFeatureLevel]',
-            })
-        ], FeatureLevelDirective);
-        return FeatureLevelDirective;
-    }());
-
-    var FeatureDirective = /** @class */ (function () {
-        function FeatureDirective(templateRef, viewContainer, featureConfig) {
-            this.templateRef = templateRef;
-            this.viewContainer = viewContainer;
-            this.featureConfig = featureConfig;
-            this.hasView = false;
-        }
-        Object.defineProperty(FeatureDirective.prototype, "cxFeature", {
-            set: function (feature) {
-                if (this.featureConfig.isEnabled(feature) && !this.hasView) {
-                    this.viewContainer.createEmbeddedView(this.templateRef);
-                    this.hasView = true;
-                }
-                else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
-                    this.viewContainer.clear();
-                    this.hasView = false;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FeatureDirective.ctorParameters = function () { return [
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: FeatureConfigService }
-        ]; };
-        __decorate([
-            core.Input()
-        ], FeatureDirective.prototype, "cxFeature", null);
-        FeatureDirective = __decorate([
-            core.Directive({
-                selector: '[cxFeature]',
-            })
-        ], FeatureDirective);
-        return FeatureDirective;
-    }());
-
-    var FeaturesConfigModule = /** @class */ (function () {
-        function FeaturesConfigModule() {
-        }
-        FeaturesConfigModule_1 = FeaturesConfigModule;
-        FeaturesConfigModule.forRoot = function (defaultLevel) {
-            return {
-                ngModule: FeaturesConfigModule_1,
-                providers: [
-                    provideDefaultConfig({
-                        features: {
-                            level: defaultLevel || '*',
-                        },
-                    }),
-                    {
-                        provide: FeaturesConfig,
-                        useExisting: Config,
-                    },
-                ],
-            };
-        };
-        var FeaturesConfigModule_1;
-        FeaturesConfigModule = FeaturesConfigModule_1 = __decorate([
-            core.NgModule({
-                declarations: [FeatureLevelDirective, FeatureDirective],
-                exports: [FeatureLevelDirective, FeatureDirective],
-            })
-        ], FeaturesConfigModule);
-        return FeaturesConfigModule;
-    }());
-
     var AsmAdapter = /** @class */ (function () {
         function AsmAdapter() {
         }
@@ -4208,6 +4038,71 @@
     };
 
     var CART_MODIFICATION_NORMALIZER = new core.InjectionToken('CartModificationNormalizer');
+
+    var FeaturesConfig = /** @class */ (function () {
+        function FeaturesConfig() {
+        }
+        return FeaturesConfig;
+    }());
+
+    function isFeatureConfig(config) {
+        return typeof config === 'object' && config.features;
+    }
+    function isInLevel(level, version) {
+        if (level === '*') {
+            return true;
+        }
+        var levelParts = level.split('.');
+        var versionParts = version.split('.');
+        for (var i = 0; i < versionParts.length; i++) {
+            var versionNumberPart = Number(versionParts[i]);
+            var levelNumberPart = Number(levelParts[i]) || 0;
+            if (versionNumberPart !== levelNumberPart) {
+                return levelNumberPart > versionNumberPart;
+            }
+        }
+        return true;
+    }
+    function isFeatureLevel(config, level) {
+        if (isFeatureConfig(config)) {
+            return level[0] === '!'
+                ? !isInLevel(config.features.level, level.substr(1, level.length))
+                : isInLevel(config.features.level, level);
+        }
+    }
+    function isFeatureEnabled(config, feature) {
+        if (isFeatureConfig(config)) {
+            var featureConfig = feature[0] === '!'
+                ? config.features[feature.substr(1, feature.length)]
+                : config.features[feature];
+            var result = typeof featureConfig === 'string'
+                ? isFeatureLevel(config, featureConfig)
+                : featureConfig;
+            return feature[0] === '!' ? !result : result;
+        }
+    }
+
+    var FeatureConfigService = /** @class */ (function () {
+        function FeatureConfigService(config) {
+            this.config = config;
+        }
+        FeatureConfigService.prototype.isLevel = function (version) {
+            return isFeatureLevel(this.config, version);
+        };
+        FeatureConfigService.prototype.isEnabled = function (feature) {
+            return isFeatureEnabled(this.config, feature);
+        };
+        FeatureConfigService.ctorParameters = function () { return [
+            { type: FeaturesConfig }
+        ]; };
+        FeatureConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core["ɵɵinject"](FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+        FeatureConfigService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], FeatureConfigService);
+        return FeatureConfigService;
+    }());
 
     var OccCartEntryAdapter = /** @class */ (function () {
         function OccCartEntryAdapter(http, occEndpointsService, converterService, featureConfigService) {
@@ -9045,7 +8940,7 @@
         }
         AnonymousConsentsInterceptor.prototype.intercept = function (request, next) {
             var _this = this;
-            return rxjs.iif(function () { return isFeatureEnabled(_this.config, ANONYMOUS_CONSENTS_FEATURE); }, this.anonymousConsentsService.getConsents().pipe(operators.take(1), operators.withLatestFrom(this.authService.isUserLoggedIn()), operators.switchMap(function (_a) {
+            return this.anonymousConsentsService.getConsents().pipe(operators.take(1), operators.withLatestFrom(this.authService.isUserLoggedIn()), operators.switchMap(function (_a) {
                 var _b = __read(_a, 2), consents = _b[0], isUserLoggedIn = _b[1];
                 if (!_this.isOccUrl(request.url)) {
                     return next.handle(request);
@@ -9056,7 +8951,7 @@
                         _this.handleResponse(isUserLoggedIn, event.headers.get(ANONYMOUS_CONSENTS_HEADER), consents);
                     }
                 }));
-            })), next.handle(request));
+            }));
         };
         AnonymousConsentsInterceptor.prototype.handleResponse = function (isUserLoggedIn, newRawConsents, previousConsents) {
             if (!isUserLoggedIn && newRawConsents) {
@@ -11811,9 +11706,7 @@
                     return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error)));
                 }));
             }));
-            this.transferAnonymousConsentsToUser$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function () {
-                return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(_this.anonymousConsentsConfig.anonymousConsents);
-            }), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(REGISTER_USER_SUCCESS))), operators.filter(function (_a) {
+            this.transferAnonymousConsentsToUser$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function () { return Boolean(_this.anonymousConsentsConfig.anonymousConsents); }), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(REGISTER_USER_SUCCESS))), operators.filter(function (_a) {
                 var _b = __read(_a, 2), registerAction = _b[1];
                 return Boolean(registerAction);
             }), operators.switchMap(function () {
@@ -11868,8 +11761,7 @@
                 }));
             }));
             this.giveRequiredConsentsToUser$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function (action) {
-                return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) &&
-                    Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
+                return Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
                     Boolean(_this.anonymousConsentsConfig.anonymousConsents.requiredConsents) &&
                     Boolean(action);
             }), operators.concatMap(function () {
@@ -21158,6 +21050,110 @@
         return ConfigInitializerModule;
     }());
 
+    var FeatureLevelDirective = /** @class */ (function () {
+        function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
+            this.templateRef = templateRef;
+            this.viewContainer = viewContainer;
+            this.featureConfig = featureConfig;
+            this.hasView = false;
+        }
+        Object.defineProperty(FeatureLevelDirective.prototype, "cxFeatureLevel", {
+            set: function (level) {
+                if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    this.hasView = true;
+                }
+                else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
+                    this.viewContainer.clear();
+                    this.hasView = false;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FeatureLevelDirective.ctorParameters = function () { return [
+            { type: core.TemplateRef },
+            { type: core.ViewContainerRef },
+            { type: FeatureConfigService }
+        ]; };
+        __decorate([
+            core.Input()
+        ], FeatureLevelDirective.prototype, "cxFeatureLevel", null);
+        FeatureLevelDirective = __decorate([
+            core.Directive({
+                selector: '[cxFeatureLevel]',
+            })
+        ], FeatureLevelDirective);
+        return FeatureLevelDirective;
+    }());
+
+    var FeatureDirective = /** @class */ (function () {
+        function FeatureDirective(templateRef, viewContainer, featureConfig) {
+            this.templateRef = templateRef;
+            this.viewContainer = viewContainer;
+            this.featureConfig = featureConfig;
+            this.hasView = false;
+        }
+        Object.defineProperty(FeatureDirective.prototype, "cxFeature", {
+            set: function (feature) {
+                if (this.featureConfig.isEnabled(feature) && !this.hasView) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    this.hasView = true;
+                }
+                else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
+                    this.viewContainer.clear();
+                    this.hasView = false;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FeatureDirective.ctorParameters = function () { return [
+            { type: core.TemplateRef },
+            { type: core.ViewContainerRef },
+            { type: FeatureConfigService }
+        ]; };
+        __decorate([
+            core.Input()
+        ], FeatureDirective.prototype, "cxFeature", null);
+        FeatureDirective = __decorate([
+            core.Directive({
+                selector: '[cxFeature]',
+            })
+        ], FeatureDirective);
+        return FeatureDirective;
+    }());
+
+    var FeaturesConfigModule = /** @class */ (function () {
+        function FeaturesConfigModule() {
+        }
+        FeaturesConfigModule_1 = FeaturesConfigModule;
+        FeaturesConfigModule.forRoot = function (defaultLevel) {
+            return {
+                ngModule: FeaturesConfigModule_1,
+                providers: [
+                    provideDefaultConfig({
+                        features: {
+                            level: defaultLevel || '*',
+                        },
+                    }),
+                    {
+                        provide: FeaturesConfig,
+                        useExisting: Config,
+                    },
+                ],
+            };
+        };
+        var FeaturesConfigModule_1;
+        FeaturesConfigModule = FeaturesConfigModule_1 = __decorate([
+            core.NgModule({
+                declarations: [FeatureLevelDirective, FeatureDirective],
+                exports: [FeatureLevelDirective, FeatureDirective],
+            })
+        ], FeaturesConfigModule);
+        return FeaturesConfigModule;
+    }());
+
     // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
     var CxDatePipe = /** @class */ (function (_super) {
         __extends(CxDatePipe, _super);
@@ -27011,7 +27007,6 @@
     exports.ADD_PRODUCT_INTEREST_PROCESS_ID = ADD_PRODUCT_INTEREST_PROCESS_ID;
     exports.ADD_VOUCHER_PROCESS_ID = ADD_VOUCHER_PROCESS_ID;
     exports.ANONYMOUS_CONSENTS = ANONYMOUS_CONSENTS;
-    exports.ANONYMOUS_CONSENTS_FEATURE = ANONYMOUS_CONSENTS_FEATURE;
     exports.ANONYMOUS_CONSENTS_STORE_FEATURE = ANONYMOUS_CONSENTS_STORE_FEATURE;
     exports.ASM_FEATURE = ASM_FEATURE;
     exports.AUTH_FEATURE = AUTH_FEATURE;
