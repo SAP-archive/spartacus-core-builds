@@ -14342,13 +14342,16 @@
         }
         return MergeCart;
     }());
-    var MergeCartSuccess = /** @class */ (function () {
+    var MergeCartSuccess = /** @class */ (function (_super) {
+        __extends(MergeCartSuccess, _super);
         function MergeCartSuccess(payload) {
-            this.payload = payload;
-            this.type = MERGE_CART_SUCCESS;
+            var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
+            _this.payload = payload;
+            _this.type = MERGE_CART_SUCCESS;
+            return _this;
         }
         return MergeCartSuccess;
-    }());
+    }(EntityRemoveAction));
     var ResetCartDetails = /** @class */ (function () {
         function ResetCartDetails() {
             this.type = RESET_CART_DETAILS;
@@ -14563,8 +14566,6 @@
     }(EntityProcessesDecrementAction));
 
     var REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
-    var MERGE_MULTI_CART = '[Multi Cart] Merge Cart';
-    var MERGE_MULTI_CART_SUCCESS = '[Multi Cart] Merge Cart Success';
     var RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
     var SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
     var REMOVE_CART = '[Multi Cart] Remove Cart';
@@ -14597,23 +14598,6 @@
         }
         return SetTempCart;
     }(EntitySuccessAction));
-    var MergeMultiCart = /** @class */ (function () {
-        function MergeMultiCart(payload) {
-            this.payload = payload;
-            this.type = MERGE_MULTI_CART;
-        }
-        return MergeMultiCart;
-    }());
-    var MergeMultiCartSuccess = /** @class */ (function (_super) {
-        __extends(MergeMultiCartSuccess, _super);
-        function MergeMultiCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
-            _this.payload = payload;
-            _this.type = MERGE_MULTI_CART_SUCCESS;
-            return _this;
-        }
-        return MergeMultiCartSuccess;
-    }(EntityRemoveAction));
     var ResetMultiCartDetails = /** @class */ (function (_super) {
         __extends(ResetMultiCartDetails, _super);
         function ResetMultiCartDetails() {
@@ -14804,8 +14788,6 @@
         DeleteCart: DeleteCart,
         DeleteCartFail: DeleteCartFail,
         REMOVE_TEMP_CART: REMOVE_TEMP_CART,
-        MERGE_MULTI_CART: MERGE_MULTI_CART,
-        MERGE_MULTI_CART_SUCCESS: MERGE_MULTI_CART_SUCCESS,
         RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
         SET_TEMP_CART: SET_TEMP_CART,
         REMOVE_CART: REMOVE_CART,
@@ -14815,8 +14797,6 @@
         CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
         RemoveTempCart: RemoveTempCart,
         SetTempCart: SetTempCart,
-        MergeMultiCart: MergeMultiCart,
-        MergeMultiCartSuccess: MergeMultiCartSuccess,
         ResetMultiCartDetails: ResetMultiCartDetails,
         RemoveCart: RemoveCart,
         CartProcessesIncrement: CartProcessesIncrement,
@@ -16224,12 +16204,10 @@
                     var conditionalActions = [];
                     if (payload.oldCartId) {
                         conditionalActions.push(new MergeCartSuccess({
+                            extraData: payload.extraData,
                             userId: payload.userId,
-                            cartId: cart.code,
-                        }));
-                        conditionalActions.push(new MergeMultiCartSuccess({
-                            userId: payload.userId,
-                            cartId: cart.code,
+                            tempCartId: payload.tempCartId,
+                            cartId: getCartIdByUserId(cart, payload.userId),
                             oldCartId: payload.oldCartId,
                         }));
                     }
@@ -16266,7 +16244,7 @@
                     }),
                 ]);
             }));
-            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
+            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
                 return new LoadCart({
                     userId: payload.userId,
                     cartId: payload.cartId,
@@ -17862,9 +17840,6 @@
             this.setTempCart$ = this.actions$.pipe(effects$c.ofType(SET_TEMP_CART), operators.map(function (action) {
                 return new RemoveTempCart(action.payload);
             }));
-            this.mergeCart2$ = this.actions$.pipe(effects$c.ofType(MERGE_CART), operators.map(function (action) {
-                return new MergeMultiCart(action.payload);
-            }));
             this.removeCart$ = this.actions$.pipe(effects$c.ofType(DELETE_CART), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new RemoveCart(payload.cartId); }));
             // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
             // Change for 2.0 release
@@ -17876,9 +17851,6 @@
         __decorate([
             effects$c.Effect()
         ], MultiCartEffects.prototype, "setTempCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], MultiCartEffects.prototype, "mergeCart2$", void 0);
         __decorate([
             effects$c.Effect()
         ], MultiCartEffects.prototype, "removeCart$", void 0);
@@ -18634,7 +18606,7 @@
             this.reloadDetailsOnMergeCart$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
                 return new LoadCheckoutDetails({
                     userId: payload.userId,
-                    cartId: payload.cartId ? payload.cartId : OCC_CART_ID_CURRENT,
+                    cartId: payload.cartId,
                 });
             }));
             this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.switchMap(function (payload) {

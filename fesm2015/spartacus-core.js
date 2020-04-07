@@ -12572,8 +12572,9 @@ class MergeCart {
         this.type = MERGE_CART;
     }
 }
-class MergeCartSuccess {
+class MergeCartSuccess extends EntityRemoveAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.oldCartId);
         this.payload = payload;
         this.type = MERGE_CART_SUCCESS;
     }
@@ -12739,8 +12740,6 @@ class CartRemoveVoucherSuccess extends EntityProcessesDecrementAction {
 }
 
 const REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
-const MERGE_MULTI_CART = '[Multi Cart] Merge Cart';
-const MERGE_MULTI_CART_SUCCESS = '[Multi Cart] Merge Cart Success';
 const RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
 const SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
 const REMOVE_CART = '[Multi Cart] Remove Cart';
@@ -12765,19 +12764,6 @@ class SetTempCart extends EntitySuccessAction {
         super(MULTI_CART_DATA, payload.tempCartId, payload.cart);
         this.payload = payload;
         this.type = SET_TEMP_CART;
-    }
-}
-class MergeMultiCart {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = MERGE_MULTI_CART;
-    }
-}
-class MergeMultiCartSuccess extends EntityRemoveAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.oldCartId);
-        this.payload = payload;
-        this.type = MERGE_MULTI_CART_SUCCESS;
     }
 }
 class ResetMultiCartDetails extends EntityProcessesLoaderResetAction {
@@ -12938,8 +12924,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     DeleteCart: DeleteCart,
     DeleteCartFail: DeleteCartFail,
     REMOVE_TEMP_CART: REMOVE_TEMP_CART,
-    MERGE_MULTI_CART: MERGE_MULTI_CART,
-    MERGE_MULTI_CART_SUCCESS: MERGE_MULTI_CART_SUCCESS,
     RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
     SET_TEMP_CART: SET_TEMP_CART,
     REMOVE_CART: REMOVE_CART,
@@ -12949,8 +12933,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
     RemoveTempCart: RemoveTempCart,
     SetTempCart: SetTempCart,
-    MergeMultiCart: MergeMultiCart,
-    MergeMultiCartSuccess: MergeMultiCartSuccess,
     ResetMultiCartDetails: ResetMultiCartDetails,
     RemoveCart: RemoveCart,
     CartProcessesIncrement: CartProcessesIncrement,
@@ -13035,7 +13017,7 @@ let MultiCartService = class MultiCartService {
      *
      * @param params Object with userId, cartId and extraData
      */
-    mergeToCurrentCart({ userId, cartId, extraData }) {
+    mergeToCurrentCart({ userId, cartId, extraData, }) {
         const tempCartId = this.generateTempCartId();
         this.store.dispatch(new MergeCart({
             userId,
@@ -14207,12 +14189,10 @@ let CartEffects = class CartEffects {
                 const conditionalActions = [];
                 if (payload.oldCartId) {
                     conditionalActions.push(new MergeCartSuccess({
+                        extraData: payload.extraData,
                         userId: payload.userId,
-                        cartId: cart.code,
-                    }));
-                    conditionalActions.push(new MergeMultiCartSuccess({
-                        userId: payload.userId,
-                        cartId: cart.code,
+                        tempCartId: payload.tempCartId,
+                        cartId: getCartIdByUserId(cart, payload.userId),
                         oldCartId: payload.oldCartId,
                     }));
                 }
@@ -14246,7 +14226,7 @@ let CartEffects = class CartEffects {
                 cartId: payload.cartId,
             }),
         ])));
-        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map((action) => action.payload), map((payload) => new LoadCart({
+        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map((action) => action.payload), map((payload) => new LoadCart({
             userId: payload.userId,
             cartId: payload.cartId,
         })));
@@ -15629,7 +15609,6 @@ let MultiCartEffects = class MultiCartEffects {
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map((action) => {
             return new RemoveTempCart(action.payload);
         }));
-        this.mergeCart2$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => new MergeMultiCart(action.payload)));
         this.removeCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), map((payload) => new RemoveCart(payload.cartId)));
         // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
         // Change for 2.0 release
@@ -15642,9 +15621,6 @@ MultiCartEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], MultiCartEffects.prototype, "setTempCart$", void 0);
-__decorate([
-    Effect()
-], MultiCartEffects.prototype, "mergeCart2$", void 0);
 __decorate([
     Effect()
 ], MultiCartEffects.prototype, "removeCart$", void 0);
@@ -16327,7 +16303,7 @@ let CheckoutEffects = class CheckoutEffects {
         this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((action) => action.payload), map((payload) => {
             return new LoadCheckoutDetails({
                 userId: payload.userId,
-                cartId: payload.cartId ? payload.cartId : OCC_CART_ID_CURRENT,
+                cartId: payload.cartId,
             });
         }));
         this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), map((action) => action.payload), filter((payload) => Boolean(payload.cartId)), switchMap((payload) => {

@@ -2,6 +2,7 @@ import { Action } from '@ngrx/store';
 import { Cart } from '../../../model/cart.model';
 import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
+import { EntityRemoveAction } from '../../../state/utils/entity/entity.action';
 export declare const CREATE_CART = "[Cart] Create Cart";
 export declare const CREATE_CART_FAIL = "[Cart] Create Cart Fail";
 export declare const CREATE_CART_SUCCESS = "[Cart] Create Cart Success";
@@ -121,21 +122,33 @@ export declare class LoadCartSuccess extends EntitySuccessAction {
     readonly type = "[Cart] Load Cart Success";
     constructor(payload: LoadCartSuccessPayload);
 }
-export declare class MergeCart implements Action {
-    payload: any;
-    readonly type = "[Cart] Merge Cart";
-    constructor(payload: any);
-}
-export declare class MergeCartSuccess implements Action {
-    payload: {
-        cartId: string;
-        userId: string;
+interface MergeCartPayload {
+    cartId: string;
+    userId: string;
+    extraData?: {
+        active?: boolean;
     };
+    /**
+     * MergeCart actions triggers CreateCart which requires this parameter, so that's why it is required.
+     */
+    tempCartId: string;
+}
+export declare class MergeCart implements Action {
+    payload: MergeCartPayload;
+    readonly type = "[Cart] Merge Cart";
+    constructor(payload: MergeCartPayload);
+}
+interface MergeCartSuccessPayload extends MergeCartPayload {
+    /**
+     * Previous cart id which was merged with new/user cart.
+     * Needed to know which obsolete entity should be removed.
+     */
+    oldCartId: string;
+}
+export declare class MergeCartSuccess extends EntityRemoveAction {
+    payload: MergeCartSuccessPayload;
     readonly type = "[Cart] Merge Cart Success";
-    constructor(payload: {
-        cartId: string;
-        userId: string;
-    });
+    constructor(payload: MergeCartSuccessPayload);
 }
 export declare class ResetCartDetails implements Action {
     readonly type = "[Cart] Reset Cart Details";

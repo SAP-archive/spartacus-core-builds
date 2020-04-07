@@ -14150,13 +14150,16 @@ var MergeCart = /** @class */ (function () {
     }
     return MergeCart;
 }());
-var MergeCartSuccess = /** @class */ (function () {
+var MergeCartSuccess = /** @class */ (function (_super) {
+    __extends(MergeCartSuccess, _super);
     function MergeCartSuccess(payload) {
-        this.payload = payload;
-        this.type = MERGE_CART_SUCCESS;
+        var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
+        _this.payload = payload;
+        _this.type = MERGE_CART_SUCCESS;
+        return _this;
     }
     return MergeCartSuccess;
-}());
+}(EntityRemoveAction));
 var ResetCartDetails = /** @class */ (function () {
     function ResetCartDetails() {
         this.type = RESET_CART_DETAILS;
@@ -14371,8 +14374,6 @@ var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
 }(EntityProcessesDecrementAction));
 
 var REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
-var MERGE_MULTI_CART = '[Multi Cart] Merge Cart';
-var MERGE_MULTI_CART_SUCCESS = '[Multi Cart] Merge Cart Success';
 var RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
 var SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
 var REMOVE_CART = '[Multi Cart] Remove Cart';
@@ -14405,23 +14406,6 @@ var SetTempCart = /** @class */ (function (_super) {
     }
     return SetTempCart;
 }(EntitySuccessAction));
-var MergeMultiCart = /** @class */ (function () {
-    function MergeMultiCart(payload) {
-        this.payload = payload;
-        this.type = MERGE_MULTI_CART;
-    }
-    return MergeMultiCart;
-}());
-var MergeMultiCartSuccess = /** @class */ (function (_super) {
-    __extends(MergeMultiCartSuccess, _super);
-    function MergeMultiCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
-        _this.payload = payload;
-        _this.type = MERGE_MULTI_CART_SUCCESS;
-        return _this;
-    }
-    return MergeMultiCartSuccess;
-}(EntityRemoveAction));
 var ResetMultiCartDetails = /** @class */ (function (_super) {
     __extends(ResetMultiCartDetails, _super);
     function ResetMultiCartDetails() {
@@ -14612,8 +14596,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     DeleteCart: DeleteCart,
     DeleteCartFail: DeleteCartFail,
     REMOVE_TEMP_CART: REMOVE_TEMP_CART,
-    MERGE_MULTI_CART: MERGE_MULTI_CART,
-    MERGE_MULTI_CART_SUCCESS: MERGE_MULTI_CART_SUCCESS,
     RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
     SET_TEMP_CART: SET_TEMP_CART,
     REMOVE_CART: REMOVE_CART,
@@ -14623,8 +14605,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
     RemoveTempCart: RemoveTempCart,
     SetTempCart: SetTempCart,
-    MergeMultiCart: MergeMultiCart,
-    MergeMultiCartSuccess: MergeMultiCartSuccess,
     ResetMultiCartDetails: ResetMultiCartDetails,
     RemoveCart: RemoveCart,
     CartProcessesIncrement: CartProcessesIncrement,
@@ -16032,12 +16012,10 @@ var CartEffects = /** @class */ (function () {
                 var conditionalActions = [];
                 if (payload.oldCartId) {
                     conditionalActions.push(new MergeCartSuccess({
+                        extraData: payload.extraData,
                         userId: payload.userId,
-                        cartId: cart.code,
-                    }));
-                    conditionalActions.push(new MergeMultiCartSuccess({
-                        userId: payload.userId,
-                        cartId: cart.code,
+                        tempCartId: payload.tempCartId,
+                        cartId: getCartIdByUserId(cart, payload.userId),
                         oldCartId: payload.oldCartId,
                     }));
                 }
@@ -16074,7 +16052,7 @@ var CartEffects = /** @class */ (function () {
                 }),
             ]);
         }));
-        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map(function (action) { return action.payload; }), map(function (payload) {
+        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map(function (action) { return action.payload; }), map(function (payload) {
             return new LoadCart({
                 userId: payload.userId,
                 cartId: payload.cartId,
@@ -17670,9 +17648,6 @@ var MultiCartEffects = /** @class */ (function () {
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map(function (action) {
             return new RemoveTempCart(action.payload);
         }));
-        this.mergeCart2$ = this.actions$.pipe(ofType(MERGE_CART), map(function (action) {
-            return new MergeMultiCart(action.payload);
-        }));
         this.removeCart$ = this.actions$.pipe(ofType(DELETE_CART), map(function (action) { return action.payload; }), map(function (payload) { return new RemoveCart(payload.cartId); }));
         // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
         // Change for 2.0 release
@@ -17684,9 +17659,6 @@ var MultiCartEffects = /** @class */ (function () {
     __decorate([
         Effect()
     ], MultiCartEffects.prototype, "setTempCart$", void 0);
-    __decorate([
-        Effect()
-    ], MultiCartEffects.prototype, "mergeCart2$", void 0);
     __decorate([
         Effect()
     ], MultiCartEffects.prototype, "removeCart$", void 0);
@@ -18442,7 +18414,7 @@ var CheckoutEffects = /** @class */ (function () {
         this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map(function (action) { return action.payload; }), map(function (payload) {
             return new LoadCheckoutDetails({
                 userId: payload.userId,
-                cartId: payload.cartId ? payload.cartId : OCC_CART_ID_CURRENT,
+                cartId: payload.cartId,
             });
         }));
         this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), map(function (action) { return action.payload; }), filter(function (payload) { return Boolean(payload.cartId); }), switchMap(function (payload) {
