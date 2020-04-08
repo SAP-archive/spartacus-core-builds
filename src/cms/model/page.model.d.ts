@@ -7,7 +7,7 @@ export interface Page {
     title?: string;
     template?: string;
     loadTime?: number;
-    slots: {
+    slots?: {
         [key: string]: ContentSlotData;
     };
     properties?: any;
