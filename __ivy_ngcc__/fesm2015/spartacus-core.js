@@ -12186,127 +12186,6 @@ function isTempCartId(cartId) {
     return cartId.startsWith('temp-');
 }
 
-const CREATE_CART = '[Cart] Create Cart';
-const CREATE_CART_FAIL = '[Cart] Create Cart Fail';
-const CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
-const LOAD_CART = '[Cart] Load Cart';
-const LOAD_CART_FAIL = '[Cart] Load Cart Fail';
-const LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
-const ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
-const ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
-const ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
-const MERGE_CART = '[Cart] Merge Cart';
-const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
-const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
-const CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
-const CLEAR_CART = '[Cart] Clear Cart';
-const DELETE_CART = '[Cart] Delete Cart';
-const DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
-class CreateCart extends EntityLoadAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.tempCartId);
-        this.payload = payload;
-        this.type = CREATE_CART;
-    }
-}
-class CreateCartFail extends EntityFailAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.tempCartId);
-        this.payload = payload;
-        this.type = CREATE_CART_FAIL;
-    }
-}
-class CreateCartSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CREATE_CART_SUCCESS;
-    }
-}
-class AddEmailToCart extends EntityProcessesIncrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART;
-    }
-}
-class AddEmailToCartFail extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART_FAIL;
-    }
-}
-class AddEmailToCartSuccess extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART_SUCCESS;
-    }
-}
-class LoadCart extends EntityLoadAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = LOAD_CART;
-    }
-}
-class LoadCartFail extends EntityFailAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId, payload.error);
-        this.payload = payload;
-        this.type = LOAD_CART_FAIL;
-    }
-}
-class LoadCartSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = LOAD_CART_SUCCESS;
-    }
-}
-class MergeCart {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = MERGE_CART;
-    }
-}
-class MergeCartSuccess extends EntityRemoveAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.oldCartId);
-        this.payload = payload;
-        this.type = MERGE_CART_SUCCESS;
-    }
-}
-class ResetCartDetails {
-    constructor() {
-        this.type = RESET_CART_DETAILS;
-    }
-}
-class ClearExpiredCoupons {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_EXPIRED_COUPONS;
-    }
-}
-class ClearCart {
-    constructor() {
-        this.type = CLEAR_CART;
-    }
-}
-class DeleteCart {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = DELETE_CART;
-    }
-}
-class DeleteCartFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = DELETE_CART_FAIL;
-    }
-}
-
 const CART_ADD_ENTRY = '[Cart-entry] Add Entry';
 const CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
 const CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
@@ -12438,44 +12317,161 @@ class CartRemoveVoucherSuccess extends EntityProcessesDecrementAction {
     }
 }
 
-const REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
-const RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
+const CREATE_CART = '[Cart] Create Cart';
+const CREATE_CART_FAIL = '[Cart] Create Cart Fail';
+const CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
+const LOAD_CART = '[Cart] Load Cart';
+const LOAD_CART_FAIL = '[Cart] Load Cart Fail';
+const LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
+const ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+const ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+const ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+const MERGE_CART = '[Cart] Merge Cart';
+const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+const CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
+const REMOVE_CART = '[Cart] Remove Cart';
+const DELETE_CART = '[Cart] Delete Cart';
+const DELETE_CART_SUCCESS = '[Cart] Delete Cart Success';
+const DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
+class CreateCart extends EntityLoadAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.tempCartId);
+        this.payload = payload;
+        this.type = CREATE_CART;
+    }
+}
+class CreateCartFail extends EntityFailAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.tempCartId);
+        this.payload = payload;
+        this.type = CREATE_CART_FAIL;
+    }
+}
+class CreateCartSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CREATE_CART_SUCCESS;
+    }
+}
+class AddEmailToCart extends EntityProcessesIncrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART;
+    }
+}
+class AddEmailToCartFail extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART_FAIL;
+    }
+}
+class AddEmailToCartSuccess extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART_SUCCESS;
+    }
+}
+class LoadCart extends EntityLoadAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = LOAD_CART;
+    }
+}
+class LoadCartFail extends EntityFailAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId, payload.error);
+        this.payload = payload;
+        this.type = LOAD_CART_FAIL;
+    }
+}
+class LoadCartSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = LOAD_CART_SUCCESS;
+    }
+}
+class MergeCart {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = MERGE_CART;
+    }
+}
+class MergeCartSuccess extends EntityRemoveAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.oldCartId);
+        this.payload = payload;
+        this.type = MERGE_CART_SUCCESS;
+    }
+}
+/**
+ * On site context change we want to keep current list of entities, but we want to clear the value and flags.
+ * With ProcessesLoaderResetAction we run it on every entity of this type.
+ */
+class ResetCartDetails extends ProcessesLoaderResetAction {
+    constructor() {
+        super(MULTI_CART_DATA);
+        this.type = RESET_CART_DETAILS;
+    }
+}
+class ClearExpiredCoupons {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_EXPIRED_COUPONS;
+    }
+}
+/**
+ * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
+ * For removing particular cart in both places use DeleteCart actions.
+ */
+class RemoveCart extends EntityRemoveAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = REMOVE_CART;
+    }
+}
+class DeleteCart {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = DELETE_CART;
+    }
+}
+class DeleteCartSuccess extends EntityRemoveAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = DELETE_CART_SUCCESS;
+    }
+}
+class DeleteCartFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = DELETE_CART_FAIL;
+    }
+}
+
 const SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
-const REMOVE_CART = '[Multi Cart] Remove Cart';
 const CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
 const CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
 const SET_ACTIVE_CART_ID = '[Multi Cart] Set Active Cart Id';
-const CLEAR_MULTI_CART_STATE = '[Multi Cart] Clear Cart State';
+const CLEAR_CART_STATE = '[Cart] Clear Cart State';
 /**
  * To keep track of cart creation process we use cart with `temp-${uuid}` id.
  * After creating cart we switch to entity with `code` or `guid`.
  * We need `temp-${uuid}` cart entities for loading/error state.
  */
-class RemoveTempCart extends EntityRemoveAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.tempCartId);
-        this.payload = payload;
-        this.type = REMOVE_TEMP_CART;
-    }
-}
 class SetTempCart extends EntitySuccessAction {
     constructor(payload) {
         super(MULTI_CART_DATA, payload.tempCartId, payload.cart);
         this.payload = payload;
         this.type = SET_TEMP_CART;
-    }
-}
-class ResetMultiCartDetails extends EntityProcessesLoaderResetAction {
-    constructor() {
-        super(MULTI_CART_DATA, undefined);
-        this.type = RESET_MULTI_CART_DETAILS;
-    }
-}
-class RemoveCart extends EntityRemoveAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload);
-        this.payload = payload;
-        this.type = REMOVE_CART;
     }
 }
 class CartProcessesIncrement extends EntityProcessesIncrementAction {
@@ -12498,10 +12494,13 @@ class SetActiveCartId {
         this.type = SET_ACTIVE_CART_ID;
     }
 }
-class ClearMultiCartState extends EntityRemoveAction {
+/**
+ * Clear whole cart store state: all entities + reset rest of the cart state.
+ */
+class ClearCartState extends EntityRemoveAllAction {
     constructor() {
-        super(MULTI_CART_DATA, null);
-        this.type = CLEAR_MULTI_CART_STATE;
+        super(MULTI_CART_DATA);
+        this.type = CLEAR_CART_STATE;
     }
 }
 
@@ -12603,8 +12602,9 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
     RESET_CART_DETAILS: RESET_CART_DETAILS,
     CLEAR_EXPIRED_COUPONS: CLEAR_EXPIRED_COUPONS,
-    CLEAR_CART: CLEAR_CART,
+    REMOVE_CART: REMOVE_CART,
     DELETE_CART: DELETE_CART,
+    DELETE_CART_SUCCESS: DELETE_CART_SUCCESS,
     DELETE_CART_FAIL: DELETE_CART_FAIL,
     CreateCart: CreateCart,
     CreateCartFail: CreateCartFail,
@@ -12619,25 +12619,20 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MergeCartSuccess: MergeCartSuccess,
     ResetCartDetails: ResetCartDetails,
     ClearExpiredCoupons: ClearExpiredCoupons,
-    ClearCart: ClearCart,
+    RemoveCart: RemoveCart,
     DeleteCart: DeleteCart,
+    DeleteCartSuccess: DeleteCartSuccess,
     DeleteCartFail: DeleteCartFail,
-    REMOVE_TEMP_CART: REMOVE_TEMP_CART,
-    RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
     SET_TEMP_CART: SET_TEMP_CART,
-    REMOVE_CART: REMOVE_CART,
     CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
     CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
     SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
-    CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
-    RemoveTempCart: RemoveTempCart,
+    CLEAR_CART_STATE: CLEAR_CART_STATE,
     SetTempCart: SetTempCart,
-    ResetMultiCartDetails: ResetMultiCartDetails,
-    RemoveCart: RemoveCart,
     CartProcessesIncrement: CartProcessesIncrement,
     CartProcessesDecrement: CartProcessesDecrement,
     SetActiveCartId: SetActiveCartId,
-    ClearMultiCartState: ClearMultiCartState,
+    ClearCartState: ClearCartState,
     CREATE_WISH_LIST: CREATE_WISH_LIST,
     CREATE_WISH_LIST_FAIL: CREATE_WISH_LIST_FAIL,
     CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
@@ -13824,7 +13819,7 @@ let CartEffects = class CartEffects {
                     if (payload.cartId === OCC_CART_ID_CURRENT) {
                         // Removing cart from entity object under `current` key as it is no longer needed.
                         // Current cart is loaded under it's code entity.
-                        actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
+                        actions.push(new RemoveCart({ cartId: OCC_CART_ID_CURRENT }));
                     }
                 }
                 else {
@@ -13854,15 +13849,10 @@ let CartEffects = class CartEffects {
                         payload.extraData.active) {
                         // Clear cart is responsible for removing cart in `cart` store feature.
                         // Remove cart does the same thing, but in `multi-cart` store feature.
-                        return from([
-                            new ClearCart(),
-                            new RemoveCart(payload.cartId),
-                        ]);
+                        return of(new RemoveCart({ cartId: payload.cartId }));
                     }
                 }
-                return from([
-                    new LoadCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
-                ]);
+                return of(new LoadCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })));
             }));
         }))), withdrawOn(this.contextChange$));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((action) => action.payload), mergeMap((payload) => {
@@ -13914,10 +13904,7 @@ let CartEffects = class CartEffects {
             cartId: payload.cartId,
         })));
         this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), mergeMap(() => {
-            return [
-                new ResetCartDetails(),
-                new ResetMultiCartDetails(),
-            ];
+            return [new ResetCartDetails()];
         }));
         this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((action) => action.payload), mergeMap((payload) => this.cartConnector
             .addEmail(payload.userId, payload.cartId, payload.email)
@@ -13936,9 +13923,14 @@ let CartEffects = class CartEffects {
                 cartId: payload.cartId,
             }),
         ])))), withdrawOn(this.contextChange$));
-        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), exhaustMap((payload) => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map(() => {
-            return new ClearCart();
-        }), catchError((error) => of(new DeleteCartFail(makeErrorSerializable(error)))))));
+        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), mergeMap((payload) => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map(() => {
+            return new DeleteCartSuccess(Object.assign({}, payload));
+        }), catchError((error) => from([
+            new DeleteCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+            // Error might happen in higher backend layer and cart could still be removed.
+            // When load fail with NotFound error then RemoveCart action will kick in and clear that cart in our state.
+            new LoadCart(Object.assign({}, payload)),
+        ])))));
     }
 };
 CartEffects.ɵfac = function CartEffects_Factory(t) { return new (t || CartEffects)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(CartConnector), ɵngcc0.ɵɵinject(ɵngcc1.Store)); };
@@ -14025,9 +14017,7 @@ let WishListEffects = class WishListEffects {
                                 customerId,
                                 cartId: getCartIdByUserId(wishList, userId),
                             }),
-                            new RemoveTempCart({
-                                tempCartId,
-                            }),
+                            new RemoveCart({ cartId: tempCartId }),
                         ];
                     }
                     else {
@@ -14090,7 +14080,7 @@ __decorate([
 const activeCartInitialState = '';
 const wishListInitialState = '';
 function activeCartReducer(state = activeCartInitialState, action) {
-    var _a, _b;
+    var _a, _b, _c;
     switch (action.type) {
         case LOAD_CART_SUCCESS:
         case CREATE_CART_SUCCESS:
@@ -14105,13 +14095,12 @@ function activeCartReducer(state = activeCartInitialState, action) {
         case SET_ACTIVE_CART_ID:
             return action.payload;
         case REMOVE_CART:
-            if (action.payload === state) {
+        case DELETE_CART_SUCCESS:
+            if (((_c = action.payload) === null || _c === void 0 ? void 0 : _c.cartId) === state) {
                 return activeCartInitialState;
             }
-            else {
-                return state;
-            }
-        case CLEAR_MULTI_CART_STATE:
+            return state;
+        case CLEAR_CART_STATE:
             return activeCartInitialState;
     }
     return state;
@@ -14133,7 +14122,7 @@ function wishListReducer(state = wishListInitialState, action) {
         case CREATE_WISH_LIST_SUCCESS:
         case LOAD_WISH_LIST_SUCCESS:
             return action.meta.entityId;
-        case CLEAR_MULTI_CART_STATE:
+        case CLEAR_CART_STATE:
             return wishListInitialState;
     }
     return state;
@@ -15245,8 +15234,7 @@ let MultiCartStatePersistenceService = class MultiCartStatePersistenceService {
         }));
     }
     onRead(state) {
-        this.store.dispatch(new ClearCart());
-        this.store.dispatch(new ClearMultiCartState());
+        this.store.dispatch(new ClearCartState());
         if (state) {
             this.store.dispatch(new SetActiveCartId(state.active));
         }
@@ -15264,9 +15252,8 @@ let MultiCartEffects = class MultiCartEffects {
     constructor(actions$) {
         this.actions$ = actions$;
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map((action) => {
-            return new RemoveTempCart(action.payload);
+            return new RemoveCart({ cartId: action.payload.tempCartId });
         }));
-        this.removeCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), map((payload) => new RemoveCart(payload.cartId)));
         // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
         // Change for 2.0 release
         this.processesIncrement$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), map((action) => action.payload), map((payload) => new CartProcessesIncrement(payload.cartId)));
@@ -15280,9 +15267,6 @@ MultiCartEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], MultiCartEffects.prototype, "setTempCart$", void 0);
-__decorate([
-    Effect()
-], MultiCartEffects.prototype, "removeCart$", void 0);
 __decorate([
     Effect()
 ], MultiCartEffects.prototype, "processesIncrement$", void 0);
@@ -15917,7 +15901,7 @@ let CheckoutEffects = class CheckoutEffects {
             return this.checkoutConnector
                 .placeOrder(payload.userId, payload.cartId)
                 .pipe(switchMap((data) => [
-                new RemoveCart(payload.cartId),
+                new RemoveCart({ cartId: payload.cartId }),
                 new PlaceOrderSuccess(data),
             ]), catchError((error) => of(new PlaceOrderFail(makeErrorSerializable(error)))));
         }), withdrawOn(this.contextChange$));

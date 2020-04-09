@@ -3,6 +3,7 @@ import { Cart } from '../../../model/cart.model';
 import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 import { EntityRemoveAction } from '../../../state/utils/entity/entity.action';
+import { ProcessesLoaderResetAction } from '../../../state/utils/processes-loader/processes-loader.action';
 export declare const CREATE_CART = "[Cart] Create Cart";
 export declare const CREATE_CART_FAIL = "[Cart] Create Cart Fail";
 export declare const CREATE_CART_SUCCESS = "[Cart] Create Cart Success";
@@ -16,8 +17,9 @@ export declare const MERGE_CART = "[Cart] Merge Cart";
 export declare const MERGE_CART_SUCCESS = "[Cart] Merge Cart Success";
 export declare const RESET_CART_DETAILS = "[Cart] Reset Cart Details";
 export declare const CLEAR_EXPIRED_COUPONS = "[Cart] Clear Expired Coupon";
-export declare const CLEAR_CART = "[Cart] Clear Cart";
+export declare const REMOVE_CART = "[Cart] Remove Cart";
 export declare const DELETE_CART = "[Cart] Delete Cart";
+export declare const DELETE_CART_SUCCESS = "[Cart] Delete Cart Success";
 export declare const DELETE_CART_FAIL = "[Cart] Delete Cart Fail";
 interface CreateCartPayload {
     userId: string;
@@ -150,7 +152,11 @@ export declare class MergeCartSuccess extends EntityRemoveAction {
     readonly type = "[Cart] Merge Cart Success";
     constructor(payload: MergeCartSuccessPayload);
 }
-export declare class ResetCartDetails implements Action {
+/**
+ * On site context change we want to keep current list of entities, but we want to clear the value and flags.
+ * With ProcessesLoaderResetAction we run it on every entity of this type.
+ */
+export declare class ResetCartDetails extends ProcessesLoaderResetAction {
     readonly type = "[Cart] Reset Cart Details";
     constructor();
 }
@@ -159,11 +165,20 @@ export declare class ClearExpiredCoupons implements Action {
     readonly type = "[Cart] Clear Expired Coupon";
     constructor(payload: any);
 }
-export declare class ClearCart {
-    readonly type = "[Cart] Clear Cart";
-    constructor();
+/**
+ * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
+ * For removing particular cart in both places use DeleteCart actions.
+ */
+export declare class RemoveCart extends EntityRemoveAction {
+    payload: {
+        cartId: string;
+    };
+    readonly type = "[Cart] Remove Cart";
+    constructor(payload: {
+        cartId: string;
+    });
 }
-export declare class DeleteCart {
+export declare class DeleteCart implements Action {
     payload: {
         userId: string;
         cartId: string;
@@ -174,10 +189,29 @@ export declare class DeleteCart {
         cartId: string;
     });
 }
-export declare class DeleteCartFail {
-    payload: any;
-    readonly type = "[Cart] Delete Cart Fail";
-    constructor(payload: any);
+export declare class DeleteCartSuccess extends EntityRemoveAction {
+    payload: {
+        userId: string;
+        cartId: string;
+    };
+    readonly type = "[Cart] Delete Cart Success";
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+    });
 }
-export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails | AddEmailToCart | AddEmailToCartFail | AddEmailToCartSuccess | DeleteCart | DeleteCartFail | ClearExpiredCoupons | ClearCart;
+export declare class DeleteCartFail implements Action {
+    payload: {
+        userId: string;
+        cartId: string;
+        error: any;
+    };
+    readonly type = "[Cart] Delete Cart Fail";
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+        error: any;
+    });
+}
+export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails | AddEmailToCart | AddEmailToCartFail | AddEmailToCartSuccess | DeleteCart | DeleteCartSuccess | DeleteCartFail | ClearExpiredCoupons | RemoveCart;
 export {};

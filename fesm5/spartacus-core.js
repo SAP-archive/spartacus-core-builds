@@ -14037,163 +14037,6 @@ function isTempCartId(cartId) {
     return cartId.startsWith('temp-');
 }
 
-var CREATE_CART = '[Cart] Create Cart';
-var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
-var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
-var LOAD_CART = '[Cart] Load Cart';
-var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
-var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
-var ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
-var ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
-var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
-var MERGE_CART = '[Cart] Merge Cart';
-var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
-var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
-var CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
-var CLEAR_CART = '[Cart] Clear Cart';
-var DELETE_CART = '[Cart] Delete Cart';
-var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
-var CreateCart = /** @class */ (function (_super) {
-    __extends(CreateCart, _super);
-    function CreateCart(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
-        _this.payload = payload;
-        _this.type = CREATE_CART;
-        return _this;
-    }
-    return CreateCart;
-}(EntityLoadAction));
-var CreateCartFail = /** @class */ (function (_super) {
-    __extends(CreateCartFail, _super);
-    function CreateCartFail(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
-        _this.payload = payload;
-        _this.type = CREATE_CART_FAIL;
-        return _this;
-    }
-    return CreateCartFail;
-}(EntityFailAction));
-var CreateCartSuccess = /** @class */ (function (_super) {
-    __extends(CreateCartSuccess, _super);
-    function CreateCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = CREATE_CART_SUCCESS;
-        return _this;
-    }
-    return CreateCartSuccess;
-}(EntitySuccessAction));
-var AddEmailToCart = /** @class */ (function (_super) {
-    __extends(AddEmailToCart, _super);
-    function AddEmailToCart(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = ADD_EMAIL_TO_CART;
-        return _this;
-    }
-    return AddEmailToCart;
-}(EntityProcessesIncrementAction));
-var AddEmailToCartFail = /** @class */ (function (_super) {
-    __extends(AddEmailToCartFail, _super);
-    function AddEmailToCartFail(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = ADD_EMAIL_TO_CART_FAIL;
-        return _this;
-    }
-    return AddEmailToCartFail;
-}(EntityProcessesDecrementAction));
-var AddEmailToCartSuccess = /** @class */ (function (_super) {
-    __extends(AddEmailToCartSuccess, _super);
-    function AddEmailToCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = ADD_EMAIL_TO_CART_SUCCESS;
-        return _this;
-    }
-    return AddEmailToCartSuccess;
-}(EntityProcessesDecrementAction));
-var LoadCart = /** @class */ (function (_super) {
-    __extends(LoadCart, _super);
-    function LoadCart(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = LOAD_CART;
-        return _this;
-    }
-    return LoadCart;
-}(EntityLoadAction));
-var LoadCartFail = /** @class */ (function (_super) {
-    __extends(LoadCartFail, _super);
-    function LoadCartFail(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
-        _this.payload = payload;
-        _this.type = LOAD_CART_FAIL;
-        return _this;
-    }
-    return LoadCartFail;
-}(EntityFailAction));
-var LoadCartSuccess = /** @class */ (function (_super) {
-    __extends(LoadCartSuccess, _super);
-    function LoadCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = LOAD_CART_SUCCESS;
-        return _this;
-    }
-    return LoadCartSuccess;
-}(EntitySuccessAction));
-var MergeCart = /** @class */ (function () {
-    function MergeCart(payload) {
-        this.payload = payload;
-        this.type = MERGE_CART;
-    }
-    return MergeCart;
-}());
-var MergeCartSuccess = /** @class */ (function (_super) {
-    __extends(MergeCartSuccess, _super);
-    function MergeCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
-        _this.payload = payload;
-        _this.type = MERGE_CART_SUCCESS;
-        return _this;
-    }
-    return MergeCartSuccess;
-}(EntityRemoveAction));
-var ResetCartDetails = /** @class */ (function () {
-    function ResetCartDetails() {
-        this.type = RESET_CART_DETAILS;
-    }
-    return ResetCartDetails;
-}());
-var ClearExpiredCoupons = /** @class */ (function () {
-    function ClearExpiredCoupons(payload) {
-        this.payload = payload;
-        this.type = CLEAR_EXPIRED_COUPONS;
-    }
-    return ClearExpiredCoupons;
-}());
-var ClearCart = /** @class */ (function () {
-    function ClearCart() {
-        this.type = CLEAR_CART;
-    }
-    return ClearCart;
-}());
-var DeleteCart = /** @class */ (function () {
-    function DeleteCart(payload) {
-        this.payload = payload;
-        this.type = DELETE_CART;
-    }
-    return DeleteCart;
-}());
-var DeleteCartFail = /** @class */ (function () {
-    function DeleteCartFail(payload) {
-        this.payload = payload;
-        this.type = DELETE_CART_FAIL;
-    }
-    return DeleteCartFail;
-}());
-
 var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
 var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
 var CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
@@ -14373,29 +14216,199 @@ var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
     return CartRemoveVoucherSuccess;
 }(EntityProcessesDecrementAction));
 
-var REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
-var RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
+var CREATE_CART = '[Cart] Create Cart';
+var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
+var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
+var LOAD_CART = '[Cart] Load Cart';
+var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
+var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
+var ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+var ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+var MERGE_CART = '[Cart] Merge Cart';
+var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+var CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
+var REMOVE_CART = '[Cart] Remove Cart';
+var DELETE_CART = '[Cart] Delete Cart';
+var DELETE_CART_SUCCESS = '[Cart] Delete Cart Success';
+var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
+var CreateCart = /** @class */ (function (_super) {
+    __extends(CreateCart, _super);
+    function CreateCart(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART;
+        return _this;
+    }
+    return CreateCart;
+}(EntityLoadAction));
+var CreateCartFail = /** @class */ (function (_super) {
+    __extends(CreateCartFail, _super);
+    function CreateCartFail(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART_FAIL;
+        return _this;
+    }
+    return CreateCartFail;
+}(EntityFailAction));
+var CreateCartSuccess = /** @class */ (function (_super) {
+    __extends(CreateCartSuccess, _super);
+    function CreateCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART_SUCCESS;
+        return _this;
+    }
+    return CreateCartSuccess;
+}(EntitySuccessAction));
+var AddEmailToCart = /** @class */ (function (_super) {
+    __extends(AddEmailToCart, _super);
+    function AddEmailToCart(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_CART;
+        return _this;
+    }
+    return AddEmailToCart;
+}(EntityProcessesIncrementAction));
+var AddEmailToCartFail = /** @class */ (function (_super) {
+    __extends(AddEmailToCartFail, _super);
+    function AddEmailToCartFail(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_CART_FAIL;
+        return _this;
+    }
+    return AddEmailToCartFail;
+}(EntityProcessesDecrementAction));
+var AddEmailToCartSuccess = /** @class */ (function (_super) {
+    __extends(AddEmailToCartSuccess, _super);
+    function AddEmailToCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_CART_SUCCESS;
+        return _this;
+    }
+    return AddEmailToCartSuccess;
+}(EntityProcessesDecrementAction));
+var LoadCart = /** @class */ (function (_super) {
+    __extends(LoadCart, _super);
+    function LoadCart(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = LOAD_CART;
+        return _this;
+    }
+    return LoadCart;
+}(EntityLoadAction));
+var LoadCartFail = /** @class */ (function (_super) {
+    __extends(LoadCartFail, _super);
+    function LoadCartFail(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
+        _this.payload = payload;
+        _this.type = LOAD_CART_FAIL;
+        return _this;
+    }
+    return LoadCartFail;
+}(EntityFailAction));
+var LoadCartSuccess = /** @class */ (function (_super) {
+    __extends(LoadCartSuccess, _super);
+    function LoadCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = LOAD_CART_SUCCESS;
+        return _this;
+    }
+    return LoadCartSuccess;
+}(EntitySuccessAction));
+var MergeCart = /** @class */ (function () {
+    function MergeCart(payload) {
+        this.payload = payload;
+        this.type = MERGE_CART;
+    }
+    return MergeCart;
+}());
+var MergeCartSuccess = /** @class */ (function (_super) {
+    __extends(MergeCartSuccess, _super);
+    function MergeCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
+        _this.payload = payload;
+        _this.type = MERGE_CART_SUCCESS;
+        return _this;
+    }
+    return MergeCartSuccess;
+}(EntityRemoveAction));
+/**
+ * On site context change we want to keep current list of entities, but we want to clear the value and flags.
+ * With ProcessesLoaderResetAction we run it on every entity of this type.
+ */
+var ResetCartDetails = /** @class */ (function (_super) {
+    __extends(ResetCartDetails, _super);
+    function ResetCartDetails() {
+        var _this = _super.call(this, MULTI_CART_DATA) || this;
+        _this.type = RESET_CART_DETAILS;
+        return _this;
+    }
+    return ResetCartDetails;
+}(ProcessesLoaderResetAction));
+var ClearExpiredCoupons = /** @class */ (function () {
+    function ClearExpiredCoupons(payload) {
+        this.payload = payload;
+        this.type = CLEAR_EXPIRED_COUPONS;
+    }
+    return ClearExpiredCoupons;
+}());
+/**
+ * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
+ * For removing particular cart in both places use DeleteCart actions.
+ */
+var RemoveCart = /** @class */ (function (_super) {
+    __extends(RemoveCart, _super);
+    function RemoveCart(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = REMOVE_CART;
+        return _this;
+    }
+    return RemoveCart;
+}(EntityRemoveAction));
+var DeleteCart = /** @class */ (function () {
+    function DeleteCart(payload) {
+        this.payload = payload;
+        this.type = DELETE_CART;
+    }
+    return DeleteCart;
+}());
+var DeleteCartSuccess = /** @class */ (function (_super) {
+    __extends(DeleteCartSuccess, _super);
+    function DeleteCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = DELETE_CART_SUCCESS;
+        return _this;
+    }
+    return DeleteCartSuccess;
+}(EntityRemoveAction));
+var DeleteCartFail = /** @class */ (function () {
+    function DeleteCartFail(payload) {
+        this.payload = payload;
+        this.type = DELETE_CART_FAIL;
+    }
+    return DeleteCartFail;
+}());
+
 var SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
-var REMOVE_CART = '[Multi Cart] Remove Cart';
 var CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
 var CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
 var SET_ACTIVE_CART_ID = '[Multi Cart] Set Active Cart Id';
-var CLEAR_MULTI_CART_STATE = '[Multi Cart] Clear Cart State';
+var CLEAR_CART_STATE = '[Cart] Clear Cart State';
 /**
  * To keep track of cart creation process we use cart with `temp-${uuid}` id.
  * After creating cart we switch to entity with `code` or `guid`.
  * We need `temp-${uuid}` cart entities for loading/error state.
  */
-var RemoveTempCart = /** @class */ (function (_super) {
-    __extends(RemoveTempCart, _super);
-    function RemoveTempCart(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
-        _this.payload = payload;
-        _this.type = REMOVE_TEMP_CART;
-        return _this;
-    }
-    return RemoveTempCart;
-}(EntityRemoveAction));
 var SetTempCart = /** @class */ (function (_super) {
     __extends(SetTempCart, _super);
     function SetTempCart(payload) {
@@ -14406,25 +14419,6 @@ var SetTempCart = /** @class */ (function (_super) {
     }
     return SetTempCart;
 }(EntitySuccessAction));
-var ResetMultiCartDetails = /** @class */ (function (_super) {
-    __extends(ResetMultiCartDetails, _super);
-    function ResetMultiCartDetails() {
-        var _this = _super.call(this, MULTI_CART_DATA, undefined) || this;
-        _this.type = RESET_MULTI_CART_DETAILS;
-        return _this;
-    }
-    return ResetMultiCartDetails;
-}(EntityProcessesLoaderResetAction));
-var RemoveCart = /** @class */ (function (_super) {
-    __extends(RemoveCart, _super);
-    function RemoveCart(payload) {
-        var _this = _super.call(this, MULTI_CART_DATA, payload) || this;
-        _this.payload = payload;
-        _this.type = REMOVE_CART;
-        return _this;
-    }
-    return RemoveCart;
-}(EntityRemoveAction));
 var CartProcessesIncrement = /** @class */ (function (_super) {
     __extends(CartProcessesIncrement, _super);
     function CartProcessesIncrement(payload) {
@@ -14452,15 +14446,18 @@ var SetActiveCartId = /** @class */ (function () {
     }
     return SetActiveCartId;
 }());
-var ClearMultiCartState = /** @class */ (function (_super) {
-    __extends(ClearMultiCartState, _super);
-    function ClearMultiCartState() {
-        var _this = _super.call(this, MULTI_CART_DATA, null) || this;
-        _this.type = CLEAR_MULTI_CART_STATE;
+/**
+ * Clear whole cart store state: all entities + reset rest of the cart state.
+ */
+var ClearCartState = /** @class */ (function (_super) {
+    __extends(ClearCartState, _super);
+    function ClearCartState() {
+        var _this = _super.call(this, MULTI_CART_DATA) || this;
+        _this.type = CLEAR_CART_STATE;
         return _this;
     }
-    return ClearMultiCartState;
-}(EntityRemoveAction));
+    return ClearCartState;
+}(EntityRemoveAllAction));
 
 var CREATE_WISH_LIST = '[Wish List] Create Wish List';
 var CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
@@ -14576,8 +14573,9 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
     RESET_CART_DETAILS: RESET_CART_DETAILS,
     CLEAR_EXPIRED_COUPONS: CLEAR_EXPIRED_COUPONS,
-    CLEAR_CART: CLEAR_CART,
+    REMOVE_CART: REMOVE_CART,
     DELETE_CART: DELETE_CART,
+    DELETE_CART_SUCCESS: DELETE_CART_SUCCESS,
     DELETE_CART_FAIL: DELETE_CART_FAIL,
     CreateCart: CreateCart,
     CreateCartFail: CreateCartFail,
@@ -14592,25 +14590,20 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MergeCartSuccess: MergeCartSuccess,
     ResetCartDetails: ResetCartDetails,
     ClearExpiredCoupons: ClearExpiredCoupons,
-    ClearCart: ClearCart,
+    RemoveCart: RemoveCart,
     DeleteCart: DeleteCart,
+    DeleteCartSuccess: DeleteCartSuccess,
     DeleteCartFail: DeleteCartFail,
-    REMOVE_TEMP_CART: REMOVE_TEMP_CART,
-    RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
     SET_TEMP_CART: SET_TEMP_CART,
-    REMOVE_CART: REMOVE_CART,
     CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
     CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
     SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
-    CLEAR_MULTI_CART_STATE: CLEAR_MULTI_CART_STATE,
-    RemoveTempCart: RemoveTempCart,
+    CLEAR_CART_STATE: CLEAR_CART_STATE,
     SetTempCart: SetTempCart,
-    ResetMultiCartDetails: ResetMultiCartDetails,
-    RemoveCart: RemoveCart,
     CartProcessesIncrement: CartProcessesIncrement,
     CartProcessesDecrement: CartProcessesDecrement,
     SetActiveCartId: SetActiveCartId,
-    ClearMultiCartState: ClearMultiCartState,
+    ClearCartState: ClearCartState,
     CREATE_WISH_LIST: CREATE_WISH_LIST,
     CREATE_WISH_LIST_FAIL: CREATE_WISH_LIST_FAIL,
     CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
@@ -15963,7 +15956,7 @@ var CartEffects = /** @class */ (function () {
                         if (payload.cartId === OCC_CART_ID_CURRENT) {
                             // Removing cart from entity object under `current` key as it is no longer needed.
                             // Current cart is loaded under it's code entity.
-                            actions.push(new RemoveCart(OCC_CART_ID_CURRENT));
+                            actions.push(new RemoveCart({ cartId: OCC_CART_ID_CURRENT }));
                         }
                     }
                     else {
@@ -15993,15 +15986,10 @@ var CartEffects = /** @class */ (function () {
                             payload.extraData.active) {
                             // Clear cart is responsible for removing cart in `cart` store feature.
                             // Remove cart does the same thing, but in `multi-cart` store feature.
-                            return from([
-                                new ClearCart(),
-                                new RemoveCart(payload.cartId),
-                            ]);
+                            return of(new RemoveCart({ cartId: payload.cartId }));
                         }
                     }
-                    return from([
-                        new LoadCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                    ]);
+                    return of(new LoadCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })));
                 }));
             }));
         }), withdrawOn(this.contextChange$));
@@ -16059,10 +16047,7 @@ var CartEffects = /** @class */ (function () {
             });
         }));
         this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), mergeMap(function () {
-            return [
-                new ResetCartDetails(),
-                new ResetMultiCartDetails(),
-            ];
+            return [new ResetCartDetails()];
         }));
         this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map(function (action) { return action.payload; }), mergeMap(function (payload) {
             return _this.cartConnector
@@ -16085,11 +16070,16 @@ var CartEffects = /** @class */ (function () {
                 ]);
             }));
         }), withdrawOn(this.contextChange$));
-        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map(function (action) { return action.payload; }), exhaustMap(function (payload) {
+        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map(function (action) { return action.payload; }), mergeMap(function (payload) {
             return _this.cartConnector.delete(payload.userId, payload.cartId).pipe(map(function () {
-                return new ClearCart();
+                return new DeleteCartSuccess(__assign({}, payload));
             }), catchError(function (error) {
-                return of(new DeleteCartFail(makeErrorSerializable(error)));
+                return from([
+                    new DeleteCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
+                    // Error might happen in higher backend layer and cart could still be removed.
+                    // When load fail with NotFound error then RemoveCart action will kick in and clear that cart in our state.
+                    new LoadCart(__assign({}, payload)),
+                ]);
             }));
         }));
     }
@@ -16188,9 +16178,7 @@ var WishListEffects = /** @class */ (function () {
                                 customerId: customerId,
                                 cartId: getCartIdByUserId(wishList, userId),
                             }),
-                            new RemoveTempCart({
-                                tempCartId: tempCartId,
-                            }),
+                            new RemoveCart({ cartId: tempCartId }),
                         ];
                     }
                     else {
@@ -16261,7 +16249,7 @@ var activeCartInitialState = '';
 var wishListInitialState = '';
 function activeCartReducer(state, action) {
     if (state === void 0) { state = activeCartInitialState; }
-    var _a, _b;
+    var _a, _b, _c;
     switch (action.type) {
         case LOAD_CART_SUCCESS:
         case CREATE_CART_SUCCESS:
@@ -16276,13 +16264,12 @@ function activeCartReducer(state, action) {
         case SET_ACTIVE_CART_ID:
             return action.payload;
         case REMOVE_CART:
-            if (action.payload === state) {
+        case DELETE_CART_SUCCESS:
+            if (((_c = action.payload) === null || _c === void 0 ? void 0 : _c.cartId) === state) {
                 return activeCartInitialState;
             }
-            else {
-                return state;
-            }
-        case CLEAR_MULTI_CART_STATE:
+            return state;
+        case CLEAR_CART_STATE:
             return activeCartInitialState;
     }
     return state;
@@ -16306,7 +16293,7 @@ function wishListReducer(state, action) {
         case CREATE_WISH_LIST_SUCCESS:
         case LOAD_WISH_LIST_SUCCESS:
             return action.meta.entityId;
-        case CLEAR_MULTI_CART_STATE:
+        case CLEAR_CART_STATE:
             return wishListInitialState;
     }
     return state;
@@ -17622,8 +17609,7 @@ var MultiCartStatePersistenceService = /** @class */ (function () {
         }));
     };
     MultiCartStatePersistenceService.prototype.onRead = function (state) {
-        this.store.dispatch(new ClearCart());
-        this.store.dispatch(new ClearMultiCartState());
+        this.store.dispatch(new ClearCartState());
         if (state) {
             this.store.dispatch(new SetActiveCartId(state.active));
         }
@@ -17646,9 +17632,8 @@ var MultiCartEffects = /** @class */ (function () {
     function MultiCartEffects(actions$) {
         this.actions$ = actions$;
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map(function (action) {
-            return new RemoveTempCart(action.payload);
+            return new RemoveCart({ cartId: action.payload.tempCartId });
         }));
-        this.removeCart$ = this.actions$.pipe(ofType(DELETE_CART), map(function (action) { return action.payload; }), map(function (payload) { return new RemoveCart(payload.cartId); }));
         // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
         // Change for 2.0 release
         this.processesIncrement$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), map(function (action) { return action.payload; }), map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
@@ -17659,9 +17644,6 @@ var MultiCartEffects = /** @class */ (function () {
     __decorate([
         Effect()
     ], MultiCartEffects.prototype, "setTempCart$", void 0);
-    __decorate([
-        Effect()
-    ], MultiCartEffects.prototype, "removeCart$", void 0);
     __decorate([
         Effect()
     ], MultiCartEffects.prototype, "processesIncrement$", void 0);
@@ -18396,7 +18378,7 @@ var CheckoutEffects = /** @class */ (function () {
             return _this.checkoutConnector
                 .placeOrder(payload.userId, payload.cartId)
                 .pipe(switchMap(function (data) { return [
-                new RemoveCart(payload.cartId),
+                new RemoveCart({ cartId: payload.cartId }),
                 new PlaceOrderSuccess(data),
             ]; }), catchError(function (error) {
                 return of(new PlaceOrderFail(makeErrorSerializable(error)));
