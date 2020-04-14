@@ -18921,6 +18921,9 @@ let I18nextTranslationService = class I18nextTranslationService {
         const namespacedKey = this.getNamespacedKey(key, chunkName);
         return new Observable((subscriber) => {
             const translate = () => {
+                if (!i18next.isInitialized) {
+                    return;
+                }
                 if (i18next.exists(namespacedKey, options)) {
                     subscriber.next(i18next.t(namespacedKey, options));
                 }

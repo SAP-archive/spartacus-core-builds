@@ -21284,6 +21284,9 @@ var I18nextTranslationService = /** @class */ (function () {
         var namespacedKey = this.getNamespacedKey(key, chunkName);
         return new Observable(function (subscriber) {
             var translate = function () {
+                if (!i18next.isInitialized) {
+                    return;
+                }
                 if (i18next.exists(namespacedKey, options)) {
                     subscriber.next(i18next.t(namespacedKey, options));
                 }
