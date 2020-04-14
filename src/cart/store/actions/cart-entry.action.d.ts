@@ -70,24 +70,26 @@ export declare class CartRemoveEntry extends EntityProcessesIncrementAction {
     payload: {
         cartId: string;
         userId: string;
-        entry: string;
+        entryNumber: string;
     };
     readonly type = "[Cart-entry] Remove Entry";
     constructor(payload: {
         cartId: string;
         userId: string;
-        entry: string;
+        entryNumber: string;
     });
 }
 export declare class CartRemoveEntrySuccess extends EntityProcessesDecrementAction {
     payload: {
         userId: string;
         cartId: string;
+        entryNumber: string;
     };
     readonly type = "[Cart-entry] Remove Entry Success";
     constructor(payload: {
         userId: string;
         cartId: string;
+        entryNumber: string;
     });
 }
 export declare class CartRemoveEntryFail extends EntityProcessesDecrementAction {
@@ -95,38 +97,44 @@ export declare class CartRemoveEntryFail extends EntityProcessesDecrementAction 
         error: any;
         cartId: string;
         userId: string;
+        entryNumber: string;
     };
     readonly type = "[Cart-entry] Remove Entry Fail";
     constructor(payload: {
         error: any;
         cartId: string;
         userId: string;
+        entryNumber: string;
     });
 }
 export declare class CartUpdateEntry extends EntityProcessesIncrementAction {
     payload: {
         userId: string;
         cartId: string;
-        entry: string;
-        qty: number;
+        entryNumber: string;
+        quantity: number;
     };
     readonly type = "[Cart-entry] Update Entry";
     constructor(payload: {
         userId: string;
         cartId: string;
-        entry: string;
-        qty: number;
+        entryNumber: string;
+        quantity: number;
     });
 }
 export declare class CartUpdateEntrySuccess extends EntityProcessesDecrementAction {
     payload: {
         userId: string;
         cartId: string;
+        entryNumber: string;
+        quantity: number;
     };
     readonly type = "[Cart-entry] Update Entry Success";
     constructor(payload: {
         userId: string;
         cartId: string;
+        entryNumber: string;
+        quantity: number;
     });
 }
 export declare class CartUpdateEntryFail extends EntityProcessesDecrementAction {
@@ -134,12 +142,16 @@ export declare class CartUpdateEntryFail extends EntityProcessesDecrementAction 
         error: any;
         userId: string;
         cartId: string;
+        entryNumber: string;
+        quantity: number;
     };
     readonly type = "[Cart-entry] Update Entry Fail";
     constructor(payload: {
         error: any;
         userId: string;
         cartId: string;
+        entryNumber: string;
+        quantity: number;
     });
 }
 export declare type CartEntryAction = CartAddEntry | CartAddEntrySuccess | CartAddEntryFail | CartRemoveEntry | CartRemoveEntrySuccess | CartRemoveEntryFail | CartUpdateEntry | CartUpdateEntrySuccess | CartUpdateEntryFail;

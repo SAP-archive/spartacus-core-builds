@@ -3,10 +3,10 @@ import { Cart } from '../../../model/cart.model';
 import { EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 import { EntityRemoveAllAction } from '../../../state/utils/entity/entity.action';
-export declare const SET_TEMP_CART = "[Multi Cart] Set Temp Cart";
-export declare const CART_PROCESSES_INCREMENT = "[Multi Cart] Cart Processes Increment";
-export declare const CART_PROCESSES_DECREMENT = "[Multi Cart] Cart Processes Decrement";
-export declare const SET_ACTIVE_CART_ID = "[Multi Cart] Set Active Cart Id";
+export declare const SET_TEMP_CART = "[Cart] Set Temp Cart";
+export declare const CART_PROCESSES_INCREMENT = "[Cart] Cart Processes Increment";
+export declare const CART_PROCESSES_DECREMENT = "[Cart] Cart Processes Decrement";
+export declare const SET_ACTIVE_CART_ID = "[Cart] Set Active Cart Id";
 export declare const CLEAR_CART_STATE = "[Cart] Clear Cart State";
 /**
  * To keep track of cart creation process we use cart with `temp-${uuid}` id.
@@ -18,25 +18,38 @@ export declare class SetTempCart extends EntitySuccessAction {
         cart: Cart;
         tempCartId: string;
     };
-    readonly type = "[Multi Cart] Set Temp Cart";
+    readonly type = "[Cart] Set Temp Cart";
     constructor(payload: {
         cart: Cart;
         tempCartId: string;
     });
 }
+/**
+ * Increases process counter on cart entities
+ * All actions that cause computations on cart should extend EntityProcessesIncrementAction instead of dispatching this action.
+ * @deprecated since 2.0
+ */
 export declare class CartProcessesIncrement extends EntityProcessesIncrementAction {
     payload: string;
-    readonly type = "[Multi Cart] Cart Processes Increment";
+    readonly type = "[Cart] Cart Processes Increment";
     constructor(payload: string);
 }
+/**
+ * Decrement process counter on cart entities
+ * All actions that cause computations on cart should extend EntityProcessesDecrementAction instead of dispatching this action.
+ * @deprecated since 2.0
+ */
 export declare class CartProcessesDecrement extends EntityProcessesDecrementAction {
     payload: string;
-    readonly type = "[Multi Cart] Cart Processes Decrement";
+    readonly type = "[Cart] Cart Processes Decrement";
     constructor(payload: string);
 }
+/**
+ * Only sets active cart property with id of active cart. Then services take care of loading that cart.
+ */
 export declare class SetActiveCartId implements Action {
     payload: string;
-    readonly type = "[Multi Cart] Set Active Cart Id";
+    readonly type = "[Cart] Set Active Cart Id";
     constructor(payload: string);
 }
 /**

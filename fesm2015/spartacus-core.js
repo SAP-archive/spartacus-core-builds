@@ -12403,6 +12403,11 @@ const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).
 
 const MULTI_CART_FEATURE = 'cart';
 const MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
+// TODO(#7241): Drop after event system implementation for cart vouchers
+/**
+ * Add voucher process const
+ * @deprecated since 2.0
+ */
 const ADD_VOUCHER_PROCESS_ID = 'addVoucher';
 
 const getMultiCartState = createFeatureSelector(MULTI_CART_FEATURE);
@@ -12577,7 +12582,7 @@ class CartAddVoucher extends EntityLoadAction {
 }
 class CartAddVoucherFail extends EntityFailAction {
     constructor(payload) {
-        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload);
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload.error);
         this.payload = payload;
         this.type = CART_ADD_VOUCHER_FAIL;
     }
@@ -12589,6 +12594,12 @@ class CartAddVoucherSuccess extends EntitySuccessAction {
         this.type = CART_ADD_VOUCHER_SUCCESS;
     }
 }
+// TODO(#7241): Remove when switching to event system for vouchers
+/**
+ * Resets add voucher process
+ *
+ * @deprecated since 2.0
+ */
 class CartResetAddVoucher extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
@@ -12630,7 +12641,6 @@ const ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
 const MERGE_CART = '[Cart] Merge Cart';
 const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
 const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
-const CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
 const REMOVE_CART = '[Cart] Remove Cart';
 const DELETE_CART = '[Cart] Delete Cart';
 const DELETE_CART_SUCCESS = '[Cart] Delete Cart Success';
@@ -12721,12 +12731,6 @@ class ResetCartDetails extends ProcessesLoaderResetAction {
         this.type = RESET_CART_DETAILS;
     }
 }
-class ClearExpiredCoupons {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_EXPIRED_COUPONS;
-    }
-}
 /**
  * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
  * For removing particular cart in both places use DeleteCart actions.
@@ -12758,10 +12762,10 @@ class DeleteCartFail {
     }
 }
 
-const SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
-const CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
-const CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
-const SET_ACTIVE_CART_ID = '[Multi Cart] Set Active Cart Id';
+const SET_TEMP_CART = '[Cart] Set Temp Cart';
+const CART_PROCESSES_INCREMENT = '[Cart] Cart Processes Increment';
+const CART_PROCESSES_DECREMENT = '[Cart] Cart Processes Decrement';
+const SET_ACTIVE_CART_ID = '[Cart] Set Active Cart Id';
 const CLEAR_CART_STATE = '[Cart] Clear Cart State';
 /**
  * To keep track of cart creation process we use cart with `temp-${uuid}` id.
@@ -12775,6 +12779,12 @@ class SetTempCart extends EntitySuccessAction {
         this.type = SET_TEMP_CART;
     }
 }
+// TODO(#7241): Remove when there won't be any usage
+/**
+ * Increases process counter on cart entities
+ * All actions that cause computations on cart should extend EntityProcessesIncrementAction instead of dispatching this action.
+ * @deprecated since 2.0
+ */
 class CartProcessesIncrement extends EntityProcessesIncrementAction {
     constructor(payload) {
         super(MULTI_CART_DATA, payload);
@@ -12782,6 +12792,12 @@ class CartProcessesIncrement extends EntityProcessesIncrementAction {
         this.type = CART_PROCESSES_INCREMENT;
     }
 }
+// TODO(#7241): Remove when there won't be any usage
+/**
+ * Decrement process counter on cart entities
+ * All actions that cause computations on cart should extend EntityProcessesDecrementAction instead of dispatching this action.
+ * @deprecated since 2.0
+ */
 class CartProcessesDecrement extends EntityProcessesDecrementAction {
     constructor(payload) {
         super(MULTI_CART_DATA, payload);
@@ -12789,6 +12805,9 @@ class CartProcessesDecrement extends EntityProcessesDecrementAction {
         this.type = CART_PROCESSES_DECREMENT;
     }
 }
+/**
+ * Only sets active cart property with id of active cart. Then services take care of loading that cart.
+ */
 class SetActiveCartId {
     constructor(payload) {
         this.payload = payload;
@@ -12902,7 +12921,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MERGE_CART: MERGE_CART,
     MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
     RESET_CART_DETAILS: RESET_CART_DETAILS,
-    CLEAR_EXPIRED_COUPONS: CLEAR_EXPIRED_COUPONS,
     REMOVE_CART: REMOVE_CART,
     DELETE_CART: DELETE_CART,
     DELETE_CART_SUCCESS: DELETE_CART_SUCCESS,
@@ -12919,7 +12937,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MergeCart: MergeCart,
     MergeCartSuccess: MergeCartSuccess,
     ResetCartDetails: ResetCartDetails,
-    ClearExpiredCoupons: ClearExpiredCoupons,
     RemoveCart: RemoveCart,
     DeleteCart: DeleteCart,
     DeleteCartSuccess: DeleteCartSuccess,
@@ -13084,7 +13101,7 @@ let MultiCartService = class MultiCartService {
         this.store.dispatch(new CartRemoveEntry({
             userId,
             cartId,
-            entry: `${entryNumber}`,
+            entryNumber: `${entryNumber}`,
         }));
     }
     /**
@@ -13100,8 +13117,8 @@ let MultiCartService = class MultiCartService {
             this.store.dispatch(new CartUpdateEntry({
                 userId,
                 cartId,
-                entry: `${entryNumber}`,
-                qty: quantity,
+                entryNumber: `${entryNumber}`,
+                quantity: quantity,
             }));
         }
         else {
@@ -13492,36 +13509,22 @@ let CartEntryEffects = class CartEntryEffects {
             ])));
         }), withdrawOn(this.contextChange$));
         this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((action) => action.payload), concatMap((payload) => this.cartEntryConnector
-            .remove(payload.userId, payload.cartId, payload.entry)
+            .remove(payload.userId, payload.cartId, payload.entryNumber)
             .pipe(map(() => {
-            return new CartRemoveEntrySuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
+            return new CartRemoveEntrySuccess(Object.assign({}, payload));
         }), catchError((error) => from([
-            new CartRemoveEntryFail({
-                error: makeErrorSerializable(error),
-                cartId: payload.cartId,
-                userId: payload.userId,
-            }),
+            new CartRemoveEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
             new LoadCart({
                 cartId: payload.cartId,
                 userId: payload.userId,
             }),
         ])))), withdrawOn(this.contextChange$));
         this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((action) => action.payload), concatMap((payload) => this.cartEntryConnector
-            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
+            .update(payload.userId, payload.cartId, payload.entryNumber, payload.quantity)
             .pipe(map(() => {
-            return new CartUpdateEntrySuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
+            return new CartUpdateEntrySuccess(Object.assign({}, payload));
         }), catchError((error) => from([
-            new CartUpdateEntryFail({
-                error: makeErrorSerializable(error),
-                cartId: payload.cartId,
-                userId: payload.userId,
-            }),
+            new CartUpdateEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
             new LoadCart({
                 cartId: payload.cartId,
                 userId: payload.userId,
@@ -13577,10 +13580,7 @@ let CartVoucherEffects = class CartVoucherEffects {
                 .add(payload.userId, payload.cartId, payload.voucherId)
                 .pipe(map(() => {
                 this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_CONFIRMATION);
-                return new CartAddVoucherSuccess({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                });
+                return new CartAddVoucherSuccess(Object.assign({}, payload));
             }), catchError((error) => {
                 var _a;
                 if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
@@ -13591,7 +13591,7 @@ let CartVoucherEffects = class CartVoucherEffects {
                     });
                 }
                 return from([
-                    new CartAddVoucherFail(makeErrorSerializable(error)),
+                    new CartAddVoucherFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
                     new CartProcessesDecrement(payload.cartId),
                     new LoadCart({
                         userId: payload.userId,
@@ -13970,20 +13970,23 @@ class ClearCheckoutDeliveryAddressFail {
         this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
     }
 }
-class ClearCheckoutDeliveryMode {
+class ClearCheckoutDeliveryMode extends EntityProcessesIncrementAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
     }
 }
-class ClearCheckoutDeliveryModeSuccess {
+class ClearCheckoutDeliveryModeSuccess extends EntityProcessesDecrementAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
     }
 }
-class ClearCheckoutDeliveryModeFail {
+class ClearCheckoutDeliveryModeFail extends EntityProcessesDecrementAction {
     constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
         this.payload = payload;
         this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
     }
@@ -14150,22 +14153,12 @@ let CartEffects = class CartEffects {
                 if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                     const couponExpiredErrors = error.error.errors.filter((err) => err.reason === 'invalid');
                     if (couponExpiredErrors.length > 0) {
-                        // clear coupons actions just wanted to reload cart again
-                        // no need to do it in refresh or keep that action
-                        // however removing this action will be a breaking change
-                        // remove that action in 2.0 release
-                        // @deprecated since 1.4
-                        return from([
-                            new LoadCart(Object.assign({}, payload)),
-                            new ClearExpiredCoupons({}),
-                        ]);
+                        // Reload in case of expired coupon.
+                        return of(new LoadCart(Object.assign({}, payload)));
                     }
                     const cartNotFoundErrors = error.error.errors.filter((err) => err.reason === 'notFound' || 'UnknownResourceError');
-                    if (cartNotFoundErrors.length > 0 &&
-                        payload.extraData &&
-                        payload.extraData.active) {
-                        // Clear cart is responsible for removing cart in `cart` store feature.
-                        // Remove cart does the same thing, but in `multi-cart` store feature.
+                    if (cartNotFoundErrors.length > 0) {
+                        // Remove cart as it doesn't exist on backend.
                         return of(new RemoveCart({ cartId: payload.cartId }));
                     }
                 }
@@ -14209,14 +14202,16 @@ let CartEffects = class CartEffects {
                 ];
             }));
         }), withdrawOn(this.contextChange$));
-        this.refresh$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), map((action) => action.payload), concatMap((payload) => from([
+        // TODO(#7241): Remove when AddVoucherSuccess actions will extend processes actions
+        this.refresh$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER_SUCCESS), map((action) => action.payload), concatMap((payload) => from([
             new CartProcessesDecrement(payload.cartId),
             new LoadCart({
                 userId: payload.userId,
                 cartId: payload.cartId,
             }),
         ])));
-        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map((action) => action.payload), map((payload) => new LoadCart({
+        // TODO: Switch to automatic cart reload on processes count reaching 0 for cart entity
+        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), map((action) => action.payload), map((payload) => new LoadCart({
             userId: payload.userId,
             cartId: payload.cartId,
         })));
@@ -14574,15 +14569,35 @@ let CartVoucherService = class CartVoucherService {
             voucherId: voucherId,
         })));
     }
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process error flag
+     * @deprecated since 2.0
+     */
     getAddVoucherResultError() {
         return this.store.pipe(select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
     }
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process success flag
+     * @deprecated since 2.0
+     */
     getAddVoucherResultSuccess() {
         return this.store.pipe(select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
     }
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process loading flag
+     * @deprecated since 2.0
+     */
     getAddVoucherResultLoading() {
         return this.store.pipe(select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
     }
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Reset add voucher process
+     * @deprecated since 2.0
+     */
     resetAddVoucherProcessingState() {
         this.store.dispatch(new CartResetAddVoucher());
     }
@@ -15597,9 +15612,8 @@ let MultiCartEffects = class MultiCartEffects {
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map((action) => {
             return new RemoveCart({ cartId: action.payload.tempCartId });
         }));
-        // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
-        // Change for 2.0 release
-        this.processesIncrement$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), map((action) => action.payload), map((payload) => new CartProcessesIncrement(payload.cartId)));
+        // TODO(#7241): Remove when we drop ADD_VOUCHER process and we sort out checkout and cart dependencies
+        this.processesIncrement$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER), map((action) => action.payload), map((payload) => new CartProcessesIncrement(payload.cartId)));
     }
 };
 MultiCartEffects.ctorParameters = () => [
@@ -16298,12 +16312,8 @@ let CheckoutEffects = class CheckoutEffects {
         this.clearCheckoutDeliveryMode$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE), map((action) => action.payload), filter((payload) => Boolean(payload.cartId)), concatMap((payload) => {
             return this.checkoutConnector
                 .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
-                .pipe(map(() => new ClearCheckoutDeliveryModeSuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            })), catchError((error) => from([
-                new ClearCheckoutDeliveryModeFail(makeErrorSerializable(error)),
-                new CartProcessesDecrement(payload.cartId),
+                .pipe(map(() => new ClearCheckoutDeliveryModeSuccess(Object.assign({}, payload))), catchError((error) => from([
+                new ClearCheckoutDeliveryModeFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
                 new LoadCart({
                     cartId: payload.cartId,
                     userId: payload.userId,

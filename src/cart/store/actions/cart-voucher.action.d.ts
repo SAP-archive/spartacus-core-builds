@@ -21,21 +21,38 @@ export declare class CartAddVoucher extends EntityLoadAction {
     });
 }
 export declare class CartAddVoucherFail extends EntityFailAction {
-    payload: any;
+    payload: {
+        userId: string;
+        cartId: string;
+        voucherId: string;
+        error: any;
+    };
     readonly type = "[Cart-voucher] Add Cart Voucher Fail";
-    constructor(payload: any);
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+        voucherId: string;
+        error: any;
+    });
 }
 export declare class CartAddVoucherSuccess extends EntitySuccessAction {
     payload: {
         userId: string;
         cartId: string;
+        voucherId: string;
     };
     readonly type = "[Cart-voucher] Add Cart Voucher Success";
     constructor(payload: {
         userId: string;
         cartId: string;
+        voucherId: string;
     });
 }
+/**
+ * Resets add voucher process
+ *
+ * @deprecated since 2.0
+ */
 export declare class CartResetAddVoucher extends EntityResetAction {
     readonly type = "[Cart-voucher] Reset Add Cart Voucher";
     constructor();

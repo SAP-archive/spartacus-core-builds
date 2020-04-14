@@ -9,7 +9,7 @@ export declare class CartEffects {
     private cartConnector;
     private store;
     private contextChange$;
-    loadCart$: Observable<CartActions.LoadCartFail | CartActions.LoadCartSuccess | CartActions.ClearExpiredCoupons | CartActions.RemoveCart>;
+    loadCart$: Observable<CartActions.LoadCartFail | CartActions.LoadCartSuccess | CartActions.RemoveCart>;
     createCart$: Observable<CartActions.MergeCartSuccess | CartActions.CreateCartSuccess | CartActions.CreateCartFail | CartActions.SetTempCart>;
     mergeCart$: Observable<CartActions.CreateCart>;
     refresh$: Observable<CartActions.LoadCart | CartActions.CartProcessesDecrement>;

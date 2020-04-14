@@ -16,7 +16,6 @@ export declare const ADD_EMAIL_TO_CART_SUCCESS = "[Cart] Add Email to Cart Succe
 export declare const MERGE_CART = "[Cart] Merge Cart";
 export declare const MERGE_CART_SUCCESS = "[Cart] Merge Cart Success";
 export declare const RESET_CART_DETAILS = "[Cart] Reset Cart Details";
-export declare const CLEAR_EXPIRED_COUPONS = "[Cart] Clear Expired Coupon";
 export declare const REMOVE_CART = "[Cart] Remove Cart";
 export declare const DELETE_CART = "[Cart] Delete Cart";
 export declare const DELETE_CART_SUCCESS = "[Cart] Delete Cart Success";
@@ -160,11 +159,6 @@ export declare class ResetCartDetails extends ProcessesLoaderResetAction {
     readonly type = "[Cart] Reset Cart Details";
     constructor();
 }
-export declare class ClearExpiredCoupons implements Action {
-    payload: any;
-    readonly type = "[Cart] Clear Expired Coupon";
-    constructor(payload: any);
-}
 /**
  * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
  * For removing particular cart in both places use DeleteCart actions.
@@ -213,5 +207,5 @@ export declare class DeleteCartFail implements Action {
         error: any;
     });
 }
-export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails | AddEmailToCart | AddEmailToCartFail | AddEmailToCartSuccess | DeleteCart | DeleteCartSuccess | DeleteCartFail | ClearExpiredCoupons | RemoveCart;
+export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails | AddEmailToCart | AddEmailToCartFail | AddEmailToCartSuccess | DeleteCart | DeleteCartSuccess | DeleteCartFail | RemoveCart;
 export {};

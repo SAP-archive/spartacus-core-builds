@@ -13945,6 +13945,11 @@ var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6
 
 var MULTI_CART_FEATURE = 'cart';
 var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
+// TODO(#7241): Drop after event system implementation for cart vouchers
+/**
+ * Add voucher process const
+ * @deprecated since 2.0
+ */
 var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
 
 var getMultiCartState = createFeatureSelector(MULTI_CART_FEATURE);
@@ -14158,7 +14163,7 @@ var CartAddVoucher = /** @class */ (function (_super) {
 var CartAddVoucherFail = /** @class */ (function (_super) {
     __extends(CartAddVoucherFail, _super);
     function CartAddVoucherFail(payload) {
-        var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload) || this;
+        var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload.error) || this;
         _this.payload = payload;
         _this.type = CART_ADD_VOUCHER_FAIL;
         return _this;
@@ -14175,6 +14180,12 @@ var CartAddVoucherSuccess = /** @class */ (function (_super) {
     }
     return CartAddVoucherSuccess;
 }(EntitySuccessAction));
+// TODO(#7241): Remove when switching to event system for vouchers
+/**
+ * Resets add voucher process
+ *
+ * @deprecated since 2.0
+ */
 var CartResetAddVoucher = /** @class */ (function (_super) {
     __extends(CartResetAddVoucher, _super);
     function CartResetAddVoucher() {
@@ -14228,7 +14239,6 @@ var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
 var MERGE_CART = '[Cart] Merge Cart';
 var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
 var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
-var CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
 var REMOVE_CART = '[Cart] Remove Cart';
 var DELETE_CART = '[Cart] Delete Cart';
 var DELETE_CART_SUCCESS = '[Cart] Delete Cart Success';
@@ -14353,13 +14363,6 @@ var ResetCartDetails = /** @class */ (function (_super) {
     }
     return ResetCartDetails;
 }(ProcessesLoaderResetAction));
-var ClearExpiredCoupons = /** @class */ (function () {
-    function ClearExpiredCoupons(payload) {
-        this.payload = payload;
-        this.type = CLEAR_EXPIRED_COUPONS;
-    }
-    return ClearExpiredCoupons;
-}());
 /**
  * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
  * For removing particular cart in both places use DeleteCart actions.
@@ -14399,10 +14402,10 @@ var DeleteCartFail = /** @class */ (function () {
     return DeleteCartFail;
 }());
 
-var SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
-var CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
-var CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
-var SET_ACTIVE_CART_ID = '[Multi Cart] Set Active Cart Id';
+var SET_TEMP_CART = '[Cart] Set Temp Cart';
+var CART_PROCESSES_INCREMENT = '[Cart] Cart Processes Increment';
+var CART_PROCESSES_DECREMENT = '[Cart] Cart Processes Decrement';
+var SET_ACTIVE_CART_ID = '[Cart] Set Active Cart Id';
 var CLEAR_CART_STATE = '[Cart] Clear Cart State';
 /**
  * To keep track of cart creation process we use cart with `temp-${uuid}` id.
@@ -14419,6 +14422,12 @@ var SetTempCart = /** @class */ (function (_super) {
     }
     return SetTempCart;
 }(EntitySuccessAction));
+// TODO(#7241): Remove when there won't be any usage
+/**
+ * Increases process counter on cart entities
+ * All actions that cause computations on cart should extend EntityProcessesIncrementAction instead of dispatching this action.
+ * @deprecated since 2.0
+ */
 var CartProcessesIncrement = /** @class */ (function (_super) {
     __extends(CartProcessesIncrement, _super);
     function CartProcessesIncrement(payload) {
@@ -14429,6 +14438,12 @@ var CartProcessesIncrement = /** @class */ (function (_super) {
     }
     return CartProcessesIncrement;
 }(EntityProcessesIncrementAction));
+// TODO(#7241): Remove when there won't be any usage
+/**
+ * Decrement process counter on cart entities
+ * All actions that cause computations on cart should extend EntityProcessesDecrementAction instead of dispatching this action.
+ * @deprecated since 2.0
+ */
 var CartProcessesDecrement = /** @class */ (function (_super) {
     __extends(CartProcessesDecrement, _super);
     function CartProcessesDecrement(payload) {
@@ -14439,6 +14454,9 @@ var CartProcessesDecrement = /** @class */ (function (_super) {
     }
     return CartProcessesDecrement;
 }(EntityProcessesDecrementAction));
+/**
+ * Only sets active cart property with id of active cart. Then services take care of loading that cart.
+ */
 var SetActiveCartId = /** @class */ (function () {
     function SetActiveCartId(payload) {
         this.payload = payload;
@@ -14572,7 +14590,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MERGE_CART: MERGE_CART,
     MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
     RESET_CART_DETAILS: RESET_CART_DETAILS,
-    CLEAR_EXPIRED_COUPONS: CLEAR_EXPIRED_COUPONS,
     REMOVE_CART: REMOVE_CART,
     DELETE_CART: DELETE_CART,
     DELETE_CART_SUCCESS: DELETE_CART_SUCCESS,
@@ -14589,7 +14606,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MergeCart: MergeCart,
     MergeCartSuccess: MergeCartSuccess,
     ResetCartDetails: ResetCartDetails,
-    ClearExpiredCoupons: ClearExpiredCoupons,
     RemoveCart: RemoveCart,
     DeleteCart: DeleteCart,
     DeleteCartSuccess: DeleteCartSuccess,
@@ -14758,7 +14774,7 @@ var MultiCartService = /** @class */ (function () {
         this.store.dispatch(new CartRemoveEntry({
             userId: userId,
             cartId: cartId,
-            entry: "" + entryNumber,
+            entryNumber: "" + entryNumber,
         }));
     };
     /**
@@ -14774,8 +14790,8 @@ var MultiCartService = /** @class */ (function () {
             this.store.dispatch(new CartUpdateEntry({
                 userId: userId,
                 cartId: cartId,
-                entry: "" + entryNumber,
-                qty: quantity,
+                entryNumber: "" + entryNumber,
+                quantity: quantity,
             }));
         }
         else {
@@ -15200,19 +15216,12 @@ var CartEntryEffects = /** @class */ (function () {
         }), withdrawOn(this.contextChange$));
         this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map(function (action) { return action.payload; }), concatMap(function (payload) {
             return _this.cartEntryConnector
-                .remove(payload.userId, payload.cartId, payload.entry)
+                .remove(payload.userId, payload.cartId, payload.entryNumber)
                 .pipe(map(function () {
-                return new CartRemoveEntrySuccess({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                });
+                return new CartRemoveEntrySuccess(__assign({}, payload));
             }), catchError(function (error) {
                 return from([
-                    new CartRemoveEntryFail({
-                        error: makeErrorSerializable(error),
-                        cartId: payload.cartId,
-                        userId: payload.userId,
-                    }),
+                    new CartRemoveEntryFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
                     new LoadCart({
                         cartId: payload.cartId,
                         userId: payload.userId,
@@ -15222,19 +15231,12 @@ var CartEntryEffects = /** @class */ (function () {
         }), withdrawOn(this.contextChange$));
         this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map(function (action) { return action.payload; }), concatMap(function (payload) {
             return _this.cartEntryConnector
-                .update(payload.userId, payload.cartId, payload.entry, payload.qty)
+                .update(payload.userId, payload.cartId, payload.entryNumber, payload.quantity)
                 .pipe(map(function () {
-                return new CartUpdateEntrySuccess({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                });
+                return new CartUpdateEntrySuccess(__assign({}, payload));
             }), catchError(function (error) {
                 return from([
-                    new CartUpdateEntryFail({
-                        error: makeErrorSerializable(error),
-                        cartId: payload.cartId,
-                        userId: payload.userId,
-                    }),
+                    new CartUpdateEntryFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
                     new LoadCart({
                         cartId: payload.cartId,
                         userId: payload.userId,
@@ -15295,10 +15297,7 @@ var CartVoucherEffects = /** @class */ (function () {
                 .add(payload.userId, payload.cartId, payload.voucherId)
                 .pipe(map(function () {
                 _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_CONFIRMATION);
-                return new CartAddVoucherSuccess({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                });
+                return new CartAddVoucherSuccess(__assign({}, payload));
             }), catchError(function (error) {
                 var _a;
                 if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
@@ -15309,7 +15308,7 @@ var CartVoucherEffects = /** @class */ (function () {
                     });
                 }
                 return from([
-                    new CartAddVoucherFail(makeErrorSerializable(error)),
+                    new CartAddVoucherFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
                     new CartProcessesDecrement(payload.cartId),
                     new LoadCart({
                         userId: payload.userId,
@@ -15778,27 +15777,36 @@ var ClearCheckoutDeliveryAddressFail = /** @class */ (function () {
     }
     return ClearCheckoutDeliveryAddressFail;
 }());
-var ClearCheckoutDeliveryMode = /** @class */ (function () {
+var ClearCheckoutDeliveryMode = /** @class */ (function (_super) {
+    __extends(ClearCheckoutDeliveryMode, _super);
     function ClearCheckoutDeliveryMode(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
+        return _this;
     }
     return ClearCheckoutDeliveryMode;
-}());
-var ClearCheckoutDeliveryModeSuccess = /** @class */ (function () {
+}(EntityProcessesIncrementAction));
+var ClearCheckoutDeliveryModeSuccess = /** @class */ (function (_super) {
+    __extends(ClearCheckoutDeliveryModeSuccess, _super);
     function ClearCheckoutDeliveryModeSuccess(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
+        return _this;
     }
     return ClearCheckoutDeliveryModeSuccess;
-}());
-var ClearCheckoutDeliveryModeFail = /** @class */ (function () {
+}(EntityProcessesDecrementAction));
+var ClearCheckoutDeliveryModeFail = /** @class */ (function (_super) {
+    __extends(ClearCheckoutDeliveryModeFail, _super);
     function ClearCheckoutDeliveryModeFail(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
+        var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
+        return _this;
     }
     return ClearCheckoutDeliveryModeFail;
-}());
+}(EntityProcessesDecrementAction));
 
 
 
@@ -15970,22 +15978,12 @@ var CartEffects = /** @class */ (function () {
                     if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                         var couponExpiredErrors = error.error.errors.filter(function (err) { return err.reason === 'invalid'; });
                         if (couponExpiredErrors.length > 0) {
-                            // clear coupons actions just wanted to reload cart again
-                            // no need to do it in refresh or keep that action
-                            // however removing this action will be a breaking change
-                            // remove that action in 2.0 release
-                            // @deprecated since 1.4
-                            return from([
-                                new LoadCart(__assign({}, payload)),
-                                new ClearExpiredCoupons({}),
-                            ]);
+                            // Reload in case of expired coupon.
+                            return of(new LoadCart(__assign({}, payload)));
                         }
                         var cartNotFoundErrors = error.error.errors.filter(function (err) { return err.reason === 'notFound' || 'UnknownResourceError'; });
-                        if (cartNotFoundErrors.length > 0 &&
-                            payload.extraData &&
-                            payload.extraData.active) {
-                            // Clear cart is responsible for removing cart in `cart` store feature.
-                            // Remove cart does the same thing, but in `multi-cart` store feature.
+                        if (cartNotFoundErrors.length > 0) {
+                            // Remove cart as it doesn't exist on backend.
                             return of(new RemoveCart({ cartId: payload.cartId }));
                         }
                     }
@@ -16031,7 +16029,8 @@ var CartEffects = /** @class */ (function () {
                 ];
             }));
         }), withdrawOn(this.contextChange$));
-        this.refresh$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS), map(function (action) { return action.payload; }), concatMap(function (payload) {
+        // TODO(#7241): Remove when AddVoucherSuccess actions will extend processes actions
+        this.refresh$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER_SUCCESS), map(function (action) { return action.payload; }), concatMap(function (payload) {
             return from([
                 new CartProcessesDecrement(payload.cartId),
                 new LoadCart({
@@ -16040,7 +16039,8 @@ var CartEffects = /** @class */ (function () {
                 }),
             ]);
         }));
-        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map(function (action) { return action.payload; }), map(function (payload) {
+        // TODO: Switch to automatic cart reload on processes count reaching 0 for cart entity
+        this.refreshWithoutProcesses$ = this.actions$.pipe(ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), map(function (action) { return action.payload; }), map(function (payload) {
             return new LoadCart({
                 userId: payload.userId,
                 cartId: payload.cartId,
@@ -16448,15 +16448,35 @@ var CartVoucherService = /** @class */ (function () {
             }));
         });
     };
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process error flag
+     * @deprecated since 2.0
+     */
     CartVoucherService.prototype.getAddVoucherResultError = function () {
         return this.store.pipe(select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
     };
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process success flag
+     * @deprecated since 2.0
+     */
     CartVoucherService.prototype.getAddVoucherResultSuccess = function () {
         return this.store.pipe(select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
     };
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process loading flag
+     * @deprecated since 2.0
+     */
     CartVoucherService.prototype.getAddVoucherResultLoading = function () {
         return this.store.pipe(select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
     };
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Reset add voucher process
+     * @deprecated since 2.0
+     */
     CartVoucherService.prototype.resetAddVoucherProcessingState = function () {
         this.store.dispatch(new CartResetAddVoucher());
     };
@@ -17634,9 +17654,8 @@ var MultiCartEffects = /** @class */ (function () {
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map(function (action) {
             return new RemoveCart({ cartId: action.payload.tempCartId });
         }));
-        // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
-        // Change for 2.0 release
-        this.processesIncrement$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER), map(function (action) { return action.payload; }), map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
+        // TODO(#7241): Remove when we drop ADD_VOUCHER process and we sort out checkout and cart dependencies
+        this.processesIncrement$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER), map(function (action) { return action.payload; }), map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
     }
     MultiCartEffects.ctorParameters = function () { return [
         { type: Actions }
@@ -18410,14 +18429,10 @@ var CheckoutEffects = /** @class */ (function () {
             return _this.checkoutConnector
                 .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
                 .pipe(map(function () {
-                return new ClearCheckoutDeliveryModeSuccess({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                });
+                return new ClearCheckoutDeliveryModeSuccess(__assign({}, payload));
             }), catchError(function (error) {
                 return from([
-                    new ClearCheckoutDeliveryModeFail(makeErrorSerializable(error)),
-                    new CartProcessesDecrement(payload.cartId),
+                    new ClearCheckoutDeliveryModeFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
                     new LoadCart({
                         cartId: payload.cartId,
                         userId: payload.userId,

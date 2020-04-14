@@ -2,6 +2,7 @@ import { Action } from '@ngrx/store';
 import { Address } from '../../../model/address.model';
 import { PaymentDetails } from '../../../model/cart.model';
 import { DeliveryMode, Order } from '../../../model/order.model';
+import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 import { StateEntityLoaderActions, StateLoaderActions } from '../../../state/utils/index';
 import { CheckoutDetails } from '../../models/checkout.model';
 export declare const CLEAR_CHECKOUT_DELIVERY_ADDRESS = "[Checkout] Clear Checkout Delivery Address";
@@ -278,7 +279,7 @@ export declare class ClearCheckoutDeliveryAddressFail implements Action {
     readonly type = "[Checkout] Clear Checkout Delivery Address Fail";
     constructor(payload: any);
 }
-export declare class ClearCheckoutDeliveryMode implements Action {
+export declare class ClearCheckoutDeliveryMode extends EntityProcessesIncrementAction {
     payload: {
         userId: string;
         cartId: string;
@@ -289,7 +290,7 @@ export declare class ClearCheckoutDeliveryMode implements Action {
         cartId: string;
     });
 }
-export declare class ClearCheckoutDeliveryModeSuccess implements Action {
+export declare class ClearCheckoutDeliveryModeSuccess extends EntityProcessesDecrementAction {
     payload: {
         userId: string;
         cartId: string;
@@ -300,9 +301,17 @@ export declare class ClearCheckoutDeliveryModeSuccess implements Action {
         cartId: string;
     });
 }
-export declare class ClearCheckoutDeliveryModeFail implements Action {
-    payload: any;
+export declare class ClearCheckoutDeliveryModeFail extends EntityProcessesDecrementAction {
+    payload: {
+        userId: string;
+        cartId: string;
+        error: any;
+    };
     readonly type = "[Checkout] Clear Checkout Delivery Mode Fail";
-    constructor(payload: any);
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+        error: any;
+    });
 }
 export declare type CheckoutAction = AddDeliveryAddress | AddDeliveryAddressFail | AddDeliveryAddressSuccess | SetDeliveryAddress | SetDeliveryAddressFail | SetDeliveryAddressSuccess | ResetSetDeliveryAddressProcess | LoadSupportedDeliveryModes | LoadSupportedDeliveryModesFail | LoadSupportedDeliveryModesSuccess | SetDeliveryMode | SetDeliveryModeFail | SetDeliveryModeSuccess | ResetSetDeliveryModeProcess | ClearSupportedDeliveryModes | CreatePaymentDetails | CreatePaymentDetailsFail | CreatePaymentDetailsSuccess | SetPaymentDetails | SetPaymentDetailsFail | SetPaymentDetailsSuccess | ResetSetPaymentDetailsProcess | PlaceOrder | PlaceOrderFail | PlaceOrderSuccess | ClearCheckoutStep | ClearCheckoutData | ClearCheckoutDeliveryAddress | ClearCheckoutDeliveryAddressFail | ClearCheckoutDeliveryAddressSuccess | ClearCheckoutDeliveryMode | ClearCheckoutDeliveryModeFail | ClearCheckoutDeliveryModeSuccess | LoadCheckoutDetails | LoadCheckoutDetailsFail | LoadCheckoutDetailsSuccess | CheckoutClearMiscsData;
