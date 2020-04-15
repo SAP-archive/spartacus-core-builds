@@ -2170,6 +2170,24 @@ var BaseSiteService = /** @class */ (function () {
     return BaseSiteService;
 }());
 
+var CustomEncoder = /** @class */ (function () {
+    function CustomEncoder() {
+    }
+    CustomEncoder.prototype.encodeKey = function (key) {
+        return encodeURIComponent(key);
+    };
+    CustomEncoder.prototype.encodeValue = function (value) {
+        return encodeURIComponent(value);
+    };
+    CustomEncoder.prototype.decodeKey = function (key) {
+        return decodeURIComponent(key);
+    };
+    CustomEncoder.prototype.decodeValue = function (value) {
+        return decodeURIComponent(value);
+    };
+    return CustomEncoder;
+}());
+
 var OccEndpointsService = /** @class */ (function () {
     function OccEndpointsService(config, baseSiteService) {
         var _this = this;
@@ -2237,11 +2255,11 @@ var OccEndpointsService = /** @class */ (function () {
             endpoint = DynamicTemplate.resolve(endpoint, urlParams);
         }
         if (queryParams) {
-            var httpParamsOptions = void 0;
+            var httpParamsOptions = { encoder: new CustomEncoder() };
             if (endpoint.includes('?')) {
                 var queryParamsFromEndpoint = void 0;
                 _a = __read(endpoint.split('?'), 2), endpoint = _a[0], queryParamsFromEndpoint = _a[1];
-                httpParamsOptions = { fromString: queryParamsFromEndpoint };
+                httpParamsOptions = __assign(__assign({}, httpParamsOptions), { fromString: queryParamsFromEndpoint });
             }
             var httpParams_1 = new HttpParams(httpParamsOptions);
             Object.keys(queryParams).forEach(function (key) {
@@ -4426,24 +4444,6 @@ var OccCheckoutDeliveryAdapter = /** @class */ (function () {
 var PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
 var PAYMENT_DETAILS_SERIALIZER = new InjectionToken('PaymentDetailsSerializer');
 var CARD_TYPE_NORMALIZER = new InjectionToken('CardTypeNormalizer');
-
-var CustomEncoder = /** @class */ (function () {
-    function CustomEncoder() {
-    }
-    CustomEncoder.prototype.encodeKey = function (key) {
-        return encodeURIComponent(key);
-    };
-    CustomEncoder.prototype.encodeValue = function (value) {
-        return encodeURIComponent(value);
-    };
-    CustomEncoder.prototype.decodeKey = function (key) {
-        return decodeURIComponent(key);
-    };
-    CustomEncoder.prototype.decodeValue = function (value) {
-        return decodeURIComponent(value);
-    };
-    return CustomEncoder;
-}());
 
 var ENDPOINT_CARD_TYPES = 'cardtypes';
 var OccCheckoutPaymentAdapter = /** @class */ (function () {

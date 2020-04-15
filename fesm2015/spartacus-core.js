@@ -1947,6 +1947,21 @@ BaseSiteService = __decorate([
     Injectable()
 ], BaseSiteService);
 
+class CustomEncoder {
+    encodeKey(key) {
+        return encodeURIComponent(key);
+    }
+    encodeValue(value) {
+        return encodeURIComponent(value);
+    }
+    decodeKey(key) {
+        return decodeURIComponent(key);
+    }
+    decodeValue(value) {
+        return decodeURIComponent(value);
+    }
+}
+
 let OccEndpointsService = class OccEndpointsService {
     constructor(config, baseSiteService) {
         this.config = config;
@@ -2011,11 +2026,11 @@ let OccEndpointsService = class OccEndpointsService {
             endpoint = DynamicTemplate.resolve(endpoint, urlParams);
         }
         if (queryParams) {
-            let httpParamsOptions;
+            let httpParamsOptions = { encoder: new CustomEncoder() };
             if (endpoint.includes('?')) {
                 let queryParamsFromEndpoint;
                 [endpoint, queryParamsFromEndpoint] = endpoint.split('?');
-                httpParamsOptions = { fromString: queryParamsFromEndpoint };
+                httpParamsOptions = Object.assign(Object.assign({}, httpParamsOptions), { fromString: queryParamsFromEndpoint });
             }
             let httpParams = new HttpParams(httpParamsOptions);
             Object.keys(queryParams).forEach((key) => {
@@ -4060,21 +4075,6 @@ OccCheckoutDeliveryAdapter = __decorate([
 const PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
 const PAYMENT_DETAILS_SERIALIZER = new InjectionToken('PaymentDetailsSerializer');
 const CARD_TYPE_NORMALIZER = new InjectionToken('CardTypeNormalizer');
-
-class CustomEncoder {
-    encodeKey(key) {
-        return encodeURIComponent(key);
-    }
-    encodeValue(value) {
-        return encodeURIComponent(value);
-    }
-    decodeKey(key) {
-        return decodeURIComponent(key);
-    }
-    decodeValue(value) {
-        return decodeURIComponent(value);
-    }
-}
 
 const ENDPOINT_CARD_TYPES = 'cardtypes';
 let OccCheckoutPaymentAdapter = class OccCheckoutPaymentAdapter {
