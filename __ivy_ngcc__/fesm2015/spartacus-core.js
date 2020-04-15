@@ -3447,88 +3447,17 @@ const defaultOccCartConfig = {
 
 const CART_MODIFICATION_NORMALIZER = new InjectionToken('CartModificationNormalizer');
 
-class FeaturesConfig {
-}
-
-function isFeatureConfig(config) {
-    return typeof config === 'object' && config.features;
-}
-function isInLevel(level, version) {
-    if (level === '*') {
-        return true;
-    }
-    const levelParts = level.split('.');
-    const versionParts = version.split('.');
-    for (let i = 0; i < versionParts.length; i++) {
-        const versionNumberPart = Number(versionParts[i]);
-        const levelNumberPart = Number(levelParts[i]) || 0;
-        if (versionNumberPart !== levelNumberPart) {
-            return levelNumberPart > versionNumberPart;
-        }
-    }
-    return true;
-}
-function isFeatureLevel(config, level) {
-    if (isFeatureConfig(config)) {
-        return level[0] === '!'
-            ? !isInLevel(config.features.level, level.substr(1, level.length))
-            : isInLevel(config.features.level, level);
-    }
-}
-function isFeatureEnabled(config, feature) {
-    if (isFeatureConfig(config)) {
-        const featureConfig = feature[0] === '!'
-            ? config.features[feature.substr(1, feature.length)]
-            : config.features[feature];
-        const result = typeof featureConfig === 'string'
-            ? isFeatureLevel(config, featureConfig)
-            : featureConfig;
-        return feature[0] === '!' ? !result : result;
-    }
-}
-
-let FeatureConfigService = class FeatureConfigService {
-    constructor(config) {
-        this.config = config;
-    }
-    isLevel(version) {
-        return isFeatureLevel(this.config, version);
-    }
-    isEnabled(feature) {
-        return isFeatureEnabled(this.config, feature);
-    }
-};
-FeatureConfigService.ɵfac = function FeatureConfigService_Factory(t) { return new (t || FeatureConfigService)(ɵngcc0.ɵɵinject(FeaturesConfig)); };
-FeatureConfigService.ctorParameters = () => [
-    { type: FeaturesConfig }
-];
-FeatureConfigService.ɵprov = ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-
 let OccCartEntryAdapter = class OccCartEntryAdapter {
-    constructor(http, occEndpointsService, converterService, featureConfigService) {
+    constructor(http, occEndpointsService, converterService) {
         this.http = http;
         this.occEndpointsService = occEndpointsService;
         this.converterService = converterService;
-        this.featureConfigService = featureConfigService;
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    getCartEndpoint(userId) {
-        const cartEndpoint = 'users/' + userId + '/carts/';
-        return this.occEndpointsService.getEndpoint(cartEndpoint);
     }
     add(userId, cartId, productCode, quantity = 1) {
         const toAdd = JSON.stringify({});
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        // TODO: Deprecated, remove Issue: #4125
-        if (!this.featureConfigService.isLevel('1.1')) {
-            return this.legacyAdd(userId, cartId, productCode, quantity);
-        }
         const url = this.occEndpointsService.getUrl('addEntries', {
             userId,
             cartId,
@@ -3545,10 +3474,6 @@ let OccCartEntryAdapter = class OccCartEntryAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        // TODO: Deprecated, remove Issue: #4125
-        if (!this.featureConfigService.isLevel('1.1')) {
-            return this.legacyUpdate(userId, cartId, entryNumber, qty, pickupStore);
-        }
         const url = this.occEndpointsService.getUrl('updateEntries', { userId, cartId, entryNumber }, Object.assign({ qty }, params));
         return this.http
             .patch(url, {}, { headers })
@@ -3558,10 +3483,6 @@ let OccCartEntryAdapter = class OccCartEntryAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        // TODO: Deprecated, remove Issue: #4125
-        if (!this.featureConfigService.isLevel('1.1')) {
-            return this.legacyRemove(userId, cartId, entryNumber);
-        }
         const url = this.occEndpointsService.getUrl('removeEntries', {
             userId,
             cartId,
@@ -3569,65 +3490,13 @@ let OccCartEntryAdapter = class OccCartEntryAdapter {
         });
         return this.http.delete(url, { headers });
     }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    legacyAdd(userId, cartId, productCode, quantity = 1) {
-        const url = this.getCartEndpoint(userId) + cartId + '/entries';
-        const params = new HttpParams({
-            fromString: 'code=' + productCode + '&qty=' + quantity,
-        });
-        const toAdd = JSON.stringify({});
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .post(url, toAdd, { headers, params })
-            .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    legacyUpdate(userId, cartId, entryNumber, qty, pickupStore) {
-        const url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
-        let queryString = 'qty=' + qty;
-        if (pickupStore) {
-            queryString = queryString + '&pickupStore=' + pickupStore;
-        }
-        const params = new HttpParams({
-            fromString: queryString,
-        });
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .patch(url, {}, { headers, params })
-            .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    legacyRemove(userId, cartId, entryNumber) {
-        const url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http.delete(url, { headers });
-    }
 };
-OccCartEntryAdapter.ɵfac = function OccCartEntryAdapter_Factory(t) { return new (t || OccCartEntryAdapter)(ɵngcc0.ɵɵinject(ɵngcc3.HttpClient), ɵngcc0.ɵɵinject(OccEndpointsService), ɵngcc0.ɵɵinject(ConverterService), ɵngcc0.ɵɵinject(FeatureConfigService)); };
+OccCartEntryAdapter.ɵfac = function OccCartEntryAdapter_Factory(t) { return new (t || OccCartEntryAdapter)(ɵngcc0.ɵɵinject(ɵngcc3.HttpClient), ɵngcc0.ɵɵinject(OccEndpointsService), ɵngcc0.ɵɵinject(ConverterService)); };
 OccCartEntryAdapter.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: OccCartEntryAdapter, factory: OccCartEntryAdapter.ɵfac });
 OccCartEntryAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
-    { type: ConverterService },
-    { type: FeatureConfigService }
+    { type: ConverterService }
 ];
 
 const CART_VOUCHER_NORMALIZER = new InjectionToken('CartVoucherNormalizer');
@@ -3675,33 +3544,13 @@ OccCartVoucherAdapter.ctorParameters = () => [
     { type: ConverterService }
 ];
 
-// TODO: Deprecated, remove Issue: #4125. Use configurable endpoints.
-const DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,' +
-    'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),' +
-    'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),' +
-    'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
-    'appliedVouchers,productDiscounts(formattedValue),user';
 let OccCartAdapter = class OccCartAdapter {
-    constructor(http, occEndpointsService, converterService, featureConfigService) {
+    constructor(http, occEndpointsService, converterService) {
         this.http = http;
         this.occEndpointsService = occEndpointsService;
         this.converterService = converterService;
-        this.featureConfigService = featureConfigService;
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    getCartEndpoint(userId) {
-        const cartEndpoint = `users/${userId}/carts/`;
-        return this.occEndpointsService.getEndpoint(cartEndpoint);
     }
     loadAll(userId) {
-        // TODO: Deprecated, remove Issue: #4125.
-        if (!this.featureConfigService.isLevel('1.1')) {
-            return this.legacyLoadAll(userId);
-        }
         return this.http
             .get(this.occEndpointsService.getUrl('carts', { userId }))
             .pipe(pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
@@ -3721,10 +3570,6 @@ let OccCartAdapter = class OccCartAdapter {
             }));
         }
         else {
-            // TODO: Deprecated, remove Issue: #4125.
-            if (!this.featureConfigService.isLevel('1.1')) {
-                return this.legacyLoad(userId, cartId);
-            }
             return this.http
                 .get(this.occEndpointsService.getUrl('cart', { userId, cartId }))
                 .pipe(this.converterService.pipeable(CART_NORMALIZER));
@@ -3732,10 +3577,6 @@ let OccCartAdapter = class OccCartAdapter {
     }
     create(userId, oldCartId, toMergeCartGuid) {
         const toAdd = JSON.stringify({});
-        // TODO: Deprecated, remove Issue: #4125.
-        if (!this.featureConfigService.isLevel('1.1')) {
-            return this.legacyCreate(userId, toAdd, oldCartId, toMergeCartGuid);
-        }
         let params = {};
         if (oldCartId) {
             params = { oldCartId: oldCartId };
@@ -3754,55 +3595,6 @@ let OccCartAdapter = class OccCartAdapter {
         }
         return this.http.delete(this.occEndpointsService.getUrl('deleteCart', { userId, cartId }), { headers });
     }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    legacyLoadAll(userId) {
-        const url = this.getCartEndpoint(userId);
-        const params = new HttpParams({
-            fromString: `fields=carts(${DETAILS_PARAMS},saveTime)`,
-        });
-        return this.http
-            .get(url, { params })
-            .pipe(pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    legacyLoad(userId, cartId) {
-        const url = this.getCartEndpoint(userId) + cartId;
-        const params = new HttpParams({
-            fromString: `fields=${DETAILS_PARAMS}`,
-        });
-        return this.http
-            .get(url, { params })
-            .pipe(this.converterService.pipeable(CART_NORMALIZER));
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    legacyCreate(userId, toAdd, oldCartId, toMergeCartGuid) {
-        const url = this.getCartEndpoint(userId);
-        let queryString = `fields=${DETAILS_PARAMS}`;
-        if (oldCartId) {
-            queryString = `${queryString}&oldCartId=${oldCartId}`;
-        }
-        if (toMergeCartGuid) {
-            queryString = `${queryString}&toMergeCartGuid=${toMergeCartGuid}`;
-        }
-        const params = new HttpParams({
-            fromString: queryString,
-        });
-        return this.http
-            .post(url, toAdd, { params })
-            .pipe(this.converterService.pipeable(CART_NORMALIZER));
-    }
     addEmail(userId, cartId, email) {
         let headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -3816,13 +3608,12 @@ let OccCartAdapter = class OccCartAdapter {
         return this.http.put(url, httpParams, { headers });
     }
 };
-OccCartAdapter.ɵfac = function OccCartAdapter_Factory(t) { return new (t || OccCartAdapter)(ɵngcc0.ɵɵinject(ɵngcc3.HttpClient), ɵngcc0.ɵɵinject(OccEndpointsService), ɵngcc0.ɵɵinject(ConverterService), ɵngcc0.ɵɵinject(FeatureConfigService)); };
+OccCartAdapter.ɵfac = function OccCartAdapter_Factory(t) { return new (t || OccCartAdapter)(ɵngcc0.ɵɵinject(ɵngcc3.HttpClient), ɵngcc0.ɵɵinject(OccEndpointsService), ɵngcc0.ɵɵinject(ConverterService)); };
 OccCartAdapter.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: OccCartAdapter, factory: OccCartAdapter.ɵfac });
 OccCartAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
-    { type: ConverterService },
-    { type: FeatureConfigService }
+    { type: ConverterService }
 ];
 
 const SAVE_CART_NORMALIZER = new InjectionToken('SaveCartNormalizer');
@@ -5625,26 +5416,12 @@ const ORDER_RETURN_REQUEST_INPUT_SERIALIZER = new InjectionToken('OrderReturnReq
 const ORDER_RETURNS_NORMALIZER = new InjectionToken('OrderReturnsNormalizer');
 
 let OccUserOrderAdapter = class OccUserOrderAdapter {
-    constructor(http, occEndpoints, converter, featureConfigService) {
+    constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
         this.converter = converter;
-        this.featureConfigService = featureConfigService;
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    getOrderEndpoint(userId) {
-        const orderEndpoint = 'users/' + userId + '/orders';
-        return this.occEndpoints.getEndpoint(orderEndpoint);
     }
     load(userId, orderCode) {
-        // TODO: Deprecated, remove Issue #4125
-        if (!this.featureConfigService.isLevel('1.1')) {
-            return this.legacyLoad(userId, orderCode);
-        }
         const url = this.occEndpoints.getUrl('orderDetail', {
             userId,
             orderId: orderCode,
@@ -5658,10 +5435,6 @@ let OccUserOrderAdapter = class OccUserOrderAdapter {
             .pipe(this.converter.pipeable(ORDER_NORMALIZER));
     }
     loadHistory(userId, pageSize, currentPage, sort) {
-        // TODO: Deprecated, remove Issue #4125
-        if (!this.featureConfigService.isLevel('1.1')) {
-            return this.legacyLoadHistory(userId, pageSize, currentPage, sort);
-        }
         const params = {};
         if (pageSize) {
             params['pageSize'] = pageSize.toString();
@@ -5675,43 +5448,6 @@ let OccUserOrderAdapter = class OccUserOrderAdapter {
         const url = this.occEndpoints.getUrl('orderHistory', { userId }, params);
         return this.http
             .get(url)
-            .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    legacyLoad(userId, orderCode) {
-        const url = this.getOrderEndpoint(userId) + '/' + orderCode;
-        const params = new HttpParams({
-            fromString: 'fields=FULL',
-        });
-        return this.http
-            .get(url, {
-            params,
-        })
-            .pipe(this.converter.pipeable(ORDER_NORMALIZER));
-    }
-    /**
-     * @deprecated Since 1.1
-     * Use configurable endpoints.
-     * Remove issue: #4125
-     */
-    legacyLoadHistory(userId, pageSize, currentPage, sort) {
-        const url = this.getOrderEndpoint(userId);
-        let params = new HttpParams();
-        if (pageSize) {
-            params = params.set('pageSize', pageSize.toString());
-        }
-        if (currentPage) {
-            params = params.set('currentPage', currentPage.toString());
-        }
-        if (sort) {
-            params = params.set('sort', sort);
-        }
-        return this.http
-            .get(url, { params: params })
             .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
     }
     getConsignmentTracking(orderCode, consignmentCode, userId = OCC_USER_ID_CURRENT) {
@@ -5784,13 +5520,12 @@ let OccUserOrderAdapter = class OccUserOrderAdapter {
             .pipe(catchError((error) => throwError(error)));
     }
 };
-OccUserOrderAdapter.ɵfac = function OccUserOrderAdapter_Factory(t) { return new (t || OccUserOrderAdapter)(ɵngcc0.ɵɵinject(ɵngcc3.HttpClient), ɵngcc0.ɵɵinject(OccEndpointsService), ɵngcc0.ɵɵinject(ConverterService), ɵngcc0.ɵɵinject(FeatureConfigService)); };
+OccUserOrderAdapter.ɵfac = function OccUserOrderAdapter_Factory(t) { return new (t || OccUserOrderAdapter)(ɵngcc0.ɵɵinject(ɵngcc3.HttpClient), ɵngcc0.ɵɵinject(OccEndpointsService), ɵngcc0.ɵɵinject(ConverterService)); };
 OccUserOrderAdapter.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: OccUserOrderAdapter, factory: OccUserOrderAdapter.ɵfac });
 OccUserOrderAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
-    { type: ConverterService },
-    { type: FeatureConfigService }
+    { type: ConverterService }
 ];
 
 let OccUserPaymentAdapter = class OccUserPaymentAdapter {
@@ -18124,6 +17859,63 @@ let ConfigInitializerModule = ConfigInitializerModule_1 = class ConfigInitialize
 ConfigInitializerModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ConfigInitializerModule });
 ConfigInitializerModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ConfigInitializerModule_Factory(t) { return new (t || ConfigInitializerModule)(); } });
 
+class FeaturesConfig {
+}
+
+function isFeatureConfig(config) {
+    return typeof config === 'object' && config.features;
+}
+function isInLevel(level, version) {
+    if (level === '*') {
+        return true;
+    }
+    const levelParts = level.split('.');
+    const versionParts = version.split('.');
+    for (let i = 0; i < versionParts.length; i++) {
+        const versionNumberPart = Number(versionParts[i]);
+        const levelNumberPart = Number(levelParts[i]) || 0;
+        if (versionNumberPart !== levelNumberPart) {
+            return levelNumberPart > versionNumberPart;
+        }
+    }
+    return true;
+}
+function isFeatureLevel(config, level) {
+    if (isFeatureConfig(config)) {
+        return level[0] === '!'
+            ? !isInLevel(config.features.level, level.substr(1, level.length))
+            : isInLevel(config.features.level, level);
+    }
+}
+function isFeatureEnabled(config, feature) {
+    if (isFeatureConfig(config)) {
+        const featureConfig = feature[0] === '!'
+            ? config.features[feature.substr(1, feature.length)]
+            : config.features[feature];
+        const result = typeof featureConfig === 'string'
+            ? isFeatureLevel(config, featureConfig)
+            : featureConfig;
+        return feature[0] === '!' ? !result : result;
+    }
+}
+
+let FeatureConfigService = class FeatureConfigService {
+    constructor(config) {
+        this.config = config;
+    }
+    isLevel(version) {
+        return isFeatureLevel(this.config, version);
+    }
+    isEnabled(feature) {
+        return isFeatureEnabled(this.config, feature);
+    }
+};
+FeatureConfigService.ɵfac = function FeatureConfigService_Factory(t) { return new (t || FeatureConfigService)(ɵngcc0.ɵɵinject(FeaturesConfig)); };
+FeatureConfigService.ctorParameters = () => [
+    { type: FeaturesConfig }
+];
+FeatureConfigService.ɵprov = ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+
 let FeatureLevelDirective = class FeatureLevelDirective {
     constructor(templateRef, viewContainer, featureConfig) {
         this.templateRef = templateRef;
@@ -23384,21 +23176,15 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
         type: Injectable,
         args: [{ providedIn: 'root' }]
     }], function () { return [{ type: ConverterService }]; }, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(FeatureConfigService, [{
-        type: Injectable,
-        args: [{
-                providedIn: 'root'
-            }]
-    }], function () { return [{ type: FeaturesConfig }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccCartEntryAdapter, [{
         type: Injectable
-    }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }, { type: FeatureConfigService }]; }, null); })();
+    }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccCartVoucherAdapter, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccCartAdapter, [{
         type: Injectable
-    }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }, { type: FeatureConfigService }]; }, null); })();
+    }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccSaveCartAdapter, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
@@ -23648,7 +23434,7 @@ UserModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function UserModule_Fac
     }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccUserOrderAdapter, [{
         type: Injectable
-    }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }, { type: FeatureConfigService }]; }, null); })();
+    }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OccUserPaymentAdapter, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc3.HttpClient }, { type: OccEndpointsService }, { type: ConverterService }]; }, null); })();
@@ -24444,6 +24230,12 @@ const ɵUnknownErrorHandler_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Unknow
         type: NgModule,
         args: [{}]
     }], null, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(FeatureConfigService, [{
+        type: Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return [{ type: FeaturesConfig }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(FeatureLevelDirective, [{
         type: Directive,
         args: [{

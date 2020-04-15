@@ -4057,97 +4057,18 @@
 
     var CART_MODIFICATION_NORMALIZER = new core.InjectionToken('CartModificationNormalizer');
 
-    var FeaturesConfig = /** @class */ (function () {
-        function FeaturesConfig() {
-        }
-        return FeaturesConfig;
-    }());
-
-    function isFeatureConfig(config) {
-        return typeof config === 'object' && config.features;
-    }
-    function isInLevel(level, version) {
-        if (level === '*') {
-            return true;
-        }
-        var levelParts = level.split('.');
-        var versionParts = version.split('.');
-        for (var i = 0; i < versionParts.length; i++) {
-            var versionNumberPart = Number(versionParts[i]);
-            var levelNumberPart = Number(levelParts[i]) || 0;
-            if (versionNumberPart !== levelNumberPart) {
-                return levelNumberPart > versionNumberPart;
-            }
-        }
-        return true;
-    }
-    function isFeatureLevel(config, level) {
-        if (isFeatureConfig(config)) {
-            return level[0] === '!'
-                ? !isInLevel(config.features.level, level.substr(1, level.length))
-                : isInLevel(config.features.level, level);
-        }
-    }
-    function isFeatureEnabled(config, feature) {
-        if (isFeatureConfig(config)) {
-            var featureConfig = feature[0] === '!'
-                ? config.features[feature.substr(1, feature.length)]
-                : config.features[feature];
-            var result = typeof featureConfig === 'string'
-                ? isFeatureLevel(config, featureConfig)
-                : featureConfig;
-            return feature[0] === '!' ? !result : result;
-        }
-    }
-
-    var FeatureConfigService = /** @class */ (function () {
-        function FeatureConfigService(config) {
-            this.config = config;
-        }
-        FeatureConfigService.prototype.isLevel = function (version) {
-            return isFeatureLevel(this.config, version);
-        };
-        FeatureConfigService.prototype.isEnabled = function (feature) {
-            return isFeatureEnabled(this.config, feature);
-        };
-        FeatureConfigService.ctorParameters = function () { return [
-            { type: FeaturesConfig }
-        ]; };
-        FeatureConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core["ɵɵinject"](FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-        FeatureConfigService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], FeatureConfigService);
-        return FeatureConfigService;
-    }());
-
     var OccCartEntryAdapter = /** @class */ (function () {
-        function OccCartEntryAdapter(http, occEndpointsService, converterService, featureConfigService) {
+        function OccCartEntryAdapter(http, occEndpointsService, converterService) {
             this.http = http;
             this.occEndpointsService = occEndpointsService;
             this.converterService = converterService;
-            this.featureConfigService = featureConfigService;
         }
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccCartEntryAdapter.prototype.getCartEndpoint = function (userId) {
-            var cartEndpoint = 'users/' + userId + '/carts/';
-            return this.occEndpointsService.getEndpoint(cartEndpoint);
-        };
         OccCartEntryAdapter.prototype.add = function (userId, cartId, productCode, quantity) {
             if (quantity === void 0) { quantity = 1; }
             var toAdd = JSON.stringify({});
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            // TODO: Deprecated, remove Issue: #4125
-            if (!this.featureConfigService.isLevel('1.1')) {
-                return this.legacyAdd(userId, cartId, productCode, quantity);
-            }
             var url = this.occEndpointsService.getUrl('addEntries', {
                 userId: userId,
                 cartId: cartId,
@@ -4164,10 +4085,6 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            // TODO: Deprecated, remove Issue: #4125
-            if (!this.featureConfigService.isLevel('1.1')) {
-                return this.legacyUpdate(userId, cartId, entryNumber, qty, pickupStore);
-            }
             var url = this.occEndpointsService.getUrl('updateEntries', { userId: userId, cartId: cartId, entryNumber: entryNumber }, __assign({ qty: qty }, params));
             return this.http
                 .patch(url, {}, { headers: headers })
@@ -4177,10 +4094,6 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            // TODO: Deprecated, remove Issue: #4125
-            if (!this.featureConfigService.isLevel('1.1')) {
-                return this.legacyRemove(userId, cartId, entryNumber);
-            }
             var url = this.occEndpointsService.getUrl('removeEntries', {
                 userId: userId,
                 cartId: cartId,
@@ -4188,63 +4101,10 @@
             });
             return this.http.delete(url, { headers: headers });
         };
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccCartEntryAdapter.prototype.legacyAdd = function (userId, cartId, productCode, quantity) {
-            if (quantity === void 0) { quantity = 1; }
-            var url = this.getCartEndpoint(userId) + cartId + '/entries';
-            var params = new http.HttpParams({
-                fromString: 'code=' + productCode + '&qty=' + quantity,
-            });
-            var toAdd = JSON.stringify({});
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .post(url, toAdd, { headers: headers, params: params })
-                .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
-        };
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccCartEntryAdapter.prototype.legacyUpdate = function (userId, cartId, entryNumber, qty, pickupStore) {
-            var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
-            var queryString = 'qty=' + qty;
-            if (pickupStore) {
-                queryString = queryString + '&pickupStore=' + pickupStore;
-            }
-            var params = new http.HttpParams({
-                fromString: queryString,
-            });
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .patch(url, {}, { headers: headers, params: params })
-                .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
-        };
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccCartEntryAdapter.prototype.legacyRemove = function (userId, cartId, entryNumber) {
-            var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http.delete(url, { headers: headers });
-        };
         OccCartEntryAdapter.ctorParameters = function () { return [
             { type: http.HttpClient },
             { type: OccEndpointsService },
-            { type: ConverterService },
-            { type: FeatureConfigService }
+            { type: ConverterService }
         ]; };
         OccCartEntryAdapter = __decorate([
             core.Injectable()
@@ -4299,33 +4159,13 @@
         return OccCartVoucherAdapter;
     }());
 
-    // TODO: Deprecated, remove Issue: #4125. Use configurable endpoints.
-    var DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,' +
-        'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),' +
-        'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),' +
-        'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
-        'appliedVouchers,productDiscounts(formattedValue),user';
     var OccCartAdapter = /** @class */ (function () {
-        function OccCartAdapter(http, occEndpointsService, converterService, featureConfigService) {
+        function OccCartAdapter(http, occEndpointsService, converterService) {
             this.http = http;
             this.occEndpointsService = occEndpointsService;
             this.converterService = converterService;
-            this.featureConfigService = featureConfigService;
         }
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccCartAdapter.prototype.getCartEndpoint = function (userId) {
-            var cartEndpoint = "users/" + userId + "/carts/";
-            return this.occEndpointsService.getEndpoint(cartEndpoint);
-        };
         OccCartAdapter.prototype.loadAll = function (userId) {
-            // TODO: Deprecated, remove Issue: #4125.
-            if (!this.featureConfigService.isLevel('1.1')) {
-                return this.legacyLoadAll(userId);
-            }
             return this.http
                 .get(this.occEndpointsService.getUrl('carts', { userId: userId }))
                 .pipe(operators.pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
@@ -4345,10 +4185,6 @@
                 }));
             }
             else {
-                // TODO: Deprecated, remove Issue: #4125.
-                if (!this.featureConfigService.isLevel('1.1')) {
-                    return this.legacyLoad(userId, cartId);
-                }
                 return this.http
                     .get(this.occEndpointsService.getUrl('cart', { userId: userId, cartId: cartId }))
                     .pipe(this.converterService.pipeable(CART_NORMALIZER));
@@ -4356,10 +4192,6 @@
         };
         OccCartAdapter.prototype.create = function (userId, oldCartId, toMergeCartGuid) {
             var toAdd = JSON.stringify({});
-            // TODO: Deprecated, remove Issue: #4125.
-            if (!this.featureConfigService.isLevel('1.1')) {
-                return this.legacyCreate(userId, toAdd, oldCartId, toMergeCartGuid);
-            }
             var params = {};
             if (oldCartId) {
                 params = { oldCartId: oldCartId };
@@ -4378,55 +4210,6 @@
             }
             return this.http.delete(this.occEndpointsService.getUrl('deleteCart', { userId: userId, cartId: cartId }), { headers: headers });
         };
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccCartAdapter.prototype.legacyLoadAll = function (userId) {
-            var url = this.getCartEndpoint(userId);
-            var params = new http.HttpParams({
-                fromString: "fields=carts(" + DETAILS_PARAMS + ",saveTime)",
-            });
-            return this.http
-                .get(url, { params: params })
-                .pipe(operators.pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
-        };
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccCartAdapter.prototype.legacyLoad = function (userId, cartId) {
-            var url = this.getCartEndpoint(userId) + cartId;
-            var params = new http.HttpParams({
-                fromString: "fields=" + DETAILS_PARAMS,
-            });
-            return this.http
-                .get(url, { params: params })
-                .pipe(this.converterService.pipeable(CART_NORMALIZER));
-        };
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccCartAdapter.prototype.legacyCreate = function (userId, toAdd, oldCartId, toMergeCartGuid) {
-            var url = this.getCartEndpoint(userId);
-            var queryString = "fields=" + DETAILS_PARAMS;
-            if (oldCartId) {
-                queryString = queryString + "&oldCartId=" + oldCartId;
-            }
-            if (toMergeCartGuid) {
-                queryString = queryString + "&toMergeCartGuid=" + toMergeCartGuid;
-            }
-            var params = new http.HttpParams({
-                fromString: queryString,
-            });
-            return this.http
-                .post(url, toAdd, { params: params })
-                .pipe(this.converterService.pipeable(CART_NORMALIZER));
-        };
         OccCartAdapter.prototype.addEmail = function (userId, cartId, email) {
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -4442,8 +4225,7 @@
         OccCartAdapter.ctorParameters = function () { return [
             { type: http.HttpClient },
             { type: OccEndpointsService },
-            { type: ConverterService },
-            { type: FeatureConfigService }
+            { type: ConverterService }
         ]; };
         OccCartAdapter = __decorate([
             core.Injectable()
@@ -6540,26 +6322,12 @@
     var ORDER_RETURNS_NORMALIZER = new core.InjectionToken('OrderReturnsNormalizer');
 
     var OccUserOrderAdapter = /** @class */ (function () {
-        function OccUserOrderAdapter(http, occEndpoints, converter, featureConfigService) {
+        function OccUserOrderAdapter(http, occEndpoints, converter) {
             this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.featureConfigService = featureConfigService;
         }
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccUserOrderAdapter.prototype.getOrderEndpoint = function (userId) {
-            var orderEndpoint = 'users/' + userId + '/orders';
-            return this.occEndpoints.getEndpoint(orderEndpoint);
-        };
         OccUserOrderAdapter.prototype.load = function (userId, orderCode) {
-            // TODO: Deprecated, remove Issue #4125
-            if (!this.featureConfigService.isLevel('1.1')) {
-                return this.legacyLoad(userId, orderCode);
-            }
             var url = this.occEndpoints.getUrl('orderDetail', {
                 userId: userId,
                 orderId: orderCode,
@@ -6573,10 +6341,6 @@
                 .pipe(this.converter.pipeable(ORDER_NORMALIZER));
         };
         OccUserOrderAdapter.prototype.loadHistory = function (userId, pageSize, currentPage, sort) {
-            // TODO: Deprecated, remove Issue #4125
-            if (!this.featureConfigService.isLevel('1.1')) {
-                return this.legacyLoadHistory(userId, pageSize, currentPage, sort);
-            }
             var params = {};
             if (pageSize) {
                 params['pageSize'] = pageSize.toString();
@@ -6590,43 +6354,6 @@
             var url = this.occEndpoints.getUrl('orderHistory', { userId: userId }, params);
             return this.http
                 .get(url)
-                .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
-        };
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccUserOrderAdapter.prototype.legacyLoad = function (userId, orderCode) {
-            var url = this.getOrderEndpoint(userId) + '/' + orderCode;
-            var params = new http.HttpParams({
-                fromString: 'fields=FULL',
-            });
-            return this.http
-                .get(url, {
-                params: params,
-            })
-                .pipe(this.converter.pipeable(ORDER_NORMALIZER));
-        };
-        /**
-         * @deprecated Since 1.1
-         * Use configurable endpoints.
-         * Remove issue: #4125
-         */
-        OccUserOrderAdapter.prototype.legacyLoadHistory = function (userId, pageSize, currentPage, sort) {
-            var url = this.getOrderEndpoint(userId);
-            var params = new http.HttpParams();
-            if (pageSize) {
-                params = params.set('pageSize', pageSize.toString());
-            }
-            if (currentPage) {
-                params = params.set('currentPage', currentPage.toString());
-            }
-            if (sort) {
-                params = params.set('sort', sort);
-            }
-            return this.http
-                .get(url, { params: params })
                 .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
         };
         OccUserOrderAdapter.prototype.getConsignmentTracking = function (orderCode, consignmentCode, userId) {
@@ -6702,8 +6429,7 @@
         OccUserOrderAdapter.ctorParameters = function () { return [
             { type: http.HttpClient },
             { type: OccEndpointsService },
-            { type: ConverterService },
-            { type: FeatureConfigService }
+            { type: ConverterService }
         ]; };
         OccUserOrderAdapter = __decorate([
             core.Injectable()
@@ -21102,6 +20828,71 @@
             core.NgModule({})
         ], ConfigInitializerModule);
         return ConfigInitializerModule;
+    }());
+
+    var FeaturesConfig = /** @class */ (function () {
+        function FeaturesConfig() {
+        }
+        return FeaturesConfig;
+    }());
+
+    function isFeatureConfig(config) {
+        return typeof config === 'object' && config.features;
+    }
+    function isInLevel(level, version) {
+        if (level === '*') {
+            return true;
+        }
+        var levelParts = level.split('.');
+        var versionParts = version.split('.');
+        for (var i = 0; i < versionParts.length; i++) {
+            var versionNumberPart = Number(versionParts[i]);
+            var levelNumberPart = Number(levelParts[i]) || 0;
+            if (versionNumberPart !== levelNumberPart) {
+                return levelNumberPart > versionNumberPart;
+            }
+        }
+        return true;
+    }
+    function isFeatureLevel(config, level) {
+        if (isFeatureConfig(config)) {
+            return level[0] === '!'
+                ? !isInLevel(config.features.level, level.substr(1, level.length))
+                : isInLevel(config.features.level, level);
+        }
+    }
+    function isFeatureEnabled(config, feature) {
+        if (isFeatureConfig(config)) {
+            var featureConfig = feature[0] === '!'
+                ? config.features[feature.substr(1, feature.length)]
+                : config.features[feature];
+            var result = typeof featureConfig === 'string'
+                ? isFeatureLevel(config, featureConfig)
+                : featureConfig;
+            return feature[0] === '!' ? !result : result;
+        }
+    }
+
+    var FeatureConfigService = /** @class */ (function () {
+        function FeatureConfigService(config) {
+            this.config = config;
+        }
+        FeatureConfigService.prototype.isLevel = function (version) {
+            return isFeatureLevel(this.config, version);
+        };
+        FeatureConfigService.prototype.isEnabled = function (feature) {
+            return isFeatureEnabled(this.config, feature);
+        };
+        FeatureConfigService.ctorParameters = function () { return [
+            { type: FeaturesConfig }
+        ]; };
+        FeatureConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core["ɵɵinject"](FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+        FeatureConfigService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], FeatureConfigService);
+        return FeatureConfigService;
     }());
 
     var FeatureLevelDirective = /** @class */ (function () {
