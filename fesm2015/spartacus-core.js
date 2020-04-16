@@ -6509,7 +6509,7 @@ function provideConfigFromMetaTags() {
 const defaultOccConfig = {
     backend: {
         occ: {
-            prefix: '/rest/v2/',
+            prefix: '/occ/v2/',
         },
         media: {},
     },
