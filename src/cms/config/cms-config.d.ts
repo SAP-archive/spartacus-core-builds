@@ -54,7 +54,7 @@ export declare enum DeferLoadingStrategy {
     INSTANT = "INSTANT-LOADING"
 }
 export interface CMSComponentConfig extends StandardCmsComponentConfig, JspIncludeCmsComponentConfig {
-    [_: string]: CmsComponentMapping;
+    [componentType: string]: CmsComponentMapping;
 }
 export declare abstract class CmsConfig extends OccConfig implements AuthConfig, KymaConfig {
     authentication?: {
