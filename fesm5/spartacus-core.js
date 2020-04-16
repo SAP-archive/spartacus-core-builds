@@ -22197,33 +22197,27 @@ var getProductSuggestions$1 = createSelector(getProductsSearchState, getProductS
 
 var ɵ0$H = function (state) { return state.details; };
 var getProductState = createSelector(getProductsState, ɵ0$H);
-var getSelectedProductsFactory = function (codes) {
-    return createSelector(getProductState, function (details) {
-        return codes
-            .map(function (code) {
-            return details.entities[code] ? details.entities[code].value : undefined;
-        })
-            .filter(function (product) { return product !== undefined; });
-    });
-};
 var getSelectedProductStateFactory = function (code, scope) {
+    if (scope === void 0) { scope = ''; }
     return createSelector(getProductState, function (details) {
-        return scope
-            ? entityStateSelector(details, code)[scope] ||
-                initialLoaderState
-            : entityStateSelector(details, code);
+        return entityStateSelector(details, code)[scope] ||
+            initialLoaderState;
     });
 };
 var getSelectedProductFactory = function (code, scope) {
+    if (scope === void 0) { scope = ''; }
     return createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderValueSelector(productState); });
 };
 var getSelectedProductLoadingFactory = function (code, scope) {
+    if (scope === void 0) { scope = ''; }
     return createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderLoadingSelector(productState); });
 };
 var getSelectedProductSuccessFactory = function (code, scope) {
+    if (scope === void 0) { scope = ''; }
     return createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderSuccessSelector(productState); });
 };
 var getSelectedProductErrorFactory = function (code, scope) {
+    if (scope === void 0) { scope = ''; }
     return createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderErrorSelector(productState); });
 };
 var ɵ1$r = function (details) {
@@ -22246,7 +22240,6 @@ var productGroup_selectors = /*#__PURE__*/Object.freeze({
     getAuxSearchResults: getAuxSearchResults$1,
     getProductSuggestions: getProductSuggestions$1,
     getProductState: getProductState,
-    getSelectedProductsFactory: getSelectedProductsFactory,
     getSelectedProductStateFactory: getSelectedProductStateFactory,
     getSelectedProductFactory: getSelectedProductFactory,
     getSelectedProductLoadingFactory: getSelectedProductLoadingFactory,
@@ -23171,14 +23164,9 @@ var getReviewProductCode = function (state) {
     return state.productCode;
 };
 
+var initialScopedLoaderState = {};
 /**
  * Higher order reducer designed to add scope support for loader reducer
- *
- * For backward compatibility, we accommodate scopes alongside current
- * loading/error/success/value flags, thus those names can't be used as scope
- * names.
- *
- * TODO: Improve, issue #5445
  *
  * @param entityType
  * @param reducer
@@ -23187,16 +23175,12 @@ function scopedLoaderReducer(entityType, reducer) {
     var loader = loaderReducer(entityType, reducer);
     return function (state, action) {
         var _a;
-        if (state === void 0) { state = initialLoaderState; }
-        if (action &&
-            action.meta &&
-            action.meta.entityType === entityType &&
-            action.meta.scope) {
-            return __assign(__assign({}, state), (_a = {}, _a[action.meta.scope] = loader(state[action.meta.scope], action), _a));
+        if (state === void 0) { state = initialScopedLoaderState; }
+        var _b;
+        if (action && action.meta && action.meta.entityType === entityType) {
+            return __assign(__assign({}, state), (_a = {}, _a[(_b = action.meta.scope) !== null && _b !== void 0 ? _b : ''] = loader(state[action.meta.scope], action), _a));
         }
-        else {
-            return loader(state, action);
-        }
+        return state;
     };
 }
 

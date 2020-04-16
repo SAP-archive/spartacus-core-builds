@@ -19185,29 +19185,20 @@ const getProductSuggestions$1 = createSelector(getProductsSearchState, getProduc
 
 const ɵ0$H = (state) => state.details;
 const getProductState = createSelector(getProductsState, ɵ0$H);
-const getSelectedProductsFactory = (codes) => {
-    return createSelector(getProductState, (details) => {
-        return codes
-            .map((code) => details.entities[code] ? details.entities[code].value : undefined)
-            .filter((product) => product !== undefined);
-    });
+const getSelectedProductStateFactory = (code, scope = '') => {
+    return createSelector(getProductState, (details) => entityStateSelector(details, code)[scope] ||
+        initialLoaderState);
 };
-const getSelectedProductStateFactory = (code, scope) => {
-    return createSelector(getProductState, (details) => scope
-        ? entityStateSelector(details, code)[scope] ||
-            initialLoaderState
-        : entityStateSelector(details, code));
-};
-const getSelectedProductFactory = (code, scope) => {
+const getSelectedProductFactory = (code, scope = '') => {
     return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderValueSelector(productState));
 };
-const getSelectedProductLoadingFactory = (code, scope) => {
+const getSelectedProductLoadingFactory = (code, scope = '') => {
     return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderLoadingSelector(productState));
 };
-const getSelectedProductSuccessFactory = (code, scope) => {
+const getSelectedProductSuccessFactory = (code, scope = '') => {
     return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderSuccessSelector(productState));
 };
-const getSelectedProductErrorFactory = (code, scope) => {
+const getSelectedProductErrorFactory = (code, scope = '') => {
     return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderErrorSelector(productState));
 };
 const ɵ1$r = (details) => {
@@ -19230,7 +19221,6 @@ var productGroup_selectors = /*#__PURE__*/Object.freeze({
     getAuxSearchResults: getAuxSearchResults$1,
     getProductSuggestions: getProductSuggestions$1,
     getProductState: getProductState,
-    getSelectedProductsFactory: getSelectedProductsFactory,
     getSelectedProductStateFactory: getSelectedProductStateFactory,
     getSelectedProductFactory: getSelectedProductFactory,
     getSelectedProductLoadingFactory: getSelectedProductLoadingFactory,
@@ -19986,30 +19976,21 @@ function reducer$j(state = initialState$j, action) {
 const getReviewList = (state) => state.list;
 const getReviewProductCode = (state) => state.productCode;
 
+const initialScopedLoaderState = {};
 /**
  * Higher order reducer designed to add scope support for loader reducer
- *
- * For backward compatibility, we accommodate scopes alongside current
- * loading/error/success/value flags, thus those names can't be used as scope
- * names.
- *
- * TODO: Improve, issue #5445
  *
  * @param entityType
  * @param reducer
  */
 function scopedLoaderReducer(entityType, reducer) {
     const loader = loaderReducer(entityType, reducer);
-    return (state = initialLoaderState, action) => {
-        if (action &&
-            action.meta &&
-            action.meta.entityType === entityType &&
-            action.meta.scope) {
-            return Object.assign(Object.assign({}, state), { [action.meta.scope]: loader(state[action.meta.scope], action) });
+    return (state = initialScopedLoaderState, action) => {
+        var _a;
+        if (action && action.meta && action.meta.entityType === entityType) {
+            return Object.assign(Object.assign({}, state), { [(_a = action.meta.scope) !== null && _a !== void 0 ? _a : '']: loader(state[action.meta.scope], action) });
         }
-        else {
-            return loader(state, action);
-        }
+        return state;
     };
 }
 
