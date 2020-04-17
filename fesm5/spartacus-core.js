@@ -12747,6 +12747,7 @@ var BadRequestHandler = /** @class */ (function (_super) {
         this.handleBadLoginResponse(request, response);
         this.handleBadCartRequest(request, response);
         this.handleValidationError(request, response);
+        this.handleVoucherOperationError(request, response);
     };
     BadRequestHandler.prototype.handleBadPassword = function (request, response) {
         var _a, _b, _c;
@@ -12786,6 +12787,17 @@ var BadRequestHandler = /** @class */ (function (_super) {
             .filter(function (e) { return e.subjectType === 'cart' && e.reason === 'notFound'; })
             .forEach(function () {
             _this.globalMessageService.add({ key: 'httpHandlers.cartNotFound' }, GlobalMessageType.MSG_TYPE_ERROR);
+        });
+    };
+    BadRequestHandler.prototype.handleVoucherOperationError = function (_request, response) {
+        var _this = this;
+        this.getErrors(response)
+            .filter(function (e) {
+            return e.message === 'coupon.invalid.code.provided' &&
+                e.type === 'VoucherOperationError';
+        })
+            .forEach(function () {
+            _this.globalMessageService.add({ key: 'httpHandlers.invalidCodeProvided' }, GlobalMessageType.MSG_TYPE_ERROR);
         });
     };
     BadRequestHandler.prototype.getErrors = function (response) {
@@ -14970,14 +14982,6 @@ var CartVoucherEffects = /** @class */ (function () {
                 _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_CONFIRMATION);
                 return new CartAddVoucherSuccess(__assign({}, payload));
             }), catchError(function (error) {
-                var _a;
-                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                    error.error.errors.forEach(function (err) {
-                        if (err.message) {
-                            _this.messageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
-                        }
-                    });
-                }
                 return from([
                     new CartAddVoucherFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
                     new CartProcessesDecrement(payload.cartId),

@@ -11293,6 +11293,7 @@ let BadRequestHandler = class BadRequestHandler extends HttpErrorHandler {
         this.handleBadLoginResponse(request, response);
         this.handleBadCartRequest(request, response);
         this.handleValidationError(request, response);
+        this.handleVoucherOperationError(request, response);
     }
     handleBadPassword(request, response) {
         var _a, _b, _c;
@@ -11329,6 +11330,14 @@ let BadRequestHandler = class BadRequestHandler extends HttpErrorHandler {
             .filter((e) => e.subjectType === 'cart' && e.reason === 'notFound')
             .forEach(() => {
             this.globalMessageService.add({ key: 'httpHandlers.cartNotFound' }, GlobalMessageType.MSG_TYPE_ERROR);
+        });
+    }
+    handleVoucherOperationError(_request, response) {
+        this.getErrors(response)
+            .filter((e) => e.message === 'coupon.invalid.code.provided' &&
+            e.type === 'VoucherOperationError')
+            .forEach(() => {
+            this.globalMessageService.add({ key: 'httpHandlers.invalidCodeProvided' }, GlobalMessageType.MSG_TYPE_ERROR);
         });
     }
     getErrors(response) {
@@ -13267,24 +13276,14 @@ let CartVoucherEffects = class CartVoucherEffects {
                 .pipe(map(() => {
                 this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_CONFIRMATION);
                 return new CartAddVoucherSuccess(Object.assign({}, payload));
-            }), catchError((error) => {
-                var _a;
-                if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                    error.error.errors.forEach((err) => {
-                        if (err.message) {
-                            this.messageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
-                        }
-                    });
-                }
-                return from([
-                    new CartAddVoucherFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
-                    new CartProcessesDecrement(payload.cartId),
-                    new LoadCart({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                ]);
-            }));
+            }), catchError((error) => from([
+                new CartAddVoucherFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new CartProcessesDecrement(payload.cartId),
+                new LoadCart({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+            ])));
         }));
         this.removeCartVoucher$ = this.actions$.pipe(ofType(CART_REMOVE_VOUCHER), map((action) => action.payload), mergeMap((payload) => {
             return this.cartVoucherConnector

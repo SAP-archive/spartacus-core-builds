@@ -9,5 +9,6 @@ export declare class BadRequestHandler extends HttpErrorHandler {
     protected handleBadLoginResponse(_request: HttpRequest<any>, response: HttpErrorResponse): void;
     protected handleValidationError(_request: HttpRequest<any>, response: HttpErrorResponse): void;
     protected handleBadCartRequest(_request: HttpRequest<any>, response: HttpErrorResponse): void;
+    protected handleVoucherOperationError(_request: HttpRequest<any>, response: HttpErrorResponse): void;
     protected getErrors(response: HttpErrorResponse): ErrorModel[];
 }
