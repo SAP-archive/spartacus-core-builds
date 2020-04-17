@@ -1,8 +1,8 @@
-import { StateEntityLoaderActions } from '../../../state/utils/index';
+import { StateUtils } from '../../../state/utils/index';
 export declare const LOAD_CMS_NAVIGATION_ITEMS = "[Cms] Load NavigationEntry items";
 export declare const LOAD_CMS_NAVIGATION_ITEMS_FAIL = "[Cms] Load NavigationEntry items Fail";
 export declare const LOAD_CMS_NAVIGATION_ITEMS_SUCCESS = "[Cms] Load NavigationEntry items Success";
-export declare class LoadCmsNavigationItems extends StateEntityLoaderActions.EntityLoadAction {
+export declare class LoadCmsNavigationItems extends StateUtils.EntityLoadAction {
     payload: {
         nodeId: string;
         items: any[];
@@ -13,12 +13,12 @@ export declare class LoadCmsNavigationItems extends StateEntityLoaderActions.Ent
         items: any[];
     });
 }
-export declare class LoadCmsNavigationItemsFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class LoadCmsNavigationItemsFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[Cms] Load NavigationEntry items Fail";
     constructor(nodeId: string, payload: any);
 }
-export declare class LoadCmsNavigationItemsSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class LoadCmsNavigationItemsSuccess extends StateUtils.EntitySuccessAction {
     payload: {
         nodeId: string;
         components: any[];

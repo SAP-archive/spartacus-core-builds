@@ -1,6 +1,6 @@
 import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction } from '../../../state/utils/loader/loader.action';
 import { CustomerCouponSearchResult, CustomerCouponNotification, CustomerCoupon2Customer } from '../../../model/customer-coupon.model';
-import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
+import { EntityFailAction, EntityLoadAction, EntityLoaderResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 export declare const LOAD_CUSTOMER_COUPONS = "[User] Load Customer Coupons";
 export declare const LOAD_CUSTOMER_COUPONS_FAIL = "[User] Load Customer Coupons Fail";
 export declare const LOAD_CUSTOMER_COUPONS_SUCCESS = "[User] Load Customer Coupons Success";
@@ -66,7 +66,7 @@ export declare class SubscribeCustomerCouponSuccess extends EntitySuccessAction 
     readonly type = "[User] Subscribe Customer Coupon Notification Success";
     constructor(payload: CustomerCouponNotification);
 }
-export declare class ResetSubscribeCustomerCouponProcess extends EntityResetAction {
+export declare class ResetSubscribeCustomerCouponProcess extends EntityLoaderResetAction {
     readonly type = "[User] Reset Subscribe Customer Coupon Process";
     constructor();
 }
@@ -91,7 +91,7 @@ export declare class UnsubscribeCustomerCouponSuccess extends EntitySuccessActio
     readonly type = "[User] Unsubscribe Customer Coupon Notification Success";
     constructor(payload: any);
 }
-export declare class ResetUnsubscribeCustomerCouponProcess extends EntityResetAction {
+export declare class ResetUnsubscribeCustomerCouponProcess extends EntityLoaderResetAction {
     readonly type = "[User] Reset Unsubscribe Customer Coupon Process";
     constructor();
 }

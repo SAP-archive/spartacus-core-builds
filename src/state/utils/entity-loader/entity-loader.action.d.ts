@@ -31,7 +31,7 @@ export declare class EntitySuccessAction implements EntityLoaderAction {
     readonly meta: EntityLoaderMeta;
     constructor(entityType: string, id: string | string[], payload?: any);
 }
-export declare class EntityResetAction implements EntityLoaderAction {
+export declare class EntityLoaderResetAction implements EntityLoaderAction {
     type: string;
     readonly meta: EntityLoaderMeta;
     constructor(entityType: string, id: string | string[]);

@@ -1,5 +1,5 @@
-import { StateLoaderActions } from '../../../state/utils/index';
-import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
+import { StateUtils } from '../../../state/utils/index';
+import { EntityFailAction, EntityLoadAction, EntityLoaderResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 import { NotificationPreference } from '../../../model/notification-preference.model';
 export declare const LOAD_NOTIFICATION_PREFERENCES = "[User] Load Notification Preferences";
 export declare const LOAD_NOTIFICATION_PREFERENCES_FAIL = "[User] Load Notification Preferences Fail";
@@ -9,17 +9,17 @@ export declare const UPDATE_NOTIFICATION_PREFERENCES_FAIL = "[User] Update Notif
 export declare const UPDATE_NOTIFICATION_PREFERENCES_SUCCESS = "[User] Update Notification Preferences Success";
 export declare const RESET_NOTIFICATION_PREFERENCES = "[User] Reset Notification Preferences";
 export declare const CLEAR_NOTIFICATION_PREFERENCES = "[User] Clear Notification Preferences";
-export declare class LoadNotificationPreferences extends StateLoaderActions.LoaderLoadAction {
+export declare class LoadNotificationPreferences extends StateUtils.LoaderLoadAction {
     payload: string;
     readonly type = "[User] Load Notification Preferences";
     constructor(payload: string);
 }
-export declare class LoadNotificationPreferencesFail extends StateLoaderActions.LoaderFailAction {
+export declare class LoadNotificationPreferencesFail extends StateUtils.LoaderFailAction {
     payload: any;
     readonly type = "[User] Load Notification Preferences Fail";
     constructor(payload: any);
 }
-export declare class LoadNotificationPreferencesSuccess extends StateLoaderActions.LoaderSuccessAction {
+export declare class LoadNotificationPreferencesSuccess extends StateUtils.LoaderSuccessAction {
     payload: NotificationPreference[];
     readonly type = "[User] Load Notification Preferences Success";
     constructor(payload: NotificationPreference[]);
@@ -45,11 +45,11 @@ export declare class UpdateNotificationPreferencesSuccess extends EntitySuccessA
     readonly type = "[User] Update Notification Preferences Success";
     constructor(payload: NotificationPreference[]);
 }
-export declare class ResetNotificationPreferences extends EntityResetAction {
+export declare class ResetNotificationPreferences extends EntityLoaderResetAction {
     readonly type = "[User] Reset Notification Preferences";
     constructor();
 }
-export declare class ClearNotificationPreferences extends StateLoaderActions.LoaderResetAction {
+export declare class ClearNotificationPreferences extends StateUtils.LoaderResetAction {
     readonly type = "[User] Clear Notification Preferences";
     constructor();
 }

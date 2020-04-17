@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { User } from '../../../model/misc.model';
-import { StateEntityLoaderActions } from '../../../state/utils/index';
+import { StateUtils } from '../../../state/utils/index';
 export declare const LOAD_USER_DETAILS = "[User] Load User Details";
 export declare const LOAD_USER_DETAILS_FAIL = "[User] Load User Details Fail";
 export declare const LOAD_USER_DETAILS_SUCCESS = "[User] Load User Details Success";
@@ -23,7 +23,7 @@ export declare class LoadUserDetailsSuccess implements Action {
     readonly type = "[User] Load User Details Success";
     constructor(payload: User);
 }
-export declare class UpdateUserDetails extends StateEntityLoaderActions.EntityLoadAction {
+export declare class UpdateUserDetails extends StateUtils.EntityLoadAction {
     payload: {
         username: string;
         userDetails: User;
@@ -34,17 +34,17 @@ export declare class UpdateUserDetails extends StateEntityLoaderActions.EntityLo
         userDetails: User;
     });
 }
-export declare class UpdateUserDetailsFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class UpdateUserDetailsFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[User] Update User Details Fail";
     constructor(payload: any);
 }
-export declare class UpdateUserDetailsSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class UpdateUserDetailsSuccess extends StateUtils.EntitySuccessAction {
     userUpdates: User;
     readonly type = "[User] Update User Details Success";
     constructor(userUpdates: User);
 }
-export declare class ResetUpdateUserDetails extends StateEntityLoaderActions.EntityResetAction {
+export declare class ResetUpdateUserDetails extends StateUtils.EntityLoaderResetAction {
     readonly type = "[User] Reset User Details";
     constructor();
 }

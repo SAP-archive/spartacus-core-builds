@@ -3,7 +3,7 @@ import { Address } from '../../../model/address.model';
 import { PaymentDetails } from '../../../model/cart.model';
 import { DeliveryMode, Order } from '../../../model/order.model';
 import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
-import { StateEntityLoaderActions, StateLoaderActions } from '../../../state/utils/index';
+import { StateUtils } from '../../../state/utils/index';
 import { CheckoutDetails } from '../../models/checkout.model';
 export declare const CLEAR_CHECKOUT_DELIVERY_ADDRESS = "[Checkout] Clear Checkout Delivery Address";
 export declare const CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = "[Checkout] Clear Checkout Delivery Address Success";
@@ -70,7 +70,7 @@ export declare class AddDeliveryAddressSuccess implements Action {
     readonly type = "[Checkout] Add Delivery Address Success";
     constructor(payload: Address);
 }
-export declare class SetDeliveryAddress extends StateEntityLoaderActions.EntityLoadAction {
+export declare class SetDeliveryAddress extends StateUtils.EntityLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -83,21 +83,21 @@ export declare class SetDeliveryAddress extends StateEntityLoaderActions.EntityL
         address: Address;
     });
 }
-export declare class SetDeliveryAddressFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class SetDeliveryAddressFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[Checkout] Set Delivery Address Fail";
     constructor(payload: any);
 }
-export declare class SetDeliveryAddressSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class SetDeliveryAddressSuccess extends StateUtils.EntitySuccessAction {
     payload: Address;
     readonly type = "[Checkout] Set Delivery Address Success";
     constructor(payload: Address);
 }
-export declare class ResetSetDeliveryAddressProcess extends StateEntityLoaderActions.EntityResetAction {
+export declare class ResetSetDeliveryAddressProcess extends StateUtils.EntityLoaderResetAction {
     readonly type = "[Checkout] Reset Set Delivery Address Process";
     constructor();
 }
-export declare class LoadSupportedDeliveryModes extends StateEntityLoaderActions.EntityLoadAction {
+export declare class LoadSupportedDeliveryModes extends StateUtils.EntityLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -108,21 +108,21 @@ export declare class LoadSupportedDeliveryModes extends StateEntityLoaderActions
         cartId: string;
     });
 }
-export declare class LoadSupportedDeliveryModesFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class LoadSupportedDeliveryModesFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[Checkout] Load Supported Delivery Modes Fail";
     constructor(payload: any);
 }
-export declare class LoadSupportedDeliveryModesSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class LoadSupportedDeliveryModesSuccess extends StateUtils.EntitySuccessAction {
     payload: DeliveryMode[];
     readonly type = "[Checkout] Load Supported Delivery Modes Success";
     constructor(payload: DeliveryMode[]);
 }
-export declare class ResetLoadSupportedDeliveryModesProcess extends StateEntityLoaderActions.EntityResetAction {
+export declare class ResetLoadSupportedDeliveryModesProcess extends StateUtils.EntityLoaderResetAction {
     readonly type = "[Checkout] Reset Set Supported Delivery Modes Process";
     constructor();
 }
-export declare class SetDeliveryMode extends StateEntityLoaderActions.EntityLoadAction {
+export declare class SetDeliveryMode extends StateUtils.EntityLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -135,21 +135,21 @@ export declare class SetDeliveryMode extends StateEntityLoaderActions.EntityLoad
         selectedModeId: string;
     });
 }
-export declare class SetDeliveryModeFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class SetDeliveryModeFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[Checkout] Set Delivery Mode Fail";
     constructor(payload: any);
 }
-export declare class SetDeliveryModeSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class SetDeliveryModeSuccess extends StateUtils.EntitySuccessAction {
     payload: string;
     readonly type = "[Checkout] Set Delivery Mode Success";
     constructor(payload: string);
 }
-export declare class ResetSetDeliveryModeProcess extends StateEntityLoaderActions.EntityResetAction {
+export declare class ResetSetDeliveryModeProcess extends StateUtils.EntityLoaderResetAction {
     readonly type = "[Checkout] Reset Set Delivery Mode Process";
     constructor();
 }
-export declare class CreatePaymentDetails extends StateEntityLoaderActions.EntityLoadAction {
+export declare class CreatePaymentDetails extends StateUtils.EntityLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -162,7 +162,7 @@ export declare class CreatePaymentDetails extends StateEntityLoaderActions.Entit
         paymentDetails: PaymentDetails;
     });
 }
-export declare class CreatePaymentDetailsFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class CreatePaymentDetailsFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[Checkout] Create Payment Details Fail";
     constructor(payload: any);
@@ -172,11 +172,11 @@ export declare class CreatePaymentDetailsSuccess implements Action {
     readonly type = "[Checkout] Create Payment Details Success";
     constructor(payload: PaymentDetails);
 }
-export declare class PaymentProcessSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class PaymentProcessSuccess extends StateUtils.EntitySuccessAction {
     readonly type = "[Checkout] Payment Process Success";
     constructor();
 }
-export declare class SetPaymentDetails extends StateEntityLoaderActions.EntityLoadAction {
+export declare class SetPaymentDetails extends StateUtils.EntityLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -189,17 +189,17 @@ export declare class SetPaymentDetails extends StateEntityLoaderActions.EntityLo
         paymentDetails: PaymentDetails;
     });
 }
-export declare class SetPaymentDetailsFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class SetPaymentDetailsFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[Checkout] Set Payment Details Fail";
     constructor(payload: any);
 }
-export declare class SetPaymentDetailsSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class SetPaymentDetailsSuccess extends StateUtils.EntitySuccessAction {
     payload: PaymentDetails;
     readonly type = "[Checkout] Set Payment Details Success";
     constructor(payload: PaymentDetails);
 }
-export declare class ResetSetPaymentDetailsProcess extends StateEntityLoaderActions.EntityResetAction {
+export declare class ResetSetPaymentDetailsProcess extends StateUtils.EntityLoaderResetAction {
     readonly type = "[Checkout] Reset Set Payment Details Process";
     constructor();
 }
@@ -235,7 +235,7 @@ export declare class ClearCheckoutStep implements Action {
 export declare class ClearCheckoutData implements Action {
     readonly type = "[Checkout] Clear Checkout Data";
 }
-export declare class LoadCheckoutDetails extends StateLoaderActions.LoaderLoadAction {
+export declare class LoadCheckoutDetails extends StateUtils.LoaderLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -246,12 +246,12 @@ export declare class LoadCheckoutDetails extends StateLoaderActions.LoaderLoadAc
         cartId: string;
     });
 }
-export declare class LoadCheckoutDetailsFail extends StateLoaderActions.LoaderFailAction {
+export declare class LoadCheckoutDetailsFail extends StateUtils.LoaderFailAction {
     payload: any;
     readonly type = "[Checkout] Load Checkout Details Fail";
     constructor(payload: any);
 }
-export declare class LoadCheckoutDetailsSuccess extends StateLoaderActions.LoaderSuccessAction {
+export declare class LoadCheckoutDetailsSuccess extends StateUtils.LoaderSuccessAction {
     payload: CheckoutDetails;
     readonly type = "[Checkout] Load Checkout Details Success";
     constructor(payload: CheckoutDetails);

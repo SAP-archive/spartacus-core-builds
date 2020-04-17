@@ -1,5 +1,5 @@
 import { AnonymousConsent, ConsentTemplate } from '../../../model/consent.model';
-import { StateLoaderActions } from '../../../state/utils/index';
+import { StateUtils } from '../../../state/utils/index';
 export declare const LOAD_ANONYMOUS_CONSENT_TEMPLATES = "[Anonymous Consents] Load Anonymous Consent Templates";
 export declare const LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS = "[Anonymous Consents] Load Anonymous Consent Templates Success";
 export declare const LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL = "[Anonymous Consents] Load Anonymous Consent Templates Fail";
@@ -11,20 +11,20 @@ export declare const GIVE_ANONYMOUS_CONSENT = "[Anonymous Consents] Give Anonymo
 export declare const WITHDRAW_ANONYMOUS_CONSENT = "[Anonymous Consents] Withdraw Anonymous Consent";
 export declare const TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = "[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed";
 export declare const TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = "[Anonymous Consents] Anonymous Consent Templates Updated";
-export declare class LoadAnonymousConsentTemplates extends StateLoaderActions.LoaderLoadAction {
+export declare class LoadAnonymousConsentTemplates extends StateUtils.LoaderLoadAction {
     readonly type = "[Anonymous Consents] Load Anonymous Consent Templates";
     constructor();
 }
-export declare class LoadAnonymousConsentTemplatesSuccess extends StateLoaderActions.LoaderSuccessAction {
+export declare class LoadAnonymousConsentTemplatesSuccess extends StateUtils.LoaderSuccessAction {
     payload: ConsentTemplate[];
     readonly type = "[Anonymous Consents] Load Anonymous Consent Templates Success";
     constructor(payload: ConsentTemplate[]);
 }
-export declare class LoadAnonymousConsentTemplatesFail extends StateLoaderActions.LoaderFailAction {
+export declare class LoadAnonymousConsentTemplatesFail extends StateUtils.LoaderFailAction {
     readonly type = "[Anonymous Consents] Load Anonymous Consent Templates Fail";
     constructor(payload: any);
 }
-export declare class ResetLoadAnonymousConsentTemplates extends StateLoaderActions.LoaderResetAction {
+export declare class ResetLoadAnonymousConsentTemplates extends StateUtils.LoaderResetAction {
     readonly type = "[Anonymous Consents] Reset Load Anonymous Consent Templates";
     constructor();
 }

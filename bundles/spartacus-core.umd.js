@@ -512,17 +512,6 @@
         return EntityRemoveAllAction;
     }());
 
-    var entity_action = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        ENTITY_REMOVE_ACTION: ENTITY_REMOVE_ACTION,
-        ENTITY_REMOVE_ALL_ACTION: ENTITY_REMOVE_ALL_ACTION,
-        entityMeta: entityMeta,
-        entityRemoveMeta: entityRemoveMeta,
-        entityRemoveAllMeta: entityRemoveAllMeta,
-        EntityRemoveAction: EntityRemoveAction,
-        EntityRemoveAllAction: EntityRemoveAllAction
-    });
-
     var LOADER_LOAD_ACTION = '[LOADER] LOAD';
     var LOADER_FAIL_ACTION = '[LOADER] FAIL';
     var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
@@ -586,22 +575,6 @@
         return LoaderResetAction;
     }());
 
-    var loader_action = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        LOADER_LOAD_ACTION: LOADER_LOAD_ACTION,
-        LOADER_FAIL_ACTION: LOADER_FAIL_ACTION,
-        LOADER_SUCCESS_ACTION: LOADER_SUCCESS_ACTION,
-        LOADER_RESET_ACTION: LOADER_RESET_ACTION,
-        loadMeta: loadMeta,
-        failMeta: failMeta,
-        successMeta: successMeta,
-        resetMeta: resetMeta,
-        LoaderLoadAction: LoaderLoadAction,
-        LoaderFailAction: LoaderFailAction,
-        LoaderSuccessAction: LoaderSuccessAction,
-        LoaderResetAction: LoaderResetAction
-    });
-
     var ENTITY_LOAD_ACTION = '[ENTITY] LOAD';
     var ENTITY_FAIL_ACTION = '[ENTITY] LOAD FAIL';
     var ENTITY_SUCCESS_ACTION = '[ENTITY] LOAD SUCCESS';
@@ -640,29 +613,13 @@
         }
         return EntitySuccessAction;
     }());
-    var EntityResetAction = /** @class */ (function () {
-        function EntityResetAction(entityType, id) {
+    var EntityLoaderResetAction = /** @class */ (function () {
+        function EntityLoaderResetAction(entityType, id) {
             this.type = ENTITY_RESET_ACTION;
             this.meta = entityResetMeta(entityType, id);
         }
-        return EntityResetAction;
+        return EntityLoaderResetAction;
     }());
-
-    var entityLoader_action = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        ENTITY_LOAD_ACTION: ENTITY_LOAD_ACTION,
-        ENTITY_FAIL_ACTION: ENTITY_FAIL_ACTION,
-        ENTITY_SUCCESS_ACTION: ENTITY_SUCCESS_ACTION,
-        ENTITY_RESET_ACTION: ENTITY_RESET_ACTION,
-        entityLoadMeta: entityLoadMeta,
-        entityFailMeta: entityFailMeta,
-        entitySuccessMeta: entitySuccessMeta,
-        entityResetMeta: entityResetMeta,
-        EntityLoadAction: EntityLoadAction,
-        EntityFailAction: EntityFailAction,
-        EntitySuccessAction: EntitySuccessAction,
-        EntityResetAction: EntityResetAction
-    });
 
     var initialLoaderState = {
         loading: false,
@@ -709,34 +666,38 @@
         };
     }
 
-    function entityStateSelector(state, id) {
+    function loaderValueSelector(state) {
+        return state.value;
+    }
+    function loaderLoadingSelector(state) {
+        return state.loading;
+    }
+    function loaderErrorSelector(state) {
+        return state.error;
+    }
+    function loaderSuccessSelector(state) {
+        return state.success;
+    }
+
+    function entityLoaderStateSelector(state, id) {
         return state.entities[id] || initialLoaderState;
     }
     function entityValueSelector(state, id) {
-        var entityState = entityStateSelector(state, id);
-        return entityState.value;
+        var entityState = entityLoaderStateSelector(state, id);
+        return loaderValueSelector(entityState);
     }
     function entityLoadingSelector(state, id) {
-        var entityState = entityStateSelector(state, id);
-        return entityState.loading;
+        var entityState = entityLoaderStateSelector(state, id);
+        return loaderLoadingSelector(entityState);
     }
     function entityErrorSelector(state, id) {
-        var entityState = entityStateSelector(state, id);
-        return entityState.error;
+        var entityState = entityLoaderStateSelector(state, id);
+        return loaderErrorSelector(entityState);
     }
     function entitySuccessSelector(state, id) {
-        var entityState = entityStateSelector(state, id);
-        return entityState.success;
+        var entityState = entityLoaderStateSelector(state, id);
+        return loaderSuccessSelector(entityState);
     }
-
-    var entityLoader_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        entityStateSelector: entityStateSelector,
-        entityValueSelector: entityValueSelector,
-        entityLoadingSelector: entityLoadingSelector,
-        entityErrorSelector: entityErrorSelector,
-        entitySuccessSelector: entitySuccessSelector
-    });
 
     var initialEntityState = { entities: {} };
     /**
@@ -846,19 +807,6 @@
         return ProcessesDecrementAction;
     }());
 
-    var processesLoader_action = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        PROCESSES_INCREMENT_ACTION: PROCESSES_INCREMENT_ACTION,
-        PROCESSES_DECREMENT_ACTION: PROCESSES_DECREMENT_ACTION,
-        PROCESSES_LOADER_RESET_ACTION: PROCESSES_LOADER_RESET_ACTION,
-        processesIncrementMeta: processesIncrementMeta,
-        processesDecrementMeta: processesDecrementMeta,
-        processesLoaderResetMeta: processesLoaderResetMeta,
-        ProcessesLoaderResetAction: ProcessesLoaderResetAction,
-        ProcessesIncrementAction: ProcessesIncrementAction,
-        ProcessesDecrementAction: ProcessesDecrementAction
-    });
-
     var ENTITY_PROCESSES_LOADER_RESET_ACTION = '[ENTITY] PROCESSES LOADER RESET';
     var ENTITY_PROCESSES_INCREMENT_ACTION = '[ENTITY] PROCESSES INCREMENT';
     var ENTITY_PROCESSES_DECREMENT_ACTION = '[ENTITY] PROCESSES DECREMENT';
@@ -893,31 +841,12 @@
         return EntityProcessesDecrementAction;
     }());
 
-    var entityProcessesLoader_action = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        ENTITY_PROCESSES_LOADER_RESET_ACTION: ENTITY_PROCESSES_LOADER_RESET_ACTION,
-        ENTITY_PROCESSES_INCREMENT_ACTION: ENTITY_PROCESSES_INCREMENT_ACTION,
-        ENTITY_PROCESSES_DECREMENT_ACTION: ENTITY_PROCESSES_DECREMENT_ACTION,
-        entityProcessesLoaderResetMeta: entityProcessesLoaderResetMeta,
-        entityProcessesIncrementMeta: entityProcessesIncrementMeta,
-        entityProcessesDecrementMeta: entityProcessesDecrementMeta,
-        EntityProcessesLoaderResetAction: EntityProcessesLoaderResetAction,
-        EntityProcessesIncrementAction: EntityProcessesIncrementAction,
-        EntityProcessesDecrementAction: EntityProcessesDecrementAction
-    });
-
     function isStableSelector(state) {
         return state.processesCount === 0 && !state.loading;
     }
     function hasPendingProcessesSelector(state) {
         return state.processesCount > 0;
     }
-
-    var processesLoader_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        isStableSelector: isStableSelector,
-        hasPendingProcessesSelector: hasPendingProcessesSelector
-    });
 
     var initialProcessesState = {
         processesCount: 0,
@@ -953,23 +882,16 @@
 
     var initialProcessesLoaderState = __assign(__assign({}, initialLoaderState), initialProcessesState);
     function entityHasPendingProcessesSelector(state, id) {
-        var entityState = entityStateSelector(state, id);
+        var entityState = entityLoaderStateSelector(state, id);
         return hasPendingProcessesSelector(entityState);
     }
     function entityIsStableSelector(state, id) {
-        var entityState = entityStateSelector(state, id);
+        var entityState = entityLoaderStateSelector(state, id);
         return isStableSelector(entityState);
     }
     function entityProcessesLoaderStateSelector(state, id) {
         return state.entities[id] || initialProcessesLoaderState;
     }
-
-    var entityProcessesLoader_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        entityHasPendingProcessesSelector: entityHasPendingProcessesSelector,
-        entityIsStableSelector: entityIsStableSelector,
-        entityProcessesLoaderStateSelector: entityProcessesLoaderStateSelector
-    });
 
     /**
      * Higher order reducer that wraps ProcessesLoaderReducer and EntityReducer enhancing
@@ -982,11 +904,6 @@
     function entitySelector(state, id) {
         return state.entities[id] || undefined;
     }
-
-    var entity_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        entitySelector: entitySelector
-    });
 
     var OBJECT_SEPARATOR = '.';
     function getStateSliceValue(keys, state) {
@@ -1092,52 +1009,84 @@
         return Object.keys(keys).filter(function (key) { return keys[key] === type; });
     }
 
-    function loaderValueSelector(state) {
-        return state.value;
-    }
-    function loaderLoadingSelector(state) {
-        return state.loading;
-    }
-    function loaderErrorSelector(state) {
-        return state.error;
-    }
-    function loaderSuccessSelector(state) {
-        return state.success;
-    }
 
-    var loader_selectors = /*#__PURE__*/Object.freeze({
+
+    var utilsGroup = /*#__PURE__*/Object.freeze({
         __proto__: null,
+        getStateSlice: getStateSlice,
+        ENTITY_LOAD_ACTION: ENTITY_LOAD_ACTION,
+        ENTITY_FAIL_ACTION: ENTITY_FAIL_ACTION,
+        ENTITY_SUCCESS_ACTION: ENTITY_SUCCESS_ACTION,
+        ENTITY_RESET_ACTION: ENTITY_RESET_ACTION,
+        entityLoadMeta: entityLoadMeta,
+        entityFailMeta: entityFailMeta,
+        entitySuccessMeta: entitySuccessMeta,
+        entityResetMeta: entityResetMeta,
+        EntityLoadAction: EntityLoadAction,
+        EntityFailAction: EntityFailAction,
+        EntitySuccessAction: EntitySuccessAction,
+        EntityLoaderResetAction: EntityLoaderResetAction,
+        entityLoaderStateSelector: entityLoaderStateSelector,
+        entityValueSelector: entityValueSelector,
+        entityLoadingSelector: entityLoadingSelector,
+        entityErrorSelector: entityErrorSelector,
+        entitySuccessSelector: entitySuccessSelector,
+        entityLoaderReducer: entityLoaderReducer,
+        ENTITY_PROCESSES_LOADER_RESET_ACTION: ENTITY_PROCESSES_LOADER_RESET_ACTION,
+        ENTITY_PROCESSES_INCREMENT_ACTION: ENTITY_PROCESSES_INCREMENT_ACTION,
+        ENTITY_PROCESSES_DECREMENT_ACTION: ENTITY_PROCESSES_DECREMENT_ACTION,
+        entityProcessesLoaderResetMeta: entityProcessesLoaderResetMeta,
+        entityProcessesIncrementMeta: entityProcessesIncrementMeta,
+        entityProcessesDecrementMeta: entityProcessesDecrementMeta,
+        EntityProcessesLoaderResetAction: EntityProcessesLoaderResetAction,
+        EntityProcessesIncrementAction: EntityProcessesIncrementAction,
+        EntityProcessesDecrementAction: EntityProcessesDecrementAction,
+        entityHasPendingProcessesSelector: entityHasPendingProcessesSelector,
+        entityIsStableSelector: entityIsStableSelector,
+        entityProcessesLoaderStateSelector: entityProcessesLoaderStateSelector,
+        entityProcessesLoaderReducer: entityProcessesLoaderReducer,
+        ENTITY_REMOVE_ACTION: ENTITY_REMOVE_ACTION,
+        ENTITY_REMOVE_ALL_ACTION: ENTITY_REMOVE_ALL_ACTION,
+        entityMeta: entityMeta,
+        entityRemoveMeta: entityRemoveMeta,
+        entityRemoveAllMeta: entityRemoveAllMeta,
+        EntityRemoveAction: EntityRemoveAction,
+        EntityRemoveAllAction: EntityRemoveAllAction,
+        entitySelector: entitySelector,
+        initialEntityState: initialEntityState,
+        entityReducer: entityReducer,
+        LOADER_LOAD_ACTION: LOADER_LOAD_ACTION,
+        LOADER_FAIL_ACTION: LOADER_FAIL_ACTION,
+        LOADER_SUCCESS_ACTION: LOADER_SUCCESS_ACTION,
+        LOADER_RESET_ACTION: LOADER_RESET_ACTION,
+        loadMeta: loadMeta,
+        failMeta: failMeta,
+        successMeta: successMeta,
+        resetMeta: resetMeta,
+        LoaderLoadAction: LoaderLoadAction,
+        LoaderFailAction: LoaderFailAction,
+        LoaderSuccessAction: LoaderSuccessAction,
+        LoaderResetAction: LoaderResetAction,
         loaderValueSelector: loaderValueSelector,
         loaderLoadingSelector: loaderLoadingSelector,
         loaderErrorSelector: loaderErrorSelector,
-        loaderSuccessSelector: loaderSuccessSelector
+        loaderSuccessSelector: loaderSuccessSelector,
+        initialLoaderState: initialLoaderState,
+        loaderReducer: loaderReducer,
+        PROCESSES_INCREMENT_ACTION: PROCESSES_INCREMENT_ACTION,
+        PROCESSES_DECREMENT_ACTION: PROCESSES_DECREMENT_ACTION,
+        PROCESSES_LOADER_RESET_ACTION: PROCESSES_LOADER_RESET_ACTION,
+        processesIncrementMeta: processesIncrementMeta,
+        processesDecrementMeta: processesDecrementMeta,
+        processesLoaderResetMeta: processesLoaderResetMeta,
+        ProcessesLoaderResetAction: ProcessesLoaderResetAction,
+        ProcessesIncrementAction: ProcessesIncrementAction,
+        ProcessesDecrementAction: ProcessesDecrementAction,
+        isStableSelector: isStableSelector,
+        hasPendingProcessesSelector: hasPendingProcessesSelector,
+        initialProcessesState: initialProcessesState,
+        processesLoaderReducer: processesLoaderReducer
     });
-
-    function ofLoaderLoad(entityType) {
-        return operators.filter(function (action) {
-            return action.meta &&
-                action.meta.loader &&
-                action.meta.entityType === entityType &&
-                action.meta.loader.load;
-        });
-    }
-    function ofLoaderFail(entityType) {
-        return operators.filter(function (action) {
-            return action.meta &&
-                action.meta.loader &&
-                action.meta.entityType === entityType &&
-                action.meta.loader.error;
-        });
-    }
-    function ofLoaderSuccess(entityType) {
-        return operators.filter(function (action) {
-            return action.meta &&
-                action.meta.loader &&
-                action.meta.entityType === entityType &&
-                !action.meta.loader.load &&
-                !action.meta.loader.error;
-        });
-    }
 
     var AUTH_FEATURE = 'auth';
     var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
@@ -9026,7 +8975,7 @@
 
     function getProcessStateFactory(processId) {
         return store.createSelector(getProcessState(), function (entityState) {
-            return entityStateSelector(entityState, processId);
+            return entityLoaderStateSelector(entityState, processId);
         });
     }
     function getProcessLoadingFactory(processId) {
@@ -9269,7 +9218,7 @@
             return _this;
         }
         return ResetCancelOrderProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
 
     var LOAD_USER_PAYMENT_METHODS = '[User] Load User Payment Methods';
     var LOAD_USER_PAYMENT_METHODS_FAIL = '[User] Load User Payment Methods Fail';
@@ -9502,7 +9451,7 @@
             return _this;
         }
         return ResetUpdateEmailAction;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
 
     var UPDATE_PASSWORD = '[User] Update Password';
     var UPDATE_PASSWORD_FAIL = '[User] Update Password Fail';
@@ -9545,7 +9494,7 @@
             return _this;
         }
         return UpdatePasswordReset;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
 
     var LOAD_USER_ADDRESSES = '[User] Load User Addresses';
     var LOAD_USER_ADDRESSES_FAIL = '[User] Load User Addresses Fail';
@@ -9772,7 +9721,7 @@
             return _this;
         }
         return ResetGiveUserConsentProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var TransferAnonymousConsent = /** @class */ (function () {
         function TransferAnonymousConsent(payload) {
             this.payload = payload;
@@ -9816,7 +9765,7 @@
             return _this;
         }
         return ResetWithdrawUserConsentProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
 
     var LOAD_USER_DETAILS = '[User] Load User Details';
     var LOAD_USER_DETAILS_FAIL = '[User] Load User Details Fail';
@@ -9884,7 +9833,7 @@
             return _this;
         }
         return ResetUpdateUserDetails;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
 
     var CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
     var ClearUserMiscsData = /** @class */ (function () {
@@ -9986,7 +9935,7 @@
             return _this;
         }
         return ResetRegisterUserProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var RegisterGuest = /** @class */ (function () {
         function RegisterGuest(payload) {
             this.payload = payload;
@@ -10044,7 +9993,7 @@
             return _this;
         }
         return RemoveUserReset;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
 
     var LOAD_CUSTOMER_COUPONS = '[User] Load Customer Coupons';
     var LOAD_CUSTOMER_COUPONS_FAIL = '[User] Load Customer Coupons Fail';
@@ -10139,7 +10088,7 @@
             return _this;
         }
         return ResetSubscribeCustomerCouponProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var UnsubscribeCustomerCoupon = /** @class */ (function (_super) {
         __extends(UnsubscribeCustomerCoupon, _super);
         function UnsubscribeCustomerCoupon(payload) {
@@ -10178,7 +10127,7 @@
             return _this;
         }
         return ResetUnsubscribeCustomerCouponProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var ClaimCustomerCoupon = /** @class */ (function (_super) {
         __extends(ClaimCustomerCoupon, _super);
         function ClaimCustomerCoupon(payload) {
@@ -10286,7 +10235,7 @@
             return _this;
         }
         return ResetNotificationPreferences;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var ClearNotificationPreferences = /** @class */ (function (_super) {
         __extends(ClearNotificationPreferences, _super);
         function ClearNotificationPreferences() {
@@ -10407,7 +10356,7 @@
             return _this;
         }
         return ResetAddInterestState;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var ResetRemoveInterestState = /** @class */ (function (_super) {
         __extends(ResetRemoveInterestState, _super);
         function ResetRemoveInterestState() {
@@ -10416,7 +10365,7 @@
             return _this;
         }
         return ResetRemoveInterestState;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var ClearProductInterests = /** @class */ (function (_super) {
         __extends(ClearProductInterests, _super);
         function ClearProductInterests() {
@@ -10587,7 +10536,7 @@
             return _this;
         }
         return ResetCancelReturnProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
 
 
 
@@ -10926,13 +10875,9 @@
 
     var ɵ0$f = function (state) { return state.orderReturn; };
     var getOrderReturnRequestState = store.createSelector(getUserState, ɵ0$f);
-    var ɵ1$b = function (state) {
-        return loaderValueSelector(state);
-    };
+    var ɵ1$b = function (state) { return loaderValueSelector(state); };
     var getOrderReturnRequest = store.createSelector(getOrderReturnRequestState, ɵ1$b);
-    var ɵ2$5 = function (state) {
-        return loaderLoadingSelector(state);
-    };
+    var ɵ2$5 = function (state) { return loaderLoadingSelector(state); };
     var getOrderReturnRequestLoading = store.createSelector(getOrderReturnRequestState, ɵ2$5);
     var ɵ3$3 = function (state) {
         return loaderSuccessSelector(state) &&
@@ -14112,7 +14057,7 @@
             return _this;
         }
         return CartResetAddVoucher;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     // Deleting cart voucher
     var CartRemoveVoucher = /** @class */ (function (_super) {
         __extends(CartRemoveVoucher, _super);
@@ -15445,7 +15390,7 @@
             return _this;
         }
         return ResetSetDeliveryAddressProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var LoadSupportedDeliveryModes = /** @class */ (function (_super) {
         __extends(LoadSupportedDeliveryModes, _super);
         function LoadSupportedDeliveryModes(payload) {
@@ -15484,7 +15429,7 @@
             return _this;
         }
         return ResetLoadSupportedDeliveryModesProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var SetDeliveryMode = /** @class */ (function (_super) {
         __extends(SetDeliveryMode, _super);
         function SetDeliveryMode(payload) {
@@ -15523,7 +15468,7 @@
             return _this;
         }
         return ResetSetDeliveryModeProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var CreatePaymentDetails = /** @class */ (function (_super) {
         __extends(CreatePaymentDetails, _super);
         function CreatePaymentDetails(payload) {
@@ -15598,7 +15543,7 @@
             return _this;
         }
         return ResetSetPaymentDetailsProcess;
-    }(EntityResetAction));
+    }(EntityLoaderResetAction));
     var PlaceOrder = /** @class */ (function () {
         function PlaceOrder(payload) {
             this.payload = payload;
@@ -17083,9 +17028,7 @@
         });
     };
     var componentsContextExistsSelectorFactory = function (uid, context) {
-        return store.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) {
-            return loaderValueSelector(loaderState) || false;
-        });
+        return store.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState) || false; });
     };
     var componentsDataSelectorFactory = function (uid) {
         return store.createSelector(componentsContextSelectorFactory(uid), function (state) {
@@ -17107,7 +17050,7 @@
     var getNavigationEntryItemState = store.createSelector(getCmsState, ɵ0$x);
     var getSelectedNavigationEntryItemState = function (nodeId) {
         return store.createSelector(getNavigationEntryItemState, function (nodes) {
-            return entityStateSelector(nodes, nodeId);
+            return entityLoaderStateSelector(nodes, nodeId);
         });
     };
     var getNavigationEntryItems = function (nodeId) {
@@ -17178,7 +17121,7 @@
     };
     var getPageStateIndexLoaderState = function (pageContext) {
         return store.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) {
-            return entityStateSelector(indexState, pageContext.id);
+            return entityLoaderStateSelector(indexState, pageContext.id);
         });
     };
     var getPageStateIndexValue = function (pageContext) {
@@ -22392,7 +22335,7 @@
     var getSelectedProductStateFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
         return store.createSelector(getProductState, function (details) {
-            return entityStateSelector(details, code)[scope] ||
+            return entityLoaderStateSelector(details, code)[scope] ||
                 initialLoaderState;
         });
     };
@@ -27161,19 +27104,10 @@
     exports.SmartEditModule = SmartEditModule;
     exports.SmartEditService = SmartEditService;
     exports.StateConfig = StateConfig;
-    exports.StateEntityActions = entity_action;
-    exports.StateEntityLoaderActions = entityLoader_action;
-    exports.StateEntityLoaderSelectors = entityLoader_selectors;
-    exports.StateEntityProcessesLoaderActions = entityProcessesLoader_action;
-    exports.StateEntityProcessesLoaderSelectors = entityProcessesLoader_selectors;
-    exports.StateEntitySelectors = entity_selectors;
     exports.StateEventService = StateEventService;
-    exports.StateLoaderActions = loader_action;
-    exports.StateLoaderSelectors = loader_selectors;
     exports.StateModule = StateModule;
     exports.StatePersistenceService = StatePersistenceService;
-    exports.StateProcessesLoaderActions = processesLoader_action;
-    exports.StateProcessesLoaderSelectors = processesLoader_selectors;
+    exports.StateUtils = utilsGroup;
     exports.StoreDataService = StoreDataService;
     exports.StoreFinderActions = storeFinderGroup_actions;
     exports.StoreFinderAdapter = StoreFinderAdapter;
@@ -27248,27 +27182,15 @@
     exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
     exports.defaultOccConfig = defaultOccConfig;
     exports.defaultStateConfig = defaultStateConfig;
-    exports.entityLoaderReducer = entityLoaderReducer;
-    exports.entityProcessesLoaderReducer = entityProcessesLoaderReducer;
-    exports.entityReducer = entityReducer;
     exports.errorHandlers = errorHandlers;
     exports.getServerRequestProviders = getServerRequestProviders;
-    exports.getStateSlice = getStateSlice;
     exports.httpErrorInterceptors = httpErrorInterceptors;
     exports.initConfigurableRoutes = initConfigurableRoutes;
-    exports.initialEntityState = initialEntityState;
-    exports.initialLoaderState = initialLoaderState;
-    exports.initialProcessesState = initialProcessesState;
     exports.isFeatureEnabled = isFeatureEnabled;
     exports.isFeatureLevel = isFeatureLevel;
-    exports.loaderReducer = loaderReducer;
     exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
     exports.occConfigValidator = occConfigValidator;
     exports.occServerConfigFromMetaTagFactory = occServerConfigFromMetaTagFactory;
-    exports.ofLoaderFail = ofLoaderFail;
-    exports.ofLoaderLoad = ofLoaderLoad;
-    exports.ofLoaderSuccess = ofLoaderSuccess;
-    exports.processesLoaderReducer = processesLoaderReducer;
     exports.provideConfig = provideConfig;
     exports.provideConfigFactory = provideConfigFactory;
     exports.provideConfigFromMetaTags = provideConfigFromMetaTags;

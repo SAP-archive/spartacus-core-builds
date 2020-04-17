@@ -1,6 +1,6 @@
 import { ReturnRequest, ReturnRequestEntryInputList, ReturnRequestList, ReturnRequestModification } from '../../../model/order.model';
 import { LoaderFailAction, LoaderLoadAction, LoaderSuccessAction, LoaderResetAction } from '../../../state/utils/loader/loader.action';
-import { StateEntityLoaderActions } from '../../../state/utils/index';
+import { StateUtils } from '../../../state/utils/index';
 export declare const CREATE_ORDER_RETURN_REQUEST = "[User] Create Order Return Request";
 export declare const CREATE_ORDER_RETURN_REQUEST_FAIL = "[User] Create Order Return Request Fail";
 export declare const CREATE_ORDER_RETURN_REQUEST_SUCCESS = "[User] Create Order Return Request Success";
@@ -58,7 +58,7 @@ export declare class LoadOrderReturnRequestSuccess extends LoaderSuccessAction {
     readonly type = "[User] Load Order Return Request details Success";
     constructor(payload: ReturnRequest);
 }
-export declare class CancelOrderReturnRequest extends StateEntityLoaderActions.EntityLoadAction {
+export declare class CancelOrderReturnRequest extends StateUtils.EntityLoadAction {
     payload: {
         userId: string;
         returnRequestCode: string;
@@ -71,12 +71,12 @@ export declare class CancelOrderReturnRequest extends StateEntityLoaderActions.E
         returnRequestModification: ReturnRequestModification;
     });
 }
-export declare class CancelOrderReturnRequestFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class CancelOrderReturnRequestFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[User] Cancel Order Return Request Fail";
     constructor(payload: any);
 }
-export declare class CancelOrderReturnRequestSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class CancelOrderReturnRequestSuccess extends StateUtils.EntitySuccessAction {
     readonly type = "[User] Cancel Order Return Request Success";
     constructor();
 }
@@ -113,7 +113,7 @@ export declare class ClearOrderReturnRequestList extends LoaderResetAction {
     readonly type = "[User] Clear Order Return Request List";
     constructor();
 }
-export declare class ResetCancelReturnProcess extends StateEntityLoaderActions.EntityResetAction {
+export declare class ResetCancelReturnProcess extends StateUtils.EntityLoaderResetAction {
     readonly type = "[User] Reset Cancel Return Request Process";
     constructor();
 }

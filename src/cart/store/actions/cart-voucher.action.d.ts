@@ -1,4 +1,4 @@
-import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
+import { EntityFailAction, EntityLoadAction, EntityLoaderResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 import { EntityProcessesDecrementAction, EntityProcessesIncrementAction } from '../../../state/utils/entity-processes-loader/entity-processes-loader.action';
 export declare const CART_ADD_VOUCHER = "[Cart-voucher] Add Cart Vouchers";
 export declare const CART_ADD_VOUCHER_FAIL = "[Cart-voucher] Add Cart Voucher Fail";
@@ -53,7 +53,7 @@ export declare class CartAddVoucherSuccess extends EntitySuccessAction {
  *
  * @deprecated since 2.0
  */
-export declare class CartResetAddVoucher extends EntityResetAction {
+export declare class CartResetAddVoucher extends EntityLoaderResetAction {
     readonly type = "[Cart-voucher] Reset Add Cart Voucher";
     constructor();
 }

@@ -1,9 +1,9 @@
-import { StateLoaderActions } from '../../../state/utils/index';
+import { StateUtils } from '../../../state/utils/index';
 import { OpenIdToken } from '../../models/kyma-token-types.model';
 export declare const LOAD_OPEN_ID_TOKEN = "[Kyma] Load Open ID Token";
 export declare const LOAD_OPEN_ID_TOKEN_FAIL = "[Kyma] Load Open ID Token Fail";
 export declare const LOAD_OPEN_ID_TOKEN_SUCCESS = "[Kyma] Load Open ID Token Success";
-export declare class LoadOpenIdToken extends StateLoaderActions.LoaderLoadAction {
+export declare class LoadOpenIdToken extends StateUtils.LoaderLoadAction {
     payload: {
         username: string;
         password: string;
@@ -14,12 +14,12 @@ export declare class LoadOpenIdToken extends StateLoaderActions.LoaderLoadAction
         password: string;
     });
 }
-export declare class LoadOpenIdTokenFail extends StateLoaderActions.LoaderFailAction {
+export declare class LoadOpenIdTokenFail extends StateUtils.LoaderFailAction {
     payload: any;
     readonly type = "[Kyma] Load Open ID Token Fail";
     constructor(payload: any);
 }
-export declare class LoadOpenIdTokenSuccess extends StateLoaderActions.LoaderSuccessAction {
+export declare class LoadOpenIdTokenSuccess extends StateUtils.LoaderSuccessAction {
     payload: OpenIdToken;
     readonly type = "[Kyma] Load Open ID Token Success";
     constructor(payload: OpenIdToken);

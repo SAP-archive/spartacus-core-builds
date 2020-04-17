@@ -1,6 +1,6 @@
 import { ProductInterestSearchResult, ProductInterestEntryRelation, NotificationType } from '../../../model/product-interest.model';
 import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction } from '../../../state/utils/loader/loader.action';
-import { EntityFailAction, EntityLoadAction, EntitySuccessAction, EntityResetAction } from '../../../state/utils/entity-loader/entity-loader.action';
+import { EntityFailAction, EntityLoadAction, EntitySuccessAction, EntityLoaderResetAction } from '../../../state/utils/entity-loader/entity-loader.action';
 export declare const LOAD_PRODUCT_INTERESTS = "Load Product Interests";
 export declare const LOAD_PRODUCT_INTERESTS_FAIL = "Load Product Interests Fail";
 export declare const LOAD_PRODUCT_INTERESTS_SUCCESS = "Load Product Interests Success";
@@ -88,11 +88,11 @@ export declare class AddProductInterestFail extends EntityFailAction {
     readonly type = "Add Product Interest Fail";
     constructor(payload: any);
 }
-export declare class ResetAddInterestState extends EntityResetAction {
+export declare class ResetAddInterestState extends EntityLoaderResetAction {
     readonly type = "Add Product Interest Reset";
     constructor();
 }
-export declare class ResetRemoveInterestState extends EntityResetAction {
+export declare class ResetRemoveInterestState extends EntityLoaderResetAction {
     readonly type = "Remove Product Interest Reset";
     constructor();
 }

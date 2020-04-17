@@ -1,10 +1,9 @@
 import { MemoizedSelector } from '@ngrx/store';
 import { Product } from '../../../model/product.model';
-import { EntityLoaderState } from '../../../state/utils/entity-loader/entity-loader-state';
-import { LoaderState } from '../../../state/utils/loader/loader-state';
+import { StateUtils } from '../../../state/utils/index';
 import { StateWithProduct } from '../product-state';
-export declare const getProductState: MemoizedSelector<StateWithProduct, EntityLoaderState<Product>>;
-export declare const getSelectedProductStateFactory: (code: string, scope?: string) => MemoizedSelector<StateWithProduct, LoaderState<Product>, import("@ngrx/store").DefaultProjectorFn<LoaderState<Product>>>;
+export declare const getProductState: MemoizedSelector<StateWithProduct, StateUtils.EntityLoaderState<Product>>;
+export declare const getSelectedProductStateFactory: (code: string, scope?: string) => MemoizedSelector<StateWithProduct, StateUtils.LoaderState<Product>, import("@ngrx/store").DefaultProjectorFn<StateUtils.LoaderState<Product>>>;
 export declare const getSelectedProductFactory: (code: string, scope?: string) => MemoizedSelector<StateWithProduct, Product, import("@ngrx/store").DefaultProjectorFn<Product>>;
 export declare const getSelectedProductLoadingFactory: (code: string, scope?: string) => MemoizedSelector<StateWithProduct, boolean, import("@ngrx/store").DefaultProjectorFn<boolean>>;
 export declare const getSelectedProductSuccessFactory: (code: string, scope?: string) => MemoizedSelector<StateWithProduct, boolean, import("@ngrx/store").DefaultProjectorFn<boolean>>;

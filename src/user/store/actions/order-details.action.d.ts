@@ -1,6 +1,6 @@
 import { Order, CancellationRequestEntryInputList } from '../../../model/order.model';
 import { LoaderFailAction, LoaderLoadAction, LoaderSuccessAction, LoaderResetAction } from '../../../state/utils/loader/loader.action';
-import { StateEntityLoaderActions } from '../../../state/utils/index';
+import { StateUtils } from '../../../state/utils/index';
 export declare const LOAD_ORDER_DETAILS = "[User] Load Order Details";
 export declare const LOAD_ORDER_DETAILS_FAIL = "[User] Load Order Details Fail";
 export declare const LOAD_ORDER_DETAILS_SUCCESS = "[User] Load Order Details Success";
@@ -34,7 +34,7 @@ export declare class ClearOrderDetails extends LoaderResetAction {
     readonly type = "[User] Clear Order Details";
     constructor();
 }
-export declare class CancelOrder extends StateEntityLoaderActions.EntityLoadAction {
+export declare class CancelOrder extends StateUtils.EntityLoadAction {
     payload: {
         userId: string;
         orderCode: string;
@@ -47,16 +47,16 @@ export declare class CancelOrder extends StateEntityLoaderActions.EntityLoadActi
         cancelRequestInput: CancellationRequestEntryInputList;
     });
 }
-export declare class CancelOrderFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class CancelOrderFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[User] Cancel Order Fail";
     constructor(payload: any);
 }
-export declare class CancelOrderSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class CancelOrderSuccess extends StateUtils.EntitySuccessAction {
     readonly type = "[User] Cancel Order Success";
     constructor();
 }
-export declare class ResetCancelOrderProcess extends StateEntityLoaderActions.EntityResetAction {
+export declare class ResetCancelOrderProcess extends StateUtils.EntityLoaderResetAction {
     readonly type = "[User] Reset Cancel Order Process";
     constructor();
 }

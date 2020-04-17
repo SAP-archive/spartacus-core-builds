@@ -1,11 +1,11 @@
 import { CmsComponent } from '../../../model/cms.model';
 import { PageContext } from '../../../routing/index';
-import { StateEntityLoaderActions } from '../../../state/utils/index';
+import { StateUtils } from '../../../state/utils/index';
 export declare const LOAD_CMS_COMPONENT = "[Cms] Load Component";
 export declare const LOAD_CMS_COMPONENT_FAIL = "[Cms] Load Component Fail";
 export declare const LOAD_CMS_COMPONENT_SUCCESS = "[Cms] Load Component Success";
 export declare const CMS_GET_COMPONENT_FROM_PAGE = "[Cms] Get Component from Page";
-export declare class LoadCmsComponent extends StateEntityLoaderActions.EntityLoadAction {
+export declare class LoadCmsComponent extends StateUtils.EntityLoadAction {
     payload: {
         uid: string;
         pageContext: PageContext;
@@ -16,7 +16,7 @@ export declare class LoadCmsComponent extends StateEntityLoaderActions.EntityLoa
         pageContext: PageContext;
     });
 }
-export declare class LoadCmsComponentFail extends StateEntityLoaderActions.EntityFailAction {
+export declare class LoadCmsComponentFail extends StateUtils.EntityFailAction {
     payload: {
         uid: string;
         error: any;
@@ -29,7 +29,7 @@ export declare class LoadCmsComponentFail extends StateEntityLoaderActions.Entit
         pageContext: PageContext;
     });
 }
-export declare class LoadCmsComponentSuccess<T extends CmsComponent> extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class LoadCmsComponentSuccess<T extends CmsComponent> extends StateUtils.EntitySuccessAction {
     payload: {
         component: T;
         uid?: string;
@@ -42,7 +42,7 @@ export declare class LoadCmsComponentSuccess<T extends CmsComponent> extends Sta
         pageContext: PageContext;
     });
 }
-export declare class CmsGetComponentFromPage<T extends CmsComponent> extends StateEntityLoaderActions.EntitySuccessAction {
+export declare class CmsGetComponentFromPage<T extends CmsComponent> extends StateUtils.EntitySuccessAction {
     payload: {
         component: T;
         pageContext: PageContext;

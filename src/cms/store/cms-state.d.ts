@@ -1,6 +1,5 @@
 import { CmsComponent } from '../../model';
-import { EntityState, LoaderState } from '../../state/index';
-import { EntityLoaderState } from '../../state/utils/entity-loader/entity-loader-state';
+import { StateUtils } from '../../state/index';
 import { NodeItem } from '../model/node-item.model';
 import { Page } from '../model/page.model';
 export declare const CMS_FEATURE = "cms";
@@ -9,7 +8,7 @@ export declare const COMPONENT_ENTITY = "[Cms] Component Entity";
 export interface StateWithCms {
     [CMS_FEATURE]: CmsState;
 }
-export declare type ComponentsState = EntityState<ComponentsContext>;
+export declare type ComponentsState = StateUtils.EntityState<ComponentsContext>;
 export interface ComponentsContext {
     component: CmsComponent;
     /**
@@ -48,24 +47,24 @@ export interface ComponentsContext {
      *
      */
     pageContext: {
-        [context: string]: LoaderState<boolean>;
+        [context: string]: StateUtils.LoaderState<boolean>;
     };
 }
 export declare type IndexType = {
-    content: EntityLoaderState<string>;
-    product: EntityLoaderState<string>;
-    category: EntityLoaderState<string>;
-    catalog: EntityLoaderState<string>;
+    content: StateUtils.EntityLoaderState<string>;
+    product: StateUtils.EntityLoaderState<string>;
+    category: StateUtils.EntityLoaderState<string>;
+    catalog: StateUtils.EntityLoaderState<string>;
 };
 export interface NavigationNodes {
     [nodeId: string]: NodeItem;
 }
 export interface PageState {
-    pageData: EntityState<Page>;
+    pageData: StateUtils.EntityState<Page>;
     index: IndexType;
 }
 export interface CmsState {
     page: PageState;
     components: ComponentsState;
-    navigation: EntityLoaderState<NodeItem>;
+    navigation: StateUtils.EntityLoaderState<NodeItem>;
 }
