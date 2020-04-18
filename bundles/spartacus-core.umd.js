@@ -1531,7 +1531,8 @@
             this.config = config;
         }
         RoutingConfigService.prototype.getRouteConfig = function (routeName) {
-            var routeConfig = this.config && this.config.routing && this.config.routing.routes;
+            var _a, _b;
+            var routeConfig = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes;
             var result = routeConfig && routeConfig[routeName];
             if (!routeConfig || result === undefined) {
                 this.warn("No path was configured for the named route '" + routeName + "'!");
@@ -1546,6 +1547,10 @@
             if (core.isDevMode()) {
                 console.warn.apply(console, __spread(args));
             }
+        };
+        RoutingConfigService.prototype.getLoadStrategy = function () {
+            var _a, _b, _c;
+            return (_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.loadStrategy) !== null && _c !== void 0 ? _c : "always" /* ALWAYS */;
         };
         RoutingConfigService.ctorParameters = function () { return [
             { type: RoutingConfig }
