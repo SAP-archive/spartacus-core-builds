@@ -18048,8 +18048,8 @@ CmsModule = CmsModule_1 = __decorate([
 function resolveHandler(handlers, matchParams, priorityParams) {
     const matchedHandlers = (handlers !== null && handlers !== void 0 ? handlers : []).filter((handler) => !handler.hasMatch || handler.hasMatch(...matchParams));
     if (matchedHandlers.length > 1) {
-        matchedHandlers.sort((a, b) => (a.getPriority ? a.getPriority(...priorityParams) : 0) -
-            (b.getPriority ? b.getPriority(...priorityParams) : 0));
+        matchedHandlers.sort((a, b) => (a.getPriority ? a.getPriority(...priorityParams) : 0 /* NORMAL */) -
+            (b.getPriority ? b.getPriority(...priorityParams) : 0 /* NORMAL */));
     }
     return matchedHandlers[matchedHandlers.length - 1];
 }

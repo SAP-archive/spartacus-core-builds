@@ -20537,8 +20537,8 @@
         var matchedHandlers = (handlers !== null && handlers !== void 0 ? handlers : []).filter(function (handler) { return !handler.hasMatch || handler.hasMatch.apply(handler, __spread(matchParams)); });
         if (matchedHandlers.length > 1) {
             matchedHandlers.sort(function (a, b) {
-                return (a.getPriority ? a.getPriority.apply(a, __spread(priorityParams)) : 0) -
-                    (b.getPriority ? b.getPriority.apply(b, __spread(priorityParams)) : 0);
+                return (a.getPriority ? a.getPriority.apply(a, __spread(priorityParams)) : 0 /* NORMAL */) -
+                    (b.getPriority ? b.getPriority.apply(b, __spread(priorityParams)) : 0 /* NORMAL */);
             });
         }
         return matchedHandlers[matchedHandlers.length - 1];
