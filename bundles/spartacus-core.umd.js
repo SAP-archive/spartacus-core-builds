@@ -13811,6 +13811,12 @@
             }
             return score;
         };
+        PageMetaResolver.prototype.hasMatch = function (page) {
+            return this.getScore(page) > 0;
+        };
+        PageMetaResolver.prototype.getPriority = function (page) {
+            return this.getScore(page);
+        };
         return PageMetaResolver;
     }());
 
@@ -20511,6 +20517,33 @@
         return CmsModule;
     }());
 
+    /**
+     * Helper logic to resolve best matching handler
+     *
+     * Finding best match is a two step process:
+     * 1. Find all matching handlers
+     *    - all handlers for which hasMatch(...matchParams) will return true
+     *    - all handlers without hasMatch method (implicit always match)
+     * 2. Find the handler with highest priority
+     *    - handler with highest getPriority(...priorityParams) will win
+     *    - handler without getPriority method is treated as Priotity.NORMAL or 0
+     *    - handlers with the same priority are sorted by order of providers, the handler that was provided later wins
+     *
+     * @param handlers - array or handler-like instancese
+     * @param matchParams - array of parameters passed for hasMatch calls
+     * @param priorityParams - array of parameters passed for getPriority calls
+     */
+    function resolveHandler(handlers, matchParams, priorityParams) {
+        var matchedHandlers = (handlers !== null && handlers !== void 0 ? handlers : []).filter(function (handler) { return !handler.hasMatch || handler.hasMatch.apply(handler, __spread(matchParams)); });
+        if (matchedHandlers.length > 1) {
+            matchedHandlers.sort(function (a, b) {
+                return (a.getPriority ? a.getPriority.apply(a, __spread(priorityParams)) : 0) -
+                    (b.getPriority ? b.getPriority.apply(b, __spread(priorityParams)) : 0);
+            });
+        }
+        return matchedHandlers[matchedHandlers.length - 1];
+    }
+
     var PageMetaService = /** @class */ (function () {
         function PageMetaService(resolvers, cms) {
             this.resolvers = resolvers;
@@ -20571,11 +20604,7 @@
          * Resolvers match by default on `PageType` and `page.template`.
          */
         PageMetaService.prototype.getMetaResolver = function (page) {
-            var matchingResolvers = this.resolvers.filter(function (resolver) { return resolver.getScore(page) > 0; });
-            matchingResolvers.sort(function (a, b) {
-                return b.getScore(page) - a.getScore(page);
-            });
-            return matchingResolvers[0];
+            return resolveHandler(this.resolvers, [page], [page]);
         };
         PageMetaService.ctorParameters = function () { return [
             { type: Array, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PageMetaResolver,] }] },
@@ -27201,6 +27230,7 @@
     exports.provideConfigValidator = provideConfigValidator;
     exports.provideDefaultConfig = provideDefaultConfig;
     exports.provideDefaultConfigFactory = provideDefaultConfigFactory;
+    exports.resolveHandler = resolveHandler;
     exports.serviceMapFactory = serviceMapFactory;
     exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;
