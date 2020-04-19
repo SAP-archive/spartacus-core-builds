@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { ErrorModel } from '../../../../model/misc.model';
 import { HttpResponseStatus } from '../../../models/response-status.model';
 import { HttpErrorHandler } from '../http-error.handler';
+import { Priority } from '../../../../util/handler';
 export declare class BadRequestHandler extends HttpErrorHandler {
     responseStatus: HttpResponseStatus;
     handleError(request: HttpRequest<any>, response: HttpErrorResponse): void;
@@ -11,4 +12,5 @@ export declare class BadRequestHandler extends HttpErrorHandler {
     protected handleBadCartRequest(_request: HttpRequest<any>, response: HttpErrorResponse): void;
     protected handleVoucherOperationError(_request: HttpRequest<any>, response: HttpErrorResponse): void;
     protected getErrors(response: HttpErrorResponse): ErrorModel[];
+    getPriority(): Priority;
 }

@@ -12900,6 +12900,13 @@
         function HttpErrorHandler(globalMessageService) {
             this.globalMessageService = globalMessageService;
         }
+        /**
+         * Error handlers are matched by the error `responseStatus` (i.e. 404). On top of the matching status
+         * a priority can be added to distinguish multiple handles for the same response status.
+         */
+        HttpErrorHandler.prototype.hasMatch = function (errorResponse) {
+            return errorResponse.status === this.responseStatus;
+        };
         HttpErrorHandler.ctorParameters = function () { return [
             { type: GlobalMessageService }
         ]; };
@@ -12921,6 +12928,9 @@
         }
         BadGatewayHandler.prototype.handleError = function () {
             this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        BadGatewayHandler.prototype.getPriority = function () {
+            return -10 /* LOW */;
         };
         BadGatewayHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(core["ɵɵinject"](GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
         BadGatewayHandler = __decorate([
@@ -13001,6 +13011,9 @@
             var _a;
             return (((_a = response.error) === null || _a === void 0 ? void 0 : _a.errors) || []).filter(function (error) { return error.type !== 'JaloObjectNoLongerValidError'; });
         };
+        BadRequestHandler.prototype.getPriority = function () {
+            return -10 /* LOW */;
+        };
         BadRequestHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(core["ɵɵinject"](GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
         BadRequestHandler = __decorate([
             core.Injectable({
@@ -13019,6 +13032,9 @@
         }
         ConflictHandler.prototype.handleError = function () {
             this.globalMessageService.add({ key: 'httpHandlers.conflict' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        ConflictHandler.prototype.getPriority = function () {
+            return -10 /* LOW */;
         };
         ConflictHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConflictHandler_Factory() { return new ConflictHandler(core["ɵɵinject"](GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
         ConflictHandler = __decorate([
@@ -13039,6 +13055,9 @@
         ForbiddenHandler.prototype.handleError = function () {
             this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
         };
+        ForbiddenHandler.prototype.getPriority = function () {
+            return -10 /* LOW */;
+        };
         ForbiddenHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(core["ɵɵinject"](GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
         ForbiddenHandler = __decorate([
             core.Injectable({
@@ -13057,6 +13076,9 @@
         }
         GatewayTimeoutHandler.prototype.handleError = function () {
             this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        GatewayTimeoutHandler.prototype.getPriority = function () {
+            return -10 /* LOW */;
         };
         GatewayTimeoutHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(core["ɵɵinject"](GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
         GatewayTimeoutHandler = __decorate([
@@ -13077,6 +13099,9 @@
         InternalServerErrorHandler.prototype.handleError = function () {
             this.globalMessageService.add({ key: 'httpHandlers.internalServerError' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
         };
+        InternalServerErrorHandler.prototype.getPriority = function () {
+            return -10 /* LOW */;
+        };
         InternalServerErrorHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(core["ɵɵinject"](GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
         InternalServerErrorHandler = __decorate([
             core.Injectable({
@@ -13095,6 +13120,9 @@
         }
         // empty error handler to avoid we fallabck to the unknown error handler
         NotFoundHandler.prototype.handleError = function () { };
+        NotFoundHandler.prototype.getPriority = function () {
+            return -10 /* LOW */;
+        };
         NotFoundHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(core["ɵɵinject"](GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
         NotFoundHandler = __decorate([
             core.Injectable({
@@ -13130,6 +13158,9 @@
                 this.globalMessageService.add({ key: 'httpHandlers.unauthorized.common' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
             }
         };
+        UnauthorizedErrorHandler.prototype.getPriority = function () {
+            return -10 /* LOW */;
+        };
         UnauthorizedErrorHandler.ctorParameters = function () { return [
             { type: GlobalMessageService }
         ]; };
@@ -13142,6 +13173,10 @@
         return UnauthorizedErrorHandler;
     }(HttpErrorHandler));
 
+    /**
+     * Unknown Error Handler works as an fallback, to handle errors that were
+     * not handled by any other error handlers
+     */
     var UnknownErrorHandler = /** @class */ (function (_super) {
         __extends(UnknownErrorHandler, _super);
         function UnknownErrorHandler() {
@@ -13149,10 +13184,22 @@
             _this.responseStatus = HttpResponseStatus.UNKNOWN;
             return _this;
         }
+        /**
+         * hasMatch always returns true, to mach all errors
+         */
+        UnknownErrorHandler.prototype.hasMatch = function (_errorResponse) {
+            return true;
+        };
         UnknownErrorHandler.prototype.handleError = function () {
             if (core.isDevMode()) {
                 console.warn("Unknown http response error: " + this.responseStatus);
             }
+        };
+        /**
+         * Fallback priority assures that the handler is used as a last resort
+         */
+        UnknownErrorHandler.prototype.getPriority = function () {
+            return -50 /* FALLBACK */;
         };
         UnknownErrorHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core["ɵɵinject"](GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
         UnknownErrorHandler = __decorate([
@@ -13162,6 +13209,35 @@
         ], UnknownErrorHandler);
         return UnknownErrorHandler;
     }(HttpErrorHandler));
+
+    /**
+     * Helper logic to resolve best matching handler
+     *
+     * Finding best match is a two step process:
+     * 1. Find all matching handlers
+     *    - all handlers for which hasMatch(...matchParams) will return true
+     *    - all handlers without hasMatch method (implicit always match)
+     * 2. Find the handler with highest priority
+     *    - handler with highest getPriority(...priorityParams) will win
+     *    - handler without getPriority method is treated as Priotity.NORMAL or 0
+     *    - handlers with the same priority are sorted by order of providers, the handler that was provided later wins
+     *
+     * @param handlers - array or handler-like instancese
+     * @param matchParams - array of parameters passed for hasMatch calls
+     * @param priorityParams - array of parameters passed for getPriority calls
+     */
+    function resolveHandler(handlers, matchParams, priorityParams) {
+        if (matchParams === void 0) { matchParams = []; }
+        if (priorityParams === void 0) { priorityParams = []; }
+        var matchedHandlers = (handlers !== null && handlers !== void 0 ? handlers : []).filter(function (handler) { return !handler.hasMatch || handler.hasMatch.apply(handler, __spread(matchParams)); });
+        if (matchedHandlers.length > 1) {
+            matchedHandlers.sort(function (a, b) {
+                return (a.getPriority ? a.getPriority.apply(a, __spread(priorityParams)) : 0 /* NORMAL */) -
+                    (b.getPriority ? b.getPriority.apply(b, __spread(priorityParams)) : 0 /* NORMAL */);
+            });
+        }
+        return matchedHandlers[matchedHandlers.length - 1];
+    }
 
     var HttpErrorInterceptor = /** @class */ (function () {
         function HttpErrorInterceptor(handlers) {
@@ -13190,12 +13266,7 @@
          * If no handler is available, the UNKNOWN handler is returned.
          */
         HttpErrorInterceptor.prototype.getResponseHandler = function (response) {
-            var status = response.status;
-            var handler = this.handlers.find(function (h) { return h.responseStatus === status; });
-            if (!handler) {
-                handler = this.handlers.find(function (h) { return h.responseStatus === HttpResponseStatus.UNKNOWN; });
-            }
-            return handler;
+            return resolveHandler(this.handlers, [response]);
         };
         HttpErrorInterceptor.ctorParameters = function () { return [
             { type: Array, decorators: [{ type: core.Inject, args: [HttpErrorHandler,] }] }
@@ -20521,33 +20592,6 @@
         ], CmsModule);
         return CmsModule;
     }());
-
-    /**
-     * Helper logic to resolve best matching handler
-     *
-     * Finding best match is a two step process:
-     * 1. Find all matching handlers
-     *    - all handlers for which hasMatch(...matchParams) will return true
-     *    - all handlers without hasMatch method (implicit always match)
-     * 2. Find the handler with highest priority
-     *    - handler with highest getPriority(...priorityParams) will win
-     *    - handler without getPriority method is treated as Priotity.NORMAL or 0
-     *    - handlers with the same priority are sorted by order of providers, the handler that was provided later wins
-     *
-     * @param handlers - array or handler-like instancese
-     * @param matchParams - array of parameters passed for hasMatch calls
-     * @param priorityParams - array of parameters passed for getPriority calls
-     */
-    function resolveHandler(handlers, matchParams, priorityParams) {
-        var matchedHandlers = (handlers !== null && handlers !== void 0 ? handlers : []).filter(function (handler) { return !handler.hasMatch || handler.hasMatch.apply(handler, __spread(matchParams)); });
-        if (matchedHandlers.length > 1) {
-            matchedHandlers.sort(function (a, b) {
-                return (a.getPriority ? a.getPriority.apply(a, __spread(priorityParams)) : 0 /* NORMAL */) -
-                    (b.getPriority ? b.getPriority.apply(b, __spread(priorityParams)) : 0 /* NORMAL */);
-            });
-        }
-        return matchedHandlers[matchedHandlers.length - 1];
-    }
 
     var PageMetaService = /** @class */ (function () {
         function PageMetaService(resolvers, cms) {
