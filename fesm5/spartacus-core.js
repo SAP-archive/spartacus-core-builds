@@ -15738,7 +15738,10 @@ var CartEffects = /** @class */ (function () {
                             // Reload in case of expired coupon.
                             return of(new LoadCart(__assign({}, payload)));
                         }
-                        var cartNotFoundErrors = error.error.errors.filter(function (err) { return err.reason === 'notFound' || 'UnknownResourceError'; });
+                        var cartNotFoundErrors = error.error.errors.filter(function (err) {
+                            return err.reason === 'notFound' ||
+                                err.reason === 'UnknownResourceError';
+                        });
                         if (cartNotFoundErrors.length > 0) {
                             // Remove cart as it doesn't exist on backend.
                             return of(new RemoveCart({ cartId: payload.cartId }));

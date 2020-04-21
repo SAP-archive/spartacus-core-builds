@@ -13919,7 +13919,8 @@ let CartEffects = class CartEffects {
                         // Reload in case of expired coupon.
                         return of(new LoadCart(Object.assign({}, payload)));
                     }
-                    const cartNotFoundErrors = error.error.errors.filter((err) => err.reason === 'notFound' || 'UnknownResourceError');
+                    const cartNotFoundErrors = error.error.errors.filter((err) => err.reason === 'notFound' ||
+                        err.reason === 'UnknownResourceError');
                     if (cartNotFoundErrors.length > 0) {
                         // Remove cart as it doesn't exist on backend.
                         return of(new RemoveCart({ cartId: payload.cartId }));
