@@ -4,7 +4,6 @@ export declare class OccEndpointsService {
     private config;
     private baseSiteService;
     private activeBaseSite;
-    private readonly SCOPE_SUFFIX;
     constructor(config: OccConfig, baseSiteService: BaseSiteService);
     /**
      * Returns and endpoint starting from the OCC baseUrl (no baseSite)

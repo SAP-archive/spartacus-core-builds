@@ -2334,12 +2334,13 @@
         return CustomEncoder;
     }());
 
+    var DEFAULT_SCOPE = 'default';
+
     var OccEndpointsService = /** @class */ (function () {
         function OccEndpointsService(config, baseSiteService) {
             var _this = this;
             this.config = config;
             this.baseSiteService = baseSiteService;
-            this.SCOPE_SUFFIX = '_scopes';
             this.activeBaseSite =
                 getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID) || '';
             if (this.baseSiteService) {
@@ -2353,10 +2354,11 @@
          * @param endpoint Endpoint suffix
          */
         OccEndpointsService.prototype.getRawEndpoint = function (endpoint) {
-            if (!this.config || !this.config.backend || !this.config.backend.occ) {
+            var _a, _b, _c;
+            if (!((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.backend) === null || _b === void 0 ? void 0 : _b.occ)) {
                 return '';
             }
-            endpoint = this.config.backend.occ.endpoints[endpoint];
+            endpoint = (_c = this.config.backend.occ.endpoints) === null || _c === void 0 ? void 0 : _c[endpoint];
             if (!endpoint.startsWith('/')) {
                 endpoint = '/' + endpoint;
             }
@@ -2366,7 +2368,8 @@
          * Returns base OCC endpoint (baseUrl + prefix + baseSite)
          */
         OccEndpointsService.prototype.getBaseEndpoint = function () {
-            if (!this.config || !this.config.backend || !this.config.backend.occ) {
+            var _a, _b;
+            if (!((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.backend) === null || _b === void 0 ? void 0 : _b.occ)) {
                 return '';
             }
             return ((this.config.backend.occ.baseUrl || '') +
@@ -2392,7 +2395,6 @@
          */
         OccEndpointsService.prototype.getUrl = function (endpoint, urlParams, queryParams, scope) {
             var _a;
-            if (scope === void 0) { scope = ''; }
             endpoint = this.getEndpointForScope(endpoint, scope);
             if (urlParams) {
                 Object.keys(urlParams).forEach(function (key) {
@@ -2427,19 +2429,23 @@
             return this.getEndpoint(endpoint);
         };
         OccEndpointsService.prototype.getEndpointForScope = function (endpoint, scope) {
-            var endpointsConfig = this.config.backend &&
-                this.config.backend.occ &&
-                this.config.backend.occ.endpoints;
+            var _a, _b;
+            var endpointsConfig = (_b = (_a = this.config.backend) === null || _a === void 0 ? void 0 : _a.occ) === null || _b === void 0 ? void 0 : _b.endpoints;
+            var endpointConfig = endpointsConfig[endpoint];
             if (scope) {
-                var endpointConfig = endpointsConfig["" + endpoint + this.SCOPE_SUFFIX];
-                if (endpointConfig && endpointConfig[scope]) {
-                    return endpointConfig[scope];
+                if (endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[scope]) {
+                    return endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[scope];
+                }
+                if (scope === DEFAULT_SCOPE && typeof endpointConfig === 'string') {
+                    return endpointConfig;
                 }
                 if (core.isDevMode()) {
                     console.warn(endpoint + " endpoint configuration missing for scope \"" + scope + "\"");
                 }
             }
-            return endpointsConfig[endpoint] || endpoint;
+            return ((typeof endpointConfig === 'string'
+                ? endpointConfig
+                : endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[DEFAULT_SCOPE]) || endpoint);
         };
         OccEndpointsService.ctorParameters = function () { return [
             { type: OccConfig },
@@ -5666,8 +5672,8 @@
         backend: {
             occ: {
                 endpoints: {
-                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,manufacturer,numberOfReviews,categories(FULL),baseOptions,baseProduct,variantOptions,variantType',
-                    product_scopes: {
+                    product: {
+                        default: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,manufacturer,numberOfReviews,categories(FULL),baseOptions,baseProduct,variantOptions,variantType',
                         list: 'products/${productCode}?fields=code,name,summary,price(formattedValue),images(DEFAULT,galleryIndex)',
                         details: 'products/${productCode}?fields=averageRating,stock(DEFAULT),description,availableForPickup,code,url,price(DEFAULT),numberOfReviews,manufacturer,categories(FULL),priceRange,multidimensional,configuratorType,configurable,tags,images(FULL)',
                         attributes: 'products/${productCode}?fields=classifications',
@@ -22706,7 +22712,7 @@
          * @param scopes Scope or scopes of the product data
          */
         ProductService.prototype.get = function (productCode, scopes) {
-            if (scopes === void 0) { scopes = ''; }
+            if (scopes === void 0) { scopes = DEFAULT_SCOPE; }
             return productCode
                 ? this.productLoading.get(productCode, [].concat(scopes))
                 : rxjs.of(undefined);
@@ -26984,6 +26990,7 @@
     exports.CustomerSupportAgentTokenInterceptor = CustomerSupportAgentTokenInterceptor;
     exports.CxDatePipe = CxDatePipe;
     exports.DEFAULT_LOCAL_STORAGE_KEY = DEFAULT_LOCAL_STORAGE_KEY;
+    exports.DEFAULT_SCOPE = DEFAULT_SCOPE;
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
     exports.DEFAULT_URL_MATCHER = DEFAULT_URL_MATCHER;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
