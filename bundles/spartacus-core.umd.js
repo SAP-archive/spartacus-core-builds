@@ -21562,7 +21562,6 @@
 
     var defaultKymaConfig = {
         authentication: {
-            kyma_enabled: false,
             kyma_client_id: 'client4kyma',
             kyma_client_secret: 'secret',
         },
@@ -21606,18 +21605,17 @@
     var KymaServices = [OpenIdAuthenticationTokenService];
 
     var OpenIdTokenEffect = /** @class */ (function () {
-        function OpenIdTokenEffect(actions$, openIdTokenService, config) {
+        function OpenIdTokenEffect(actions$, openIdTokenService) {
             var _this = this;
             this.actions$ = actions$;
             this.openIdTokenService = openIdTokenService;
-            this.config = config;
-            this.triggerOpenIdTokenLoading$ = rxjs.iif(function () { return _this.config.authentication && _this.config.authentication.kyma_enabled; }, this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN))), operators.map(function (_a) {
+            this.triggerOpenIdTokenLoading$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN))), operators.map(function (_a) {
                 var _b = __read(_a, 2), loginAction = _b[1];
                 return new LoadOpenIdToken({
                     username: loginAction.payload.userId,
                     password: loginAction.payload.password,
                 });
-            })));
+            }));
             this.loadOpenIdToken$ = this.actions$.pipe(effects$c.ofType(LOAD_OPEN_ID_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) {
                 return _this.openIdTokenService
                     .loadOpenIdAuthenticationToken(payload.username, payload.password)
@@ -21628,8 +21626,7 @@
         }
         OpenIdTokenEffect.ctorParameters = function () { return [
             { type: effects$c.Actions },
-            { type: OpenIdAuthenticationTokenService },
-            { type: KymaConfig }
+            { type: OpenIdAuthenticationTokenService }
         ]; };
         __decorate([
             effects$c.Effect()

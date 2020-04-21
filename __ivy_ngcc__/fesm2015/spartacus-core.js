@@ -18487,7 +18487,6 @@ KymaService.ɵprov = ɵɵdefineInjectable({ factory: function KymaService_Factor
 
 const defaultKymaConfig = {
     authentication: {
-        kyma_enabled: false,
         kyma_client_id: 'client4kyma',
         kyma_client_secret: 'secret',
     },
@@ -18529,25 +18528,23 @@ OpenIdAuthenticationTokenService.ctorParameters = () => [
 const KymaServices = [OpenIdAuthenticationTokenService];
 
 let OpenIdTokenEffect = class OpenIdTokenEffect {
-    constructor(actions$, openIdTokenService, config) {
+    constructor(actions$, openIdTokenService) {
         this.actions$ = actions$;
         this.openIdTokenService = openIdTokenService;
-        this.config = config;
-        this.triggerOpenIdTokenLoading$ = iif(() => this.config.authentication && this.config.authentication.kyma_enabled, this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(([, loginAction]) => new LoadOpenIdToken({
+        this.triggerOpenIdTokenLoading$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(([, loginAction]) => new LoadOpenIdToken({
             username: loginAction.payload.userId,
             password: loginAction.payload.password,
-        }))));
+        })));
         this.loadOpenIdToken$ = this.actions$.pipe(ofType(LOAD_OPEN_ID_TOKEN), map((action) => action.payload), exhaustMap((payload) => this.openIdTokenService
             .loadOpenIdAuthenticationToken(payload.username, payload.password)
             .pipe(map((token) => new LoadOpenIdTokenSuccess(token)), catchError((error) => of(new LoadOpenIdTokenFail(makeErrorSerializable(error)))))));
     }
 };
-OpenIdTokenEffect.ɵfac = function OpenIdTokenEffect_Factory(t) { return new (t || OpenIdTokenEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(OpenIdAuthenticationTokenService), ɵngcc0.ɵɵinject(KymaConfig)); };
+OpenIdTokenEffect.ɵfac = function OpenIdTokenEffect_Factory(t) { return new (t || OpenIdTokenEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(OpenIdAuthenticationTokenService)); };
 OpenIdTokenEffect.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: OpenIdTokenEffect, factory: OpenIdTokenEffect.ɵfac });
 OpenIdTokenEffect.ctorParameters = () => [
     { type: Actions },
-    { type: OpenIdAuthenticationTokenService },
-    { type: KymaConfig }
+    { type: OpenIdAuthenticationTokenService }
 ];
 __decorate([
     Effect()
@@ -24331,7 +24328,7 @@ const ɵMockDatePipe_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(MockDatePipe)
     }], function () { return [{ type: KymaConfig }, { type: ɵngcc3.HttpClient }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OpenIdTokenEffect, [{
         type: Injectable
-    }], function () { return [{ type: ɵngcc4.Actions }, { type: OpenIdAuthenticationTokenService }, { type: KymaConfig }]; }, null); })();
+    }], function () { return [{ type: ɵngcc4.Actions }, { type: OpenIdAuthenticationTokenService }]; }, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(KymaStoreModule, { imports: function () { return [CommonModule,
         HttpClientModule,
         StateModule, ɵngcc1.StoreFeatureModule, ɵngcc4.EffectsFeatureModule]; } }); })();

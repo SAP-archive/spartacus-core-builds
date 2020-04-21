@@ -18974,7 +18974,6 @@ KymaService = __decorate([
 
 const defaultKymaConfig = {
     authentication: {
-        kyma_enabled: false,
         kyma_client_id: 'client4kyma',
         kyma_client_secret: 'secret',
     },
@@ -19017,14 +19016,13 @@ OpenIdAuthenticationTokenService = __decorate([
 const KymaServices = [OpenIdAuthenticationTokenService];
 
 let OpenIdTokenEffect = class OpenIdTokenEffect {
-    constructor(actions$, openIdTokenService, config) {
+    constructor(actions$, openIdTokenService) {
         this.actions$ = actions$;
         this.openIdTokenService = openIdTokenService;
-        this.config = config;
-        this.triggerOpenIdTokenLoading$ = iif(() => this.config.authentication && this.config.authentication.kyma_enabled, this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(([, loginAction]) => new LoadOpenIdToken({
+        this.triggerOpenIdTokenLoading$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(([, loginAction]) => new LoadOpenIdToken({
             username: loginAction.payload.userId,
             password: loginAction.payload.password,
-        }))));
+        })));
         this.loadOpenIdToken$ = this.actions$.pipe(ofType(LOAD_OPEN_ID_TOKEN), map((action) => action.payload), exhaustMap((payload) => this.openIdTokenService
             .loadOpenIdAuthenticationToken(payload.username, payload.password)
             .pipe(map((token) => new LoadOpenIdTokenSuccess(token)), catchError((error) => of(new LoadOpenIdTokenFail(makeErrorSerializable(error)))))));
@@ -19032,8 +19030,7 @@ let OpenIdTokenEffect = class OpenIdTokenEffect {
 };
 OpenIdTokenEffect.ctorParameters = () => [
     { type: Actions },
-    { type: OpenIdAuthenticationTokenService },
-    { type: KymaConfig }
+    { type: OpenIdAuthenticationTokenService }
 ];
 __decorate([
     Effect()

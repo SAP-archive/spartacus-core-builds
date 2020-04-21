@@ -21370,7 +21370,6 @@ var KymaService = /** @class */ (function () {
 
 var defaultKymaConfig = {
     authentication: {
-        kyma_enabled: false,
         kyma_client_id: 'client4kyma',
         kyma_client_secret: 'secret',
     },
@@ -21414,18 +21413,17 @@ var OpenIdAuthenticationTokenService = /** @class */ (function () {
 var KymaServices = [OpenIdAuthenticationTokenService];
 
 var OpenIdTokenEffect = /** @class */ (function () {
-    function OpenIdTokenEffect(actions$, openIdTokenService, config) {
+    function OpenIdTokenEffect(actions$, openIdTokenService) {
         var _this = this;
         this.actions$ = actions$;
         this.openIdTokenService = openIdTokenService;
-        this.config = config;
-        this.triggerOpenIdTokenLoading$ = iif(function () { return _this.config.authentication && _this.config.authentication.kyma_enabled; }, this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(function (_a) {
+        this.triggerOpenIdTokenLoading$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(function (_a) {
             var _b = __read(_a, 2), loginAction = _b[1];
             return new LoadOpenIdToken({
                 username: loginAction.payload.userId,
                 password: loginAction.payload.password,
             });
-        })));
+        }));
         this.loadOpenIdToken$ = this.actions$.pipe(ofType(LOAD_OPEN_ID_TOKEN), map(function (action) { return action.payload; }), exhaustMap(function (payload) {
             return _this.openIdTokenService
                 .loadOpenIdAuthenticationToken(payload.username, payload.password)
@@ -21436,8 +21434,7 @@ var OpenIdTokenEffect = /** @class */ (function () {
     }
     OpenIdTokenEffect.ctorParameters = function () { return [
         { type: Actions },
-        { type: OpenIdAuthenticationTokenService },
-        { type: KymaConfig }
+        { type: OpenIdAuthenticationTokenService }
     ]; };
     __decorate([
         Effect()
