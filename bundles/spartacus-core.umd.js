@@ -386,28 +386,6 @@
         return ConfigModule;
     }());
 
-    var SiteContextConfig = /** @class */ (function () {
-        function SiteContextConfig() {
-        }
-        return SiteContextConfig;
-    }());
-
-    var OccConfig = /** @class */ (function (_super) {
-        __extends(OccConfig, _super);
-        function OccConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return OccConfig;
-    }(SiteContextConfig));
-
-    var AnonymousConsentsConfig = /** @class */ (function (_super) {
-        __extends(AnonymousConsentsConfig, _super);
-        function AnonymousConsentsConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return AnonymousConsentsConfig;
-    }(OccConfig));
-
     var defaultAnonymousConsentsConfig = {
         anonymousConsents: {
             registerConsent: 'MARKETING_NEWSLETTER',
@@ -419,14 +397,6 @@
             },
         },
     };
-
-    var AuthConfig = /** @class */ (function (_super) {
-        __extends(AuthConfig, _super);
-        function AuthConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return AuthConfig;
-    }(OccConfig));
 
     var defaultAuthConfig = {
         authentication: {
@@ -1523,6 +1493,13 @@
     var RoutingConfig = /** @class */ (function () {
         function RoutingConfig() {
         }
+        RoutingConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function RoutingConfig_Factory() { return core["ɵɵinject"](Config); }, token: RoutingConfig, providedIn: "root" });
+        RoutingConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], RoutingConfig);
         return RoutingConfig;
     }());
 
@@ -2258,6 +2235,19 @@
         getSiteContextState: getSiteContextState
     });
 
+    var SiteContextConfig = /** @class */ (function () {
+        function SiteContextConfig() {
+        }
+        SiteContextConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SiteContextConfig_Factory() { return core["ɵɵinject"](Config); }, token: SiteContextConfig, providedIn: "root" });
+        SiteContextConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], SiteContextConfig);
+        return SiteContextConfig;
+    }());
+
     var LANGUAGE_CONTEXT_ID = 'language';
     var CURRENCY_CONTEXT_ID = 'currency';
     var BASE_SITE_CONTEXT_ID = 'baseSite';
@@ -2333,6 +2323,21 @@
         };
         return CustomEncoder;
     }());
+
+    var OccConfig = /** @class */ (function (_super) {
+        __extends(OccConfig, _super);
+        function OccConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        OccConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccConfig_Factory() { return core["ɵɵinject"](Config); }, token: OccConfig, providedIn: "root" });
+        OccConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], OccConfig);
+        return OccConfig;
+    }(SiteContextConfig));
 
     var DEFAULT_SCOPE = 'default';
 
@@ -2580,6 +2585,21 @@
         },
     ];
 
+    var AuthConfig = /** @class */ (function (_super) {
+        __extends(AuthConfig, _super);
+        function AuthConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        AuthConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AuthConfig_Factory() { return core["ɵɵinject"](Config); }, token: AuthConfig, providedIn: "root" });
+        AuthConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], AuthConfig);
+        return AuthConfig;
+    }(OccConfig));
+
     var ClientAuthenticationTokenService = /** @class */ (function () {
         function ClientAuthenticationTokenService(config, http, occEndpointsService) {
             this.config = config;
@@ -2685,6 +2705,13 @@
     var StateConfig = /** @class */ (function () {
         function StateConfig() {
         }
+        StateConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StateConfig_Factory() { return core["ɵɵinject"](Config); }, token: StateConfig, providedIn: "root" });
+        StateConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], StateConfig);
         return StateConfig;
     }());
 
@@ -2878,7 +2905,6 @@
                 ngModule: StateModule_1,
                 providers: __spread(stateMetaReducers, [
                     provideDefaultConfig(defaultStateConfig),
-                    { provide: StateConfig, useExisting: Config },
                 ]),
             };
         };
@@ -3105,9 +3131,7 @@
                 ngModule: AuthModule_1,
                 providers: __spread([
                     provideDefaultConfig(defaultAuthConfig)
-                ], interceptors, AuthServices, [
-                    { provide: AuthConfig, useExisting: Config },
-                ]),
+                ], interceptors, AuthServices),
             };
         };
         var AuthModule_1;
@@ -3767,6 +3791,13 @@
         function AsmConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
+        AsmConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AsmConfig_Factory() { return core["ɵɵinject"](Config); }, token: AsmConfig, providedIn: "root" });
+        AsmConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], AsmConfig);
         return AsmConfig;
     }(OccConfig));
 
@@ -4768,6 +4799,13 @@
         function CmsConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
+        CmsConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsConfig_Factory() { return core["ɵɵinject"](Config); }, token: CmsConfig, providedIn: "root" });
+        CmsConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], CmsConfig);
         return CmsConfig;
     }(OccConfig));
 
@@ -8514,7 +8552,6 @@
                         useExisting: WithCredentialsInterceptor,
                         multi: true,
                     },
-                    { provide: OccConfig, useExisting: Config },
                     provideDefaultConfig(defaultOccConfig),
                     provideConfigValidator(occConfigValidator),
                 ],
@@ -8615,6 +8652,21 @@
         ], LoadingScopesService);
         return LoadingScopesService;
     }());
+
+    var AnonymousConsentsConfig = /** @class */ (function (_super) {
+        __extends(AnonymousConsentsConfig, _super);
+        function AnonymousConsentsConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        AnonymousConsentsConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AnonymousConsentsConfig_Factory() { return core["ɵɵinject"](Config); }, token: AnonymousConsentsConfig, providedIn: "root" });
+        AnonymousConsentsConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], AnonymousConsentsConfig);
+        return AnonymousConsentsConfig;
+    }(OccConfig));
 
     var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
     var AnonymousConsentsInterceptor = /** @class */ (function () {
@@ -12331,7 +12383,6 @@
                     provideDefaultConfigFactory(defaultSiteContextConfigFactory),
                     contextServiceMapProvider
                 ], contextServiceProviders, siteContextParamsProviders, [
-                    { provide: SiteContextConfig, useExisting: Config },
                     provideConfigValidator(baseSiteConfigValidator),
                 ]),
             };
@@ -12467,7 +12518,6 @@
                 ngModule: AnonymousConsentsModule_1,
                 providers: __spread(interceptors$1, [
                     AnonymousConsentsService,
-                    { provide: AnonymousConsentsConfig, useExisting: Config },
                     provideDefaultConfig(defaultAnonymousConsentsConfig),
                 ]),
             };
@@ -12779,6 +12829,13 @@
     var GlobalMessageConfig = /** @class */ (function () {
         function GlobalMessageConfig() {
         }
+        GlobalMessageConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GlobalMessageConfig_Factory() { return core["ɵɵinject"](Config); }, token: GlobalMessageConfig, providedIn: "root" });
+        GlobalMessageConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], GlobalMessageConfig);
         return GlobalMessageConfig;
     }());
 
@@ -13570,7 +13627,6 @@
                 providers: [
                     provideDefaultConfigFactory(defaultGlobalMessageConfigFactory),
                     GlobalMessageService,
-                    { provide: GlobalMessageConfig, useExisting: Config },
                 ],
             })
         ], GlobalMessageModule);
@@ -13801,11 +13857,7 @@
         AsmModule.forRoot = function () {
             return {
                 ngModule: AsmModule_1,
-                providers: __spread([
-                    { provide: AsmConfig, useExisting: Config }
-                ], interceptors$2, [
-                    provideDefaultConfig(defaultAsmConfig),
-                ]),
+                providers: __spread(interceptors$2, [provideDefaultConfig(defaultAsmConfig)]),
             };
         };
         var AsmModule_1;
@@ -18898,21 +18950,6 @@
         return CheckoutPaymentService;
     }());
 
-    /**
-     * The `CmsStructureConfig` is used to build pages in Spartacus by configuration
-     * instead of using a backend CMS system. The configuration can be used to build
-     * complete pages or parts of a page. The `CmsStructureConfig` is optimized to
-     * only require the necessary properties. Adapter logic is applied to serialize
-     * the `CmsStructureConfig` into the required UI model.
-     */
-    var CmsStructureConfig = /** @class */ (function (_super) {
-        __extends(CmsStructureConfig, _super);
-        function CmsStructureConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return CmsStructureConfig;
-    }(CmsConfig));
-
     var defaultCmsModuleConfig = {
         backend: {
             occ: {
@@ -19001,6 +19038,167 @@
             return source.pipe(operators.tap(function (value) { return bufferedValues.push(value); }), operators.debounceTime(time, scheduler), operators.map(function () { return bufferedValues; }), operators.tap(function () { return (bufferedValues = []); }));
         };
     }
+
+    function getCookie(cookie, name) {
+        var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
+        var result = regExp.exec(cookie);
+        return (result && decodeURIComponent(result[1])) || '';
+    }
+
+    var TEST_CONFIG_COOKIE_NAME = new core.InjectionToken('TEST_CONFIG_COOKIE_NAME');
+    function parseConfigJSON(config) {
+        try {
+            return JSON.parse(decodeURIComponent(config));
+        }
+        catch (_) {
+            return {};
+        }
+    }
+    function configFromCookieFactory(cookieName, platform, document) {
+        if (common.isPlatformBrowser(platform) && cookieName) {
+            var config = getCookie(document.cookie, cookieName);
+            return parseConfigJSON(config);
+        }
+        return {};
+    }
+    /**
+     * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
+     *
+     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+     */
+    var TestConfigModule = /** @class */ (function () {
+        function TestConfigModule() {
+        }
+        TestConfigModule_1 = TestConfigModule;
+        /**
+         * Injects JSON config from the cookie of the given name.
+         *
+         * Be aware of the cookie limitations (4096 bytes).
+         *
+         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+         */
+        TestConfigModule.forRoot = function (options) {
+            return {
+                ngModule: TestConfigModule_1,
+                providers: [
+                    {
+                        provide: TEST_CONFIG_COOKIE_NAME,
+                        useValue: options && options.cookie,
+                    },
+                    provideConfigFactory(configFromCookieFactory, [
+                        TEST_CONFIG_COOKIE_NAME,
+                        core.PLATFORM_ID,
+                        common.DOCUMENT,
+                    ]),
+                ],
+            };
+        };
+        var TestConfigModule_1;
+        TestConfigModule = TestConfigModule_1 = __decorate([
+            core.NgModule({})
+        ], TestConfigModule);
+        return TestConfigModule;
+    }());
+
+    function configValidatorFactory(configInitializer, validators) {
+        var validate = function () {
+            if (core.isDevMode()) {
+                configInitializer
+                    .getStableConfig()
+                    .then(function (config) { return validateConfig(config, validators || []); });
+            }
+        };
+        return validate;
+    }
+    /**
+     * Should stay private in 1.x
+     * as forRoot() is used internally by ConfigInitializerModule
+     *
+     * issue: #5279
+     */
+    var ConfigValidatorModule = /** @class */ (function () {
+        function ConfigValidatorModule() {
+        }
+        ConfigValidatorModule_1 = ConfigValidatorModule;
+        ConfigValidatorModule.forRoot = function () {
+            return {
+                ngModule: ConfigValidatorModule_1,
+                providers: [
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: configValidatorFactory,
+                        deps: [
+                            ConfigInitializerService,
+                            [new core.Optional(), ConfigValidatorToken],
+                        ],
+                    },
+                ],
+            };
+        };
+        var ConfigValidatorModule_1;
+        ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
+            core.NgModule()
+        ], ConfigValidatorModule);
+        return ConfigValidatorModule;
+    }());
+
+    function configInitializerFactory(configInitializer, initializers) {
+        var isReady = function () { return configInitializer.initialize(initializers); };
+        return isReady;
+    }
+    var ConfigInitializerModule = /** @class */ (function () {
+        function ConfigInitializerModule() {
+        }
+        ConfigInitializerModule_1 = ConfigInitializerModule;
+        ConfigInitializerModule.forRoot = function () {
+            return {
+                ngModule: ConfigInitializerModule_1,
+                providers: [
+                    {
+                        provide: CONFIG_INITIALIZER_FORROOT_GUARD,
+                        useValue: true,
+                    },
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: configInitializerFactory,
+                        deps: [
+                            ConfigInitializerService,
+                            [new core.Optional(), CONFIG_INITIALIZER],
+                        ],
+                    },
+                ],
+            };
+        };
+        var ConfigInitializerModule_1;
+        ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
+            core.NgModule({})
+        ], ConfigInitializerModule);
+        return ConfigInitializerModule;
+    }());
+
+    /**
+     * The `CmsStructureConfig` is used to build pages in Spartacus by configuration
+     * instead of using a backend CMS system. The configuration can be used to build
+     * complete pages or parts of a page. The `CmsStructureConfig` is optimized to
+     * only require the necessary properties. Adapter logic is applied to serialize
+     * the `CmsStructureConfig` into the required UI model.
+     */
+    var CmsStructureConfig = /** @class */ (function (_super) {
+        __extends(CmsStructureConfig, _super);
+        function CmsStructureConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        CmsStructureConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsStructureConfig_Factory() { return core["ɵɵinject"](Config); }, token: CmsStructureConfig, providedIn: "root" });
+        CmsStructureConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], CmsStructureConfig);
+        return CmsStructureConfig;
+    }(CmsConfig));
 
     /**
      * Service that provides access to CMS structure from a static
@@ -19733,6 +19931,13 @@
     var ExternalRoutesConfig = /** @class */ (function () {
         function ExternalRoutesConfig() {
         }
+        ExternalRoutesConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ExternalRoutesConfig_Factory() { return core["ɵɵinject"](Config); }, token: ExternalRoutesConfig, providedIn: "root" });
+        ExternalRoutesConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], ExternalRoutesConfig);
         return ExternalRoutesConfig;
     }());
 
@@ -19850,7 +20055,6 @@
                 ngModule: ExternalRoutesModule_1,
                 providers: [
                     ExternalRoutesService,
-                    { provide: ExternalRoutesConfig, useExisting: Config },
                     {
                         provide: core.APP_INITIALIZER,
                         multi: true,
@@ -20183,7 +20387,6 @@
                         deps: [ConfigurableRoutesService],
                         multi: true,
                     },
-                    { provide: RoutingConfig, useExisting: Config },
                 ],
             };
         };
@@ -20585,12 +20788,7 @@
         CmsModule.forRoot = function () {
             return {
                 ngModule: CmsModule_1,
-                providers: [
-                    CmsService,
-                    { provide: CmsConfig, useExisting: Config },
-                    { provide: CmsStructureConfig, useExisting: Config },
-                    provideDefaultConfig(defaultCmsModuleConfig),
-                ],
+                providers: [CmsService, provideDefaultConfig(defaultCmsModuleConfig)],
             };
         };
         var CmsModule_1;
@@ -20725,148 +20923,16 @@
         return DynamicAttributeService;
     }());
 
-    function getCookie(cookie, name) {
-        var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
-        var result = regExp.exec(cookie);
-        return (result && decodeURIComponent(result[1])) || '';
-    }
-
-    var TEST_CONFIG_COOKIE_NAME = new core.InjectionToken('TEST_CONFIG_COOKIE_NAME');
-    function parseConfigJSON(config) {
-        try {
-            return JSON.parse(decodeURIComponent(config));
-        }
-        catch (_) {
-            return {};
-        }
-    }
-    function configFromCookieFactory(cookieName, platform, document) {
-        if (common.isPlatformBrowser(platform) && cookieName) {
-            var config = getCookie(document.cookie, cookieName);
-            return parseConfigJSON(config);
-        }
-        return {};
-    }
-    /**
-     * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
-     *
-     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
-     */
-    var TestConfigModule = /** @class */ (function () {
-        function TestConfigModule() {
-        }
-        TestConfigModule_1 = TestConfigModule;
-        /**
-         * Injects JSON config from the cookie of the given name.
-         *
-         * Be aware of the cookie limitations (4096 bytes).
-         *
-         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
-         */
-        TestConfigModule.forRoot = function (options) {
-            return {
-                ngModule: TestConfigModule_1,
-                providers: [
-                    {
-                        provide: TEST_CONFIG_COOKIE_NAME,
-                        useValue: options && options.cookie,
-                    },
-                    provideConfigFactory(configFromCookieFactory, [
-                        TEST_CONFIG_COOKIE_NAME,
-                        core.PLATFORM_ID,
-                        common.DOCUMENT,
-                    ]),
-                ],
-            };
-        };
-        var TestConfigModule_1;
-        TestConfigModule = TestConfigModule_1 = __decorate([
-            core.NgModule({})
-        ], TestConfigModule);
-        return TestConfigModule;
-    }());
-
-    function configValidatorFactory(configInitializer, validators) {
-        var validate = function () {
-            if (core.isDevMode()) {
-                configInitializer
-                    .getStableConfig()
-                    .then(function (config) { return validateConfig(config, validators || []); });
-            }
-        };
-        return validate;
-    }
-    /**
-     * Should stay private in 1.x
-     * as forRoot() is used internally by ConfigInitializerModule
-     *
-     * issue: #5279
-     */
-    var ConfigValidatorModule = /** @class */ (function () {
-        function ConfigValidatorModule() {
-        }
-        ConfigValidatorModule_1 = ConfigValidatorModule;
-        ConfigValidatorModule.forRoot = function () {
-            return {
-                ngModule: ConfigValidatorModule_1,
-                providers: [
-                    {
-                        provide: core.APP_INITIALIZER,
-                        multi: true,
-                        useFactory: configValidatorFactory,
-                        deps: [
-                            ConfigInitializerService,
-                            [new core.Optional(), ConfigValidatorToken],
-                        ],
-                    },
-                ],
-            };
-        };
-        var ConfigValidatorModule_1;
-        ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
-            core.NgModule()
-        ], ConfigValidatorModule);
-        return ConfigValidatorModule;
-    }());
-
-    function configInitializerFactory(configInitializer, initializers) {
-        var isReady = function () { return configInitializer.initialize(initializers); };
-        return isReady;
-    }
-    var ConfigInitializerModule = /** @class */ (function () {
-        function ConfigInitializerModule() {
-        }
-        ConfigInitializerModule_1 = ConfigInitializerModule;
-        ConfigInitializerModule.forRoot = function () {
-            return {
-                ngModule: ConfigInitializerModule_1,
-                providers: [
-                    {
-                        provide: CONFIG_INITIALIZER_FORROOT_GUARD,
-                        useValue: true,
-                    },
-                    {
-                        provide: core.APP_INITIALIZER,
-                        multi: true,
-                        useFactory: configInitializerFactory,
-                        deps: [
-                            ConfigInitializerService,
-                            [new core.Optional(), CONFIG_INITIALIZER],
-                        ],
-                    },
-                ],
-            };
-        };
-        var ConfigInitializerModule_1;
-        ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
-            core.NgModule({})
-        ], ConfigInitializerModule);
-        return ConfigInitializerModule;
-    }());
-
     var FeaturesConfig = /** @class */ (function () {
         function FeaturesConfig() {
         }
+        FeaturesConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function FeaturesConfig_Factory() { return core["ɵɵinject"](Config); }, token: FeaturesConfig, providedIn: "root" });
+        FeaturesConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], FeaturesConfig);
         return FeaturesConfig;
     }());
 
@@ -21016,10 +21082,6 @@
                             level: defaultLevel || '*',
                         },
                     }),
-                    {
-                        provide: FeaturesConfig,
-                        useExisting: Config,
-                    },
                 ],
             };
         };
@@ -21130,6 +21192,13 @@
     var I18nConfig = /** @class */ (function () {
         function I18nConfig() {
         }
+        I18nConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function I18nConfig_Factory() { return core["ɵɵinject"](Config); }, token: I18nConfig, providedIn: "root" });
+        I18nConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], I18nConfig);
         return I18nConfig;
     }());
 
@@ -21364,7 +21433,6 @@
                 ngModule: I18nModule_1,
                 providers: __spread([
                     provideDefaultConfig(defaultI18nConfig),
-                    { provide: I18nConfig, useExisting: Config },
                     { provide: TranslationService, useClass: I18nextTranslationService },
                     TranslationChunkService
                 ], i18nextProviders),
@@ -21464,6 +21532,13 @@
         function KymaConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
+        KymaConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function KymaConfig_Factory() { return core["ɵɵinject"](Config); }, token: KymaConfig, providedIn: "root" });
+        KymaConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], KymaConfig);
         return KymaConfig;
     }(OccConfig));
 
@@ -21711,20 +21786,10 @@
         KymaModule = __decorate([
             core.NgModule({
                 imports: [common.CommonModule, http.HttpClientModule, KymaStoreModule],
-                providers: __spread([
-                    provideDefaultConfig(defaultKymaConfig)
-                ], KymaServices, [
-                    { provide: KymaConfig, useExisting: Config },
-                ]),
+                providers: __spread([provideDefaultConfig(defaultKymaConfig)], KymaServices),
             })
         ], KymaModule);
         return KymaModule;
-    }());
-
-    var PersonalizationConfig = /** @class */ (function () {
-        function PersonalizationConfig() {
-        }
-        return PersonalizationConfig;
     }());
 
     var defaultPersonalizationConfig = {
@@ -21740,6 +21805,19 @@
             },
         },
     };
+
+    var PersonalizationConfig = /** @class */ (function () {
+        function PersonalizationConfig() {
+        }
+        PersonalizationConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function PersonalizationConfig_Factory() { return core["ɵɵinject"](Config); }, token: PersonalizationConfig, providedIn: "root" });
+        PersonalizationConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], PersonalizationConfig);
+        return PersonalizationConfig;
+    }());
 
     var PERSONALIZATION_ID_KEY = 'personalization-id';
     var OccPersonalizationIdInterceptor = /** @class */ (function () {
@@ -21890,9 +21968,7 @@
         };
         var PersonalizationModule_1;
         PersonalizationModule = PersonalizationModule_1 = __decorate([
-            core.NgModule({
-                providers: [{ provide: PersonalizationConfig, useExisting: Config }],
-            })
+            core.NgModule({})
         ], PersonalizationModule);
         return PersonalizationModule;
     }());
@@ -23764,6 +23840,13 @@
     var StoreFinderConfig = /** @class */ (function () {
         function StoreFinderConfig() {
         }
+        StoreFinderConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StoreFinderConfig_Factory() { return core["ɵɵinject"](Config); }, token: StoreFinderConfig, providedIn: "root" });
+        StoreFinderConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], StoreFinderConfig);
         return StoreFinderConfig;
     }());
 
@@ -24402,7 +24485,6 @@
                     StoreDataService,
                     GoogleMapRendererService,
                     ExternalJsFileLoader,
-                    { provide: StoreFinderConfig, useExisting: Config },
                 ],
             })
         ], StoreFinderCoreModule);
@@ -27372,158 +27454,159 @@
     exports.ɵdw = ComponentsEffects;
     exports.ɵdx = NavigationEntryItemEffects;
     exports.ɵdy = PageEffects;
-    exports.ɵdz = reducer$f;
+    exports.ɵdz = Config;
     exports.ɵe = initConfig;
-    exports.ɵea = reducer$g;
-    exports.ɵeb = reducer$d;
-    exports.ɵec = reducer$e;
-    exports.ɵed = GlobalMessageStoreModule;
-    exports.ɵee = getReducers$4;
-    exports.ɵef = reducerToken$4;
-    exports.ɵeg = reducerProvider$4;
-    exports.ɵeh = reducer$8;
-    exports.ɵei = GlobalMessageEffect;
-    exports.ɵej = defaultGlobalMessageConfigFactory;
-    exports.ɵek = HttpErrorInterceptor;
-    exports.ɵel = defaultI18nConfig;
-    exports.ɵem = i18nextProviders;
-    exports.ɵen = i18nextInit;
-    exports.ɵeo = MockTranslationService;
-    exports.ɵep = kymaStoreConfigFactory;
-    exports.ɵeq = KymaStoreModule;
-    exports.ɵer = getReducers$8;
-    exports.ɵes = reducerToken$8;
-    exports.ɵet = reducerProvider$8;
-    exports.ɵeu = clearKymaState;
-    exports.ɵev = metaReducers$4;
-    exports.ɵew = effects$8;
-    exports.ɵex = OpenIdTokenEffect;
-    exports.ɵey = OpenIdAuthenticationTokenService;
-    exports.ɵez = defaultKymaConfig;
+    exports.ɵea = reducer$f;
+    exports.ɵeb = reducer$g;
+    exports.ɵec = reducer$d;
+    exports.ɵed = reducer$e;
+    exports.ɵee = GlobalMessageStoreModule;
+    exports.ɵef = getReducers$4;
+    exports.ɵeg = reducerToken$4;
+    exports.ɵeh = reducerProvider$4;
+    exports.ɵei = reducer$8;
+    exports.ɵej = GlobalMessageEffect;
+    exports.ɵek = defaultGlobalMessageConfigFactory;
+    exports.ɵel = HttpErrorInterceptor;
+    exports.ɵem = defaultI18nConfig;
+    exports.ɵen = i18nextProviders;
+    exports.ɵeo = i18nextInit;
+    exports.ɵep = MockTranslationService;
+    exports.ɵeq = kymaStoreConfigFactory;
+    exports.ɵer = KymaStoreModule;
+    exports.ɵes = getReducers$8;
+    exports.ɵet = reducerToken$8;
+    exports.ɵeu = reducerProvider$8;
+    exports.ɵev = clearKymaState;
+    exports.ɵew = metaReducers$4;
+    exports.ɵex = effects$8;
+    exports.ɵey = OpenIdTokenEffect;
+    exports.ɵez = OpenIdAuthenticationTokenService;
     exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = defaultOccAsmConfig;
-    exports.ɵfb = defaultOccCartConfig;
-    exports.ɵfc = OccSaveCartAdapter;
-    exports.ɵfd = defaultOccProductConfig;
-    exports.ɵfe = defaultOccSiteContextConfig;
-    exports.ɵff = defaultOccStoreFinderConfig;
-    exports.ɵfg = defaultOccUserConfig;
-    exports.ɵfh = UserNotificationPreferenceAdapter;
-    exports.ɵfi = defaultPersonalizationConfig;
-    exports.ɵfj = interceptors$3;
-    exports.ɵfk = OccPersonalizationIdInterceptor;
-    exports.ɵfl = OccPersonalizationTimeInterceptor;
-    exports.ɵfm = ProcessStoreModule;
-    exports.ɵfn = getReducers$9;
-    exports.ɵfo = reducerToken$9;
-    exports.ɵfp = reducerProvider$9;
-    exports.ɵfq = productStoreConfigFactory;
-    exports.ɵfr = ProductStoreModule;
-    exports.ɵfs = getReducers$a;
-    exports.ɵft = reducerToken$a;
-    exports.ɵfu = reducerProvider$a;
-    exports.ɵfv = clearProductsState;
-    exports.ɵfw = metaReducers$5;
-    exports.ɵfx = effects$9;
-    exports.ɵfy = ProductReferencesEffects;
-    exports.ɵfz = ProductReviewsEffects;
+    exports.ɵfa = defaultKymaConfig;
+    exports.ɵfb = defaultOccAsmConfig;
+    exports.ɵfc = defaultOccCartConfig;
+    exports.ɵfd = OccSaveCartAdapter;
+    exports.ɵfe = defaultOccProductConfig;
+    exports.ɵff = defaultOccSiteContextConfig;
+    exports.ɵfg = defaultOccStoreFinderConfig;
+    exports.ɵfh = defaultOccUserConfig;
+    exports.ɵfi = UserNotificationPreferenceAdapter;
+    exports.ɵfj = defaultPersonalizationConfig;
+    exports.ɵfk = interceptors$3;
+    exports.ɵfl = OccPersonalizationIdInterceptor;
+    exports.ɵfm = OccPersonalizationTimeInterceptor;
+    exports.ɵfn = ProcessStoreModule;
+    exports.ɵfo = getReducers$9;
+    exports.ɵfp = reducerToken$9;
+    exports.ɵfq = reducerProvider$9;
+    exports.ɵfr = productStoreConfigFactory;
+    exports.ɵfs = ProductStoreModule;
+    exports.ɵft = getReducers$a;
+    exports.ɵfu = reducerToken$a;
+    exports.ɵfv = reducerProvider$a;
+    exports.ɵfw = clearProductsState;
+    exports.ɵfx = metaReducers$5;
+    exports.ɵfy = effects$9;
+    exports.ɵfz = ProductReferencesEffects;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = ProductsSearchEffects;
-    exports.ɵgb = ProductEffects;
-    exports.ɵgc = reducer$h;
-    exports.ɵgd = entityScopedLoaderReducer;
-    exports.ɵge = scopedLoaderReducer;
-    exports.ɵgf = reducer$j;
-    exports.ɵgg = reducer$i;
-    exports.ɵgh = PageMetaResolver;
-    exports.ɵgi = CouponSearchPageResolver;
-    exports.ɵgj = PageMetaResolver;
-    exports.ɵgk = addExternalRoutesFactory;
-    exports.ɵgl = getReducers$6;
-    exports.ɵgm = reducer$c;
-    exports.ɵgn = reducerToken$6;
-    exports.ɵgo = reducerProvider$6;
-    exports.ɵgp = CustomSerializer;
-    exports.ɵgq = effects$6;
-    exports.ɵgr = RouterEffects;
-    exports.ɵgs = siteContextStoreConfigFactory;
-    exports.ɵgt = SiteContextStoreModule;
-    exports.ɵgu = getReducers$1;
-    exports.ɵgv = reducerToken$1;
-    exports.ɵgw = reducerProvider$1;
-    exports.ɵgx = effects$2;
-    exports.ɵgy = LanguagesEffects;
-    exports.ɵgz = CurrenciesEffects;
+    exports.ɵga = ProductReviewsEffects;
+    exports.ɵgb = ProductsSearchEffects;
+    exports.ɵgc = ProductEffects;
+    exports.ɵgd = reducer$h;
+    exports.ɵge = entityScopedLoaderReducer;
+    exports.ɵgf = scopedLoaderReducer;
+    exports.ɵgg = reducer$j;
+    exports.ɵgh = reducer$i;
+    exports.ɵgi = PageMetaResolver;
+    exports.ɵgj = CouponSearchPageResolver;
+    exports.ɵgk = PageMetaResolver;
+    exports.ɵgl = addExternalRoutesFactory;
+    exports.ɵgm = getReducers$6;
+    exports.ɵgn = reducer$c;
+    exports.ɵgo = reducerToken$6;
+    exports.ɵgp = reducerProvider$6;
+    exports.ɵgq = CustomSerializer;
+    exports.ɵgr = effects$6;
+    exports.ɵgs = RouterEffects;
+    exports.ɵgt = siteContextStoreConfigFactory;
+    exports.ɵgu = SiteContextStoreModule;
+    exports.ɵgv = getReducers$1;
+    exports.ɵgw = reducerToken$1;
+    exports.ɵgx = reducerProvider$1;
+    exports.ɵgy = effects$2;
+    exports.ɵgz = LanguagesEffects;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = BaseSiteEffects;
-    exports.ɵhb = reducer$3;
-    exports.ɵhc = reducer$2;
-    exports.ɵhd = reducer$1;
-    exports.ɵhe = defaultSiteContextConfigFactory;
-    exports.ɵhf = initializeContext;
-    exports.ɵhg = contextServiceProviders;
-    exports.ɵhh = initSiteContextRoutesHandler;
-    exports.ɵhi = siteContextParamsProviders;
-    exports.ɵhj = SiteContextUrlSerializer;
-    exports.ɵhk = SiteContextRoutesHandler;
-    exports.ɵhl = baseSiteConfigValidator;
-    exports.ɵhm = interceptors$4;
-    exports.ɵhn = CmsTicketInterceptor;
-    exports.ɵho = StoreFinderStoreModule;
-    exports.ɵhp = getReducers$b;
-    exports.ɵhq = reducerToken$b;
-    exports.ɵhr = reducerProvider$b;
-    exports.ɵhs = effects$a;
-    exports.ɵht = FindStoresEffect;
-    exports.ɵhu = ViewAllStoresEffect;
-    exports.ɵhv = defaultStoreFinderConfig;
-    exports.ɵhw = UserStoreModule;
-    exports.ɵhx = getReducers$c;
-    exports.ɵhy = reducerToken$c;
-    exports.ɵhz = reducerProvider$c;
+    exports.ɵha = CurrenciesEffects;
+    exports.ɵhb = BaseSiteEffects;
+    exports.ɵhc = reducer$3;
+    exports.ɵhd = reducer$2;
+    exports.ɵhe = reducer$1;
+    exports.ɵhf = defaultSiteContextConfigFactory;
+    exports.ɵhg = initializeContext;
+    exports.ɵhh = contextServiceProviders;
+    exports.ɵhi = initSiteContextRoutesHandler;
+    exports.ɵhj = siteContextParamsProviders;
+    exports.ɵhk = SiteContextUrlSerializer;
+    exports.ɵhl = SiteContextRoutesHandler;
+    exports.ɵhm = baseSiteConfigValidator;
+    exports.ɵhn = interceptors$4;
+    exports.ɵho = CmsTicketInterceptor;
+    exports.ɵhp = StoreFinderStoreModule;
+    exports.ɵhq = getReducers$b;
+    exports.ɵhr = reducerToken$b;
+    exports.ɵhs = reducerProvider$b;
+    exports.ɵht = effects$a;
+    exports.ɵhu = FindStoresEffect;
+    exports.ɵhv = ViewAllStoresEffect;
+    exports.ɵhw = defaultStoreFinderConfig;
+    exports.ɵhx = UserStoreModule;
+    exports.ɵhy = getReducers$c;
+    exports.ɵhz = reducerToken$c;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = clearUserState;
-    exports.ɵib = metaReducers$7;
-    exports.ɵic = effects$b;
-    exports.ɵid = BillingCountriesEffect;
-    exports.ɵie = ClearMiscsDataEffect;
-    exports.ɵif = ConsignmentTrackingEffects;
-    exports.ɵig = DeliveryCountriesEffects;
-    exports.ɵih = NotificationPreferenceEffects;
-    exports.ɵii = OrderDetailsEffect;
-    exports.ɵij = OrderReturnRequestEffect;
-    exports.ɵik = UserPaymentMethodsEffects;
-    exports.ɵil = RegionsEffects;
-    exports.ɵim = ResetPasswordEffects;
-    exports.ɵin = TitlesEffects;
-    exports.ɵio = UserAddressesEffects;
-    exports.ɵip = UserConsentsEffect;
-    exports.ɵiq = UserDetailsEffects;
-    exports.ɵir = UserOrdersEffect;
-    exports.ɵis = UserRegisterEffects;
-    exports.ɵit = CustomerCouponEffects;
-    exports.ɵiu = ProductInterestsEffect;
-    exports.ɵiv = ForgotPasswordEffects;
-    exports.ɵiw = UpdateEmailEffects;
-    exports.ɵix = UpdatePasswordEffects;
-    exports.ɵiy = UserNotificationPreferenceConnector;
-    exports.ɵiz = reducer$v;
+    exports.ɵia = reducerProvider$c;
+    exports.ɵib = clearUserState;
+    exports.ɵic = metaReducers$7;
+    exports.ɵid = effects$b;
+    exports.ɵie = BillingCountriesEffect;
+    exports.ɵif = ClearMiscsDataEffect;
+    exports.ɵig = ConsignmentTrackingEffects;
+    exports.ɵih = DeliveryCountriesEffects;
+    exports.ɵii = NotificationPreferenceEffects;
+    exports.ɵij = OrderDetailsEffect;
+    exports.ɵik = OrderReturnRequestEffect;
+    exports.ɵil = UserPaymentMethodsEffects;
+    exports.ɵim = RegionsEffects;
+    exports.ɵin = ResetPasswordEffects;
+    exports.ɵio = TitlesEffects;
+    exports.ɵip = UserAddressesEffects;
+    exports.ɵiq = UserConsentsEffect;
+    exports.ɵir = UserDetailsEffects;
+    exports.ɵis = UserOrdersEffect;
+    exports.ɵit = UserRegisterEffects;
+    exports.ɵiu = CustomerCouponEffects;
+    exports.ɵiv = ProductInterestsEffect;
+    exports.ɵiw = ForgotPasswordEffects;
+    exports.ɵix = UpdateEmailEffects;
+    exports.ɵiy = UpdatePasswordEffects;
+    exports.ɵiz = UserNotificationPreferenceConnector;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = reducer$t;
-    exports.ɵjb = reducer$k;
-    exports.ɵjc = reducer$u;
-    exports.ɵjd = reducer$p;
-    exports.ɵje = reducer$w;
-    exports.ɵjf = reducer$o;
-    exports.ɵjg = reducer$z;
-    exports.ɵjh = reducer$m;
-    exports.ɵji = reducer$s;
-    exports.ɵjj = reducer$q;
-    exports.ɵjk = reducer$r;
-    exports.ɵjl = reducer$l;
-    exports.ɵjm = reducer$x;
-    exports.ɵjn = reducer$n;
-    exports.ɵjo = reducer$y;
+    exports.ɵja = reducer$v;
+    exports.ɵjb = reducer$t;
+    exports.ɵjc = reducer$k;
+    exports.ɵjd = reducer$u;
+    exports.ɵje = reducer$p;
+    exports.ɵjf = reducer$w;
+    exports.ɵjg = reducer$o;
+    exports.ɵjh = reducer$z;
+    exports.ɵji = reducer$m;
+    exports.ɵjj = reducer$s;
+    exports.ɵjk = reducer$q;
+    exports.ɵjl = reducer$r;
+    exports.ɵjm = reducer$l;
+    exports.ɵjn = reducer$x;
+    exports.ɵjo = reducer$n;
+    exports.ɵjp = reducer$y;
     exports.ɵk = getStorageSyncReducer;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$2;
