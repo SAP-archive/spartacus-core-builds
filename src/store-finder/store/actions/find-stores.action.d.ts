@@ -19,6 +19,7 @@ export declare class FindStores extends StateUtils.LoaderLoadAction {
         longitudeLatitude?: GeoPoint;
         useMyLocation?: boolean;
         countryIsoCode?: string;
+        radius?: number;
     };
     readonly type = "[StoreFinder] Find Stores";
     constructor(payload: {
@@ -27,6 +28,7 @@ export declare class FindStores extends StateUtils.LoaderLoadAction {
         longitudeLatitude?: GeoPoint;
         useMyLocation?: boolean;
         countryIsoCode?: string;
+        radius?: number;
     });
 }
 export declare class FindStoresFail extends StateUtils.LoaderFailAction {

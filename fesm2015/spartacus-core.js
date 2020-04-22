@@ -5328,8 +5328,8 @@ let StoreFinderConnector = class StoreFinderConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
-    search(query, searchConfig, longitudeLatitude) {
-        return this.adapter.search(query, searchConfig, longitudeLatitude);
+    search(query, searchConfig, longitudeLatitude, radius) {
+        return this.adapter.search(query, searchConfig, longitudeLatitude, radius);
     }
     getCounts() {
         return this.adapter.loadCounts();
@@ -5356,8 +5356,8 @@ let OccStoreFinderAdapter = class OccStoreFinderAdapter {
         this.occEndpointsService = occEndpointsService;
         this.converterService = converterService;
     }
-    search(query, searchConfig, longitudeLatitude) {
-        return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(this.converterService.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
+    search(query, searchConfig, longitudeLatitude, radius) {
+        return this.callOccFindStores(query, searchConfig, longitudeLatitude, radius).pipe(this.converterService.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
     }
     loadCounts() {
         return this.http
@@ -5369,12 +5369,12 @@ let OccStoreFinderAdapter = class OccStoreFinderAdapter {
             .get(this.occEndpointsService.getUrl('store', { storeId }))
             .pipe(this.converterService.pipeable(POINT_OF_SERVICE_NORMALIZER));
     }
-    callOccFindStores(query, searchConfig, longitudeLatitude) {
+    callOccFindStores(query, searchConfig, longitudeLatitude, radius) {
         const params = {};
         if (longitudeLatitude) {
             params['longitude'] = String(longitudeLatitude.longitude);
             params['latitude'] = String(longitudeLatitude.latitude);
-            params['radius'] = String('10000000');
+            params['radius'] = String(radius);
         }
         else {
             params['query'] = query;
@@ -21183,8 +21183,9 @@ let StoreFinderService = class StoreFinderService {
      * @param longitudeLatitude longitude and latitude coordinates
      * @param countryIsoCode country ISO code
      * @param useMyLocation current location coordinates
+     * @param radius radius of the scope from the center point
      */
-    findStoresAction(queryText, searchConfig, longitudeLatitude, countryIsoCode, useMyLocation) {
+    findStoresAction(queryText, searchConfig, longitudeLatitude, countryIsoCode, useMyLocation, radius) {
         if (useMyLocation && this.winRef.nativeWindow) {
             this.clearWatchGeolocation(new FindStoresOnHold());
             this.geolocationWatchId = this.winRef.nativeWindow.navigator.geolocation.watchPosition((pos) => {
@@ -21197,6 +21198,7 @@ let StoreFinderService = class StoreFinderService {
                     searchConfig: searchConfig,
                     longitudeLatitude: position,
                     countryIsoCode: countryIsoCode,
+                    radius: radius,
                 }));
             }, () => {
                 this.globalMessageService.add({ key: 'storeFinder.geolocationNotEnabled' }, GlobalMessageType.MSG_TYPE_ERROR);
@@ -21209,6 +21211,7 @@ let StoreFinderService = class StoreFinderService {
                 searchConfig: searchConfig,
                 longitudeLatitude: longitudeLatitude,
                 countryIsoCode: countryIsoCode,
+                radius: radius,
             }));
         }
     }
@@ -21476,6 +21479,7 @@ const defaultStoreFinderConfig = {
         apiKey: '',
         scale: 5,
         selectedMarkerScale: 17,
+        radius: 50000,
     },
 };
 
@@ -21497,7 +21501,7 @@ let FindStoresEffect = class FindStoresEffect {
         this.actions$ = actions$;
         this.storeFinderConnector = storeFinderConnector;
         this.findStores$ = this.actions$.pipe(ofType(FIND_STORES), map((action) => action.payload), mergeMap((payload) => this.storeFinderConnector
-            .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
+            .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude, payload.radius)
             .pipe(map((data) => {
             if (payload.countryIsoCode) {
                 data.stores = data.stores.filter((store) => store.address.country.isocode === payload.countryIsoCode);

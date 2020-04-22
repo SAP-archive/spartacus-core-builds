@@ -36,8 +36,9 @@ export declare class StoreFinderService {
      * @param longitudeLatitude longitude and latitude coordinates
      * @param countryIsoCode country ISO code
      * @param useMyLocation current location coordinates
+     * @param radius radius of the scope from the center point
      */
-    findStoresAction(queryText: string, searchConfig?: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, countryIsoCode?: string, useMyLocation?: boolean): void;
+    findStoresAction(queryText: string, searchConfig?: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, countryIsoCode?: string, useMyLocation?: boolean, radius?: number): void;
     /**
      * View all stores
      */

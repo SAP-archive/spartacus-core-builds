@@ -5886,8 +5886,8 @@ var StoreFinderConnector = /** @class */ (function () {
     function StoreFinderConnector(adapter) {
         this.adapter = adapter;
     }
-    StoreFinderConnector.prototype.search = function (query, searchConfig, longitudeLatitude) {
-        return this.adapter.search(query, searchConfig, longitudeLatitude);
+    StoreFinderConnector.prototype.search = function (query, searchConfig, longitudeLatitude, radius) {
+        return this.adapter.search(query, searchConfig, longitudeLatitude, radius);
     };
     StoreFinderConnector.prototype.getCounts = function () {
         return this.adapter.loadCounts();
@@ -5915,8 +5915,8 @@ var OccStoreFinderAdapter = /** @class */ (function () {
         this.occEndpointsService = occEndpointsService;
         this.converterService = converterService;
     }
-    OccStoreFinderAdapter.prototype.search = function (query, searchConfig, longitudeLatitude) {
-        return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(this.converterService.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
+    OccStoreFinderAdapter.prototype.search = function (query, searchConfig, longitudeLatitude, radius) {
+        return this.callOccFindStores(query, searchConfig, longitudeLatitude, radius).pipe(this.converterService.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
     };
     OccStoreFinderAdapter.prototype.loadCounts = function () {
         return this.http
@@ -5931,12 +5931,12 @@ var OccStoreFinderAdapter = /** @class */ (function () {
             .get(this.occEndpointsService.getUrl('store', { storeId: storeId }))
             .pipe(this.converterService.pipeable(POINT_OF_SERVICE_NORMALIZER));
     };
-    OccStoreFinderAdapter.prototype.callOccFindStores = function (query, searchConfig, longitudeLatitude) {
+    OccStoreFinderAdapter.prototype.callOccFindStores = function (query, searchConfig, longitudeLatitude, radius) {
         var params = {};
         if (longitudeLatitude) {
             params['longitude'] = String(longitudeLatitude.longitude);
             params['latitude'] = String(longitudeLatitude.latitude);
-            params['radius'] = String('10000000');
+            params['radius'] = String(radius);
         }
         else {
             params['query'] = query;
@@ -23879,8 +23879,9 @@ var StoreFinderService = /** @class */ (function () {
      * @param longitudeLatitude longitude and latitude coordinates
      * @param countryIsoCode country ISO code
      * @param useMyLocation current location coordinates
+     * @param radius radius of the scope from the center point
      */
-    StoreFinderService.prototype.findStoresAction = function (queryText, searchConfig, longitudeLatitude, countryIsoCode, useMyLocation) {
+    StoreFinderService.prototype.findStoresAction = function (queryText, searchConfig, longitudeLatitude, countryIsoCode, useMyLocation, radius) {
         var _this = this;
         if (useMyLocation && this.winRef.nativeWindow) {
             this.clearWatchGeolocation(new FindStoresOnHold());
@@ -23894,6 +23895,7 @@ var StoreFinderService = /** @class */ (function () {
                     searchConfig: searchConfig,
                     longitudeLatitude: position,
                     countryIsoCode: countryIsoCode,
+                    radius: radius,
                 }));
             }, function () {
                 _this.globalMessageService.add({ key: 'storeFinder.geolocationNotEnabled' }, GlobalMessageType.MSG_TYPE_ERROR);
@@ -23906,6 +23908,7 @@ var StoreFinderService = /** @class */ (function () {
                 searchConfig: searchConfig,
                 longitudeLatitude: longitudeLatitude,
                 countryIsoCode: countryIsoCode,
+                radius: radius,
             }));
         }
     };
@@ -24179,6 +24182,7 @@ var defaultStoreFinderConfig = {
         apiKey: '',
         scale: 5,
         selectedMarkerScale: 17,
+        radius: 50000,
     },
 };
 
@@ -24202,7 +24206,7 @@ var FindStoresEffect = /** @class */ (function () {
         this.storeFinderConnector = storeFinderConnector;
         this.findStores$ = this.actions$.pipe(ofType(FIND_STORES), map(function (action) { return action.payload; }), mergeMap(function (payload) {
             return _this.storeFinderConnector
-                .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
+                .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude, payload.radius)
                 .pipe(map(function (data) {
                 if (payload.countryIsoCode) {
                     data.stores = data.stores.filter(function (store) {

@@ -7,7 +7,7 @@ import { StoreCount, StoreFinderSearchPage } from '../../model/store-finder.mode
 export declare class StoreFinderConnector {
     protected adapter: StoreFinderAdapter;
     constructor(adapter: StoreFinderAdapter);
-    search(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint): Observable<StoreFinderSearchPage>;
+    search(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, radius?: number): Observable<StoreFinderSearchPage>;
     getCounts(): Observable<StoreCount[]>;
     get(storeId: string): Observable<PointOfService>;
 }

@@ -13,8 +13,8 @@ export declare class OccStoreFinderAdapter implements StoreFinderAdapter {
     protected occEndpointsService: OccEndpointsService;
     protected converterService: ConverterService;
     constructor(http: HttpClient, occEndpointsService: OccEndpointsService, converterService: ConverterService);
-    search(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint): Observable<StoreFinderSearchPage>;
+    search(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, radius?: number): Observable<StoreFinderSearchPage>;
     loadCounts(): Observable<StoreCount[]>;
     load(storeId: string): Observable<PointOfService>;
-    protected callOccFindStores(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint): Observable<Occ.StoreFinderSearchPage>;
+    protected callOccFindStores(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, radius?: number): Observable<Occ.StoreFinderSearchPage>;
 }
