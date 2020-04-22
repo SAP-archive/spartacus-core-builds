@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { GlobalMessageService } from '../../../facade/global-message.service';
 import { HttpResponseStatus } from '../../../models/response-status.model';
 import { HttpErrorHandler } from './../http-error.handler';
-import { Priority } from '../../../../util/handler';
+import { Priority } from '../../../../util/applicable';
 /**
  * Handles Oauth client errors when a 401 is returned. This is the case for failing
  * authenticaton requests to OCC.

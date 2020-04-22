@@ -13274,40 +13274,44 @@
     }(HttpErrorHandler));
 
     /**
-     * Helper logic to resolve best matching handler
+     * Helper logic to resolve best matching Applicable
      *
      * Finding best match is a two step process:
-     * 1. Find all matching handlers
-     *    - all handlers for which hasMatch(...matchParams) will return true
-     *    - all handlers without hasMatch method (implicit always match)
-     * 2. Find the handler with highest priority
-     *    - handler with highest getPriority(...priorityParams) will win
-     *    - handler without getPriority method is treated as Priotity.NORMAL or 0
-     *    - handlers with the same priority are sorted by order of providers, the handler that was provided later wins
+     * 1. Find all matching applicables
+     *    - all applicables for which hasMatch(...matchParams) will return true
+     *    - all applicables without hasMatch method (implicit always match)
+     * 2. Find the applicable with highest priority
+     *    - applicable with highest getPriority(...priorityParams) will win
+     *    - applicable without getPriority method is treated as Priotity.NORMAL or 0
+     *    - applicables with the same priority are sorted by order of providers, the applicable that was provided later wins
      *
-     * @param handlers - array or handler-like instancese
+     * @param applicables - array or applicable-like instancese
      * @param matchParams - array of parameters passed for hasMatch calls
      * @param priorityParams - array of parameters passed for getPriority calls
      */
-    function resolveHandler(handlers, matchParams, priorityParams) {
+    function resolveApplicable(applicables, matchParams, priorityParams) {
+        if (applicables === void 0) { applicables = []; }
         if (matchParams === void 0) { matchParams = []; }
         if (priorityParams === void 0) { priorityParams = []; }
-        var matchedHandlers = (handlers !== null && handlers !== void 0 ? handlers : []).filter(function (handler) { return !handler.hasMatch || handler.hasMatch.apply(handler, __spread(matchParams)); });
-        if (matchedHandlers.length > 1) {
-            matchedHandlers.sort(function (a, b) {
-                return (a.getPriority ? a.getPriority.apply(a, __spread(priorityParams)) : 0 /* NORMAL */) -
-                    (b.getPriority ? b.getPriority.apply(b, __spread(priorityParams)) : 0 /* NORMAL */);
-            });
+        var matchedApplicables = applicables.filter(function (applicable) { return !applicable.hasMatch || applicable.hasMatch.apply(applicable, __spread(matchParams)); });
+        if (matchedApplicables.length < 2) {
+            return matchedApplicables[0];
         }
-        return matchedHandlers[matchedHandlers.length - 1];
+        var lastPriority = -Infinity;
+        return matchedApplicables.reduce(function (acc, curr) {
+            var currPriority = curr.getPriority
+                ? curr.getPriority.apply(curr, __spread(priorityParams)) : 0 /* NORMAL */;
+            if (lastPriority > currPriority) {
+                return acc;
+            }
+            lastPriority = currPriority;
+            return curr;
+        }, undefined);
     }
 
     var HttpErrorInterceptor = /** @class */ (function () {
         function HttpErrorInterceptor(handlers) {
             this.handlers = handlers;
-            // We reverse the handlers to allow for custom handlers
-            // that replace standard handlers
-            this.handlers.reverse();
         }
         HttpErrorInterceptor.prototype.intercept = function (request, next) {
             var _this = this;
@@ -13329,7 +13333,7 @@
          * If no handler is available, the UNKNOWN handler is returned.
          */
         HttpErrorInterceptor.prototype.getResponseHandler = function (response) {
-            return resolveHandler(this.handlers, [response]);
+            return resolveApplicable(this.handlers, [response]);
         };
         HttpErrorInterceptor.ctorParameters = function () { return [
             { type: Array, decorators: [{ type: core.Inject, args: [HttpErrorHandler,] }] }
@@ -20860,7 +20864,7 @@
          * Resolvers match by default on `PageType` and `page.template`.
          */
         PageMetaService.prototype.getMetaResolver = function (page) {
-            return resolveHandler(this.resolvers, [page], [page]);
+            return resolveApplicable(this.resolvers, [page], [page]);
         };
         PageMetaService.ctorParameters = function () { return [
             { type: Array, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PageMetaResolver,] }] },
@@ -27368,7 +27372,7 @@
     exports.provideConfigValidator = provideConfigValidator;
     exports.provideDefaultConfig = provideDefaultConfig;
     exports.provideDefaultConfigFactory = provideDefaultConfigFactory;
-    exports.resolveHandler = resolveHandler;
+    exports.resolveApplicable = resolveApplicable;
     exports.serviceMapFactory = serviceMapFactory;
     exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;

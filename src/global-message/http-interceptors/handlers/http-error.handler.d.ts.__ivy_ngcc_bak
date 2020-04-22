@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { GlobalMessageService } from '../../facade/global-message.service';
-import { Handler, Priority } from '../../../util/handler';
-export declare abstract class HttpErrorHandler implements Handler {
+import { Applicable, Priority } from '../../../util/applicable';
+export declare abstract class HttpErrorHandler implements Applicable {
     protected globalMessageService: GlobalMessageService;
     constructor(globalMessageService: GlobalMessageService);
     /**
