@@ -14946,6 +14946,12 @@
             return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getEntries(cartId); }), operators.distinctUntilChanged());
         };
         /**
+         * Returns cart loading state
+         */
+        ActiveCartService.prototype.getLoading = function () {
+            return this.cartSelector$.pipe(operators.map(function (cartEntity) { return cartEntity.loading; }), operators.distinctUntilChanged());
+        };
+        /**
          * Returns true when cart is stable (not loading and not pending processes on cart)
          */
         ActiveCartService.prototype.isStable = function () {

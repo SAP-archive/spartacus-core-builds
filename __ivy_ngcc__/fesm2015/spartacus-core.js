@@ -12737,6 +12737,12 @@ let ActiveCartService = class ActiveCartService {
         return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getEntries(cartId)), distinctUntilChanged());
     }
     /**
+     * Returns cart loading state
+     */
+    getLoading() {
+        return this.cartSelector$.pipe(map((cartEntity) => cartEntity.loading), distinctUntilChanged());
+    }
+    /**
      * Returns true when cart is stable (not loading and not pending processes on cart)
      */
     isStable() {
