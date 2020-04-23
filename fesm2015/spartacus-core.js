@@ -18713,6 +18713,13 @@ TranslationChunkService = __decorate([
     Injectable()
 ], TranslationChunkService);
 
+const defaultI18nConfig = {
+    i18n: {
+        fallbackLang: false,
+        debug: false,
+    },
+};
+
 function i18nextInit(configInit, languageService, httpClient, serverRequestOrigin) {
     return () => configInit.getStableConfig('i18n').then((config) => {
         let i18nextConfig = {
@@ -18801,13 +18808,6 @@ const i18nextProviders = [
     },
 ];
 
-const defaultI18nConfig = {
-    i18n: {
-        fallbackLang: false,
-        debug: false,
-    },
-};
-
 let I18nextTranslationService = class I18nextTranslationService {
     constructor(config, translationChunk) {
         this.config = config;
@@ -18874,8 +18874,9 @@ I18nextTranslationService.ctorParameters = () => [
     { type: I18nConfig },
     { type: TranslationChunkService }
 ];
+I18nextTranslationService.ɵprov = ɵɵdefineInjectable({ factory: function I18nextTranslationService_Factory() { return new I18nextTranslationService(ɵɵinject(I18nConfig), ɵɵinject(TranslationChunkService)); }, token: I18nextTranslationService, providedIn: "root" });
 I18nextTranslationService = __decorate([
-    Injectable()
+    Injectable({ providedIn: 'root' })
 ], I18nextTranslationService);
 
 var I18nModule_1;
@@ -18885,7 +18886,7 @@ let I18nModule = I18nModule_1 = class I18nModule {
             ngModule: I18nModule_1,
             providers: [
                 provideDefaultConfig(defaultI18nConfig),
-                { provide: TranslationService, useClass: I18nextTranslationService },
+                { provide: TranslationService, useExisting: I18nextTranslationService },
                 TranslationChunkService,
                 ...i18nextProviders,
             ],

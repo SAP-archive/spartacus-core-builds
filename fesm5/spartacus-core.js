@@ -21064,6 +21064,13 @@ var TranslationChunkService = /** @class */ (function () {
     return TranslationChunkService;
 }());
 
+var defaultI18nConfig = {
+    i18n: {
+        fallbackLang: false,
+        debug: false,
+    },
+};
+
 function i18nextInit(configInit, languageService, httpClient, serverRequestOrigin) {
     return function () {
         return configInit.getStableConfig('i18n').then(function (config) {
@@ -21155,13 +21162,6 @@ var i18nextProviders = [
     },
 ];
 
-var defaultI18nConfig = {
-    i18n: {
-        fallbackLang: false,
-        debug: false,
-    },
-};
-
 var I18nextTranslationService = /** @class */ (function () {
     function I18nextTranslationService(config, translationChunk) {
         this.config = config;
@@ -21230,8 +21230,9 @@ var I18nextTranslationService = /** @class */ (function () {
         { type: I18nConfig },
         { type: TranslationChunkService }
     ]; };
+    I18nextTranslationService.ɵprov = ɵɵdefineInjectable({ factory: function I18nextTranslationService_Factory() { return new I18nextTranslationService(ɵɵinject(I18nConfig), ɵɵinject(TranslationChunkService)); }, token: I18nextTranslationService, providedIn: "root" });
     I18nextTranslationService = __decorate([
-        Injectable()
+        Injectable({ providedIn: 'root' })
     ], I18nextTranslationService);
     return I18nextTranslationService;
 }());
@@ -21245,7 +21246,7 @@ var I18nModule = /** @class */ (function () {
             ngModule: I18nModule_1,
             providers: __spread([
                 provideDefaultConfig(defaultI18nConfig),
-                { provide: TranslationService, useClass: I18nextTranslationService },
+                { provide: TranslationService, useExisting: I18nextTranslationService },
                 TranslationChunkService
             ], i18nextProviders),
         };
