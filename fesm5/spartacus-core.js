@@ -22962,8 +22962,8 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
      */
     ProductPageMetaResolver.prototype.resolveImage = function () {
         return this.product$.pipe(map(function (p) {
-            var _a, _b;
-            return ((_b = ((_a = p.images) === null || _a === void 0 ? void 0 : _a.PRIMARY).zoom) === null || _b === void 0 ? void 0 : _b.url) ? p.images.PRIMARY.zoom.url
+            var _a, _b, _c;
+            return ((_c = (_b = (_a = p.images) === null || _a === void 0 ? void 0 : _a.PRIMARY) === null || _b === void 0 ? void 0 : _b.zoom) === null || _c === void 0 ? void 0 : _c.url) ? p.images.PRIMARY.zoom.url
                 : null;
         }));
     };
