@@ -1,9 +1,9 @@
 import { __decorate, __param, __rest, __awaiter } from 'tslib';
-import { InjectionToken, Optional, NgModule, isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, PLATFORM_ID, Injector, INJECTOR, APP_INITIALIZER, Pipe, inject, TemplateRef, ViewContainerRef, Input, Directive, ChangeDetectorRef, NgZone } from '@angular/core';
+import { InjectionToken, Optional, NgModule, isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, PLATFORM_ID, Injector, INJECTOR, APP_INITIALIZER, Pipe, inject, NgZone, TemplateRef, ViewContainerRef, Input, Directive, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule, ActionsSubject } from '@ngrx/store';
 import { of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subject, BehaviorSubject, merge, Subscription, timer, from, queueScheduler, using, Observable, defer } from 'rxjs';
-import { map, take, filter, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, share, concatMap, mapTo, delay, debounce, switchMapTo, groupBy, observeOn, distinctUntilKeyChanged, auditTime, takeWhile } from 'rxjs/operators';
+import { map, take, filter, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, share, concatMap, mapTo, delay, debounce, switchMapTo, groupBy, observeOn, distinctUntilKeyChanged, takeWhile, auditTime } from 'rxjs/operators';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
@@ -14792,20 +14792,7 @@ let CmsService = class CmsService {
     constructor(store, routingService) {
         this.store = store;
         this.routingService = routingService;
-        this._launchInSmartEdit = false;
         this.components = {};
-    }
-    /**
-     * Set _launchInSmartEdit value
-     */
-    set launchInSmartEdit(value) {
-        this._launchInSmartEdit = value;
-    }
-    /**
-     * Whether the app launched in smart edit
-     */
-    isLaunchInSmartEdit() {
-        return this._launchInSmartEdit;
     }
     /**
      * Get current CMS page data
@@ -17873,17 +17860,155 @@ PageMetaService = __decorate([ __param(0, Optional()),
     __param(0, Inject(PageMetaResolver))
 ], PageMetaService);
 
+let SmartEditService = class SmartEditService {
+    constructor(cmsService, routingService, baseSiteService, zone, winRef) {
+        this.cmsService = cmsService;
+        this.routingService = routingService;
+        this.baseSiteService = baseSiteService;
+        this.zone = zone;
+        this.winRef = winRef;
+        this.isPreviewPage = false;
+        this._launchedInSmartEdit = false;
+        this.getCmsTicket();
+        if (winRef.nativeWindow) {
+            const window = winRef.nativeWindow;
+            // rerender components and slots after editing
+            window.smartedit = window.smartedit || {};
+            window.smartedit.renderComponent = (componentId, componentType, parentId) => {
+                return this.renderComponent(componentId, componentType, parentId);
+            };
+            // reprocess page
+            window.smartedit.reprocessPage = this.reprocessPage;
+        }
+    }
+    get cmsTicketId() {
+        return this._cmsTicketId;
+    }
+    getCmsTicket() {
+        combineLatest([
+            this.cmsService.getCurrentPage(),
+            this.routingService.getRouterState(),
+        ])
+            .pipe(takeWhile(([cmsPage]) => cmsPage === undefined), filter(([, routerState]) => {
+            if (routerState.nextState && !this._cmsTicketId) {
+                this._cmsTicketId =
+                    routerState.nextState.queryParams['cmsTicketId'];
+                if (this._cmsTicketId) {
+                    return true;
+                }
+            }
+            return false;
+        }), take(1))
+            .subscribe(() => {
+            this._launchedInSmartEdit = true;
+            this.getDefaultPreviewCode();
+        });
+    }
+    getDefaultPreviewCode() {
+        this.baseSiteService
+            .getBaseSiteData()
+            .pipe(filter((site) => Object.keys(site).length !== 0), take(1))
+            .subscribe((site) => {
+            this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
+            this.defaultPreviewProductCode = site.defaultPreviewProductCode;
+            this.addPageContract();
+        });
+    }
+    addPageContract() {
+        this.cmsService.getCurrentPage().subscribe((cmsPage) => {
+            if (cmsPage && this._cmsTicketId) {
+                this._currentPageId = cmsPage.pageId;
+                // before adding contract to page, we need redirect to that page
+                this.goToPreviewPage(cmsPage);
+                // remove old page contract
+                const previousContract = [];
+                Array.from(this.winRef.document.body.classList).forEach((attr) => previousContract.push(attr));
+                previousContract.forEach((attr) => this.winRef.document.body.classList.remove(attr));
+                // add new page contract
+                if (cmsPage.properties && cmsPage.properties.smartedit) {
+                    const seClasses = cmsPage.properties.smartedit.classes.split(' ');
+                    seClasses.forEach((classItem) => {
+                        this.winRef.document.body.classList.add(classItem);
+                    });
+                }
+            }
+        });
+    }
+    goToPreviewPage(cmsPage) {
+        // only the first page is the smartedit preview page
+        if (!this.isPreviewPage) {
+            this.isPreviewPage = true;
+            if (cmsPage.type === PageType.PRODUCT_PAGE &&
+                this.defaultPreviewProductCode) {
+                this.routingService.go({
+                    cxRoute: 'product',
+                    params: { code: this.defaultPreviewProductCode, name: '' },
+                });
+            }
+            else if (cmsPage.type === PageType.CATEGORY_PAGE &&
+                this.defaultPreviewCategoryCode) {
+                this.routingService.go({
+                    cxRoute: 'category',
+                    params: { code: this.defaultPreviewCategoryCode },
+                });
+            }
+        }
+    }
+    renderComponent(componentId, componentType, parentId) {
+        if (componentId) {
+            this.zone.run(() => {
+                // without parentId, it is slot
+                if (!parentId) {
+                    if (this._currentPageId) {
+                        this.cmsService.refreshPageById(this._currentPageId);
+                    }
+                    else {
+                        this.cmsService.refreshLatestPage();
+                    }
+                }
+                else if (componentType) {
+                    this.cmsService.refreshComponent(componentId);
+                }
+            });
+        }
+        return true;
+    }
+    reprocessPage() {
+        // TODO: reprocess page API
+    }
+    /**
+     * Whether the app launched in smart edit
+     */
+    isLaunchedInSmartEdit() {
+        return this._launchedInSmartEdit;
+    }
+};
+SmartEditService.ɵfac = function SmartEditService_Factory(t) { return new (t || SmartEditService)(ɵngcc0.ɵɵinject(CmsService), ɵngcc0.ɵɵinject(RoutingService), ɵngcc0.ɵɵinject(BaseSiteService), ɵngcc0.ɵɵinject(ɵngcc0.NgZone), ɵngcc0.ɵɵinject(WindowRef)); };
+SmartEditService.ctorParameters = () => [
+    { type: CmsService },
+    { type: RoutingService },
+    { type: BaseSiteService },
+    { type: NgZone },
+    { type: WindowRef }
+];
+SmartEditService.ɵprov = ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(ɵɵinject(CmsService), ɵɵinject(RoutingService), ɵɵinject(BaseSiteService), ɵɵinject(NgZone), ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+
 let DynamicAttributeService = class DynamicAttributeService {
+    constructor(smartEditService) {
+        this.smartEditService = smartEditService;
+    }
     /**
      * Add dynamic attributes to DOM. These attributes are extracted from the properties of cms items received from backend.
-     * There can by many different groups of properties, one of them is smaredit. But EC allows addons to create different groups.
+     * There can by many different groups of properties, one of them is smartedit. But EC allows addons to create different groups.
      * For example, personalization may add 'script' group etc.
-     * @param properties: properties in each cms item response data
+     * @param properties: an object containing properties in each cms item response data
      * @param element: slot or cms component element
      * @param renderer
      */
-    addDynamicAttributes(properties, element, renderer) {
-        if (properties) {
+    addDynamicAttributes(element, renderer, cmsRenderingContext) {
+        var _a, _b;
+        const properties = ((_a = cmsRenderingContext.componentData) === null || _a === void 0 ? void 0 : _a.properties) || ((_b = cmsRenderingContext.slotData) === null || _b === void 0 ? void 0 : _b.properties);
+        if (properties && this.smartEditService.isLaunchedInSmartEdit()) {
             // check each group of properties, e.g. smartedit
             Object.keys(properties).forEach((group) => {
                 const name = 'data-' + group + '-';
@@ -17909,8 +18034,11 @@ let DynamicAttributeService = class DynamicAttributeService {
         }
     }
 };
-DynamicAttributeService.ɵfac = function DynamicAttributeService_Factory(t) { return new (t || DynamicAttributeService)(); };
-DynamicAttributeService.ɵprov = ɵɵdefineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(); }, token: DynamicAttributeService, providedIn: "root" });
+DynamicAttributeService.ɵfac = function DynamicAttributeService_Factory(t) { return new (t || DynamicAttributeService)(ɵngcc0.ɵɵinject(SmartEditService)); };
+DynamicAttributeService.ctorParameters = () => [
+    { type: SmartEditService }
+];
+DynamicAttributeService.ɵprov = ɵɵdefineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(ɵɵinject(SmartEditService)); }, token: DynamicAttributeService, providedIn: "root" });
 
 let FeaturesConfig = class FeaturesConfig {
 };
@@ -20138,132 +20266,6 @@ let ProductModule = ProductModule_1 = class ProductModule {
 };
 ProductModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: ProductModule });
 ProductModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function ProductModule_Factory(t) { return new (t || ProductModule)(); }, imports: [[ProductStoreModule]] });
-
-let SmartEditService = class SmartEditService {
-    constructor(cmsService, routingService, baseSiteService, zone, winRef) {
-        this.cmsService = cmsService;
-        this.routingService = routingService;
-        this.baseSiteService = baseSiteService;
-        this.zone = zone;
-        this.winRef = winRef;
-        this.isPreviewPage = false;
-        this.getCmsTicket();
-        if (winRef.nativeWindow) {
-            const window = winRef.nativeWindow;
-            // rerender components and slots after editing
-            window.smartedit = window.smartedit || {};
-            window.smartedit.renderComponent = (componentId, componentType, parentId) => {
-                return this.renderComponent(componentId, componentType, parentId);
-            };
-            // reprocess page
-            window.smartedit.reprocessPage = this.reprocessPage;
-        }
-    }
-    get cmsTicketId() {
-        return this._cmsTicketId;
-    }
-    getCmsTicket() {
-        combineLatest([
-            this.cmsService.getCurrentPage(),
-            this.routingService.getRouterState(),
-        ])
-            .pipe(takeWhile(([cmsPage]) => cmsPage === undefined), filter(([, routerState]) => {
-            if (routerState.nextState && !this._cmsTicketId) {
-                this._cmsTicketId =
-                    routerState.nextState.queryParams['cmsTicketId'];
-                if (this._cmsTicketId) {
-                    return true;
-                }
-            }
-            return false;
-        }), take(1))
-            .subscribe(() => {
-            this.cmsService.launchInSmartEdit = true;
-            this.getDefaultPreviewCode();
-        });
-    }
-    getDefaultPreviewCode() {
-        this.baseSiteService
-            .getBaseSiteData()
-            .pipe(filter((site) => Object.keys(site).length !== 0), take(1))
-            .subscribe((site) => {
-            this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
-            this.defaultPreviewProductCode = site.defaultPreviewProductCode;
-            this.addPageContract();
-        });
-    }
-    addPageContract() {
-        this.cmsService.getCurrentPage().subscribe((cmsPage) => {
-            if (cmsPage && this._cmsTicketId) {
-                this._currentPageId = cmsPage.pageId;
-                // before adding contract to page, we need redirect to that page
-                this.goToPreviewPage(cmsPage);
-                // remove old page contract
-                const previousContract = [];
-                Array.from(this.winRef.document.body.classList).forEach((attr) => previousContract.push(attr));
-                previousContract.forEach((attr) => this.winRef.document.body.classList.remove(attr));
-                // add new page contract
-                if (cmsPage.properties && cmsPage.properties.smartedit) {
-                    const seClasses = cmsPage.properties.smartedit.classes.split(' ');
-                    seClasses.forEach((classItem) => {
-                        this.winRef.document.body.classList.add(classItem);
-                    });
-                }
-            }
-        });
-    }
-    goToPreviewPage(cmsPage) {
-        // only the first page is the smartedit preview page
-        if (!this.isPreviewPage) {
-            this.isPreviewPage = true;
-            if (cmsPage.type === PageType.PRODUCT_PAGE &&
-                this.defaultPreviewProductCode) {
-                this.routingService.go({
-                    cxRoute: 'product',
-                    params: { code: this.defaultPreviewProductCode, name: '' },
-                });
-            }
-            else if (cmsPage.type === PageType.CATEGORY_PAGE &&
-                this.defaultPreviewCategoryCode) {
-                this.routingService.go({
-                    cxRoute: 'category',
-                    params: { code: this.defaultPreviewCategoryCode },
-                });
-            }
-        }
-    }
-    renderComponent(componentId, componentType, parentId) {
-        if (componentId) {
-            this.zone.run(() => {
-                // without parentId, it is slot
-                if (!parentId) {
-                    if (this._currentPageId) {
-                        this.cmsService.refreshPageById(this._currentPageId);
-                    }
-                    else {
-                        this.cmsService.refreshLatestPage();
-                    }
-                }
-                else if (componentType) {
-                    this.cmsService.refreshComponent(componentId);
-                }
-            });
-        }
-        return true;
-    }
-    reprocessPage() {
-        // TODO: reprocess page API
-    }
-};
-SmartEditService.ɵfac = function SmartEditService_Factory(t) { return new (t || SmartEditService)(ɵngcc0.ɵɵinject(CmsService), ɵngcc0.ɵɵinject(RoutingService), ɵngcc0.ɵɵinject(BaseSiteService), ɵngcc0.ɵɵinject(ɵngcc0.NgZone), ɵngcc0.ɵɵinject(WindowRef)); };
-SmartEditService.ctorParameters = () => [
-    { type: CmsService },
-    { type: RoutingService },
-    { type: BaseSiteService },
-    { type: NgZone },
-    { type: WindowRef }
-];
-SmartEditService.ɵprov = ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(ɵɵinject(CmsService), ɵɵinject(RoutingService), ɵɵinject(BaseSiteService), ɵɵinject(NgZone), ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
 
 let CmsTicketInterceptor = class CmsTicketInterceptor {
     constructor(service) {
@@ -24341,12 +24343,18 @@ const ɵCmsStructureConfig_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(CmsStru
                 type: Inject,
                 args: [PageMetaResolver]
             }] }, { type: CmsService }]; }, null); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SmartEditService, [{
+        type: Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return [{ type: CmsService }, { type: RoutingService }, { type: BaseSiteService }, { type: ɵngcc0.NgZone }, { type: WindowRef }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(DynamicAttributeService, [{
         type: Injectable,
         args: [{
                 providedIn: 'root'
             }]
-    }], null, null); })();
+    }], function () { return [{ type: SmartEditService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(FeaturesConfig, [{
         type: Injectable,
         args: [{
@@ -24649,12 +24657,6 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
                 imports: [ProductStoreModule]
             }]
     }], null, null); })();
-/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(SmartEditService, [{
-        type: Injectable,
-        args: [{
-                providedIn: 'root'
-            }]
-    }], function () { return [{ type: CmsService }, { type: RoutingService }, { type: BaseSiteService }, { type: ɵngcc0.NgZone }, { type: WindowRef }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(CmsTicketInterceptor, [{
         type: Injectable,
         args: [{ providedIn: 'root' }]

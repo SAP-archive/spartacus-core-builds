@@ -10,17 +10,8 @@ import { StateWithCms } from '../store/cms-state';
 export declare class CmsService {
     protected store: Store<StateWithCms>;
     protected routingService: RoutingService;
-    private _launchInSmartEdit;
     private components;
     constructor(store: Store<StateWithCms>, routingService: RoutingService);
-    /**
-     * Set _launchInSmartEdit value
-     */
-    set launchInSmartEdit(value: boolean);
-    /**
-     * Whether the app launched in smart edit
-     */
-    isLaunchInSmartEdit(): boolean;
     /**
      * Get current CMS page data
      */

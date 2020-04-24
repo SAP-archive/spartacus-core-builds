@@ -13,6 +13,7 @@ export declare class SmartEditService {
     private _cmsTicketId;
     private isPreviewPage;
     private _currentPageId;
+    private _launchedInSmartEdit;
     private defaultPreviewProductCode;
     private defaultPreviewCategoryCode;
     constructor(cmsService: CmsService, routingService: RoutingService, baseSiteService: BaseSiteService, zone: NgZone, winRef: WindowRef);
@@ -23,4 +24,8 @@ export declare class SmartEditService {
     protected goToPreviewPage(cmsPage: Page): void;
     protected renderComponent(componentId: string, componentType?: string, parentId?: string): boolean;
     protected reprocessPage(): void;
+    /**
+     * Whether the app launched in smart edit
+     */
+    isLaunchedInSmartEdit(): boolean;
 }

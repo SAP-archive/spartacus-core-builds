@@ -17359,25 +17359,8 @@
         function CmsService(store, routingService) {
             this.store = store;
             this.routingService = routingService;
-            this._launchInSmartEdit = false;
             this.components = {};
         }
-        Object.defineProperty(CmsService.prototype, "launchInSmartEdit", {
-            /**
-             * Set _launchInSmartEdit value
-             */
-            set: function (value) {
-                this._launchInSmartEdit = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * Whether the app launched in smart edit
-         */
-        CmsService.prototype.isLaunchInSmartEdit = function () {
-            return this._launchInSmartEdit;
-        };
         /**
          * Get current CMS page data
          */
@@ -20887,19 +20870,177 @@
         return PageMetaService;
     }());
 
+    var SmartEditService = /** @class */ (function () {
+        function SmartEditService(cmsService, routingService, baseSiteService, zone, winRef) {
+            var _this = this;
+            this.cmsService = cmsService;
+            this.routingService = routingService;
+            this.baseSiteService = baseSiteService;
+            this.zone = zone;
+            this.winRef = winRef;
+            this.isPreviewPage = false;
+            this._launchedInSmartEdit = false;
+            this.getCmsTicket();
+            if (winRef.nativeWindow) {
+                var window_1 = winRef.nativeWindow;
+                // rerender components and slots after editing
+                window_1.smartedit = window_1.smartedit || {};
+                window_1.smartedit.renderComponent = function (componentId, componentType, parentId) {
+                    return _this.renderComponent(componentId, componentType, parentId);
+                };
+                // reprocess page
+                window_1.smartedit.reprocessPage = this.reprocessPage;
+            }
+        }
+        Object.defineProperty(SmartEditService.prototype, "cmsTicketId", {
+            get: function () {
+                return this._cmsTicketId;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SmartEditService.prototype.getCmsTicket = function () {
+            var _this = this;
+            rxjs.combineLatest([
+                this.cmsService.getCurrentPage(),
+                this.routingService.getRouterState(),
+            ])
+                .pipe(operators.takeWhile(function (_a) {
+                var _b = __read(_a, 1), cmsPage = _b[0];
+                return cmsPage === undefined;
+            }), operators.filter(function (_a) {
+                var _b = __read(_a, 2), routerState = _b[1];
+                if (routerState.nextState && !_this._cmsTicketId) {
+                    _this._cmsTicketId =
+                        routerState.nextState.queryParams['cmsTicketId'];
+                    if (_this._cmsTicketId) {
+                        return true;
+                    }
+                }
+                return false;
+            }), operators.take(1))
+                .subscribe(function () {
+                _this._launchedInSmartEdit = true;
+                _this.getDefaultPreviewCode();
+            });
+        };
+        SmartEditService.prototype.getDefaultPreviewCode = function () {
+            var _this = this;
+            this.baseSiteService
+                .getBaseSiteData()
+                .pipe(operators.filter(function (site) { return Object.keys(site).length !== 0; }), operators.take(1))
+                .subscribe(function (site) {
+                _this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
+                _this.defaultPreviewProductCode = site.defaultPreviewProductCode;
+                _this.addPageContract();
+            });
+        };
+        SmartEditService.prototype.addPageContract = function () {
+            var _this = this;
+            this.cmsService.getCurrentPage().subscribe(function (cmsPage) {
+                if (cmsPage && _this._cmsTicketId) {
+                    _this._currentPageId = cmsPage.pageId;
+                    // before adding contract to page, we need redirect to that page
+                    _this.goToPreviewPage(cmsPage);
+                    // remove old page contract
+                    var previousContract_1 = [];
+                    Array.from(_this.winRef.document.body.classList).forEach(function (attr) {
+                        return previousContract_1.push(attr);
+                    });
+                    previousContract_1.forEach(function (attr) {
+                        return _this.winRef.document.body.classList.remove(attr);
+                    });
+                    // add new page contract
+                    if (cmsPage.properties && cmsPage.properties.smartedit) {
+                        var seClasses = cmsPage.properties.smartedit.classes.split(' ');
+                        seClasses.forEach(function (classItem) {
+                            _this.winRef.document.body.classList.add(classItem);
+                        });
+                    }
+                }
+            });
+        };
+        SmartEditService.prototype.goToPreviewPage = function (cmsPage) {
+            // only the first page is the smartedit preview page
+            if (!this.isPreviewPage) {
+                this.isPreviewPage = true;
+                if (cmsPage.type === exports.PageType.PRODUCT_PAGE &&
+                    this.defaultPreviewProductCode) {
+                    this.routingService.go({
+                        cxRoute: 'product',
+                        params: { code: this.defaultPreviewProductCode, name: '' },
+                    });
+                }
+                else if (cmsPage.type === exports.PageType.CATEGORY_PAGE &&
+                    this.defaultPreviewCategoryCode) {
+                    this.routingService.go({
+                        cxRoute: 'category',
+                        params: { code: this.defaultPreviewCategoryCode },
+                    });
+                }
+            }
+        };
+        SmartEditService.prototype.renderComponent = function (componentId, componentType, parentId) {
+            var _this = this;
+            if (componentId) {
+                this.zone.run(function () {
+                    // without parentId, it is slot
+                    if (!parentId) {
+                        if (_this._currentPageId) {
+                            _this.cmsService.refreshPageById(_this._currentPageId);
+                        }
+                        else {
+                            _this.cmsService.refreshLatestPage();
+                        }
+                    }
+                    else if (componentType) {
+                        _this.cmsService.refreshComponent(componentId);
+                    }
+                });
+            }
+            return true;
+        };
+        SmartEditService.prototype.reprocessPage = function () {
+            // TODO: reprocess page API
+        };
+        /**
+         * Whether the app launched in smart edit
+         */
+        SmartEditService.prototype.isLaunchedInSmartEdit = function () {
+            return this._launchedInSmartEdit;
+        };
+        SmartEditService.ctorParameters = function () { return [
+            { type: CmsService },
+            { type: RoutingService },
+            { type: BaseSiteService },
+            { type: core.NgZone },
+            { type: WindowRef }
+        ]; };
+        SmartEditService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SmartEditService_Factory() { return new SmartEditService(core["ɵɵinject"](CmsService), core["ɵɵinject"](RoutingService), core["ɵɵinject"](BaseSiteService), core["ɵɵinject"](core.NgZone), core["ɵɵinject"](WindowRef)); }, token: SmartEditService, providedIn: "root" });
+        SmartEditService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], SmartEditService);
+        return SmartEditService;
+    }());
+
     var DynamicAttributeService = /** @class */ (function () {
-        function DynamicAttributeService() {
+        function DynamicAttributeService(smartEditService) {
+            this.smartEditService = smartEditService;
         }
         /**
          * Add dynamic attributes to DOM. These attributes are extracted from the properties of cms items received from backend.
-         * There can by many different groups of properties, one of them is smaredit. But EC allows addons to create different groups.
+         * There can by many different groups of properties, one of them is smartedit. But EC allows addons to create different groups.
          * For example, personalization may add 'script' group etc.
-         * @param properties: properties in each cms item response data
+         * @param properties: an object containing properties in each cms item response data
          * @param element: slot or cms component element
          * @param renderer
          */
-        DynamicAttributeService.prototype.addDynamicAttributes = function (properties, element, renderer) {
-            if (properties) {
+        DynamicAttributeService.prototype.addDynamicAttributes = function (element, renderer, cmsRenderingContext) {
+            var _a, _b;
+            var properties = ((_a = cmsRenderingContext.componentData) === null || _a === void 0 ? void 0 : _a.properties) || ((_b = cmsRenderingContext.slotData) === null || _b === void 0 ? void 0 : _b.properties);
+            if (properties && this.smartEditService.isLaunchedInSmartEdit()) {
                 // check each group of properties, e.g. smartedit
                 Object.keys(properties).forEach(function (group) {
                     var name = 'data-' + group + '-';
@@ -20924,7 +21065,10 @@
                 });
             }
         };
-        DynamicAttributeService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(); }, token: DynamicAttributeService, providedIn: "root" });
+        DynamicAttributeService.ctorParameters = function () { return [
+            { type: SmartEditService }
+        ]; };
+        DynamicAttributeService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(core["ɵɵinject"](SmartEditService)); }, token: DynamicAttributeService, providedIn: "root" });
         DynamicAttributeService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23602,154 +23746,6 @@
             })
         ], ProductModule);
         return ProductModule;
-    }());
-
-    var SmartEditService = /** @class */ (function () {
-        function SmartEditService(cmsService, routingService, baseSiteService, zone, winRef) {
-            var _this = this;
-            this.cmsService = cmsService;
-            this.routingService = routingService;
-            this.baseSiteService = baseSiteService;
-            this.zone = zone;
-            this.winRef = winRef;
-            this.isPreviewPage = false;
-            this.getCmsTicket();
-            if (winRef.nativeWindow) {
-                var window_1 = winRef.nativeWindow;
-                // rerender components and slots after editing
-                window_1.smartedit = window_1.smartedit || {};
-                window_1.smartedit.renderComponent = function (componentId, componentType, parentId) {
-                    return _this.renderComponent(componentId, componentType, parentId);
-                };
-                // reprocess page
-                window_1.smartedit.reprocessPage = this.reprocessPage;
-            }
-        }
-        Object.defineProperty(SmartEditService.prototype, "cmsTicketId", {
-            get: function () {
-                return this._cmsTicketId;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        SmartEditService.prototype.getCmsTicket = function () {
-            var _this = this;
-            rxjs.combineLatest([
-                this.cmsService.getCurrentPage(),
-                this.routingService.getRouterState(),
-            ])
-                .pipe(operators.takeWhile(function (_a) {
-                var _b = __read(_a, 1), cmsPage = _b[0];
-                return cmsPage === undefined;
-            }), operators.filter(function (_a) {
-                var _b = __read(_a, 2), routerState = _b[1];
-                if (routerState.nextState && !_this._cmsTicketId) {
-                    _this._cmsTicketId =
-                        routerState.nextState.queryParams['cmsTicketId'];
-                    if (_this._cmsTicketId) {
-                        return true;
-                    }
-                }
-                return false;
-            }), operators.take(1))
-                .subscribe(function () {
-                _this.cmsService.launchInSmartEdit = true;
-                _this.getDefaultPreviewCode();
-            });
-        };
-        SmartEditService.prototype.getDefaultPreviewCode = function () {
-            var _this = this;
-            this.baseSiteService
-                .getBaseSiteData()
-                .pipe(operators.filter(function (site) { return Object.keys(site).length !== 0; }), operators.take(1))
-                .subscribe(function (site) {
-                _this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
-                _this.defaultPreviewProductCode = site.defaultPreviewProductCode;
-                _this.addPageContract();
-            });
-        };
-        SmartEditService.prototype.addPageContract = function () {
-            var _this = this;
-            this.cmsService.getCurrentPage().subscribe(function (cmsPage) {
-                if (cmsPage && _this._cmsTicketId) {
-                    _this._currentPageId = cmsPage.pageId;
-                    // before adding contract to page, we need redirect to that page
-                    _this.goToPreviewPage(cmsPage);
-                    // remove old page contract
-                    var previousContract_1 = [];
-                    Array.from(_this.winRef.document.body.classList).forEach(function (attr) {
-                        return previousContract_1.push(attr);
-                    });
-                    previousContract_1.forEach(function (attr) {
-                        return _this.winRef.document.body.classList.remove(attr);
-                    });
-                    // add new page contract
-                    if (cmsPage.properties && cmsPage.properties.smartedit) {
-                        var seClasses = cmsPage.properties.smartedit.classes.split(' ');
-                        seClasses.forEach(function (classItem) {
-                            _this.winRef.document.body.classList.add(classItem);
-                        });
-                    }
-                }
-            });
-        };
-        SmartEditService.prototype.goToPreviewPage = function (cmsPage) {
-            // only the first page is the smartedit preview page
-            if (!this.isPreviewPage) {
-                this.isPreviewPage = true;
-                if (cmsPage.type === exports.PageType.PRODUCT_PAGE &&
-                    this.defaultPreviewProductCode) {
-                    this.routingService.go({
-                        cxRoute: 'product',
-                        params: { code: this.defaultPreviewProductCode, name: '' },
-                    });
-                }
-                else if (cmsPage.type === exports.PageType.CATEGORY_PAGE &&
-                    this.defaultPreviewCategoryCode) {
-                    this.routingService.go({
-                        cxRoute: 'category',
-                        params: { code: this.defaultPreviewCategoryCode },
-                    });
-                }
-            }
-        };
-        SmartEditService.prototype.renderComponent = function (componentId, componentType, parentId) {
-            var _this = this;
-            if (componentId) {
-                this.zone.run(function () {
-                    // without parentId, it is slot
-                    if (!parentId) {
-                        if (_this._currentPageId) {
-                            _this.cmsService.refreshPageById(_this._currentPageId);
-                        }
-                        else {
-                            _this.cmsService.refreshLatestPage();
-                        }
-                    }
-                    else if (componentType) {
-                        _this.cmsService.refreshComponent(componentId);
-                    }
-                });
-            }
-            return true;
-        };
-        SmartEditService.prototype.reprocessPage = function () {
-            // TODO: reprocess page API
-        };
-        SmartEditService.ctorParameters = function () { return [
-            { type: CmsService },
-            { type: RoutingService },
-            { type: BaseSiteService },
-            { type: core.NgZone },
-            { type: WindowRef }
-        ]; };
-        SmartEditService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SmartEditService_Factory() { return new SmartEditService(core["ɵɵinject"](CmsService), core["ɵɵinject"](RoutingService), core["ɵɵinject"](BaseSiteService), core["ɵɵinject"](core.NgZone), core["ɵɵinject"](WindowRef)); }, token: SmartEditService, providedIn: "root" });
-        SmartEditService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SmartEditService);
-        return SmartEditService;
     }());
 
     var CmsTicketInterceptor = /** @class */ (function () {

@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
+import { CmsService } from '../../cms/facade/cms.service';
 import { PersonalizationConfig } from '../config/personalization-config';
 import { PersonalizationContext } from '../model/personalization-context.model';
-import { CmsService } from '../../cms/facade/cms.service';
 export declare class PersonalizationContextService {
     protected config: PersonalizationConfig;
     protected cmsService: CmsService;
