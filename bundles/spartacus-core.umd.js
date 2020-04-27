@@ -13004,6 +13004,63 @@
         return BadGatewayHandler;
     }(HttpErrorHandler));
 
+    /**
+     * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
+     */
+    function getCartIdByUserId(cart, userId) {
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            return cart.guid;
+        }
+        return cart.code;
+    }
+    /**
+     * Check if cart is selective (save for later) based on id.
+     */
+    function isSelectiveCart(cartId) {
+        if (cartId === void 0) { cartId = ''; }
+        return cartId.startsWith('selectivecart');
+    }
+    /**
+     * Check if the returned error is of type notFound.
+     *
+     * We additionally check if the cart is not a selective cart.
+     * For selective cart this error can happen only when extension is disabled.
+     * It should never happen, because in that case, selective cart should also be disabled in our configuration.
+     * However if that happens we want to handle these errors silently.
+     */
+    function isCartNotFoundError(error) {
+        return (error.reason === 'notFound' &&
+            error.subjectType === 'cart' &&
+            !isSelectiveCart(error.subject));
+    }
+    /**
+     * Compute wishlist cart name for customer.
+     */
+    function getWishlistName(customerId) {
+        return "wishlist" + customerId;
+    }
+    /**
+     * What is a temporary cart?
+     * - frontend only cart entity!
+     * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
+     *
+     * Why we need temporary carts?
+     * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
+     * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
+     * - cart identifiers are created in the backend, so those are only known after cart is created
+     *
+     * Temporary cart life cycle
+     * - create cart method invoked
+     * - new `temp-${uuid}` cart is created with `loading=true` state
+     * - backend returns created cart
+     * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
+     * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
+     * - in next tick temporary cart is removed
+     */
+    function isTempCartId(cartId) {
+        return cartId.startsWith('temp-');
+    }
+
     var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
     var BadRequestHandler = /** @class */ (function (_super) {
         __extends(BadRequestHandler, _super);
@@ -13054,7 +13111,7 @@
         BadRequestHandler.prototype.handleBadCartRequest = function (_request, response) {
             var _this = this;
             this.getErrors(response)
-                .filter(function (e) { return e.subjectType === 'cart' && e.reason === 'notFound'; })
+                .filter(function (e) { return isCartNotFoundError(e); })
                 .forEach(function () {
                 _this.globalMessageService.add({ key: 'httpHandlers.cartNotFound' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
             });
@@ -14029,37 +14086,6 @@
         ɵ1: ɵ1$n,
         ɵ2: ɵ2$g
     });
-
-    function getCartIdByUserId(cart, userId) {
-        if (userId === OCC_USER_ID_ANONYMOUS) {
-            return cart.guid;
-        }
-        return cart.code;
-    }
-    function getWishlistName(customerId) {
-        return "wishlist" + customerId;
-    }
-    /**
-     * What is a temporary cart?
-     * - frontend only cart entity!
-     * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
-     *
-     * Why we need temporary carts?
-     * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
-     * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
-     * - cart identifiers are created in the backend, so those are only known after cart is created
-     *
-     * Temporary cart lifecycle
-     * - create cart method invoked
-     * - new `temp-${uuid}` cart is created with `loading=true` state
-     * - backend returns created cart
-     * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
-     * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
-     * - in next tick temporary cart is removed
-     */
-    function isTempCartId(cartId) {
-        return cartId.startsWith('temp-');
-    }
 
     var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
     var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
@@ -15999,11 +16025,11 @@
                                 return rxjs.of(new LoadCart(__assign({}, payload)));
                             }
                             var cartNotFoundErrors = error.error.errors.filter(function (err) {
-                                return err.reason === 'notFound' ||
+                                return isCartNotFoundError(err) ||
                                     err.reason === 'UnknownResourceError';
                             });
                             if (cartNotFoundErrors.length > 0) {
-                                // Remove cart as it doesn't exist on backend.
+                                // Remove cart as it doesn't exist on backend (selective cart always exists).
                                 return rxjs.of(new RemoveCart({ cartId: payload.cartId }));
                             }
                         }
@@ -16781,14 +16807,48 @@
         return UserService;
     }());
 
+    var CartConfig = /** @class */ (function () {
+        function CartConfig() {
+        }
+        CartConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConfig_Factory() { return core["ɵɵinject"](Config); }, token: CartConfig, providedIn: "root" });
+        CartConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], CartConfig);
+        return CartConfig;
+    }());
+
+    var CartConfigService = /** @class */ (function () {
+        function CartConfigService(config) {
+            this.config = config;
+        }
+        CartConfigService.prototype.isSelectiveCartEnabled = function () {
+            var _a, _b, _c;
+            return Boolean((_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.cart) === null || _b === void 0 ? void 0 : _b.selectiveCart) === null || _c === void 0 ? void 0 : _c.enabled);
+        };
+        CartConfigService.ctorParameters = function () { return [
+            { type: CartConfig }
+        ]; };
+        CartConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConfigService_Factory() { return new CartConfigService(core["ɵɵinject"](CartConfig)); }, token: CartConfigService, providedIn: "root" });
+        CartConfigService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CartConfigService);
+        return CartConfigService;
+    }());
+
     var SelectiveCartService = /** @class */ (function () {
-        function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService) {
+        function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
             var _this = this;
             this.store = store;
             this.userService = userService;
             this.authService = authService;
             this.multiCartService = multiCartService;
             this.baseSiteService = baseSiteService;
+            this.cartConfigService = cartConfigService;
             this.cartId$ = new rxjs.BehaviorSubject(undefined);
             this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
             this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
@@ -16876,6 +16936,12 @@
         SelectiveCartService.prototype.getEntry = function (productCode) {
             return this.multiCartService.getEntry(this.cartId, productCode);
         };
+        /**
+         * Indicates if selectiveCart feature is enabled based on cart configuration.
+         */
+        SelectiveCartService.prototype.isEnabled = function () {
+            return this.cartConfigService.isSelectiveCartEnabled();
+        };
         SelectiveCartService.prototype.isEmpty = function (cart) {
             return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
         };
@@ -16893,7 +16959,8 @@
             { type: UserService },
             { type: AuthService },
             { type: MultiCartService },
-            { type: BaseSiteService }
+            { type: BaseSiteService },
+            { type: CartConfigService }
         ]; };
         SelectiveCartService = __decorate([
             core.Injectable()
@@ -27025,6 +27092,8 @@
     exports.CartAddEntryEvent = CartAddEntryEvent;
     exports.CartAddEntryFailEvent = CartAddEntryFailEvent;
     exports.CartAddEntrySuccessEvent = CartAddEntrySuccessEvent;
+    exports.CartConfig = CartConfig;
+    exports.CartConfigService = CartConfigService;
     exports.CartConnector = CartConnector;
     exports.CartEntryAdapter = CartEntryAdapter;
     exports.CartEntryConnector = CartEntryConnector;

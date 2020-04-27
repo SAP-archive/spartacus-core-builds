@@ -1,8 +1,8 @@
 import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { ErrorModel } from '../../../../model/misc.model';
+import { Priority } from '../../../../util/applicable';
 import { HttpResponseStatus } from '../../../models/response-status.model';
 import { HttpErrorHandler } from '../http-error.handler';
-import { Priority } from '../../../../util/applicable';
 export declare class BadRequestHandler extends HttpErrorHandler {
     responseStatus: HttpResponseStatus;
     handleError(request: HttpRequest<any>, response: HttpErrorResponse): void;
