@@ -24,6 +24,14 @@ export declare class SetActiveLanguage implements Action {
     constructor(payload: string);
 }
 export declare class LanguageChange implements Action {
+    payload: {
+        previous: string;
+        current: string;
+    };
     readonly type = "[Site-context] Language Change";
+    constructor(payload: {
+        previous: string;
+        current: string;
+    });
 }
 export declare type LanguagesAction = LoadLanguages | LoadLanguagesFail | LoadLanguagesSuccess | SetActiveLanguage | LanguageChange;

@@ -3,5 +3,6 @@ import { ConfigInitializerService } from '../../config/config-initializer/config
 import { BaseSiteService } from '../facade/base-site.service';
 import { CurrencyService } from '../facade/currency.service';
 import { LanguageService } from '../facade/language.service';
-export declare function initializeContext(baseSiteService: BaseSiteService, langService: LanguageService, currService: CurrencyService, configInit: ConfigInitializerService): () => void;
+import { SiteContextRoutesHandler } from '../services/site-context-routes-handler';
+export declare function initializeContext(baseSiteService: BaseSiteService, langService: LanguageService, currService: CurrencyService, configInit: ConfigInitializerService, siteContextRoutesHandler: SiteContextRoutesHandler): () => void;
 export declare const contextServiceProviders: Provider[];

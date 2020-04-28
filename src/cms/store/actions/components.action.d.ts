@@ -19,13 +19,13 @@ export declare class LoadCmsComponent extends StateUtils.EntityLoadAction {
 export declare class LoadCmsComponentFail extends StateUtils.EntityFailAction {
     payload: {
         uid: string;
-        error: any;
+        error?: any;
         pageContext: PageContext;
     };
     readonly type = "[Cms] Load Component Fail";
     constructor(payload: {
         uid: string;
-        error: any;
+        error?: any;
         pageContext: PageContext;
     });
 }

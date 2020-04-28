@@ -24,6 +24,14 @@ export declare class SetActiveCurrency implements Action {
     constructor(payload: string);
 }
 export declare class CurrencyChange implements Action {
+    payload: {
+        previous: string;
+        current: string;
+    };
     readonly type = "[Site-context] Currency Change";
+    constructor(payload: {
+        previous: string;
+        current: string;
+    });
 }
 export declare type CurrenciesAction = LoadCurrencies | LoadCurrenciesFail | LoadCurrenciesSuccess | SetActiveCurrency | CurrencyChange;

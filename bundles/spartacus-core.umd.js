@@ -2020,6 +2020,23 @@
         return param && param.length ? param[0] : undefined;
     }
 
+    var SiteContextConfig = /** @class */ (function () {
+        function SiteContextConfig() {
+        }
+        SiteContextConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SiteContextConfig_Factory() { return core["ɵɵinject"](Config); }, token: SiteContextConfig, providedIn: "root" });
+        SiteContextConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], SiteContextConfig);
+        return SiteContextConfig;
+    }());
+
+    var LANGUAGE_CONTEXT_ID = 'language';
+    var CURRENCY_CONTEXT_ID = 'currency';
+    var BASE_SITE_CONTEXT_ID = 'baseSite';
+
     var LOAD_BASE_SITE = '[Site-context] Load BaseSite';
     var LOAD_BASE_SITE_FAIL = '[Site-context] Load BaseSite Fail';
     var LOAD_BASE_SITE_SUCCESS = '[Site-context] Load BaseSite Success';
@@ -2092,7 +2109,8 @@
         return SetActiveCurrency;
     }());
     var CurrencyChange = /** @class */ (function () {
-        function CurrencyChange() {
+        function CurrencyChange(payload) {
+            this.payload = payload;
             this.type = CURRENCY_CHANGE;
         }
         return CurrencyChange;
@@ -2131,7 +2149,8 @@
         return SetActiveLanguage;
     }());
     var LanguageChange = /** @class */ (function () {
-        function LanguageChange() {
+        function LanguageChange(payload) {
+            this.payload = payload;
             this.type = LANGUAGE_CHANGE;
         }
         return LanguageChange;
@@ -2235,23 +2254,6 @@
         getSiteContextState: getSiteContextState
     });
 
-    var SiteContextConfig = /** @class */ (function () {
-        function SiteContextConfig() {
-        }
-        SiteContextConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SiteContextConfig_Factory() { return core["ɵɵinject"](Config); }, token: SiteContextConfig, providedIn: "root" });
-        SiteContextConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], SiteContextConfig);
-        return SiteContextConfig;
-    }());
-
-    var LANGUAGE_CONTEXT_ID = 'language';
-    var CURRENCY_CONTEXT_ID = 'currency';
-    var BASE_SITE_CONTEXT_ID = 'baseSite';
-
     var BaseSiteService = /** @class */ (function () {
         function BaseSiteService(store, config) {
             this.store = store;
@@ -2283,6 +2285,14 @@
          * Initializes the active baseSite.
          */
         BaseSiteService.prototype.initialize = function () {
+            var value;
+            this.getActive()
+                .subscribe(function (val) { return (value = val); })
+                .unsubscribe();
+            if (value) {
+                // don't initialize, if there is already a value (i.e. retrieved from route or transferred from SSR)
+                return;
+            }
             this.setActive(getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
         };
         /**
@@ -5908,6 +5918,14 @@
          * default session currency of the store.
          */
         CurrencyService.prototype.initialize = function () {
+            var value;
+            this.getActive()
+                .subscribe(function (val) { return (value = val); })
+                .unsubscribe();
+            if (value) {
+                // don't initialize, if there is already a value (i.e. retrieved from route or transferred from SSR)
+                return;
+            }
             var sessionCurrency = this.sessionStorage && this.sessionStorage.getItem('currency');
             if (sessionCurrency &&
                 getContextParameterValues(this.config, CURRENCY_CONTEXT_ID).includes(sessionCurrency)) {
@@ -5973,6 +5991,14 @@
          * default session language of the store.
          */
         LanguageService.prototype.initialize = function () {
+            var value;
+            this.getActive()
+                .subscribe(function (val) { return (value = val); })
+                .unsubscribe();
+            if (value) {
+                // don't initialize, if there is already a value (i.e. retrieved from route or transferred from SSR)
+                return;
+            }
             var sessionLanguage = this.sessionStorage && this.sessionStorage.getItem('language');
             if (sessionLanguage &&
                 getContextParameterValues(this.config, LANGUAGE_CONTEXT_ID).includes(sessionLanguage)) {
@@ -11881,32 +11907,6 @@
         return ConfigInitializerService;
     }());
 
-    function initializeContext(baseSiteService, langService, currService, configInit) {
-        return function () {
-            configInit.getStableConfig('context').then(function () {
-                baseSiteService.initialize();
-                langService.initialize();
-                currService.initialize();
-            });
-        };
-    }
-    var contextServiceProviders = [
-        BaseSiteService,
-        LanguageService,
-        CurrencyService,
-        {
-            provide: core.APP_INITIALIZER,
-            useFactory: initializeContext,
-            deps: [
-                BaseSiteService,
-                LanguageService,
-                CurrencyService,
-                ConfigInitializerService,
-            ],
-            multi: true,
-        },
-    ];
-
     var SiteContextParamsService = /** @class */ (function () {
         function SiteContextParamsService(config, injector, serviceMap) {
             this.config = config;
@@ -12073,18 +12073,37 @@
             this.injector = injector;
             this.subscription = new rxjs.Subscription();
             this.contextValues = {};
+            /**
+             * Tells whether there is a pending navigation at the moment, so we can avoid an infinite loop caused by the cyclic dependency:
+             * - `subscribeChanges` method triggers a navigation on update of site context state
+             * - `subscribeRouting` method updates the site context state on navigation
+             */
             this.isNavigating = false;
         }
+        /**
+         * Initializes the two-way synchronization between the site context state and the URL.
+         *
+         * @returns Promise that is resolved when the site context state is initialized (updated for the first time) based on the URL.
+         */
         SiteContextRoutesHandler.prototype.init = function () {
-            this.router = this.injector.get(router.Router);
-            this.location = this.injector.get(common.Location);
-            var routingParams = this.siteContextParams.getUrlEncodingParameters();
-            if (routingParams.length) {
-                this.setContextParamsFromRoute(this.router.url);
-                this.subscribeChanges(routingParams);
-                this.subscribeRouting();
-            }
+            var _this = this;
+            return new Promise(function (resolve) {
+                _this.router = _this.injector.get(router.Router);
+                _this.location = _this.injector.get(common.Location);
+                var routingParams = _this.siteContextParams.getUrlEncodingParameters();
+                if (routingParams.length) {
+                    _this.subscribeChanges(routingParams);
+                    _this.subscribeRouting(resolve);
+                }
+                else {
+                    resolve();
+                }
+            });
         };
+        /**
+         * After each change of the site context state, it modifies the current URL in place.
+         * But it happens only for the parameters configured to be persisted in the URL.
+         */
         SiteContextRoutesHandler.prototype.subscribeChanges = function (params) {
             var _this = this;
             params.forEach(function (param) {
@@ -12103,8 +12122,18 @@
                 }
             });
         };
-        SiteContextRoutesHandler.prototype.subscribeRouting = function () {
+        /**
+         * After each Angular NavigationStart event it updates the site context state based on
+         * site context params encoded in the anticipated URL.
+         *
+         * In particular, it's responsible for initializing the state of the context params
+         * on page start, reading the values from the URL.
+         *
+         * @param onContextInitialized notify that the initialization of the context was done based on the URL
+         */
+        SiteContextRoutesHandler.prototype.subscribeRouting = function (onContextInitialized) {
             var _this = this;
+            var contextInitialized = false;
             this.subscription.add(this.router.events
                 .pipe(operators.filter(function (event) {
                 return event instanceof router.NavigationStart ||
@@ -12116,9 +12145,18 @@
                 _this.isNavigating = event instanceof router.NavigationStart;
                 if (_this.isNavigating) {
                     _this.setContextParamsFromRoute(event.url);
+                    if (!contextInitialized) {
+                        contextInitialized = true;
+                        onContextInitialized();
+                    }
                 }
             }));
         };
+        /**
+         * Updates the site context state based on the context params encoded in the given URL
+         *
+         * @param url URL with encoded context params
+         */
         SiteContextRoutesHandler.prototype.setContextParamsFromRoute = function (url) {
             var _this = this;
             var params = this.serializer.urlExtractContextParameters(url).params;
@@ -12143,51 +12181,81 @@
         return SiteContextRoutesHandler;
     }());
 
-    // functions below should not be exposed in public API:
-    function initSiteContextRoutesHandler(siteContextRoutesHandler, configInit) {
+    function initializeContext(baseSiteService, langService, currService, configInit, siteContextRoutesHandler) {
         return function () {
             configInit.getStableConfig('context').then(function () {
-                siteContextRoutesHandler.init();
+                siteContextRoutesHandler.init().then(function () {
+                    baseSiteService.initialize();
+                    langService.initialize();
+                    currService.initialize();
+                });
             });
         };
     }
-    var siteContextParamsProviders = [
-        SiteContextParamsService,
-        SiteContextUrlSerializer,
-        { provide: router.UrlSerializer, useExisting: SiteContextUrlSerializer },
+    var contextServiceProviders = [
+        BaseSiteService,
+        LanguageService,
+        CurrencyService,
         {
             provide: core.APP_INITIALIZER,
-            useFactory: initSiteContextRoutesHandler,
-            deps: [SiteContextRoutesHandler, ConfigInitializerService],
+            useFactory: initializeContext,
+            deps: [
+                BaseSiteService,
+                LanguageService,
+                CurrencyService,
+                ConfigInitializerService,
+                SiteContextRoutesHandler,
+            ],
             multi: true,
         },
     ];
 
+    // functions below should not be exposed in public API:
+    var siteContextParamsProviders = [
+        SiteContextParamsService,
+        SiteContextUrlSerializer,
+        { provide: router.UrlSerializer, useExisting: SiteContextUrlSerializer },
+    ];
+
     var LanguagesEffects = /** @class */ (function () {
-        function LanguagesEffects(actions$, siteConnector, winRef) {
+        function LanguagesEffects(actions$, siteConnector, winRef, state) {
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.winRef = winRef;
+            this.state = state;
             this.loadLanguages$ = this.actions$.pipe(effects$c.ofType(LOAD_LANGUAGES), operators.exhaustMap(function () {
                 return _this.siteConnector.getLanguages().pipe(operators.map(function (languages) { return new LoadLanguagesSuccess(languages); }), operators.catchError(function (error) {
                     return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error)));
                 }));
             }));
-            this.activateLanguage$ = this.actions$.pipe(effects$c.ofType(SET_ACTIVE_LANGUAGE), operators.tap(function (action) {
+            this.persist$ = this.actions$.pipe(effects$c.ofType(SET_ACTIVE_LANGUAGE), operators.tap(function (action) {
                 if (_this.winRef.sessionStorage) {
                     _this.winRef.sessionStorage.setItem('language', action.payload);
                 }
-            }), operators.map(function () { return new LanguageChange(); }));
+            }), operators.switchMapTo(rxjs.NEVER));
+            this.activateLanguage$ = this.state.select(getActiveLanguage).pipe(operators.bufferCount(2, 1), 
+            // avoid dispatching `change` action when we're just setting the initial value:
+            operators.filter(function (_a) {
+                var _b = __read(_a, 1), previous = _b[0];
+                return !!previous;
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 2), previous = _b[0], current = _b[1];
+                return new LanguageChange({ previous: previous, current: current });
+            }));
         }
         LanguagesEffects.ctorParameters = function () { return [
             { type: effects$c.Actions },
             { type: SiteConnector },
-            { type: WindowRef }
+            { type: WindowRef },
+            { type: store.Store }
         ]; };
         __decorate([
             effects$c.Effect()
         ], LanguagesEffects.prototype, "loadLanguages$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], LanguagesEffects.prototype, "persist$", void 0);
         __decorate([
             effects$c.Effect()
         ], LanguagesEffects.prototype, "activateLanguage$", void 0);
@@ -12198,11 +12266,12 @@
     }());
 
     var CurrenciesEffects = /** @class */ (function () {
-        function CurrenciesEffects(actions$, siteConnector, winRef) {
+        function CurrenciesEffects(actions$, siteConnector, winRef, state) {
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.winRef = winRef;
+            this.state = state;
             this.loadCurrencies$ = this.actions$.pipe(effects$c.ofType(LOAD_CURRENCIES), operators.exhaustMap(function () {
                 return _this.siteConnector.getCurrencies().pipe(operators.map(function (currencies) {
                     return new LoadCurrenciesSuccess(currencies);
@@ -12210,20 +12279,33 @@
                     return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error)));
                 }));
             }));
-            this.activateCurrency$ = this.actions$.pipe(effects$c.ofType(SET_ACTIVE_CURRENCY), operators.tap(function (action) {
+            this.persist$ = this.actions$.pipe(effects$c.ofType(SET_ACTIVE_CURRENCY), operators.tap(function (action) {
                 if (_this.winRef.sessionStorage) {
                     _this.winRef.sessionStorage.setItem('currency', action.payload);
                 }
-            }), operators.map(function () { return new CurrencyChange(); }));
+            }), operators.switchMapTo(rxjs.NEVER));
+            this.activateCurrency$ = this.state.select(getActiveCurrency).pipe(operators.bufferCount(2, 1), 
+            // avoid dispatching `change` action when we're just setting the initial value:
+            operators.filter(function (_a) {
+                var _b = __read(_a, 1), previous = _b[0];
+                return !!previous;
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 2), previous = _b[0], current = _b[1];
+                return new CurrencyChange({ previous: previous, current: current });
+            }));
         }
         CurrenciesEffects.ctorParameters = function () { return [
             { type: effects$c.Actions },
             { type: SiteConnector },
-            { type: WindowRef }
+            { type: WindowRef },
+            { type: store.Store }
         ]; };
         __decorate([
             effects$c.Effect()
         ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
+        __decorate([
+            effects$c.Effect()
+        ], CurrenciesEffects.prototype, "persist$", void 0);
         __decorate([
             effects$c.Effect()
         ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
@@ -17251,21 +17333,41 @@
                 initialLoaderState;
         });
     };
+    /**
+     * This selector will return:
+     *   - true: component for this context exists
+     *   - false: component for this context doesn't exist
+     *   - undefined: if the exists status for component is unknown
+     *
+     * @param uid
+     * @param context
+     */
     var componentsContextExistsSelectorFactory = function (uid, context) {
-        return store.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState) || false; });
+        return store.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState); });
     };
     var componentsDataSelectorFactory = function (uid) {
         return store.createSelector(componentsContextSelectorFactory(uid), function (state) {
             return state ? state.component : undefined;
         });
     };
+    /**
+     * This selector will return:
+     *   - CmsComponent instance: if we have component data for specified context
+     *   - null: if there is no component data for specified context
+     *   - undefined: if status of component data for specified context is unknown
+     *
+     * @param uid
+     * @param context
+     */
     var componentsSelectorFactory = function (uid, context) {
         return store.createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), function (componentState, exists) {
-            if (componentState && exists) {
-                return componentState;
-            }
-            else {
-                return undefined;
+            switch (exists) {
+                case true:
+                    return componentState;
+                case false:
+                    return null;
+                case undefined:
+                    return undefined;
             }
         });
     };
@@ -17489,13 +17591,7 @@
                     _this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
                 }
             }));
-            var component$ = this.store.pipe(store.select(componentsSelectorFactory(uid, context)), 
-            // TODO(issue:6431) - this `filter` should be removed.
-            // The reason for removal: with `filter` in place, when moving to a page that has restrictions, the component data will still emit the previous value.
-            // Removing it causes some components to fail, because they are not checking
-            // if the data is actually there. I noticed these that this component is failing, but there are possibly more:
-            // - `tab-paragraph-container.component.ts` when visiting any PDP page
-            operators.filter(function (component) { return !!component; }));
+            var component$ = this.store.pipe(store.select(componentsSelectorFactory(uid, context)), operators.filter(function (component) { return component !== undefined; }));
             return rxjs.using(function () { return loading$.subscribe(); }, function () { return component$; }).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
@@ -19494,10 +19590,10 @@
     }());
 
     var ComponentsEffects = /** @class */ (function () {
-        function ComponentsEffects(actions$, cmsComponentLoader) {
+        function ComponentsEffects(actions$, cmsComponentConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.cmsComponentLoader = cmsComponentLoader;
+            this.cmsComponentConnector = cmsComponentConnector;
             this.contextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
             this.loadComponent$ = effects$c.createEffect(function () { return function (_a) {
                 var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
@@ -19509,14 +19605,37 @@
             }; });
         }
         ComponentsEffects.prototype.loadComponentsEffect = function (componentUids, pageContext) {
-            return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(operators.switchMap(function (components) {
-                return rxjs.from(components.map(function (component) {
-                    return new LoadCmsComponentSuccess({
-                        component: component,
-                        uid: component.uid,
+            return this.cmsComponentConnector.getList(componentUids, pageContext).pipe(operators.switchMap(function (components) {
+                var e_1, _a;
+                var actions = [];
+                var uidsLeft = new Set(componentUids);
+                try {
+                    for (var components_1 = __values(components), components_1_1 = components_1.next(); !components_1_1.done; components_1_1 = components_1.next()) {
+                        var component = components_1_1.value;
+                        actions.push(new LoadCmsComponentSuccess({
+                            component: component,
+                            uid: component.uid,
+                            pageContext: pageContext,
+                        }));
+                        uidsLeft.delete(component.uid);
+                    }
+                }
+                catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                finally {
+                    try {
+                        if (components_1_1 && !components_1_1.done && (_a = components_1.return)) _a.call(components_1);
+                    }
+                    finally { if (e_1) throw e_1.error; }
+                }
+                // we have to emit LoadCmsComponentFail for all component's uids that
+                // are missing from the response
+                uidsLeft.forEach(function (uid) {
+                    actions.push(new LoadCmsComponentFail({
+                        uid: uid,
                         pageContext: pageContext,
-                    });
-                }));
+                    }));
+                });
+                return rxjs.from(actions);
             }), operators.catchError(function (error) {
                 return rxjs.from(componentUids.map(function (uid) {
                     return new LoadCmsComponentFail({
@@ -20681,7 +20800,6 @@
         pageContext: {},
     };
     function componentExistsReducer(state, action) {
-        if (state === void 0) { state = false; }
         switch (action.type) {
             case LOAD_CMS_COMPONENT_FAIL:
                 return false;
@@ -27629,68 +27747,67 @@
     exports.ɵhj = defaultSiteContextConfigFactory;
     exports.ɵhk = initializeContext;
     exports.ɵhl = contextServiceProviders;
-    exports.ɵhm = initSiteContextRoutesHandler;
-    exports.ɵhn = siteContextParamsProviders;
-    exports.ɵho = SiteContextUrlSerializer;
-    exports.ɵhp = SiteContextRoutesHandler;
-    exports.ɵhq = baseSiteConfigValidator;
-    exports.ɵhr = interceptors$4;
-    exports.ɵhs = CmsTicketInterceptor;
-    exports.ɵht = StoreFinderStoreModule;
-    exports.ɵhu = getReducers$b;
-    exports.ɵhv = reducerToken$b;
-    exports.ɵhw = reducerProvider$b;
-    exports.ɵhx = effects$a;
-    exports.ɵhy = FindStoresEffect;
-    exports.ɵhz = ViewAllStoresEffect;
+    exports.ɵhm = SiteContextRoutesHandler;
+    exports.ɵhn = SiteContextUrlSerializer;
+    exports.ɵho = siteContextParamsProviders;
+    exports.ɵhp = baseSiteConfigValidator;
+    exports.ɵhq = interceptors$4;
+    exports.ɵhr = CmsTicketInterceptor;
+    exports.ɵhs = StoreFinderStoreModule;
+    exports.ɵht = getReducers$b;
+    exports.ɵhu = reducerToken$b;
+    exports.ɵhv = reducerProvider$b;
+    exports.ɵhw = effects$a;
+    exports.ɵhx = FindStoresEffect;
+    exports.ɵhy = ViewAllStoresEffect;
+    exports.ɵhz = defaultStoreFinderConfig;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = defaultStoreFinderConfig;
-    exports.ɵib = UserStoreModule;
-    exports.ɵic = getReducers$c;
-    exports.ɵid = reducerToken$c;
-    exports.ɵie = reducerProvider$c;
-    exports.ɵif = clearUserState;
-    exports.ɵig = metaReducers$7;
-    exports.ɵih = effects$b;
-    exports.ɵii = BillingCountriesEffect;
-    exports.ɵij = ClearMiscsDataEffect;
-    exports.ɵik = ConsignmentTrackingEffects;
-    exports.ɵil = DeliveryCountriesEffects;
-    exports.ɵim = NotificationPreferenceEffects;
-    exports.ɵin = OrderDetailsEffect;
-    exports.ɵio = OrderReturnRequestEffect;
-    exports.ɵip = UserPaymentMethodsEffects;
-    exports.ɵiq = RegionsEffects;
-    exports.ɵir = ResetPasswordEffects;
-    exports.ɵis = TitlesEffects;
-    exports.ɵit = UserAddressesEffects;
-    exports.ɵiu = UserConsentsEffect;
-    exports.ɵiv = UserDetailsEffects;
-    exports.ɵiw = UserOrdersEffect;
-    exports.ɵix = UserRegisterEffects;
-    exports.ɵiy = CustomerCouponEffects;
-    exports.ɵiz = ProductInterestsEffect;
+    exports.ɵia = UserStoreModule;
+    exports.ɵib = getReducers$c;
+    exports.ɵic = reducerToken$c;
+    exports.ɵid = reducerProvider$c;
+    exports.ɵie = clearUserState;
+    exports.ɵif = metaReducers$7;
+    exports.ɵig = effects$b;
+    exports.ɵih = BillingCountriesEffect;
+    exports.ɵii = ClearMiscsDataEffect;
+    exports.ɵij = ConsignmentTrackingEffects;
+    exports.ɵik = DeliveryCountriesEffects;
+    exports.ɵil = NotificationPreferenceEffects;
+    exports.ɵim = OrderDetailsEffect;
+    exports.ɵin = OrderReturnRequestEffect;
+    exports.ɵio = UserPaymentMethodsEffects;
+    exports.ɵip = RegionsEffects;
+    exports.ɵiq = ResetPasswordEffects;
+    exports.ɵir = TitlesEffects;
+    exports.ɵis = UserAddressesEffects;
+    exports.ɵit = UserConsentsEffect;
+    exports.ɵiu = UserDetailsEffects;
+    exports.ɵiv = UserOrdersEffect;
+    exports.ɵiw = UserRegisterEffects;
+    exports.ɵix = CustomerCouponEffects;
+    exports.ɵiy = ProductInterestsEffect;
+    exports.ɵiz = ForgotPasswordEffects;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = ForgotPasswordEffects;
-    exports.ɵjb = UpdateEmailEffects;
-    exports.ɵjc = UpdatePasswordEffects;
-    exports.ɵjd = UserNotificationPreferenceConnector;
-    exports.ɵje = reducer$v;
-    exports.ɵjf = reducer$t;
-    exports.ɵjg = reducer$k;
-    exports.ɵjh = reducer$u;
-    exports.ɵji = reducer$p;
-    exports.ɵjj = reducer$w;
-    exports.ɵjk = reducer$o;
-    exports.ɵjl = reducer$z;
-    exports.ɵjm = reducer$m;
-    exports.ɵjn = reducer$s;
-    exports.ɵjo = reducer$q;
-    exports.ɵjp = reducer$r;
-    exports.ɵjq = reducer$l;
-    exports.ɵjr = reducer$x;
-    exports.ɵjs = reducer$n;
-    exports.ɵjt = reducer$y;
+    exports.ɵja = UpdateEmailEffects;
+    exports.ɵjb = UpdatePasswordEffects;
+    exports.ɵjc = UserNotificationPreferenceConnector;
+    exports.ɵjd = reducer$v;
+    exports.ɵje = reducer$t;
+    exports.ɵjf = reducer$k;
+    exports.ɵjg = reducer$u;
+    exports.ɵjh = reducer$p;
+    exports.ɵji = reducer$w;
+    exports.ɵjj = reducer$o;
+    exports.ɵjk = reducer$z;
+    exports.ɵjl = reducer$m;
+    exports.ɵjm = reducer$s;
+    exports.ɵjn = reducer$q;
+    exports.ɵjo = reducer$r;
+    exports.ɵjp = reducer$l;
+    exports.ɵjq = reducer$x;
+    exports.ɵjr = reducer$n;
+    exports.ɵjs = reducer$y;
     exports.ɵk = getStorageSyncReducer;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$2;
