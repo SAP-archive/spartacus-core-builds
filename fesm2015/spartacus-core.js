@@ -23309,9 +23309,10 @@ NotificationPreferenceEffects = __decorate([
 ], NotificationPreferenceEffects);
 
 let OrderDetailsEffect = class OrderDetailsEffect {
-    constructor(actions$, orderConnector) {
+    constructor(actions$, orderConnector, globalMessageService) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
+        this.globalMessageService = globalMessageService;
         this.loadOrderDetails$ = this.actions$.pipe(ofType(LOAD_ORDER_DETAILS), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector.get(payload.userId, payload.orderCode).pipe(map((order) => {
                 return new LoadOrderDetailsSuccess(order);
@@ -23320,13 +23321,18 @@ let OrderDetailsEffect = class OrderDetailsEffect {
         this.cancelOrder$ = this.actions$.pipe(ofType(CANCEL_ORDER), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .cancel(payload.userId, payload.orderCode, payload.cancelRequestInput)
-                .pipe(map(() => new CancelOrderSuccess()), catchError((error) => of(new CancelOrderFail(makeErrorSerializable(error)))));
+                .pipe(map(() => new CancelOrderSuccess()), catchError((error) => {
+                var _a;
+                (_a = error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach((err) => this.globalMessageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR));
+                return of(new CancelOrderFail(makeErrorSerializable(error)));
+            }));
         }));
     }
 };
 OrderDetailsEffect.ctorParameters = () => [
     { type: Actions },
-    { type: UserOrderConnector }
+    { type: UserOrderConnector },
+    { type: GlobalMessageService }
 ];
 __decorate([
     Effect()

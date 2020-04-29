@@ -26166,10 +26166,11 @@ var NotificationPreferenceEffects = /** @class */ (function () {
 }());
 
 var OrderDetailsEffect = /** @class */ (function () {
-    function OrderDetailsEffect(actions$, orderConnector) {
+    function OrderDetailsEffect(actions$, orderConnector, globalMessageService) {
         var _this = this;
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
+        this.globalMessageService = globalMessageService;
         this.loadOrderDetails$ = this.actions$.pipe(ofType(LOAD_ORDER_DETAILS), map(function (action) { return action.payload; }), switchMap(function (payload) {
             return _this.orderConnector.get(payload.userId, payload.orderCode).pipe(map(function (order) {
                 return new LoadOrderDetailsSuccess(order);
@@ -26181,13 +26182,18 @@ var OrderDetailsEffect = /** @class */ (function () {
             return _this.orderConnector
                 .cancel(payload.userId, payload.orderCode, payload.cancelRequestInput)
                 .pipe(map(function () { return new CancelOrderSuccess(); }), catchError(function (error) {
+                var _a;
+                (_a = error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach(function (err) {
+                    return _this.globalMessageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR);
+                });
                 return of(new CancelOrderFail(makeErrorSerializable(error)));
             }));
         }));
     }
     OrderDetailsEffect.ctorParameters = function () { return [
         { type: Actions },
-        { type: UserOrderConnector }
+        { type: UserOrderConnector },
+        { type: GlobalMessageService }
     ]; };
     __decorate([
         Effect()

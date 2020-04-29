@@ -26358,10 +26358,11 @@
     }());
 
     var OrderDetailsEffect = /** @class */ (function () {
-        function OrderDetailsEffect(actions$, orderConnector) {
+        function OrderDetailsEffect(actions$, orderConnector, globalMessageService) {
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
+            this.globalMessageService = globalMessageService;
             this.loadOrderDetails$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_DETAILS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector.get(payload.userId, payload.orderCode).pipe(operators.map(function (order) {
                     return new LoadOrderDetailsSuccess(order);
@@ -26373,13 +26374,18 @@
                 return _this.orderConnector
                     .cancel(payload.userId, payload.orderCode, payload.cancelRequestInput)
                     .pipe(operators.map(function () { return new CancelOrderSuccess(); }), operators.catchError(function (error) {
+                    var _a;
+                    (_a = error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach(function (err) {
+                        return _this.globalMessageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR);
+                    });
                     return rxjs.of(new CancelOrderFail(makeErrorSerializable(error)));
                 }));
             }));
         }
         OrderDetailsEffect.ctorParameters = function () { return [
             { type: effects$c.Actions },
-            { type: UserOrderConnector }
+            { type: UserOrderConnector },
+            { type: GlobalMessageService }
         ]; };
         __decorate([
             effects$c.Effect()

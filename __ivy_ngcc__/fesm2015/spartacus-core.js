@@ -22574,9 +22574,10 @@ __decorate([
 ], NotificationPreferenceEffects.prototype, "updatePreferences$", void 0);
 
 let OrderDetailsEffect = class OrderDetailsEffect {
-    constructor(actions$, orderConnector) {
+    constructor(actions$, orderConnector, globalMessageService) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
+        this.globalMessageService = globalMessageService;
         this.loadOrderDetails$ = this.actions$.pipe(ofType(LOAD_ORDER_DETAILS), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector.get(payload.userId, payload.orderCode).pipe(map((order) => {
                 return new LoadOrderDetailsSuccess(order);
@@ -22585,15 +22586,20 @@ let OrderDetailsEffect = class OrderDetailsEffect {
         this.cancelOrder$ = this.actions$.pipe(ofType(CANCEL_ORDER), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .cancel(payload.userId, payload.orderCode, payload.cancelRequestInput)
-                .pipe(map(() => new CancelOrderSuccess()), catchError((error) => of(new CancelOrderFail(makeErrorSerializable(error)))));
+                .pipe(map(() => new CancelOrderSuccess()), catchError((error) => {
+                var _a;
+                (_a = error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach((err) => this.globalMessageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR));
+                return of(new CancelOrderFail(makeErrorSerializable(error)));
+            }));
         }));
     }
 };
-OrderDetailsEffect.ɵfac = function OrderDetailsEffect_Factory(t) { return new (t || OrderDetailsEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserOrderConnector)); };
+OrderDetailsEffect.ɵfac = function OrderDetailsEffect_Factory(t) { return new (t || OrderDetailsEffect)(ɵngcc0.ɵɵinject(ɵngcc4.Actions), ɵngcc0.ɵɵinject(UserOrderConnector), ɵngcc0.ɵɵinject(GlobalMessageService)); };
 OrderDetailsEffect.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: OrderDetailsEffect, factory: OrderDetailsEffect.ɵfac });
 OrderDetailsEffect.ctorParameters = () => [
     { type: Actions },
-    { type: UserOrderConnector }
+    { type: UserOrderConnector },
+    { type: GlobalMessageService }
 ];
 __decorate([
     Effect()
@@ -24988,7 +24994,7 @@ const ɵSearchboxService_BaseFactory = ɵngcc0.ɵɵgetInheritedFactory(Searchbox
     }], function () { return [{ type: ɵngcc4.Actions }, { type: UserNotificationPreferenceConnector }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OrderDetailsEffect, [{
         type: Injectable
-    }], function () { return [{ type: ɵngcc4.Actions }, { type: UserOrderConnector }]; }, null); })();
+    }], function () { return [{ type: ɵngcc4.Actions }, { type: UserOrderConnector }, { type: GlobalMessageService }]; }, null); })();
 /*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(OrderReturnRequestEffect, [{
         type: Injectable
     }], function () { return [{ type: ɵngcc4.Actions }, { type: UserOrderConnector }]; }, null); })();
