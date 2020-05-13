@@ -1200,8 +1200,11 @@ var ClientErrorHandlingService = /** @class */ (function () {
     ClientErrorHandlingService.ctorParameters = function () { return [
         { type: AuthService }
     ]; };
+    ClientErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(ɵɵinject(AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
     ClientErrorHandlingService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], ClientErrorHandlingService);
     return ClientErrorHandlingService;
 }());
@@ -1702,8 +1705,11 @@ var UserErrorHandlingService = /** @class */ (function () {
         { type: AuthService },
         { type: RoutingService }
     ]; };
+    UserErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(ɵɵinject(AuthService), ɵɵinject(RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
     UserErrorHandlingService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], UserErrorHandlingService);
     return UserErrorHandlingService;
 }());
@@ -2403,113 +2409,6 @@ var interceptors = [
     },
 ];
 
-var AuthConfig = /** @class */ (function (_super) {
-    __extends(AuthConfig, _super);
-    function AuthConfig() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    AuthConfig.ɵprov = ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
-    AuthConfig = __decorate([
-        Injectable({
-            providedIn: 'root',
-            useExisting: Config,
-        })
-    ], AuthConfig);
-    return AuthConfig;
-}(OccConfig));
-
-var ClientAuthenticationTokenService = /** @class */ (function () {
-    function ClientAuthenticationTokenService(config, http, occEndpointsService) {
-        this.config = config;
-        this.http = http;
-        this.occEndpointsService = occEndpointsService;
-    }
-    ClientAuthenticationTokenService.prototype.loadClientAuthenticationToken = function () {
-        var url = this.occEndpointsService.getRawEndpoint('login');
-        var params = new HttpParams()
-            .set('client_id', encodeURIComponent(this.config.authentication.client_id))
-            .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
-            .set('grant_type', 'client_credentials');
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http.post(url, params, { headers: headers });
-    };
-    ClientAuthenticationTokenService.ctorParameters = function () { return [
-        { type: AuthConfig },
-        { type: HttpClient },
-        { type: OccEndpointsService }
-    ]; };
-    ClientAuthenticationTokenService = __decorate([
-        Injectable()
-    ], ClientAuthenticationTokenService);
-    return ClientAuthenticationTokenService;
-}());
-
-var UserAuthenticationTokenService = /** @class */ (function () {
-    function UserAuthenticationTokenService(http, config, occEndpointsService) {
-        this.http = http;
-        this.config = config;
-        this.occEndpointsService = occEndpointsService;
-    }
-    UserAuthenticationTokenService.prototype.loadToken = function (userId, password) {
-        var url = this.occEndpointsService.getRawEndpoint('login');
-        var params = new HttpParams()
-            .set('client_id', this.config.authentication.client_id)
-            .set('client_secret', this.config.authentication.client_secret)
-            .set('grant_type', 'password')
-            .set('username', userId)
-            .set('password', password);
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .post(url, params, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    UserAuthenticationTokenService.prototype.refreshToken = function (refreshToken) {
-        var url = this.occEndpointsService.getRawEndpoint('login');
-        var params = new HttpParams()
-            .set('client_id', encodeURIComponent(this.config.authentication.client_id))
-            .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
-            .set('refresh_token', encodeURI(refreshToken))
-            .set('grant_type', 'refresh_token');
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .post(url, params, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    UserAuthenticationTokenService.prototype.revoke = function (userToken) {
-        var url = this.occEndpointsService.getRawEndpoint('revoke');
-        var headers = InterceptorUtil.createHeader(TOKEN_REVOCATION_HEADER, true, new HttpHeaders({
-            Authorization: userToken.token_type + " " + userToken.access_token,
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }));
-        var params = new HttpParams().set('token', userToken.access_token);
-        return this.http
-            .post(url, params, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    UserAuthenticationTokenService.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: AuthConfig },
-        { type: OccEndpointsService }
-    ]; };
-    UserAuthenticationTokenService = __decorate([
-        Injectable()
-    ], UserAuthenticationTokenService);
-    return UserAuthenticationTokenService;
-}());
-
-var AuthServices = [
-    ClientAuthenticationTokenService,
-    ClientErrorHandlingService,
-    UserAuthenticationTokenService,
-    UserErrorHandlingService,
-];
-
 var StorageSyncType;
 (function (StorageSyncType) {
     StorageSyncType["NO_STORAGE"] = "NO_STORAGE";
@@ -2773,6 +2672,52 @@ function makeErrorSerializable(error) {
     return isObject(error) ? UNKNOWN_ERROR : error;
 }
 
+var AuthConfig = /** @class */ (function (_super) {
+    __extends(AuthConfig, _super);
+    function AuthConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    AuthConfig.ɵprov = ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
+    AuthConfig = __decorate([
+        Injectable({
+            providedIn: 'root',
+            useExisting: Config,
+        })
+    ], AuthConfig);
+    return AuthConfig;
+}(OccConfig));
+
+var ClientAuthenticationTokenService = /** @class */ (function () {
+    function ClientAuthenticationTokenService(config, http, occEndpointsService) {
+        this.config = config;
+        this.http = http;
+        this.occEndpointsService = occEndpointsService;
+    }
+    ClientAuthenticationTokenService.prototype.loadClientAuthenticationToken = function () {
+        var url = this.occEndpointsService.getRawEndpoint('login');
+        var params = new HttpParams()
+            .set('client_id', encodeURIComponent(this.config.authentication.client_id))
+            .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
+            .set('grant_type', 'client_credentials');
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        return this.http.post(url, params, { headers: headers });
+    };
+    ClientAuthenticationTokenService.ctorParameters = function () { return [
+        { type: AuthConfig },
+        { type: HttpClient },
+        { type: OccEndpointsService }
+    ]; };
+    ClientAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(ɵɵinject(AuthConfig), ɵɵinject(HttpClient), ɵɵinject(OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
+    ClientAuthenticationTokenService = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], ClientAuthenticationTokenService);
+    return ClientAuthenticationTokenService;
+}());
+
 var ClientTokenEffect = /** @class */ (function () {
     function ClientTokenEffect(actions$, clientAuthenticationTokenService) {
         var _this = this;
@@ -2799,6 +2744,66 @@ var ClientTokenEffect = /** @class */ (function () {
         Injectable()
     ], ClientTokenEffect);
     return ClientTokenEffect;
+}());
+
+var UserAuthenticationTokenService = /** @class */ (function () {
+    function UserAuthenticationTokenService(http, config, occEndpointsService) {
+        this.http = http;
+        this.config = config;
+        this.occEndpointsService = occEndpointsService;
+    }
+    UserAuthenticationTokenService.prototype.loadToken = function (userId, password) {
+        var url = this.occEndpointsService.getRawEndpoint('login');
+        var params = new HttpParams()
+            .set('client_id', this.config.authentication.client_id)
+            .set('client_secret', this.config.authentication.client_secret)
+            .set('grant_type', 'password')
+            .set('username', userId)
+            .set('password', password);
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        return this.http
+            .post(url, params, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    UserAuthenticationTokenService.prototype.refreshToken = function (refreshToken) {
+        var url = this.occEndpointsService.getRawEndpoint('login');
+        var params = new HttpParams()
+            .set('client_id', encodeURIComponent(this.config.authentication.client_id))
+            .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
+            .set('refresh_token', encodeURI(refreshToken))
+            .set('grant_type', 'refresh_token');
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        return this.http
+            .post(url, params, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    UserAuthenticationTokenService.prototype.revoke = function (userToken) {
+        var url = this.occEndpointsService.getRawEndpoint('revoke');
+        var headers = InterceptorUtil.createHeader(TOKEN_REVOCATION_HEADER, true, new HttpHeaders({
+            Authorization: userToken.token_type + " " + userToken.access_token,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }));
+        var params = new HttpParams().set('token', userToken.access_token);
+        return this.http
+            .post(url, params, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    UserAuthenticationTokenService.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: AuthConfig },
+        { type: OccEndpointsService }
+    ]; };
+    UserAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(ɵɵinject(HttpClient), ɵɵinject(AuthConfig), ɵɵinject(OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
+    UserAuthenticationTokenService = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], UserAuthenticationTokenService);
+    return UserAuthenticationTokenService;
 }());
 
 var UserTokenEffects = /** @class */ (function () {
@@ -2947,9 +2952,7 @@ var AuthModule = /** @class */ (function () {
     AuthModule.forRoot = function () {
         return {
             ngModule: AuthModule_1,
-            providers: __spread([
-                provideDefaultConfig(defaultAuthConfig)
-            ], interceptors, AuthServices),
+            providers: __spread([provideDefaultConfig(defaultAuthConfig)], interceptors),
         };
     };
     var AuthModule_1;
@@ -12830,8 +12833,11 @@ var GlobalMessageService = /** @class */ (function () {
     GlobalMessageService.ctorParameters = function () { return [
         { type: Store }
     ]; };
+    GlobalMessageService.ɵprov = ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(ɵɵinject(Store)); }, token: GlobalMessageService, providedIn: "root" });
     GlobalMessageService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], GlobalMessageService);
     return GlobalMessageService;
 }());
@@ -13575,10 +13581,7 @@ var GlobalMessageModule = /** @class */ (function () {
                 GlobalMessageStoreModule,
                 EffectsModule.forFeature([GlobalMessageEffect]),
             ],
-            providers: [
-                provideDefaultConfigFactory(defaultGlobalMessageConfigFactory),
-                GlobalMessageService,
-            ],
+            providers: [provideDefaultConfigFactory(defaultGlobalMessageConfigFactory)],
         })
     ], GlobalMessageModule);
     return GlobalMessageModule;
@@ -14771,8 +14774,11 @@ var MultiCartService = /** @class */ (function () {
     MultiCartService.ctorParameters = function () { return [
         { type: Store }
     ]; };
+    MultiCartService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(ɵɵinject(Store)); }, token: MultiCartService, providedIn: "root" });
     MultiCartService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], MultiCartService);
     return MultiCartService;
 }());
@@ -15088,8 +15094,11 @@ var ActiveCartService = /** @class */ (function () {
         { type: AuthService },
         { type: MultiCartService }
     ]; };
+    ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
     ActiveCartService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], ActiveCartService);
     return ActiveCartService;
 }());
@@ -16356,608 +16365,6 @@ var CartEventModule = /** @class */ (function () {
     return CartEventModule;
 }());
 
-var CartVoucherService = /** @class */ (function () {
-    function CartVoucherService(store, authService, activeCartService) {
-        this.store = store;
-        this.authService = authService;
-        this.activeCartService = activeCartService;
-    }
-    CartVoucherService.prototype.addVoucher = function (voucherId, cartId) {
-        var _this = this;
-        this.combineUserAndCartId(cartId).subscribe(function (_a) {
-            var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
-            return _this.store.dispatch(new CartAddVoucher({
-                userId: occUserId,
-                cartId: cartIdentifier,
-                voucherId: voucherId,
-            }));
-        });
-    };
-    CartVoucherService.prototype.removeVoucher = function (voucherId, cartId) {
-        var _this = this;
-        this.combineUserAndCartId(cartId).subscribe(function (_a) {
-            var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
-            return _this.store.dispatch(new CartRemoveVoucher({
-                userId: occUserId,
-                cartId: cartIdentifier,
-                voucherId: voucherId,
-            }));
-        });
-    };
-    // TODO(#7241): Remove when switching to event system for add voucher
-    /**
-     * Get add voucher process error flag
-     * @deprecated since 2.0
-     */
-    CartVoucherService.prototype.getAddVoucherResultError = function () {
-        return this.store.pipe(select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
-    };
-    // TODO(#7241): Remove when switching to event system for add voucher
-    /**
-     * Get add voucher process success flag
-     * @deprecated since 2.0
-     */
-    CartVoucherService.prototype.getAddVoucherResultSuccess = function () {
-        return this.store.pipe(select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
-    };
-    // TODO(#7241): Remove when switching to event system for add voucher
-    /**
-     * Get add voucher process loading flag
-     * @deprecated since 2.0
-     */
-    CartVoucherService.prototype.getAddVoucherResultLoading = function () {
-        return this.store.pipe(select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
-    };
-    // TODO(#7241): Remove when switching to event system for add voucher
-    /**
-     * Reset add voucher process
-     * @deprecated since 2.0
-     */
-    CartVoucherService.prototype.resetAddVoucherProcessingState = function () {
-        this.store.dispatch(new CartResetAddVoucher());
-    };
-    CartVoucherService.prototype.combineUserAndCartId = function (cartId) {
-        if (cartId) {
-            return this.authService.getOccUserId().pipe(take(1), map(function (userId) { return [userId, cartId]; }));
-        }
-        else {
-            return combineLatest([
-                this.authService.getOccUserId(),
-                this.activeCartService.getActiveCartId(),
-            ]).pipe(take(1));
-        }
-    };
-    CartVoucherService.ctorParameters = function () { return [
-        { type: Store },
-        { type: AuthService },
-        { type: ActiveCartService }
-    ]; };
-    CartVoucherService = __decorate([
-        Injectable()
-    ], CartVoucherService);
-    return CartVoucherService;
-}());
-
-var UserService = /** @class */ (function () {
-    function UserService(store, authService) {
-        this.store = store;
-        this.authService = authService;
-    }
-    /**
-     * Returns a user
-     */
-    UserService.prototype.get = function () {
-        var _this = this;
-        return this.store.pipe(select(getDetails), tap(function (details) {
-            if (Object.keys(details).length === 0) {
-                _this.load();
-            }
-        }));
-    };
-    /**
-     * Loads the user's details
-     */
-    UserService.prototype.load = function () {
-        var _this = this;
-        this.authService.invokeWithUserId(function (userId) {
-            if (userId !== OCC_USER_ID_ANONYMOUS) {
-                _this.store.dispatch(new LoadUserDetails(userId));
-            }
-        });
-    };
-    /**
-     * Register a new user
-     *
-     * @param submitFormData as UserRegisterFormData
-     */
-    UserService.prototype.register = function (userRegisterFormData) {
-        this.store.dispatch(new RegisterUser(userRegisterFormData));
-    };
-    /**
-     * Register a new user from guest
-     *
-     * @param guid
-     * @param password
-     */
-    UserService.prototype.registerGuest = function (guid, password) {
-        this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
-    };
-    /**
-     * Returns the register user process loading flag
-     */
-    UserService.prototype.getRegisterUserResultLoading = function () {
-        return this.store.pipe(select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
-    };
-    /**
-     * Returns the register user process success flag
-     */
-    UserService.prototype.getRegisterUserResultSuccess = function () {
-        return this.store.pipe(select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
-    };
-    /**
-     * Returns the register user process error flag
-     */
-    UserService.prototype.getRegisterUserResultError = function () {
-        return this.store.pipe(select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
-    };
-    /**
-     * Resets the register user process flags
-     */
-    UserService.prototype.resetRegisterUserProcessState = function () {
-        return this.store.dispatch(new ResetRegisterUserProcess());
-    };
-    /**
-     * Remove user account, that's also called close user's account
-     */
-    UserService.prototype.remove = function () {
-        var _this = this;
-        this.authService.invokeWithUserId(function (userId) {
-            _this.store.dispatch(new RemoveUser(userId));
-        });
-    };
-    /**
-     * Returns the remove user loading flag
-     */
-    UserService.prototype.getRemoveUserResultLoading = function () {
-        return this.store.pipe(select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
-    };
-    /**
-     * Returns the remove user failure outcome.
-     */
-    UserService.prototype.getRemoveUserResultError = function () {
-        return this.store.pipe(select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
-    };
-    /**
-     * Returns the remove user process success outcome.
-     */
-    UserService.prototype.getRemoveUserResultSuccess = function () {
-        return this.store.pipe(select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
-    };
-    /**
-     * Resets the remove user process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     */
-    UserService.prototype.resetRemoveUserProcessState = function () {
-        this.store.dispatch(new RemoveUserReset());
-    };
-    /**
-     * Returns titles
-     */
-    UserService.prototype.getTitles = function () {
-        return this.store.pipe(select(getAllTitles));
-    };
-    /**
-     * Retrieves titles
-     */
-    UserService.prototype.loadTitles = function () {
-        this.store.dispatch(new LoadTitles());
-    };
-    /**
-     * Return whether user's password is successfully reset
-     */
-    UserService.prototype.isPasswordReset = function () {
-        return this.store.pipe(select(getResetPassword));
-    };
-    /**
-     * Updates the user's details
-     * @param userDetails to be updated
-     */
-    UserService.prototype.updatePersonalDetails = function (userDetails) {
-        var _this = this;
-        this.authService.invokeWithUserId(function (userId) {
-            _this.store.dispatch(new UpdateUserDetails({
-                username: userId,
-                userDetails: userDetails,
-            }));
-        });
-    };
-    /**
-     * Returns the update user's personal details loading flag
-     */
-    UserService.prototype.getUpdatePersonalDetailsResultLoading = function () {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    };
-    /**
-     * Returns the update user's personal details error flag
-     */
-    UserService.prototype.getUpdatePersonalDetailsResultError = function () {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    };
-    /**
-     * Returns the update user's personal details success flag
-     */
-    UserService.prototype.getUpdatePersonalDetailsResultSuccess = function () {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    };
-    /**
-     * Resets the update user details processing state
-     */
-    UserService.prototype.resetUpdatePersonalDetailsProcessingState = function () {
-        this.store.dispatch(new ResetUpdateUserDetails());
-    };
-    /**
-     * Reset new password.  Part of the forgot password flow.
-     * @param token
-     * @param password
-     */
-    UserService.prototype.resetPassword = function (token, password) {
-        this.store.dispatch(new ResetPassword({ token: token, password: password }));
-    };
-    /*
-     * Request an email to reset a forgotten password.
-     */
-    UserService.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
-        this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
-    };
-    /**
-     * Updates the user's email
-     */
-    UserService.prototype.updateEmail = function (password, newUid) {
-        var _this = this;
-        this.authService.invokeWithUserId(function (userId) {
-            _this.store.dispatch(new UpdateEmailAction({
-                uid: userId,
-                password: password,
-                newUid: newUid,
-            }));
-        });
-    };
-    /**
-     * Returns the update user's email success flag
-     */
-    UserService.prototype.getUpdateEmailResultSuccess = function () {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
-    };
-    /**
-     * Returns the update user's email error flag
-     */
-    UserService.prototype.getUpdateEmailResultError = function () {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
-    };
-    /**
-     * Returns the update user's email loading flag
-     */
-    UserService.prototype.getUpdateEmailResultLoading = function () {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
-    };
-    /**
-     * Resets the update user's email processing state
-     */
-    UserService.prototype.resetUpdateEmailResultState = function () {
-        this.store.dispatch(new ResetUpdateEmailAction());
-    };
-    /**
-     * Updates the password for the user
-     * @param oldPassword the current password that will be changed
-     * @param newPassword the new password
-     */
-    UserService.prototype.updatePassword = function (oldPassword, newPassword) {
-        var _this = this;
-        this.authService.invokeWithUserId(function (userId) {
-            _this.store.dispatch(new UpdatePassword({
-                userId: userId,
-                oldPassword: oldPassword,
-                newPassword: newPassword,
-            }));
-        });
-    };
-    /**
-     * Returns the update password loading flag
-     */
-    UserService.prototype.getUpdatePasswordResultLoading = function () {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    };
-    /**
-     * Returns the update password failure outcome.
-     */
-    UserService.prototype.getUpdatePasswordResultError = function () {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    };
-    /**
-     * Returns the update password process success outcome.
-     */
-    UserService.prototype.getUpdatePasswordResultSuccess = function () {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    };
-    /**
-     * Resets the update password process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     */
-    UserService.prototype.resetUpdatePasswordProcessState = function () {
-        this.store.dispatch(new UpdatePasswordReset());
-    };
-    UserService.ctorParameters = function () { return [
-        { type: Store },
-        { type: AuthService }
-    ]; };
-    UserService.ɵprov = ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
-    UserService = __decorate([
-        Injectable({ providedIn: 'root' })
-    ], UserService);
-    return UserService;
-}());
-
-var CartConfig = /** @class */ (function () {
-    function CartConfig() {
-    }
-    CartConfig.ɵprov = ɵɵdefineInjectable({ factory: function CartConfig_Factory() { return ɵɵinject(Config); }, token: CartConfig, providedIn: "root" });
-    CartConfig = __decorate([
-        Injectable({
-            providedIn: 'root',
-            useExisting: Config,
-        })
-    ], CartConfig);
-    return CartConfig;
-}());
-
-var CartConfigService = /** @class */ (function () {
-    function CartConfigService(config) {
-        this.config = config;
-    }
-    CartConfigService.prototype.isSelectiveCartEnabled = function () {
-        var _a, _b, _c;
-        return Boolean((_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.cart) === null || _b === void 0 ? void 0 : _b.selectiveCart) === null || _c === void 0 ? void 0 : _c.enabled);
-    };
-    CartConfigService.ctorParameters = function () { return [
-        { type: CartConfig }
-    ]; };
-    CartConfigService.ɵprov = ɵɵdefineInjectable({ factory: function CartConfigService_Factory() { return new CartConfigService(ɵɵinject(CartConfig)); }, token: CartConfigService, providedIn: "root" });
-    CartConfigService = __decorate([
-        Injectable({
-            providedIn: 'root',
-        })
-    ], CartConfigService);
-    return CartConfigService;
-}());
-
-var SelectiveCartService = /** @class */ (function () {
-    function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
-        var _this = this;
-        this.store = store;
-        this.userService = userService;
-        this.authService = authService;
-        this.multiCartService = multiCartService;
-        this.baseSiteService = baseSiteService;
-        this.cartConfigService = cartConfigService;
-        this.cartId$ = new BehaviorSubject(undefined);
-        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
-        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
-        this.cartSelector$ = this.cartId$.pipe(switchMap(function (cartId) {
-            _this.cartId = cartId;
-            return _this.multiCartService.getCartEntity(cartId);
-        }));
-        combineLatest([
-            this.userService.get(),
-            this.baseSiteService.getActive(),
-        ]).subscribe(function (_a) {
-            var _b = __read(_a, 2), user = _b[0], activeBaseSite = _b[1];
-            if (user && user.customerId && activeBaseSite) {
-                _this.customerId = user.customerId;
-                _this.cartId$.next("selectivecart" + activeBaseSite + _this.customerId);
-            }
-            else if (user && !user.customerId) {
-                _this.cartId$.next(undefined);
-            }
-        });
-        this.authService.getOccUserId().subscribe(function (userId) {
-            _this.userId = userId;
-            if (_this.isJustLoggedIn(userId)) {
-                _this.load();
-            }
-            _this.previousUserId = userId;
-        });
-        this.selectiveCart$ = this.cartSelector$.pipe(map(function (cartEntity) {
-            return {
-                cart: cartEntity.value,
-                loading: cartEntity.loading,
-                loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
-            };
-        }), filter(function (_a) {
-            var loading = _a.loading;
-            return !loading;
-        }), tap(function (_a) {
-            var cart = _a.cart, loaded = _a.loaded;
-            if (_this.cartId && _this.isEmpty(cart) && !loaded) {
-                _this.load();
-            }
-        }), map(function (_a) {
-            var cart = _a.cart;
-            return (cart ? cart : {});
-        }), shareReplay({ bufferSize: 1, refCount: true }));
-    }
-    SelectiveCartService.prototype.getCart = function () {
-        return this.selectiveCart$;
-    };
-    SelectiveCartService.prototype.getEntries = function () {
-        return this.multiCartService.getEntries(this.cartId);
-    };
-    SelectiveCartService.prototype.getLoaded = function () {
-        return this.cartSelector$.pipe(map(function (cart) { return (cart.success || cart.error) && !cart.loading; }));
-    };
-    SelectiveCartService.prototype.load = function () {
-        if (this.isLoggedIn(this.userId) && this.cartId) {
-            this.multiCartService.loadCart({
-                userId: this.userId,
-                cartId: this.cartId,
-            });
-        }
-    };
-    SelectiveCartService.prototype.addEntry = function (productCode, quantity) {
-        var _this = this;
-        var loadAttempted = false;
-        this.cartSelector$
-            .pipe(filter(function () { return !loadAttempted; }), switchMap(function (cartState) {
-            if (_this.isEmpty(cartState.value) && !cartState.loading) {
-                loadAttempted = true;
-                _this.load();
-            }
-            return of(cartState);
-        }), filter(function (cartState) { return !_this.isEmpty(cartState.value); }), take(1))
-            .subscribe(function () {
-            _this.multiCartService.addEntry(_this.userId, _this.cartId, productCode, quantity);
-        });
-    };
-    SelectiveCartService.prototype.removeEntry = function (entry) {
-        this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
-    };
-    SelectiveCartService.prototype.updateEntry = function (entryNumber, quantity) {
-        this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
-    };
-    SelectiveCartService.prototype.getEntry = function (productCode) {
-        return this.multiCartService.getEntry(this.cartId, productCode);
-    };
-    /**
-     * Indicates if selectiveCart feature is enabled based on cart configuration.
-     */
-    SelectiveCartService.prototype.isEnabled = function () {
-        return this.cartConfigService.isSelectiveCartEnabled();
-    };
-    SelectiveCartService.prototype.isEmpty = function (cart) {
-        return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
-    };
-    SelectiveCartService.prototype.isJustLoggedIn = function (userId) {
-        return (this.isLoggedIn(userId) &&
-            this.previousUserId !== userId && // *just* logged in
-            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
-        );
-    };
-    SelectiveCartService.prototype.isLoggedIn = function (userId) {
-        return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
-    };
-    SelectiveCartService.ctorParameters = function () { return [
-        { type: Store },
-        { type: UserService },
-        { type: AuthService },
-        { type: MultiCartService },
-        { type: BaseSiteService },
-        { type: CartConfigService }
-    ]; };
-    SelectiveCartService = __decorate([
-        Injectable()
-    ], SelectiveCartService);
-    return SelectiveCartService;
-}());
-
-var WishListService = /** @class */ (function () {
-    function WishListService(store, authService, userService, multiCartService) {
-        this.store = store;
-        this.authService = authService;
-        this.userService = userService;
-        this.multiCartService = multiCartService;
-    }
-    WishListService.prototype.createWishList = function (userId, name, description) {
-        this.store.dispatch(new CreateWishList({ userId: userId, name: name, description: description }));
-    };
-    WishListService.prototype.getWishList = function () {
-        var _this = this;
-        return combineLatest([
-            this.getWishListId(),
-            this.userService.get(),
-            this.authService.getOccUserId(),
-        ]).pipe(distinctUntilChanged(), tap(function (_a) {
-            var _b = __read(_a, 3), wishListId = _b[0], user = _b[1], userId = _b[2];
-            if (!Boolean(wishListId) &&
-                userId !== OCC_USER_ID_ANONYMOUS &&
-                Boolean(user) &&
-                Boolean(user.customerId)) {
-                _this.loadWishList(userId, user.customerId);
-            }
-        }), filter(function (_a) {
-            var _b = __read(_a, 1), wishListId = _b[0];
-            return Boolean(wishListId);
-        }), switchMap(function (_a) {
-            var _b = __read(_a, 1), wishListId = _b[0];
-            return _this.multiCartService.getCart(wishListId);
-        }));
-    };
-    WishListService.prototype.loadWishList = function (userId, customerId) {
-        this.store.dispatch(new LoadWishList({
-            userId: userId,
-            customerId: customerId,
-            tempCartId: getWishlistName(customerId),
-        }));
-    };
-    WishListService.prototype.addEntry = function (productCode) {
-        var _this = this;
-        this.getWishListId()
-            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap(function (_a) {
-            var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
-            if (!Boolean(wishListId) &&
-                Boolean(user) &&
-                Boolean(user.customerId)) {
-                _this.loadWishList(userId, user.customerId);
-            }
-        }), filter(function (_a) {
-            var _b = __read(_a, 1), wishListId = _b[0];
-            return Boolean(wishListId);
-        }), take(1))
-            .subscribe(function (_a) {
-            var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
-            return _this.multiCartService.addEntry(userId, wishListId, productCode, 1);
-        });
-    };
-    WishListService.prototype.removeEntry = function (entry) {
-        var _this = this;
-        this.getWishListId()
-            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap(function (_a) {
-            var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
-            if (!Boolean(wishListId) &&
-                Boolean(user) &&
-                Boolean(user.customerId)) {
-                _this.loadWishList(userId, user.customerId);
-            }
-        }), filter(function (_a) {
-            var _b = __read(_a, 1), wishListId = _b[0];
-            return Boolean(wishListId);
-        }), take(1))
-            .subscribe(function (_a) {
-            var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
-            return _this.multiCartService.removeEntry(userId, wishListId, entry.entryNumber);
-        });
-    };
-    WishListService.prototype.getWishListLoading = function () {
-        var _this = this;
-        return this.getWishListId().pipe(switchMap(function (wishListId) {
-            return _this.multiCartService
-                .isStable(wishListId)
-                .pipe(map(function (stable) { return !stable; }));
-        }));
-    };
-    WishListService.prototype.getWishListId = function () {
-        return this.store.pipe(select(getWishListId));
-    };
-    WishListService.ctorParameters = function () { return [
-        { type: Store },
-        { type: AuthService },
-        { type: UserService },
-        { type: MultiCartService }
-    ]; };
-    WishListService = __decorate([
-        Injectable()
-    ], WishListService);
-    return WishListService;
-}());
-
 var CMS_FEATURE = 'cms';
 var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
 var COMPONENT_ENTITY = '[Cms] Component Entity';
@@ -17686,11 +17093,6 @@ var CartModule = /** @class */ (function () {
         return {
             ngModule: CartModule_1,
             providers: [
-                CartVoucherService,
-                MultiCartService,
-                WishListService,
-                ActiveCartService,
-                SelectiveCartService,
                 {
                     provide: PageMetaResolver,
                     useExisting: CartPageMetaResolver,
@@ -17714,231 +17116,615 @@ var CartModule = /** @class */ (function () {
     return CartModule;
 }());
 
-var initialState$9 = {
-    results: {},
-};
-function reducer$9(state, action) {
-    if (state === void 0) { state = initialState$9; }
-    switch (action.type) {
-        case VERIFY_ADDRESS_SUCCESS: {
-            var results = action.payload;
-            return __assign(__assign({}, state), { results: results });
-        }
-        case VERIFY_ADDRESS_FAIL: {
-            return __assign(__assign({}, state), { results: 'FAIL' });
-        }
-        case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
-            return __assign(__assign({}, state), { results: {} });
-        }
+var CartConfig = /** @class */ (function () {
+    function CartConfig() {
     }
-    return state;
-}
-var getAddressVerificationResults = function (state) { return state.results; };
+    CartConfig.ɵprov = ɵɵdefineInjectable({ factory: function CartConfig_Factory() { return ɵɵinject(Config); }, token: CartConfig, providedIn: "root" });
+    CartConfig = __decorate([
+        Injectable({
+            providedIn: 'root',
+            useExisting: Config,
+        })
+    ], CartConfig);
+    return CartConfig;
+}());
 
-var getDeliveryAddressSelector = function (state) { return state.address; };
-var ɵ0$z = getDeliveryAddressSelector;
-var getDeliveryModeSelector = function (state) {
-    return state.deliveryMode;
-};
-var ɵ1$p = getDeliveryModeSelector;
-var getPaymentDetailsSelector = function (state) {
-    return state.paymentDetails;
-};
-var ɵ2$i = getPaymentDetailsSelector;
-var getOrderDetailsSelector = function (state) {
-    return state.orderDetails;
-};
-var ɵ3$a = getOrderDetailsSelector;
-var getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
-var ɵ4$3 = function (checkoutState) { return checkoutState.steps; };
-var getCheckoutStepsState = createSelector(getCheckoutState, ɵ4$3);
-var ɵ5$2 = function (state) {
-    return loaderValueSelector(state);
-};
-var getCheckoutSteps = createSelector(getCheckoutStepsState, ɵ5$2);
-var getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
-var getDeliveryMode = createSelector(getCheckoutSteps, getDeliveryModeSelector);
-var ɵ6 = function (deliveryMode) {
-    return (deliveryMode &&
-        Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
-};
-var getSupportedDeliveryModes = createSelector(getDeliveryMode, ɵ6);
-var ɵ7 = function (deliveryMode) {
-    return deliveryMode && deliveryMode.selected;
-};
-var getSelectedDeliveryModeCode = createSelector(getDeliveryMode, ɵ7);
-var ɵ8 = function (deliveryMode) {
-    if (deliveryMode.selected !== '') {
-        if (Object.keys(deliveryMode.supported).length === 0) {
-            return null;
-        }
-        return deliveryMode.supported[deliveryMode.selected];
-    }
-};
-var getSelectedDeliveryMode = createSelector(getDeliveryMode, ɵ8);
-var getPaymentDetails = createSelector(getCheckoutSteps, getPaymentDetailsSelector);
-var getCheckoutOrderDetails = createSelector(getCheckoutSteps, getOrderDetailsSelector);
-var ɵ9 = function (state) {
-    return loaderSuccessSelector(state) &&
-        !loaderLoadingSelector(state);
-};
-var getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, ɵ9);
-
-var ɵ0$A = function (state) { return state.addressVerification; };
-var getAddressVerificationResultsState = createSelector(getCheckoutState, ɵ0$A);
-var getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
-
-var initialState$a = {
-    entities: {},
-};
-function reducer$a(state, action) {
-    if (state === void 0) { state = initialState$a; }
-    switch (action.type) {
-        case LOAD_CARD_TYPES_SUCCESS: {
-            var cardTypes = action.payload;
-            var entities = cardTypes.reduce(function (cardTypesEntities, name) {
-                var _a;
-                return __assign(__assign({}, cardTypesEntities), (_a = {}, _a[name.code] = name, _a));
-            }, __assign({}, state.entities));
-            return __assign(__assign({}, state), { entities: entities });
-        }
-        case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$a;
-        }
-    }
-    return state;
-}
-var getCardTypesEntites = function (state) { return state.entities; };
-
-var ɵ0$B = function (state) { return state.cardTypes; };
-var getCardTypesState = createSelector(getCheckoutState, ɵ0$B);
-var getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-var ɵ1$q = function (entites) {
-    return Object.keys(entites).map(function (code) { return entites[code]; });
-};
-var getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$q);
-
-
-
-var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getAddressVerificationResultsState: getAddressVerificationResultsState,
-    getAddressVerificationResults: getAddressVerificationResults$1,
-    ɵ0: ɵ0$A,
-    getCardTypesState: getCardTypesState,
-    getCardTypesEntites: getCardTypesEntites$1,
-    getAllCardTypes: getAllCardTypes,
-    ɵ1: ɵ1$q,
-    getCheckoutState: getCheckoutState,
-    getCheckoutStepsState: getCheckoutStepsState,
-    getCheckoutSteps: getCheckoutSteps,
-    getDeliveryAddress: getDeliveryAddress,
-    getDeliveryMode: getDeliveryMode,
-    getSupportedDeliveryModes: getSupportedDeliveryModes,
-    getSelectedDeliveryModeCode: getSelectedDeliveryModeCode,
-    getSelectedDeliveryMode: getSelectedDeliveryMode,
-    getPaymentDetails: getPaymentDetails,
-    getCheckoutOrderDetails: getCheckoutOrderDetails,
-    getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
-    ɵ2: ɵ2$i,
-    ɵ3: ɵ3$a,
-    ɵ4: ɵ4$3,
-    ɵ5: ɵ5$2,
-    ɵ6: ɵ6,
-    ɵ7: ɵ7,
-    ɵ8: ɵ8,
-    ɵ9: ɵ9
-});
-
-var CheckoutService = /** @class */ (function () {
-    function CheckoutService(checkoutStore, authService, activeCartService) {
-        this.checkoutStore = checkoutStore;
+var CartVoucherService = /** @class */ (function () {
+    function CartVoucherService(store, authService, activeCartService) {
+        this.store = store;
         this.authService = authService;
         this.activeCartService = activeCartService;
     }
-    /**
-     * Places an order
-     */
-    CheckoutService.prototype.placeOrder = function () {
-        if (this.actionAllowed()) {
-            var userId_1;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId_1 = occUserId); })
-                .unsubscribe();
-            var cartId_1;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
-                .unsubscribe();
-            if (userId_1 && cartId_1) {
-                this.checkoutStore.dispatch(new PlaceOrder({
-                    userId: userId_1,
-                    cartId: cartId_1,
-                }));
-            }
-        }
-    };
-    /**
-     * Clear checkout data
-     */
-    CheckoutService.prototype.clearCheckoutData = function () {
-        this.checkoutStore.dispatch(new ClearCheckoutData());
-    };
-    /**
-     * Clear checkout step
-     * @param stepNumber : the step number to be cleared
-     */
-    CheckoutService.prototype.clearCheckoutStep = function (stepNumber) {
-        this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
-    };
-    /**
-     * Load checkout details data
-     * @param cartId : string Cart ID of loaded cart
-     */
-    CheckoutService.prototype.loadCheckoutDetails = function (cartId) {
-        var userId;
-        this.authService
-            .getOccUserId()
-            .subscribe(function (occUserId) { return (userId = occUserId); })
-            .unsubscribe();
-        if (userId) {
-            this.checkoutStore.dispatch(new LoadCheckoutDetails({
-                userId: userId,
-                cartId: cartId,
+    CartVoucherService.prototype.addVoucher = function (voucherId, cartId) {
+        var _this = this;
+        this.combineUserAndCartId(cartId).subscribe(function (_a) {
+            var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
+            return _this.store.dispatch(new CartAddVoucher({
+                userId: occUserId,
+                cartId: cartIdentifier,
+                voucherId: voucherId,
             }));
+        });
+    };
+    CartVoucherService.prototype.removeVoucher = function (voucherId, cartId) {
+        var _this = this;
+        this.combineUserAndCartId(cartId).subscribe(function (_a) {
+            var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
+            return _this.store.dispatch(new CartRemoveVoucher({
+                userId: occUserId,
+                cartId: cartIdentifier,
+                voucherId: voucherId,
+            }));
+        });
+    };
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process error flag
+     * @deprecated since 2.0
+     */
+    CartVoucherService.prototype.getAddVoucherResultError = function () {
+        return this.store.pipe(select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
+    };
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process success flag
+     * @deprecated since 2.0
+     */
+    CartVoucherService.prototype.getAddVoucherResultSuccess = function () {
+        return this.store.pipe(select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
+    };
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Get add voucher process loading flag
+     * @deprecated since 2.0
+     */
+    CartVoucherService.prototype.getAddVoucherResultLoading = function () {
+        return this.store.pipe(select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
+    };
+    // TODO(#7241): Remove when switching to event system for add voucher
+    /**
+     * Reset add voucher process
+     * @deprecated since 2.0
+     */
+    CartVoucherService.prototype.resetAddVoucherProcessingState = function () {
+        this.store.dispatch(new CartResetAddVoucher());
+    };
+    CartVoucherService.prototype.combineUserAndCartId = function (cartId) {
+        if (cartId) {
+            return this.authService.getOccUserId().pipe(take(1), map(function (userId) { return [userId, cartId]; }));
+        }
+        else {
+            return combineLatest([
+                this.authService.getOccUserId(),
+                this.activeCartService.getActiveCartId(),
+            ]).pipe(take(1));
         }
     };
-    /**
-     * Get status of checkout details loaded
-     */
-    CheckoutService.prototype.getCheckoutDetailsLoaded = function () {
-        return this.checkoutStore.pipe(select(getCheckoutDetailsLoaded));
-    };
-    /**
-     * Get order details
-     */
-    CheckoutService.prototype.getOrderDetails = function () {
-        return this.checkoutStore.pipe(select(getCheckoutOrderDetails));
-    };
-    CheckoutService.prototype.actionAllowed = function () {
-        var userId;
-        this.authService
-            .getOccUserId()
-            .subscribe(function (occUserId) { return (userId = occUserId); })
-            .unsubscribe();
-        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
-            this.activeCartService.isGuestCart());
-    };
-    CheckoutService.ctorParameters = function () { return [
+    CartVoucherService.ctorParameters = function () { return [
         { type: Store },
         { type: AuthService },
         { type: ActiveCartService }
     ]; };
-    CheckoutService = __decorate([
-        Injectable()
-    ], CheckoutService);
-    return CheckoutService;
+    CartVoucherService.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
+    CartVoucherService = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], CartVoucherService);
+    return CartVoucherService;
+}());
+
+var UserService = /** @class */ (function () {
+    function UserService(store, authService) {
+        this.store = store;
+        this.authService = authService;
+    }
+    /**
+     * Returns a user
+     */
+    UserService.prototype.get = function () {
+        var _this = this;
+        return this.store.pipe(select(getDetails), tap(function (details) {
+            if (Object.keys(details).length === 0) {
+                _this.load();
+            }
+        }));
+    };
+    /**
+     * Loads the user's details
+     */
+    UserService.prototype.load = function () {
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                _this.store.dispatch(new LoadUserDetails(userId));
+            }
+        });
+    };
+    /**
+     * Register a new user
+     *
+     * @param submitFormData as UserRegisterFormData
+     */
+    UserService.prototype.register = function (userRegisterFormData) {
+        this.store.dispatch(new RegisterUser(userRegisterFormData));
+    };
+    /**
+     * Register a new user from guest
+     *
+     * @param guid
+     * @param password
+     */
+    UserService.prototype.registerGuest = function (guid, password) {
+        this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
+    };
+    /**
+     * Returns the register user process loading flag
+     */
+    UserService.prototype.getRegisterUserResultLoading = function () {
+        return this.store.pipe(select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
+    };
+    /**
+     * Returns the register user process success flag
+     */
+    UserService.prototype.getRegisterUserResultSuccess = function () {
+        return this.store.pipe(select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
+    };
+    /**
+     * Returns the register user process error flag
+     */
+    UserService.prototype.getRegisterUserResultError = function () {
+        return this.store.pipe(select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
+    };
+    /**
+     * Resets the register user process flags
+     */
+    UserService.prototype.resetRegisterUserProcessState = function () {
+        return this.store.dispatch(new ResetRegisterUserProcess());
+    };
+    /**
+     * Remove user account, that's also called close user's account
+     */
+    UserService.prototype.remove = function () {
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new RemoveUser(userId));
+        });
+    };
+    /**
+     * Returns the remove user loading flag
+     */
+    UserService.prototype.getRemoveUserResultLoading = function () {
+        return this.store.pipe(select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+    };
+    /**
+     * Returns the remove user failure outcome.
+     */
+    UserService.prototype.getRemoveUserResultError = function () {
+        return this.store.pipe(select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+    };
+    /**
+     * Returns the remove user process success outcome.
+     */
+    UserService.prototype.getRemoveUserResultSuccess = function () {
+        return this.store.pipe(select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+    };
+    /**
+     * Resets the remove user process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     */
+    UserService.prototype.resetRemoveUserProcessState = function () {
+        this.store.dispatch(new RemoveUserReset());
+    };
+    /**
+     * Returns titles
+     */
+    UserService.prototype.getTitles = function () {
+        return this.store.pipe(select(getAllTitles));
+    };
+    /**
+     * Retrieves titles
+     */
+    UserService.prototype.loadTitles = function () {
+        this.store.dispatch(new LoadTitles());
+    };
+    /**
+     * Return whether user's password is successfully reset
+     */
+    UserService.prototype.isPasswordReset = function () {
+        return this.store.pipe(select(getResetPassword));
+    };
+    /**
+     * Updates the user's details
+     * @param userDetails to be updated
+     */
+    UserService.prototype.updatePersonalDetails = function (userDetails) {
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdateUserDetails({
+                username: userId,
+                userDetails: userDetails,
+            }));
+        });
+    };
+    /**
+     * Returns the update user's personal details loading flag
+     */
+    UserService.prototype.getUpdatePersonalDetailsResultLoading = function () {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's personal details error flag
+     */
+    UserService.prototype.getUpdatePersonalDetailsResultError = function () {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's personal details success flag
+     */
+    UserService.prototype.getUpdatePersonalDetailsResultSuccess = function () {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    };
+    /**
+     * Resets the update user details processing state
+     */
+    UserService.prototype.resetUpdatePersonalDetailsProcessingState = function () {
+        this.store.dispatch(new ResetUpdateUserDetails());
+    };
+    /**
+     * Reset new password.  Part of the forgot password flow.
+     * @param token
+     * @param password
+     */
+    UserService.prototype.resetPassword = function (token, password) {
+        this.store.dispatch(new ResetPassword({ token: token, password: password }));
+    };
+    /*
+     * Request an email to reset a forgotten password.
+     */
+    UserService.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
+        this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
+    };
+    /**
+     * Updates the user's email
+     */
+    UserService.prototype.updateEmail = function (password, newUid) {
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdateEmailAction({
+                uid: userId,
+                password: password,
+                newUid: newUid,
+            }));
+        });
+    };
+    /**
+     * Returns the update user's email success flag
+     */
+    UserService.prototype.getUpdateEmailResultSuccess = function () {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's email error flag
+     */
+    UserService.prototype.getUpdateEmailResultError = function () {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's email loading flag
+     */
+    UserService.prototype.getUpdateEmailResultLoading = function () {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Resets the update user's email processing state
+     */
+    UserService.prototype.resetUpdateEmailResultState = function () {
+        this.store.dispatch(new ResetUpdateEmailAction());
+    };
+    /**
+     * Updates the password for the user
+     * @param oldPassword the current password that will be changed
+     * @param newPassword the new password
+     */
+    UserService.prototype.updatePassword = function (oldPassword, newPassword) {
+        var _this = this;
+        this.authService.invokeWithUserId(function (userId) {
+            _this.store.dispatch(new UpdatePassword({
+                userId: userId,
+                oldPassword: oldPassword,
+                newPassword: newPassword,
+            }));
+        });
+    };
+    /**
+     * Returns the update password loading flag
+     */
+    UserService.prototype.getUpdatePasswordResultLoading = function () {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    };
+    /**
+     * Returns the update password failure outcome.
+     */
+    UserService.prototype.getUpdatePasswordResultError = function () {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    };
+    /**
+     * Returns the update password process success outcome.
+     */
+    UserService.prototype.getUpdatePasswordResultSuccess = function () {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    };
+    /**
+     * Resets the update password process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     */
+    UserService.prototype.resetUpdatePasswordProcessState = function () {
+        this.store.dispatch(new UpdatePasswordReset());
+    };
+    UserService.ctorParameters = function () { return [
+        { type: Store },
+        { type: AuthService }
+    ]; };
+    UserService.ɵprov = ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
+    UserService = __decorate([
+        Injectable({ providedIn: 'root' })
+    ], UserService);
+    return UserService;
+}());
+
+var CartConfigService = /** @class */ (function () {
+    function CartConfigService(config) {
+        this.config = config;
+    }
+    CartConfigService.prototype.isSelectiveCartEnabled = function () {
+        var _a, _b, _c;
+        return Boolean((_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.cart) === null || _b === void 0 ? void 0 : _b.selectiveCart) === null || _c === void 0 ? void 0 : _c.enabled);
+    };
+    CartConfigService.ctorParameters = function () { return [
+        { type: CartConfig }
+    ]; };
+    CartConfigService.ɵprov = ɵɵdefineInjectable({ factory: function CartConfigService_Factory() { return new CartConfigService(ɵɵinject(CartConfig)); }, token: CartConfigService, providedIn: "root" });
+    CartConfigService = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], CartConfigService);
+    return CartConfigService;
+}());
+
+var SelectiveCartService = /** @class */ (function () {
+    function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
+        var _this = this;
+        this.store = store;
+        this.userService = userService;
+        this.authService = authService;
+        this.multiCartService = multiCartService;
+        this.baseSiteService = baseSiteService;
+        this.cartConfigService = cartConfigService;
+        this.cartId$ = new BehaviorSubject(undefined);
+        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+        this.cartSelector$ = this.cartId$.pipe(switchMap(function (cartId) {
+            _this.cartId = cartId;
+            return _this.multiCartService.getCartEntity(cartId);
+        }));
+        combineLatest([
+            this.userService.get(),
+            this.baseSiteService.getActive(),
+        ]).subscribe(function (_a) {
+            var _b = __read(_a, 2), user = _b[0], activeBaseSite = _b[1];
+            if (user && user.customerId && activeBaseSite) {
+                _this.customerId = user.customerId;
+                _this.cartId$.next("selectivecart" + activeBaseSite + _this.customerId);
+            }
+            else if (user && !user.customerId) {
+                _this.cartId$.next(undefined);
+            }
+        });
+        this.authService.getOccUserId().subscribe(function (userId) {
+            _this.userId = userId;
+            if (_this.isJustLoggedIn(userId)) {
+                _this.load();
+            }
+            _this.previousUserId = userId;
+        });
+        this.selectiveCart$ = this.cartSelector$.pipe(map(function (cartEntity) {
+            return {
+                cart: cartEntity.value,
+                loading: cartEntity.loading,
+                loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
+            };
+        }), filter(function (_a) {
+            var loading = _a.loading;
+            return !loading;
+        }), tap(function (_a) {
+            var cart = _a.cart, loaded = _a.loaded;
+            if (_this.cartId && _this.isEmpty(cart) && !loaded) {
+                _this.load();
+            }
+        }), map(function (_a) {
+            var cart = _a.cart;
+            return (cart ? cart : {});
+        }), shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    SelectiveCartService.prototype.getCart = function () {
+        return this.selectiveCart$;
+    };
+    SelectiveCartService.prototype.getEntries = function () {
+        return this.multiCartService.getEntries(this.cartId);
+    };
+    SelectiveCartService.prototype.getLoaded = function () {
+        return this.cartSelector$.pipe(map(function (cart) { return (cart.success || cart.error) && !cart.loading; }));
+    };
+    SelectiveCartService.prototype.load = function () {
+        if (this.isLoggedIn(this.userId) && this.cartId) {
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId: this.cartId,
+            });
+        }
+    };
+    SelectiveCartService.prototype.addEntry = function (productCode, quantity) {
+        var _this = this;
+        var loadAttempted = false;
+        this.cartSelector$
+            .pipe(filter(function () { return !loadAttempted; }), switchMap(function (cartState) {
+            if (_this.isEmpty(cartState.value) && !cartState.loading) {
+                loadAttempted = true;
+                _this.load();
+            }
+            return of(cartState);
+        }), filter(function (cartState) { return !_this.isEmpty(cartState.value); }), take(1))
+            .subscribe(function () {
+            _this.multiCartService.addEntry(_this.userId, _this.cartId, productCode, quantity);
+        });
+    };
+    SelectiveCartService.prototype.removeEntry = function (entry) {
+        this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
+    };
+    SelectiveCartService.prototype.updateEntry = function (entryNumber, quantity) {
+        this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
+    };
+    SelectiveCartService.prototype.getEntry = function (productCode) {
+        return this.multiCartService.getEntry(this.cartId, productCode);
+    };
+    /**
+     * Indicates if selectiveCart feature is enabled based on cart configuration.
+     */
+    SelectiveCartService.prototype.isEnabled = function () {
+        return this.cartConfigService.isSelectiveCartEnabled();
+    };
+    SelectiveCartService.prototype.isEmpty = function (cart) {
+        return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
+    };
+    SelectiveCartService.prototype.isJustLoggedIn = function (userId) {
+        return (this.isLoggedIn(userId) &&
+            this.previousUserId !== userId && // *just* logged in
+            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+        );
+    };
+    SelectiveCartService.prototype.isLoggedIn = function (userId) {
+        return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
+    };
+    SelectiveCartService.ctorParameters = function () { return [
+        { type: Store },
+        { type: UserService },
+        { type: AuthService },
+        { type: MultiCartService },
+        { type: BaseSiteService },
+        { type: CartConfigService }
+    ]; };
+    SelectiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(ɵɵinject(Store), ɵɵinject(UserService), ɵɵinject(AuthService), ɵɵinject(MultiCartService), ɵɵinject(BaseSiteService), ɵɵinject(CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
+    SelectiveCartService = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], SelectiveCartService);
+    return SelectiveCartService;
+}());
+
+var WishListService = /** @class */ (function () {
+    function WishListService(store, authService, userService, multiCartService) {
+        this.store = store;
+        this.authService = authService;
+        this.userService = userService;
+        this.multiCartService = multiCartService;
+    }
+    WishListService.prototype.createWishList = function (userId, name, description) {
+        this.store.dispatch(new CreateWishList({ userId: userId, name: name, description: description }));
+    };
+    WishListService.prototype.getWishList = function () {
+        var _this = this;
+        return combineLatest([
+            this.getWishListId(),
+            this.userService.get(),
+            this.authService.getOccUserId(),
+        ]).pipe(distinctUntilChanged(), tap(function (_a) {
+            var _b = __read(_a, 3), wishListId = _b[0], user = _b[1], userId = _b[2];
+            if (!Boolean(wishListId) &&
+                userId !== OCC_USER_ID_ANONYMOUS &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                _this.loadWishList(userId, user.customerId);
+            }
+        }), filter(function (_a) {
+            var _b = __read(_a, 1), wishListId = _b[0];
+            return Boolean(wishListId);
+        }), switchMap(function (_a) {
+            var _b = __read(_a, 1), wishListId = _b[0];
+            return _this.multiCartService.getCart(wishListId);
+        }));
+    };
+    WishListService.prototype.loadWishList = function (userId, customerId) {
+        this.store.dispatch(new LoadWishList({
+            userId: userId,
+            customerId: customerId,
+            tempCartId: getWishlistName(customerId),
+        }));
+    };
+    WishListService.prototype.addEntry = function (productCode) {
+        var _this = this;
+        this.getWishListId()
+            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap(function (_a) {
+            var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
+            if (!Boolean(wishListId) &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                _this.loadWishList(userId, user.customerId);
+            }
+        }), filter(function (_a) {
+            var _b = __read(_a, 1), wishListId = _b[0];
+            return Boolean(wishListId);
+        }), take(1))
+            .subscribe(function (_a) {
+            var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+            return _this.multiCartService.addEntry(userId, wishListId, productCode, 1);
+        });
+    };
+    WishListService.prototype.removeEntry = function (entry) {
+        var _this = this;
+        this.getWishListId()
+            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap(function (_a) {
+            var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
+            if (!Boolean(wishListId) &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                _this.loadWishList(userId, user.customerId);
+            }
+        }), filter(function (_a) {
+            var _b = __read(_a, 1), wishListId = _b[0];
+            return Boolean(wishListId);
+        }), take(1))
+            .subscribe(function (_a) {
+            var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+            return _this.multiCartService.removeEntry(userId, wishListId, entry.entryNumber);
+        });
+    };
+    WishListService.prototype.getWishListLoading = function () {
+        var _this = this;
+        return this.getWishListId().pipe(switchMap(function (wishListId) {
+            return _this.multiCartService
+                .isStable(wishListId)
+                .pipe(map(function (stable) { return !stable; }));
+        }));
+    };
+    WishListService.prototype.getWishListId = function () {
+        return this.store.pipe(select(getWishListId));
+    };
+    WishListService.ctorParameters = function () { return [
+        { type: Store },
+        { type: AuthService },
+        { type: UserService },
+        { type: MultiCartService }
+    ]; };
+    WishListService.ɵprov = ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(UserService), ɵɵinject(MultiCartService)); }, token: WishListService, providedIn: "root" });
+    WishListService = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], WishListService);
+    return WishListService;
 }());
 
 var TranslationService = /** @class */ (function () {
@@ -17988,6 +17774,49 @@ var CheckoutPageMetaResolver = /** @class */ (function (_super) {
     ], CheckoutPageMetaResolver);
     return CheckoutPageMetaResolver;
 }(PageMetaResolver));
+
+var initialState$9 = {
+    results: {},
+};
+function reducer$9(state, action) {
+    if (state === void 0) { state = initialState$9; }
+    switch (action.type) {
+        case VERIFY_ADDRESS_SUCCESS: {
+            var results = action.payload;
+            return __assign(__assign({}, state), { results: results });
+        }
+        case VERIFY_ADDRESS_FAIL: {
+            return __assign(__assign({}, state), { results: 'FAIL' });
+        }
+        case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
+            return __assign(__assign({}, state), { results: {} });
+        }
+    }
+    return state;
+}
+var getAddressVerificationResults = function (state) { return state.results; };
+
+var initialState$a = {
+    entities: {},
+};
+function reducer$a(state, action) {
+    if (state === void 0) { state = initialState$a; }
+    switch (action.type) {
+        case LOAD_CARD_TYPES_SUCCESS: {
+            var cardTypes = action.payload;
+            var entities = cardTypes.reduce(function (cardTypesEntities, name) {
+                var _a;
+                return __assign(__assign({}, cardTypesEntities), (_a = {}, _a[name.code] = name, _a));
+            }, __assign({}, state.entities));
+            return __assign(__assign({}, state), { entities: entities });
+        }
+        case CHECKOUT_CLEAR_MISCS_DATA: {
+            return initialState$a;
+        }
+    }
+    return state;
+}
+var getCardTypesEntites = function (state) { return state.entities; };
 
 var initialState$b = {
     address: {},
@@ -18501,7 +18330,6 @@ var CheckoutModule = /** @class */ (function () {
         return {
             ngModule: CheckoutModule_1,
             providers: [
-                CheckoutService,
                 {
                     provide: PageMetaResolver,
                     useExisting: CheckoutPageMetaResolver,
@@ -18517,6 +18345,193 @@ var CheckoutModule = /** @class */ (function () {
         })
     ], CheckoutModule);
     return CheckoutModule;
+}());
+
+var getDeliveryAddressSelector = function (state) { return state.address; };
+var ɵ0$z = getDeliveryAddressSelector;
+var getDeliveryModeSelector = function (state) {
+    return state.deliveryMode;
+};
+var ɵ1$p = getDeliveryModeSelector;
+var getPaymentDetailsSelector = function (state) {
+    return state.paymentDetails;
+};
+var ɵ2$i = getPaymentDetailsSelector;
+var getOrderDetailsSelector = function (state) {
+    return state.orderDetails;
+};
+var ɵ3$a = getOrderDetailsSelector;
+var getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
+var ɵ4$3 = function (checkoutState) { return checkoutState.steps; };
+var getCheckoutStepsState = createSelector(getCheckoutState, ɵ4$3);
+var ɵ5$2 = function (state) {
+    return loaderValueSelector(state);
+};
+var getCheckoutSteps = createSelector(getCheckoutStepsState, ɵ5$2);
+var getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+var getDeliveryMode = createSelector(getCheckoutSteps, getDeliveryModeSelector);
+var ɵ6 = function (deliveryMode) {
+    return (deliveryMode &&
+        Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
+};
+var getSupportedDeliveryModes = createSelector(getDeliveryMode, ɵ6);
+var ɵ7 = function (deliveryMode) {
+    return deliveryMode && deliveryMode.selected;
+};
+var getSelectedDeliveryModeCode = createSelector(getDeliveryMode, ɵ7);
+var ɵ8 = function (deliveryMode) {
+    if (deliveryMode.selected !== '') {
+        if (Object.keys(deliveryMode.supported).length === 0) {
+            return null;
+        }
+        return deliveryMode.supported[deliveryMode.selected];
+    }
+};
+var getSelectedDeliveryMode = createSelector(getDeliveryMode, ɵ8);
+var getPaymentDetails = createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+var getCheckoutOrderDetails = createSelector(getCheckoutSteps, getOrderDetailsSelector);
+var ɵ9 = function (state) {
+    return loaderSuccessSelector(state) &&
+        !loaderLoadingSelector(state);
+};
+var getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, ɵ9);
+
+var ɵ0$A = function (state) { return state.addressVerification; };
+var getAddressVerificationResultsState = createSelector(getCheckoutState, ɵ0$A);
+var getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+
+var ɵ0$B = function (state) { return state.cardTypes; };
+var getCardTypesState = createSelector(getCheckoutState, ɵ0$B);
+var getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
+var ɵ1$q = function (entites) {
+    return Object.keys(entites).map(function (code) { return entites[code]; });
+};
+var getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$q);
+
+
+
+var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getAddressVerificationResultsState: getAddressVerificationResultsState,
+    getAddressVerificationResults: getAddressVerificationResults$1,
+    ɵ0: ɵ0$A,
+    getCardTypesState: getCardTypesState,
+    getCardTypesEntites: getCardTypesEntites$1,
+    getAllCardTypes: getAllCardTypes,
+    ɵ1: ɵ1$q,
+    getCheckoutState: getCheckoutState,
+    getCheckoutStepsState: getCheckoutStepsState,
+    getCheckoutSteps: getCheckoutSteps,
+    getDeliveryAddress: getDeliveryAddress,
+    getDeliveryMode: getDeliveryMode,
+    getSupportedDeliveryModes: getSupportedDeliveryModes,
+    getSelectedDeliveryModeCode: getSelectedDeliveryModeCode,
+    getSelectedDeliveryMode: getSelectedDeliveryMode,
+    getPaymentDetails: getPaymentDetails,
+    getCheckoutOrderDetails: getCheckoutOrderDetails,
+    getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
+    ɵ2: ɵ2$i,
+    ɵ3: ɵ3$a,
+    ɵ4: ɵ4$3,
+    ɵ5: ɵ5$2,
+    ɵ6: ɵ6,
+    ɵ7: ɵ7,
+    ɵ8: ɵ8,
+    ɵ9: ɵ9
+});
+
+var CheckoutService = /** @class */ (function () {
+    function CheckoutService(checkoutStore, authService, activeCartService) {
+        this.checkoutStore = checkoutStore;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
+    }
+    /**
+     * Places an order
+     */
+    CheckoutService.prototype.placeOrder = function () {
+        if (this.actionAllowed()) {
+            var userId_1;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId_1 = occUserId); })
+                .unsubscribe();
+            var cartId_1;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
+                .unsubscribe();
+            if (userId_1 && cartId_1) {
+                this.checkoutStore.dispatch(new PlaceOrder({
+                    userId: userId_1,
+                    cartId: cartId_1,
+                }));
+            }
+        }
+    };
+    /**
+     * Clear checkout data
+     */
+    CheckoutService.prototype.clearCheckoutData = function () {
+        this.checkoutStore.dispatch(new ClearCheckoutData());
+    };
+    /**
+     * Clear checkout step
+     * @param stepNumber : the step number to be cleared
+     */
+    CheckoutService.prototype.clearCheckoutStep = function (stepNumber) {
+        this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
+    };
+    /**
+     * Load checkout details data
+     * @param cartId : string Cart ID of loaded cart
+     */
+    CheckoutService.prototype.loadCheckoutDetails = function (cartId) {
+        var userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(function (occUserId) { return (userId = occUserId); })
+            .unsubscribe();
+        if (userId) {
+            this.checkoutStore.dispatch(new LoadCheckoutDetails({
+                userId: userId,
+                cartId: cartId,
+            }));
+        }
+    };
+    /**
+     * Get status of checkout details loaded
+     */
+    CheckoutService.prototype.getCheckoutDetailsLoaded = function () {
+        return this.checkoutStore.pipe(select(getCheckoutDetailsLoaded));
+    };
+    /**
+     * Get order details
+     */
+    CheckoutService.prototype.getOrderDetails = function () {
+        return this.checkoutStore.pipe(select(getCheckoutOrderDetails));
+    };
+    CheckoutService.prototype.actionAllowed = function () {
+        var userId;
+        this.authService
+            .getOccUserId()
+            .subscribe(function (occUserId) { return (userId = occUserId); })
+            .unsubscribe();
+        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+            this.activeCartService.isGuestCart());
+    };
+    CheckoutService.ctorParameters = function () { return [
+        { type: Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
+    CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+    CheckoutService = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], CheckoutService);
+    return CheckoutService;
 }());
 
 var CheckoutDeliveryService = /** @class */ (function () {
@@ -20024,8 +20039,11 @@ var ExternalRoutesService = /** @class */ (function () {
         { type: UrlMatcherService },
         { type: Injector }
     ]; };
+    ExternalRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(ɵɵinject(ExternalRoutesConfig), ɵɵinject(UrlMatcherService), ɵɵinject(INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
     ExternalRoutesService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], ExternalRoutesService);
     return ExternalRoutesService;
 }());
@@ -20041,7 +20059,6 @@ var ExternalRoutesModule = /** @class */ (function () {
         return {
             ngModule: ExternalRoutesModule_1,
             providers: [
-                ExternalRoutesService,
                 {
                     provide: APP_INITIALIZER,
                     multi: true,
@@ -21394,8 +21411,11 @@ var TranslationChunkService = /** @class */ (function () {
     TranslationChunkService.ctorParameters = function () { return [
         { type: I18nConfig }
     ]; };
+    TranslationChunkService.ɵprov = ɵɵdefineInjectable({ factory: function TranslationChunkService_Factory() { return new TranslationChunkService(ɵɵinject(I18nConfig)); }, token: TranslationChunkService, providedIn: "root" });
     TranslationChunkService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], TranslationChunkService);
     return TranslationChunkService;
 }());
@@ -21582,8 +21602,7 @@ var I18nModule = /** @class */ (function () {
             ngModule: I18nModule_1,
             providers: __spread([
                 provideDefaultConfig(defaultI18nConfig),
-                { provide: TranslationService, useExisting: I18nextTranslationService },
-                TranslationChunkService
+                { provide: TranslationService, useExisting: I18nextTranslationService }
             ], i18nextProviders),
         };
     };
@@ -21829,13 +21848,14 @@ var OpenIdAuthenticationTokenService = /** @class */ (function () {
         { type: KymaConfig },
         { type: HttpClient }
     ]; };
+    OpenIdAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(ɵɵinject(KymaConfig), ɵɵinject(HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
     OpenIdAuthenticationTokenService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], OpenIdAuthenticationTokenService);
     return OpenIdAuthenticationTokenService;
 }());
-
-var KymaServices = [OpenIdAuthenticationTokenService];
 
 var OpenIdTokenEffect = /** @class */ (function () {
     function OpenIdTokenEffect(actions$, openIdTokenService) {
@@ -21935,7 +21955,7 @@ var KymaModule = /** @class */ (function () {
     KymaModule = __decorate([
         NgModule({
             imports: [CommonModule, HttpClientModule, KymaStoreModule],
-            providers: __spread([provideDefaultConfig(defaultKymaConfig)], KymaServices),
+            providers: [provideDefaultConfig(defaultKymaConfig)],
         })
     ], KymaModule);
     return KymaModule;
@@ -22719,8 +22739,11 @@ var ProductReferenceService = /** @class */ (function () {
     ProductReferenceService.ctorParameters = function () { return [
         { type: Store }
     ]; };
+    ProductReferenceService.ɵprov = ɵɵdefineInjectable({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(ɵɵinject(Store)); }, token: ProductReferenceService, providedIn: "root" });
     ProductReferenceService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], ProductReferenceService);
     return ProductReferenceService;
 }());
@@ -22746,8 +22769,11 @@ var ProductReviewService = /** @class */ (function () {
     ProductReviewService.ctorParameters = function () { return [
         { type: Store }
     ]; };
+    ProductReviewService.ɵprov = ɵɵdefineInjectable({ factory: function ProductReviewService_Factory() { return new ProductReviewService(ɵɵinject(Store)); }, token: ProductReviewService, providedIn: "root" });
     ProductReviewService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], ProductReviewService);
     return ProductReviewService;
 }());
@@ -22773,8 +22799,11 @@ var ProductSearchService = /** @class */ (function () {
     ProductSearchService.ctorParameters = function () { return [
         { type: Store }
     ]; };
+    ProductSearchService.ɵprov = ɵɵdefineInjectable({ factory: function ProductSearchService_Factory() { return new ProductSearchService(ɵɵinject(Store)); }, token: ProductSearchService, providedIn: "root" });
     ProductSearchService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], ProductSearchService);
     return ProductSearchService;
 }());
@@ -22976,8 +23005,11 @@ var ProductService = /** @class */ (function () {
         { type: Store },
         { type: ProductLoadingService }
     ]; };
+    ProductService.ɵprov = ɵɵdefineInjectable({ factory: function ProductService_Factory() { return new ProductService(ɵɵinject(Store), ɵɵinject(ProductLoadingService)); }, token: ProductService, providedIn: "root" });
     ProductService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], ProductService);
     return ProductService;
 }());
@@ -23725,12 +23757,7 @@ var ProductModule = /** @class */ (function () {
     ProductModule.forRoot = function () {
         return {
             ngModule: ProductModule_1,
-            providers: __spread([
-                ProductService,
-                ProductSearchService,
-                ProductReviewService,
-                ProductReferenceService
-            ], pageTitleResolvers),
+            providers: __spread(pageTitleResolvers),
         };
     };
     var ProductModule_1;
@@ -24127,8 +24154,11 @@ var StoreFinderService = /** @class */ (function () {
         { type: GlobalMessageService },
         { type: RoutingService }
     ]; };
+    StoreFinderService.ɵprov = ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(GlobalMessageService), ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
     StoreFinderService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], StoreFinderService);
     return StoreFinderService;
 }());
@@ -24202,8 +24232,11 @@ var StoreDataService = /** @class */ (function () {
         var weekday = this.weekDays[date.getDay()];
         return location.openingHours.weekDayOpeningList.find(function (weekDayOpeningListItem) { return weekDayOpeningListItem.weekDay === weekday; });
     };
+    StoreDataService.ɵprov = ɵɵdefineInjectable({ factory: function StoreDataService_Factory() { return new StoreDataService(); }, token: StoreDataService, providedIn: "root" });
     StoreDataService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], StoreDataService);
     return StoreDataService;
 }());
@@ -24253,8 +24286,11 @@ var ExternalJsFileLoader = /** @class */ (function () {
     ExternalJsFileLoader.ctorParameters = function () { return [
         { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
     ]; };
+    ExternalJsFileLoader.ɵprov = ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(ɵɵinject(DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
     ExternalJsFileLoader = __decorate([
-        Injectable(),
+        Injectable({
+            providedIn: 'root',
+        }),
         __param(0, Inject(DOCUMENT))
     ], ExternalJsFileLoader);
     return ExternalJsFileLoader;
@@ -24359,8 +24395,11 @@ var GoogleMapRendererService = /** @class */ (function () {
         { type: ExternalJsFileLoader },
         { type: StoreDataService }
     ]; };
+    GoogleMapRendererService.ɵprov = ɵɵdefineInjectable({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(ɵɵinject(StoreFinderConfig), ɵɵinject(ExternalJsFileLoader), ɵɵinject(StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
     GoogleMapRendererService = __decorate([
-        Injectable()
+        Injectable({
+            providedIn: 'root',
+        })
     ], GoogleMapRendererService);
     return GoogleMapRendererService;
 }());
@@ -24484,13 +24523,7 @@ var StoreFinderCoreModule = /** @class */ (function () {
     StoreFinderCoreModule = __decorate([
         NgModule({
             imports: [StoreFinderStoreModule],
-            providers: [
-                provideDefaultConfig(defaultStoreFinderConfig),
-                StoreFinderService,
-                StoreDataService,
-                GoogleMapRendererService,
-                ExternalJsFileLoader,
-            ],
+            providers: [provideDefaultConfig(defaultStoreFinderConfig)],
         })
     ], StoreFinderCoreModule);
     return StoreFinderCoreModule;
@@ -26965,5 +26998,5 @@ var UserModule = /** @class */ (function () {
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, createFrom, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, resolveApplicable, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, AsmStoreModule as ɵba, getReducers$3 as ɵbb, reducerToken$3 as ɵbc, reducerProvider$3 as ɵbd, clearCustomerSupportAgentAsmState as ɵbe, metaReducers$2 as ɵbf, effects$3 as ɵbg, CustomerEffects as ɵbh, CustomerSupportAgentTokenEffects as ɵbi, UserAuthenticationTokenService as ɵbj, reducer$7 as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, defaultAsmConfig as ɵbo, authStoreConfigFactory as ɵbp, AuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, clearAuthState as ɵbu, metaReducers as ɵbv, effects as ɵbw, ClientTokenEffect as ɵbx, UserTokenEffects as ɵby, ClientAuthenticationTokenService as ɵbz, configFromCookieFactory as ɵc, reducer as ɵca, defaultAuthConfig as ɵcb, interceptors as ɵcc, ClientTokenInterceptor as ɵcd, UserTokenInterceptor as ɵce, AuthErrorInterceptor as ɵcf, UserErrorHandlingService as ɵcg, UrlParsingService as ɵch, ClientErrorHandlingService as ɵci, TokenRevocationInterceptor as ɵcj, AuthServices as ɵck, MultiCartStoreModule as ɵcl, clearMultiCartState as ɵcm, multiCartMetaReducers as ɵcn, multiCartReducerToken as ɵco, getMultiCartReducers as ɵcp, multiCartReducerProvider as ɵcq, CartEffects as ɵcr, CartEntryEffects as ɵcs, CartVoucherEffects as ɵct, WishListEffects as ɵcu, SaveCartConnector as ɵcv, SaveCartAdapter as ɵcw, MultiCartEffects as ɵcx, entityProcessesLoaderReducer as ɵcy, entityReducer as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, processesLoaderReducer as ɵda, activeCartReducer as ɵdb, cartEntitiesReducer as ɵdc, wishListReducer as ɵdd, CartPageMetaResolver as ɵde, SiteContextParamsService as ɵdf, CheckoutStoreModule as ɵdg, getReducers$5 as ɵdh, reducerToken$5 as ɵdi, reducerProvider$5 as ɵdj, effects$5 as ɵdk, AddressVerificationEffect as ɵdl, CardTypesEffects as ɵdm, CheckoutEffects as ɵdn, reducer$b as ɵdo, reducer$a as ɵdp, reducer$9 as ɵdq, cmsStoreConfigFactory as ɵdr, CmsStoreModule as ɵds, getReducers$7 as ɵdt, reducerToken$7 as ɵdu, reducerProvider$7 as ɵdv, clearCmsState as ɵdw, metaReducers$3 as ɵdx, effects$7 as ɵdy, ComponentsEffects as ɵdz, initConfig as ɵe, NavigationEntryItemEffects as ɵea, PageEffects as ɵeb, Config as ɵec, reducer$f as ɵed, entityLoaderReducer as ɵee, reducer$g as ɵef, reducer$d as ɵeg, reducer$e as ɵeh, GlobalMessageStoreModule as ɵei, getReducers$4 as ɵej, reducerToken$4 as ɵek, reducerProvider$4 as ɵel, reducer$8 as ɵem, GlobalMessageEffect as ɵen, defaultGlobalMessageConfigFactory as ɵeo, HttpErrorInterceptor as ɵep, defaultI18nConfig as ɵeq, i18nextProviders as ɵer, i18nextInit as ɵes, MockTranslationService as ɵet, kymaStoreConfigFactory as ɵeu, KymaStoreModule as ɵev, getReducers$8 as ɵew, reducerToken$8 as ɵex, reducerProvider$8 as ɵey, clearKymaState as ɵez, anonymousConsentsStoreConfigFactory as ɵf, metaReducers$4 as ɵfa, effects$8 as ɵfb, OpenIdTokenEffect as ɵfc, OpenIdAuthenticationTokenService as ɵfd, defaultKymaConfig as ɵfe, defaultOccAsmConfig as ɵff, defaultOccCartConfig as ɵfg, OccSaveCartAdapter as ɵfh, defaultOccProductConfig as ɵfi, defaultOccSiteContextConfig as ɵfj, defaultOccStoreFinderConfig as ɵfk, defaultOccUserConfig as ɵfl, UserNotificationPreferenceAdapter as ɵfm, defaultPersonalizationConfig as ɵfn, interceptors$3 as ɵfo, OccPersonalizationIdInterceptor as ɵfp, OccPersonalizationTimeInterceptor as ɵfq, ProcessStoreModule as ɵfr, getReducers$9 as ɵfs, reducerToken$9 as ɵft, reducerProvider$9 as ɵfu, productStoreConfigFactory as ɵfv, ProductStoreModule as ɵfw, getReducers$a as ɵfx, reducerToken$a as ɵfy, reducerProvider$a as ɵfz, AnonymousConsentsStoreModule as ɵg, clearProductsState as ɵga, metaReducers$5 as ɵgb, effects$9 as ɵgc, ProductReferencesEffects as ɵgd, ProductReviewsEffects as ɵge, ProductsSearchEffects as ɵgf, ProductEffects as ɵgg, reducer$h as ɵgh, entityScopedLoaderReducer as ɵgi, scopedLoaderReducer as ɵgj, reducer$j as ɵgk, reducer$i as ɵgl, PageMetaResolver as ɵgm, CouponSearchPageResolver as ɵgn, PageMetaResolver as ɵgo, addExternalRoutesFactory as ɵgp, getReducers$6 as ɵgq, reducer$c as ɵgr, reducerToken$6 as ɵgs, reducerProvider$6 as ɵgt, CustomSerializer as ɵgu, effects$6 as ɵgv, RouterEffects as ɵgw, siteContextStoreConfigFactory as ɵgx, SiteContextStoreModule as ɵgy, getReducers$1 as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, reducerToken$1 as ɵha, reducerProvider$1 as ɵhb, effects$2 as ɵhc, LanguagesEffects as ɵhd, CurrenciesEffects as ɵhe, BaseSiteEffects as ɵhf, reducer$3 as ɵhg, reducer$2 as ɵhh, reducer$1 as ɵhi, defaultSiteContextConfigFactory as ɵhj, initializeContext as ɵhk, contextServiceProviders as ɵhl, SiteContextRoutesHandler as ɵhm, SiteContextUrlSerializer as ɵhn, siteContextParamsProviders as ɵho, baseSiteConfigValidator as ɵhp, interceptors$4 as ɵhq, CmsTicketInterceptor as ɵhr, StoreFinderStoreModule as ɵhs, getReducers$b as ɵht, reducerToken$b as ɵhu, reducerProvider$b as ɵhv, effects$a as ɵhw, FindStoresEffect as ɵhx, ViewAllStoresEffect as ɵhy, defaultStoreFinderConfig as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, UserStoreModule as ɵia, getReducers$c as ɵib, reducerToken$c as ɵic, reducerProvider$c as ɵid, clearUserState as ɵie, metaReducers$7 as ɵif, effects$b as ɵig, BillingCountriesEffect as ɵih, ClearMiscsDataEffect as ɵii, ConsignmentTrackingEffects as ɵij, DeliveryCountriesEffects as ɵik, NotificationPreferenceEffects as ɵil, OrderDetailsEffect as ɵim, OrderReturnRequestEffect as ɵin, UserPaymentMethodsEffects as ɵio, RegionsEffects as ɵip, ResetPasswordEffects as ɵiq, TitlesEffects as ɵir, UserAddressesEffects as ɵis, UserConsentsEffect as ɵit, UserDetailsEffects as ɵiu, UserOrdersEffect as ɵiv, UserRegisterEffects as ɵiw, CustomerCouponEffects as ɵix, ProductInterestsEffect as ɵiy, ForgotPasswordEffects as ɵiz, stateMetaReducers as ɵj, UpdateEmailEffects as ɵja, UpdatePasswordEffects as ɵjb, UserNotificationPreferenceConnector as ɵjc, reducer$v as ɵjd, reducer$t as ɵje, reducer$k as ɵjf, reducer$u as ɵjg, reducer$p as ɵjh, reducer$w as ɵji, reducer$o as ɵjj, reducer$z as ɵjk, reducer$m as ɵjl, reducer$s as ɵjm, reducer$q as ɵjn, reducer$r as ɵjo, reducer$l as ɵjp, reducer$x as ɵjq, reducer$n as ɵjr, reducer$y as ɵjs, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, loaderReducer as ɵt, reducer$6 as ɵu, reducer$4 as ɵv, reducer$5 as ɵw, interceptors$1 as ɵx, AnonymousConsentsInterceptor as ɵy, asmStoreConfigFactory as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OpenIdAuthenticationTokenService, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, createFrom, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, resolveApplicable, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, AsmStoreModule as ɵba, getReducers$3 as ɵbb, reducerToken$3 as ɵbc, reducerProvider$3 as ɵbd, clearCustomerSupportAgentAsmState as ɵbe, metaReducers$2 as ɵbf, effects$3 as ɵbg, CustomerEffects as ɵbh, CustomerSupportAgentTokenEffects as ɵbi, UserAuthenticationTokenService as ɵbj, reducer$7 as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, defaultAsmConfig as ɵbo, authStoreConfigFactory as ɵbp, AuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, clearAuthState as ɵbu, metaReducers as ɵbv, effects as ɵbw, ClientTokenEffect as ɵbx, UserTokenEffects as ɵby, ClientAuthenticationTokenService as ɵbz, configFromCookieFactory as ɵc, reducer as ɵca, defaultAuthConfig as ɵcb, interceptors as ɵcc, ClientTokenInterceptor as ɵcd, UserTokenInterceptor as ɵce, AuthErrorInterceptor as ɵcf, UserErrorHandlingService as ɵcg, UrlParsingService as ɵch, ClientErrorHandlingService as ɵci, TokenRevocationInterceptor as ɵcj, MultiCartStoreModule as ɵck, clearMultiCartState as ɵcl, multiCartMetaReducers as ɵcm, multiCartReducerToken as ɵcn, getMultiCartReducers as ɵco, multiCartReducerProvider as ɵcp, CartEffects as ɵcq, CartEntryEffects as ɵcr, CartVoucherEffects as ɵcs, WishListEffects as ɵct, SaveCartConnector as ɵcu, SaveCartAdapter as ɵcv, MultiCartEffects as ɵcw, entityProcessesLoaderReducer as ɵcx, entityReducer as ɵcy, processesLoaderReducer as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, activeCartReducer as ɵda, cartEntitiesReducer as ɵdb, wishListReducer as ɵdc, CartPageMetaResolver as ɵdd, SiteContextParamsService as ɵde, CheckoutStoreModule as ɵdf, getReducers$5 as ɵdg, reducerToken$5 as ɵdh, reducerProvider$5 as ɵdi, effects$5 as ɵdj, AddressVerificationEffect as ɵdk, CardTypesEffects as ɵdl, CheckoutEffects as ɵdm, reducer$b as ɵdn, reducer$a as ɵdo, reducer$9 as ɵdp, cmsStoreConfigFactory as ɵdq, CmsStoreModule as ɵdr, getReducers$7 as ɵds, reducerToken$7 as ɵdt, reducerProvider$7 as ɵdu, clearCmsState as ɵdv, metaReducers$3 as ɵdw, effects$7 as ɵdx, ComponentsEffects as ɵdy, NavigationEntryItemEffects as ɵdz, initConfig as ɵe, PageEffects as ɵea, Config as ɵeb, reducer$f as ɵec, entityLoaderReducer as ɵed, reducer$g as ɵee, reducer$d as ɵef, reducer$e as ɵeg, GlobalMessageStoreModule as ɵeh, getReducers$4 as ɵei, reducerToken$4 as ɵej, reducerProvider$4 as ɵek, reducer$8 as ɵel, GlobalMessageEffect as ɵem, defaultGlobalMessageConfigFactory as ɵen, HttpErrorInterceptor as ɵeo, defaultI18nConfig as ɵep, i18nextProviders as ɵeq, i18nextInit as ɵer, MockTranslationService as ɵes, kymaStoreConfigFactory as ɵet, KymaStoreModule as ɵeu, getReducers$8 as ɵev, reducerToken$8 as ɵew, reducerProvider$8 as ɵex, clearKymaState as ɵey, metaReducers$4 as ɵez, anonymousConsentsStoreConfigFactory as ɵf, effects$8 as ɵfa, OpenIdTokenEffect as ɵfb, defaultKymaConfig as ɵfc, defaultOccAsmConfig as ɵfd, defaultOccCartConfig as ɵfe, OccSaveCartAdapter as ɵff, defaultOccProductConfig as ɵfg, defaultOccSiteContextConfig as ɵfh, defaultOccStoreFinderConfig as ɵfi, defaultOccUserConfig as ɵfj, UserNotificationPreferenceAdapter as ɵfk, defaultPersonalizationConfig as ɵfl, interceptors$3 as ɵfm, OccPersonalizationIdInterceptor as ɵfn, OccPersonalizationTimeInterceptor as ɵfo, ProcessStoreModule as ɵfp, getReducers$9 as ɵfq, reducerToken$9 as ɵfr, reducerProvider$9 as ɵfs, productStoreConfigFactory as ɵft, ProductStoreModule as ɵfu, getReducers$a as ɵfv, reducerToken$a as ɵfw, reducerProvider$a as ɵfx, clearProductsState as ɵfy, metaReducers$5 as ɵfz, AnonymousConsentsStoreModule as ɵg, effects$9 as ɵga, ProductReferencesEffects as ɵgb, ProductReviewsEffects as ɵgc, ProductsSearchEffects as ɵgd, ProductEffects as ɵge, reducer$h as ɵgf, entityScopedLoaderReducer as ɵgg, scopedLoaderReducer as ɵgh, reducer$j as ɵgi, reducer$i as ɵgj, PageMetaResolver as ɵgk, CouponSearchPageResolver as ɵgl, PageMetaResolver as ɵgm, addExternalRoutesFactory as ɵgn, getReducers$6 as ɵgo, reducer$c as ɵgp, reducerToken$6 as ɵgq, reducerProvider$6 as ɵgr, CustomSerializer as ɵgs, effects$6 as ɵgt, RouterEffects as ɵgu, siteContextStoreConfigFactory as ɵgv, SiteContextStoreModule as ɵgw, getReducers$1 as ɵgx, reducerToken$1 as ɵgy, reducerProvider$1 as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, effects$2 as ɵha, LanguagesEffects as ɵhb, CurrenciesEffects as ɵhc, BaseSiteEffects as ɵhd, reducer$3 as ɵhe, reducer$2 as ɵhf, reducer$1 as ɵhg, defaultSiteContextConfigFactory as ɵhh, initializeContext as ɵhi, contextServiceProviders as ɵhj, SiteContextRoutesHandler as ɵhk, SiteContextUrlSerializer as ɵhl, siteContextParamsProviders as ɵhm, baseSiteConfigValidator as ɵhn, interceptors$4 as ɵho, CmsTicketInterceptor as ɵhp, StoreFinderStoreModule as ɵhq, getReducers$b as ɵhr, reducerToken$b as ɵhs, reducerProvider$b as ɵht, effects$a as ɵhu, FindStoresEffect as ɵhv, ViewAllStoresEffect as ɵhw, defaultStoreFinderConfig as ɵhx, UserStoreModule as ɵhy, getReducers$c as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, reducerToken$c as ɵia, reducerProvider$c as ɵib, clearUserState as ɵic, metaReducers$7 as ɵid, effects$b as ɵie, BillingCountriesEffect as ɵif, ClearMiscsDataEffect as ɵig, ConsignmentTrackingEffects as ɵih, DeliveryCountriesEffects as ɵii, NotificationPreferenceEffects as ɵij, OrderDetailsEffect as ɵik, OrderReturnRequestEffect as ɵil, UserPaymentMethodsEffects as ɵim, RegionsEffects as ɵin, ResetPasswordEffects as ɵio, TitlesEffects as ɵip, UserAddressesEffects as ɵiq, UserConsentsEffect as ɵir, UserDetailsEffects as ɵis, UserOrdersEffect as ɵit, UserRegisterEffects as ɵiu, CustomerCouponEffects as ɵiv, ProductInterestsEffect as ɵiw, ForgotPasswordEffects as ɵix, UpdateEmailEffects as ɵiy, UpdatePasswordEffects as ɵiz, stateMetaReducers as ɵj, UserNotificationPreferenceConnector as ɵja, reducer$v as ɵjb, reducer$t as ɵjc, reducer$k as ɵjd, reducer$u as ɵje, reducer$p as ɵjf, reducer$w as ɵjg, reducer$o as ɵjh, reducer$z as ɵji, reducer$m as ɵjj, reducer$s as ɵjk, reducer$q as ɵjl, reducer$r as ɵjm, reducer$l as ɵjn, reducer$x as ɵjo, reducer$n as ɵjp, reducer$y as ɵjq, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, loaderReducer as ɵt, reducer$6 as ɵu, reducer$4 as ɵv, reducer$5 as ɵw, interceptors$1 as ɵx, AnonymousConsentsInterceptor as ɵy, asmStoreConfigFactory as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

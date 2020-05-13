@@ -1392,8 +1392,11 @@
         ClientErrorHandlingService.ctorParameters = function () { return [
             { type: AuthService }
         ]; };
+        ClientErrorHandlingService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(core["ɵɵinject"](AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
         ClientErrorHandlingService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], ClientErrorHandlingService);
         return ClientErrorHandlingService;
     }());
@@ -1894,8 +1897,11 @@
             { type: AuthService },
             { type: RoutingService }
         ]; };
+        UserErrorHandlingService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(core["ɵɵinject"](AuthService), core["ɵɵinject"](RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
         UserErrorHandlingService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], UserErrorHandlingService);
         return UserErrorHandlingService;
     }());
@@ -2595,113 +2601,6 @@
         },
     ];
 
-    var AuthConfig = /** @class */ (function (_super) {
-        __extends(AuthConfig, _super);
-        function AuthConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        AuthConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AuthConfig_Factory() { return core["ɵɵinject"](Config); }, token: AuthConfig, providedIn: "root" });
-        AuthConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], AuthConfig);
-        return AuthConfig;
-    }(OccConfig));
-
-    var ClientAuthenticationTokenService = /** @class */ (function () {
-        function ClientAuthenticationTokenService(config, http, occEndpointsService) {
-            this.config = config;
-            this.http = http;
-            this.occEndpointsService = occEndpointsService;
-        }
-        ClientAuthenticationTokenService.prototype.loadClientAuthenticationToken = function () {
-            var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new http.HttpParams()
-                .set('client_id', encodeURIComponent(this.config.authentication.client_id))
-                .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
-                .set('grant_type', 'client_credentials');
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http.post(url, params, { headers: headers });
-        };
-        ClientAuthenticationTokenService.ctorParameters = function () { return [
-            { type: AuthConfig },
-            { type: http.HttpClient },
-            { type: OccEndpointsService }
-        ]; };
-        ClientAuthenticationTokenService = __decorate([
-            core.Injectable()
-        ], ClientAuthenticationTokenService);
-        return ClientAuthenticationTokenService;
-    }());
-
-    var UserAuthenticationTokenService = /** @class */ (function () {
-        function UserAuthenticationTokenService(http, config, occEndpointsService) {
-            this.http = http;
-            this.config = config;
-            this.occEndpointsService = occEndpointsService;
-        }
-        UserAuthenticationTokenService.prototype.loadToken = function (userId, password) {
-            var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new http.HttpParams()
-                .set('client_id', this.config.authentication.client_id)
-                .set('client_secret', this.config.authentication.client_secret)
-                .set('grant_type', 'password')
-                .set('username', userId)
-                .set('password', password);
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .post(url, params, { headers: headers })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        UserAuthenticationTokenService.prototype.refreshToken = function (refreshToken) {
-            var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new http.HttpParams()
-                .set('client_id', encodeURIComponent(this.config.authentication.client_id))
-                .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
-                .set('refresh_token', encodeURI(refreshToken))
-                .set('grant_type', 'refresh_token');
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .post(url, params, { headers: headers })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        UserAuthenticationTokenService.prototype.revoke = function (userToken) {
-            var url = this.occEndpointsService.getRawEndpoint('revoke');
-            var headers = InterceptorUtil.createHeader(TOKEN_REVOCATION_HEADER, true, new http.HttpHeaders({
-                Authorization: userToken.token_type + " " + userToken.access_token,
-                'Content-Type': 'application/x-www-form-urlencoded',
-            }));
-            var params = new http.HttpParams().set('token', userToken.access_token);
-            return this.http
-                .post(url, params, { headers: headers })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        UserAuthenticationTokenService.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: AuthConfig },
-            { type: OccEndpointsService }
-        ]; };
-        UserAuthenticationTokenService = __decorate([
-            core.Injectable()
-        ], UserAuthenticationTokenService);
-        return UserAuthenticationTokenService;
-    }());
-
-    var AuthServices = [
-        ClientAuthenticationTokenService,
-        ClientErrorHandlingService,
-        UserAuthenticationTokenService,
-        UserErrorHandlingService,
-    ];
-
 
     (function (StorageSyncType) {
         StorageSyncType["NO_STORAGE"] = "NO_STORAGE";
@@ -2965,6 +2864,52 @@
         return isObject(error) ? UNKNOWN_ERROR : error;
     }
 
+    var AuthConfig = /** @class */ (function (_super) {
+        __extends(AuthConfig, _super);
+        function AuthConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        AuthConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AuthConfig_Factory() { return core["ɵɵinject"](Config); }, token: AuthConfig, providedIn: "root" });
+        AuthConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], AuthConfig);
+        return AuthConfig;
+    }(OccConfig));
+
+    var ClientAuthenticationTokenService = /** @class */ (function () {
+        function ClientAuthenticationTokenService(config, http, occEndpointsService) {
+            this.config = config;
+            this.http = http;
+            this.occEndpointsService = occEndpointsService;
+        }
+        ClientAuthenticationTokenService.prototype.loadClientAuthenticationToken = function () {
+            var url = this.occEndpointsService.getRawEndpoint('login');
+            var params = new http.HttpParams()
+                .set('client_id', encodeURIComponent(this.config.authentication.client_id))
+                .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
+                .set('grant_type', 'client_credentials');
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http.post(url, params, { headers: headers });
+        };
+        ClientAuthenticationTokenService.ctorParameters = function () { return [
+            { type: AuthConfig },
+            { type: http.HttpClient },
+            { type: OccEndpointsService }
+        ]; };
+        ClientAuthenticationTokenService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(core["ɵɵinject"](AuthConfig), core["ɵɵinject"](http.HttpClient), core["ɵɵinject"](OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
+        ClientAuthenticationTokenService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], ClientAuthenticationTokenService);
+        return ClientAuthenticationTokenService;
+    }());
+
     var ClientTokenEffect = /** @class */ (function () {
         function ClientTokenEffect(actions$, clientAuthenticationTokenService) {
             var _this = this;
@@ -2991,6 +2936,66 @@
             core.Injectable()
         ], ClientTokenEffect);
         return ClientTokenEffect;
+    }());
+
+    var UserAuthenticationTokenService = /** @class */ (function () {
+        function UserAuthenticationTokenService(http, config, occEndpointsService) {
+            this.http = http;
+            this.config = config;
+            this.occEndpointsService = occEndpointsService;
+        }
+        UserAuthenticationTokenService.prototype.loadToken = function (userId, password) {
+            var url = this.occEndpointsService.getRawEndpoint('login');
+            var params = new http.HttpParams()
+                .set('client_id', this.config.authentication.client_id)
+                .set('client_secret', this.config.authentication.client_secret)
+                .set('grant_type', 'password')
+                .set('username', userId)
+                .set('password', password);
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http
+                .post(url, params, { headers: headers })
+                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        UserAuthenticationTokenService.prototype.refreshToken = function (refreshToken) {
+            var url = this.occEndpointsService.getRawEndpoint('login');
+            var params = new http.HttpParams()
+                .set('client_id', encodeURIComponent(this.config.authentication.client_id))
+                .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
+                .set('refresh_token', encodeURI(refreshToken))
+                .set('grant_type', 'refresh_token');
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http
+                .post(url, params, { headers: headers })
+                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        UserAuthenticationTokenService.prototype.revoke = function (userToken) {
+            var url = this.occEndpointsService.getRawEndpoint('revoke');
+            var headers = InterceptorUtil.createHeader(TOKEN_REVOCATION_HEADER, true, new http.HttpHeaders({
+                Authorization: userToken.token_type + " " + userToken.access_token,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }));
+            var params = new http.HttpParams().set('token', userToken.access_token);
+            return this.http
+                .post(url, params, { headers: headers })
+                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        UserAuthenticationTokenService.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: AuthConfig },
+            { type: OccEndpointsService }
+        ]; };
+        UserAuthenticationTokenService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(core["ɵɵinject"](http.HttpClient), core["ɵɵinject"](AuthConfig), core["ɵɵinject"](OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
+        UserAuthenticationTokenService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], UserAuthenticationTokenService);
+        return UserAuthenticationTokenService;
     }());
 
     var UserTokenEffects = /** @class */ (function () {
@@ -3139,9 +3144,7 @@
         AuthModule.forRoot = function () {
             return {
                 ngModule: AuthModule_1,
-                providers: __spread([
-                    provideDefaultConfig(defaultAuthConfig)
-                ], interceptors, AuthServices),
+                providers: __spread([provideDefaultConfig(defaultAuthConfig)], interceptors),
             };
         };
         var AuthModule_1;
@@ -13022,8 +13025,11 @@
         GlobalMessageService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
+        GlobalMessageService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(core["ɵɵinject"](store.Store)); }, token: GlobalMessageService, providedIn: "root" });
         GlobalMessageService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], GlobalMessageService);
         return GlobalMessageService;
     }());
@@ -13767,10 +13773,7 @@
                     GlobalMessageStoreModule,
                     effects$c.EffectsModule.forFeature([GlobalMessageEffect]),
                 ],
-                providers: [
-                    provideDefaultConfigFactory(defaultGlobalMessageConfigFactory),
-                    GlobalMessageService,
-                ],
+                providers: [provideDefaultConfigFactory(defaultGlobalMessageConfigFactory)],
             })
         ], GlobalMessageModule);
         return GlobalMessageModule;
@@ -14963,8 +14966,11 @@
         MultiCartService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
+        MultiCartService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function MultiCartService_Factory() { return new MultiCartService(core["ɵɵinject"](store.Store)); }, token: MultiCartService, providedIn: "root" });
         MultiCartService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], MultiCartService);
         return MultiCartService;
     }());
@@ -15280,8 +15286,11 @@
             { type: AuthService },
             { type: MultiCartService }
         ]; };
+        ActiveCartService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ActiveCartService_Factory() { return new ActiveCartService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
         ActiveCartService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], ActiveCartService);
         return ActiveCartService;
     }());
@@ -16548,608 +16557,6 @@
         return CartEventModule;
     }());
 
-    var CartVoucherService = /** @class */ (function () {
-        function CartVoucherService(store, authService, activeCartService) {
-            this.store = store;
-            this.authService = authService;
-            this.activeCartService = activeCartService;
-        }
-        CartVoucherService.prototype.addVoucher = function (voucherId, cartId) {
-            var _this = this;
-            this.combineUserAndCartId(cartId).subscribe(function (_a) {
-                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
-                return _this.store.dispatch(new CartAddVoucher({
-                    userId: occUserId,
-                    cartId: cartIdentifier,
-                    voucherId: voucherId,
-                }));
-            });
-        };
-        CartVoucherService.prototype.removeVoucher = function (voucherId, cartId) {
-            var _this = this;
-            this.combineUserAndCartId(cartId).subscribe(function (_a) {
-                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
-                return _this.store.dispatch(new CartRemoveVoucher({
-                    userId: occUserId,
-                    cartId: cartIdentifier,
-                    voucherId: voucherId,
-                }));
-            });
-        };
-        // TODO(#7241): Remove when switching to event system for add voucher
-        /**
-         * Get add voucher process error flag
-         * @deprecated since 2.0
-         */
-        CartVoucherService.prototype.getAddVoucherResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
-        };
-        // TODO(#7241): Remove when switching to event system for add voucher
-        /**
-         * Get add voucher process success flag
-         * @deprecated since 2.0
-         */
-        CartVoucherService.prototype.getAddVoucherResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
-        };
-        // TODO(#7241): Remove when switching to event system for add voucher
-        /**
-         * Get add voucher process loading flag
-         * @deprecated since 2.0
-         */
-        CartVoucherService.prototype.getAddVoucherResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
-        };
-        // TODO(#7241): Remove when switching to event system for add voucher
-        /**
-         * Reset add voucher process
-         * @deprecated since 2.0
-         */
-        CartVoucherService.prototype.resetAddVoucherProcessingState = function () {
-            this.store.dispatch(new CartResetAddVoucher());
-        };
-        CartVoucherService.prototype.combineUserAndCartId = function (cartId) {
-            if (cartId) {
-                return this.authService.getOccUserId().pipe(operators.take(1), operators.map(function (userId) { return [userId, cartId]; }));
-            }
-            else {
-                return rxjs.combineLatest([
-                    this.authService.getOccUserId(),
-                    this.activeCartService.getActiveCartId(),
-                ]).pipe(operators.take(1));
-            }
-        };
-        CartVoucherService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: ActiveCartService }
-        ]; };
-        CartVoucherService = __decorate([
-            core.Injectable()
-        ], CartVoucherService);
-        return CartVoucherService;
-    }());
-
-    var UserService = /** @class */ (function () {
-        function UserService(store, authService) {
-            this.store = store;
-            this.authService = authService;
-        }
-        /**
-         * Returns a user
-         */
-        UserService.prototype.get = function () {
-            var _this = this;
-            return this.store.pipe(store.select(getDetails), operators.tap(function (details) {
-                if (Object.keys(details).length === 0) {
-                    _this.load();
-                }
-            }));
-        };
-        /**
-         * Loads the user's details
-         */
-        UserService.prototype.load = function () {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                if (userId !== OCC_USER_ID_ANONYMOUS) {
-                    _this.store.dispatch(new LoadUserDetails(userId));
-                }
-            });
-        };
-        /**
-         * Register a new user
-         *
-         * @param submitFormData as UserRegisterFormData
-         */
-        UserService.prototype.register = function (userRegisterFormData) {
-            this.store.dispatch(new RegisterUser(userRegisterFormData));
-        };
-        /**
-         * Register a new user from guest
-         *
-         * @param guid
-         * @param password
-         */
-        UserService.prototype.registerGuest = function (guid, password) {
-            this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
-        };
-        /**
-         * Returns the register user process loading flag
-         */
-        UserService.prototype.getRegisterUserResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the register user process success flag
-         */
-        UserService.prototype.getRegisterUserResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the register user process error flag
-         */
-        UserService.prototype.getRegisterUserResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Resets the register user process flags
-         */
-        UserService.prototype.resetRegisterUserProcessState = function () {
-            return this.store.dispatch(new ResetRegisterUserProcess());
-        };
-        /**
-         * Remove user account, that's also called close user's account
-         */
-        UserService.prototype.remove = function () {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new RemoveUser(userId));
-            });
-        };
-        /**
-         * Returns the remove user loading flag
-         */
-        UserService.prototype.getRemoveUserResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the remove user failure outcome.
-         */
-        UserService.prototype.getRemoveUserResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the remove user process success outcome.
-         */
-        UserService.prototype.getRemoveUserResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Resets the remove user process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         */
-        UserService.prototype.resetRemoveUserProcessState = function () {
-            this.store.dispatch(new RemoveUserReset());
-        };
-        /**
-         * Returns titles
-         */
-        UserService.prototype.getTitles = function () {
-            return this.store.pipe(store.select(getAllTitles));
-        };
-        /**
-         * Retrieves titles
-         */
-        UserService.prototype.loadTitles = function () {
-            this.store.dispatch(new LoadTitles());
-        };
-        /**
-         * Return whether user's password is successfully reset
-         */
-        UserService.prototype.isPasswordReset = function () {
-            return this.store.pipe(store.select(getResetPassword));
-        };
-        /**
-         * Updates the user's details
-         * @param userDetails to be updated
-         */
-        UserService.prototype.updatePersonalDetails = function (userDetails) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdateUserDetails({
-                    username: userId,
-                    userDetails: userDetails,
-                }));
-            });
-        };
-        /**
-         * Returns the update user's personal details loading flag
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's personal details error flag
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's personal details success flag
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Resets the update user details processing state
-         */
-        UserService.prototype.resetUpdatePersonalDetailsProcessingState = function () {
-            this.store.dispatch(new ResetUpdateUserDetails());
-        };
-        /**
-         * Reset new password.  Part of the forgot password flow.
-         * @param token
-         * @param password
-         */
-        UserService.prototype.resetPassword = function (token, password) {
-            this.store.dispatch(new ResetPassword({ token: token, password: password }));
-        };
-        /*
-         * Request an email to reset a forgotten password.
-         */
-        UserService.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
-            this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
-        };
-        /**
-         * Updates the user's email
-         */
-        UserService.prototype.updateEmail = function (password, newUid) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdateEmailAction({
-                    uid: userId,
-                    password: password,
-                    newUid: newUid,
-                }));
-            });
-        };
-        /**
-         * Returns the update user's email success flag
-         */
-        UserService.prototype.getUpdateEmailResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's email error flag
-         */
-        UserService.prototype.getUpdateEmailResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's email loading flag
-         */
-        UserService.prototype.getUpdateEmailResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Resets the update user's email processing state
-         */
-        UserService.prototype.resetUpdateEmailResultState = function () {
-            this.store.dispatch(new ResetUpdateEmailAction());
-        };
-        /**
-         * Updates the password for the user
-         * @param oldPassword the current password that will be changed
-         * @param newPassword the new password
-         */
-        UserService.prototype.updatePassword = function (oldPassword, newPassword) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdatePassword({
-                    userId: userId,
-                    oldPassword: oldPassword,
-                    newPassword: newPassword,
-                }));
-            });
-        };
-        /**
-         * Returns the update password loading flag
-         */
-        UserService.prototype.getUpdatePasswordResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Returns the update password failure outcome.
-         */
-        UserService.prototype.getUpdatePasswordResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Returns the update password process success outcome.
-         */
-        UserService.prototype.getUpdatePasswordResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Resets the update password process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         */
-        UserService.prototype.resetUpdatePasswordProcessState = function () {
-            this.store.dispatch(new UpdatePasswordReset());
-        };
-        UserService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserService_Factory() { return new UserService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserService, providedIn: "root" });
-        UserService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], UserService);
-        return UserService;
-    }());
-
-    var CartConfig = /** @class */ (function () {
-        function CartConfig() {
-        }
-        CartConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConfig_Factory() { return core["ɵɵinject"](Config); }, token: CartConfig, providedIn: "root" });
-        CartConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], CartConfig);
-        return CartConfig;
-    }());
-
-    var CartConfigService = /** @class */ (function () {
-        function CartConfigService(config) {
-            this.config = config;
-        }
-        CartConfigService.prototype.isSelectiveCartEnabled = function () {
-            var _a, _b, _c;
-            return Boolean((_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.cart) === null || _b === void 0 ? void 0 : _b.selectiveCart) === null || _c === void 0 ? void 0 : _c.enabled);
-        };
-        CartConfigService.ctorParameters = function () { return [
-            { type: CartConfig }
-        ]; };
-        CartConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConfigService_Factory() { return new CartConfigService(core["ɵɵinject"](CartConfig)); }, token: CartConfigService, providedIn: "root" });
-        CartConfigService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartConfigService);
-        return CartConfigService;
-    }());
-
-    var SelectiveCartService = /** @class */ (function () {
-        function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
-            var _this = this;
-            this.store = store;
-            this.userService = userService;
-            this.authService = authService;
-            this.multiCartService = multiCartService;
-            this.baseSiteService = baseSiteService;
-            this.cartConfigService = cartConfigService;
-            this.cartId$ = new rxjs.BehaviorSubject(undefined);
-            this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
-            this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
-            this.cartSelector$ = this.cartId$.pipe(operators.switchMap(function (cartId) {
-                _this.cartId = cartId;
-                return _this.multiCartService.getCartEntity(cartId);
-            }));
-            rxjs.combineLatest([
-                this.userService.get(),
-                this.baseSiteService.getActive(),
-            ]).subscribe(function (_a) {
-                var _b = __read(_a, 2), user = _b[0], activeBaseSite = _b[1];
-                if (user && user.customerId && activeBaseSite) {
-                    _this.customerId = user.customerId;
-                    _this.cartId$.next("selectivecart" + activeBaseSite + _this.customerId);
-                }
-                else if (user && !user.customerId) {
-                    _this.cartId$.next(undefined);
-                }
-            });
-            this.authService.getOccUserId().subscribe(function (userId) {
-                _this.userId = userId;
-                if (_this.isJustLoggedIn(userId)) {
-                    _this.load();
-                }
-                _this.previousUserId = userId;
-            });
-            this.selectiveCart$ = this.cartSelector$.pipe(operators.map(function (cartEntity) {
-                return {
-                    cart: cartEntity.value,
-                    loading: cartEntity.loading,
-                    loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
-                };
-            }), operators.filter(function (_a) {
-                var loading = _a.loading;
-                return !loading;
-            }), operators.tap(function (_a) {
-                var cart = _a.cart, loaded = _a.loaded;
-                if (_this.cartId && _this.isEmpty(cart) && !loaded) {
-                    _this.load();
-                }
-            }), operators.map(function (_a) {
-                var cart = _a.cart;
-                return (cart ? cart : {});
-            }), operators.shareReplay({ bufferSize: 1, refCount: true }));
-        }
-        SelectiveCartService.prototype.getCart = function () {
-            return this.selectiveCart$;
-        };
-        SelectiveCartService.prototype.getEntries = function () {
-            return this.multiCartService.getEntries(this.cartId);
-        };
-        SelectiveCartService.prototype.getLoaded = function () {
-            return this.cartSelector$.pipe(operators.map(function (cart) { return (cart.success || cart.error) && !cart.loading; }));
-        };
-        SelectiveCartService.prototype.load = function () {
-            if (this.isLoggedIn(this.userId) && this.cartId) {
-                this.multiCartService.loadCart({
-                    userId: this.userId,
-                    cartId: this.cartId,
-                });
-            }
-        };
-        SelectiveCartService.prototype.addEntry = function (productCode, quantity) {
-            var _this = this;
-            var loadAttempted = false;
-            this.cartSelector$
-                .pipe(operators.filter(function () { return !loadAttempted; }), operators.switchMap(function (cartState) {
-                if (_this.isEmpty(cartState.value) && !cartState.loading) {
-                    loadAttempted = true;
-                    _this.load();
-                }
-                return rxjs.of(cartState);
-            }), operators.filter(function (cartState) { return !_this.isEmpty(cartState.value); }), operators.take(1))
-                .subscribe(function () {
-                _this.multiCartService.addEntry(_this.userId, _this.cartId, productCode, quantity);
-            });
-        };
-        SelectiveCartService.prototype.removeEntry = function (entry) {
-            this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
-        };
-        SelectiveCartService.prototype.updateEntry = function (entryNumber, quantity) {
-            this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
-        };
-        SelectiveCartService.prototype.getEntry = function (productCode) {
-            return this.multiCartService.getEntry(this.cartId, productCode);
-        };
-        /**
-         * Indicates if selectiveCart feature is enabled based on cart configuration.
-         */
-        SelectiveCartService.prototype.isEnabled = function () {
-            return this.cartConfigService.isSelectiveCartEnabled();
-        };
-        SelectiveCartService.prototype.isEmpty = function (cart) {
-            return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
-        };
-        SelectiveCartService.prototype.isJustLoggedIn = function (userId) {
-            return (this.isLoggedIn(userId) &&
-                this.previousUserId !== userId && // *just* logged in
-                this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
-            );
-        };
-        SelectiveCartService.prototype.isLoggedIn = function (userId) {
-            return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
-        };
-        SelectiveCartService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: UserService },
-            { type: AuthService },
-            { type: MultiCartService },
-            { type: BaseSiteService },
-            { type: CartConfigService }
-        ]; };
-        SelectiveCartService = __decorate([
-            core.Injectable()
-        ], SelectiveCartService);
-        return SelectiveCartService;
-    }());
-
-    var WishListService = /** @class */ (function () {
-        function WishListService(store, authService, userService, multiCartService) {
-            this.store = store;
-            this.authService = authService;
-            this.userService = userService;
-            this.multiCartService = multiCartService;
-        }
-        WishListService.prototype.createWishList = function (userId, name, description) {
-            this.store.dispatch(new CreateWishList({ userId: userId, name: name, description: description }));
-        };
-        WishListService.prototype.getWishList = function () {
-            var _this = this;
-            return rxjs.combineLatest([
-                this.getWishListId(),
-                this.userService.get(),
-                this.authService.getOccUserId(),
-            ]).pipe(operators.distinctUntilChanged(), operators.tap(function (_a) {
-                var _b = __read(_a, 3), wishListId = _b[0], user = _b[1], userId = _b[2];
-                if (!Boolean(wishListId) &&
-                    userId !== OCC_USER_ID_ANONYMOUS &&
-                    Boolean(user) &&
-                    Boolean(user.customerId)) {
-                    _this.loadWishList(userId, user.customerId);
-                }
-            }), operators.filter(function (_a) {
-                var _b = __read(_a, 1), wishListId = _b[0];
-                return Boolean(wishListId);
-            }), operators.switchMap(function (_a) {
-                var _b = __read(_a, 1), wishListId = _b[0];
-                return _this.multiCartService.getCart(wishListId);
-            }));
-        };
-        WishListService.prototype.loadWishList = function (userId, customerId) {
-            this.store.dispatch(new LoadWishList({
-                userId: userId,
-                customerId: customerId,
-                tempCartId: getWishlistName(customerId),
-            }));
-        };
-        WishListService.prototype.addEntry = function (productCode) {
-            var _this = this;
-            this.getWishListId()
-                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId(), this.userService.get()), operators.tap(function (_a) {
-                var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
-                if (!Boolean(wishListId) &&
-                    Boolean(user) &&
-                    Boolean(user.customerId)) {
-                    _this.loadWishList(userId, user.customerId);
-                }
-            }), operators.filter(function (_a) {
-                var _b = __read(_a, 1), wishListId = _b[0];
-                return Boolean(wishListId);
-            }), operators.take(1))
-                .subscribe(function (_a) {
-                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
-                return _this.multiCartService.addEntry(userId, wishListId, productCode, 1);
-            });
-        };
-        WishListService.prototype.removeEntry = function (entry) {
-            var _this = this;
-            this.getWishListId()
-                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId(), this.userService.get()), operators.tap(function (_a) {
-                var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
-                if (!Boolean(wishListId) &&
-                    Boolean(user) &&
-                    Boolean(user.customerId)) {
-                    _this.loadWishList(userId, user.customerId);
-                }
-            }), operators.filter(function (_a) {
-                var _b = __read(_a, 1), wishListId = _b[0];
-                return Boolean(wishListId);
-            }), operators.take(1))
-                .subscribe(function (_a) {
-                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
-                return _this.multiCartService.removeEntry(userId, wishListId, entry.entryNumber);
-            });
-        };
-        WishListService.prototype.getWishListLoading = function () {
-            var _this = this;
-            return this.getWishListId().pipe(operators.switchMap(function (wishListId) {
-                return _this.multiCartService
-                    .isStable(wishListId)
-                    .pipe(operators.map(function (stable) { return !stable; }));
-            }));
-        };
-        WishListService.prototype.getWishListId = function () {
-            return this.store.pipe(store.select(getWishListId));
-        };
-        WishListService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: UserService },
-            { type: MultiCartService }
-        ]; };
-        WishListService = __decorate([
-            core.Injectable()
-        ], WishListService);
-        return WishListService;
-    }());
-
     var CMS_FEATURE = 'cms';
     var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
     var COMPONENT_ENTITY = '[Cms] Component Entity';
@@ -17878,11 +17285,6 @@
             return {
                 ngModule: CartModule_1,
                 providers: [
-                    CartVoucherService,
-                    MultiCartService,
-                    WishListService,
-                    ActiveCartService,
-                    SelectiveCartService,
                     {
                         provide: PageMetaResolver,
                         useExisting: CartPageMetaResolver,
@@ -17906,231 +17308,615 @@
         return CartModule;
     }());
 
-    var initialState$9 = {
-        results: {},
-    };
-    function reducer$9(state, action) {
-        if (state === void 0) { state = initialState$9; }
-        switch (action.type) {
-            case VERIFY_ADDRESS_SUCCESS: {
-                var results = action.payload;
-                return __assign(__assign({}, state), { results: results });
-            }
-            case VERIFY_ADDRESS_FAIL: {
-                return __assign(__assign({}, state), { results: 'FAIL' });
-            }
-            case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
-                return __assign(__assign({}, state), { results: {} });
-            }
+    var CartConfig = /** @class */ (function () {
+        function CartConfig() {
         }
-        return state;
-    }
-    var getAddressVerificationResults = function (state) { return state.results; };
+        CartConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConfig_Factory() { return core["ɵɵinject"](Config); }, token: CartConfig, providedIn: "root" });
+        CartConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], CartConfig);
+        return CartConfig;
+    }());
 
-    var getDeliveryAddressSelector = function (state) { return state.address; };
-    var ɵ0$z = getDeliveryAddressSelector;
-    var getDeliveryModeSelector = function (state) {
-        return state.deliveryMode;
-    };
-    var ɵ1$p = getDeliveryModeSelector;
-    var getPaymentDetailsSelector = function (state) {
-        return state.paymentDetails;
-    };
-    var ɵ2$i = getPaymentDetailsSelector;
-    var getOrderDetailsSelector = function (state) {
-        return state.orderDetails;
-    };
-    var ɵ3$a = getOrderDetailsSelector;
-    var getCheckoutState = store.createFeatureSelector(CHECKOUT_FEATURE);
-    var ɵ4$3 = function (checkoutState) { return checkoutState.steps; };
-    var getCheckoutStepsState = store.createSelector(getCheckoutState, ɵ4$3);
-    var ɵ5$2 = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getCheckoutSteps = store.createSelector(getCheckoutStepsState, ɵ5$2);
-    var getDeliveryAddress = store.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
-    var getDeliveryMode = store.createSelector(getCheckoutSteps, getDeliveryModeSelector);
-    var ɵ6 = function (deliveryMode) {
-        return (deliveryMode &&
-            Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
-    };
-    var getSupportedDeliveryModes = store.createSelector(getDeliveryMode, ɵ6);
-    var ɵ7 = function (deliveryMode) {
-        return deliveryMode && deliveryMode.selected;
-    };
-    var getSelectedDeliveryModeCode = store.createSelector(getDeliveryMode, ɵ7);
-    var ɵ8 = function (deliveryMode) {
-        if (deliveryMode.selected !== '') {
-            if (Object.keys(deliveryMode.supported).length === 0) {
-                return null;
-            }
-            return deliveryMode.supported[deliveryMode.selected];
-        }
-    };
-    var getSelectedDeliveryMode = store.createSelector(getDeliveryMode, ɵ8);
-    var getPaymentDetails = store.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
-    var getCheckoutOrderDetails = store.createSelector(getCheckoutSteps, getOrderDetailsSelector);
-    var ɵ9 = function (state) {
-        return loaderSuccessSelector(state) &&
-            !loaderLoadingSelector(state);
-    };
-    var getCheckoutDetailsLoaded = store.createSelector(getCheckoutStepsState, ɵ9);
-
-    var ɵ0$A = function (state) { return state.addressVerification; };
-    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, ɵ0$A);
-    var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
-
-    var initialState$a = {
-        entities: {},
-    };
-    function reducer$a(state, action) {
-        if (state === void 0) { state = initialState$a; }
-        switch (action.type) {
-            case LOAD_CARD_TYPES_SUCCESS: {
-                var cardTypes = action.payload;
-                var entities = cardTypes.reduce(function (cardTypesEntities, name) {
-                    var _a;
-                    return __assign(__assign({}, cardTypesEntities), (_a = {}, _a[name.code] = name, _a));
-                }, __assign({}, state.entities));
-                return __assign(__assign({}, state), { entities: entities });
-            }
-            case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$a;
-            }
-        }
-        return state;
-    }
-    var getCardTypesEntites = function (state) { return state.entities; };
-
-    var ɵ0$B = function (state) { return state.cardTypes; };
-    var getCardTypesState = store.createSelector(getCheckoutState, ɵ0$B);
-    var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$q = function (entites) {
-        return Object.keys(entites).map(function (code) { return entites[code]; });
-    };
-    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, ɵ1$q);
-
-
-
-    var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getAddressVerificationResultsState: getAddressVerificationResultsState,
-        getAddressVerificationResults: getAddressVerificationResults$1,
-        ɵ0: ɵ0$A,
-        getCardTypesState: getCardTypesState,
-        getCardTypesEntites: getCardTypesEntites$1,
-        getAllCardTypes: getAllCardTypes,
-        ɵ1: ɵ1$q,
-        getCheckoutState: getCheckoutState,
-        getCheckoutStepsState: getCheckoutStepsState,
-        getCheckoutSteps: getCheckoutSteps,
-        getDeliveryAddress: getDeliveryAddress,
-        getDeliveryMode: getDeliveryMode,
-        getSupportedDeliveryModes: getSupportedDeliveryModes,
-        getSelectedDeliveryModeCode: getSelectedDeliveryModeCode,
-        getSelectedDeliveryMode: getSelectedDeliveryMode,
-        getPaymentDetails: getPaymentDetails,
-        getCheckoutOrderDetails: getCheckoutOrderDetails,
-        getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
-        ɵ2: ɵ2$i,
-        ɵ3: ɵ3$a,
-        ɵ4: ɵ4$3,
-        ɵ5: ɵ5$2,
-        ɵ6: ɵ6,
-        ɵ7: ɵ7,
-        ɵ8: ɵ8,
-        ɵ9: ɵ9
-    });
-
-    var CheckoutService = /** @class */ (function () {
-        function CheckoutService(checkoutStore, authService, activeCartService) {
-            this.checkoutStore = checkoutStore;
+    var CartVoucherService = /** @class */ (function () {
+        function CartVoucherService(store, authService, activeCartService) {
+            this.store = store;
             this.authService = authService;
             this.activeCartService = activeCartService;
         }
-        /**
-         * Places an order
-         */
-        CheckoutService.prototype.placeOrder = function () {
-            if (this.actionAllowed()) {
-                var userId_1;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
-                    .unsubscribe();
-                var cartId_1;
-                this.activeCartService
-                    .getActiveCartId()
-                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
-                    .unsubscribe();
-                if (userId_1 && cartId_1) {
-                    this.checkoutStore.dispatch(new PlaceOrder({
-                        userId: userId_1,
-                        cartId: cartId_1,
-                    }));
-                }
-            }
-        };
-        /**
-         * Clear checkout data
-         */
-        CheckoutService.prototype.clearCheckoutData = function () {
-            this.checkoutStore.dispatch(new ClearCheckoutData());
-        };
-        /**
-         * Clear checkout step
-         * @param stepNumber : the step number to be cleared
-         */
-        CheckoutService.prototype.clearCheckoutStep = function (stepNumber) {
-            this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
-        };
-        /**
-         * Load checkout details data
-         * @param cartId : string Cart ID of loaded cart
-         */
-        CheckoutService.prototype.loadCheckoutDetails = function (cartId) {
-            var userId;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId = occUserId); })
-                .unsubscribe();
-            if (userId) {
-                this.checkoutStore.dispatch(new LoadCheckoutDetails({
-                    userId: userId,
-                    cartId: cartId,
+        CartVoucherService.prototype.addVoucher = function (voucherId, cartId) {
+            var _this = this;
+            this.combineUserAndCartId(cartId).subscribe(function (_a) {
+                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
+                return _this.store.dispatch(new CartAddVoucher({
+                    userId: occUserId,
+                    cartId: cartIdentifier,
+                    voucherId: voucherId,
                 }));
+            });
+        };
+        CartVoucherService.prototype.removeVoucher = function (voucherId, cartId) {
+            var _this = this;
+            this.combineUserAndCartId(cartId).subscribe(function (_a) {
+                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
+                return _this.store.dispatch(new CartRemoveVoucher({
+                    userId: occUserId,
+                    cartId: cartIdentifier,
+                    voucherId: voucherId,
+                }));
+            });
+        };
+        // TODO(#7241): Remove when switching to event system for add voucher
+        /**
+         * Get add voucher process error flag
+         * @deprecated since 2.0
+         */
+        CartVoucherService.prototype.getAddVoucherResultError = function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        // TODO(#7241): Remove when switching to event system for add voucher
+        /**
+         * Get add voucher process success flag
+         * @deprecated since 2.0
+         */
+        CartVoucherService.prototype.getAddVoucherResultSuccess = function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        // TODO(#7241): Remove when switching to event system for add voucher
+        /**
+         * Get add voucher process loading flag
+         * @deprecated since 2.0
+         */
+        CartVoucherService.prototype.getAddVoucherResultLoading = function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        // TODO(#7241): Remove when switching to event system for add voucher
+        /**
+         * Reset add voucher process
+         * @deprecated since 2.0
+         */
+        CartVoucherService.prototype.resetAddVoucherProcessingState = function () {
+            this.store.dispatch(new CartResetAddVoucher());
+        };
+        CartVoucherService.prototype.combineUserAndCartId = function (cartId) {
+            if (cartId) {
+                return this.authService.getOccUserId().pipe(operators.take(1), operators.map(function (userId) { return [userId, cartId]; }));
+            }
+            else {
+                return rxjs.combineLatest([
+                    this.authService.getOccUserId(),
+                    this.activeCartService.getActiveCartId(),
+                ]).pipe(operators.take(1));
             }
         };
-        /**
-         * Get status of checkout details loaded
-         */
-        CheckoutService.prototype.getCheckoutDetailsLoaded = function () {
-            return this.checkoutStore.pipe(store.select(getCheckoutDetailsLoaded));
-        };
-        /**
-         * Get order details
-         */
-        CheckoutService.prototype.getOrderDetails = function () {
-            return this.checkoutStore.pipe(store.select(getCheckoutOrderDetails));
-        };
-        CheckoutService.prototype.actionAllowed = function () {
-            var userId;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId = occUserId); })
-                .unsubscribe();
-            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
-                this.activeCartService.isGuestCart());
-        };
-        CheckoutService.ctorParameters = function () { return [
+        CartVoucherService.ctorParameters = function () { return [
             { type: store.Store },
             { type: AuthService },
             { type: ActiveCartService }
         ]; };
-        CheckoutService = __decorate([
-            core.Injectable()
-        ], CheckoutService);
-        return CheckoutService;
+        CartVoucherService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartVoucherService_Factory() { return new CartVoucherService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
+        CartVoucherService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CartVoucherService);
+        return CartVoucherService;
+    }());
+
+    var UserService = /** @class */ (function () {
+        function UserService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * Returns a user
+         */
+        UserService.prototype.get = function () {
+            var _this = this;
+            return this.store.pipe(store.select(getDetails), operators.tap(function (details) {
+                if (Object.keys(details).length === 0) {
+                    _this.load();
+                }
+            }));
+        };
+        /**
+         * Loads the user's details
+         */
+        UserService.prototype.load = function () {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new LoadUserDetails(userId));
+                }
+            });
+        };
+        /**
+         * Register a new user
+         *
+         * @param submitFormData as UserRegisterFormData
+         */
+        UserService.prototype.register = function (userRegisterFormData) {
+            this.store.dispatch(new RegisterUser(userRegisterFormData));
+        };
+        /**
+         * Register a new user from guest
+         *
+         * @param guid
+         * @param password
+         */
+        UserService.prototype.registerGuest = function (guid, password) {
+            this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
+        };
+        /**
+         * Returns the register user process loading flag
+         */
+        UserService.prototype.getRegisterUserResultLoading = function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the register user process success flag
+         */
+        UserService.prototype.getRegisterUserResultSuccess = function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the register user process error flag
+         */
+        UserService.prototype.getRegisterUserResultError = function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Resets the register user process flags
+         */
+        UserService.prototype.resetRegisterUserProcessState = function () {
+            return this.store.dispatch(new ResetRegisterUserProcess());
+        };
+        /**
+         * Remove user account, that's also called close user's account
+         */
+        UserService.prototype.remove = function () {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new RemoveUser(userId));
+            });
+        };
+        /**
+         * Returns the remove user loading flag
+         */
+        UserService.prototype.getRemoveUserResultLoading = function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the remove user failure outcome.
+         */
+        UserService.prototype.getRemoveUserResultError = function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the remove user process success outcome.
+         */
+        UserService.prototype.getRemoveUserResultSuccess = function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Resets the remove user process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         */
+        UserService.prototype.resetRemoveUserProcessState = function () {
+            this.store.dispatch(new RemoveUserReset());
+        };
+        /**
+         * Returns titles
+         */
+        UserService.prototype.getTitles = function () {
+            return this.store.pipe(store.select(getAllTitles));
+        };
+        /**
+         * Retrieves titles
+         */
+        UserService.prototype.loadTitles = function () {
+            this.store.dispatch(new LoadTitles());
+        };
+        /**
+         * Return whether user's password is successfully reset
+         */
+        UserService.prototype.isPasswordReset = function () {
+            return this.store.pipe(store.select(getResetPassword));
+        };
+        /**
+         * Updates the user's details
+         * @param userDetails to be updated
+         */
+        UserService.prototype.updatePersonalDetails = function (userDetails) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdateUserDetails({
+                    username: userId,
+                    userDetails: userDetails,
+                }));
+            });
+        };
+        /**
+         * Returns the update user's personal details loading flag
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultLoading = function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's personal details error flag
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultError = function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's personal details success flag
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultSuccess = function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Resets the update user details processing state
+         */
+        UserService.prototype.resetUpdatePersonalDetailsProcessingState = function () {
+            this.store.dispatch(new ResetUpdateUserDetails());
+        };
+        /**
+         * Reset new password.  Part of the forgot password flow.
+         * @param token
+         * @param password
+         */
+        UserService.prototype.resetPassword = function (token, password) {
+            this.store.dispatch(new ResetPassword({ token: token, password: password }));
+        };
+        /*
+         * Request an email to reset a forgotten password.
+         */
+        UserService.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
+            this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
+        };
+        /**
+         * Updates the user's email
+         */
+        UserService.prototype.updateEmail = function (password, newUid) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdateEmailAction({
+                    uid: userId,
+                    password: password,
+                    newUid: newUid,
+                }));
+            });
+        };
+        /**
+         * Returns the update user's email success flag
+         */
+        UserService.prototype.getUpdateEmailResultSuccess = function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's email error flag
+         */
+        UserService.prototype.getUpdateEmailResultError = function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's email loading flag
+         */
+        UserService.prototype.getUpdateEmailResultLoading = function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Resets the update user's email processing state
+         */
+        UserService.prototype.resetUpdateEmailResultState = function () {
+            this.store.dispatch(new ResetUpdateEmailAction());
+        };
+        /**
+         * Updates the password for the user
+         * @param oldPassword the current password that will be changed
+         * @param newPassword the new password
+         */
+        UserService.prototype.updatePassword = function (oldPassword, newPassword) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdatePassword({
+                    userId: userId,
+                    oldPassword: oldPassword,
+                    newPassword: newPassword,
+                }));
+            });
+        };
+        /**
+         * Returns the update password loading flag
+         */
+        UserService.prototype.getUpdatePasswordResultLoading = function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Returns the update password failure outcome.
+         */
+        UserService.prototype.getUpdatePasswordResultError = function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Returns the update password process success outcome.
+         */
+        UserService.prototype.getUpdatePasswordResultSuccess = function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Resets the update password process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         */
+        UserService.prototype.resetUpdatePasswordProcessState = function () {
+            this.store.dispatch(new UpdatePasswordReset());
+        };
+        UserService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService }
+        ]; };
+        UserService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserService_Factory() { return new UserService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserService, providedIn: "root" });
+        UserService = __decorate([
+            core.Injectable({ providedIn: 'root' })
+        ], UserService);
+        return UserService;
+    }());
+
+    var CartConfigService = /** @class */ (function () {
+        function CartConfigService(config) {
+            this.config = config;
+        }
+        CartConfigService.prototype.isSelectiveCartEnabled = function () {
+            var _a, _b, _c;
+            return Boolean((_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.cart) === null || _b === void 0 ? void 0 : _b.selectiveCart) === null || _c === void 0 ? void 0 : _c.enabled);
+        };
+        CartConfigService.ctorParameters = function () { return [
+            { type: CartConfig }
+        ]; };
+        CartConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConfigService_Factory() { return new CartConfigService(core["ɵɵinject"](CartConfig)); }, token: CartConfigService, providedIn: "root" });
+        CartConfigService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CartConfigService);
+        return CartConfigService;
+    }());
+
+    var SelectiveCartService = /** @class */ (function () {
+        function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
+            var _this = this;
+            this.store = store;
+            this.userService = userService;
+            this.authService = authService;
+            this.multiCartService = multiCartService;
+            this.baseSiteService = baseSiteService;
+            this.cartConfigService = cartConfigService;
+            this.cartId$ = new rxjs.BehaviorSubject(undefined);
+            this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+            this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+            this.cartSelector$ = this.cartId$.pipe(operators.switchMap(function (cartId) {
+                _this.cartId = cartId;
+                return _this.multiCartService.getCartEntity(cartId);
+            }));
+            rxjs.combineLatest([
+                this.userService.get(),
+                this.baseSiteService.getActive(),
+            ]).subscribe(function (_a) {
+                var _b = __read(_a, 2), user = _b[0], activeBaseSite = _b[1];
+                if (user && user.customerId && activeBaseSite) {
+                    _this.customerId = user.customerId;
+                    _this.cartId$.next("selectivecart" + activeBaseSite + _this.customerId);
+                }
+                else if (user && !user.customerId) {
+                    _this.cartId$.next(undefined);
+                }
+            });
+            this.authService.getOccUserId().subscribe(function (userId) {
+                _this.userId = userId;
+                if (_this.isJustLoggedIn(userId)) {
+                    _this.load();
+                }
+                _this.previousUserId = userId;
+            });
+            this.selectiveCart$ = this.cartSelector$.pipe(operators.map(function (cartEntity) {
+                return {
+                    cart: cartEntity.value,
+                    loading: cartEntity.loading,
+                    loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
+                };
+            }), operators.filter(function (_a) {
+                var loading = _a.loading;
+                return !loading;
+            }), operators.tap(function (_a) {
+                var cart = _a.cart, loaded = _a.loaded;
+                if (_this.cartId && _this.isEmpty(cart) && !loaded) {
+                    _this.load();
+                }
+            }), operators.map(function (_a) {
+                var cart = _a.cart;
+                return (cart ? cart : {});
+            }), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        }
+        SelectiveCartService.prototype.getCart = function () {
+            return this.selectiveCart$;
+        };
+        SelectiveCartService.prototype.getEntries = function () {
+            return this.multiCartService.getEntries(this.cartId);
+        };
+        SelectiveCartService.prototype.getLoaded = function () {
+            return this.cartSelector$.pipe(operators.map(function (cart) { return (cart.success || cart.error) && !cart.loading; }));
+        };
+        SelectiveCartService.prototype.load = function () {
+            if (this.isLoggedIn(this.userId) && this.cartId) {
+                this.multiCartService.loadCart({
+                    userId: this.userId,
+                    cartId: this.cartId,
+                });
+            }
+        };
+        SelectiveCartService.prototype.addEntry = function (productCode, quantity) {
+            var _this = this;
+            var loadAttempted = false;
+            this.cartSelector$
+                .pipe(operators.filter(function () { return !loadAttempted; }), operators.switchMap(function (cartState) {
+                if (_this.isEmpty(cartState.value) && !cartState.loading) {
+                    loadAttempted = true;
+                    _this.load();
+                }
+                return rxjs.of(cartState);
+            }), operators.filter(function (cartState) { return !_this.isEmpty(cartState.value); }), operators.take(1))
+                .subscribe(function () {
+                _this.multiCartService.addEntry(_this.userId, _this.cartId, productCode, quantity);
+            });
+        };
+        SelectiveCartService.prototype.removeEntry = function (entry) {
+            this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
+        };
+        SelectiveCartService.prototype.updateEntry = function (entryNumber, quantity) {
+            this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
+        };
+        SelectiveCartService.prototype.getEntry = function (productCode) {
+            return this.multiCartService.getEntry(this.cartId, productCode);
+        };
+        /**
+         * Indicates if selectiveCart feature is enabled based on cart configuration.
+         */
+        SelectiveCartService.prototype.isEnabled = function () {
+            return this.cartConfigService.isSelectiveCartEnabled();
+        };
+        SelectiveCartService.prototype.isEmpty = function (cart) {
+            return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
+        };
+        SelectiveCartService.prototype.isJustLoggedIn = function (userId) {
+            return (this.isLoggedIn(userId) &&
+                this.previousUserId !== userId && // *just* logged in
+                this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+            );
+        };
+        SelectiveCartService.prototype.isLoggedIn = function (userId) {
+            return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
+        };
+        SelectiveCartService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: UserService },
+            { type: AuthService },
+            { type: MultiCartService },
+            { type: BaseSiteService },
+            { type: CartConfigService }
+        ]; };
+        SelectiveCartService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(core["ɵɵinject"](store.Store), core["ɵɵinject"](UserService), core["ɵɵinject"](AuthService), core["ɵɵinject"](MultiCartService), core["ɵɵinject"](BaseSiteService), core["ɵɵinject"](CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
+        SelectiveCartService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], SelectiveCartService);
+        return SelectiveCartService;
+    }());
+
+    var WishListService = /** @class */ (function () {
+        function WishListService(store, authService, userService, multiCartService) {
+            this.store = store;
+            this.authService = authService;
+            this.userService = userService;
+            this.multiCartService = multiCartService;
+        }
+        WishListService.prototype.createWishList = function (userId, name, description) {
+            this.store.dispatch(new CreateWishList({ userId: userId, name: name, description: description }));
+        };
+        WishListService.prototype.getWishList = function () {
+            var _this = this;
+            return rxjs.combineLatest([
+                this.getWishListId(),
+                this.userService.get(),
+                this.authService.getOccUserId(),
+            ]).pipe(operators.distinctUntilChanged(), operators.tap(function (_a) {
+                var _b = __read(_a, 3), wishListId = _b[0], user = _b[1], userId = _b[2];
+                if (!Boolean(wishListId) &&
+                    userId !== OCC_USER_ID_ANONYMOUS &&
+                    Boolean(user) &&
+                    Boolean(user.customerId)) {
+                    _this.loadWishList(userId, user.customerId);
+                }
+            }), operators.filter(function (_a) {
+                var _b = __read(_a, 1), wishListId = _b[0];
+                return Boolean(wishListId);
+            }), operators.switchMap(function (_a) {
+                var _b = __read(_a, 1), wishListId = _b[0];
+                return _this.multiCartService.getCart(wishListId);
+            }));
+        };
+        WishListService.prototype.loadWishList = function (userId, customerId) {
+            this.store.dispatch(new LoadWishList({
+                userId: userId,
+                customerId: customerId,
+                tempCartId: getWishlistName(customerId),
+            }));
+        };
+        WishListService.prototype.addEntry = function (productCode) {
+            var _this = this;
+            this.getWishListId()
+                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId(), this.userService.get()), operators.tap(function (_a) {
+                var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
+                if (!Boolean(wishListId) &&
+                    Boolean(user) &&
+                    Boolean(user.customerId)) {
+                    _this.loadWishList(userId, user.customerId);
+                }
+            }), operators.filter(function (_a) {
+                var _b = __read(_a, 1), wishListId = _b[0];
+                return Boolean(wishListId);
+            }), operators.take(1))
+                .subscribe(function (_a) {
+                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+                return _this.multiCartService.addEntry(userId, wishListId, productCode, 1);
+            });
+        };
+        WishListService.prototype.removeEntry = function (entry) {
+            var _this = this;
+            this.getWishListId()
+                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId(), this.userService.get()), operators.tap(function (_a) {
+                var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
+                if (!Boolean(wishListId) &&
+                    Boolean(user) &&
+                    Boolean(user.customerId)) {
+                    _this.loadWishList(userId, user.customerId);
+                }
+            }), operators.filter(function (_a) {
+                var _b = __read(_a, 1), wishListId = _b[0];
+                return Boolean(wishListId);
+            }), operators.take(1))
+                .subscribe(function (_a) {
+                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+                return _this.multiCartService.removeEntry(userId, wishListId, entry.entryNumber);
+            });
+        };
+        WishListService.prototype.getWishListLoading = function () {
+            var _this = this;
+            return this.getWishListId().pipe(operators.switchMap(function (wishListId) {
+                return _this.multiCartService
+                    .isStable(wishListId)
+                    .pipe(operators.map(function (stable) { return !stable; }));
+            }));
+        };
+        WishListService.prototype.getWishListId = function () {
+            return this.store.pipe(store.select(getWishListId));
+        };
+        WishListService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService },
+            { type: UserService },
+            { type: MultiCartService }
+        ]; };
+        WishListService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function WishListService_Factory() { return new WishListService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](UserService), core["ɵɵinject"](MultiCartService)); }, token: WishListService, providedIn: "root" });
+        WishListService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], WishListService);
+        return WishListService;
     }());
 
     var TranslationService = /** @class */ (function () {
@@ -18180,6 +17966,49 @@
         ], CheckoutPageMetaResolver);
         return CheckoutPageMetaResolver;
     }(PageMetaResolver));
+
+    var initialState$9 = {
+        results: {},
+    };
+    function reducer$9(state, action) {
+        if (state === void 0) { state = initialState$9; }
+        switch (action.type) {
+            case VERIFY_ADDRESS_SUCCESS: {
+                var results = action.payload;
+                return __assign(__assign({}, state), { results: results });
+            }
+            case VERIFY_ADDRESS_FAIL: {
+                return __assign(__assign({}, state), { results: 'FAIL' });
+            }
+            case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
+                return __assign(__assign({}, state), { results: {} });
+            }
+        }
+        return state;
+    }
+    var getAddressVerificationResults = function (state) { return state.results; };
+
+    var initialState$a = {
+        entities: {},
+    };
+    function reducer$a(state, action) {
+        if (state === void 0) { state = initialState$a; }
+        switch (action.type) {
+            case LOAD_CARD_TYPES_SUCCESS: {
+                var cardTypes = action.payload;
+                var entities = cardTypes.reduce(function (cardTypesEntities, name) {
+                    var _a;
+                    return __assign(__assign({}, cardTypesEntities), (_a = {}, _a[name.code] = name, _a));
+                }, __assign({}, state.entities));
+                return __assign(__assign({}, state), { entities: entities });
+            }
+            case CHECKOUT_CLEAR_MISCS_DATA: {
+                return initialState$a;
+            }
+        }
+        return state;
+    }
+    var getCardTypesEntites = function (state) { return state.entities; };
 
     var initialState$b = {
         address: {},
@@ -18693,7 +18522,6 @@
             return {
                 ngModule: CheckoutModule_1,
                 providers: [
-                    CheckoutService,
                     {
                         provide: PageMetaResolver,
                         useExisting: CheckoutPageMetaResolver,
@@ -18709,6 +18537,193 @@
             })
         ], CheckoutModule);
         return CheckoutModule;
+    }());
+
+    var getDeliveryAddressSelector = function (state) { return state.address; };
+    var ɵ0$z = getDeliveryAddressSelector;
+    var getDeliveryModeSelector = function (state) {
+        return state.deliveryMode;
+    };
+    var ɵ1$p = getDeliveryModeSelector;
+    var getPaymentDetailsSelector = function (state) {
+        return state.paymentDetails;
+    };
+    var ɵ2$i = getPaymentDetailsSelector;
+    var getOrderDetailsSelector = function (state) {
+        return state.orderDetails;
+    };
+    var ɵ3$a = getOrderDetailsSelector;
+    var getCheckoutState = store.createFeatureSelector(CHECKOUT_FEATURE);
+    var ɵ4$3 = function (checkoutState) { return checkoutState.steps; };
+    var getCheckoutStepsState = store.createSelector(getCheckoutState, ɵ4$3);
+    var ɵ5$2 = function (state) {
+        return loaderValueSelector(state);
+    };
+    var getCheckoutSteps = store.createSelector(getCheckoutStepsState, ɵ5$2);
+    var getDeliveryAddress = store.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+    var getDeliveryMode = store.createSelector(getCheckoutSteps, getDeliveryModeSelector);
+    var ɵ6 = function (deliveryMode) {
+        return (deliveryMode &&
+            Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
+    };
+    var getSupportedDeliveryModes = store.createSelector(getDeliveryMode, ɵ6);
+    var ɵ7 = function (deliveryMode) {
+        return deliveryMode && deliveryMode.selected;
+    };
+    var getSelectedDeliveryModeCode = store.createSelector(getDeliveryMode, ɵ7);
+    var ɵ8 = function (deliveryMode) {
+        if (deliveryMode.selected !== '') {
+            if (Object.keys(deliveryMode.supported).length === 0) {
+                return null;
+            }
+            return deliveryMode.supported[deliveryMode.selected];
+        }
+    };
+    var getSelectedDeliveryMode = store.createSelector(getDeliveryMode, ɵ8);
+    var getPaymentDetails = store.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+    var getCheckoutOrderDetails = store.createSelector(getCheckoutSteps, getOrderDetailsSelector);
+    var ɵ9 = function (state) {
+        return loaderSuccessSelector(state) &&
+            !loaderLoadingSelector(state);
+    };
+    var getCheckoutDetailsLoaded = store.createSelector(getCheckoutStepsState, ɵ9);
+
+    var ɵ0$A = function (state) { return state.addressVerification; };
+    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, ɵ0$A);
+    var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+
+    var ɵ0$B = function (state) { return state.cardTypes; };
+    var getCardTypesState = store.createSelector(getCheckoutState, ɵ0$B);
+    var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
+    var ɵ1$q = function (entites) {
+        return Object.keys(entites).map(function (code) { return entites[code]; });
+    };
+    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, ɵ1$q);
+
+
+
+    var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getAddressVerificationResultsState: getAddressVerificationResultsState,
+        getAddressVerificationResults: getAddressVerificationResults$1,
+        ɵ0: ɵ0$A,
+        getCardTypesState: getCardTypesState,
+        getCardTypesEntites: getCardTypesEntites$1,
+        getAllCardTypes: getAllCardTypes,
+        ɵ1: ɵ1$q,
+        getCheckoutState: getCheckoutState,
+        getCheckoutStepsState: getCheckoutStepsState,
+        getCheckoutSteps: getCheckoutSteps,
+        getDeliveryAddress: getDeliveryAddress,
+        getDeliveryMode: getDeliveryMode,
+        getSupportedDeliveryModes: getSupportedDeliveryModes,
+        getSelectedDeliveryModeCode: getSelectedDeliveryModeCode,
+        getSelectedDeliveryMode: getSelectedDeliveryMode,
+        getPaymentDetails: getPaymentDetails,
+        getCheckoutOrderDetails: getCheckoutOrderDetails,
+        getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
+        ɵ2: ɵ2$i,
+        ɵ3: ɵ3$a,
+        ɵ4: ɵ4$3,
+        ɵ5: ɵ5$2,
+        ɵ6: ɵ6,
+        ɵ7: ɵ7,
+        ɵ8: ɵ8,
+        ɵ9: ɵ9
+    });
+
+    var CheckoutService = /** @class */ (function () {
+        function CheckoutService(checkoutStore, authService, activeCartService) {
+            this.checkoutStore = checkoutStore;
+            this.authService = authService;
+            this.activeCartService = activeCartService;
+        }
+        /**
+         * Places an order
+         */
+        CheckoutService.prototype.placeOrder = function () {
+            if (this.actionAllowed()) {
+                var userId_1;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
+                    .unsubscribe();
+                var cartId_1;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
+                    .unsubscribe();
+                if (userId_1 && cartId_1) {
+                    this.checkoutStore.dispatch(new PlaceOrder({
+                        userId: userId_1,
+                        cartId: cartId_1,
+                    }));
+                }
+            }
+        };
+        /**
+         * Clear checkout data
+         */
+        CheckoutService.prototype.clearCheckoutData = function () {
+            this.checkoutStore.dispatch(new ClearCheckoutData());
+        };
+        /**
+         * Clear checkout step
+         * @param stepNumber : the step number to be cleared
+         */
+        CheckoutService.prototype.clearCheckoutStep = function (stepNumber) {
+            this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
+        };
+        /**
+         * Load checkout details data
+         * @param cartId : string Cart ID of loaded cart
+         */
+        CheckoutService.prototype.loadCheckoutDetails = function (cartId) {
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            if (userId) {
+                this.checkoutStore.dispatch(new LoadCheckoutDetails({
+                    userId: userId,
+                    cartId: cartId,
+                }));
+            }
+        };
+        /**
+         * Get status of checkout details loaded
+         */
+        CheckoutService.prototype.getCheckoutDetailsLoaded = function () {
+            return this.checkoutStore.pipe(store.select(getCheckoutDetailsLoaded));
+        };
+        /**
+         * Get order details
+         */
+        CheckoutService.prototype.getOrderDetails = function () {
+            return this.checkoutStore.pipe(store.select(getCheckoutOrderDetails));
+        };
+        CheckoutService.prototype.actionAllowed = function () {
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+                this.activeCartService.isGuestCart());
+        };
+        CheckoutService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService },
+            { type: ActiveCartService }
+        ]; };
+        CheckoutService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutService_Factory() { return new CheckoutService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+        CheckoutService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CheckoutService);
+        return CheckoutService;
     }());
 
     var CheckoutDeliveryService = /** @class */ (function () {
@@ -20216,8 +20231,11 @@
             { type: UrlMatcherService },
             { type: core.Injector }
         ]; };
+        ExternalRoutesService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(core["ɵɵinject"](ExternalRoutesConfig), core["ɵɵinject"](UrlMatcherService), core["ɵɵinject"](core.INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
         ExternalRoutesService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], ExternalRoutesService);
         return ExternalRoutesService;
     }());
@@ -20233,7 +20251,6 @@
             return {
                 ngModule: ExternalRoutesModule_1,
                 providers: [
-                    ExternalRoutesService,
                     {
                         provide: core.APP_INITIALIZER,
                         multi: true,
@@ -21586,8 +21603,11 @@
         TranslationChunkService.ctorParameters = function () { return [
             { type: I18nConfig }
         ]; };
+        TranslationChunkService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function TranslationChunkService_Factory() { return new TranslationChunkService(core["ɵɵinject"](I18nConfig)); }, token: TranslationChunkService, providedIn: "root" });
         TranslationChunkService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], TranslationChunkService);
         return TranslationChunkService;
     }());
@@ -21774,8 +21794,7 @@
                 ngModule: I18nModule_1,
                 providers: __spread([
                     provideDefaultConfig(defaultI18nConfig),
-                    { provide: TranslationService, useExisting: I18nextTranslationService },
-                    TranslationChunkService
+                    { provide: TranslationService, useExisting: I18nextTranslationService }
                 ], i18nextProviders),
             };
         };
@@ -22021,13 +22040,14 @@
             { type: KymaConfig },
             { type: http.HttpClient }
         ]; };
+        OpenIdAuthenticationTokenService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(core["ɵɵinject"](KymaConfig), core["ɵɵinject"](http.HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
         OpenIdAuthenticationTokenService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], OpenIdAuthenticationTokenService);
         return OpenIdAuthenticationTokenService;
     }());
-
-    var KymaServices = [OpenIdAuthenticationTokenService];
 
     var OpenIdTokenEffect = /** @class */ (function () {
         function OpenIdTokenEffect(actions$, openIdTokenService) {
@@ -22127,7 +22147,7 @@
         KymaModule = __decorate([
             core.NgModule({
                 imports: [common.CommonModule, http.HttpClientModule, KymaStoreModule],
-                providers: __spread([provideDefaultConfig(defaultKymaConfig)], KymaServices),
+                providers: [provideDefaultConfig(defaultKymaConfig)],
             })
         ], KymaModule);
         return KymaModule;
@@ -22911,8 +22931,11 @@
         ProductReferenceService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
+        ProductReferenceService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(core["ɵɵinject"](store.Store)); }, token: ProductReferenceService, providedIn: "root" });
         ProductReferenceService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], ProductReferenceService);
         return ProductReferenceService;
     }());
@@ -22938,8 +22961,11 @@
         ProductReviewService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
+        ProductReviewService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductReviewService_Factory() { return new ProductReviewService(core["ɵɵinject"](store.Store)); }, token: ProductReviewService, providedIn: "root" });
         ProductReviewService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], ProductReviewService);
         return ProductReviewService;
     }());
@@ -22965,8 +22991,11 @@
         ProductSearchService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
+        ProductSearchService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductSearchService_Factory() { return new ProductSearchService(core["ɵɵinject"](store.Store)); }, token: ProductSearchService, providedIn: "root" });
         ProductSearchService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], ProductSearchService);
         return ProductSearchService;
     }());
@@ -23168,8 +23197,11 @@
             { type: store.Store },
             { type: ProductLoadingService }
         ]; };
+        ProductService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductService_Factory() { return new ProductService(core["ɵɵinject"](store.Store), core["ɵɵinject"](ProductLoadingService)); }, token: ProductService, providedIn: "root" });
         ProductService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], ProductService);
         return ProductService;
     }());
@@ -23917,12 +23949,7 @@
         ProductModule.forRoot = function () {
             return {
                 ngModule: ProductModule_1,
-                providers: __spread([
-                    ProductService,
-                    ProductSearchService,
-                    ProductReviewService,
-                    ProductReferenceService
-                ], pageTitleResolvers),
+                providers: __spread(pageTitleResolvers),
             };
         };
         var ProductModule_1;
@@ -24319,8 +24346,11 @@
             { type: GlobalMessageService },
             { type: RoutingService }
         ]; };
+        StoreFinderService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StoreFinderService_Factory() { return new StoreFinderService(core["ɵɵinject"](store.Store), core["ɵɵinject"](WindowRef), core["ɵɵinject"](GlobalMessageService), core["ɵɵinject"](RoutingService)); }, token: StoreFinderService, providedIn: "root" });
         StoreFinderService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], StoreFinderService);
         return StoreFinderService;
     }());
@@ -24394,8 +24424,11 @@
             var weekday = this.weekDays[date.getDay()];
             return location.openingHours.weekDayOpeningList.find(function (weekDayOpeningListItem) { return weekDayOpeningListItem.weekDay === weekday; });
         };
+        StoreDataService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StoreDataService_Factory() { return new StoreDataService(); }, token: StoreDataService, providedIn: "root" });
         StoreDataService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], StoreDataService);
         return StoreDataService;
     }());
@@ -24445,8 +24478,11 @@
         ExternalJsFileLoader.ctorParameters = function () { return [
             { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
         ]; };
+        ExternalJsFileLoader.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(core["ɵɵinject"](common.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
         ExternalJsFileLoader = __decorate([
-            core.Injectable(),
+            core.Injectable({
+                providedIn: 'root',
+            }),
             __param(0, core.Inject(common.DOCUMENT))
         ], ExternalJsFileLoader);
         return ExternalJsFileLoader;
@@ -24551,8 +24587,11 @@
             { type: ExternalJsFileLoader },
             { type: StoreDataService }
         ]; };
+        GoogleMapRendererService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(core["ɵɵinject"](StoreFinderConfig), core["ɵɵinject"](ExternalJsFileLoader), core["ɵɵinject"](StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
         GoogleMapRendererService = __decorate([
-            core.Injectable()
+            core.Injectable({
+                providedIn: 'root',
+            })
         ], GoogleMapRendererService);
         return GoogleMapRendererService;
     }());
@@ -24676,13 +24715,7 @@
         StoreFinderCoreModule = __decorate([
             core.NgModule({
                 imports: [StoreFinderStoreModule],
-                providers: [
-                    provideDefaultConfig(defaultStoreFinderConfig),
-                    StoreFinderService,
-                    StoreDataService,
-                    GoogleMapRendererService,
-                    ExternalJsFileLoader,
-                ],
+                providers: [provideDefaultConfig(defaultStoreFinderConfig)],
             })
         ], StoreFinderCoreModule);
         return StoreFinderCoreModule;
@@ -27322,7 +27355,6 @@
     exports.KymaModule = KymaModule;
     exports.KymaSelectors = kymaGroup_selectors;
     exports.KymaService = KymaService;
-    exports.KymaServices = KymaServices;
     exports.LANGUAGE_CONTEXT_ID = LANGUAGE_CONTEXT_ID;
     exports.LANGUAGE_NORMALIZER = LANGUAGE_NORMALIZER;
     exports.LanguageService = LanguageService;
@@ -27393,6 +27425,7 @@
     exports.OccUserNotificationPreferenceAdapter = OccUserNotificationPreferenceAdapter;
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
+    exports.OpenIdAuthenticationTokenService = OpenIdAuthenticationTokenService;
     exports.OrderReturnRequestService = OrderReturnRequestService;
     exports.PASSWORD_PATTERN = PASSWORD_PATTERN;
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
@@ -27617,204 +27650,202 @@
     exports.ɵch = UrlParsingService;
     exports.ɵci = ClientErrorHandlingService;
     exports.ɵcj = TokenRevocationInterceptor;
-    exports.ɵck = AuthServices;
-    exports.ɵcl = MultiCartStoreModule;
-    exports.ɵcm = clearMultiCartState;
-    exports.ɵcn = multiCartMetaReducers;
-    exports.ɵco = multiCartReducerToken;
-    exports.ɵcp = getMultiCartReducers;
-    exports.ɵcq = multiCartReducerProvider;
-    exports.ɵcr = CartEffects;
-    exports.ɵcs = CartEntryEffects;
-    exports.ɵct = CartVoucherEffects;
-    exports.ɵcu = WishListEffects;
-    exports.ɵcv = SaveCartConnector;
-    exports.ɵcw = SaveCartAdapter;
-    exports.ɵcx = MultiCartEffects;
-    exports.ɵcy = entityProcessesLoaderReducer;
-    exports.ɵcz = entityReducer;
+    exports.ɵck = MultiCartStoreModule;
+    exports.ɵcl = clearMultiCartState;
+    exports.ɵcm = multiCartMetaReducers;
+    exports.ɵcn = multiCartReducerToken;
+    exports.ɵco = getMultiCartReducers;
+    exports.ɵcp = multiCartReducerProvider;
+    exports.ɵcq = CartEffects;
+    exports.ɵcr = CartEntryEffects;
+    exports.ɵcs = CartVoucherEffects;
+    exports.ɵct = WishListEffects;
+    exports.ɵcu = SaveCartConnector;
+    exports.ɵcv = SaveCartAdapter;
+    exports.ɵcw = MultiCartEffects;
+    exports.ɵcx = entityProcessesLoaderReducer;
+    exports.ɵcy = entityReducer;
+    exports.ɵcz = processesLoaderReducer;
     exports.ɵd = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵda = processesLoaderReducer;
-    exports.ɵdb = activeCartReducer;
-    exports.ɵdc = cartEntitiesReducer;
-    exports.ɵdd = wishListReducer;
-    exports.ɵde = CartPageMetaResolver;
-    exports.ɵdf = SiteContextParamsService;
-    exports.ɵdg = CheckoutStoreModule;
-    exports.ɵdh = getReducers$5;
-    exports.ɵdi = reducerToken$5;
-    exports.ɵdj = reducerProvider$5;
-    exports.ɵdk = effects$5;
-    exports.ɵdl = AddressVerificationEffect;
-    exports.ɵdm = CardTypesEffects;
-    exports.ɵdn = CheckoutEffects;
-    exports.ɵdo = reducer$b;
-    exports.ɵdp = reducer$a;
-    exports.ɵdq = reducer$9;
-    exports.ɵdr = cmsStoreConfigFactory;
-    exports.ɵds = CmsStoreModule;
-    exports.ɵdt = getReducers$7;
-    exports.ɵdu = reducerToken$7;
-    exports.ɵdv = reducerProvider$7;
-    exports.ɵdw = clearCmsState;
-    exports.ɵdx = metaReducers$3;
-    exports.ɵdy = effects$7;
-    exports.ɵdz = ComponentsEffects;
+    exports.ɵda = activeCartReducer;
+    exports.ɵdb = cartEntitiesReducer;
+    exports.ɵdc = wishListReducer;
+    exports.ɵdd = CartPageMetaResolver;
+    exports.ɵde = SiteContextParamsService;
+    exports.ɵdf = CheckoutStoreModule;
+    exports.ɵdg = getReducers$5;
+    exports.ɵdh = reducerToken$5;
+    exports.ɵdi = reducerProvider$5;
+    exports.ɵdj = effects$5;
+    exports.ɵdk = AddressVerificationEffect;
+    exports.ɵdl = CardTypesEffects;
+    exports.ɵdm = CheckoutEffects;
+    exports.ɵdn = reducer$b;
+    exports.ɵdo = reducer$a;
+    exports.ɵdp = reducer$9;
+    exports.ɵdq = cmsStoreConfigFactory;
+    exports.ɵdr = CmsStoreModule;
+    exports.ɵds = getReducers$7;
+    exports.ɵdt = reducerToken$7;
+    exports.ɵdu = reducerProvider$7;
+    exports.ɵdv = clearCmsState;
+    exports.ɵdw = metaReducers$3;
+    exports.ɵdx = effects$7;
+    exports.ɵdy = ComponentsEffects;
+    exports.ɵdz = NavigationEntryItemEffects;
     exports.ɵe = initConfig;
-    exports.ɵea = NavigationEntryItemEffects;
-    exports.ɵeb = PageEffects;
-    exports.ɵec = Config;
-    exports.ɵed = reducer$f;
-    exports.ɵee = entityLoaderReducer;
-    exports.ɵef = reducer$g;
-    exports.ɵeg = reducer$d;
-    exports.ɵeh = reducer$e;
-    exports.ɵei = GlobalMessageStoreModule;
-    exports.ɵej = getReducers$4;
-    exports.ɵek = reducerToken$4;
-    exports.ɵel = reducerProvider$4;
-    exports.ɵem = reducer$8;
-    exports.ɵen = GlobalMessageEffect;
-    exports.ɵeo = defaultGlobalMessageConfigFactory;
-    exports.ɵep = HttpErrorInterceptor;
-    exports.ɵeq = defaultI18nConfig;
-    exports.ɵer = i18nextProviders;
-    exports.ɵes = i18nextInit;
-    exports.ɵet = MockTranslationService;
-    exports.ɵeu = kymaStoreConfigFactory;
-    exports.ɵev = KymaStoreModule;
-    exports.ɵew = getReducers$8;
-    exports.ɵex = reducerToken$8;
-    exports.ɵey = reducerProvider$8;
-    exports.ɵez = clearKymaState;
+    exports.ɵea = PageEffects;
+    exports.ɵeb = Config;
+    exports.ɵec = reducer$f;
+    exports.ɵed = entityLoaderReducer;
+    exports.ɵee = reducer$g;
+    exports.ɵef = reducer$d;
+    exports.ɵeg = reducer$e;
+    exports.ɵeh = GlobalMessageStoreModule;
+    exports.ɵei = getReducers$4;
+    exports.ɵej = reducerToken$4;
+    exports.ɵek = reducerProvider$4;
+    exports.ɵel = reducer$8;
+    exports.ɵem = GlobalMessageEffect;
+    exports.ɵen = defaultGlobalMessageConfigFactory;
+    exports.ɵeo = HttpErrorInterceptor;
+    exports.ɵep = defaultI18nConfig;
+    exports.ɵeq = i18nextProviders;
+    exports.ɵer = i18nextInit;
+    exports.ɵes = MockTranslationService;
+    exports.ɵet = kymaStoreConfigFactory;
+    exports.ɵeu = KymaStoreModule;
+    exports.ɵev = getReducers$8;
+    exports.ɵew = reducerToken$8;
+    exports.ɵex = reducerProvider$8;
+    exports.ɵey = clearKymaState;
+    exports.ɵez = metaReducers$4;
     exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = metaReducers$4;
-    exports.ɵfb = effects$8;
-    exports.ɵfc = OpenIdTokenEffect;
-    exports.ɵfd = OpenIdAuthenticationTokenService;
-    exports.ɵfe = defaultKymaConfig;
-    exports.ɵff = defaultOccAsmConfig;
-    exports.ɵfg = defaultOccCartConfig;
-    exports.ɵfh = OccSaveCartAdapter;
-    exports.ɵfi = defaultOccProductConfig;
-    exports.ɵfj = defaultOccSiteContextConfig;
-    exports.ɵfk = defaultOccStoreFinderConfig;
-    exports.ɵfl = defaultOccUserConfig;
-    exports.ɵfm = UserNotificationPreferenceAdapter;
-    exports.ɵfn = defaultPersonalizationConfig;
-    exports.ɵfo = interceptors$3;
-    exports.ɵfp = OccPersonalizationIdInterceptor;
-    exports.ɵfq = OccPersonalizationTimeInterceptor;
-    exports.ɵfr = ProcessStoreModule;
-    exports.ɵfs = getReducers$9;
-    exports.ɵft = reducerToken$9;
-    exports.ɵfu = reducerProvider$9;
-    exports.ɵfv = productStoreConfigFactory;
-    exports.ɵfw = ProductStoreModule;
-    exports.ɵfx = getReducers$a;
-    exports.ɵfy = reducerToken$a;
-    exports.ɵfz = reducerProvider$a;
+    exports.ɵfa = effects$8;
+    exports.ɵfb = OpenIdTokenEffect;
+    exports.ɵfc = defaultKymaConfig;
+    exports.ɵfd = defaultOccAsmConfig;
+    exports.ɵfe = defaultOccCartConfig;
+    exports.ɵff = OccSaveCartAdapter;
+    exports.ɵfg = defaultOccProductConfig;
+    exports.ɵfh = defaultOccSiteContextConfig;
+    exports.ɵfi = defaultOccStoreFinderConfig;
+    exports.ɵfj = defaultOccUserConfig;
+    exports.ɵfk = UserNotificationPreferenceAdapter;
+    exports.ɵfl = defaultPersonalizationConfig;
+    exports.ɵfm = interceptors$3;
+    exports.ɵfn = OccPersonalizationIdInterceptor;
+    exports.ɵfo = OccPersonalizationTimeInterceptor;
+    exports.ɵfp = ProcessStoreModule;
+    exports.ɵfq = getReducers$9;
+    exports.ɵfr = reducerToken$9;
+    exports.ɵfs = reducerProvider$9;
+    exports.ɵft = productStoreConfigFactory;
+    exports.ɵfu = ProductStoreModule;
+    exports.ɵfv = getReducers$a;
+    exports.ɵfw = reducerToken$a;
+    exports.ɵfx = reducerProvider$a;
+    exports.ɵfy = clearProductsState;
+    exports.ɵfz = metaReducers$5;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = clearProductsState;
-    exports.ɵgb = metaReducers$5;
-    exports.ɵgc = effects$9;
-    exports.ɵgd = ProductReferencesEffects;
-    exports.ɵge = ProductReviewsEffects;
-    exports.ɵgf = ProductsSearchEffects;
-    exports.ɵgg = ProductEffects;
-    exports.ɵgh = reducer$h;
-    exports.ɵgi = entityScopedLoaderReducer;
-    exports.ɵgj = scopedLoaderReducer;
-    exports.ɵgk = reducer$j;
-    exports.ɵgl = reducer$i;
+    exports.ɵga = effects$9;
+    exports.ɵgb = ProductReferencesEffects;
+    exports.ɵgc = ProductReviewsEffects;
+    exports.ɵgd = ProductsSearchEffects;
+    exports.ɵge = ProductEffects;
+    exports.ɵgf = reducer$h;
+    exports.ɵgg = entityScopedLoaderReducer;
+    exports.ɵgh = scopedLoaderReducer;
+    exports.ɵgi = reducer$j;
+    exports.ɵgj = reducer$i;
+    exports.ɵgk = PageMetaResolver;
+    exports.ɵgl = CouponSearchPageResolver;
     exports.ɵgm = PageMetaResolver;
-    exports.ɵgn = CouponSearchPageResolver;
-    exports.ɵgo = PageMetaResolver;
-    exports.ɵgp = addExternalRoutesFactory;
-    exports.ɵgq = getReducers$6;
-    exports.ɵgr = reducer$c;
-    exports.ɵgs = reducerToken$6;
-    exports.ɵgt = reducerProvider$6;
-    exports.ɵgu = CustomSerializer;
-    exports.ɵgv = effects$6;
-    exports.ɵgw = RouterEffects;
-    exports.ɵgx = siteContextStoreConfigFactory;
-    exports.ɵgy = SiteContextStoreModule;
-    exports.ɵgz = getReducers$1;
+    exports.ɵgn = addExternalRoutesFactory;
+    exports.ɵgo = getReducers$6;
+    exports.ɵgp = reducer$c;
+    exports.ɵgq = reducerToken$6;
+    exports.ɵgr = reducerProvider$6;
+    exports.ɵgs = CustomSerializer;
+    exports.ɵgt = effects$6;
+    exports.ɵgu = RouterEffects;
+    exports.ɵgv = siteContextStoreConfigFactory;
+    exports.ɵgw = SiteContextStoreModule;
+    exports.ɵgx = getReducers$1;
+    exports.ɵgy = reducerToken$1;
+    exports.ɵgz = reducerProvider$1;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = reducerToken$1;
-    exports.ɵhb = reducerProvider$1;
-    exports.ɵhc = effects$2;
-    exports.ɵhd = LanguagesEffects;
-    exports.ɵhe = CurrenciesEffects;
-    exports.ɵhf = BaseSiteEffects;
-    exports.ɵhg = reducer$3;
-    exports.ɵhh = reducer$2;
-    exports.ɵhi = reducer$1;
-    exports.ɵhj = defaultSiteContextConfigFactory;
-    exports.ɵhk = initializeContext;
-    exports.ɵhl = contextServiceProviders;
-    exports.ɵhm = SiteContextRoutesHandler;
-    exports.ɵhn = SiteContextUrlSerializer;
-    exports.ɵho = siteContextParamsProviders;
-    exports.ɵhp = baseSiteConfigValidator;
-    exports.ɵhq = interceptors$4;
-    exports.ɵhr = CmsTicketInterceptor;
-    exports.ɵhs = StoreFinderStoreModule;
-    exports.ɵht = getReducers$b;
-    exports.ɵhu = reducerToken$b;
-    exports.ɵhv = reducerProvider$b;
-    exports.ɵhw = effects$a;
-    exports.ɵhx = FindStoresEffect;
-    exports.ɵhy = ViewAllStoresEffect;
-    exports.ɵhz = defaultStoreFinderConfig;
+    exports.ɵha = effects$2;
+    exports.ɵhb = LanguagesEffects;
+    exports.ɵhc = CurrenciesEffects;
+    exports.ɵhd = BaseSiteEffects;
+    exports.ɵhe = reducer$3;
+    exports.ɵhf = reducer$2;
+    exports.ɵhg = reducer$1;
+    exports.ɵhh = defaultSiteContextConfigFactory;
+    exports.ɵhi = initializeContext;
+    exports.ɵhj = contextServiceProviders;
+    exports.ɵhk = SiteContextRoutesHandler;
+    exports.ɵhl = SiteContextUrlSerializer;
+    exports.ɵhm = siteContextParamsProviders;
+    exports.ɵhn = baseSiteConfigValidator;
+    exports.ɵho = interceptors$4;
+    exports.ɵhp = CmsTicketInterceptor;
+    exports.ɵhq = StoreFinderStoreModule;
+    exports.ɵhr = getReducers$b;
+    exports.ɵhs = reducerToken$b;
+    exports.ɵht = reducerProvider$b;
+    exports.ɵhu = effects$a;
+    exports.ɵhv = FindStoresEffect;
+    exports.ɵhw = ViewAllStoresEffect;
+    exports.ɵhx = defaultStoreFinderConfig;
+    exports.ɵhy = UserStoreModule;
+    exports.ɵhz = getReducers$c;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = UserStoreModule;
-    exports.ɵib = getReducers$c;
-    exports.ɵic = reducerToken$c;
-    exports.ɵid = reducerProvider$c;
-    exports.ɵie = clearUserState;
-    exports.ɵif = metaReducers$7;
-    exports.ɵig = effects$b;
-    exports.ɵih = BillingCountriesEffect;
-    exports.ɵii = ClearMiscsDataEffect;
-    exports.ɵij = ConsignmentTrackingEffects;
-    exports.ɵik = DeliveryCountriesEffects;
-    exports.ɵil = NotificationPreferenceEffects;
-    exports.ɵim = OrderDetailsEffect;
-    exports.ɵin = OrderReturnRequestEffect;
-    exports.ɵio = UserPaymentMethodsEffects;
-    exports.ɵip = RegionsEffects;
-    exports.ɵiq = ResetPasswordEffects;
-    exports.ɵir = TitlesEffects;
-    exports.ɵis = UserAddressesEffects;
-    exports.ɵit = UserConsentsEffect;
-    exports.ɵiu = UserDetailsEffects;
-    exports.ɵiv = UserOrdersEffect;
-    exports.ɵiw = UserRegisterEffects;
-    exports.ɵix = CustomerCouponEffects;
-    exports.ɵiy = ProductInterestsEffect;
-    exports.ɵiz = ForgotPasswordEffects;
+    exports.ɵia = reducerToken$c;
+    exports.ɵib = reducerProvider$c;
+    exports.ɵic = clearUserState;
+    exports.ɵid = metaReducers$7;
+    exports.ɵie = effects$b;
+    exports.ɵif = BillingCountriesEffect;
+    exports.ɵig = ClearMiscsDataEffect;
+    exports.ɵih = ConsignmentTrackingEffects;
+    exports.ɵii = DeliveryCountriesEffects;
+    exports.ɵij = NotificationPreferenceEffects;
+    exports.ɵik = OrderDetailsEffect;
+    exports.ɵil = OrderReturnRequestEffect;
+    exports.ɵim = UserPaymentMethodsEffects;
+    exports.ɵin = RegionsEffects;
+    exports.ɵio = ResetPasswordEffects;
+    exports.ɵip = TitlesEffects;
+    exports.ɵiq = UserAddressesEffects;
+    exports.ɵir = UserConsentsEffect;
+    exports.ɵis = UserDetailsEffects;
+    exports.ɵit = UserOrdersEffect;
+    exports.ɵiu = UserRegisterEffects;
+    exports.ɵiv = CustomerCouponEffects;
+    exports.ɵiw = ProductInterestsEffect;
+    exports.ɵix = ForgotPasswordEffects;
+    exports.ɵiy = UpdateEmailEffects;
+    exports.ɵiz = UpdatePasswordEffects;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = UpdateEmailEffects;
-    exports.ɵjb = UpdatePasswordEffects;
-    exports.ɵjc = UserNotificationPreferenceConnector;
-    exports.ɵjd = reducer$v;
-    exports.ɵje = reducer$t;
-    exports.ɵjf = reducer$k;
-    exports.ɵjg = reducer$u;
-    exports.ɵjh = reducer$p;
-    exports.ɵji = reducer$w;
-    exports.ɵjj = reducer$o;
-    exports.ɵjk = reducer$z;
-    exports.ɵjl = reducer$m;
-    exports.ɵjm = reducer$s;
-    exports.ɵjn = reducer$q;
-    exports.ɵjo = reducer$r;
-    exports.ɵjp = reducer$l;
-    exports.ɵjq = reducer$x;
-    exports.ɵjr = reducer$n;
-    exports.ɵjs = reducer$y;
+    exports.ɵja = UserNotificationPreferenceConnector;
+    exports.ɵjb = reducer$v;
+    exports.ɵjc = reducer$t;
+    exports.ɵjd = reducer$k;
+    exports.ɵje = reducer$u;
+    exports.ɵjf = reducer$p;
+    exports.ɵjg = reducer$w;
+    exports.ɵjh = reducer$o;
+    exports.ɵji = reducer$z;
+    exports.ɵjj = reducer$m;
+    exports.ɵjk = reducer$s;
+    exports.ɵjl = reducer$q;
+    exports.ɵjm = reducer$r;
+    exports.ɵjn = reducer$l;
+    exports.ɵjo = reducer$x;
+    exports.ɵjp = reducer$n;
+    exports.ɵjq = reducer$y;
     exports.ɵk = getStorageSyncReducer;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$2;

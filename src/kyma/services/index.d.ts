@@ -1,1 +1,1 @@
-export declare const KymaServices: any[];
+export * from './open-id-token/open-id-token.service';
