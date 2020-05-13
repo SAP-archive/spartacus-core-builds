@@ -18500,7 +18500,8 @@ let PageMetaService = class PageMetaService {
             .map((key) => metaResolver[this.resolverMethods[key]]().pipe(map((data) => ({
             [key]: data,
         }))));
-        return combineLatest(resolveMethods).pipe(map((data) => Object.assign({}, ...data)));
+        return combineLatest(resolveMethods).pipe(debounceTime(0), // avoid partial data emissions when all methods resolve at the same time
+        map((data) => Object.assign({}, ...data)));
     }
     /**
      * Return the resolver with the best match, based on a score

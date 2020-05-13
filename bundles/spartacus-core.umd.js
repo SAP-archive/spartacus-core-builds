@@ -21029,7 +21029,8 @@
                         _a);
                 }));
             });
-            return rxjs.combineLatest(resolveMethods).pipe(operators.map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
+            return rxjs.combineLatest(resolveMethods).pipe(operators.debounceTime(0), // avoid partial data emissions when all methods resolve at the same time
+            operators.map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
         };
         /**
          * Return the resolver with the best match, based on a score

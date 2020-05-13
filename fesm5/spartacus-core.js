@@ -20837,7 +20837,8 @@ var PageMetaService = /** @class */ (function () {
                     _a);
             }));
         });
-        return combineLatest(resolveMethods).pipe(map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
+        return combineLatest(resolveMethods).pipe(debounceTime(0), // avoid partial data emissions when all methods resolve at the same time
+        map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
     };
     /**
      * Return the resolver with the best match, based on a score
