@@ -7392,7 +7392,7 @@
     var defaultOccConfig = {
         backend: {
             occ: {
-                prefix: '/occ/v2/',
+                prefix: '/rest/v2/',
             },
             media: {},
         },
