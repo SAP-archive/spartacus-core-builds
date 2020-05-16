@@ -8789,6 +8789,130 @@
         },
     ];
 
+    // PRIVATE API
+    /**
+     * Allows for dynamic adding and removing source observables
+     * and exposes them as one merged observable at a property `output$`.
+     *
+     * Thanks to the `share()` operator used inside, it subscribes to source observables
+     * only when someone subscribes to it. And it unsubscribes from source observables
+     * when the counter of consumers drops to 0.
+     *
+     * **To avoid memory leaks**, all manually added sources should be manually removed
+     * when not plan to emit values anymore. In particular closed event sources won't be
+     * automatically removed.
+     */
+    var MergingSubject = /** @class */ (function () {
+        function MergingSubject() {
+            var _this = this;
+            /**
+             * List of already added sources (but not removed yet)
+             */
+            this.sources = [];
+            /**
+             * For each source: it stores a subscription responsible for
+             * passing all values from source to the consumer
+             */
+            this.subscriptionsToSources = new Map();
+            /**
+             * Observable with all sources merged.
+             *
+             * Only after subscribing to it, under the hood it subscribes to the source observables.
+             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
+             * But if later on something subscribes to it again, it subscribes to the source observables again.
+             *
+             * It multicasts the emissions for each subscriber.
+             */
+            this.output$ = new rxjs.Observable(function (consumer) {
+                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
+                // that is piped right after this observable.
+                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
+                // from this observable (by the nature `refCount`-nature of the `share()` operator).
+                _this.consumer = consumer;
+                _this.bindAllSourcesToConsumer(consumer);
+                return function () {
+                    _this.consumer = null;
+                    _this.unbindAllSourcesFromConsumer();
+                };
+            }).pipe(operators.share());
+            /**
+             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
+             * For more, see docs of the `output$` observable;
+             */
+            this.consumer = null;
+        }
+        /**
+         * Registers the given source to pass its values to the `output$` observable.
+         *
+         * It does nothing, when the source has been already added (but not removed yet).
+         */
+        MergingSubject.prototype.add = function (source) {
+            if (this.has(source)) {
+                return;
+            }
+            if (this.consumer) {
+                this.bindSourceToConsumer(source, this.consumer);
+            }
+            this.sources.push(source);
+        };
+        /**
+         * Starts passing all values from already added sources to consumer
+         */
+        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
+            var _this = this;
+            this.sources.forEach(function (source) {
+                return _this.bindSourceToConsumer(source, consumer);
+            });
+        };
+        /**
+         * Stops passing all values from already added sources to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
+            var _this = this;
+            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
+        };
+        /**
+         * Starts passing all values from a single source to consumer
+         */
+        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
+            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
+            this.subscriptionsToSources.set(source, subscriptionToSource);
+        };
+        /**
+         * Stops passing all values from a single source to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
+            var subscriptionToSource = this.subscriptionsToSources.get(source);
+            if (subscriptionToSource !== undefined) {
+                subscriptionToSource.unsubscribe();
+                this.subscriptionsToSources.delete(source);
+            }
+        };
+        /**
+         * Unregisters the given source so it stops passing its values to `output$` observable.
+         *
+         * Should be used when a source is no longer maintained **to avoid memory leaks**.
+         */
+        MergingSubject.prototype.remove = function (source) {
+            // clear binding from source to consumer (if any consumer exists at the moment)
+            this.unbindSourceFromConsumer(source);
+            // remove source from array
+            var i;
+            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
+                this.sources.splice(i, 1);
+            }
+        };
+        /**
+         * Returns whether the given source has been already addded
+         */
+        MergingSubject.prototype.has = function (source) {
+            return this.sources.includes(source);
+        };
+        return MergingSubject;
+    }());
+
     /**
      * A service to register and observe event sources. Events are driven by event types, which are class signatures
      * for the given event.
@@ -8817,43 +8941,30 @@
          * @returns a teardown function which unregisters the given event source
          */
         EventService.prototype.register = function (eventType, source$) {
-            var _this = this;
-            var event = this.getEventMeta(eventType);
-            var sources = event.sources$.value;
-            if (sources.includes(source$)) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (eventMeta.mergingSubject.has(source$)) {
                 if (core.isDevMode()) {
                     console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
                 }
             }
             else {
-                event.sources$.next(__spread(sources, [source$]));
+                eventMeta.mergingSubject.add(source$);
             }
-            return function () { return _this.unregister(eventType, source$); };
-        };
-        /**
-         * Unregisters an event source for the given event type
-         *
-         * @param eventType the event type
-         * @param source$ an observable that represents the source
-         */
-        EventService.prototype.unregister = function (eventType, source$) {
-            var event = this.getEventMeta(eventType);
-            var newSources = event.sources$.value.filter(function (s$) { return s$ !== source$; });
-            event.sources$.next(newSources);
+            return function () { return eventMeta.mergingSubject.remove(source$); };
         };
         /**
          * Returns a stream of events for the given event type
          * @param eventTypes event type
          */
         EventService.prototype.get = function (eventType) {
-            return this.getEventMeta(eventType).output$;
+            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
+            if (core.isDevMode()) {
+                output$ = this.getValidatedEventStream(output$, eventType);
+            }
+            return output$;
         };
         /**
-         * Dispatches a single event.
-         *
-         * However, it's recommended to use method `register` instead, whenever the event can come from some stream.
-         *  It allows for lazy computations in the event source stream -
-         *  if no one subscribes to the event, the logic of the event source stream won't be evaluated.
+         * Dispatches an instance of an individual event.
          */
         EventService.prototype.dispatch = function (event) {
             var eventType = event.constructor;
@@ -8889,16 +9000,9 @@
          * Creates the event meta object for the given event type
          */
         EventService.prototype.createEventMeta = function (eventType) {
-            var sources$ = new rxjs.BehaviorSubject([]);
-            var output$ = sources$.pipe(operators.switchMap(function (sources) { return rxjs.merge.apply(void 0, __spread(sources)); }), operators.share() // share the result observable to avoid merging sources for each subscriber
-            );
-            if (core.isDevMode()) {
-                output$ = this.getValidatedEventStream(output$, eventType);
-            }
             this.eventsMeta.set(eventType, {
                 inputSubject$: null,
-                sources$: sources$,
-                output$: output$,
+                mergingSubject: new MergingSubject(),
             });
         };
         /**

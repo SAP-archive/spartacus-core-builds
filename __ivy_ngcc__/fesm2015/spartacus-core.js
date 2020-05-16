@@ -2,7 +2,7 @@ import { __decorate, __param, __rest, __awaiter } from 'tslib';
 import { InjectionToken, Optional, NgModule, isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, PLATFORM_ID, Injector, INJECTOR, APP_INITIALIZER, Pipe, inject, NgZone, TemplateRef, ViewContainerRef, Input, Directive, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule, ActionsSubject } from '@ngrx/store';
-import { of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Subject, BehaviorSubject, merge, Subscription, NEVER, timer, from, queueScheduler, using, Observable, defer } from 'rxjs';
+import { of, fromEvent, throwError, EMPTY, iif, combineLatest, forkJoin, Observable, Subject, Subscription, BehaviorSubject, NEVER, timer, from, queueScheduler, using, merge, defer } from 'rxjs';
 import { map, take, filter, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, share, concatMap, mapTo, switchMapTo, bufferCount, delay, debounce, groupBy, observeOn, distinctUntilKeyChanged, takeWhile, auditTime } from 'rxjs/operators';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
@@ -7671,6 +7671,124 @@ const interceptors$1 = [
     },
 ];
 
+// PRIVATE API
+/**
+ * Allows for dynamic adding and removing source observables
+ * and exposes them as one merged observable at a property `output$`.
+ *
+ * Thanks to the `share()` operator used inside, it subscribes to source observables
+ * only when someone subscribes to it. And it unsubscribes from source observables
+ * when the counter of consumers drops to 0.
+ *
+ * **To avoid memory leaks**, all manually added sources should be manually removed
+ * when not plan to emit values anymore. In particular closed event sources won't be
+ * automatically removed.
+ */
+class MergingSubject {
+    constructor() {
+        /**
+         * List of already added sources (but not removed yet)
+         */
+        this.sources = [];
+        /**
+         * For each source: it stores a subscription responsible for
+         * passing all values from source to the consumer
+         */
+        this.subscriptionsToSources = new Map();
+        /**
+         * Observable with all sources merged.
+         *
+         * Only after subscribing to it, under the hood it subscribes to the source observables.
+         * When the number of subscribers drops to 0, it unsubscribes from all source observables.
+         * But if later on something subscribes to it again, it subscribes to the source observables again.
+         *
+         * It multicasts the emissions for each subscriber.
+         */
+        this.output$ = new Observable((consumer) => {
+            // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
+            // that is piped right after this observable.
+            // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
+            // from this observable (by the nature `refCount`-nature of the `share()` operator).
+            this.consumer = consumer;
+            this.bindAllSourcesToConsumer(consumer);
+            return () => {
+                this.consumer = null;
+                this.unbindAllSourcesFromConsumer();
+            };
+        }).pipe(share());
+        /**
+         * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
+         * For more, see docs of the `output$` observable;
+         */
+        this.consumer = null;
+    }
+    /**
+     * Registers the given source to pass its values to the `output$` observable.
+     *
+     * It does nothing, when the source has been already added (but not removed yet).
+     */
+    add(source) {
+        if (this.has(source)) {
+            return;
+        }
+        if (this.consumer) {
+            this.bindSourceToConsumer(source, this.consumer);
+        }
+        this.sources.push(source);
+    }
+    /**
+     * Starts passing all values from already added sources to consumer
+     */
+    bindAllSourcesToConsumer(consumer) {
+        this.sources.forEach((source) => this.bindSourceToConsumer(source, consumer));
+    }
+    /**
+     * Stops passing all values from already added sources to consumer
+     * (if any consumer is active at the moment)
+     */
+    unbindAllSourcesFromConsumer() {
+        this.sources.forEach((source) => this.unbindSourceFromConsumer(source));
+    }
+    /**
+     * Starts passing all values from a single source to consumer
+     */
+    bindSourceToConsumer(source, consumer) {
+        const subscriptionToSource = source.subscribe((val) => consumer.next(val)); // passes all emissions from source to consumer
+        this.subscriptionsToSources.set(source, subscriptionToSource);
+    }
+    /**
+     * Stops passing all values from a single source to consumer
+     * (if any consumer is active at the moment)
+     */
+    unbindSourceFromConsumer(source) {
+        const subscriptionToSource = this.subscriptionsToSources.get(source);
+        if (subscriptionToSource !== undefined) {
+            subscriptionToSource.unsubscribe();
+            this.subscriptionsToSources.delete(source);
+        }
+    }
+    /**
+     * Unregisters the given source so it stops passing its values to `output$` observable.
+     *
+     * Should be used when a source is no longer maintained **to avoid memory leaks**.
+     */
+    remove(source) {
+        // clear binding from source to consumer (if any consumer exists at the moment)
+        this.unbindSourceFromConsumer(source);
+        // remove source from array
+        let i;
+        if ((i = this.sources.findIndex((s) => s === source)) !== -1) {
+            this.sources.splice(i, 1);
+        }
+    }
+    /**
+     * Returns whether the given source has been already addded
+     */
+    has(source) {
+        return this.sources.includes(source);
+    }
+}
+
 /**
  * A service to register and observe event sources. Events are driven by event types, which are class signatures
  * for the given event.
@@ -7699,42 +7817,30 @@ let EventService = class EventService {
      * @returns a teardown function which unregisters the given event source
      */
     register(eventType, source$) {
-        const event = this.getEventMeta(eventType);
-        const sources = event.sources$.value;
-        if (sources.includes(source$)) {
+        const eventMeta = this.getEventMeta(eventType);
+        if (eventMeta.mergingSubject.has(source$)) {
             if (isDevMode()) {
                 console.warn(`EventService: the event source`, source$, `has been already registered for the type`, eventType);
             }
         }
         else {
-            event.sources$.next([...sources, source$]);
+            eventMeta.mergingSubject.add(source$);
         }
-        return () => this.unregister(eventType, source$);
-    }
-    /**
-     * Unregisters an event source for the given event type
-     *
-     * @param eventType the event type
-     * @param source$ an observable that represents the source
-     */
-    unregister(eventType, source$) {
-        const event = this.getEventMeta(eventType);
-        const newSources = event.sources$.value.filter((s$) => s$ !== source$);
-        event.sources$.next(newSources);
+        return () => eventMeta.mergingSubject.remove(source$);
     }
     /**
      * Returns a stream of events for the given event type
      * @param eventTypes event type
      */
     get(eventType) {
-        return this.getEventMeta(eventType).output$;
+        let output$ = this.getEventMeta(eventType).mergingSubject.output$;
+        if (isDevMode()) {
+            output$ = this.getValidatedEventStream(output$, eventType);
+        }
+        return output$;
     }
     /**
-     * Dispatches a single event.
-     *
-     * However, it's recommended to use method `register` instead, whenever the event can come from some stream.
-     *  It allows for lazy computations in the event source stream -
-     *  if no one subscribes to the event, the logic of the event source stream won't be evaluated.
+     * Dispatches an instance of an individual event.
      */
     dispatch(event) {
         const eventType = event.constructor;
@@ -7770,16 +7876,9 @@ let EventService = class EventService {
      * Creates the event meta object for the given event type
      */
     createEventMeta(eventType) {
-        const sources$ = new BehaviorSubject([]);
-        let output$ = sources$.pipe(switchMap((sources) => merge(...sources)), share() // share the result observable to avoid merging sources for each subscriber
-        );
-        if (isDevMode()) {
-            output$ = this.getValidatedEventStream(output$, eventType);
-        }
         this.eventsMeta.set(eventType, {
             inputSubject$: null,
-            sources$,
-            output$,
+            mergingSubject: new MergingSubject(),
         });
     }
     /**

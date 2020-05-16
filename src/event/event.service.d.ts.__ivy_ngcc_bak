@@ -27,23 +27,12 @@ export declare class EventService {
      */
     register<T>(eventType: Type<T>, source$: Observable<T>): () => void;
     /**
-     * Unregisters an event source for the given event type
-     *
-     * @param eventType the event type
-     * @param source$ an observable that represents the source
-     */
-    private unregister;
-    /**
      * Returns a stream of events for the given event type
      * @param eventTypes event type
      */
     get<T>(eventType: Type<T>): Observable<T>;
     /**
-     * Dispatches a single event.
-     *
-     * However, it's recommended to use method `register` instead, whenever the event can come from some stream.
-     *  It allows for lazy computations in the event source stream -
-     *  if no one subscribes to the event, the logic of the event source stream won't be evaluated.
+     * Dispatches an instance of an individual event.
      */
     dispatch(event: Object): void;
     /**
