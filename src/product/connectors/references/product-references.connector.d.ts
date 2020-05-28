@@ -1,12 +1,8 @@
 import { Observable } from 'rxjs';
 import { ProductReference } from '../../../model/product.model';
 import { ProductReferencesAdapter } from './product-references.adapter';
-import * as ɵngcc0 from '@angular/core';
 export declare class ProductReferencesConnector {
     protected adapter: ProductReferencesAdapter;
     constructor(adapter: ProductReferencesAdapter);
     get(productCode: string, referenceType?: string, pageSize?: number): Observable<ProductReference[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductReferencesConnector, never>;
 }
-
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHJvZHVjdC1yZWZlcmVuY2VzLmNvbm5lY3Rvci5kLnRzIiwic291cmNlcyI6WyJwcm9kdWN0LXJlZmVyZW5jZXMuY29ubmVjdG9yLmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7QUFHQTs7Ozs7QUFJQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE9ic2VydmFibGUgfSBmcm9tICdyeGpzJztcbmltcG9ydCB7IFByb2R1Y3RSZWZlcmVuY2UgfSBmcm9tICcuLi8uLi8uLi9tb2RlbC9wcm9kdWN0Lm1vZGVsJztcbmltcG9ydCB7IFByb2R1Y3RSZWZlcmVuY2VzQWRhcHRlciB9IGZyb20gJy4vcHJvZHVjdC1yZWZlcmVuY2VzLmFkYXB0ZXInO1xuZXhwb3J0IGRlY2xhcmUgY2xhc3MgUHJvZHVjdFJlZmVyZW5jZXNDb25uZWN0b3Ige1xuICAgIHByb3RlY3RlZCBhZGFwdGVyOiBQcm9kdWN0UmVmZXJlbmNlc0FkYXB0ZXI7XG4gICAgY29uc3RydWN0b3IoYWRhcHRlcjogUHJvZHVjdFJlZmVyZW5jZXNBZGFwdGVyKTtcbiAgICBnZXQocHJvZHVjdENvZGU6IHN0cmluZywgcmVmZXJlbmNlVHlwZT86IHN0cmluZywgcGFnZVNpemU/OiBudW1iZXIpOiBPYnNlcnZhYmxlPFByb2R1Y3RSZWZlcmVuY2VbXT47XG59XG4iXX0=

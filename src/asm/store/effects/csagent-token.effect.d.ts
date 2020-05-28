@@ -2,14 +2,9 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { UserAuthenticationTokenService } from '../../../auth/services/user-authentication/user-authentication-token.service';
 import { AsmActions } from '../actions/index';
-import * as ɵngcc0 from '@angular/core';
 export declare class CustomerSupportAgentTokenEffects {
     private actions$;
     private userTokenService;
     loadCustomerSupportAgentToken$: Observable<AsmActions.CustomerSupportAgentTokenAction>;
     constructor(actions$: Actions, userTokenService: UserAuthenticationTokenService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerSupportAgentTokenEffects, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<CustomerSupportAgentTokenEffects>;
 }
-
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3NhZ2VudC10b2tlbi5lZmZlY3QuZC50cyIsInNvdXJjZXMiOlsiY3NhZ2VudC10b2tlbi5lZmZlY3QuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7QUFJQTs7Ozs7OztBQUtBIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQWN0aW9ucyB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnO1xuaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnO1xuaW1wb3J0IHsgVXNlckF1dGhlbnRpY2F0aW9uVG9rZW5TZXJ2aWNlIH0gZnJvbSAnLi4vLi4vLi4vYXV0aC9zZXJ2aWNlcy91c2VyLWF1dGhlbnRpY2F0aW9uL3VzZXItYXV0aGVudGljYXRpb24tdG9rZW4uc2VydmljZSc7XG5pbXBvcnQgeyBBc21BY3Rpb25zIH0gZnJvbSAnLi4vYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBDdXN0b21lclN1cHBvcnRBZ2VudFRva2VuRWZmZWN0cyB7XG4gICAgcHJpdmF0ZSBhY3Rpb25zJDtcbiAgICBwcml2YXRlIHVzZXJUb2tlblNlcnZpY2U7XG4gICAgbG9hZEN1c3RvbWVyU3VwcG9ydEFnZW50VG9rZW4kOiBPYnNlcnZhYmxlPEFzbUFjdGlvbnMuQ3VzdG9tZXJTdXBwb3J0QWdlbnRUb2tlbkFjdGlvbj47XG4gICAgY29uc3RydWN0b3IoYWN0aW9ucyQ6IEFjdGlvbnMsIHVzZXJUb2tlblNlcnZpY2U6IFVzZXJBdXRoZW50aWNhdGlvblRva2VuU2VydmljZSk7XG59XG4iXX0=
