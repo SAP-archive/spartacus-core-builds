@@ -19029,6 +19029,12 @@ let TranslatePipe = class TranslatePipe {
         this.cd = cd;
     }
     transform(input, options = {}) {
+        if (!input) {
+            if (isDevMode()) {
+                console.error(`The given input for the cxTranslate pipe (${input}) is invalid and cannot be translated`);
+            }
+            return;
+        }
         if (input.raw) {
             return input.raw;
         }

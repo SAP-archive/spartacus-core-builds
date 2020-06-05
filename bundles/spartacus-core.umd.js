@@ -21607,6 +21607,12 @@
         }
         TranslatePipe.prototype.transform = function (input, options) {
             if (options === void 0) { options = {}; }
+            if (!input) {
+                if (core.isDevMode()) {
+                    console.error("The given input for the cxTranslate pipe (" + input + ") is invalid and cannot be translated");
+                }
+                return;
+            }
             if (input.raw) {
                 return input.raw;
             }

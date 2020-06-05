@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, OnDestroy, PipeTransform } from '@angular/core';
-import { TranslationService } from './translation.service';
 import { Translatable, TranslatableParams } from './translatable';
+import { TranslationService } from './translation.service';
 export declare class TranslatePipe implements PipeTransform, OnDestroy {
     protected service: TranslationService;
     protected cd: ChangeDetectorRef;
