@@ -4,8 +4,8 @@
     (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.store, global.rxjs, global.rxjs.operators, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
 }(this, (function (exports, core, common, store, rxjs, operators, http, router, effects$c, platformBrowser, routerStore, i18next, i18nextXhrBackend) { 'use strict';
 
-    i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
-    i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
+    i18next = i18next && Object.prototype.hasOwnProperty.call(i18next, 'default') ? i18next['default'] : i18next;
+    i18nextXhrBackend = i18nextXhrBackend && Object.prototype.hasOwnProperty.call(i18nextXhrBackend, 'default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -979,8 +979,6 @@
         return Object.keys(keys).filter(function (key) { return keys[key] === type; });
     }
 
-
-
     var utilsGroup = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getStateSlice: getStateSlice,
@@ -1183,8 +1181,6 @@
         return RevokeUserTokenFail;
     }());
 
-
-
     var authGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         LOAD_CLIENT_TOKEN: LOAD_CLIENT_TOKEN,
@@ -1228,8 +1224,6 @@
     var ɵ1 = function (state) { return state.userToken; };
     var getUserTokenState = store.createSelector(getAuthState, ɵ1);
     var getUserToken = store.createSelector(getUserTokenState, getUserTokenSelector);
-
-
 
     var authGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -1362,7 +1356,7 @@
         AuthService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        AuthService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AuthService_Factory() { return new AuthService(core["ɵɵinject"](store.Store)); }, token: AuthService, providedIn: "root" });
+        AuthService.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(core.ɵɵinject(store.Store)); }, token: AuthService, providedIn: "root" });
         AuthService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -1392,7 +1386,7 @@
         ClientErrorHandlingService.ctorParameters = function () { return [
             { type: AuthService }
         ]; };
-        ClientErrorHandlingService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(core["ɵɵinject"](AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
+        ClientErrorHandlingService.ɵprov = core.ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(core.ɵɵinject(AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
         ClientErrorHandlingService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -1449,7 +1443,7 @@
         WindowRef.ctorParameters = function () { return [
             { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
         ]; };
-        WindowRef.ɵprov = core["ɵɵdefineInjectable"]({ factory: function WindowRef_Factory() { return new WindowRef(core["ɵɵinject"](common.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+        WindowRef.ɵprov = core.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(core.ɵɵinject(common.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
         WindowRef = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -1477,7 +1471,7 @@
         UrlParsingService.ctorParameters = function () { return [
             { type: router.Router }
         ]; };
-        UrlParsingService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UrlParsingService_Factory() { return new UrlParsingService(core["ɵɵinject"](router.Router)); }, token: UrlParsingService, providedIn: "root" });
+        UrlParsingService.ɵprov = core.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(core.ɵɵinject(router.Router)); }, token: UrlParsingService, providedIn: "root" });
         UrlParsingService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], UrlParsingService);
@@ -1496,7 +1490,7 @@
     var RoutingConfig = /** @class */ (function () {
         function RoutingConfig() {
         }
-        RoutingConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function RoutingConfig_Factory() { return core["ɵɵinject"](Config); }, token: RoutingConfig, providedIn: "root" });
+        RoutingConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return core.ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
         RoutingConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -1535,7 +1529,7 @@
         RoutingConfigService.ctorParameters = function () { return [
             { type: RoutingConfig }
         ]; };
-        RoutingConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(core["ɵɵinject"](RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
+        RoutingConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(core.ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
         RoutingConfigService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], RoutingConfigService);
@@ -1678,7 +1672,7 @@
             { type: RoutingConfigService },
             { type: UrlParsingService }
         ]; };
-        SemanticPathService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SemanticPathService_Factory() { return new SemanticPathService(core["ɵɵinject"](RoutingConfigService), core["ɵɵinject"](UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
+        SemanticPathService.ɵprov = core.ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
         SemanticPathService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], SemanticPathService);
@@ -1716,8 +1710,6 @@
         return RouteForwardAction;
     }());
 
-
-
     var routingGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         ROUTER_GO: ROUTER_GO,
@@ -1745,8 +1737,6 @@
     var getNextPageContext = store.createSelector(getRouterState, ɵ2);
     var ɵ3 = function (context) { return !!context; };
     var isNavigating = store.createSelector(getNextPageContext, ɵ3);
-
-
 
     var routingGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -1844,7 +1834,7 @@
             { type: WindowRef },
             { type: SemanticPathService }
         ]; };
-        RoutingService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function RoutingService_Factory() { return new RoutingService(core["ɵɵinject"](store.Store), core["ɵɵinject"](WindowRef), core["ɵɵinject"](SemanticPathService)); }, token: RoutingService, providedIn: "root" });
+        RoutingService.ɵprov = core.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(core.ɵɵinject(store.Store), core.ɵɵinject(WindowRef), core.ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
         RoutingService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -1897,7 +1887,7 @@
             { type: AuthService },
             { type: RoutingService }
         ]; };
-        UserErrorHandlingService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(core["ɵɵinject"](AuthService), core["ɵɵinject"](RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
+        UserErrorHandlingService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(core.ɵɵinject(AuthService), core.ɵɵinject(RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
         UserErrorHandlingService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -1975,7 +1965,7 @@
             { type: ClientErrorHandlingService },
             { type: AuthService }
         ]; };
-        AuthErrorInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AuthErrorInterceptor_Factory() { return new AuthErrorInterceptor(core["ɵɵinject"](UserErrorHandlingService), core["ɵɵinject"](ClientErrorHandlingService), core["ɵɵinject"](AuthService)); }, token: AuthErrorInterceptor, providedIn: "root" });
+        AuthErrorInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthErrorInterceptor_Factory() { return new AuthErrorInterceptor(core.ɵɵinject(UserErrorHandlingService), core.ɵɵinject(ClientErrorHandlingService), core.ɵɵinject(AuthService)); }, token: AuthErrorInterceptor, providedIn: "root" });
         AuthErrorInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], AuthErrorInterceptor);
@@ -2029,7 +2019,7 @@
     var SiteContextConfig = /** @class */ (function () {
         function SiteContextConfig() {
         }
-        SiteContextConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SiteContextConfig_Factory() { return core["ɵɵinject"](Config); }, token: SiteContextConfig, providedIn: "root" });
+        SiteContextConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function SiteContextConfig_Factory() { return core.ɵɵinject(Config); }, token: SiteContextConfig, providedIn: "root" });
         SiteContextConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -2162,8 +2152,6 @@
         return LanguageChange;
     }());
 
-
-
     var siteContextGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         LOAD_BASE_SITE: LOAD_BASE_SITE,
@@ -2238,8 +2226,6 @@
             : null;
     };
     var getAllLanguages = store.createSelector(getLanguagesEntities, ɵ3$2);
-
-
 
     var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -2345,7 +2331,7 @@
         function OccConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        OccConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccConfig_Factory() { return core["ɵɵinject"](Config); }, token: OccConfig, providedIn: "root" });
+        OccConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function OccConfig_Factory() { return core.ɵɵinject(Config); }, token: OccConfig, providedIn: "root" });
         OccConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -2472,7 +2458,7 @@
             { type: OccConfig },
             { type: BaseSiteService, decorators: [{ type: core.Optional }] }
         ]; };
-        OccEndpointsService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(core["ɵɵinject"](OccConfig), core["ɵɵinject"](BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
+        OccEndpointsService.ɵprov = core.ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(core.ɵɵinject(OccConfig), core.ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
         OccEndpointsService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -2511,7 +2497,7 @@
             { type: AuthService },
             { type: OccEndpointsService }
         ]; };
-        ClientTokenInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(core["ɵɵinject"](AuthService), core["ɵɵinject"](OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
+        ClientTokenInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(core.ɵɵinject(AuthService), core.ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
         ClientTokenInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], ClientTokenInterceptor);
@@ -2545,7 +2531,7 @@
             { type: AuthService },
             { type: OccEndpointsService }
         ]; };
-        UserTokenInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserTokenInterceptor_Factory() { return new UserTokenInterceptor(core["ɵɵinject"](AuthService), core["ɵɵinject"](OccEndpointsService)); }, token: UserTokenInterceptor, providedIn: "root" });
+        UserTokenInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function UserTokenInterceptor_Factory() { return new UserTokenInterceptor(core.ɵɵinject(AuthService), core.ɵɵinject(OccEndpointsService)); }, token: UserTokenInterceptor, providedIn: "root" });
         UserTokenInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], UserTokenInterceptor);
@@ -2571,7 +2557,7 @@
             var isTokenRevocationHeaderPresent = InterceptorUtil.getInterceptorParam(TOKEN_REVOCATION_HEADER, request.headers);
             return Boolean(isTokenRevocationHeaderPresent);
         };
-        TokenRevocationInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(); }, token: TokenRevocationInterceptor, providedIn: "root" });
+        TokenRevocationInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(); }, token: TokenRevocationInterceptor, providedIn: "root" });
         TokenRevocationInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], TokenRevocationInterceptor);
@@ -2614,7 +2600,7 @@
     var StateConfig = /** @class */ (function () {
         function StateConfig() {
         }
-        StateConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StateConfig_Factory() { return core["ɵɵinject"](Config); }, token: StateConfig, providedIn: "root" });
+        StateConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function StateConfig_Factory() { return core.ɵɵinject(Config); }, token: StateConfig, providedIn: "root" });
         StateConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -2869,7 +2855,7 @@
         function AuthConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        AuthConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AuthConfig_Factory() { return core["ɵɵinject"](Config); }, token: AuthConfig, providedIn: "root" });
+        AuthConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return core.ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
         AuthConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -2901,7 +2887,7 @@
             { type: http.HttpClient },
             { type: OccEndpointsService }
         ]; };
-        ClientAuthenticationTokenService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(core["ɵɵinject"](AuthConfig), core["ɵɵinject"](http.HttpClient), core["ɵɵinject"](OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
+        ClientAuthenticationTokenService.ɵprov = core.ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(core.ɵɵinject(AuthConfig), core.ɵɵinject(http.HttpClient), core.ɵɵinject(OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
         ClientAuthenticationTokenService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -2989,7 +2975,7 @@
             { type: AuthConfig },
             { type: OccEndpointsService }
         ]; };
-        UserAuthenticationTokenService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(core["ɵɵinject"](http.HttpClient), core["ɵɵinject"](AuthConfig), core["ɵɵinject"](OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
+        UserAuthenticationTokenService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(core.ɵɵinject(http.HttpClient), core.ɵɵinject(AuthConfig), core.ɵɵinject(OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
         UserAuthenticationTokenService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -3217,7 +3203,7 @@
             { type: RoutingService },
             { type: router.Router }
         ]; };
-        AuthRedirectService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(core["ɵɵinject"](RoutingService), core["ɵɵinject"](router.Router)); }, token: AuthRedirectService, providedIn: "root" });
+        AuthRedirectService.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(core.ɵɵinject(RoutingService), core.ɵɵinject(router.Router)); }, token: AuthRedirectService, providedIn: "root" });
         AuthRedirectService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -3249,7 +3235,7 @@
             { type: AuthRedirectService },
             { type: router.Router }
         ]; };
-        AuthGuard.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AuthGuard_Factory() { return new AuthGuard(core["ɵɵinject"](RoutingService), core["ɵɵinject"](AuthService), core["ɵɵinject"](AuthRedirectService), core["ɵɵinject"](router.Router)); }, token: AuthGuard, providedIn: "root" });
+        AuthGuard.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(core.ɵɵinject(RoutingService), core.ɵɵinject(AuthService), core.ɵɵinject(AuthRedirectService), core.ɵɵinject(router.Router)); }, token: AuthGuard, providedIn: "root" });
         AuthGuard = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -3280,7 +3266,7 @@
             { type: AuthService },
             { type: AuthRedirectService }
         ]; };
-        NotAuthGuard.ɵprov = core["ɵɵdefineInjectable"]({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(core["ɵɵinject"](RoutingService), core["ɵɵinject"](AuthService), core["ɵɵinject"](AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
+        NotAuthGuard.ɵprov = core.ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(core.ɵɵinject(RoutingService), core.ɵɵinject(AuthService), core.ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
         NotAuthGuard = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -3457,8 +3443,6 @@
         return ToggleAnonymousConsentTemplatesUpdated;
     }());
 
-
-
     var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
         __proto__: null,
         LOAD_ANONYMOUS_CONSENT_TEMPLATES: LOAD_ANONYMOUS_CONSENT_TEMPLATES,
@@ -3513,8 +3497,6 @@
             return consents.find(function (consent) { return consent.templateCode === templateCode; });
         });
     };
-
-
 
     var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -3776,7 +3758,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        AnonymousConsentsService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AnonymousConsentsService_Factory() { return new AnonymousConsentsService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: AnonymousConsentsService, providedIn: "root" });
+        AnonymousConsentsService.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentsService_Factory() { return new AnonymousConsentsService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: AnonymousConsentsService, providedIn: "root" });
         AnonymousConsentsService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], AnonymousConsentsService);
@@ -3804,7 +3786,7 @@
         function AsmConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        AsmConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AsmConfig_Factory() { return core["ɵɵinject"](Config); }, token: AsmConfig, providedIn: "root" });
+        AsmConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function AsmConfig_Factory() { return core.ɵɵinject(Config); }, token: AsmConfig, providedIn: "root" });
         AsmConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -3895,7 +3877,7 @@
         ConverterService.ctorParameters = function () { return [
             { type: core.Injector }
         ]; };
-        ConverterService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConverterService_Factory() { return new ConverterService(core["ɵɵinject"](core.INJECTOR)); }, token: ConverterService, providedIn: "root" });
+        ConverterService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(core.ɵɵinject(core.INJECTOR)); }, token: ConverterService, providedIn: "root" });
         ConverterService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -4032,7 +4014,7 @@
         OccCartNormalizer.ctorParameters = function () { return [
             { type: ConverterService }
         ]; };
-        OccCartNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccCartNormalizer_Factory() { return new OccCartNormalizer(core["ɵɵinject"](ConverterService)); }, token: OccCartNormalizer, providedIn: "root" });
+        OccCartNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccCartNormalizer_Factory() { return new OccCartNormalizer(core.ɵɵinject(ConverterService)); }, token: OccCartNormalizer, providedIn: "root" });
         OccCartNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccCartNormalizer);
@@ -4607,7 +4589,7 @@
         OccOrderNormalizer.ctorParameters = function () { return [
             { type: ConverterService }
         ]; };
-        OccOrderNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(core["ɵɵinject"](ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
+        OccOrderNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(core.ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
         OccOrderNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccOrderNormalizer);
@@ -4812,7 +4794,7 @@
         function CmsConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        CmsConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsConfig_Factory() { return core["ɵɵinject"](Config); }, token: CmsConfig, providedIn: "root" });
+        CmsConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsConfig_Factory() { return core.ɵɵinject(Config); }, token: CmsConfig, providedIn: "root" });
         CmsConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -4946,7 +4928,7 @@
                 finally { if (e_4) throw e_4.error; }
             }
         };
-        OccCmsPageNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccCmsPageNormalizer_Factory() { return new OccCmsPageNormalizer(); }, token: OccCmsPageNormalizer, providedIn: "root" });
+        OccCmsPageNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccCmsPageNormalizer_Factory() { return new OccCmsPageNormalizer(); }, token: OccCmsPageNormalizer, providedIn: "root" });
         OccCmsPageNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccCmsPageNormalizer);
@@ -5070,7 +5052,7 @@
         ProductImageNormalizer.ctorParameters = function () { return [
             { type: OccConfig }
         ]; };
-        ProductImageNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductImageNormalizer_Factory() { return new ProductImageNormalizer(core["ɵɵinject"](OccConfig)); }, token: ProductImageNormalizer, providedIn: "root" });
+        ProductImageNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductImageNormalizer_Factory() { return new ProductImageNormalizer(core.ɵɵinject(OccConfig)); }, token: ProductImageNormalizer, providedIn: "root" });
         ProductImageNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], ProductImageNormalizer);
@@ -5194,7 +5176,7 @@
         OccProductSearchPageNormalizer.ctorParameters = function () { return [
             { type: ConverterService }
         ]; };
-        OccProductSearchPageNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccProductSearchPageNormalizer_Factory() { return new OccProductSearchPageNormalizer(core["ɵɵinject"](ConverterService)); }, token: OccProductSearchPageNormalizer, providedIn: "root" });
+        OccProductSearchPageNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccProductSearchPageNormalizer_Factory() { return new OccProductSearchPageNormalizer(core.ɵɵinject(ConverterService)); }, token: OccProductSearchPageNormalizer, providedIn: "root" });
         OccProductSearchPageNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccProductSearchPageNormalizer);
@@ -5219,7 +5201,7 @@
         OccProductReferencesListNormalizer.ctorParameters = function () { return [
             { type: ConverterService }
         ]; };
-        OccProductReferencesListNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccProductReferencesListNormalizer_Factory() { return new OccProductReferencesListNormalizer(core["ɵɵinject"](ConverterService)); }, token: OccProductReferencesListNormalizer, providedIn: "root" });
+        OccProductReferencesListNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccProductReferencesListNormalizer_Factory() { return new OccProductReferencesListNormalizer(core.ɵɵinject(ConverterService)); }, token: OccProductReferencesListNormalizer, providedIn: "root" });
         OccProductReferencesListNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccProductReferencesListNormalizer);
@@ -5246,7 +5228,7 @@
         ProductNameNormalizer.ctorParameters = function () { return [
             { type: OccConfig }
         ]; };
-        ProductNameNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductNameNormalizer_Factory() { return new ProductNameNormalizer(core["ɵɵinject"](OccConfig)); }, token: ProductNameNormalizer, providedIn: "root" });
+        ProductNameNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductNameNormalizer_Factory() { return new ProductNameNormalizer(core.ɵɵinject(OccConfig)); }, token: ProductNameNormalizer, providedIn: "root" });
         ProductNameNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], ProductNameNormalizer);
@@ -5588,7 +5570,7 @@
         OccFieldsService.ctorParameters = function () { return [
             { type: http.HttpClient }
         ]; };
-        OccFieldsService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccFieldsService_Factory() { return new OccFieldsService(core["ɵɵinject"](http.HttpClient)); }, token: OccFieldsService, providedIn: "root" });
+        OccFieldsService.ɵprov = core.ɵɵdefineInjectable({ factory: function OccFieldsService_Factory() { return new OccFieldsService(core.ɵɵinject(http.HttpClient)); }, token: OccFieldsService, providedIn: "root" });
         OccFieldsService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -5637,7 +5619,7 @@
             { type: http.HttpClient },
             { type: OccFieldsService }
         ]; };
-        OccRequestsOptimizerService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccRequestsOptimizerService_Factory() { return new OccRequestsOptimizerService(core["ɵɵinject"](http.HttpClient), core["ɵɵinject"](OccFieldsService)); }, token: OccRequestsOptimizerService, providedIn: "root" });
+        OccRequestsOptimizerService.ɵprov = core.ɵɵdefineInjectable({ factory: function OccRequestsOptimizerService_Factory() { return new OccRequestsOptimizerService(core.ɵɵinject(http.HttpClient), core.ɵɵinject(OccFieldsService)); }, token: OccRequestsOptimizerService, providedIn: "root" });
         OccRequestsOptimizerService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -6055,7 +6037,7 @@
             { type: OccEndpointsService },
             { type: SiteContextConfig }
         ]; };
-        SiteContextInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SiteContextInterceptor_Factory() { return new SiteContextInterceptor(core["ɵɵinject"](LanguageService), core["ɵɵinject"](CurrencyService), core["ɵɵinject"](OccEndpointsService), core["ɵɵinject"](SiteContextConfig)); }, token: SiteContextInterceptor, providedIn: "root" });
+        SiteContextInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function SiteContextInterceptor_Factory() { return new SiteContextInterceptor(core.ɵɵinject(LanguageService), core.ɵɵinject(CurrencyService), core.ɵɵinject(OccEndpointsService), core.ɵɵinject(SiteContextConfig)); }, token: SiteContextInterceptor, providedIn: "root" });
         SiteContextInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], SiteContextInterceptor);
@@ -6119,7 +6101,7 @@
         StoreFinderConnector.ctorParameters = function () { return [
             { type: StoreFinderAdapter }
         ]; };
-        StoreFinderConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(core["ɵɵinject"](StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
+        StoreFinderConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(core.ɵɵinject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
         StoreFinderConnector = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], StoreFinderConnector);
@@ -6788,7 +6770,7 @@
         UserNotificationPreferenceConnector.ctorParameters = function () { return [
             { type: UserNotificationPreferenceAdapter }
         ]; };
-        UserNotificationPreferenceConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(core["ɵɵinject"](UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
+        UserNotificationPreferenceConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(core.ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
         UserNotificationPreferenceConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -6924,7 +6906,7 @@
         OccUserInterestsNormalizer.ctorParameters = function () { return [
             { type: ConverterService }
         ]; };
-        OccUserInterestsNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(core["ɵɵinject"](ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
+        OccUserInterestsNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(core.ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
         OccUserInterestsNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccUserInterestsNormalizer);
@@ -6951,7 +6933,7 @@
         OccReturnRequestNormalizer.ctorParameters = function () { return [
             { type: ConverterService }
         ]; };
-        OccReturnRequestNormalizer.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(core["ɵɵinject"](ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
+        OccReturnRequestNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(core.ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
         OccReturnRequestNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccReturnRequestNormalizer);
@@ -7045,7 +7027,7 @@
                 return null;
             }
         };
-        JavaRegExpConverter.ɵprov = core["ɵɵdefineInjectable"]({ factory: function JavaRegExpConverter_Factory() { return new JavaRegExpConverter(); }, token: JavaRegExpConverter, providedIn: "root" });
+        JavaRegExpConverter.ɵprov = core.ɵɵdefineInjectable({ factory: function JavaRegExpConverter_Factory() { return new JavaRegExpConverter(); }, token: JavaRegExpConverter, providedIn: "root" });
         JavaRegExpConverter = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], JavaRegExpConverter);
@@ -7156,7 +7138,7 @@
         OccLoadedConfigConverter.ctorParameters = function () { return [
             { type: JavaRegExpConverter }
         ]; };
-        OccLoadedConfigConverter.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccLoadedConfigConverter_Factory() { return new OccLoadedConfigConverter(core["ɵɵinject"](JavaRegExpConverter)); }, token: OccLoadedConfigConverter, providedIn: "root" });
+        OccLoadedConfigConverter.ɵprov = core.ɵɵdefineInjectable({ factory: function OccLoadedConfigConverter_Factory() { return new OccLoadedConfigConverter(core.ɵɵinject(JavaRegExpConverter)); }, token: OccLoadedConfigConverter, providedIn: "root" });
         OccLoadedConfigConverter = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccLoadedConfigConverter);
@@ -7198,7 +7180,7 @@
             { type: OccConfig },
             { type: http.HttpClient }
         ]; };
-        OccSitesConfigLoader.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccSitesConfigLoader_Factory() { return new OccSitesConfigLoader(core["ɵɵinject"](OccConfig), core["ɵɵinject"](http.HttpClient)); }, token: OccSitesConfigLoader, providedIn: "root" });
+        OccSitesConfigLoader.ɵprov = core.ɵɵdefineInjectable({ factory: function OccSitesConfigLoader_Factory() { return new OccSitesConfigLoader(core.ɵɵinject(OccConfig), core.ɵɵinject(http.HttpClient)); }, token: OccSitesConfigLoader, providedIn: "root" });
         OccSitesConfigLoader = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], OccSitesConfigLoader);
@@ -7307,7 +7289,7 @@
             { type: platformBrowser.TransferState, decorators: [{ type: core.Optional }] },
             { type: String, decorators: [{ type: core.Optional }, { type: core.Inject, args: [SERVER_REQUEST_URL,] }] }
         ]; };
-        OccConfigLoaderService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(core["ɵɵinject"](core.PLATFORM_ID), core["ɵɵinject"](common.DOCUMENT), core["ɵɵinject"](Config), core["ɵɵinject"](OccSitesConfigLoader), core["ɵɵinject"](OccLoadedConfigConverter), core["ɵɵinject"](platformBrowser.TransferState, 8), core["ɵɵinject"](SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
+        OccConfigLoaderService.ɵprov = core.ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(core.ɵɵinject(core.PLATFORM_ID), core.ɵɵinject(common.DOCUMENT), core.ɵɵinject(Config), core.ɵɵinject(OccSitesConfigLoader), core.ɵɵinject(OccLoadedConfigConverter), core.ɵɵinject(platformBrowser.TransferState, 8), core.ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
         OccConfigLoaderService = __decorate([
             core.Injectable({ providedIn: 'root' }),
             __param(0, core.Inject(core.PLATFORM_ID)),
@@ -7443,7 +7425,7 @@
         WithCredentialsInterceptor.ctorParameters = function () { return [
             { type: OccConfig }
         ]; };
-        WithCredentialsInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function WithCredentialsInterceptor_Factory() { return new WithCredentialsInterceptor(core["ɵɵinject"](OccConfig)); }, token: WithCredentialsInterceptor, providedIn: "root" });
+        WithCredentialsInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function WithCredentialsInterceptor_Factory() { return new WithCredentialsInterceptor(core.ɵɵinject(OccConfig)); }, token: WithCredentialsInterceptor, providedIn: "root" });
         WithCredentialsInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], WithCredentialsInterceptor);
@@ -8673,7 +8655,7 @@
         LoadingScopesService.ctorParameters = function () { return [
             { type: OccConfig }
         ]; };
-        LoadingScopesService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function LoadingScopesService_Factory() { return new LoadingScopesService(core["ɵɵinject"](OccConfig)); }, token: LoadingScopesService, providedIn: "root" });
+        LoadingScopesService.ɵprov = core.ɵɵdefineInjectable({ factory: function LoadingScopesService_Factory() { return new LoadingScopesService(core.ɵɵinject(OccConfig)); }, token: LoadingScopesService, providedIn: "root" });
         LoadingScopesService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -8687,7 +8669,7 @@
         function AnonymousConsentsConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        AnonymousConsentsConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AnonymousConsentsConfig_Factory() { return core["ɵɵinject"](Config); }, token: AnonymousConsentsConfig, providedIn: "root" });
+        AnonymousConsentsConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentsConfig_Factory() { return core.ɵɵinject(Config); }, token: AnonymousConsentsConfig, providedIn: "root" });
         AnonymousConsentsConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -8774,7 +8756,7 @@
             { type: OccEndpointsService },
             { type: AnonymousConsentsConfig }
         ]; };
-        AnonymousConsentsInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AnonymousConsentsInterceptor_Factory() { return new AnonymousConsentsInterceptor(core["ɵɵinject"](AnonymousConsentsService), core["ɵɵinject"](AuthService), core["ɵɵinject"](OccEndpointsService), core["ɵɵinject"](AnonymousConsentsConfig)); }, token: AnonymousConsentsInterceptor, providedIn: "root" });
+        AnonymousConsentsInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentsInterceptor_Factory() { return new AnonymousConsentsInterceptor(core.ɵɵinject(AnonymousConsentsService), core.ɵɵinject(AuthService), core.ɵɵinject(OccEndpointsService), core.ɵɵinject(AnonymousConsentsConfig)); }, token: AnonymousConsentsInterceptor, providedIn: "root" });
         AnonymousConsentsInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], AnonymousConsentsInterceptor);
@@ -9027,7 +9009,7 @@
                 }
             }));
         };
-        EventService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+        EventService.ɵprov = core.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
         EventService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -9098,7 +9080,7 @@
             { type: store.ActionsSubject },
             { type: EventService }
         ]; };
-        StateEventService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StateEventService_Factory() { return new StateEventService(core["ɵɵinject"](store.ActionsSubject), core["ɵɵinject"](EventService)); }, token: StateEventService, providedIn: "root" });
+        StateEventService.ɵprov = core.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(core.ɵɵinject(store.ActionsSubject), core.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
         StateEventService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -9154,7 +9136,7 @@
         StatePersistenceService.ctorParameters = function () { return [
             { type: WindowRef }
         ]; };
-        StatePersistenceService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(core["ɵɵinject"](WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
+        StatePersistenceService.ɵprov = core.ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(core.ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
         StatePersistenceService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -10734,8 +10716,6 @@
         return ResetCancelReturnProcess;
     }(EntityLoaderResetAction));
 
-
-
     var userGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         LOAD_BILLING_COUNTRIES: LOAD_BILLING_COUNTRIES,
@@ -11225,8 +11205,6 @@
     };
     var getInterestsLoading = store.createSelector(getInterestsState, ɵ2$d);
 
-
-
     var usersGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getBillingCountriesState: getBillingCountriesState,
@@ -11508,7 +11486,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        UserConsentService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserConsentService_Factory() { return new UserConsentService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserConsentService, providedIn: "root" });
+        UserConsentService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
         UserConsentService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -11527,7 +11505,7 @@
         AnonymousConsentTemplatesConnector.ctorParameters = function () { return [
             { type: AnonymousConsentTemplatesAdapter }
         ]; };
-        AnonymousConsentTemplatesConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AnonymousConsentTemplatesConnector_Factory() { return new AnonymousConsentTemplatesConnector(core["ɵɵinject"](AnonymousConsentTemplatesAdapter)); }, token: AnonymousConsentTemplatesConnector, providedIn: "root" });
+        AnonymousConsentTemplatesConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentTemplatesConnector_Factory() { return new AnonymousConsentTemplatesConnector(core.ɵɵinject(AnonymousConsentTemplatesAdapter)); }, token: AnonymousConsentTemplatesConnector, providedIn: "root" });
         AnonymousConsentTemplatesConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -11711,7 +11689,7 @@
         SiteConnector.ctorParameters = function () { return [
             { type: SiteAdapter }
         ]; };
-        SiteConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SiteConnector_Factory() { return new SiteConnector(core["ɵɵinject"](SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+        SiteConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(core.ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
         SiteConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -12002,7 +11980,7 @@
             { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] },
             { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
         ]; };
-        ConfigInitializerService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(core["ɵɵinject"](Config), core["ɵɵinject"](CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
+        ConfigInitializerService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(core.ɵɵinject(Config), core.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
         ConfigInitializerService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -12279,7 +12257,7 @@
             { type: SiteContextUrlSerializer },
             { type: core.Injector }
         ]; };
-        SiteContextRoutesHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(core["ɵɵinject"](SiteContextParamsService), core["ɵɵinject"](SiteContextUrlSerializer), core["ɵɵinject"](core.INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
+        SiteContextRoutesHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(core.ɵɵinject(SiteContextParamsService), core.ɵɵinject(SiteContextUrlSerializer), core.ɵɵinject(core.INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
         SiteContextRoutesHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -12745,7 +12723,7 @@
         AsmConnector.ctorParameters = function () { return [
             { type: AsmAdapter }
         ]; };
-        AsmConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AsmConnector_Factory() { return new AsmConnector(core["ɵɵinject"](AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
+        AsmConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(core.ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
         AsmConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -12846,8 +12824,6 @@
         }
         return LogoutCustomerSupportAgent;
     }());
-
-
 
     var customerGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -13018,7 +12994,7 @@
     var GlobalMessageConfig = /** @class */ (function () {
         function GlobalMessageConfig() {
         }
-        GlobalMessageConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GlobalMessageConfig_Factory() { return core["ɵɵinject"](Config); }, token: GlobalMessageConfig, providedIn: "root" });
+        GlobalMessageConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function GlobalMessageConfig_Factory() { return core.ɵɵinject(Config); }, token: GlobalMessageConfig, providedIn: "root" });
         GlobalMessageConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13053,8 +13029,6 @@
         return RemoveMessagesByType;
     }());
 
-
-
     var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         ADD_MESSAGE: ADD_MESSAGE,
@@ -13077,8 +13051,6 @@
     var getGlobalMessageCountByType = function (type) {
         return store.createSelector(getGlobalMessageEntitiesByType(type), function (entities) { return entities && entities.length; });
     };
-
-
 
     var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -13129,7 +13101,7 @@
         GlobalMessageService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        GlobalMessageService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(core["ɵɵinject"](store.Store)); }, token: GlobalMessageService, providedIn: "root" });
+        GlobalMessageService.ɵprov = core.ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(core.ɵɵinject(store.Store)); }, token: GlobalMessageService, providedIn: "root" });
         GlobalMessageService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13165,7 +13137,7 @@
         HttpErrorHandler.ctorParameters = function () { return [
             { type: GlobalMessageService }
         ]; };
-        HttpErrorHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(core["ɵɵinject"](GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+        HttpErrorHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
         HttpErrorHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13187,7 +13159,7 @@
         BadGatewayHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        BadGatewayHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(core["ɵɵinject"](GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
+        BadGatewayHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(core.ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
         BadGatewayHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13326,7 +13298,7 @@
         BadRequestHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        BadRequestHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(core["ɵɵinject"](GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
+        BadRequestHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(core.ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
         BadRequestHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13348,7 +13320,7 @@
         ConflictHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        ConflictHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConflictHandler_Factory() { return new ConflictHandler(core["ɵɵinject"](GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
+        ConflictHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(core.ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
         ConflictHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13370,7 +13342,7 @@
         ForbiddenHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        ForbiddenHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(core["ɵɵinject"](GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+        ForbiddenHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(core.ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
         ForbiddenHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13392,7 +13364,7 @@
         GatewayTimeoutHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        GatewayTimeoutHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(core["ɵɵinject"](GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+        GatewayTimeoutHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(core.ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
         GatewayTimeoutHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13414,7 +13386,7 @@
         InternalServerErrorHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        InternalServerErrorHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(core["ɵɵinject"](GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
+        InternalServerErrorHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
         InternalServerErrorHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13435,7 +13407,7 @@
         NotFoundHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        NotFoundHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(core["ɵɵinject"](GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+        NotFoundHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(core.ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
         NotFoundHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13476,7 +13448,7 @@
         UnauthorizedErrorHandler.ctorParameters = function () { return [
             { type: GlobalMessageService }
         ]; };
-        UnauthorizedErrorHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(core["ɵɵinject"](GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
+        UnauthorizedErrorHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
         UnauthorizedErrorHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13513,7 +13485,7 @@
         UnknownErrorHandler.prototype.getPriority = function () {
             return -50 /* FALLBACK */;
         };
-        UnknownErrorHandler.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core["ɵɵinject"](GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+        UnknownErrorHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
         UnknownErrorHandler = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -13587,7 +13559,7 @@
         HttpErrorInterceptor.ctorParameters = function () { return [
             { type: Array, decorators: [{ type: core.Inject, args: [HttpErrorHandler,] }] }
         ]; };
-        HttpErrorInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function HttpErrorInterceptor_Factory() { return new HttpErrorInterceptor(core["ɵɵinject"](HttpErrorHandler)); }, token: HttpErrorInterceptor, providedIn: "root" });
+        HttpErrorInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function HttpErrorInterceptor_Factory() { return new HttpErrorInterceptor(core.ɵɵinject(HttpErrorHandler)); }, token: HttpErrorInterceptor, providedIn: "root" });
         HttpErrorInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' }),
             __param(0, core.Inject(HttpErrorHandler))
@@ -13910,8 +13882,6 @@
     };
     var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
 
-
-
     var asmGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getAsmUi: getAsmUi,
@@ -13989,7 +13959,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        AsmAuthService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AsmAuthService_Factory() { return new AsmAuthService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: AsmAuthService, providedIn: "root" });
+        AsmAuthService.ɵprov = core.ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: AsmAuthService, providedIn: "root" });
         AsmAuthService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -14013,7 +13983,7 @@
             { type: AsmAuthService },
             { type: GlobalMessageService }
         ]; };
-        CustomerSupportAgentErrorHandlingService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CustomerSupportAgentErrorHandlingService_Factory() { return new CustomerSupportAgentErrorHandlingService(core["ɵɵinject"](AsmAuthService), core["ɵɵinject"](GlobalMessageService)); }, token: CustomerSupportAgentErrorHandlingService, providedIn: "root" });
+        CustomerSupportAgentErrorHandlingService.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerSupportAgentErrorHandlingService_Factory() { return new CustomerSupportAgentErrorHandlingService(core.ɵɵinject(AsmAuthService), core.ɵɵinject(GlobalMessageService)); }, token: CustomerSupportAgentErrorHandlingService, providedIn: "root" });
         CustomerSupportAgentErrorHandlingService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], CustomerSupportAgentErrorHandlingService);
@@ -14048,7 +14018,7 @@
         CustomerSupportAgentAuthErrorInterceptor.ctorParameters = function () { return [
             { type: CustomerSupportAgentErrorHandlingService }
         ]; };
-        CustomerSupportAgentAuthErrorInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CustomerSupportAgentAuthErrorInterceptor_Factory() { return new CustomerSupportAgentAuthErrorInterceptor(core["ɵɵinject"](CustomerSupportAgentErrorHandlingService)); }, token: CustomerSupportAgentAuthErrorInterceptor, providedIn: "root" });
+        CustomerSupportAgentAuthErrorInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerSupportAgentAuthErrorInterceptor_Factory() { return new CustomerSupportAgentAuthErrorInterceptor(core.ɵɵinject(CustomerSupportAgentErrorHandlingService)); }, token: CustomerSupportAgentAuthErrorInterceptor, providedIn: "root" });
         CustomerSupportAgentAuthErrorInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], CustomerSupportAgentAuthErrorInterceptor);
@@ -14080,7 +14050,7 @@
         CustomerSupportAgentTokenInterceptor.ctorParameters = function () { return [
             { type: AsmAuthService }
         ]; };
-        CustomerSupportAgentTokenInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(core["ɵɵinject"](AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
+        CustomerSupportAgentTokenInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(core.ɵɵinject(AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
         CustomerSupportAgentTokenInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], CustomerSupportAgentTokenInterceptor);
@@ -14163,7 +14133,7 @@
         AsmService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        AsmService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function AsmService_Factory() { return new AsmService(core["ɵɵinject"](store.Store)); }, token: AsmService, providedIn: "root" });
+        AsmService.ɵprov = core.ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(core.ɵɵinject(store.Store)); }, token: AsmService, providedIn: "root" });
         AsmService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -14256,8 +14226,6 @@
     var getActiveCartId = store.createSelector(getMultiCartState, ɵ1$n);
     var ɵ2$g = function (state) { return state.wishList; };
     var getWishListId = store.createSelector(getMultiCartState, ɵ2$g);
-
-
 
     var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -14776,8 +14744,6 @@
         return LoadWishListFail;
     }(EntityFailAction));
 
-
-
     var cartGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         CART_ADD_ENTRY: CART_ADD_ENTRY,
@@ -15070,7 +15036,7 @@
         MultiCartService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        MultiCartService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function MultiCartService_Factory() { return new MultiCartService(core["ɵɵinject"](store.Store)); }, token: MultiCartService, providedIn: "root" });
+        MultiCartService.ɵprov = core.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(core.ɵɵinject(store.Store)); }, token: MultiCartService, providedIn: "root" });
         MultiCartService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -15390,7 +15356,7 @@
             { type: AuthService },
             { type: MultiCartService }
         ]; };
-        ActiveCartService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ActiveCartService_Factory() { return new ActiveCartService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+        ActiveCartService.ɵprov = core.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
         ActiveCartService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -15430,7 +15396,7 @@
         CartEntryConnector.ctorParameters = function () { return [
             { type: CartEntryAdapter }
         ]; };
-        CartEntryConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core["ɵɵinject"](CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+        CartEntryConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core.ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
         CartEntryConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -15523,7 +15489,7 @@
         CartVoucherConnector.ctorParameters = function () { return [
             { type: CartVoucherAdapter }
         ]; };
-        CartVoucherConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(core["ɵɵinject"](CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
+        CartVoucherConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(core.ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
         CartVoucherConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -16046,8 +16012,6 @@
         return ClearCheckoutDeliveryModeFail;
     }(EntityProcessesDecrementAction));
 
-
-
     var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         VERIFY_ADDRESS: VERIFY_ADDRESS,
@@ -16169,7 +16133,7 @@
         CartConnector.ctorParameters = function () { return [
             { type: CartAdapter }
         ]; };
-        CartConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConnector_Factory() { return new CartConnector(core["ɵɵinject"](CartAdapter)); }, token: CartConnector, providedIn: "root" });
+        CartConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(core.ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
         CartConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -16369,7 +16333,7 @@
         SaveCartConnector.ctorParameters = function () { return [
             { type: SaveCartAdapter }
         ]; };
-        SaveCartConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(core["ɵɵinject"](SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
+        SaveCartConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(core.ɵɵinject(SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
         SaveCartConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -16642,7 +16606,7 @@
             { type: EventService },
             { type: ActiveCartService }
         ]; };
-        CartEventBuilder.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(core["ɵɵinject"](store.ActionsSubject), core["ɵɵinject"](EventService), core["ɵɵinject"](ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
+        CartEventBuilder.ɵprov = core.ɵɵdefineInjectable({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(core.ɵɵinject(store.ActionsSubject), core.ɵɵinject(EventService), core.ɵɵinject(ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
         CartEventBuilder = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], CartEventBuilder);
@@ -16796,8 +16760,6 @@
         }
         return CmsSetPageFailIndex;
     }(EntityFailAction));
-
-
 
     var cmsGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -16984,8 +16946,6 @@
             }
         });
     };
-
-
 
     var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -17221,7 +17181,7 @@
             { type: store.Store },
             { type: RoutingService }
         ]; };
-        CmsService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsService_Factory() { return new CmsService(core["ɵɵinject"](store.Store), core["ɵɵinject"](RoutingService)); }, token: CmsService, providedIn: "root" });
+        CmsService.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(core.ɵɵinject(store.Store), core.ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
         CmsService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -17272,7 +17232,7 @@
         CartPageMetaResolver.ctorParameters = function () { return [
             { type: CmsService }
         ]; };
-        CartPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(core["ɵɵinject"](CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
+        CartPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(core.ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
         CartPageMetaResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -17314,7 +17274,7 @@
             { type: store.Store },
             { type: SiteContextParamsService }
         ]; };
-        MultiCartStatePersistenceService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(core["ɵɵinject"](StatePersistenceService), core["ɵɵinject"](store.Store), core["ɵɵinject"](SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
+        MultiCartStatePersistenceService.ɵprov = core.ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(core.ɵɵinject(StatePersistenceService), core.ɵɵinject(store.Store), core.ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
         MultiCartStatePersistenceService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -17415,7 +17375,7 @@
     var CartConfig = /** @class */ (function () {
         function CartConfig() {
         }
-        CartConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConfig_Factory() { return core["ɵɵinject"](Config); }, token: CartConfig, providedIn: "root" });
+        CartConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function CartConfig_Factory() { return core.ɵɵinject(Config); }, token: CartConfig, providedIn: "root" });
         CartConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -17501,7 +17461,7 @@
             { type: AuthService },
             { type: ActiveCartService }
         ]; };
-        CartVoucherService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartVoucherService_Factory() { return new CartVoucherService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
+        CartVoucherService.ɵprov = core.ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
         CartVoucherService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -17762,7 +17722,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        UserService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserService_Factory() { return new UserService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserService, providedIn: "root" });
+        UserService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
         UserService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], UserService);
@@ -17780,7 +17740,7 @@
         CartConfigService.ctorParameters = function () { return [
             { type: CartConfig }
         ]; };
-        CartConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CartConfigService_Factory() { return new CartConfigService(core["ɵɵinject"](CartConfig)); }, token: CartConfigService, providedIn: "root" });
+        CartConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function CartConfigService_Factory() { return new CartConfigService(core.ɵɵinject(CartConfig)); }, token: CartConfigService, providedIn: "root" });
         CartConfigService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -17911,7 +17871,7 @@
             { type: BaseSiteService },
             { type: CartConfigService }
         ]; };
-        SelectiveCartService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(core["ɵɵinject"](store.Store), core["ɵɵinject"](UserService), core["ɵɵinject"](AuthService), core["ɵɵinject"](MultiCartService), core["ɵɵinject"](BaseSiteService), core["ɵɵinject"](CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
+        SelectiveCartService.ɵprov = core.ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(core.ɵɵinject(store.Store), core.ɵɵinject(UserService), core.ɵɵinject(AuthService), core.ɵɵinject(MultiCartService), core.ɵɵinject(BaseSiteService), core.ɵɵinject(CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
         SelectiveCartService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -18014,7 +17974,7 @@
             { type: UserService },
             { type: MultiCartService }
         ]; };
-        WishListService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function WishListService_Factory() { return new WishListService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](UserService), core["ɵɵinject"](MultiCartService)); }, token: WishListService, providedIn: "root" });
+        WishListService.ɵprov = core.ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(UserService), core.ɵɵinject(MultiCartService)); }, token: WishListService, providedIn: "root" });
         WishListService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -18062,7 +18022,7 @@
             { type: TranslationService },
             { type: ActiveCartService }
         ]; };
-        CheckoutPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(core["ɵɵinject"](TranslationService), core["ɵɵinject"](ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+        CheckoutPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(core.ɵɵinject(TranslationService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
         CheckoutPageMetaResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -18231,7 +18191,7 @@
         UserAddressConnector.ctorParameters = function () { return [
             { type: UserAddressAdapter }
         ]; };
-        UserAddressConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(core["ɵɵinject"](UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+        UserAddressConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(core.ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
         UserAddressConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -18280,7 +18240,7 @@
         CheckoutPaymentConnector.ctorParameters = function () { return [
             { type: CheckoutPaymentAdapter }
         ]; };
-        CheckoutPaymentConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(core["ɵɵinject"](CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+        CheckoutPaymentConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(core.ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
         CheckoutPaymentConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -18332,7 +18292,7 @@
         CheckoutConnector.ctorParameters = function () { return [
             { type: CheckoutAdapter }
         ]; };
-        CheckoutConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(core["ɵɵinject"](CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+        CheckoutConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(core.ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
         CheckoutConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -18363,7 +18323,7 @@
         CheckoutDeliveryConnector.ctorParameters = function () { return [
             { type: CheckoutDeliveryAdapter }
         ]; };
-        CheckoutDeliveryConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(core["ɵɵinject"](CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
+        CheckoutDeliveryConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(core.ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
         CheckoutDeliveryConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -18704,8 +18664,6 @@
     };
     var getAllCardTypes = store.createSelector(getCardTypesEntites$1, ɵ1$q);
 
-
-
     var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getAddressVerificationResultsState: getAddressVerificationResultsState,
@@ -18821,7 +18779,7 @@
             { type: AuthService },
             { type: ActiveCartService }
         ]; };
-        CheckoutService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutService_Factory() { return new CheckoutService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+        CheckoutService.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
         CheckoutService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -19101,7 +19059,7 @@
             { type: AuthService },
             { type: ActiveCartService }
         ]; };
-        CheckoutDeliveryService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+        CheckoutDeliveryService.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
         CheckoutDeliveryService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -19216,7 +19174,7 @@
             { type: AuthService },
             { type: ActiveCartService }
         ]; };
-        CheckoutPaymentService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService), core["ɵɵinject"](ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
+        CheckoutPaymentService.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
         CheckoutPaymentService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -19280,7 +19238,7 @@
             { type: CmsService },
             { type: TranslationService }
         ]; };
-        ContentPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(core["ɵɵinject"](CmsService), core["ɵɵinject"](TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
+        ContentPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(core.ɵɵinject(CmsService), core.ɵɵinject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
         ContentPageMetaResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -19465,7 +19423,7 @@
         function CmsStructureConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        CmsStructureConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsStructureConfig_Factory() { return core["ɵɵinject"](Config); }, token: CmsStructureConfig, providedIn: "root" });
+        CmsStructureConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsStructureConfig_Factory() { return core.ɵɵinject(Config); }, token: CmsStructureConfig, providedIn: "root" });
         CmsStructureConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -19649,7 +19607,7 @@
         CmsStructureConfigService.ctorParameters = function () { return [
             { type: CmsStructureConfig }
         ]; };
-        CmsStructureConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(core["ɵɵinject"](CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
+        CmsStructureConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(core.ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
         CmsStructureConfigService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -19699,7 +19657,7 @@
             { type: CmsComponentAdapter },
             { type: OccConfig }
         ]; };
-        CmsComponentConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(core["ɵɵinject"](CmsStructureConfigService), core["ɵɵinject"](CmsComponentAdapter), core["ɵɵinject"](OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
+        CmsComponentConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(core.ɵɵinject(CmsStructureConfigService), core.ɵɵinject(CmsComponentAdapter), core.ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
         CmsComponentConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -19892,7 +19850,7 @@
                     !excludePatterns.some(function (pattern) { return pattern.regex.test(url); });
             };
         };
-        GlobService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+        GlobService.ɵprov = core.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
         GlobService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], GlobService);
@@ -20029,7 +19987,7 @@
         UrlMatcherService.ctorParameters = function () { return [
             { type: GlobService }
         ]; };
-        UrlMatcherService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(core["ɵɵinject"](GlobService)); }, token: UrlMatcherService, providedIn: "root" });
+        UrlMatcherService.ɵprov = core.ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(core.ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
         UrlMatcherService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], UrlMatcherService);
@@ -20170,7 +20128,7 @@
             { type: RoutingConfigService },
             { type: UrlMatcherService }
         ]; };
-        ConfigurableRoutesService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core["ɵɵinject"](core.INJECTOR), core["ɵɵinject"](RoutingConfigService), core["ɵɵinject"](UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+        ConfigurableRoutesService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core.ɵɵinject(core.INJECTOR), core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
         ConfigurableRoutesService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], ConfigurableRoutesService);
@@ -20229,7 +20187,7 @@
     var ExternalRoutesConfig = /** @class */ (function () {
         function ExternalRoutesConfig() {
         }
-        ExternalRoutesConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ExternalRoutesConfig_Factory() { return core["ɵɵinject"](Config); }, token: ExternalRoutesConfig, providedIn: "root" });
+        ExternalRoutesConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function ExternalRoutesConfig_Factory() { return core.ɵɵinject(Config); }, token: ExternalRoutesConfig, providedIn: "root" });
         ExternalRoutesConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -20266,7 +20224,7 @@
             { type: WindowRef },
             { type: Object, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
         ]; };
-        ExternalRoutesGuard.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(core["ɵɵinject"](WindowRef), core["ɵɵinject"](core.PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
+        ExternalRoutesGuard.ɵprov = core.ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(core.ɵɵinject(WindowRef), core.ɵɵinject(core.PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
         ExternalRoutesGuard = __decorate([
             core.Injectable({ providedIn: 'root' }),
             __param(1, core.Inject(core.PLATFORM_ID))
@@ -20335,7 +20293,7 @@
             { type: UrlMatcherService },
             { type: core.Injector }
         ]; };
-        ExternalRoutesService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(core["ɵɵinject"](ExternalRoutesConfig), core["ɵɵinject"](UrlMatcherService), core["ɵɵinject"](core.INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
+        ExternalRoutesService.ɵprov = core.ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(core.ɵɵinject(ExternalRoutesConfig), core.ɵɵinject(UrlMatcherService), core.ɵɵinject(core.INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
         ExternalRoutesService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -20464,7 +20422,7 @@
         ProtectedRoutesService.ctorParameters = function () { return [
             { type: RoutingConfig }
         ]; };
-        ProtectedRoutesService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(core["ɵɵinject"](RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
+        ProtectedRoutesService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(core.ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
         ProtectedRoutesService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], ProtectedRoutesService);
@@ -20492,7 +20450,7 @@
             { type: ProtectedRoutesService },
             { type: AuthGuard }
         ]; };
-        ProtectedRoutesGuard.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(core["ɵɵinject"](ProtectedRoutesService), core["ɵɵinject"](AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
+        ProtectedRoutesGuard.ɵprov = core.ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(core.ɵɵinject(ProtectedRoutesService), core.ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
         ProtectedRoutesGuard = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], ProtectedRoutesGuard);
@@ -20847,7 +20805,7 @@
             { type: CmsPageAdapter },
             { type: CmsStructureConfigService }
         ]; };
-        CmsPageConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(core["ɵɵinject"](CmsPageAdapter), core["ɵɵinject"](CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
+        CmsPageConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(core.ɵɵinject(CmsPageAdapter), core.ɵɵinject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
         CmsPageConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -21166,7 +21124,7 @@
             { type: Array, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PageMetaResolver,] }] },
             { type: CmsService }
         ]; };
-        PageMetaService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function PageMetaService_Factory() { return new PageMetaService(core["ɵɵinject"](PageMetaResolver, 8), core["ɵɵinject"](CmsService)); }, token: PageMetaService, providedIn: "root" });
+        PageMetaService.ɵprov = core.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(core.ɵɵinject(PageMetaResolver, 8), core.ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
         PageMetaService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -21323,7 +21281,7 @@
             { type: core.NgZone },
             { type: WindowRef }
         ]; };
-        SmartEditService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SmartEditService_Factory() { return new SmartEditService(core["ɵɵinject"](CmsService), core["ɵɵinject"](RoutingService), core["ɵɵinject"](BaseSiteService), core["ɵɵinject"](core.NgZone), core["ɵɵinject"](WindowRef)); }, token: SmartEditService, providedIn: "root" });
+        SmartEditService.ɵprov = core.ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(core.ɵɵinject(CmsService), core.ɵɵinject(RoutingService), core.ɵɵinject(BaseSiteService), core.ɵɵinject(core.NgZone), core.ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
         SmartEditService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -21375,7 +21333,7 @@
         DynamicAttributeService.ctorParameters = function () { return [
             { type: SmartEditService }
         ]; };
-        DynamicAttributeService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(core["ɵɵinject"](SmartEditService)); }, token: DynamicAttributeService, providedIn: "root" });
+        DynamicAttributeService.ɵprov = core.ɵɵdefineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(core.ɵɵinject(SmartEditService)); }, token: DynamicAttributeService, providedIn: "root" });
         DynamicAttributeService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -21387,7 +21345,7 @@
     var FeaturesConfig = /** @class */ (function () {
         function FeaturesConfig() {
         }
-        FeaturesConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function FeaturesConfig_Factory() { return core["ɵɵinject"](Config); }, token: FeaturesConfig, providedIn: "root" });
+        FeaturesConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function FeaturesConfig_Factory() { return core.ɵɵinject(Config); }, token: FeaturesConfig, providedIn: "root" });
         FeaturesConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -21447,7 +21405,7 @@
         FeatureConfigService.ctorParameters = function () { return [
             { type: FeaturesConfig }
         ]; };
-        FeatureConfigService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core["ɵɵinject"](FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+        FeatureConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
         FeatureConfigService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -21659,7 +21617,7 @@
     var I18nConfig = /** @class */ (function () {
         function I18nConfig() {
         }
-        I18nConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function I18nConfig_Factory() { return core["ɵɵinject"](Config); }, token: I18nConfig, providedIn: "root" });
+        I18nConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function I18nConfig_Factory() { return core.ɵɵinject(Config); }, token: I18nConfig, providedIn: "root" });
         I18nConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -21713,7 +21671,7 @@
         TranslationChunkService.ctorParameters = function () { return [
             { type: I18nConfig }
         ]; };
-        TranslationChunkService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function TranslationChunkService_Factory() { return new TranslationChunkService(core["ɵɵinject"](I18nConfig)); }, token: TranslationChunkService, providedIn: "root" });
+        TranslationChunkService.ɵprov = core.ɵɵdefineInjectable({ factory: function TranslationChunkService_Factory() { return new TranslationChunkService(core.ɵɵinject(I18nConfig)); }, token: TranslationChunkService, providedIn: "root" });
         TranslationChunkService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -21888,7 +21846,7 @@
             { type: I18nConfig },
             { type: TranslationChunkService }
         ]; };
-        I18nextTranslationService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function I18nextTranslationService_Factory() { return new I18nextTranslationService(core["ɵɵinject"](I18nConfig), core["ɵɵinject"](TranslationChunkService)); }, token: I18nextTranslationService, providedIn: "root" });
+        I18nextTranslationService.ɵprov = core.ɵɵdefineInjectable({ factory: function I18nextTranslationService_Factory() { return new I18nextTranslationService(core.ɵɵinject(I18nConfig), core.ɵɵinject(TranslationChunkService)); }, token: I18nextTranslationService, providedIn: "root" });
         I18nextTranslationService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], I18nextTranslationService);
@@ -22002,7 +21960,7 @@
         function KymaConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        KymaConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function KymaConfig_Factory() { return core["ɵɵinject"](Config); }, token: KymaConfig, providedIn: "root" });
+        KymaConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function KymaConfig_Factory() { return core.ɵɵinject(Config); }, token: KymaConfig, providedIn: "root" });
         KymaConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22049,8 +22007,6 @@
         return LoadOpenIdTokenSuccess;
     }(LoaderSuccessAction));
 
-
-
     var kymaGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         LOAD_OPEN_ID_TOKEN: LOAD_OPEN_ID_TOKEN,
@@ -22069,8 +22025,6 @@
     var getOpenIdTokenLoading = store.createSelector(getOpenIdTokenState, loaderLoadingSelector);
     var getOpenIdTokenSuccess = store.createSelector(getOpenIdTokenState, loaderSuccessSelector);
     var getOpenIdTokenError = store.createSelector(getOpenIdTokenState, loaderErrorSelector);
-
-
 
     var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -22105,7 +22059,7 @@
         KymaService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        KymaService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function KymaService_Factory() { return new KymaService(core["ɵɵinject"](store.Store)); }, token: KymaService, providedIn: "root" });
+        KymaService.ɵprov = core.ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(core.ɵɵinject(store.Store)); }, token: KymaService, providedIn: "root" });
         KymaService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22150,7 +22104,7 @@
             { type: KymaConfig },
             { type: http.HttpClient }
         ]; };
-        OpenIdAuthenticationTokenService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(core["ɵɵinject"](KymaConfig), core["ɵɵinject"](http.HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
+        OpenIdAuthenticationTokenService.ɵprov = core.ɵɵdefineInjectable({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(core.ɵɵinject(KymaConfig), core.ɵɵinject(http.HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
         OpenIdAuthenticationTokenService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22280,7 +22234,7 @@
     var PersonalizationConfig = /** @class */ (function () {
         function PersonalizationConfig() {
         }
-        PersonalizationConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function PersonalizationConfig_Factory() { return core["ɵɵinject"](Config); }, token: PersonalizationConfig, providedIn: "root" });
+        PersonalizationConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function PersonalizationConfig_Factory() { return core.ɵɵinject(Config); }, token: PersonalizationConfig, providedIn: "root" });
         PersonalizationConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22343,7 +22297,7 @@
             { type: WindowRef },
             { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
         ]; };
-        OccPersonalizationIdInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccPersonalizationIdInterceptor_Factory() { return new OccPersonalizationIdInterceptor(core["ɵɵinject"](PersonalizationConfig), core["ɵɵinject"](OccEndpointsService), core["ɵɵinject"](WindowRef), core["ɵɵinject"](core.PLATFORM_ID)); }, token: OccPersonalizationIdInterceptor, providedIn: "root" });
+        OccPersonalizationIdInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function OccPersonalizationIdInterceptor_Factory() { return new OccPersonalizationIdInterceptor(core.ɵɵinject(PersonalizationConfig), core.ɵɵinject(OccEndpointsService), core.ɵɵinject(WindowRef), core.ɵɵinject(core.PLATFORM_ID)); }, token: OccPersonalizationIdInterceptor, providedIn: "root" });
         OccPersonalizationIdInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' }),
             __param(3, core.Inject(core.PLATFORM_ID))
@@ -22404,7 +22358,7 @@
             { type: WindowRef },
             { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
         ]; };
-        OccPersonalizationTimeInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OccPersonalizationTimeInterceptor_Factory() { return new OccPersonalizationTimeInterceptor(core["ɵɵinject"](PersonalizationConfig), core["ɵɵinject"](OccEndpointsService), core["ɵɵinject"](WindowRef), core["ɵɵinject"](core.PLATFORM_ID)); }, token: OccPersonalizationTimeInterceptor, providedIn: "root" });
+        OccPersonalizationTimeInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function OccPersonalizationTimeInterceptor_Factory() { return new OccPersonalizationTimeInterceptor(core.ɵɵinject(PersonalizationConfig), core.ɵɵinject(OccEndpointsService), core.ɵɵinject(WindowRef), core.ɵɵinject(core.PLATFORM_ID)); }, token: OccPersonalizationTimeInterceptor, providedIn: "root" });
         OccPersonalizationTimeInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' }),
             __param(3, core.Inject(core.PLATFORM_ID))
@@ -22475,7 +22429,7 @@
             { type: PersonalizationConfig },
             { type: CmsService }
         ]; };
-        PersonalizationContextService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function PersonalizationContextService_Factory() { return new PersonalizationContextService(core["ɵɵinject"](PersonalizationConfig), core["ɵɵinject"](CmsService)); }, token: PersonalizationContextService, providedIn: "root" });
+        PersonalizationContextService.ɵprov = core.ɵɵdefineInjectable({ factory: function PersonalizationContextService_Factory() { return new PersonalizationContextService(core.ɵɵinject(PersonalizationConfig), core.ɵɵinject(CmsService)); }, token: PersonalizationContextService, providedIn: "root" });
         PersonalizationContextService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22542,7 +22496,7 @@
         ProductConnector.ctorParameters = function () { return [
             { type: ProductAdapter }
         ]; };
-        ProductConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductConnector_Factory() { return new ProductConnector(core["ɵɵinject"](ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
+        ProductConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(core.ɵɵinject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
         ProductConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22561,7 +22515,7 @@
         ProductReferencesConnector.ctorParameters = function () { return [
             { type: ProductReferencesAdapter }
         ]; };
-        ProductReferencesConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(core["ɵɵinject"](ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
+        ProductReferencesConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(core.ɵɵinject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
         ProductReferencesConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22583,7 +22537,7 @@
         ProductReviewsConnector.ctorParameters = function () { return [
             { type: ProductReviewsAdapter }
         ]; };
-        ProductReviewsConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(core["ɵɵinject"](ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+        ProductReviewsConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(core.ɵɵinject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
         ProductReviewsConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22605,7 +22559,7 @@
         ProductSearchConnector.ctorParameters = function () { return [
             { type: ProductSearchAdapter }
         ]; };
-        ProductSearchConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(core["ɵɵinject"](ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
+        ProductSearchConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(core.ɵɵinject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
         ProductSearchConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -22852,8 +22806,6 @@
         return LoadProductSuccess;
     }(EntityScopedLoaderActions.EntityScopedSuccessAction));
 
-
-
     var productGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         LOAD_PRODUCT_REFERENCES: LOAD_PRODUCT_REFERENCES,
@@ -22995,8 +22947,6 @@
     };
     var getAllProductCodes = store.createSelector(getProductState, ɵ1$r);
 
-
-
     var productGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getProductsState: getProductsState,
@@ -23041,7 +22991,7 @@
         ProductReferenceService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        ProductReferenceService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(core["ɵɵinject"](store.Store)); }, token: ProductReferenceService, providedIn: "root" });
+        ProductReferenceService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(core.ɵɵinject(store.Store)); }, token: ProductReferenceService, providedIn: "root" });
         ProductReferenceService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23071,7 +23021,7 @@
         ProductReviewService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        ProductReviewService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductReviewService_Factory() { return new ProductReviewService(core["ɵɵinject"](store.Store)); }, token: ProductReviewService, providedIn: "root" });
+        ProductReviewService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductReviewService_Factory() { return new ProductReviewService(core.ɵɵinject(store.Store)); }, token: ProductReviewService, providedIn: "root" });
         ProductReviewService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23101,7 +23051,7 @@
         ProductSearchService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        ProductSearchService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductSearchService_Factory() { return new ProductSearchService(core["ɵɵinject"](store.Store)); }, token: ProductSearchService, providedIn: "root" });
+        ProductSearchService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductSearchService_Factory() { return new ProductSearchService(core.ɵɵinject(store.Store)); }, token: ProductSearchService, providedIn: "root" });
         ProductSearchService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23239,7 +23189,7 @@
             { type: effects$c.Actions },
             { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
         ]; };
-        ProductLoadingService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(core["ɵɵinject"](store.Store), core["ɵɵinject"](LoadingScopesService), core["ɵɵinject"](effects$c.Actions), core["ɵɵinject"](core.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
+        ProductLoadingService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(core.ɵɵinject(store.Store), core.ɵɵinject(LoadingScopesService), core.ɵɵinject(effects$c.Actions), core.ɵɵinject(core.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
         ProductLoadingService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23307,7 +23257,7 @@
             { type: store.Store },
             { type: ProductLoadingService }
         ]; };
-        ProductService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductService_Factory() { return new ProductService(core["ɵɵinject"](store.Store), core["ɵɵinject"](ProductLoadingService)); }, token: ProductService, providedIn: "root" });
+        ProductService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductService_Factory() { return new ProductService(core.ɵɵinject(store.Store), core.ɵɵinject(ProductLoadingService)); }, token: ProductService, providedIn: "root" });
         ProductService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23350,7 +23300,7 @@
                 searchConfig: searchConfig,
             }));
         };
-        SearchboxService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SearchboxService_Factory() { return new SearchboxService(core["ɵɵinject"](store.Store)); }, token: SearchboxService, providedIn: "root" });
+        SearchboxService.ɵprov = core.ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(core.ɵɵinject(store.Store)); }, token: SearchboxService, providedIn: "root" });
         SearchboxService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23448,7 +23398,7 @@
             { type: CmsService },
             { type: TranslationService }
         ]; };
-        CategoryPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(core["ɵɵinject"](ProductSearchService), core["ɵɵinject"](CmsService), core["ɵɵinject"](TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+        CategoryPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(core.ɵɵinject(ProductSearchService), core.ɵɵinject(CmsService), core.ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
         CategoryPageMetaResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23526,7 +23476,7 @@
             { type: router.ActivatedRoute },
             { type: SemanticPathService }
         ]; };
-        CouponSearchPageResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(core["ɵɵinject"](ProductSearchService), core["ɵɵinject"](TranslationService), core["ɵɵinject"](AuthService), core["ɵɵinject"](router.ActivatedRoute), core["ɵɵinject"](SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
+        CouponSearchPageResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(core.ɵɵinject(ProductSearchService), core.ɵɵinject(TranslationService), core.ɵɵinject(AuthService), core.ɵɵinject(router.ActivatedRoute), core.ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
         CouponSearchPageResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23664,7 +23614,7 @@
             { type: ProductService },
             { type: TranslationService }
         ]; };
-        ProductPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(core["ɵɵinject"](RoutingService), core["ɵɵinject"](ProductService), core["ɵɵinject"](TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
+        ProductPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(core.ɵɵinject(RoutingService), core.ɵɵinject(ProductService), core.ɵɵinject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
         ProductPageMetaResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -23710,7 +23660,7 @@
             { type: ProductSearchService },
             { type: TranslationService }
         ]; };
-        SearchPageMetaResolver.ɵprov = core["ɵɵdefineInjectable"]({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(core["ɵɵinject"](RoutingService), core["ɵɵinject"](ProductSearchService), core["ɵɵinject"](TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
+        SearchPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(core.ɵɵinject(RoutingService), core.ɵɵinject(ProductSearchService), core.ɵɵinject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
         SearchPageMetaResolver = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24088,7 +24038,7 @@
         CmsTicketInterceptor.ctorParameters = function () { return [
             { type: SmartEditService }
         ]; };
-        CmsTicketInterceptor.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CmsTicketInterceptor_Factory() { return new CmsTicketInterceptor(core["ɵɵinject"](SmartEditService)); }, token: CmsTicketInterceptor, providedIn: "root" });
+        CmsTicketInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsTicketInterceptor_Factory() { return new CmsTicketInterceptor(core.ɵɵinject(SmartEditService)); }, token: CmsTicketInterceptor, providedIn: "root" });
         CmsTicketInterceptor = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], CmsTicketInterceptor);
@@ -24170,7 +24120,7 @@
     var StoreFinderConfig = /** @class */ (function () {
         function StoreFinderConfig() {
         }
-        StoreFinderConfig.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StoreFinderConfig_Factory() { return core["ɵɵinject"](Config); }, token: StoreFinderConfig, providedIn: "root" });
+        StoreFinderConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function StoreFinderConfig_Factory() { return core.ɵɵinject(Config); }, token: StoreFinderConfig, providedIn: "root" });
         StoreFinderConfig = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24293,8 +24243,6 @@
         return ViewAllStoresSuccess;
     }(LoaderSuccessAction));
 
-
-
     var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
         FIND_STORES_ON_HOLD: FIND_STORES_ON_HOLD,
@@ -24342,8 +24290,6 @@
         return loaderLoadingSelector(state);
     };
     var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, ɵ2$k);
-
-
 
     var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -24456,7 +24402,7 @@
             { type: GlobalMessageService },
             { type: RoutingService }
         ]; };
-        StoreFinderService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StoreFinderService_Factory() { return new StoreFinderService(core["ɵɵinject"](store.Store), core["ɵɵinject"](WindowRef), core["ɵɵinject"](GlobalMessageService), core["ɵɵinject"](RoutingService)); }, token: StoreFinderService, providedIn: "root" });
+        StoreFinderService.ɵprov = core.ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(core.ɵɵinject(store.Store), core.ɵɵinject(WindowRef), core.ɵɵinject(GlobalMessageService), core.ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
         StoreFinderService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24534,7 +24480,7 @@
             var weekday = this.weekDays[date.getDay()];
             return location.openingHours.weekDayOpeningList.find(function (weekDayOpeningListItem) { return weekDayOpeningListItem.weekDay === weekday; });
         };
-        StoreDataService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function StoreDataService_Factory() { return new StoreDataService(); }, token: StoreDataService, providedIn: "root" });
+        StoreDataService.ɵprov = core.ɵɵdefineInjectable({ factory: function StoreDataService_Factory() { return new StoreDataService(); }, token: StoreDataService, providedIn: "root" });
         StoreDataService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24588,7 +24534,7 @@
         ExternalJsFileLoader.ctorParameters = function () { return [
             { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
         ]; };
-        ExternalJsFileLoader.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(core["ɵɵinject"](common.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
+        ExternalJsFileLoader.ɵprov = core.ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(core.ɵɵinject(common.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
         ExternalJsFileLoader = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24697,7 +24643,7 @@
             { type: ExternalJsFileLoader },
             { type: StoreDataService }
         ]; };
-        GoogleMapRendererService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(core["ɵɵinject"](StoreFinderConfig), core["ɵɵinject"](ExternalJsFileLoader), core["ɵɵinject"](StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
+        GoogleMapRendererService.ɵprov = core.ɵɵdefineInjectable({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(core.ɵɵinject(StoreFinderConfig), core.ɵɵinject(ExternalJsFileLoader), core.ɵɵinject(StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
         GoogleMapRendererService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24868,7 +24814,7 @@
         UserConnector.ctorParameters = function () { return [
             { type: UserAdapter }
         ]; };
-        UserConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserConnector_Factory() { return new UserConnector(core["ɵɵinject"](UserAdapter)); }, token: UserConnector, providedIn: "root" });
+        UserConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(core.ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
         UserConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24893,7 +24839,7 @@
         UserConsentConnector.ctorParameters = function () { return [
             { type: UserConsentAdapter }
         ]; };
-        UserConsentConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(core["ɵɵinject"](UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
+        UserConsentConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(core.ɵɵinject(UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
         UserConsentConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24918,7 +24864,7 @@
         UserPaymentConnector.ctorParameters = function () { return [
             { type: UserPaymentAdapter }
         ]; };
-        UserPaymentConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(core["ɵɵinject"](UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+        UserPaymentConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(core.ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
         UserPaymentConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24958,7 +24904,7 @@
         UserOrderConnector.ctorParameters = function () { return [
             { type: UserOrderAdapter }
         ]; };
-        UserOrderConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(core["ɵɵinject"](UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
+        UserOrderConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(core.ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
         UserOrderConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -24986,7 +24932,7 @@
         CustomerCouponConnector.ctorParameters = function () { return [
             { type: CustomerCouponAdapter }
         ]; };
-        CustomerCouponConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CustomerCouponConnector_Factory() { return new CustomerCouponConnector(core["ɵɵinject"](CustomerCouponAdapter)); }, token: CustomerCouponConnector, providedIn: "root" });
+        CustomerCouponConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerCouponConnector_Factory() { return new CustomerCouponConnector(core.ɵɵinject(CustomerCouponAdapter)); }, token: CustomerCouponConnector, providedIn: "root" });
         CustomerCouponConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -25011,7 +24957,7 @@
         UserInterestsConnector.ctorParameters = function () { return [
             { type: UserInterestsAdapter }
         ]; };
-        UserInterestsConnector.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserInterestsConnector_Factory() { return new UserInterestsConnector(core["ɵɵinject"](UserInterestsAdapter)); }, token: UserInterestsConnector, providedIn: "root" });
+        UserInterestsConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserInterestsConnector_Factory() { return new UserInterestsConnector(core.ɵɵinject(UserInterestsAdapter)); }, token: UserInterestsConnector, providedIn: "root" });
         UserInterestsConnector = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -25113,7 +25059,7 @@
             { type: AnonymousConsentsService },
             { type: UserConsentService }
         ]; };
-        ConsentService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function ConsentService_Factory() { return new ConsentService(core["ɵɵinject"](AnonymousConsentsService), core["ɵɵinject"](UserConsentService)); }, token: ConsentService, providedIn: "root" });
+        ConsentService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConsentService_Factory() { return new ConsentService(core.ɵɵinject(AnonymousConsentsService), core.ɵɵinject(UserConsentService)); }, token: ConsentService, providedIn: "root" });
         ConsentService = __decorate([
             core.Injectable({ providedIn: 'root' })
         ], ConsentService);
@@ -25266,7 +25212,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        UserAddressService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserAddressService_Factory() { return new UserAddressService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserAddressService, providedIn: "root" });
+        UserAddressService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
         UserAddressService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -25411,7 +25357,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        UserOrderService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserOrderService_Factory() { return new UserOrderService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserOrderService, providedIn: "root" });
+        UserOrderService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
         UserOrderService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -25570,7 +25516,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        CustomerCouponService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: CustomerCouponService, providedIn: "root" });
+        CustomerCouponService.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
         CustomerCouponService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -25651,7 +25597,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        UserPaymentService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserPaymentService_Factory() { return new UserPaymentService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserPaymentService, providedIn: "root" });
+        UserPaymentService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
         UserPaymentService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -25788,7 +25734,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        OrderReturnRequestService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
+        OrderReturnRequestService.ɵprov = core.ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
         OrderReturnRequestService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -25865,7 +25811,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        UserNotificationPreferenceService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+        UserNotificationPreferenceService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
         UserNotificationPreferenceService = __decorate([
             core.Injectable({
                 providedIn: 'root',
@@ -26002,7 +25948,7 @@
             { type: store.Store },
             { type: AuthService }
         ]; };
-        UserInterestsService.ɵprov = core["ɵɵdefineInjectable"]({ factory: function UserInterestsService_Factory() { return new UserInterestsService(core["ɵɵinject"](store.Store), core["ɵɵinject"](AuthService)); }, token: UserInterestsService, providedIn: "root" });
+        UserInterestsService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
         UserInterestsService = __decorate([
             core.Injectable({
                 providedIn: 'root',

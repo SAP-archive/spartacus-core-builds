@@ -787,8 +787,6 @@ function filterKeysByType(keys, type) {
     return Object.keys(keys).filter(function (key) { return keys[key] === type; });
 }
 
-
-
 var utilsGroup = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStateSlice: getStateSlice,
@@ -991,8 +989,6 @@ var RevokeUserTokenFail = /** @class */ (function () {
     return RevokeUserTokenFail;
 }());
 
-
-
 var authGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     LOAD_CLIENT_TOKEN: LOAD_CLIENT_TOKEN,
@@ -1036,8 +1032,6 @@ var ɵ0$1 = getUserTokenSelector;
 var ɵ1 = function (state) { return state.userToken; };
 var getUserTokenState = createSelector(getAuthState, ɵ1);
 var getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
-
-
 
 var authGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -1524,8 +1518,6 @@ var RouteForwardAction = /** @class */ (function () {
     return RouteForwardAction;
 }());
 
-
-
 var routingGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     ROUTER_GO: ROUTER_GO,
@@ -1553,8 +1545,6 @@ var ɵ2 = function (routingState) {
 var getNextPageContext = createSelector(getRouterState, ɵ2);
 var ɵ3 = function (context) { return !!context; };
 var isNavigating = createSelector(getNextPageContext, ɵ3);
-
-
 
 var routingGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -1970,8 +1960,6 @@ var LanguageChange = /** @class */ (function () {
     return LanguageChange;
 }());
 
-
-
 var siteContextGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     LOAD_BASE_SITE: LOAD_BASE_SITE,
@@ -2046,8 +2034,6 @@ var ɵ3$2 = function (entities) {
         : null;
 };
 var getAllLanguages = createSelector(getLanguagesEntities, ɵ3$2);
-
-
 
 var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -3265,8 +3251,6 @@ var ToggleAnonymousConsentTemplatesUpdated = /** @class */ (function () {
     return ToggleAnonymousConsentTemplatesUpdated;
 }());
 
-
-
 var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
     __proto__: null,
     LOAD_ANONYMOUS_CONSENT_TEMPLATES: LOAD_ANONYMOUS_CONSENT_TEMPLATES,
@@ -3321,8 +3305,6 @@ var getAnonymousConsentByTemplateCode = function (templateCode) {
         return consents.find(function (consent) { return consent.templateCode === templateCode; });
     });
 };
-
-
 
 var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -10542,8 +10524,6 @@ var ResetCancelReturnProcess = /** @class */ (function (_super) {
     return ResetCancelReturnProcess;
 }(EntityLoaderResetAction));
 
-
-
 var userGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     LOAD_BILLING_COUNTRIES: LOAD_BILLING_COUNTRIES,
@@ -11032,8 +11012,6 @@ var ɵ2$d = function (state) {
     return loaderLoadingSelector(state);
 };
 var getInterestsLoading = createSelector(getInterestsState, ɵ2$d);
-
-
 
 var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -12655,8 +12633,6 @@ var LogoutCustomerSupportAgent = /** @class */ (function () {
     return LogoutCustomerSupportAgent;
 }());
 
-
-
 var customerGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     ASM_UI_UPDATE: ASM_UI_UPDATE,
@@ -12861,8 +12837,6 @@ var RemoveMessagesByType = /** @class */ (function () {
     return RemoveMessagesByType;
 }());
 
-
-
 var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     ADD_MESSAGE: ADD_MESSAGE,
@@ -12885,8 +12859,6 @@ var getGlobalMessageEntitiesByType = function (type) {
 var getGlobalMessageCountByType = function (type) {
     return createSelector(getGlobalMessageEntitiesByType(type), function (entities) { return entities && entities.length; });
 };
-
-
 
 var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -13718,8 +13690,6 @@ var ɵ2$f = function (state) {
 };
 var getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
 
-
-
 var asmGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getAsmUi: getAsmUi,
@@ -14064,8 +14034,6 @@ var ɵ1$n = function (state) { return state.active; };
 var getActiveCartId = createSelector(getMultiCartState, ɵ1$n);
 var ɵ2$g = function (state) { return state.wishList; };
 var getWishListId = createSelector(getMultiCartState, ɵ2$g);
-
-
 
 var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -14583,8 +14551,6 @@ var LoadWishListFail = /** @class */ (function (_super) {
     }
     return LoadWishListFail;
 }(EntityFailAction));
-
-
 
 var cartGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -15854,8 +15820,6 @@ var ClearCheckoutDeliveryModeFail = /** @class */ (function (_super) {
     return ClearCheckoutDeliveryModeFail;
 }(EntityProcessesDecrementAction));
 
-
-
 var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     VERIFY_ADDRESS: VERIFY_ADDRESS,
@@ -16605,8 +16569,6 @@ var CmsSetPageFailIndex = /** @class */ (function (_super) {
     return CmsSetPageFailIndex;
 }(EntityFailAction));
 
-
-
 var cmsGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     LOAD_CMS_COMPONENT: LOAD_CMS_COMPONENT,
@@ -16792,8 +16754,6 @@ var getCurrentSlotSelectorFactory = function (pageContext, position) {
         }
     });
 };
-
-
 
 var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -18511,8 +18471,6 @@ var ɵ1$q = function (entites) {
     return Object.keys(entites).map(function (code) { return entites[code]; });
 };
 var getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$q);
-
-
 
 var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -21857,8 +21815,6 @@ var LoadOpenIdTokenSuccess = /** @class */ (function (_super) {
     return LoadOpenIdTokenSuccess;
 }(LoaderSuccessAction));
 
-
-
 var kymaGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     LOAD_OPEN_ID_TOKEN: LOAD_OPEN_ID_TOKEN,
@@ -21877,8 +21833,6 @@ var getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelecto
 var getOpenIdTokenLoading = createSelector(getOpenIdTokenState, loaderLoadingSelector);
 var getOpenIdTokenSuccess = createSelector(getOpenIdTokenState, loaderSuccessSelector);
 var getOpenIdTokenError = createSelector(getOpenIdTokenState, loaderErrorSelector);
-
-
 
 var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -22660,8 +22614,6 @@ var LoadProductSuccess = /** @class */ (function (_super) {
     return LoadProductSuccess;
 }(EntityScopedLoaderActions.EntityScopedSuccessAction));
 
-
-
 var productGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     LOAD_PRODUCT_REFERENCES: LOAD_PRODUCT_REFERENCES,
@@ -22802,8 +22754,6 @@ var ɵ1$r = function (details) {
     return Object.keys(details.entities);
 };
 var getAllProductCodes = createSelector(getProductState, ɵ1$r);
-
-
 
 var productGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -24101,8 +24051,6 @@ var ViewAllStoresSuccess = /** @class */ (function (_super) {
     return ViewAllStoresSuccess;
 }(LoaderSuccessAction));
 
-
-
 var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
     FIND_STORES_ON_HOLD: FIND_STORES_ON_HOLD,
@@ -24150,8 +24098,6 @@ var ɵ2$k = function (state) {
     return loaderLoadingSelector(state);
 };
 var getViewAllStoresLoading = createSelector(getViewAllStoresState, ɵ2$k);
-
-
 
 var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
