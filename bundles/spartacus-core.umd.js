@@ -1728,27 +1728,33 @@
     var ɵ0$2 = function (state) { return state.router; };
     var getRouterState = store.createSelector(getRouterFeatureState, ɵ0$2);
     var ɵ1$1 = function (routingState) {
+        return (routingState.state && routingState.state.semanticRoute) || '';
+    };
+    var getSemanticRoute = store.createSelector(getRouterState, ɵ1$1);
+    var ɵ2 = function (routingState) {
         return (routingState.state && routingState.state.context) || { id: '' };
     };
-    var getPageContext = store.createSelector(getRouterState, ɵ1$1);
-    var ɵ2 = function (routingState) {
+    var getPageContext = store.createSelector(getRouterState, ɵ2);
+    var ɵ3 = function (routingState) {
         return routingState.nextState && routingState.nextState.context;
     };
-    var getNextPageContext = store.createSelector(getRouterState, ɵ2);
-    var ɵ3 = function (context) { return !!context; };
-    var isNavigating = store.createSelector(getNextPageContext, ɵ3);
+    var getNextPageContext = store.createSelector(getRouterState, ɵ3);
+    var ɵ4 = function (context) { return !!context; };
+    var isNavigating = store.createSelector(getNextPageContext, ɵ4);
 
     var routingGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getRouterFeatureState: getRouterFeatureState,
         getRouterState: getRouterState,
+        getSemanticRoute: getSemanticRoute,
         getPageContext: getPageContext,
         getNextPageContext: getNextPageContext,
         isNavigating: isNavigating,
         ɵ0: ɵ0$2,
         ɵ1: ɵ1$1,
         ɵ2: ɵ2,
-        ɵ3: ɵ3
+        ɵ3: ɵ3,
+        ɵ4: ɵ4
     });
 
     var RoutingService = /** @class */ (function () {
@@ -11060,8 +11066,8 @@
             !loaderLoadingSelector(state);
     };
     var getOrderReturnRequestSuccess = store.createSelector(getOrderReturnRequestState, ɵ3$3);
-    var ɵ4 = function (state) { return state.orderReturnList; };
-    var getOrderReturnRequestListState = store.createSelector(getUserState, ɵ4);
+    var ɵ4$1 = function (state) { return state.orderReturnList; };
+    var getOrderReturnRequestListState = store.createSelector(getUserState, ɵ4$1);
     var ɵ5 = function (state) {
         return loaderValueSelector(state);
     };
@@ -11100,10 +11106,10 @@
         return loaderValueSelector(state).country;
     };
     var getRegionsCountry = store.createSelector(getRegionsLoaderState, ɵ3$5);
-    var ɵ4$1 = function (state) {
+    var ɵ4$2 = function (state) {
         return loaderLoadingSelector(state);
     };
-    var getRegionsLoading = store.createSelector(getRegionsLoaderState, ɵ4$1);
+    var getRegionsLoading = store.createSelector(getRegionsLoaderState, ɵ4$2);
     var ɵ5$1 = function (state) {
         return loaderSuccessSelector(state);
     };
@@ -11229,7 +11235,7 @@
         getOrderReturnRequestListState: getOrderReturnRequestListState,
         getOrderReturnRequestList: getOrderReturnRequestList,
         ɵ3: ɵ3$3,
-        ɵ4: ɵ4,
+        ɵ4: ɵ4$1,
         ɵ5: ɵ5,
         getPaymentMethodsState: getPaymentMethodsState,
         getPaymentMethods: getPaymentMethods,
@@ -16911,8 +16917,8 @@
     var ɵ2$h = getPageComponentTypesSelector;
     var ɵ3$9 = function (state) { return state.page; };
     var getPageState = store.createSelector(getCmsState, ɵ3$9);
-    var ɵ4$2 = function (page) { return page.index; };
-    var getPageStateIndex = store.createSelector(getPageState, ɵ4$2);
+    var ɵ4$3 = function (page) { return page.index; };
+    var getPageStateIndex = store.createSelector(getPageState, ɵ4$3);
     var getPageStateIndexEntityLoaderState = function (pageContext) {
         return store.createSelector(getPageStateIndex, function (index) {
             return getIndexByType(index, pageContext.type);
@@ -16972,7 +16978,7 @@
         ɵ1: ɵ1$o,
         ɵ2: ɵ2$h,
         ɵ3: ɵ3$9,
-        ɵ4: ɵ4$2
+        ɵ4: ɵ4$3
     });
 
     var CURRENT_CONTEXT_KEY = 'current';
@@ -18618,8 +18624,8 @@
     };
     var ɵ3$a = getOrderDetailsSelector;
     var getCheckoutState = store.createFeatureSelector(CHECKOUT_FEATURE);
-    var ɵ4$3 = function (checkoutState) { return checkoutState.steps; };
-    var getCheckoutStepsState = store.createSelector(getCheckoutState, ɵ4$3);
+    var ɵ4$4 = function (checkoutState) { return checkoutState.steps; };
+    var getCheckoutStepsState = store.createSelector(getCheckoutState, ɵ4$4);
     var ɵ5$2 = function (state) {
         return loaderValueSelector(state);
     };
@@ -18686,7 +18692,7 @@
         getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
         ɵ2: ɵ2$i,
         ɵ3: ɵ3$a,
-        ɵ4: ɵ4$3,
+        ɵ4: ɵ4$4,
         ɵ5: ɵ5$2,
         ɵ6: ɵ6,
         ɵ7: ɵ7,
@@ -20517,6 +20523,7 @@
                 id: '',
             },
             cmsRequired: false,
+            semanticRoute: '',
         },
         nextState: undefined,
     };
@@ -20564,8 +20571,12 @@
             var state = routerState.root;
             var cmsRequired = false;
             var context;
+            var semanticRoute;
             while (state.firstChild) {
                 state = state.firstChild;
+                if (state.data.routeName) {
+                    semanticRoute = state.data.routeName;
+                }
                 // we use context information embedded in Cms driven routes from any parent route
                 if (state.data && state.data.cxCmsRouteContext) {
                     context = state.data.cxCmsRouteContext;
@@ -20591,12 +20602,15 @@
             else {
                 if (params['productCode']) {
                     context = { id: params['productCode'], type: exports.PageType.PRODUCT_PAGE };
+                    semanticRoute = 'product';
                 }
                 else if (params['categoryCode']) {
                     context = { id: params['categoryCode'], type: exports.PageType.CATEGORY_PAGE };
+                    semanticRoute = 'category';
                 }
                 else if (params['brandCode']) {
                     context = { id: params['brandCode'], type: exports.PageType.CATEGORY_PAGE };
+                    semanticRoute = 'brand';
                 }
                 else if (state.data.pageLabel !== undefined) {
                     context = { id: state.data.pageLabel, type: exports.PageType.CONTENT_PAGE };
@@ -20617,7 +20631,14 @@
                     }
                 }
             }
-            return { url: url, queryParams: queryParams, params: params, context: context, cmsRequired: cmsRequired };
+            return {
+                url: url,
+                queryParams: queryParams,
+                params: params,
+                context: context,
+                cmsRequired: cmsRequired,
+                semanticRoute: semanticRoute,
+            };
         };
         return CustomSerializer;
     }());

@@ -11,6 +11,7 @@ export interface ActivatedRouterStateSnapshot {
     params: Params;
     context: PageContext;
     cmsRequired: boolean;
+    semanticRoute?: string;
 }
 export interface State {
     [ROUTING_FEATURE]: RouterState;

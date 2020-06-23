@@ -1380,24 +1380,28 @@ const ROUTING_FEATURE = 'router';
 const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
 const ɵ0$2 = (state) => state.router;
 const getRouterState = createSelector(getRouterFeatureState, ɵ0$2);
-const ɵ1$1 = (routingState) => (routingState.state && routingState.state.context) || { id: '' };
-const getPageContext = createSelector(getRouterState, ɵ1$1);
-const ɵ2 = (routingState) => routingState.nextState && routingState.nextState.context;
-const getNextPageContext = createSelector(getRouterState, ɵ2);
-const ɵ3 = (context) => !!context;
-const isNavigating = createSelector(getNextPageContext, ɵ3);
+const ɵ1$1 = (routingState) => (routingState.state && routingState.state.semanticRoute) || '';
+const getSemanticRoute = createSelector(getRouterState, ɵ1$1);
+const ɵ2 = (routingState) => (routingState.state && routingState.state.context) || { id: '' };
+const getPageContext = createSelector(getRouterState, ɵ2);
+const ɵ3 = (routingState) => routingState.nextState && routingState.nextState.context;
+const getNextPageContext = createSelector(getRouterState, ɵ3);
+const ɵ4 = (context) => !!context;
+const isNavigating = createSelector(getNextPageContext, ɵ4);
 
 var routingGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getRouterFeatureState: getRouterFeatureState,
     getRouterState: getRouterState,
+    getSemanticRoute: getSemanticRoute,
     getPageContext: getPageContext,
     getNextPageContext: getNextPageContext,
     isNavigating: isNavigating,
     ɵ0: ɵ0$2,
     ɵ1: ɵ1$1,
     ɵ2: ɵ2,
-    ɵ3: ɵ3
+    ɵ3: ɵ3,
+    ɵ4: ɵ4
 });
 
 let RoutingService = class RoutingService {
@@ -9746,8 +9750,8 @@ const getOrderReturnRequestLoading = createSelector(getOrderReturnRequestState, 
 const ɵ3$3 = (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
 const getOrderReturnRequestSuccess = createSelector(getOrderReturnRequestState, ɵ3$3);
-const ɵ4 = (state) => state.orderReturnList;
-const getOrderReturnRequestListState = createSelector(getUserState, ɵ4);
+const ɵ4$1 = (state) => state.orderReturnList;
+const getOrderReturnRequestListState = createSelector(getUserState, ɵ4$1);
 const ɵ5 = (state) => loaderValueSelector(state);
 const getOrderReturnRequestList = createSelector(getOrderReturnRequestListState, ɵ5);
 
@@ -9776,8 +9780,8 @@ const ɵ2$7 = (state) => ({
 const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, ɵ2$7);
 const ɵ3$5 = (state) => loaderValueSelector(state).country;
 const getRegionsCountry = createSelector(getRegionsLoaderState, ɵ3$5);
-const ɵ4$1 = (state) => loaderLoadingSelector(state);
-const getRegionsLoading = createSelector(getRegionsLoaderState, ɵ4$1);
+const ɵ4$2 = (state) => loaderLoadingSelector(state);
+const getRegionsLoading = createSelector(getRegionsLoaderState, ɵ4$2);
 const ɵ5$1 = (state) => loaderSuccessSelector(state);
 const getRegionsLoaded = createSelector(getRegionsLoaderState, ɵ5$1);
 
@@ -9871,7 +9875,7 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getOrderReturnRequestListState: getOrderReturnRequestListState,
     getOrderReturnRequestList: getOrderReturnRequestList,
     ɵ3: ɵ3$3,
-    ɵ4: ɵ4,
+    ɵ4: ɵ4$1,
     ɵ5: ɵ5,
     getPaymentMethodsState: getPaymentMethodsState,
     getPaymentMethods: getPaymentMethods,
@@ -14770,8 +14774,8 @@ const getPageComponentTypesSelector = (page) => {
 const ɵ2$h = getPageComponentTypesSelector;
 const ɵ3$9 = (state) => state.page;
 const getPageState = createSelector(getCmsState, ɵ3$9);
-const ɵ4$2 = (page) => page.index;
-const getPageStateIndex = createSelector(getPageState, ɵ4$2);
+const ɵ4$3 = (page) => page.index;
+const getPageStateIndex = createSelector(getPageState, ɵ4$3);
 const getPageStateIndexEntityLoaderState = (pageContext) => createSelector(getPageStateIndex, (index) => getIndexByType(index, pageContext.type));
 const getPageStateIndexLoaderState = (pageContext) => createSelector(getPageStateIndexEntityLoaderState(pageContext), (indexState) => entityLoaderStateSelector(indexState, pageContext.id));
 const getPageStateIndexValue = (pageContext) => createSelector(getPageStateIndexLoaderState(pageContext), (entity) => loaderValueSelector(entity));
@@ -14811,7 +14815,7 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
     ɵ1: ɵ1$o,
     ɵ2: ɵ2$h,
     ɵ3: ɵ3$9,
-    ɵ4: ɵ4$2
+    ɵ4: ɵ4$3
 });
 
 const CURRENT_CONTEXT_KEY = 'current';
@@ -16292,8 +16296,8 @@ const ɵ2$i = getPaymentDetailsSelector;
 const getOrderDetailsSelector = (state) => state.orderDetails;
 const ɵ3$a = getOrderDetailsSelector;
 const getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
-const ɵ4$3 = (checkoutState) => checkoutState.steps;
-const getCheckoutStepsState = createSelector(getCheckoutState, ɵ4$3);
+const ɵ4$4 = (checkoutState) => checkoutState.steps;
+const getCheckoutStepsState = createSelector(getCheckoutState, ɵ4$4);
 const ɵ5$2 = (state) => loaderValueSelector(state);
 const getCheckoutSteps = createSelector(getCheckoutStepsState, ɵ5$2);
 const getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
@@ -16356,7 +16360,7 @@ var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
     getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
     ɵ2: ɵ2$i,
     ɵ3: ɵ3$a,
-    ɵ4: ɵ4$3,
+    ɵ4: ɵ4$4,
     ɵ5: ɵ5$2,
     ɵ6: ɵ6,
     ɵ7: ɵ7,
@@ -18034,6 +18038,7 @@ const initialState$c = {
             id: '',
         },
         cmsRequired: false,
+        semanticRoute: '',
     },
     nextState: undefined,
 };
@@ -18078,8 +18083,12 @@ class CustomSerializer {
         let state = routerState.root;
         let cmsRequired = false;
         let context;
+        let semanticRoute;
         while (state.firstChild) {
             state = state.firstChild;
+            if (state.data.routeName) {
+                semanticRoute = state.data.routeName;
+            }
             // we use context information embedded in Cms driven routes from any parent route
             if (state.data && state.data.cxCmsRouteContext) {
                 context = state.data.cxCmsRouteContext;
@@ -18105,12 +18114,15 @@ class CustomSerializer {
         else {
             if (params['productCode']) {
                 context = { id: params['productCode'], type: PageType.PRODUCT_PAGE };
+                semanticRoute = 'product';
             }
             else if (params['categoryCode']) {
                 context = { id: params['categoryCode'], type: PageType.CATEGORY_PAGE };
+                semanticRoute = 'category';
             }
             else if (params['brandCode']) {
                 context = { id: params['brandCode'], type: PageType.CATEGORY_PAGE };
+                semanticRoute = 'brand';
             }
             else if (state.data.pageLabel !== undefined) {
                 context = { id: state.data.pageLabel, type: PageType.CONTENT_PAGE };
@@ -18131,7 +18143,14 @@ class CustomSerializer {
                 }
             }
         }
-        return { url, queryParams, params, context, cmsRequired };
+        return {
+            url,
+            queryParams,
+            params,
+            context,
+            cmsRequired,
+            semanticRoute,
+        };
     }
 }
 
