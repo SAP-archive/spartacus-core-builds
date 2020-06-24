@@ -8510,7 +8510,8 @@ var AnonymousConsentsInterceptor = /** @class */ (function () {
             }
             var clonedRequest = _this.handleRequest(consents, request);
             return next.handle(clonedRequest).pipe(tap(function (event) {
-                if (event instanceof HttpResponse) {
+                if (event instanceof HttpResponse &&
+                    event.url.startsWith(_this.occEndpoints.getUrl('anonymousConsentTemplates'))) {
                     _this.handleResponse(isUserLoggedIn, event.headers.get(ANONYMOUS_CONSENTS_HEADER), consents);
                 }
             }));

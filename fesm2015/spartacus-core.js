@@ -7816,7 +7816,8 @@ let AnonymousConsentsInterceptor = class AnonymousConsentsInterceptor {
             }
             const clonedRequest = this.handleRequest(consents, request);
             return next.handle(clonedRequest).pipe(tap((event) => {
-                if (event instanceof HttpResponse) {
+                if (event instanceof HttpResponse &&
+                    event.url.startsWith(this.occEndpoints.getUrl('anonymousConsentTemplates'))) {
                     this.handleResponse(isUserLoggedIn, event.headers.get(ANONYMOUS_CONSENTS_HEADER), consents);
                 }
             }));
