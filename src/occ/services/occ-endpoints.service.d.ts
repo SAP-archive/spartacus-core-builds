@@ -3,7 +3,8 @@ import { OccConfig } from '../config/occ-config';
 export declare class OccEndpointsService {
     private config;
     private baseSiteService;
-    private activeBaseSite;
+    private _activeBaseSite;
+    private get activeBaseSite();
     constructor(config: OccConfig, baseSiteService: BaseSiteService);
     /**
      * Returns and endpoint starting from the OCC baseUrl (no baseSite)

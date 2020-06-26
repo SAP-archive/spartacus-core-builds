@@ -2162,14 +2162,20 @@ var OccEndpointsService = /** @class */ (function () {
         var _this = this;
         this.config = config;
         this.baseSiteService = baseSiteService;
-        this.activeBaseSite =
-            getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID) || '';
         if (this.baseSiteService) {
             this.baseSiteService
                 .getActive()
-                .subscribe(function (value) { return (_this.activeBaseSite = value); });
+                .subscribe(function (value) { return (_this._activeBaseSite = value); });
         }
     }
+    Object.defineProperty(OccEndpointsService.prototype, "activeBaseSite", {
+        get: function () {
+            var _a;
+            return ((_a = this._activeBaseSite) !== null && _a !== void 0 ? _a : getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Returns and endpoint starting from the OCC baseUrl (no baseSite)
      * @param endpoint Endpoint suffix

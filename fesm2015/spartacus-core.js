@@ -1949,13 +1949,15 @@ let OccEndpointsService = class OccEndpointsService {
     constructor(config, baseSiteService) {
         this.config = config;
         this.baseSiteService = baseSiteService;
-        this.activeBaseSite =
-            getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID) || '';
         if (this.baseSiteService) {
             this.baseSiteService
                 .getActive()
-                .subscribe((value) => (this.activeBaseSite = value));
+                .subscribe((value) => (this._activeBaseSite = value));
         }
+    }
+    get activeBaseSite() {
+        var _a;
+        return ((_a = this._activeBaseSite) !== null && _a !== void 0 ? _a : getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
     }
     /**
      * Returns and endpoint starting from the OCC baseUrl (no baseSite)
