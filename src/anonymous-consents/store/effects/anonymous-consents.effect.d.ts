@@ -14,8 +14,17 @@ export declare class AnonymousConsentsEffects {
     private anonymousConsentsConfig;
     private anonymousConsentService;
     private userConsentService;
+    checkConsentVersions$: Observable<AnonymousConsentsActions.LoadAnonymousConsentTemplates | AnonymousConsentsActions.LoadAnonymousConsentTemplatesFail | Observable<never>>;
     loadAnonymousConsentTemplates$: Observable<AnonymousConsentsActions.AnonymousConsentsActions>;
     transferAnonymousConsentsToUser$: Observable<UserActions.TransferAnonymousConsent | Observable<never>>;
     giveRequiredConsentsToUser$: Observable<UserActions.GiveUserConsent | Observable<never>>;
     constructor(actions$: Actions, anonymousConsentTemplatesConnector: AnonymousConsentTemplatesConnector, authService: AuthService, anonymousConsentsConfig: AnonymousConsentsConfig, anonymousConsentService: AnonymousConsentsService, userConsentService: UserConsentService);
+    /**
+     * Compares the given versions and determines if there's a mismatch,
+     * in which case `true` is returned.
+     *
+     * @param currentVersions versions of the current consents
+     * @param newVersions versions of the new consents
+     */
+    private detectUpdatedVersion;
 }

@@ -12,10 +12,11 @@ export interface Consent {
 }
 export interface AnonymousConsent {
     templateCode?: string;
-    version?: number;
+    templateVersion?: number;
     consentState?: ANONYMOUS_CONSENT_STATUS;
 }
 export declare enum ANONYMOUS_CONSENT_STATUS {
     GIVEN = "GIVEN",
     WITHDRAWN = "WITHDRAWN"
 }
+export declare const ANONYMOUS_CONSENTS_HEADER = "X-Anonymous-Consents";

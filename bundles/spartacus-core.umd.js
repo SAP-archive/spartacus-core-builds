@@ -3320,6 +3320,7 @@
         ANONYMOUS_CONSENT_STATUS["GIVEN"] = "GIVEN";
         ANONYMOUS_CONSENT_STATUS["WITHDRAWN"] = "WITHDRAWN";
     })(exports.ANONYMOUS_CONSENT_STATUS || (exports.ANONYMOUS_CONSENT_STATUS = {}));
+    var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
 
 
     (function (ImageType) {
@@ -3369,6 +3370,7 @@
     var WITHDRAW_ANONYMOUS_CONSENT = '[Anonymous Consents] Withdraw Anonymous Consent';
     var TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = '[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed';
     var TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = '[Anonymous Consents] Anonymous Consent Templates Updated';
+    var ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS = '[Anonymous Consents] Check Updated Versions';
     var LoadAnonymousConsentTemplates = /** @class */ (function (_super) {
         __extends(LoadAnonymousConsentTemplates, _super);
         function LoadAnonymousConsentTemplates() {
@@ -3454,6 +3456,12 @@
         }
         return ToggleAnonymousConsentTemplatesUpdated;
     }());
+    var AnonymousConsentCheckUpdatedVersions = /** @class */ (function () {
+        function AnonymousConsentCheckUpdatedVersions() {
+            this.type = ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS;
+        }
+        return AnonymousConsentCheckUpdatedVersions;
+    }());
 
     var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -3468,6 +3476,7 @@
         WITHDRAW_ANONYMOUS_CONSENT: WITHDRAW_ANONYMOUS_CONSENT,
         TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED,
         TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED,
+        ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS: ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS,
         LoadAnonymousConsentTemplates: LoadAnonymousConsentTemplates,
         LoadAnonymousConsentTemplatesSuccess: LoadAnonymousConsentTemplatesSuccess,
         LoadAnonymousConsentTemplatesFail: LoadAnonymousConsentTemplatesFail,
@@ -3478,7 +3487,8 @@
         GiveAnonymousConsent: GiveAnonymousConsent,
         WithdrawAnonymousConsent: WithdrawAnonymousConsent,
         ToggleAnonymousConsentsBannerDissmissed: ToggleAnonymousConsentsBannerDissmissed,
-        ToggleAnonymousConsentTemplatesUpdated: ToggleAnonymousConsentTemplatesUpdated
+        ToggleAnonymousConsentTemplatesUpdated: ToggleAnonymousConsentTemplatesUpdated,
+        AnonymousConsentCheckUpdatedVersions: AnonymousConsentCheckUpdatedVersions
     });
 
     var getAnonymousConsentState = store.createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
@@ -3706,13 +3716,21 @@
          * Otherwise, it returns `false`.
          */
         AnonymousConsentsService.prototype.isBannerVisible = function () {
+            var _this = this;
             return rxjs.combineLatest([
                 this.isBannerDismissed(),
                 this.getTemplatesUpdated(),
-            ]).pipe(operators.map(function (_a) {
+            ]).pipe(operators.tap(function () { return _this.checkConsentVersions(); }), operators.map(function (_a) {
                 var _b = __read(_a, 2), dismissed = _b[0], updated = _b[1];
                 return !dismissed || updated;
             }));
+        };
+        /**
+         * Dispatches an action to trigger the check
+         * whether the anonymous consent version have been updated
+         */
+        AnonymousConsentsService.prototype.checkConsentVersions = function () {
+            this.store.dispatch(new AnonymousConsentCheckUpdatedVersions());
         };
         /**
          * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
@@ -6192,6 +6210,8 @@
         return StoreFinderOccModule;
     }());
 
+    var ANONYMOUS_CONSENT_NORMALIZER = new core.InjectionToken('AnonymousConsentNormalizer');
+
     var CONSENT_TEMPLATE_NORMALIZER = new core.InjectionToken('ConsentTemplateNormalizer');
 
     var OccAnonymousConsentTemplatesAdapter = /** @class */ (function () {
@@ -6203,6 +6223,13 @@
         OccAnonymousConsentTemplatesAdapter.prototype.loadAnonymousConsentTemplates = function () {
             var url = this.occEndpoints.getUrl('anonymousConsentTemplates');
             return this.http.get(url).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (consentList) { return consentList.consentTemplates; }), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
+        };
+        OccAnonymousConsentTemplatesAdapter.prototype.loadAnonymousConsents = function () {
+            // using the endpoint that doesn't set caching headers
+            var url = this.occEndpoints.getUrl('anonymousConsentTemplates');
+            return this.http
+                .head(url, { observe: 'response' })
+                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (response) { return response.headers.get(ANONYMOUS_CONSENTS_HEADER); }), this.converter.pipeable(ANONYMOUS_CONSENT_NORMALIZER));
         };
         OccAnonymousConsentTemplatesAdapter.ctorParameters = function () { return [
             { type: http.HttpClient },
@@ -6630,6 +6657,26 @@
         return UserConsentAdapter;
     }());
 
+    var CustomerCouponAdapter = /** @class */ (function () {
+        function CustomerCouponAdapter() {
+        }
+        return CustomerCouponAdapter;
+    }());
+
+    var PRODUCT_INTERESTS_NORMALIZER = new core.InjectionToken('ProductInterestsNormalizer');
+
+    var UserInterestsAdapter = /** @class */ (function () {
+        function UserInterestsAdapter() {
+        }
+        return UserInterestsAdapter;
+    }());
+
+    var UserNotificationPreferenceAdapter = /** @class */ (function () {
+        function UserNotificationPreferenceAdapter() {
+        }
+        return UserNotificationPreferenceAdapter;
+    }());
+
     var UserOrderAdapter = /** @class */ (function () {
         function UserOrderAdapter() {
         }
@@ -6646,52 +6693,6 @@
         function UserAdapter() {
         }
         return UserAdapter;
-    }());
-
-    var defaultOccUserConfig = {
-        backend: {
-            occ: {
-                endpoints: {
-                    // tslint:disable:max-line-length
-                    user: 'users/${userId}',
-                    userRegister: 'users',
-                    userForgotPassword: 'forgottenpasswordtokens',
-                    userResetPassword: 'resetpassword',
-                    userUpdateLoginId: 'users/${userId}/login',
-                    userUpdatePassword: 'users/${userId}/password',
-                    titles: 'titles',
-                    paymentDetailsAll: 'users/${userId}/paymentdetails',
-                    paymentDetail: 'users/${userId}/paymentdetails/${paymentDetailId}',
-                    orderHistory: 'users/${userId}/orders',
-                    orderDetail: 'users/${userId}/orders/${orderId}?fields=FULL',
-                    anonymousConsentTemplates: 'users/anonymous/consenttemplates',
-                    consentTemplates: 'users/${userId}/consenttemplates',
-                    consents: 'users/${userId}/consents',
-                    consentDetail: 'users/${userId}/consents/${consentId}',
-                    addresses: 'users/${userId}/addresses',
-                    addressDetail: 'users/${userId}/addresses/${addressId}',
-                    addressVerification: 'users/${userId}/addresses/verification',
-                    consignmentTracking: 'users/${userId}/orders/${orderCode}/consignments/${consignmentCode}/tracking',
-                    customerCoupons: 'users/${userId}/customercoupons',
-                    claimCoupon: 'users/${userId}/customercoupons/${couponCode}/claim',
-                    couponNotification: 'users/${userId}/customercoupons/${couponCode}/notification',
-                    notificationPreference: 'users/${userId}/notificationpreferences',
-                    productInterests: 'users/${userId}/productinterests',
-                    getProductInterests: 'users/${userId}/productinterests?fields=sorts,pagination,results(productInterestEntry,product(code))',
-                    cancelOrder: 'users/${userId}/orders/${orderId}/cancellation',
-                    returnOrder: 'users/${userId}/orderReturns?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name,code,baseOptions,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
-                    orderReturns: 'users/${userId}/orderReturns?fields=BASIC',
-                    orderReturnDetail: 'users/${userId}/orderReturns/${returnRequestCode}?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name,code,baseOptions,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
-                    cancelReturn: 'users/${userId}/orderReturns/${returnRequestCode}',
-                },
-            },
-        },
-    };
-
-    var CustomerCouponAdapter = /** @class */ (function () {
-        function CustomerCouponAdapter() {
-        }
-        return CustomerCouponAdapter;
     }());
 
     var CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new core.InjectionToken('CustomerCouponSearchResultNormalizer');
@@ -6760,169 +6761,23 @@
         return OccCustomerCouponAdapter;
     }());
 
-    var UserNotificationPreferenceAdapter = /** @class */ (function () {
-        function UserNotificationPreferenceAdapter() {
+    var AnonymousConsentNormalizer = /** @class */ (function () {
+        function AnonymousConsentNormalizer(anonymousConsentsService) {
+            this.anonymousConsentsService = anonymousConsentsService;
         }
-        return UserNotificationPreferenceAdapter;
-    }());
-
-    var NOTIFICATION_PREFERENCE_SERIALIZER = new core.InjectionToken('NotificationPreferenceSerializer');
-    var NOTIFICATION_PREFERENCE_NORMALIZER = new core.InjectionToken('NotificationPreferenceNormalizer');
-
-    var UserNotificationPreferenceConnector = /** @class */ (function () {
-        function UserNotificationPreferenceConnector(adapter) {
-            this.adapter = adapter;
-        }
-        UserNotificationPreferenceConnector.prototype.loadAll = function (userId) {
-            return this.adapter.loadAll(userId);
-        };
-        UserNotificationPreferenceConnector.prototype.update = function (userId, preferences) {
-            return this.adapter.update(userId, preferences);
-        };
-        UserNotificationPreferenceConnector.ctorParameters = function () { return [
-            { type: UserNotificationPreferenceAdapter }
-        ]; };
-        UserNotificationPreferenceConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(core.ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
-        UserNotificationPreferenceConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserNotificationPreferenceConnector);
-        return UserNotificationPreferenceConnector;
-    }());
-
-    var headers = new http.HttpHeaders({
-        'Content-Type': 'application/json',
-    });
-    var OccUserNotificationPreferenceAdapter = /** @class */ (function () {
-        function OccUserNotificationPreferenceAdapter(http, converter, occEndpoints) {
-            this.http = http;
-            this.converter = converter;
-            this.occEndpoints = occEndpoints;
-        }
-        OccUserNotificationPreferenceAdapter.prototype.loadAll = function (userId) {
-            return this.http
-                .get(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), {
-                headers: headers,
-            })
-                .pipe(operators.map(function (list) { return list.preferences; }), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        OccUserNotificationPreferenceAdapter.prototype.update = function (userId, preferences) {
-            preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
-            return this.http
-                .patch(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), { preferences: preferences }, { headers: headers })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: ConverterService },
-            { type: OccEndpointsService }
-        ]; };
-        OccUserNotificationPreferenceAdapter = __decorate([
-            core.Injectable()
-        ], OccUserNotificationPreferenceAdapter);
-        return OccUserNotificationPreferenceAdapter;
-    }());
-
-    var PRODUCT_INTERESTS_NORMALIZER = new core.InjectionToken('ProductInterestsNormalizer');
-
-    var headers$1 = new http.HttpHeaders({
-        'Content-Type': 'application/json',
-    });
-    var OccUserInterestsAdapter = /** @class */ (function () {
-        function OccUserInterestsAdapter(http, occEndpoints, config, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.config = config;
-            this.converter = converter;
-        }
-        OccUserInterestsAdapter.prototype.getInterests = function (userId, pageSize, currentPage, sort, productCode, notificationType) {
-            var params = new http.HttpParams().set('sort', sort ? sort : 'name:asc');
-            if (pageSize) {
-                params = params.set('pageSize', pageSize.toString());
-            }
-            if (currentPage) {
-                params = params.set('currentPage', currentPage.toString());
-            }
-            if (productCode) {
-                params = params.set('productCode', productCode);
-            }
-            if (notificationType) {
-                params = params.set('notificationType', notificationType.toString());
-            }
-            return this.http
-                .get(this.occEndpoints.getUrl('getProductInterests', { userId: userId }), {
-                headers: headers$1,
-                params: params,
-            })
-                .pipe(this.converter.pipeable(PRODUCT_INTERESTS_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        OccUserInterestsAdapter.prototype.removeInterest = function (userId, item) {
-            var _this = this;
-            var r = [];
-            item.productInterestEntry.forEach(function (entry) {
-                var params = new http.HttpParams()
-                    .set('productCode', item.product.code)
-                    .set('notificationType', entry.interestType);
-                r.push(_this.http
-                    .delete(_this.occEndpoints.getUrl('productInterests', { userId: userId }), {
-                    params: params,
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); })));
-            });
-            return rxjs.forkJoin(r);
-        };
-        OccUserInterestsAdapter.prototype.addInterest = function (userId, productCode, notificationType) {
-            var params = new http.HttpParams()
-                .set('productCode', productCode)
-                .set('notificationType', notificationType.toString());
-            return this.http
-                .post(this.occEndpoints.getUrl('productInterests', { userId: userId }), {}, {
-                headers: headers$1,
-                params: params,
-            })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        OccUserInterestsAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: OccConfig },
-            { type: ConverterService }
-        ]; };
-        OccUserInterestsAdapter = __decorate([
-            core.Injectable()
-        ], OccUserInterestsAdapter);
-        return OccUserInterestsAdapter;
-    }());
-
-    var UserInterestsAdapter = /** @class */ (function () {
-        function UserInterestsAdapter() {
-        }
-        return UserInterestsAdapter;
-    }());
-
-    var OccUserInterestsNormalizer = /** @class */ (function () {
-        function OccUserInterestsNormalizer(converter) {
-            this.converter = converter;
-        }
-        OccUserInterestsNormalizer.prototype.convert = function (source, target) {
-            var _this = this;
-            if (target === undefined) {
-                target = __assign({}, source);
-            }
-            if (source && source.results) {
-                target.results = source.results.map(function (result) { return (__assign(__assign({}, result), { product: _this.converter.convert(result.product, PRODUCT_NORMALIZER) })); });
-            }
+        AnonymousConsentNormalizer.prototype.convert = function (source, target) {
+            if (target === void 0) { target = []; }
+            target = this.anonymousConsentsService.decodeAndDeserialize(source);
             return target;
         };
-        OccUserInterestsNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
+        AnonymousConsentNormalizer.ctorParameters = function () { return [
+            { type: AnonymousConsentsService }
         ]; };
-        OccUserInterestsNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(core.ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
-        OccUserInterestsNormalizer = __decorate([
+        AnonymousConsentNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(core.ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
+        AnonymousConsentNormalizer = __decorate([
             core.Injectable({ providedIn: 'root' })
-        ], OccUserInterestsNormalizer);
-        return OccUserInterestsNormalizer;
+        ], AnonymousConsentNormalizer);
+        return AnonymousConsentNormalizer;
     }());
 
     var OccReturnRequestNormalizer = /** @class */ (function () {
@@ -6950,6 +6805,197 @@
             core.Injectable({ providedIn: 'root' })
         ], OccReturnRequestNormalizer);
         return OccReturnRequestNormalizer;
+    }());
+
+    var OccUserInterestsNormalizer = /** @class */ (function () {
+        function OccUserInterestsNormalizer(converter) {
+            this.converter = converter;
+        }
+        OccUserInterestsNormalizer.prototype.convert = function (source, target) {
+            var _this = this;
+            if (target === undefined) {
+                target = __assign({}, source);
+            }
+            if (source && source.results) {
+                target.results = source.results.map(function (result) { return (__assign(__assign({}, result), { product: _this.converter.convert(result.product, PRODUCT_NORMALIZER) })); });
+            }
+            return target;
+        };
+        OccUserInterestsNormalizer.ctorParameters = function () { return [
+            { type: ConverterService }
+        ]; };
+        OccUserInterestsNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(core.ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
+        OccUserInterestsNormalizer = __decorate([
+            core.Injectable({ providedIn: 'root' })
+        ], OccUserInterestsNormalizer);
+        return OccUserInterestsNormalizer;
+    }());
+
+    var defaultOccUserConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    // tslint:disable:max-line-length
+                    user: 'users/${userId}',
+                    userRegister: 'users',
+                    userForgotPassword: 'forgottenpasswordtokens',
+                    userResetPassword: 'resetpassword',
+                    userUpdateLoginId: 'users/${userId}/login',
+                    userUpdatePassword: 'users/${userId}/password',
+                    titles: 'titles',
+                    paymentDetailsAll: 'users/${userId}/paymentdetails',
+                    paymentDetail: 'users/${userId}/paymentdetails/${paymentDetailId}',
+                    orderHistory: 'users/${userId}/orders',
+                    orderDetail: 'users/${userId}/orders/${orderId}?fields=FULL',
+                    anonymousConsentTemplates: 'users/anonymous/consenttemplates',
+                    consentTemplates: 'users/${userId}/consenttemplates',
+                    consents: 'users/${userId}/consents',
+                    consentDetail: 'users/${userId}/consents/${consentId}',
+                    addresses: 'users/${userId}/addresses',
+                    addressDetail: 'users/${userId}/addresses/${addressId}',
+                    addressVerification: 'users/${userId}/addresses/verification',
+                    consignmentTracking: 'users/${userId}/orders/${orderCode}/consignments/${consignmentCode}/tracking',
+                    customerCoupons: 'users/${userId}/customercoupons',
+                    claimCoupon: 'users/${userId}/customercoupons/${couponCode}/claim',
+                    couponNotification: 'users/${userId}/customercoupons/${couponCode}/notification',
+                    notificationPreference: 'users/${userId}/notificationpreferences',
+                    productInterests: 'users/${userId}/productinterests',
+                    getProductInterests: 'users/${userId}/productinterests?fields=sorts,pagination,results(productInterestEntry,product(code))',
+                    cancelOrder: 'users/${userId}/orders/${orderId}/cancellation',
+                    returnOrder: 'users/${userId}/orderReturns?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name,code,baseOptions,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
+                    orderReturns: 'users/${userId}/orderReturns?fields=BASIC',
+                    orderReturnDetail: 'users/${userId}/orderReturns/${returnRequestCode}?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name,code,baseOptions,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
+                    cancelReturn: 'users/${userId}/orderReturns/${returnRequestCode}',
+                },
+            },
+        },
+    };
+
+    var headers = new http.HttpHeaders({
+        'Content-Type': 'application/json',
+    });
+    var OccUserInterestsAdapter = /** @class */ (function () {
+        function OccUserInterestsAdapter(http, occEndpoints, config, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.config = config;
+            this.converter = converter;
+        }
+        OccUserInterestsAdapter.prototype.getInterests = function (userId, pageSize, currentPage, sort, productCode, notificationType) {
+            var params = new http.HttpParams().set('sort', sort ? sort : 'name:asc');
+            if (pageSize) {
+                params = params.set('pageSize', pageSize.toString());
+            }
+            if (currentPage) {
+                params = params.set('currentPage', currentPage.toString());
+            }
+            if (productCode) {
+                params = params.set('productCode', productCode);
+            }
+            if (notificationType) {
+                params = params.set('notificationType', notificationType.toString());
+            }
+            return this.http
+                .get(this.occEndpoints.getUrl('getProductInterests', { userId: userId }), {
+                headers: headers,
+                params: params,
+            })
+                .pipe(this.converter.pipeable(PRODUCT_INTERESTS_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        OccUserInterestsAdapter.prototype.removeInterest = function (userId, item) {
+            var _this = this;
+            var r = [];
+            item.productInterestEntry.forEach(function (entry) {
+                var params = new http.HttpParams()
+                    .set('productCode', item.product.code)
+                    .set('notificationType', entry.interestType);
+                r.push(_this.http
+                    .delete(_this.occEndpoints.getUrl('productInterests', { userId: userId }), {
+                    params: params,
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); })));
+            });
+            return rxjs.forkJoin(r);
+        };
+        OccUserInterestsAdapter.prototype.addInterest = function (userId, productCode, notificationType) {
+            var params = new http.HttpParams()
+                .set('productCode', productCode)
+                .set('notificationType', notificationType.toString());
+            return this.http
+                .post(this.occEndpoints.getUrl('productInterests', { userId: userId }), {}, {
+                headers: headers,
+                params: params,
+            })
+                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        OccUserInterestsAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: OccConfig },
+            { type: ConverterService }
+        ]; };
+        OccUserInterestsAdapter = __decorate([
+            core.Injectable()
+        ], OccUserInterestsAdapter);
+        return OccUserInterestsAdapter;
+    }());
+
+    var NOTIFICATION_PREFERENCE_SERIALIZER = new core.InjectionToken('NotificationPreferenceSerializer');
+    var NOTIFICATION_PREFERENCE_NORMALIZER = new core.InjectionToken('NotificationPreferenceNormalizer');
+
+    var UserNotificationPreferenceConnector = /** @class */ (function () {
+        function UserNotificationPreferenceConnector(adapter) {
+            this.adapter = adapter;
+        }
+        UserNotificationPreferenceConnector.prototype.loadAll = function (userId) {
+            return this.adapter.loadAll(userId);
+        };
+        UserNotificationPreferenceConnector.prototype.update = function (userId, preferences) {
+            return this.adapter.update(userId, preferences);
+        };
+        UserNotificationPreferenceConnector.ctorParameters = function () { return [
+            { type: UserNotificationPreferenceAdapter }
+        ]; };
+        UserNotificationPreferenceConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(core.ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
+        UserNotificationPreferenceConnector = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], UserNotificationPreferenceConnector);
+        return UserNotificationPreferenceConnector;
+    }());
+
+    var headers$1 = new http.HttpHeaders({
+        'Content-Type': 'application/json',
+    });
+    var OccUserNotificationPreferenceAdapter = /** @class */ (function () {
+        function OccUserNotificationPreferenceAdapter(http, converter, occEndpoints) {
+            this.http = http;
+            this.converter = converter;
+            this.occEndpoints = occEndpoints;
+        }
+        OccUserNotificationPreferenceAdapter.prototype.loadAll = function (userId) {
+            return this.http
+                .get(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), {
+                headers: headers$1,
+            })
+                .pipe(operators.map(function (list) { return list.preferences; }), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        OccUserNotificationPreferenceAdapter.prototype.update = function (userId, preferences) {
+            preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
+            return this.http
+                .patch(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), { preferences: preferences }, { headers: headers$1 })
+                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: ConverterService },
+            { type: OccEndpointsService }
+        ]; };
+        OccUserNotificationPreferenceAdapter = __decorate([
+            core.Injectable()
+        ], OccUserNotificationPreferenceAdapter);
+        return OccUserNotificationPreferenceAdapter;
     }());
 
     var UserOccModule = /** @class */ (function () {
@@ -6986,6 +7032,11 @@
                     {
                         provide: ORDER_RETURN_REQUEST_NORMALIZER,
                         useExisting: OccReturnRequestNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: ANONYMOUS_CONSENT_NORMALIZER,
+                        useExisting: AnonymousConsentNormalizer,
                         multi: true,
                     },
                 ],
@@ -8691,7 +8742,6 @@
         return AnonymousConsentsConfig;
     }(OccConfig));
 
-    var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
     var AnonymousConsentsInterceptor = /** @class */ (function () {
         function AnonymousConsentsInterceptor(anonymousConsentsService, authService, occEndpoints, config) {
             this.anonymousConsentsService = anonymousConsentsService;
@@ -11515,6 +11565,12 @@
         AnonymousConsentTemplatesConnector.prototype.loadAnonymousConsentTemplates = function () {
             return this.adapter.loadAnonymousConsentTemplates();
         };
+        AnonymousConsentTemplatesConnector.prototype.loadAnonymousConsents = function () {
+            // TODO{#8158} - remove the conditional check, and just `return this.adapter.loadAnonymousConsents()`
+            return this.adapter.loadAnonymousConsents
+                ? this.adapter.loadAnonymousConsents()
+                : null;
+        };
         AnonymousConsentTemplatesConnector.ctorParameters = function () { return [
             { type: AnonymousConsentTemplatesAdapter }
         ]; };
@@ -11536,13 +11592,33 @@
             this.anonymousConsentsConfig = anonymousConsentsConfig;
             this.anonymousConsentService = anonymousConsentService;
             this.userConsentService = userConsentService;
-            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$c.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.concatMap(function () {
+            this.checkConsentVersions$ = this.actions$.pipe(effects$c.ofType(ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS), operators.withLatestFrom(this.anonymousConsentService.getConsents()), operators.concatMap(function (_a) {
+                var _b = __read(_a, 2), _ = _b[0], currentConsents = _b[1];
+                // TODO{#8158} - remove this if block
+                if (!_this.anonymousConsentTemplatesConnector.loadAnonymousConsents()) {
+                    return rxjs.of(new LoadAnonymousConsentTemplates());
+                }
+                return _this.anonymousConsentTemplatesConnector
+                    .loadAnonymousConsents()
+                    .pipe(operators.map(function (newConsents) {
+                    var currentConsentVersions = currentConsents.map(function (consent) { return consent.templateVersion; });
+                    var newConsentVersions = newConsents.map(function (consent) { return consent.templateVersion; });
+                    return _this.detectUpdatedVersion(currentConsentVersions, newConsentVersions);
+                }), operators.switchMap(function (updated) {
+                    return updated
+                        ? rxjs.of(new LoadAnonymousConsentTemplates())
+                        : rxjs.EMPTY;
+                }), operators.catchError(function (error) {
+                    return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error)));
+                }));
+            }));
+            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$c.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.withLatestFrom(this.anonymousConsentService.getTemplates()), operators.concatMap(function (_a) {
+                var _b = __read(_a, 2), _ = _b[0], currentConsentTemplates = _b[1];
                 return _this.anonymousConsentTemplatesConnector
                     .loadAnonymousConsentTemplates()
-                    .pipe(operators.withLatestFrom(_this.anonymousConsentService.getTemplates()), operators.mergeMap(function (_a) {
-                    var _b = __read(_a, 2), newConsentTemplates = _b[0], currentConsentTemplates = _b[1];
+                    .pipe(operators.mergeMap(function (newConsentTemplates) {
                     var updated = false;
-                    if (Boolean(currentConsentTemplates) &&
+                    if (currentConsentTemplates &&
                         currentConsentTemplates.length !== 0) {
                         updated = _this.anonymousConsentService.detectUpdatedTemplates(currentConsentTemplates, newConsentTemplates);
                     }
@@ -11655,6 +11731,24 @@
                 }));
             }));
         }
+        /**
+         * Compares the given versions and determines if there's a mismatch,
+         * in which case `true` is returned.
+         *
+         * @param currentVersions versions of the current consents
+         * @param newVersions versions of the new consents
+         */
+        AnonymousConsentsEffects.prototype.detectUpdatedVersion = function (currentVersions, newVersions) {
+            if (currentVersions.length !== newVersions.length) {
+                return true;
+            }
+            for (var i = 0; i < newVersions.length; i++) {
+                if (currentVersions[i] !== newVersions[i]) {
+                    return true;
+                }
+            }
+            return false;
+        };
         AnonymousConsentsEffects.ctorParameters = function () { return [
             { type: effects$c.Actions },
             { type: AnonymousConsentTemplatesConnector },
@@ -11663,6 +11757,9 @@
             { type: AnonymousConsentsService },
             { type: UserConsentService }
         ]; };
+        __decorate([
+            effects$c.Effect()
+        ], AnonymousConsentsEffects.prototype, "checkConsentVersions$", void 0);
         __decorate([
             effects$c.Effect()
         ], AnonymousConsentsEffects.prototype, "loadAnonymousConsentTemplates$", void 0);
@@ -27272,10 +27369,13 @@
     exports.ADD_PRODUCT_INTEREST_PROCESS_ID = ADD_PRODUCT_INTEREST_PROCESS_ID;
     exports.ADD_VOUCHER_PROCESS_ID = ADD_VOUCHER_PROCESS_ID;
     exports.ANONYMOUS_CONSENTS = ANONYMOUS_CONSENTS;
+    exports.ANONYMOUS_CONSENTS_HEADER = ANONYMOUS_CONSENTS_HEADER;
     exports.ANONYMOUS_CONSENTS_STORE_FEATURE = ANONYMOUS_CONSENTS_STORE_FEATURE;
+    exports.ANONYMOUS_CONSENT_NORMALIZER = ANONYMOUS_CONSENT_NORMALIZER;
     exports.ASM_FEATURE = ASM_FEATURE;
     exports.AUTH_FEATURE = AUTH_FEATURE;
     exports.ActiveCartService = ActiveCartService;
+    exports.AnonymousConsentNormalizer = AnonymousConsentNormalizer;
     exports.AnonymousConsentTemplatesAdapter = AnonymousConsentTemplatesAdapter;
     exports.AnonymousConsentTemplatesConnector = AnonymousConsentTemplatesConnector;
     exports.AnonymousConsentsActions = anonymousConsentsGroup;

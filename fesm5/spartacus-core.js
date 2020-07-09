@@ -3128,6 +3128,7 @@ var ANONYMOUS_CONSENT_STATUS;
     ANONYMOUS_CONSENT_STATUS["GIVEN"] = "GIVEN";
     ANONYMOUS_CONSENT_STATUS["WITHDRAWN"] = "WITHDRAWN";
 })(ANONYMOUS_CONSENT_STATUS || (ANONYMOUS_CONSENT_STATUS = {}));
+var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
 
 var ImageType;
 (function (ImageType) {
@@ -3177,6 +3178,7 @@ var GIVE_ANONYMOUS_CONSENT = '[Anonymous Consents] Give Anonymous Consent';
 var WITHDRAW_ANONYMOUS_CONSENT = '[Anonymous Consents] Withdraw Anonymous Consent';
 var TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = '[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed';
 var TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = '[Anonymous Consents] Anonymous Consent Templates Updated';
+var ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS = '[Anonymous Consents] Check Updated Versions';
 var LoadAnonymousConsentTemplates = /** @class */ (function (_super) {
     __extends(LoadAnonymousConsentTemplates, _super);
     function LoadAnonymousConsentTemplates() {
@@ -3262,6 +3264,12 @@ var ToggleAnonymousConsentTemplatesUpdated = /** @class */ (function () {
     }
     return ToggleAnonymousConsentTemplatesUpdated;
 }());
+var AnonymousConsentCheckUpdatedVersions = /** @class */ (function () {
+    function AnonymousConsentCheckUpdatedVersions() {
+        this.type = ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS;
+    }
+    return AnonymousConsentCheckUpdatedVersions;
+}());
 
 var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -3276,6 +3284,7 @@ var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
     WITHDRAW_ANONYMOUS_CONSENT: WITHDRAW_ANONYMOUS_CONSENT,
     TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED,
     TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED,
+    ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS: ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS,
     LoadAnonymousConsentTemplates: LoadAnonymousConsentTemplates,
     LoadAnonymousConsentTemplatesSuccess: LoadAnonymousConsentTemplatesSuccess,
     LoadAnonymousConsentTemplatesFail: LoadAnonymousConsentTemplatesFail,
@@ -3286,7 +3295,8 @@ var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
     GiveAnonymousConsent: GiveAnonymousConsent,
     WithdrawAnonymousConsent: WithdrawAnonymousConsent,
     ToggleAnonymousConsentsBannerDissmissed: ToggleAnonymousConsentsBannerDissmissed,
-    ToggleAnonymousConsentTemplatesUpdated: ToggleAnonymousConsentTemplatesUpdated
+    ToggleAnonymousConsentTemplatesUpdated: ToggleAnonymousConsentTemplatesUpdated,
+    AnonymousConsentCheckUpdatedVersions: AnonymousConsentCheckUpdatedVersions
 });
 
 var getAnonymousConsentState = createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
@@ -3514,13 +3524,21 @@ var AnonymousConsentsService = /** @class */ (function () {
      * Otherwise, it returns `false`.
      */
     AnonymousConsentsService.prototype.isBannerVisible = function () {
+        var _this = this;
         return combineLatest([
             this.isBannerDismissed(),
             this.getTemplatesUpdated(),
-        ]).pipe(map(function (_a) {
+        ]).pipe(tap(function () { return _this.checkConsentVersions(); }), map(function (_a) {
             var _b = __read(_a, 2), dismissed = _b[0], updated = _b[1];
             return !dismissed || updated;
         }));
+    };
+    /**
+     * Dispatches an action to trigger the check
+     * whether the anonymous consent version have been updated
+     */
+    AnonymousConsentsService.prototype.checkConsentVersions = function () {
+        this.store.dispatch(new AnonymousConsentCheckUpdatedVersions());
     };
     /**
      * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
@@ -6000,6 +6018,8 @@ var StoreFinderOccModule = /** @class */ (function () {
     return StoreFinderOccModule;
 }());
 
+var ANONYMOUS_CONSENT_NORMALIZER = new InjectionToken('AnonymousConsentNormalizer');
+
 var CONSENT_TEMPLATE_NORMALIZER = new InjectionToken('ConsentTemplateNormalizer');
 
 var OccAnonymousConsentTemplatesAdapter = /** @class */ (function () {
@@ -6011,6 +6031,13 @@ var OccAnonymousConsentTemplatesAdapter = /** @class */ (function () {
     OccAnonymousConsentTemplatesAdapter.prototype.loadAnonymousConsentTemplates = function () {
         var url = this.occEndpoints.getUrl('anonymousConsentTemplates');
         return this.http.get(url).pipe(catchError(function (error) { return throwError(error); }), map(function (consentList) { return consentList.consentTemplates; }), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
+    };
+    OccAnonymousConsentTemplatesAdapter.prototype.loadAnonymousConsents = function () {
+        // using the endpoint that doesn't set caching headers
+        var url = this.occEndpoints.getUrl('anonymousConsentTemplates');
+        return this.http
+            .head(url, { observe: 'response' })
+            .pipe(catchError(function (error) { return throwError(error); }), map(function (response) { return response.headers.get(ANONYMOUS_CONSENTS_HEADER); }), this.converter.pipeable(ANONYMOUS_CONSENT_NORMALIZER));
     };
     OccAnonymousConsentTemplatesAdapter.ctorParameters = function () { return [
         { type: HttpClient },
@@ -6438,6 +6465,26 @@ var UserConsentAdapter = /** @class */ (function () {
     return UserConsentAdapter;
 }());
 
+var CustomerCouponAdapter = /** @class */ (function () {
+    function CustomerCouponAdapter() {
+    }
+    return CustomerCouponAdapter;
+}());
+
+var PRODUCT_INTERESTS_NORMALIZER = new InjectionToken('ProductInterestsNormalizer');
+
+var UserInterestsAdapter = /** @class */ (function () {
+    function UserInterestsAdapter() {
+    }
+    return UserInterestsAdapter;
+}());
+
+var UserNotificationPreferenceAdapter = /** @class */ (function () {
+    function UserNotificationPreferenceAdapter() {
+    }
+    return UserNotificationPreferenceAdapter;
+}());
+
 var UserOrderAdapter = /** @class */ (function () {
     function UserOrderAdapter() {
     }
@@ -6454,52 +6501,6 @@ var UserAdapter = /** @class */ (function () {
     function UserAdapter() {
     }
     return UserAdapter;
-}());
-
-var defaultOccUserConfig = {
-    backend: {
-        occ: {
-            endpoints: {
-                // tslint:disable:max-line-length
-                user: 'users/${userId}',
-                userRegister: 'users',
-                userForgotPassword: 'forgottenpasswordtokens',
-                userResetPassword: 'resetpassword',
-                userUpdateLoginId: 'users/${userId}/login',
-                userUpdatePassword: 'users/${userId}/password',
-                titles: 'titles',
-                paymentDetailsAll: 'users/${userId}/paymentdetails',
-                paymentDetail: 'users/${userId}/paymentdetails/${paymentDetailId}',
-                orderHistory: 'users/${userId}/orders',
-                orderDetail: 'users/${userId}/orders/${orderId}?fields=FULL',
-                anonymousConsentTemplates: 'users/anonymous/consenttemplates',
-                consentTemplates: 'users/${userId}/consenttemplates',
-                consents: 'users/${userId}/consents',
-                consentDetail: 'users/${userId}/consents/${consentId}',
-                addresses: 'users/${userId}/addresses',
-                addressDetail: 'users/${userId}/addresses/${addressId}',
-                addressVerification: 'users/${userId}/addresses/verification',
-                consignmentTracking: 'users/${userId}/orders/${orderCode}/consignments/${consignmentCode}/tracking',
-                customerCoupons: 'users/${userId}/customercoupons',
-                claimCoupon: 'users/${userId}/customercoupons/${couponCode}/claim',
-                couponNotification: 'users/${userId}/customercoupons/${couponCode}/notification',
-                notificationPreference: 'users/${userId}/notificationpreferences',
-                productInterests: 'users/${userId}/productinterests',
-                getProductInterests: 'users/${userId}/productinterests?fields=sorts,pagination,results(productInterestEntry,product(code))',
-                cancelOrder: 'users/${userId}/orders/${orderId}/cancellation',
-                returnOrder: 'users/${userId}/orderReturns?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name,code,baseOptions,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
-                orderReturns: 'users/${userId}/orderReturns?fields=BASIC',
-                orderReturnDetail: 'users/${userId}/orderReturns/${returnRequestCode}?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name,code,baseOptions,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
-                cancelReturn: 'users/${userId}/orderReturns/${returnRequestCode}',
-            },
-        },
-    },
-};
-
-var CustomerCouponAdapter = /** @class */ (function () {
-    function CustomerCouponAdapter() {
-    }
-    return CustomerCouponAdapter;
 }());
 
 var CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new InjectionToken('CustomerCouponSearchResultNormalizer');
@@ -6568,169 +6569,23 @@ var OccCustomerCouponAdapter = /** @class */ (function () {
     return OccCustomerCouponAdapter;
 }());
 
-var UserNotificationPreferenceAdapter = /** @class */ (function () {
-    function UserNotificationPreferenceAdapter() {
+var AnonymousConsentNormalizer = /** @class */ (function () {
+    function AnonymousConsentNormalizer(anonymousConsentsService) {
+        this.anonymousConsentsService = anonymousConsentsService;
     }
-    return UserNotificationPreferenceAdapter;
-}());
-
-var NOTIFICATION_PREFERENCE_SERIALIZER = new InjectionToken('NotificationPreferenceSerializer');
-var NOTIFICATION_PREFERENCE_NORMALIZER = new InjectionToken('NotificationPreferenceNormalizer');
-
-var UserNotificationPreferenceConnector = /** @class */ (function () {
-    function UserNotificationPreferenceConnector(adapter) {
-        this.adapter = adapter;
-    }
-    UserNotificationPreferenceConnector.prototype.loadAll = function (userId) {
-        return this.adapter.loadAll(userId);
-    };
-    UserNotificationPreferenceConnector.prototype.update = function (userId, preferences) {
-        return this.adapter.update(userId, preferences);
-    };
-    UserNotificationPreferenceConnector.ctorParameters = function () { return [
-        { type: UserNotificationPreferenceAdapter }
-    ]; };
-    UserNotificationPreferenceConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
-    UserNotificationPreferenceConnector = __decorate([
-        Injectable({
-            providedIn: 'root',
-        })
-    ], UserNotificationPreferenceConnector);
-    return UserNotificationPreferenceConnector;
-}());
-
-var headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-});
-var OccUserNotificationPreferenceAdapter = /** @class */ (function () {
-    function OccUserNotificationPreferenceAdapter(http, converter, occEndpoints) {
-        this.http = http;
-        this.converter = converter;
-        this.occEndpoints = occEndpoints;
-    }
-    OccUserNotificationPreferenceAdapter.prototype.loadAll = function (userId) {
-        return this.http
-            .get(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), {
-            headers: headers,
-        })
-            .pipe(map(function (list) { return list.preferences; }), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), catchError(function (error) { return throwError(error); }));
-    };
-    OccUserNotificationPreferenceAdapter.prototype.update = function (userId, preferences) {
-        preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
-        return this.http
-            .patch(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), { preferences: preferences }, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: ConverterService },
-        { type: OccEndpointsService }
-    ]; };
-    OccUserNotificationPreferenceAdapter = __decorate([
-        Injectable()
-    ], OccUserNotificationPreferenceAdapter);
-    return OccUserNotificationPreferenceAdapter;
-}());
-
-var PRODUCT_INTERESTS_NORMALIZER = new InjectionToken('ProductInterestsNormalizer');
-
-var headers$1 = new HttpHeaders({
-    'Content-Type': 'application/json',
-});
-var OccUserInterestsAdapter = /** @class */ (function () {
-    function OccUserInterestsAdapter(http, occEndpoints, config, converter) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
-        this.config = config;
-        this.converter = converter;
-    }
-    OccUserInterestsAdapter.prototype.getInterests = function (userId, pageSize, currentPage, sort, productCode, notificationType) {
-        var params = new HttpParams().set('sort', sort ? sort : 'name:asc');
-        if (pageSize) {
-            params = params.set('pageSize', pageSize.toString());
-        }
-        if (currentPage) {
-            params = params.set('currentPage', currentPage.toString());
-        }
-        if (productCode) {
-            params = params.set('productCode', productCode);
-        }
-        if (notificationType) {
-            params = params.set('notificationType', notificationType.toString());
-        }
-        return this.http
-            .get(this.occEndpoints.getUrl('getProductInterests', { userId: userId }), {
-            headers: headers$1,
-            params: params,
-        })
-            .pipe(this.converter.pipeable(PRODUCT_INTERESTS_NORMALIZER), catchError(function (error) { return throwError(error); }));
-    };
-    OccUserInterestsAdapter.prototype.removeInterest = function (userId, item) {
-        var _this = this;
-        var r = [];
-        item.productInterestEntry.forEach(function (entry) {
-            var params = new HttpParams()
-                .set('productCode', item.product.code)
-                .set('notificationType', entry.interestType);
-            r.push(_this.http
-                .delete(_this.occEndpoints.getUrl('productInterests', { userId: userId }), {
-                params: params,
-            })
-                .pipe(catchError(function (error) { return throwError(error); })));
-        });
-        return forkJoin(r);
-    };
-    OccUserInterestsAdapter.prototype.addInterest = function (userId, productCode, notificationType) {
-        var params = new HttpParams()
-            .set('productCode', productCode)
-            .set('notificationType', notificationType.toString());
-        return this.http
-            .post(this.occEndpoints.getUrl('productInterests', { userId: userId }), {}, {
-            headers: headers$1,
-            params: params,
-        })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    OccUserInterestsAdapter.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: OccEndpointsService },
-        { type: OccConfig },
-        { type: ConverterService }
-    ]; };
-    OccUserInterestsAdapter = __decorate([
-        Injectable()
-    ], OccUserInterestsAdapter);
-    return OccUserInterestsAdapter;
-}());
-
-var UserInterestsAdapter = /** @class */ (function () {
-    function UserInterestsAdapter() {
-    }
-    return UserInterestsAdapter;
-}());
-
-var OccUserInterestsNormalizer = /** @class */ (function () {
-    function OccUserInterestsNormalizer(converter) {
-        this.converter = converter;
-    }
-    OccUserInterestsNormalizer.prototype.convert = function (source, target) {
-        var _this = this;
-        if (target === undefined) {
-            target = __assign({}, source);
-        }
-        if (source && source.results) {
-            target.results = source.results.map(function (result) { return (__assign(__assign({}, result), { product: _this.converter.convert(result.product, PRODUCT_NORMALIZER) })); });
-        }
+    AnonymousConsentNormalizer.prototype.convert = function (source, target) {
+        if (target === void 0) { target = []; }
+        target = this.anonymousConsentsService.decodeAndDeserialize(source);
         return target;
     };
-    OccUserInterestsNormalizer.ctorParameters = function () { return [
-        { type: ConverterService }
+    AnonymousConsentNormalizer.ctorParameters = function () { return [
+        { type: AnonymousConsentsService }
     ]; };
-    OccUserInterestsNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
-    OccUserInterestsNormalizer = __decorate([
+    AnonymousConsentNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
+    AnonymousConsentNormalizer = __decorate([
         Injectable({ providedIn: 'root' })
-    ], OccUserInterestsNormalizer);
-    return OccUserInterestsNormalizer;
+    ], AnonymousConsentNormalizer);
+    return AnonymousConsentNormalizer;
 }());
 
 var OccReturnRequestNormalizer = /** @class */ (function () {
@@ -6758,6 +6613,197 @@ var OccReturnRequestNormalizer = /** @class */ (function () {
         Injectable({ providedIn: 'root' })
     ], OccReturnRequestNormalizer);
     return OccReturnRequestNormalizer;
+}());
+
+var OccUserInterestsNormalizer = /** @class */ (function () {
+    function OccUserInterestsNormalizer(converter) {
+        this.converter = converter;
+    }
+    OccUserInterestsNormalizer.prototype.convert = function (source, target) {
+        var _this = this;
+        if (target === undefined) {
+            target = __assign({}, source);
+        }
+        if (source && source.results) {
+            target.results = source.results.map(function (result) { return (__assign(__assign({}, result), { product: _this.converter.convert(result.product, PRODUCT_NORMALIZER) })); });
+        }
+        return target;
+    };
+    OccUserInterestsNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
+    OccUserInterestsNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
+    OccUserInterestsNormalizer = __decorate([
+        Injectable({ providedIn: 'root' })
+    ], OccUserInterestsNormalizer);
+    return OccUserInterestsNormalizer;
+}());
+
+var defaultOccUserConfig = {
+    backend: {
+        occ: {
+            endpoints: {
+                // tslint:disable:max-line-length
+                user: 'users/${userId}',
+                userRegister: 'users',
+                userForgotPassword: 'forgottenpasswordtokens',
+                userResetPassword: 'resetpassword',
+                userUpdateLoginId: 'users/${userId}/login',
+                userUpdatePassword: 'users/${userId}/password',
+                titles: 'titles',
+                paymentDetailsAll: 'users/${userId}/paymentdetails',
+                paymentDetail: 'users/${userId}/paymentdetails/${paymentDetailId}',
+                orderHistory: 'users/${userId}/orders',
+                orderDetail: 'users/${userId}/orders/${orderId}?fields=FULL',
+                anonymousConsentTemplates: 'users/anonymous/consenttemplates',
+                consentTemplates: 'users/${userId}/consenttemplates',
+                consents: 'users/${userId}/consents',
+                consentDetail: 'users/${userId}/consents/${consentId}',
+                addresses: 'users/${userId}/addresses',
+                addressDetail: 'users/${userId}/addresses/${addressId}',
+                addressVerification: 'users/${userId}/addresses/verification',
+                consignmentTracking: 'users/${userId}/orders/${orderCode}/consignments/${consignmentCode}/tracking',
+                customerCoupons: 'users/${userId}/customercoupons',
+                claimCoupon: 'users/${userId}/customercoupons/${couponCode}/claim',
+                couponNotification: 'users/${userId}/customercoupons/${couponCode}/notification',
+                notificationPreference: 'users/${userId}/notificationpreferences',
+                productInterests: 'users/${userId}/productinterests',
+                getProductInterests: 'users/${userId}/productinterests?fields=sorts,pagination,results(productInterestEntry,product(code))',
+                cancelOrder: 'users/${userId}/orders/${orderId}/cancellation',
+                returnOrder: 'users/${userId}/orderReturns?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name,code,baseOptions,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
+                orderReturns: 'users/${userId}/orderReturns?fields=BASIC',
+                orderReturnDetail: 'users/${userId}/orderReturns/${returnRequestCode}?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name,code,baseOptions,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
+                cancelReturn: 'users/${userId}/orderReturns/${returnRequestCode}',
+            },
+        },
+    },
+};
+
+var headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+});
+var OccUserInterestsAdapter = /** @class */ (function () {
+    function OccUserInterestsAdapter(http, occEndpoints, config, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.config = config;
+        this.converter = converter;
+    }
+    OccUserInterestsAdapter.prototype.getInterests = function (userId, pageSize, currentPage, sort, productCode, notificationType) {
+        var params = new HttpParams().set('sort', sort ? sort : 'name:asc');
+        if (pageSize) {
+            params = params.set('pageSize', pageSize.toString());
+        }
+        if (currentPage) {
+            params = params.set('currentPage', currentPage.toString());
+        }
+        if (productCode) {
+            params = params.set('productCode', productCode);
+        }
+        if (notificationType) {
+            params = params.set('notificationType', notificationType.toString());
+        }
+        return this.http
+            .get(this.occEndpoints.getUrl('getProductInterests', { userId: userId }), {
+            headers: headers,
+            params: params,
+        })
+            .pipe(this.converter.pipeable(PRODUCT_INTERESTS_NORMALIZER), catchError(function (error) { return throwError(error); }));
+    };
+    OccUserInterestsAdapter.prototype.removeInterest = function (userId, item) {
+        var _this = this;
+        var r = [];
+        item.productInterestEntry.forEach(function (entry) {
+            var params = new HttpParams()
+                .set('productCode', item.product.code)
+                .set('notificationType', entry.interestType);
+            r.push(_this.http
+                .delete(_this.occEndpoints.getUrl('productInterests', { userId: userId }), {
+                params: params,
+            })
+                .pipe(catchError(function (error) { return throwError(error); })));
+        });
+        return forkJoin(r);
+    };
+    OccUserInterestsAdapter.prototype.addInterest = function (userId, productCode, notificationType) {
+        var params = new HttpParams()
+            .set('productCode', productCode)
+            .set('notificationType', notificationType.toString());
+        return this.http
+            .post(this.occEndpoints.getUrl('productInterests', { userId: userId }), {}, {
+            headers: headers,
+            params: params,
+        })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    OccUserInterestsAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: OccConfig },
+        { type: ConverterService }
+    ]; };
+    OccUserInterestsAdapter = __decorate([
+        Injectable()
+    ], OccUserInterestsAdapter);
+    return OccUserInterestsAdapter;
+}());
+
+var NOTIFICATION_PREFERENCE_SERIALIZER = new InjectionToken('NotificationPreferenceSerializer');
+var NOTIFICATION_PREFERENCE_NORMALIZER = new InjectionToken('NotificationPreferenceNormalizer');
+
+var UserNotificationPreferenceConnector = /** @class */ (function () {
+    function UserNotificationPreferenceConnector(adapter) {
+        this.adapter = adapter;
+    }
+    UserNotificationPreferenceConnector.prototype.loadAll = function (userId) {
+        return this.adapter.loadAll(userId);
+    };
+    UserNotificationPreferenceConnector.prototype.update = function (userId, preferences) {
+        return this.adapter.update(userId, preferences);
+    };
+    UserNotificationPreferenceConnector.ctorParameters = function () { return [
+        { type: UserNotificationPreferenceAdapter }
+    ]; };
+    UserNotificationPreferenceConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
+    UserNotificationPreferenceConnector = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], UserNotificationPreferenceConnector);
+    return UserNotificationPreferenceConnector;
+}());
+
+var headers$1 = new HttpHeaders({
+    'Content-Type': 'application/json',
+});
+var OccUserNotificationPreferenceAdapter = /** @class */ (function () {
+    function OccUserNotificationPreferenceAdapter(http, converter, occEndpoints) {
+        this.http = http;
+        this.converter = converter;
+        this.occEndpoints = occEndpoints;
+    }
+    OccUserNotificationPreferenceAdapter.prototype.loadAll = function (userId) {
+        return this.http
+            .get(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), {
+            headers: headers$1,
+        })
+            .pipe(map(function (list) { return list.preferences; }), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), catchError(function (error) { return throwError(error); }));
+    };
+    OccUserNotificationPreferenceAdapter.prototype.update = function (userId, preferences) {
+        preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
+        return this.http
+            .patch(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), { preferences: preferences }, { headers: headers$1 })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: ConverterService },
+        { type: OccEndpointsService }
+    ]; };
+    OccUserNotificationPreferenceAdapter = __decorate([
+        Injectable()
+    ], OccUserNotificationPreferenceAdapter);
+    return OccUserNotificationPreferenceAdapter;
 }());
 
 var UserOccModule = /** @class */ (function () {
@@ -6794,6 +6840,11 @@ var UserOccModule = /** @class */ (function () {
                 {
                     provide: ORDER_RETURN_REQUEST_NORMALIZER,
                     useExisting: OccReturnRequestNormalizer,
+                    multi: true,
+                },
+                {
+                    provide: ANONYMOUS_CONSENT_NORMALIZER,
+                    useExisting: AnonymousConsentNormalizer,
                     multi: true,
                 },
             ],
@@ -8499,7 +8550,6 @@ var AnonymousConsentsConfig = /** @class */ (function (_super) {
     return AnonymousConsentsConfig;
 }(OccConfig));
 
-var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
 var AnonymousConsentsInterceptor = /** @class */ (function () {
     function AnonymousConsentsInterceptor(anonymousConsentsService, authService, occEndpoints, config) {
         this.anonymousConsentsService = anonymousConsentsService;
@@ -11323,6 +11373,12 @@ var AnonymousConsentTemplatesConnector = /** @class */ (function () {
     AnonymousConsentTemplatesConnector.prototype.loadAnonymousConsentTemplates = function () {
         return this.adapter.loadAnonymousConsentTemplates();
     };
+    AnonymousConsentTemplatesConnector.prototype.loadAnonymousConsents = function () {
+        // TODO{#8158} - remove the conditional check, and just `return this.adapter.loadAnonymousConsents()`
+        return this.adapter.loadAnonymousConsents
+            ? this.adapter.loadAnonymousConsents()
+            : null;
+    };
     AnonymousConsentTemplatesConnector.ctorParameters = function () { return [
         { type: AnonymousConsentTemplatesAdapter }
     ]; };
@@ -11344,13 +11400,33 @@ var AnonymousConsentsEffects = /** @class */ (function () {
         this.anonymousConsentsConfig = anonymousConsentsConfig;
         this.anonymousConsentService = anonymousConsentService;
         this.userConsentService = userConsentService;
-        this.loadAnonymousConsentTemplates$ = this.actions$.pipe(ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), concatMap(function () {
+        this.checkConsentVersions$ = this.actions$.pipe(ofType(ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS), withLatestFrom(this.anonymousConsentService.getConsents()), concatMap(function (_a) {
+            var _b = __read(_a, 2), _ = _b[0], currentConsents = _b[1];
+            // TODO{#8158} - remove this if block
+            if (!_this.anonymousConsentTemplatesConnector.loadAnonymousConsents()) {
+                return of(new LoadAnonymousConsentTemplates());
+            }
+            return _this.anonymousConsentTemplatesConnector
+                .loadAnonymousConsents()
+                .pipe(map(function (newConsents) {
+                var currentConsentVersions = currentConsents.map(function (consent) { return consent.templateVersion; });
+                var newConsentVersions = newConsents.map(function (consent) { return consent.templateVersion; });
+                return _this.detectUpdatedVersion(currentConsentVersions, newConsentVersions);
+            }), switchMap(function (updated) {
+                return updated
+                    ? of(new LoadAnonymousConsentTemplates())
+                    : EMPTY;
+            }), catchError(function (error) {
+                return of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error)));
+            }));
+        }));
+        this.loadAnonymousConsentTemplates$ = this.actions$.pipe(ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), withLatestFrom(this.anonymousConsentService.getTemplates()), concatMap(function (_a) {
+            var _b = __read(_a, 2), _ = _b[0], currentConsentTemplates = _b[1];
             return _this.anonymousConsentTemplatesConnector
                 .loadAnonymousConsentTemplates()
-                .pipe(withLatestFrom(_this.anonymousConsentService.getTemplates()), mergeMap(function (_a) {
-                var _b = __read(_a, 2), newConsentTemplates = _b[0], currentConsentTemplates = _b[1];
+                .pipe(mergeMap(function (newConsentTemplates) {
                 var updated = false;
-                if (Boolean(currentConsentTemplates) &&
+                if (currentConsentTemplates &&
                     currentConsentTemplates.length !== 0) {
                     updated = _this.anonymousConsentService.detectUpdatedTemplates(currentConsentTemplates, newConsentTemplates);
                 }
@@ -11463,6 +11539,24 @@ var AnonymousConsentsEffects = /** @class */ (function () {
             }));
         }));
     }
+    /**
+     * Compares the given versions and determines if there's a mismatch,
+     * in which case `true` is returned.
+     *
+     * @param currentVersions versions of the current consents
+     * @param newVersions versions of the new consents
+     */
+    AnonymousConsentsEffects.prototype.detectUpdatedVersion = function (currentVersions, newVersions) {
+        if (currentVersions.length !== newVersions.length) {
+            return true;
+        }
+        for (var i = 0; i < newVersions.length; i++) {
+            if (currentVersions[i] !== newVersions[i]) {
+                return true;
+            }
+        }
+        return false;
+    };
     AnonymousConsentsEffects.ctorParameters = function () { return [
         { type: Actions },
         { type: AnonymousConsentTemplatesConnector },
@@ -11471,6 +11565,9 @@ var AnonymousConsentsEffects = /** @class */ (function () {
         { type: AnonymousConsentsService },
         { type: UserConsentService }
     ]; };
+    __decorate([
+        Effect()
+    ], AnonymousConsentsEffects.prototype, "checkConsentVersions$", void 0);
     __decorate([
         Effect()
     ], AnonymousConsentsEffects.prototype, "loadAnonymousConsentTemplates$", void 0);
@@ -27082,5 +27179,5 @@ var UserModule = /** @class */ (function () {
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OpenIdAuthenticationTokenService, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, createFrom, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, resolveApplicable, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, AsmStoreModule as ɵba, getReducers$3 as ɵbb, reducerToken$3 as ɵbc, reducerProvider$3 as ɵbd, clearCustomerSupportAgentAsmState as ɵbe, metaReducers$2 as ɵbf, effects$3 as ɵbg, CustomerEffects as ɵbh, CustomerSupportAgentTokenEffects as ɵbi, UserAuthenticationTokenService as ɵbj, reducer$7 as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, defaultAsmConfig as ɵbo, authStoreConfigFactory as ɵbp, AuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, clearAuthState as ɵbu, metaReducers as ɵbv, effects as ɵbw, ClientTokenEffect as ɵbx, UserTokenEffects as ɵby, ClientAuthenticationTokenService as ɵbz, configFromCookieFactory as ɵc, reducer as ɵca, defaultAuthConfig as ɵcb, interceptors as ɵcc, ClientTokenInterceptor as ɵcd, UserTokenInterceptor as ɵce, AuthErrorInterceptor as ɵcf, UserErrorHandlingService as ɵcg, UrlParsingService as ɵch, ClientErrorHandlingService as ɵci, TokenRevocationInterceptor as ɵcj, MultiCartStoreModule as ɵck, clearMultiCartState as ɵcl, multiCartMetaReducers as ɵcm, multiCartReducerToken as ɵcn, getMultiCartReducers as ɵco, multiCartReducerProvider as ɵcp, CartEffects as ɵcq, CartEntryEffects as ɵcr, CartVoucherEffects as ɵcs, WishListEffects as ɵct, SaveCartConnector as ɵcu, SaveCartAdapter as ɵcv, MultiCartEffects as ɵcw, entityProcessesLoaderReducer as ɵcx, entityReducer as ɵcy, processesLoaderReducer as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, activeCartReducer as ɵda, cartEntitiesReducer as ɵdb, wishListReducer as ɵdc, CartPageMetaResolver as ɵdd, SiteContextParamsService as ɵde, CheckoutStoreModule as ɵdf, getReducers$5 as ɵdg, reducerToken$5 as ɵdh, reducerProvider$5 as ɵdi, effects$5 as ɵdj, AddressVerificationEffect as ɵdk, CardTypesEffects as ɵdl, CheckoutEffects as ɵdm, reducer$b as ɵdn, reducer$a as ɵdo, reducer$9 as ɵdp, cmsStoreConfigFactory as ɵdq, CmsStoreModule as ɵdr, getReducers$7 as ɵds, reducerToken$7 as ɵdt, reducerProvider$7 as ɵdu, clearCmsState as ɵdv, metaReducers$3 as ɵdw, effects$7 as ɵdx, ComponentsEffects as ɵdy, NavigationEntryItemEffects as ɵdz, initConfig as ɵe, PageEffects as ɵea, Config as ɵeb, reducer$f as ɵec, entityLoaderReducer as ɵed, reducer$g as ɵee, reducer$d as ɵef, reducer$e as ɵeg, GlobalMessageStoreModule as ɵeh, getReducers$4 as ɵei, reducerToken$4 as ɵej, reducerProvider$4 as ɵek, reducer$8 as ɵel, GlobalMessageEffect as ɵem, defaultGlobalMessageConfigFactory as ɵen, HttpErrorInterceptor as ɵeo, defaultI18nConfig as ɵep, i18nextProviders as ɵeq, i18nextInit as ɵer, MockTranslationService as ɵes, kymaStoreConfigFactory as ɵet, KymaStoreModule as ɵeu, getReducers$8 as ɵev, reducerToken$8 as ɵew, reducerProvider$8 as ɵex, clearKymaState as ɵey, metaReducers$4 as ɵez, anonymousConsentsStoreConfigFactory as ɵf, effects$8 as ɵfa, OpenIdTokenEffect as ɵfb, defaultKymaConfig as ɵfc, defaultOccAsmConfig as ɵfd, defaultOccCartConfig as ɵfe, OccSaveCartAdapter as ɵff, defaultOccProductConfig as ɵfg, defaultOccSiteContextConfig as ɵfh, defaultOccStoreFinderConfig as ɵfi, defaultOccUserConfig as ɵfj, UserNotificationPreferenceAdapter as ɵfk, defaultPersonalizationConfig as ɵfl, interceptors$3 as ɵfm, OccPersonalizationIdInterceptor as ɵfn, OccPersonalizationTimeInterceptor as ɵfo, ProcessStoreModule as ɵfp, getReducers$9 as ɵfq, reducerToken$9 as ɵfr, reducerProvider$9 as ɵfs, productStoreConfigFactory as ɵft, ProductStoreModule as ɵfu, getReducers$a as ɵfv, reducerToken$a as ɵfw, reducerProvider$a as ɵfx, clearProductsState as ɵfy, metaReducers$5 as ɵfz, AnonymousConsentsStoreModule as ɵg, effects$9 as ɵga, ProductReferencesEffects as ɵgb, ProductReviewsEffects as ɵgc, ProductsSearchEffects as ɵgd, ProductEffects as ɵge, reducer$h as ɵgf, entityScopedLoaderReducer as ɵgg, scopedLoaderReducer as ɵgh, reducer$j as ɵgi, reducer$i as ɵgj, PageMetaResolver as ɵgk, CouponSearchPageResolver as ɵgl, PageMetaResolver as ɵgm, addExternalRoutesFactory as ɵgn, getReducers$6 as ɵgo, reducer$c as ɵgp, reducerToken$6 as ɵgq, reducerProvider$6 as ɵgr, CustomSerializer as ɵgs, effects$6 as ɵgt, RouterEffects as ɵgu, siteContextStoreConfigFactory as ɵgv, SiteContextStoreModule as ɵgw, getReducers$1 as ɵgx, reducerToken$1 as ɵgy, reducerProvider$1 as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, effects$2 as ɵha, LanguagesEffects as ɵhb, CurrenciesEffects as ɵhc, BaseSiteEffects as ɵhd, reducer$3 as ɵhe, reducer$2 as ɵhf, reducer$1 as ɵhg, defaultSiteContextConfigFactory as ɵhh, initializeContext as ɵhi, contextServiceProviders as ɵhj, SiteContextRoutesHandler as ɵhk, SiteContextUrlSerializer as ɵhl, siteContextParamsProviders as ɵhm, baseSiteConfigValidator as ɵhn, interceptors$4 as ɵho, CmsTicketInterceptor as ɵhp, StoreFinderStoreModule as ɵhq, getReducers$b as ɵhr, reducerToken$b as ɵhs, reducerProvider$b as ɵht, effects$a as ɵhu, FindStoresEffect as ɵhv, ViewAllStoresEffect as ɵhw, defaultStoreFinderConfig as ɵhx, UserStoreModule as ɵhy, getReducers$c as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, reducerToken$c as ɵia, reducerProvider$c as ɵib, clearUserState as ɵic, metaReducers$7 as ɵid, effects$b as ɵie, BillingCountriesEffect as ɵif, ClearMiscsDataEffect as ɵig, ConsignmentTrackingEffects as ɵih, DeliveryCountriesEffects as ɵii, NotificationPreferenceEffects as ɵij, OrderDetailsEffect as ɵik, OrderReturnRequestEffect as ɵil, UserPaymentMethodsEffects as ɵim, RegionsEffects as ɵin, ResetPasswordEffects as ɵio, TitlesEffects as ɵip, UserAddressesEffects as ɵiq, UserConsentsEffect as ɵir, UserDetailsEffects as ɵis, UserOrdersEffect as ɵit, UserRegisterEffects as ɵiu, CustomerCouponEffects as ɵiv, ProductInterestsEffect as ɵiw, ForgotPasswordEffects as ɵix, UpdateEmailEffects as ɵiy, UpdatePasswordEffects as ɵiz, stateMetaReducers as ɵj, UserNotificationPreferenceConnector as ɵja, reducer$v as ɵjb, reducer$t as ɵjc, reducer$k as ɵjd, reducer$u as ɵje, reducer$p as ɵjf, reducer$w as ɵjg, reducer$o as ɵjh, reducer$z as ɵji, reducer$m as ɵjj, reducer$s as ɵjk, reducer$q as ɵjl, reducer$r as ɵjm, reducer$l as ɵjn, reducer$x as ɵjo, reducer$n as ɵjp, reducer$y as ɵjq, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, loaderReducer as ɵt, reducer$6 as ɵu, reducer$4 as ɵv, reducer$5 as ɵw, interceptors$1 as ɵx, AnonymousConsentsInterceptor as ɵy, asmStoreConfigFactory as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_HEADER, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_NORMALIZER, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentNormalizer, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfigChunk, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OpenIdAuthenticationTokenService, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, configurationFactory, contextServiceMapProvider, createFrom, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, resolveApplicable, serviceMapFactory, testestsd, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, TEST_CONFIG_COOKIE_NAME as ɵb, AsmStoreModule as ɵba, getReducers$3 as ɵbb, reducerToken$3 as ɵbc, reducerProvider$3 as ɵbd, clearCustomerSupportAgentAsmState as ɵbe, metaReducers$2 as ɵbf, effects$3 as ɵbg, CustomerEffects as ɵbh, CustomerSupportAgentTokenEffects as ɵbi, UserAuthenticationTokenService as ɵbj, reducer$7 as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, defaultAsmConfig as ɵbo, authStoreConfigFactory as ɵbp, AuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, clearAuthState as ɵbu, metaReducers as ɵbv, effects as ɵbw, ClientTokenEffect as ɵbx, UserTokenEffects as ɵby, ClientAuthenticationTokenService as ɵbz, configFromCookieFactory as ɵc, reducer as ɵca, defaultAuthConfig as ɵcb, interceptors as ɵcc, ClientTokenInterceptor as ɵcd, UserTokenInterceptor as ɵce, AuthErrorInterceptor as ɵcf, UserErrorHandlingService as ɵcg, UrlParsingService as ɵch, ClientErrorHandlingService as ɵci, TokenRevocationInterceptor as ɵcj, MultiCartStoreModule as ɵck, clearMultiCartState as ɵcl, multiCartMetaReducers as ɵcm, multiCartReducerToken as ɵcn, getMultiCartReducers as ɵco, multiCartReducerProvider as ɵcp, CartEffects as ɵcq, CartEntryEffects as ɵcr, CartVoucherEffects as ɵcs, WishListEffects as ɵct, SaveCartConnector as ɵcu, SaveCartAdapter as ɵcv, MultiCartEffects as ɵcw, entityProcessesLoaderReducer as ɵcx, entityReducer as ɵcy, processesLoaderReducer as ɵcz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵd, activeCartReducer as ɵda, cartEntitiesReducer as ɵdb, wishListReducer as ɵdc, CartPageMetaResolver as ɵdd, SiteContextParamsService as ɵde, CheckoutStoreModule as ɵdf, getReducers$5 as ɵdg, reducerToken$5 as ɵdh, reducerProvider$5 as ɵdi, effects$5 as ɵdj, AddressVerificationEffect as ɵdk, CardTypesEffects as ɵdl, CheckoutEffects as ɵdm, reducer$b as ɵdn, reducer$a as ɵdo, reducer$9 as ɵdp, cmsStoreConfigFactory as ɵdq, CmsStoreModule as ɵdr, getReducers$7 as ɵds, reducerToken$7 as ɵdt, reducerProvider$7 as ɵdu, clearCmsState as ɵdv, metaReducers$3 as ɵdw, effects$7 as ɵdx, ComponentsEffects as ɵdy, NavigationEntryItemEffects as ɵdz, initConfig as ɵe, PageEffects as ɵea, Config as ɵeb, reducer$f as ɵec, entityLoaderReducer as ɵed, reducer$g as ɵee, reducer$d as ɵef, reducer$e as ɵeg, GlobalMessageStoreModule as ɵeh, getReducers$4 as ɵei, reducerToken$4 as ɵej, reducerProvider$4 as ɵek, reducer$8 as ɵel, GlobalMessageEffect as ɵem, defaultGlobalMessageConfigFactory as ɵen, HttpErrorInterceptor as ɵeo, defaultI18nConfig as ɵep, i18nextProviders as ɵeq, i18nextInit as ɵer, MockTranslationService as ɵes, kymaStoreConfigFactory as ɵet, KymaStoreModule as ɵeu, getReducers$8 as ɵev, reducerToken$8 as ɵew, reducerProvider$8 as ɵex, clearKymaState as ɵey, metaReducers$4 as ɵez, anonymousConsentsStoreConfigFactory as ɵf, effects$8 as ɵfa, OpenIdTokenEffect as ɵfb, defaultKymaConfig as ɵfc, defaultOccAsmConfig as ɵfd, defaultOccCartConfig as ɵfe, OccSaveCartAdapter as ɵff, defaultOccProductConfig as ɵfg, defaultOccSiteContextConfig as ɵfh, defaultOccStoreFinderConfig as ɵfi, defaultOccUserConfig as ɵfj, UserNotificationPreferenceAdapter as ɵfk, defaultPersonalizationConfig as ɵfl, interceptors$3 as ɵfm, OccPersonalizationIdInterceptor as ɵfn, OccPersonalizationTimeInterceptor as ɵfo, ProcessStoreModule as ɵfp, getReducers$9 as ɵfq, reducerToken$9 as ɵfr, reducerProvider$9 as ɵfs, productStoreConfigFactory as ɵft, ProductStoreModule as ɵfu, getReducers$a as ɵfv, reducerToken$a as ɵfw, reducerProvider$a as ɵfx, clearProductsState as ɵfy, metaReducers$5 as ɵfz, AnonymousConsentsStoreModule as ɵg, effects$9 as ɵga, ProductReferencesEffects as ɵgb, ProductReviewsEffects as ɵgc, ProductsSearchEffects as ɵgd, ProductEffects as ɵge, reducer$h as ɵgf, entityScopedLoaderReducer as ɵgg, scopedLoaderReducer as ɵgh, reducer$j as ɵgi, reducer$i as ɵgj, PageMetaResolver as ɵgk, CouponSearchPageResolver as ɵgl, PageMetaResolver as ɵgm, addExternalRoutesFactory as ɵgn, getReducers$6 as ɵgo, reducer$c as ɵgp, reducerToken$6 as ɵgq, reducerProvider$6 as ɵgr, CustomSerializer as ɵgs, effects$6 as ɵgt, RouterEffects as ɵgu, siteContextStoreConfigFactory as ɵgv, SiteContextStoreModule as ɵgw, getReducers$1 as ɵgx, reducerToken$1 as ɵgy, reducerProvider$1 as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, effects$2 as ɵha, LanguagesEffects as ɵhb, CurrenciesEffects as ɵhc, BaseSiteEffects as ɵhd, reducer$3 as ɵhe, reducer$2 as ɵhf, reducer$1 as ɵhg, defaultSiteContextConfigFactory as ɵhh, initializeContext as ɵhi, contextServiceProviders as ɵhj, SiteContextRoutesHandler as ɵhk, SiteContextUrlSerializer as ɵhl, siteContextParamsProviders as ɵhm, baseSiteConfigValidator as ɵhn, interceptors$4 as ɵho, CmsTicketInterceptor as ɵhp, StoreFinderStoreModule as ɵhq, getReducers$b as ɵhr, reducerToken$b as ɵhs, reducerProvider$b as ɵht, effects$a as ɵhu, FindStoresEffect as ɵhv, ViewAllStoresEffect as ɵhw, defaultStoreFinderConfig as ɵhx, UserStoreModule as ɵhy, getReducers$c as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, reducerToken$c as ɵia, reducerProvider$c as ɵib, clearUserState as ɵic, metaReducers$7 as ɵid, effects$b as ɵie, BillingCountriesEffect as ɵif, ClearMiscsDataEffect as ɵig, ConsignmentTrackingEffects as ɵih, DeliveryCountriesEffects as ɵii, NotificationPreferenceEffects as ɵij, OrderDetailsEffect as ɵik, OrderReturnRequestEffect as ɵil, UserPaymentMethodsEffects as ɵim, RegionsEffects as ɵin, ResetPasswordEffects as ɵio, TitlesEffects as ɵip, UserAddressesEffects as ɵiq, UserConsentsEffect as ɵir, UserDetailsEffects as ɵis, UserOrdersEffect as ɵit, UserRegisterEffects as ɵiu, CustomerCouponEffects as ɵiv, ProductInterestsEffect as ɵiw, ForgotPasswordEffects as ɵix, UpdateEmailEffects as ɵiy, UpdatePasswordEffects as ɵiz, stateMetaReducers as ɵj, UserNotificationPreferenceConnector as ɵja, reducer$v as ɵjb, reducer$t as ɵjc, reducer$k as ɵjd, reducer$u as ɵje, reducer$p as ɵjf, reducer$w as ɵjg, reducer$o as ɵjh, reducer$z as ɵji, reducer$m as ɵjj, reducer$s as ɵjk, reducer$q as ɵjl, reducer$r as ɵjm, reducer$l as ɵjn, reducer$x as ɵjo, reducer$n as ɵjp, reducer$y as ɵjq, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, loaderReducer as ɵt, reducer$6 as ɵu, reducer$4 as ɵv, reducer$5 as ɵw, interceptors$1 as ɵx, AnonymousConsentsInterceptor as ɵy, asmStoreConfigFactory as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

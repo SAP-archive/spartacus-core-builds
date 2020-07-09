@@ -11,6 +11,7 @@ export declare const GIVE_ANONYMOUS_CONSENT = "[Anonymous Consents] Give Anonymo
 export declare const WITHDRAW_ANONYMOUS_CONSENT = "[Anonymous Consents] Withdraw Anonymous Consent";
 export declare const TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = "[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed";
 export declare const TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = "[Anonymous Consents] Anonymous Consent Templates Updated";
+export declare const ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS = "[Anonymous Consents] Check Updated Versions";
 export declare class LoadAnonymousConsentTemplates extends StateUtils.LoaderLoadAction {
     readonly type = "[Anonymous Consents] Load Anonymous Consent Templates";
     constructor();
@@ -62,4 +63,8 @@ export declare class ToggleAnonymousConsentTemplatesUpdated {
     readonly type = "[Anonymous Consents] Anonymous Consent Templates Updated";
     constructor(updated: boolean);
 }
-export declare type AnonymousConsentsActions = LoadAnonymousConsentTemplates | LoadAnonymousConsentTemplatesSuccess | LoadAnonymousConsentTemplatesFail | ResetLoadAnonymousConsentTemplates | GetAllAnonymousConsents | SetAnonymousConsents | GetAnonymousConsent | GiveAnonymousConsent | WithdrawAnonymousConsent | ToggleAnonymousConsentsBannerDissmissed | ToggleAnonymousConsentTemplatesUpdated;
+export declare class AnonymousConsentCheckUpdatedVersions {
+    readonly type = "[Anonymous Consents] Check Updated Versions";
+    constructor();
+}
+export declare type AnonymousConsentsActions = LoadAnonymousConsentTemplates | LoadAnonymousConsentTemplatesSuccess | LoadAnonymousConsentTemplatesFail | ResetLoadAnonymousConsentTemplates | GetAllAnonymousConsents | SetAnonymousConsents | GetAnonymousConsent | GiveAnonymousConsent | WithdrawAnonymousConsent | ToggleAnonymousConsentsBannerDissmissed | ToggleAnonymousConsentTemplatesUpdated | AnonymousConsentCheckUpdatedVersions;

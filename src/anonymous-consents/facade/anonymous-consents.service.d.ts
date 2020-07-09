@@ -111,6 +111,11 @@ export declare class AnonymousConsentsService {
      */
     isBannerVisible(): Observable<boolean>;
     /**
+     * Dispatches an action to trigger the check
+     * whether the anonymous consent version have been updated
+     */
+    private checkConsentVersions;
+    /**
      * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
      * @param currentTemplates current templates to check
      * @param newTemplates new templates to check

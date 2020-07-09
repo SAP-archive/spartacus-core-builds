@@ -4,7 +4,6 @@ import { AuthService } from '../../auth/index';
 import { OccEndpointsService } from '../../occ/index';
 import { AnonymousConsentsConfig } from '../config/anonymous-consents-config';
 import { AnonymousConsentsService } from '../facade/anonymous-consents.service';
-export declare const ANONYMOUS_CONSENTS_HEADER = "X-Anonymous-Consents";
 export declare class AnonymousConsentsInterceptor implements HttpInterceptor {
     private anonymousConsentsService;
     private authService;
