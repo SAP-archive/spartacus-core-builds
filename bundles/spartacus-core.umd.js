@@ -4860,6 +4860,9 @@
         };
         OccCmsPageNormalizer.prototype.normalizePageSlotData = function (source, target) {
             var e_1, _a;
+            if (!Array.isArray(source.contentSlots.contentSlot)) {
+                source.contentSlots.contentSlot = [source.contentSlots.contentSlot];
+            }
             try {
                 for (var _b = __values(source.contentSlots.contentSlot), _c = _b.next(); !_c.done; _c = _b.next()) {
                     var slot = _c.value;

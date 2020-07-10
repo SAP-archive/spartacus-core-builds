@@ -4270,6 +4270,9 @@ let OccCmsPageNormalizer = class OccCmsPageNormalizer {
         };
     }
     normalizePageSlotData(source, target) {
+        if (!Array.isArray(source.contentSlots.contentSlot)) {
+            source.contentSlots.contentSlot = [source.contentSlots.contentSlot];
+        }
         for (const slot of source.contentSlots.contentSlot) {
             target.page.slots[slot.position] = {
                 components: [],
