@@ -2829,6 +2829,9 @@
         return StateModule;
     }());
 
+    /**
+     * @deprecated since 2.1, use normalizeHttpError instead
+     */
     var UNKNOWN_ERROR = {
         error: 'unknown error',
     };
@@ -2845,6 +2848,9 @@
         };
     };
     var ɵ0$7 = circularReplacer;
+    /**
+     * @deprecated since 2.1, use normalizeHttpError instead
+     */
     function makeErrorSerializable(error) {
         if (error instanceof Error) {
             return {
@@ -27373,6 +27379,42 @@
         return UserModule;
     }());
 
+    /**
+     * Normalizes HttpErrorResponse to HttpErrorModel.
+     *
+     * Can be used as a safe and generic way for embodying http errors into
+     * NgRx Action payload, as it will strip potentially unserializable parts from
+     * it and warn in debug mode if passed error is not instance of HttpErrorModel
+     * (which usually happens when logic in NgRx Effect is not sealed correctly)
+     */
+    function normalizeHttpError(error) {
+        if (error instanceof http.HttpErrorResponse) {
+            var normalizedError = {
+                message: error.message,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            };
+            // include backend's error details
+            if (Array.isArray(error.error.errors)) {
+                normalizedError.details = error.error.errors;
+            }
+            else if (typeof error.error.error === 'string') {
+                normalizedError.details = [
+                    {
+                        type: error.error.error,
+                        message: error.error.error_description,
+                    },
+                ];
+            }
+            return normalizedError;
+        }
+        if (core.isDevMode()) {
+            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
+        }
+        return undefined;
+    }
+
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
@@ -27792,6 +27834,7 @@
     exports.isFeatureEnabled = isFeatureEnabled;
     exports.isFeatureLevel = isFeatureLevel;
     exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
+    exports.normalizeHttpError = normalizeHttpError;
     exports.occConfigValidator = occConfigValidator;
     exports.occServerConfigFromMetaTagFactory = occServerConfigFromMetaTagFactory;
     exports.provideConfig = provideConfig;
