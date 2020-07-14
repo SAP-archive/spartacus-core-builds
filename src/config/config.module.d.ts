@@ -1,20 +1,21 @@
 import { InjectionToken, ModuleWithProviders, Provider } from '@angular/core';
+export declare function configurationFactoryProvidedInRoot(): any;
 /**
  * Global Configuration injection token, can be used to inject configuration to any part of the app
  */
-export declare const Config: InjectionToken<unknown>;
+export declare const Config: InjectionToken<any>;
 /**
  * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
  * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
  */
-export declare const ConfigChunk: InjectionToken<unknown>;
+export declare const ConfigChunk: InjectionToken<object[]>;
 /**
  * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
  * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
  *
  * General rule is, that all config provided in libraries should be provided as default config.
  */
-export declare const DefaultConfigChunk: InjectionToken<unknown>;
+export declare const DefaultConfigChunk: InjectionToken<object[]>;
 /**
  * Helper function to provide configuration chunk using ConfigChunk token
  *

@@ -237,10 +237,17 @@
         return deepMerge.apply(void 0, __spread([target], sources));
     }
 
+    // separate function needed for production build:
+    function configurationFactoryProvidedInRoot() {
+        return configurationFactory(core.inject(ConfigChunk, core.InjectFlags.Optional), core.inject(DefaultConfigChunk, core.InjectFlags.Optional));
+    }
     /**
      * Global Configuration injection token, can be used to inject configuration to any part of the app
      */
-    var Config = new core.InjectionToken('Configuration');
+    var Config = new core.InjectionToken('Configuration', {
+        providedIn: 'root',
+        factory: configurationFactoryProvidedInRoot,
+    });
     /**
      * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
      * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
@@ -19385,145 +19392,6 @@
         };
     }
 
-    function getCookie(cookie, name) {
-        var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
-        var result = regExp.exec(cookie);
-        return (result && decodeURIComponent(result[1])) || '';
-    }
-
-    var TEST_CONFIG_COOKIE_NAME = new core.InjectionToken('TEST_CONFIG_COOKIE_NAME');
-    function parseConfigJSON(config) {
-        try {
-            return JSON.parse(decodeURIComponent(config));
-        }
-        catch (_) {
-            return {};
-        }
-    }
-    function configFromCookieFactory(cookieName, platform, document) {
-        if (common.isPlatformBrowser(platform) && cookieName) {
-            var config = getCookie(document.cookie, cookieName);
-            return parseConfigJSON(config);
-        }
-        return {};
-    }
-    /**
-     * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
-     *
-     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
-     */
-    var TestConfigModule = /** @class */ (function () {
-        function TestConfigModule() {
-        }
-        TestConfigModule_1 = TestConfigModule;
-        /**
-         * Injects JSON config from the cookie of the given name.
-         *
-         * Be aware of the cookie limitations (4096 bytes).
-         *
-         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
-         */
-        TestConfigModule.forRoot = function (options) {
-            return {
-                ngModule: TestConfigModule_1,
-                providers: [
-                    {
-                        provide: TEST_CONFIG_COOKIE_NAME,
-                        useValue: options && options.cookie,
-                    },
-                    provideConfigFactory(configFromCookieFactory, [
-                        TEST_CONFIG_COOKIE_NAME,
-                        core.PLATFORM_ID,
-                        common.DOCUMENT,
-                    ]),
-                ],
-            };
-        };
-        var TestConfigModule_1;
-        TestConfigModule = TestConfigModule_1 = __decorate([
-            core.NgModule({})
-        ], TestConfigModule);
-        return TestConfigModule;
-    }());
-
-    function configValidatorFactory(configInitializer, validators) {
-        var validate = function () {
-            if (core.isDevMode()) {
-                configInitializer
-                    .getStableConfig()
-                    .then(function (config) { return validateConfig(config, validators || []); });
-            }
-        };
-        return validate;
-    }
-    /**
-     * Should stay private in 1.x
-     * as forRoot() is used internally by ConfigInitializerModule
-     *
-     * issue: #5279
-     */
-    var ConfigValidatorModule = /** @class */ (function () {
-        function ConfigValidatorModule() {
-        }
-        ConfigValidatorModule_1 = ConfigValidatorModule;
-        ConfigValidatorModule.forRoot = function () {
-            return {
-                ngModule: ConfigValidatorModule_1,
-                providers: [
-                    {
-                        provide: core.APP_INITIALIZER,
-                        multi: true,
-                        useFactory: configValidatorFactory,
-                        deps: [
-                            ConfigInitializerService,
-                            [new core.Optional(), ConfigValidatorToken],
-                        ],
-                    },
-                ],
-            };
-        };
-        var ConfigValidatorModule_1;
-        ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
-            core.NgModule()
-        ], ConfigValidatorModule);
-        return ConfigValidatorModule;
-    }());
-
-    function configInitializerFactory(configInitializer, initializers) {
-        var isReady = function () { return configInitializer.initialize(initializers); };
-        return isReady;
-    }
-    var ConfigInitializerModule = /** @class */ (function () {
-        function ConfigInitializerModule() {
-        }
-        ConfigInitializerModule_1 = ConfigInitializerModule;
-        ConfigInitializerModule.forRoot = function () {
-            return {
-                ngModule: ConfigInitializerModule_1,
-                providers: [
-                    {
-                        provide: CONFIG_INITIALIZER_FORROOT_GUARD,
-                        useValue: true,
-                    },
-                    {
-                        provide: core.APP_INITIALIZER,
-                        multi: true,
-                        useFactory: configInitializerFactory,
-                        deps: [
-                            ConfigInitializerService,
-                            [new core.Optional(), CONFIG_INITIALIZER],
-                        ],
-                    },
-                ],
-            };
-        };
-        var ConfigInitializerModule_1;
-        ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
-            core.NgModule({})
-        ], ConfigInitializerModule);
-        return ConfigInitializerModule;
-    }());
-
     /**
      * The `CmsStructureConfig` is used to build pages in Spartacus by configuration
      * instead of using a backend CMS system. The configuration can be used to build
@@ -21468,6 +21336,145 @@
             })
         ], DynamicAttributeService);
         return DynamicAttributeService;
+    }());
+
+    function configInitializerFactory(configInitializer, initializers) {
+        var isReady = function () { return configInitializer.initialize(initializers); };
+        return isReady;
+    }
+    var ConfigInitializerModule = /** @class */ (function () {
+        function ConfigInitializerModule() {
+        }
+        ConfigInitializerModule_1 = ConfigInitializerModule;
+        ConfigInitializerModule.forRoot = function () {
+            return {
+                ngModule: ConfigInitializerModule_1,
+                providers: [
+                    {
+                        provide: CONFIG_INITIALIZER_FORROOT_GUARD,
+                        useValue: true,
+                    },
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: configInitializerFactory,
+                        deps: [
+                            ConfigInitializerService,
+                            [new core.Optional(), CONFIG_INITIALIZER],
+                        ],
+                    },
+                ],
+            };
+        };
+        var ConfigInitializerModule_1;
+        ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
+            core.NgModule({})
+        ], ConfigInitializerModule);
+        return ConfigInitializerModule;
+    }());
+
+    function configValidatorFactory(configInitializer, validators) {
+        var validate = function () {
+            if (core.isDevMode()) {
+                configInitializer
+                    .getStableConfig()
+                    .then(function (config) { return validateConfig(config, validators || []); });
+            }
+        };
+        return validate;
+    }
+    /**
+     * Should stay private in 1.x
+     * as forRoot() is used internally by ConfigInitializerModule
+     *
+     * issue: #5279
+     */
+    var ConfigValidatorModule = /** @class */ (function () {
+        function ConfigValidatorModule() {
+        }
+        ConfigValidatorModule_1 = ConfigValidatorModule;
+        ConfigValidatorModule.forRoot = function () {
+            return {
+                ngModule: ConfigValidatorModule_1,
+                providers: [
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: configValidatorFactory,
+                        deps: [
+                            ConfigInitializerService,
+                            [new core.Optional(), ConfigValidatorToken],
+                        ],
+                    },
+                ],
+            };
+        };
+        var ConfigValidatorModule_1;
+        ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
+            core.NgModule()
+        ], ConfigValidatorModule);
+        return ConfigValidatorModule;
+    }());
+
+    function getCookie(cookie, name) {
+        var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
+        var result = regExp.exec(cookie);
+        return (result && decodeURIComponent(result[1])) || '';
+    }
+
+    var TEST_CONFIG_COOKIE_NAME = new core.InjectionToken('TEST_CONFIG_COOKIE_NAME');
+    function parseConfigJSON(config) {
+        try {
+            return JSON.parse(decodeURIComponent(config));
+        }
+        catch (_) {
+            return {};
+        }
+    }
+    function configFromCookieFactory(cookieName, platform, document) {
+        if (common.isPlatformBrowser(platform) && cookieName) {
+            var config = getCookie(document.cookie, cookieName);
+            return parseConfigJSON(config);
+        }
+        return {};
+    }
+    /**
+     * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
+     *
+     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+     */
+    var TestConfigModule = /** @class */ (function () {
+        function TestConfigModule() {
+        }
+        TestConfigModule_1 = TestConfigModule;
+        /**
+         * Injects JSON config from the cookie of the given name.
+         *
+         * Be aware of the cookie limitations (4096 bytes).
+         *
+         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+         */
+        TestConfigModule.forRoot = function (options) {
+            return {
+                ngModule: TestConfigModule_1,
+                providers: [
+                    {
+                        provide: TEST_CONFIG_COOKIE_NAME,
+                        useValue: options && options.cookie,
+                    },
+                    provideConfigFactory(configFromCookieFactory, [
+                        TEST_CONFIG_COOKIE_NAME,
+                        core.PLATFORM_ID,
+                        common.DOCUMENT,
+                    ]),
+                ],
+            };
+        };
+        var TestConfigModule_1;
+        TestConfigModule = TestConfigModule_1 = __decorate([
+            core.NgModule({})
+        ], TestConfigModule);
+        return TestConfigModule;
     }());
 
     var FeaturesConfig = /** @class */ (function () {
@@ -27799,90 +27806,90 @@
     exports.validateConfig = validateConfig;
     exports.withdrawOn = withdrawOn;
     exports.ɵa = cartStatePersistenceFactory;
-    exports.ɵb = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵba = AsmStoreModule;
-    exports.ɵbb = getReducers$3;
-    exports.ɵbc = reducerToken$3;
-    exports.ɵbd = reducerProvider$3;
-    exports.ɵbe = clearCustomerSupportAgentAsmState;
-    exports.ɵbf = metaReducers$2;
-    exports.ɵbg = effects$3;
-    exports.ɵbh = CustomerEffects;
-    exports.ɵbi = CustomerSupportAgentTokenEffects;
-    exports.ɵbj = UserAuthenticationTokenService;
-    exports.ɵbk = reducer$7;
-    exports.ɵbl = interceptors$2;
-    exports.ɵbm = CustomerSupportAgentAuthErrorInterceptor;
-    exports.ɵbn = CustomerSupportAgentErrorHandlingService;
-    exports.ɵbo = defaultAsmConfig;
-    exports.ɵbp = authStoreConfigFactory;
-    exports.ɵbq = AuthStoreModule;
-    exports.ɵbr = getReducers;
-    exports.ɵbs = reducerToken;
-    exports.ɵbt = reducerProvider;
-    exports.ɵbu = clearAuthState;
-    exports.ɵbv = metaReducers;
-    exports.ɵbw = effects;
-    exports.ɵbx = ClientTokenEffect;
-    exports.ɵby = UserTokenEffects;
-    exports.ɵbz = ClientAuthenticationTokenService;
-    exports.ɵc = configFromCookieFactory;
-    exports.ɵca = reducer;
-    exports.ɵcb = defaultAuthConfig;
-    exports.ɵcc = interceptors;
-    exports.ɵcd = ClientTokenInterceptor;
-    exports.ɵce = UserTokenInterceptor;
-    exports.ɵcf = AuthErrorInterceptor;
-    exports.ɵcg = UserErrorHandlingService;
-    exports.ɵch = UrlParsingService;
-    exports.ɵci = ClientErrorHandlingService;
-    exports.ɵcj = TokenRevocationInterceptor;
-    exports.ɵck = MultiCartStoreModule;
-    exports.ɵcl = clearMultiCartState;
-    exports.ɵcm = multiCartMetaReducers;
-    exports.ɵcn = multiCartReducerToken;
-    exports.ɵco = getMultiCartReducers;
-    exports.ɵcp = multiCartReducerProvider;
-    exports.ɵcq = CartEffects;
-    exports.ɵcr = CartEntryEffects;
-    exports.ɵcs = CartVoucherEffects;
-    exports.ɵct = WishListEffects;
-    exports.ɵcu = SaveCartConnector;
-    exports.ɵcv = SaveCartAdapter;
-    exports.ɵcw = MultiCartEffects;
-    exports.ɵcx = entityProcessesLoaderReducer;
-    exports.ɵcy = entityReducer;
-    exports.ɵcz = processesLoaderReducer;
-    exports.ɵd = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵda = activeCartReducer;
-    exports.ɵdb = cartEntitiesReducer;
-    exports.ɵdc = wishListReducer;
-    exports.ɵdd = CartPageMetaResolver;
-    exports.ɵde = SiteContextParamsService;
-    exports.ɵdf = CheckoutStoreModule;
-    exports.ɵdg = getReducers$5;
-    exports.ɵdh = reducerToken$5;
-    exports.ɵdi = reducerProvider$5;
-    exports.ɵdj = effects$5;
-    exports.ɵdk = AddressVerificationEffect;
-    exports.ɵdl = CardTypesEffects;
-    exports.ɵdm = CheckoutEffects;
-    exports.ɵdn = reducer$b;
-    exports.ɵdo = reducer$a;
-    exports.ɵdp = reducer$9;
-    exports.ɵdq = cmsStoreConfigFactory;
-    exports.ɵdr = CmsStoreModule;
-    exports.ɵds = getReducers$7;
-    exports.ɵdt = reducerToken$7;
-    exports.ɵdu = reducerProvider$7;
-    exports.ɵdv = clearCmsState;
-    exports.ɵdw = metaReducers$3;
-    exports.ɵdx = effects$7;
-    exports.ɵdy = ComponentsEffects;
-    exports.ɵdz = NavigationEntryItemEffects;
-    exports.ɵe = initConfig;
-    exports.ɵea = PageEffects;
-    exports.ɵeb = Config;
+    exports.ɵb = CONFIG_INITIALIZER_FORROOT_GUARD;
+    exports.ɵba = asmStoreConfigFactory;
+    exports.ɵbb = AsmStoreModule;
+    exports.ɵbc = getReducers$3;
+    exports.ɵbd = reducerToken$3;
+    exports.ɵbe = reducerProvider$3;
+    exports.ɵbf = clearCustomerSupportAgentAsmState;
+    exports.ɵbg = metaReducers$2;
+    exports.ɵbh = effects$3;
+    exports.ɵbi = CustomerEffects;
+    exports.ɵbj = CustomerSupportAgentTokenEffects;
+    exports.ɵbk = UserAuthenticationTokenService;
+    exports.ɵbl = reducer$7;
+    exports.ɵbm = interceptors$2;
+    exports.ɵbn = CustomerSupportAgentAuthErrorInterceptor;
+    exports.ɵbo = CustomerSupportAgentErrorHandlingService;
+    exports.ɵbp = defaultAsmConfig;
+    exports.ɵbq = authStoreConfigFactory;
+    exports.ɵbr = AuthStoreModule;
+    exports.ɵbs = getReducers;
+    exports.ɵbt = reducerToken;
+    exports.ɵbu = reducerProvider;
+    exports.ɵbv = clearAuthState;
+    exports.ɵbw = metaReducers;
+    exports.ɵbx = effects;
+    exports.ɵby = ClientTokenEffect;
+    exports.ɵbz = UserTokenEffects;
+    exports.ɵc = configurationFactoryProvidedInRoot;
+    exports.ɵca = ClientAuthenticationTokenService;
+    exports.ɵcb = reducer;
+    exports.ɵcc = defaultAuthConfig;
+    exports.ɵcd = interceptors;
+    exports.ɵce = ClientTokenInterceptor;
+    exports.ɵcf = UserTokenInterceptor;
+    exports.ɵcg = AuthErrorInterceptor;
+    exports.ɵch = UserErrorHandlingService;
+    exports.ɵci = UrlParsingService;
+    exports.ɵcj = ClientErrorHandlingService;
+    exports.ɵck = TokenRevocationInterceptor;
+    exports.ɵcl = MultiCartStoreModule;
+    exports.ɵcm = clearMultiCartState;
+    exports.ɵcn = multiCartMetaReducers;
+    exports.ɵco = multiCartReducerToken;
+    exports.ɵcp = getMultiCartReducers;
+    exports.ɵcq = multiCartReducerProvider;
+    exports.ɵcr = CartEffects;
+    exports.ɵcs = CartEntryEffects;
+    exports.ɵct = CartVoucherEffects;
+    exports.ɵcu = WishListEffects;
+    exports.ɵcv = SaveCartConnector;
+    exports.ɵcw = SaveCartAdapter;
+    exports.ɵcx = MultiCartEffects;
+    exports.ɵcy = entityProcessesLoaderReducer;
+    exports.ɵcz = entityReducer;
+    exports.ɵd = TEST_CONFIG_COOKIE_NAME;
+    exports.ɵda = processesLoaderReducer;
+    exports.ɵdb = activeCartReducer;
+    exports.ɵdc = cartEntitiesReducer;
+    exports.ɵdd = wishListReducer;
+    exports.ɵde = CartPageMetaResolver;
+    exports.ɵdf = SiteContextParamsService;
+    exports.ɵdg = CheckoutStoreModule;
+    exports.ɵdh = getReducers$5;
+    exports.ɵdi = reducerToken$5;
+    exports.ɵdj = reducerProvider$5;
+    exports.ɵdk = effects$5;
+    exports.ɵdl = AddressVerificationEffect;
+    exports.ɵdm = CardTypesEffects;
+    exports.ɵdn = CheckoutEffects;
+    exports.ɵdo = reducer$b;
+    exports.ɵdp = reducer$a;
+    exports.ɵdq = reducer$9;
+    exports.ɵdr = cmsStoreConfigFactory;
+    exports.ɵds = CmsStoreModule;
+    exports.ɵdt = getReducers$7;
+    exports.ɵdu = reducerToken$7;
+    exports.ɵdv = reducerProvider$7;
+    exports.ɵdw = clearCmsState;
+    exports.ɵdx = metaReducers$3;
+    exports.ɵdy = effects$7;
+    exports.ɵdz = ComponentsEffects;
+    exports.ɵe = configFromCookieFactory;
+    exports.ɵea = NavigationEntryItemEffects;
+    exports.ɵeb = PageEffects;
     exports.ɵec = reducer$f;
     exports.ɵed = entityLoaderReducer;
     exports.ɵee = reducer$g;
@@ -27907,7 +27914,7 @@
     exports.ɵex = reducerProvider$8;
     exports.ɵey = clearKymaState;
     exports.ɵez = metaReducers$4;
-    exports.ɵf = anonymousConsentsStoreConfigFactory;
+    exports.ɵf = initConfig;
     exports.ɵfa = effects$8;
     exports.ɵfb = OpenIdTokenEffect;
     exports.ɵfc = defaultKymaConfig;
@@ -27934,7 +27941,7 @@
     exports.ɵfx = reducerProvider$a;
     exports.ɵfy = clearProductsState;
     exports.ɵfz = metaReducers$5;
-    exports.ɵg = AnonymousConsentsStoreModule;
+    exports.ɵg = anonymousConsentsStoreConfigFactory;
     exports.ɵga = effects$9;
     exports.ɵgb = ProductReferencesEffects;
     exports.ɵgc = ProductReviewsEffects;
@@ -27961,7 +27968,7 @@
     exports.ɵgx = getReducers$1;
     exports.ɵgy = reducerToken$1;
     exports.ɵgz = reducerProvider$1;
-    exports.ɵh = TRANSFER_STATE_META_REDUCER;
+    exports.ɵh = AnonymousConsentsStoreModule;
     exports.ɵha = effects$2;
     exports.ɵhb = LanguagesEffects;
     exports.ɵhc = CurrenciesEffects;
@@ -27988,7 +27995,7 @@
     exports.ɵhx = defaultStoreFinderConfig;
     exports.ɵhy = UserStoreModule;
     exports.ɵhz = getReducers$c;
-    exports.ɵi = STORAGE_SYNC_META_REDUCER;
+    exports.ɵi = TRANSFER_STATE_META_REDUCER;
     exports.ɵia = reducerToken$c;
     exports.ɵib = reducerProvider$c;
     exports.ɵic = clearUserState;
@@ -28015,7 +28022,7 @@
     exports.ɵix = ForgotPasswordEffects;
     exports.ɵiy = UpdateEmailEffects;
     exports.ɵiz = UpdatePasswordEffects;
-    exports.ɵj = stateMetaReducers;
+    exports.ɵj = STORAGE_SYNC_META_REDUCER;
     exports.ɵja = UserNotificationPreferenceConnector;
     exports.ɵjb = reducer$v;
     exports.ɵjc = reducer$t;
@@ -28033,22 +28040,22 @@
     exports.ɵjo = reducer$x;
     exports.ɵjp = reducer$n;
     exports.ɵjq = reducer$y;
-    exports.ɵk = getStorageSyncReducer;
-    exports.ɵl = getTransferStateReducer;
-    exports.ɵm = getReducers$2;
-    exports.ɵn = reducerToken$2;
-    exports.ɵo = reducerProvider$2;
-    exports.ɵp = clearAnonymousConsentTemplates;
-    exports.ɵq = metaReducers$1;
-    exports.ɵr = effects$1;
-    exports.ɵs = AnonymousConsentsEffects;
-    exports.ɵt = loaderReducer;
-    exports.ɵu = reducer$6;
-    exports.ɵv = reducer$4;
-    exports.ɵw = reducer$5;
-    exports.ɵx = interceptors$1;
-    exports.ɵy = AnonymousConsentsInterceptor;
-    exports.ɵz = asmStoreConfigFactory;
+    exports.ɵk = stateMetaReducers;
+    exports.ɵl = getStorageSyncReducer;
+    exports.ɵm = getTransferStateReducer;
+    exports.ɵn = getReducers$2;
+    exports.ɵo = reducerToken$2;
+    exports.ɵp = reducerProvider$2;
+    exports.ɵq = clearAnonymousConsentTemplates;
+    exports.ɵr = metaReducers$1;
+    exports.ɵs = effects$1;
+    exports.ɵt = AnonymousConsentsEffects;
+    exports.ɵu = loaderReducer;
+    exports.ɵv = reducer$6;
+    exports.ɵw = reducer$4;
+    exports.ɵx = reducer$5;
+    exports.ɵy = interceptors$1;
+    exports.ɵz = AnonymousConsentsInterceptor;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
