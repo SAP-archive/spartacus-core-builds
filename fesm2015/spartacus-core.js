@@ -1193,6 +1193,9 @@ let RoutingConfigService = class RoutingConfigService {
     constructor(config) {
         this.config = config;
     }
+    /**
+     * Returns the route config for the given route name.
+     */
     getRouteConfig(routeName) {
         var _a, _b;
         const routeConfig = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes;
@@ -1207,9 +1210,51 @@ let RoutingConfigService = class RoutingConfigService {
             console.warn(...args);
         }
     }
+    /**
+     * Returns the configured route loading strategy.
+     */
     getLoadStrategy() {
         var _a, _b, _c;
         return (_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.loadStrategy) !== null && _c !== void 0 ? _c : "always" /* ALWAYS */;
+    }
+    /**
+     * Returns the route name of the configured path.
+     *
+     * For example, when the config is:
+     * ```
+     * routing: {
+     *   routes: {
+     *      addressBook: { paths: ['my-account/address-book'] }
+     *   }
+     * }
+     * ```
+     *
+     * the `getRouteName('my-account/address-book')` returns `'addressBook'`.
+     */
+    getRouteName(path) {
+        if (!this.routeNamesByPath) {
+            this.initRouteNamesByPath();
+        }
+        return this.routeNamesByPath[path];
+    }
+    /**
+     * Initializes the property `routeNamesByPath`.
+     *
+     * The original config allows for reading configured path by the route name.
+     * But this method builds up a structure with a 'reversed config'
+     * to read quickly the route name by the path.
+     */
+    initRouteNamesByPath() {
+        var _a, _b, _c;
+        this.routeNamesByPath = {};
+        for (const [routeName, routeConfig] of Object.entries((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes)) {
+            (_c = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _c === void 0 ? void 0 : _c.forEach((path) => {
+                if (isDevMode() && this.routeNamesByPath[path]) {
+                    console.error(`The same path '${path}' is configured for two different route names: '${this.routeNamesByPath[path]}' and '${routeName}`);
+                }
+                this.routeNamesByPath[path] = routeName;
+            });
+        }
     }
 };
 RoutingConfigService.ctorParameters = () => [
@@ -18018,7 +18063,7 @@ const initialState$c = {
             id: '',
         },
         cmsRequired: false,
-        semanticRoute: '',
+        semanticRoute: undefined,
     },
     nextState: undefined,
 };
@@ -18056,18 +18101,24 @@ const reducerProvider$6 = {
 /* The serializer is there to parse the RouterStateSnapshot,
 and to reduce the amount of properties to be passed to the reducer.
  */
-class CustomSerializer {
+let CustomSerializer = class CustomSerializer {
+    constructor(routingConfig) {
+        this.routingConfig = routingConfig;
+    }
     serialize(routerState) {
-        const { url } = routerState;
-        const { queryParams } = routerState.root;
+        var _a, _b;
         let state = routerState.root;
         let cmsRequired = false;
         let context;
         let semanticRoute;
+        let urlString = '';
         while (state.firstChild) {
             state = state.firstChild;
-            if (state.data.routeName) {
-                semanticRoute = state.data.routeName;
+            urlString +=
+                '/' + state.url.map((urlSegment) => urlSegment.path).join('/');
+            // we use semantic route information embedded from any parent route
+            if ((_a = state.data) === null || _a === void 0 ? void 0 : _a.cxRoute) {
+                semanticRoute = (_b = state.data) === null || _b === void 0 ? void 0 : _b.cxRoute;
             }
             // we use context information embedded in Cms driven routes from any parent route
             if (state.data && state.data.cxCmsRouteContext) {
@@ -18083,6 +18134,10 @@ class CustomSerializer {
                 cmsRequired = true;
             }
         }
+        // If `semanticRoute` couldn't be already recognized using `data.cxRoute` property
+        // let's lookup the routing configuration to find the semantic route that has exactly the same configured path as the current URL.
+        // This will work only for simple URLs without any dynamic routing parameters.
+        semanticRoute = semanticRoute || this.lookupSemanticRoute(urlString);
         const { params } = state;
         // we give smartedit preview page a PageContext
         if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
@@ -18094,15 +18149,12 @@ class CustomSerializer {
         else {
             if (params['productCode']) {
                 context = { id: params['productCode'], type: PageType.PRODUCT_PAGE };
-                semanticRoute = 'product';
             }
             else if (params['categoryCode']) {
                 context = { id: params['categoryCode'], type: PageType.CATEGORY_PAGE };
-                semanticRoute = 'category';
             }
             else if (params['brandCode']) {
                 context = { id: params['brandCode'], type: PageType.CATEGORY_PAGE };
-                semanticRoute = 'brand';
             }
             else if (state.data.pageLabel !== undefined) {
                 context = { id: state.data.pageLabel, type: PageType.CONTENT_PAGE };
@@ -18124,15 +18176,45 @@ class CustomSerializer {
             }
         }
         return {
-            url,
-            queryParams,
+            url: routerState.url,
+            queryParams: routerState.root.queryParams,
             params,
             context,
             cmsRequired,
             semanticRoute,
         };
     }
-}
+    /**
+     * Returns the semantic route name for given page label.
+     *
+     * *NOTE*: It works only for simple static urls that are equal to the page label
+     * of cms-driven content page. For example: `/my-account/address-book`.
+     *
+     * It doesn't work for URLs with dynamic parameters. But such case can be handled
+     * by reading the defined `data.cxRoute` from the Angular Routes.
+     *
+     * It doesn't work for cms-driven child routes, because the guessed page label
+     * is longer than the real one (i.e. `/store-finder/view-all`). Only when backend
+     * returns the correct one along with cms page data (i.e. `pageLabel: '/store-finder'`),
+     * then it could be used. But it's too late for this serializer.
+     *
+     * This means that recognizing semantic route name of cms-driven child routes
+     * is NOT SUPPORTED.
+     *
+     * @param path path to be found in the routing config
+     */
+    lookupSemanticRoute(pageLabel) {
+        // Page label is assumed to start with `/`, but Spartacus configured paths
+        // don't start with slash. So we remove the leading slash:
+        return this.routingConfig.getRouteName(pageLabel.substr(1));
+    }
+};
+CustomSerializer.ctorParameters = () => [
+    { type: RoutingConfigService }
+];
+CustomSerializer = __decorate([
+    Injectable()
+], CustomSerializer);
 
 var RoutingModule_1;
 function initConfigurableRoutes(service) {

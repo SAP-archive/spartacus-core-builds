@@ -1319,6 +1319,9 @@ var RoutingConfigService = /** @class */ (function () {
     function RoutingConfigService(config) {
         this.config = config;
     }
+    /**
+     * Returns the route config for the given route name.
+     */
     RoutingConfigService.prototype.getRouteConfig = function (routeName) {
         var _a, _b;
         var routeConfig = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes;
@@ -1337,9 +1340,66 @@ var RoutingConfigService = /** @class */ (function () {
             console.warn.apply(console, __spread(args));
         }
     };
+    /**
+     * Returns the configured route loading strategy.
+     */
     RoutingConfigService.prototype.getLoadStrategy = function () {
         var _a, _b, _c;
         return (_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.loadStrategy) !== null && _c !== void 0 ? _c : "always" /* ALWAYS */;
+    };
+    /**
+     * Returns the route name of the configured path.
+     *
+     * For example, when the config is:
+     * ```
+     * routing: {
+     *   routes: {
+     *      addressBook: { paths: ['my-account/address-book'] }
+     *   }
+     * }
+     * ```
+     *
+     * the `getRouteName('my-account/address-book')` returns `'addressBook'`.
+     */
+    RoutingConfigService.prototype.getRouteName = function (path) {
+        if (!this.routeNamesByPath) {
+            this.initRouteNamesByPath();
+        }
+        return this.routeNamesByPath[path];
+    };
+    /**
+     * Initializes the property `routeNamesByPath`.
+     *
+     * The original config allows for reading configured path by the route name.
+     * But this method builds up a structure with a 'reversed config'
+     * to read quickly the route name by the path.
+     */
+    RoutingConfigService.prototype.initRouteNamesByPath = function () {
+        var e_1, _a;
+        var _this = this;
+        var _b, _c, _d;
+        this.routeNamesByPath = {};
+        var _loop_1 = function (routeName, routeConfig) {
+            (_d = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _d === void 0 ? void 0 : _d.forEach(function (path) {
+                if (isDevMode() && _this.routeNamesByPath[path]) {
+                    console.error("The same path '" + path + "' is configured for two different route names: '" + _this.routeNamesByPath[path] + "' and '" + routeName);
+                }
+                _this.routeNamesByPath[path] = routeName;
+            });
+        };
+        try {
+            for (var _e = __values(Object.entries((_c = (_b = this.config) === null || _b === void 0 ? void 0 : _b.routing) === null || _c === void 0 ? void 0 : _c.routes)), _f = _e.next(); !_f.done; _f = _e.next()) {
+                var _g = __read(_f.value, 2), routeName = _g[0], routeConfig = _g[1];
+                _loop_1(routeName, routeConfig);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_f && !_f.done && (_a = _e.return)) _a.call(_e);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
     };
     RoutingConfigService.ctorParameters = function () { return [
         { type: RoutingConfig }
@@ -20312,7 +20372,7 @@ var initialState$c = {
             id: '',
         },
         cmsRequired: false,
-        semanticRoute: '',
+        semanticRoute: undefined,
     },
     nextState: undefined,
 };
@@ -20352,19 +20412,23 @@ var reducerProvider$6 = {
 and to reduce the amount of properties to be passed to the reducer.
  */
 var CustomSerializer = /** @class */ (function () {
-    function CustomSerializer() {
+    function CustomSerializer(routingConfig) {
+        this.routingConfig = routingConfig;
     }
     CustomSerializer.prototype.serialize = function (routerState) {
-        var url = routerState.url;
-        var queryParams = routerState.root.queryParams;
+        var _a, _b;
         var state = routerState.root;
         var cmsRequired = false;
         var context;
         var semanticRoute;
+        var urlString = '';
         while (state.firstChild) {
             state = state.firstChild;
-            if (state.data.routeName) {
-                semanticRoute = state.data.routeName;
+            urlString +=
+                '/' + state.url.map(function (urlSegment) { return urlSegment.path; }).join('/');
+            // we use semantic route information embedded from any parent route
+            if ((_a = state.data) === null || _a === void 0 ? void 0 : _a.cxRoute) {
+                semanticRoute = (_b = state.data) === null || _b === void 0 ? void 0 : _b.cxRoute;
             }
             // we use context information embedded in Cms driven routes from any parent route
             if (state.data && state.data.cxCmsRouteContext) {
@@ -20380,6 +20444,10 @@ var CustomSerializer = /** @class */ (function () {
                 cmsRequired = true;
             }
         }
+        // If `semanticRoute` couldn't be already recognized using `data.cxRoute` property
+        // let's lookup the routing configuration to find the semantic route that has exactly the same configured path as the current URL.
+        // This will work only for simple URLs without any dynamic routing parameters.
+        semanticRoute = semanticRoute || this.lookupSemanticRoute(urlString);
         var params = state.params;
         // we give smartedit preview page a PageContext
         if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
@@ -20391,15 +20459,12 @@ var CustomSerializer = /** @class */ (function () {
         else {
             if (params['productCode']) {
                 context = { id: params['productCode'], type: PageType.PRODUCT_PAGE };
-                semanticRoute = 'product';
             }
             else if (params['categoryCode']) {
                 context = { id: params['categoryCode'], type: PageType.CATEGORY_PAGE };
-                semanticRoute = 'category';
             }
             else if (params['brandCode']) {
                 context = { id: params['brandCode'], type: PageType.CATEGORY_PAGE };
-                semanticRoute = 'brand';
             }
             else if (state.data.pageLabel !== undefined) {
                 context = { id: state.data.pageLabel, type: PageType.CONTENT_PAGE };
@@ -20421,14 +20486,44 @@ var CustomSerializer = /** @class */ (function () {
             }
         }
         return {
-            url: url,
-            queryParams: queryParams,
+            url: routerState.url,
+            queryParams: routerState.root.queryParams,
             params: params,
             context: context,
             cmsRequired: cmsRequired,
             semanticRoute: semanticRoute,
         };
     };
+    /**
+     * Returns the semantic route name for given page label.
+     *
+     * *NOTE*: It works only for simple static urls that are equal to the page label
+     * of cms-driven content page. For example: `/my-account/address-book`.
+     *
+     * It doesn't work for URLs with dynamic parameters. But such case can be handled
+     * by reading the defined `data.cxRoute` from the Angular Routes.
+     *
+     * It doesn't work for cms-driven child routes, because the guessed page label
+     * is longer than the real one (i.e. `/store-finder/view-all`). Only when backend
+     * returns the correct one along with cms page data (i.e. `pageLabel: '/store-finder'`),
+     * then it could be used. But it's too late for this serializer.
+     *
+     * This means that recognizing semantic route name of cms-driven child routes
+     * is NOT SUPPORTED.
+     *
+     * @param path path to be found in the routing config
+     */
+    CustomSerializer.prototype.lookupSemanticRoute = function (pageLabel) {
+        // Page label is assumed to start with `/`, but Spartacus configured paths
+        // don't start with slash. So we remove the leading slash:
+        return this.routingConfig.getRouteName(pageLabel.substr(1));
+    };
+    CustomSerializer.ctorParameters = function () { return [
+        { type: RoutingConfigService }
+    ]; };
+    CustomSerializer = __decorate([
+        Injectable()
+    ], CustomSerializer);
     return CustomSerializer;
 }());
 
