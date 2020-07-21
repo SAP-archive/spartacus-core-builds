@@ -20503,20 +20503,12 @@ var CustomSerializer = /** @class */ (function () {
      * It doesn't work for URLs with dynamic parameters. But such case can be handled
      * by reading the defined `data.cxRoute` from the Angular Routes.
      *
-     * It doesn't work for cms-driven child routes, because the guessed page label
-     * is longer than the real one (i.e. `/store-finder/view-all`). Only when backend
-     * returns the correct one along with cms page data (i.e. `pageLabel: '/store-finder'`),
-     * then it could be used. But it's too late for this serializer.
-     *
-     * This means that recognizing semantic route name of cms-driven child routes
-     * is NOT SUPPORTED.
-     *
      * @param path path to be found in the routing config
      */
-    CustomSerializer.prototype.lookupSemanticRoute = function (pageLabel) {
+    CustomSerializer.prototype.lookupSemanticRoute = function (path) {
         // Page label is assumed to start with `/`, but Spartacus configured paths
         // don't start with slash. So we remove the leading slash:
-        return this.routingConfig.getRouteName(pageLabel.substr(1));
+        return this.routingConfig.getRouteName(path.substr(1));
     };
     CustomSerializer.ctorParameters = function () { return [
         { type: RoutingConfigService }
