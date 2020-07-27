@@ -13333,6 +13333,7 @@ let ActiveCartService = class ActiveCartService {
         this.multiCartService = multiCartService;
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+        this.subscription = new Subscription();
         this.userId = OCC_USER_ID_ANONYMOUS;
         this.activeCartId$ = this.store.pipe(select(getActiveCartId), map((cartId) => {
             if (!cartId) {
@@ -13341,7 +13342,13 @@ let ActiveCartService = class ActiveCartService {
             return cartId;
         }));
         this.cartSelector$ = this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getCartEntity(cartId)));
-        this.authService.getOccUserId().subscribe((userId) => {
+        this.initActiveCart();
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+    initActiveCart() {
+        this.subscription.add(this.authService.getOccUserId().subscribe((userId) => {
             this.userId = userId;
             if (this.userId !== OCC_USER_ID_ANONYMOUS) {
                 if (this.isJustLoggedIn(userId)) {
@@ -13349,13 +13356,10 @@ let ActiveCartService = class ActiveCartService {
                 }
             }
             this.previousUserId = userId;
-        });
-        this.activeCartId$.subscribe((cartId) => {
+        }));
+        this.subscription.add(this.activeCartId$.subscribe((cartId) => {
             this.cartId = cartId;
-        });
-        this.initActiveCart();
-    }
-    initActiveCart() {
+        }));
         this.activeCart$ = this.cartSelector$.pipe(withLatestFrom(this.activeCartId$), map(([cartEntity, activeCartId]) => {
             return {
                 cart: cartEntity.value,

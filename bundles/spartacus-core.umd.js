@@ -15239,6 +15239,7 @@
             this.multiCartService = multiCartService;
             this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
             this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+            this.subscription = new rxjs.Subscription();
             this.userId = OCC_USER_ID_ANONYMOUS;
             this.activeCartId$ = this.store.pipe(store.select(getActiveCartId), operators.map(function (cartId) {
                 if (!cartId) {
@@ -15247,7 +15248,14 @@
                 return cartId;
             }));
             this.cartSelector$ = this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getCartEntity(cartId); }));
-            this.authService.getOccUserId().subscribe(function (userId) {
+            this.initActiveCart();
+        }
+        ActiveCartService.prototype.ngOnDestroy = function () {
+            this.subscription.unsubscribe();
+        };
+        ActiveCartService.prototype.initActiveCart = function () {
+            var _this = this;
+            this.subscription.add(this.authService.getOccUserId().subscribe(function (userId) {
                 _this.userId = userId;
                 if (_this.userId !== OCC_USER_ID_ANONYMOUS) {
                     if (_this.isJustLoggedIn(userId)) {
@@ -15255,14 +15263,10 @@
                     }
                 }
                 _this.previousUserId = userId;
-            });
-            this.activeCartId$.subscribe(function (cartId) {
+            }));
+            this.subscription.add(this.activeCartId$.subscribe(function (cartId) {
                 _this.cartId = cartId;
-            });
-            this.initActiveCart();
-        }
-        ActiveCartService.prototype.initActiveCart = function () {
-            var _this = this;
+            }));
             this.activeCart$ = this.cartSelector$.pipe(operators.withLatestFrom(this.activeCartId$), operators.map(function (_a) {
                 var _b = __read(_a, 2), cartEntity = _b[0], activeCartId = _b[1];
                 return {

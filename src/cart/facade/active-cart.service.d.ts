@@ -1,25 +1,28 @@
+import { OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../auth/index';
 import { Cart } from '../../model/cart.model';
 import { User } from '../../model/misc.model';
 import { OrderEntry } from '../../model/order.model';
 import { StateWithMultiCart } from '../store/multi-cart-state';
 import { MultiCartService } from './multi-cart.service';
-export declare class ActiveCartService {
+export declare class ActiveCartService implements OnDestroy {
     protected store: Store<StateWithMultiCart>;
     protected authService: AuthService;
     protected multiCartService: MultiCartService;
     private readonly PREVIOUS_USER_ID_INITIAL_VALUE;
     private previousUserId;
     private activeCart$;
+    protected subscription: Subscription;
     private userId;
     private cartId;
     private cartUser;
     private activeCartId$;
     private cartSelector$;
     constructor(store: Store<StateWithMultiCart>, authService: AuthService, multiCartService: MultiCartService);
-    private initActiveCart;
+    ngOnDestroy(): void;
+    protected initActiveCart(): void;
     /**
      * Returns active cart
      */
