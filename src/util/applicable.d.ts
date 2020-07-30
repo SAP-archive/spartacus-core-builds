@@ -51,4 +51,4 @@ export interface Applicable {
  * @param matchParams - array of parameters passed for hasMatch calls
  * @param priorityParams - array of parameters passed for getPriority calls
  */
-export declare function resolveApplicable<T extends Applicable>(applicables?: T[], matchParams?: any[], priorityParams?: any[]): T | undefined;
+export declare function resolveApplicable<T extends Applicable>(applicables: T[], matchParams?: any[], priorityParams?: any[]): T | undefined;

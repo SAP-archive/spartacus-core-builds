@@ -13697,10 +13697,9 @@
      * @param priorityParams - array of parameters passed for getPriority calls
      */
     function resolveApplicable(applicables, matchParams, priorityParams) {
-        if (applicables === void 0) { applicables = []; }
         if (matchParams === void 0) { matchParams = []; }
         if (priorityParams === void 0) { priorityParams = []; }
-        var matchedApplicables = applicables.filter(function (applicable) { return !applicable.hasMatch || applicable.hasMatch.apply(applicable, __spread(matchParams)); });
+        var matchedApplicables = (applicables !== null && applicables !== void 0 ? applicables : []).filter(function (applicable) { return !applicable.hasMatch || applicable.hasMatch.apply(applicable, __spread(matchParams)); });
         if (matchedApplicables.length < 2) {
             return matchedApplicables[0];
         }
@@ -27970,6 +27969,7 @@
     exports.configurationFactory = configurationFactory;
     exports.contextServiceMapProvider = contextServiceMapProvider;
     exports.createFrom = createFrom;
+    exports.deepMerge = deepMerge;
     exports.defaultAnonymousConsentsConfig = defaultAnonymousConsentsConfig;
     exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
     exports.defaultOccConfig = defaultOccConfig;
@@ -27980,6 +27980,7 @@
     exports.initConfigurableRoutes = initConfigurableRoutes;
     exports.isFeatureEnabled = isFeatureEnabled;
     exports.isFeatureLevel = isFeatureLevel;
+    exports.isObject = isObject;
     exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
     exports.normalizeHttpError = normalizeHttpError;
     exports.occConfigValidator = occConfigValidator;
