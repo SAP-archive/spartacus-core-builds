@@ -18173,6 +18173,59 @@
         return WishListService;
     }());
 
+    /**
+     * Indicates that a user has successfully placed an order
+     */
+    var OrderPlacedEvent = /** @class */ (function () {
+        function OrderPlacedEvent() {
+        }
+        return OrderPlacedEvent;
+    }());
+
+    var CheckoutEventBuilder = /** @class */ (function () {
+        function CheckoutEventBuilder(stateEventService) {
+            this.stateEventService = stateEventService;
+            this.register();
+        }
+        /**
+         * Registers checkout events
+         */
+        CheckoutEventBuilder.prototype.register = function () {
+            this.orderPlacedEvent();
+        };
+        /**
+         * Register an order successfully placed event
+         */
+        CheckoutEventBuilder.prototype.orderPlacedEvent = function () {
+            this.stateEventService.register({
+                action: PLACE_ORDER_SUCCESS,
+                event: OrderPlacedEvent,
+            });
+        };
+        CheckoutEventBuilder.ctorParameters = function () { return [
+            { type: StateEventService }
+        ]; };
+        CheckoutEventBuilder.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(core.ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
+        CheckoutEventBuilder = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], CheckoutEventBuilder);
+        return CheckoutEventBuilder;
+    }());
+
+    var CheckoutEventModule = /** @class */ (function () {
+        function CheckoutEventModule(_checkoutEventBuilder) {
+        }
+        CheckoutEventModule.ctorParameters = function () { return [
+            { type: CheckoutEventBuilder }
+        ]; };
+        CheckoutEventModule = __decorate([
+            core.NgModule({})
+        ], CheckoutEventModule);
+        return CheckoutEventModule;
+    }());
+
     var TranslationService = /** @class */ (function () {
         function TranslationService() {
         }
@@ -18787,7 +18840,7 @@
         var CheckoutModule_1;
         CheckoutModule = CheckoutModule_1 = __decorate([
             core.NgModule({
-                imports: [CheckoutStoreModule],
+                imports: [CheckoutStoreModule, CheckoutEventModule],
             })
         ], CheckoutModule);
         return CheckoutModule;
@@ -27596,6 +27649,8 @@
     exports.CheckoutDeliveryAdapter = CheckoutDeliveryAdapter;
     exports.CheckoutDeliveryConnector = CheckoutDeliveryConnector;
     exports.CheckoutDeliveryService = CheckoutDeliveryService;
+    exports.CheckoutEventBuilder = CheckoutEventBuilder;
+    exports.CheckoutEventModule = CheckoutEventModule;
     exports.CheckoutModule = CheckoutModule;
     exports.CheckoutOccModule = CheckoutOccModule;
     exports.CheckoutPageMetaResolver = CheckoutPageMetaResolver;
@@ -27753,6 +27808,7 @@
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
     exports.OpenIdAuthenticationTokenService = OpenIdAuthenticationTokenService;
+    exports.OrderPlacedEvent = OrderPlacedEvent;
     exports.OrderReturnRequestService = OrderReturnRequestService;
     exports.PASSWORD_PATTERN = PASSWORD_PATTERN;
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;

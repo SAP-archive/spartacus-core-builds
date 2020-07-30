@@ -1,0 +1,14 @@
+import { __decorate } from "tslib";
+import { NgModule } from '@angular/core';
+import { CheckoutEventBuilder } from './checkout-event.builder';
+let CheckoutEventModule = class CheckoutEventModule {
+    constructor(_checkoutEventBuilder) { }
+};
+CheckoutEventModule.ctorParameters = () => [
+    { type: CheckoutEventBuilder }
+];
+CheckoutEventModule = __decorate([
+    NgModule({})
+], CheckoutEventModule);
+export { CheckoutEventModule };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2hlY2tvdXQtZXZlbnQubW9kdWxlLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2NoZWNrb3V0L2V2ZW50cy9jaGVja291dC1ldmVudC5tb2R1bGUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBLE9BQU8sRUFBRSxRQUFRLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFDekMsT0FBTyxFQUFFLG9CQUFvQixFQUFFLE1BQU0sMEJBQTBCLENBQUM7QUFHaEUsSUFBYSxtQkFBbUIsR0FBaEMsTUFBYSxtQkFBbUI7SUFDOUIsWUFBWSxxQkFBMkMsSUFBRyxDQUFDO0NBQzVELENBQUE7O1lBRG9DLG9CQUFvQjs7QUFENUMsbUJBQW1CO0lBRC9CLFFBQVEsQ0FBQyxFQUFFLENBQUM7R0FDQSxtQkFBbUIsQ0FFL0I7U0FGWSxtQkFBbUIiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBOZ01vZHVsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgQ2hlY2tvdXRFdmVudEJ1aWxkZXIgfSBmcm9tICcuL2NoZWNrb3V0LWV2ZW50LmJ1aWxkZXInO1xuXG5ATmdNb2R1bGUoe30pXG5leHBvcnQgY2xhc3MgQ2hlY2tvdXRFdmVudE1vZHVsZSB7XG4gIGNvbnN0cnVjdG9yKF9jaGVja291dEV2ZW50QnVpbGRlcjogQ2hlY2tvdXRFdmVudEJ1aWxkZXIpIHt9XG59XG4iXX0=
