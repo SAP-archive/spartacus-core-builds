@@ -21832,8 +21832,9 @@ let ExternalJsFileLoader = class ExternalJsFileLoader {
      * @param src URL for the script to be loaded
      * @param params additional parameters to be attached to the given URL
      * @param callback a function to be invoked after the script has been loaded
+     * @param errorCallback function to be invoked after error during script loading
      */
-    load(src, params, callback) {
+    load(src, params, callback, errorCallback) {
         const script = this.document.createElement('script');
         script.type = 'text/javascript';
         if (params) {
@@ -21846,6 +21847,9 @@ let ExternalJsFileLoader = class ExternalJsFileLoader {
         script.defer = true;
         if (callback) {
             script.addEventListener('load', callback);
+        }
+        if (errorCallback) {
+            script.addEventListener('error', errorCallback);
         }
         document.head.appendChild(script);
     }

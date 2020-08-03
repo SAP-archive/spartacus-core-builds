@@ -24590,8 +24590,9 @@ var ExternalJsFileLoader = /** @class */ (function () {
      * @param src URL for the script to be loaded
      * @param params additional parameters to be attached to the given URL
      * @param callback a function to be invoked after the script has been loaded
+     * @param errorCallback function to be invoked after error during script loading
      */
-    ExternalJsFileLoader.prototype.load = function (src, params, callback) {
+    ExternalJsFileLoader.prototype.load = function (src, params, callback, errorCallback) {
         var script = this.document.createElement('script');
         script.type = 'text/javascript';
         if (params) {
@@ -24604,6 +24605,9 @@ var ExternalJsFileLoader = /** @class */ (function () {
         script.defer = true;
         if (callback) {
             script.addEventListener('load', callback);
+        }
+        if (errorCallback) {
+            script.addEventListener('error', errorCallback);
         }
         document.head.appendChild(script);
     };
