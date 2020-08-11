@@ -1,6 +1,10 @@
 /**
  * Generated bundle index. Do not edit.
  */
+/** AUGMENTABLE_TYPES_START */
+export { Product } from './src/model/product.model';
+export { ProductSearchPage, Facet } from './src/model/product-search.model';
+/** AUGMENTABLE_TYPES_END */
 export * from './public_api';
 export { AnonymousConsentsInterceptor as ɵz } from './src/anonymous-consents/http-interceptors/anonymous-consents-interceptor';
 export { interceptors as ɵy } from './src/anonymous-consents/http-interceptors/index';

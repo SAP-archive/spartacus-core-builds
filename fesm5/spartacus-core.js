@@ -27373,6 +27373,7 @@ function normalizeHttpError(error) {
 /*
  * Public API Surface of core
  */
+/** AUGMENTABLE_TYPES_END */
 
 /**
  * Generated bundle index. Do not edit.
