@@ -5049,7 +5049,7 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
     /**
      * The (current) backend returns facets with values that do not contribute
      * to the facet navigation much, as the number in the result list will not get
-     * behaviour, see https://jira.hybris.com/browse/CS-427.
+     * behavior, see https://jira.hybris.com/browse/CS-427.
      *
      * As long as this is not in place, we manually filter the facet from the list;
      * any facet that does not have a count < the total results will be dropped from
@@ -5080,9 +5080,8 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
         if (target.facets) {
             target.facets = target.facets.map(function (facetSource) {
                 var topValues = facetSource.topValues, facetTarget = __rest(facetSource, ["topValues"]);
-                facetTarget.topValueCount = topValues
-                    ? topValues.length
-                    : _this.DEFAULT_TOP_VALUES;
+                facetTarget.topValueCount =
+                    (topValues === null || topValues === void 0 ? void 0 : topValues.length) > 0 ? topValues.length : _this.DEFAULT_TOP_VALUES;
                 return facetTarget;
             });
         }

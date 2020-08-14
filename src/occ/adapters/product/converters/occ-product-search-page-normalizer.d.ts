@@ -14,7 +14,7 @@ export declare class OccProductSearchPageNormalizer implements Converter<Occ.Pro
     /**
      * The (current) backend returns facets with values that do not contribute
      * to the facet navigation much, as the number in the result list will not get
-     * behaviour, see https://jira.hybris.com/browse/CS-427.
+     * behavior, see https://jira.hybris.com/browse/CS-427.
      *
      * As long as this is not in place, we manually filter the facet from the list;
      * any facet that does not have a count < the total results will be dropped from
