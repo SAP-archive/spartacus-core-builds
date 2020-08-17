@@ -25568,12 +25568,14 @@
         UserOrderService.prototype.loadOrderList = function (pageSize, currentPage, sort) {
             var _this = this;
             this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new LoadUserOrders({
-                    userId: userId,
-                    pageSize: pageSize,
-                    currentPage: currentPage,
-                    sort: sort,
-                }));
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new LoadUserOrders({
+                        userId: userId,
+                        pageSize: pageSize,
+                        currentPage: currentPage,
+                        sort: sort,
+                    }));
+                }
             });
         };
         /**
@@ -25954,12 +25956,14 @@
         OrderReturnRequestService.prototype.loadOrderReturnRequestList = function (pageSize, currentPage, sort) {
             var _this = this;
             this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new LoadOrderReturnRequestList({
-                    userId: userId,
-                    pageSize: pageSize,
-                    currentPage: currentPage,
-                    sort: sort,
-                }));
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new LoadOrderReturnRequestList({
+                        userId: userId,
+                        pageSize: pageSize,
+                        currentPage: currentPage,
+                        sort: sort,
+                    }));
+                }
             });
         };
         /**

@@ -22570,12 +22570,14 @@ let UserOrderService = class UserOrderService {
      */
     loadOrderList(pageSize, currentPage, sort) {
         this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new LoadUserOrders({
-                userId,
-                pageSize,
-                currentPage,
-                sort,
-            }));
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new LoadUserOrders({
+                    userId,
+                    pageSize,
+                    currentPage,
+                    sort,
+                }));
+            }
         });
     }
     /**
@@ -22932,12 +22934,14 @@ let OrderReturnRequestService = class OrderReturnRequestService {
      */
     loadOrderReturnRequestList(pageSize, currentPage, sort) {
         this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new LoadOrderReturnRequestList({
-                userId,
-                pageSize,
-                currentPage,
-                sort,
-            }));
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new LoadOrderReturnRequestList({
+                    userId,
+                    pageSize,
+                    currentPage,
+                    sort,
+                }));
+            }
         });
     }
     /**
