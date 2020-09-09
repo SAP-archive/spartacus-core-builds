@@ -2,7 +2,6 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { UserOrderConnector } from '../../connectors/order/user-order.connector';
 import { UserActions } from '../actions/index';
-import * as ɵngcc0 from '@angular/core';
 export declare class OrderReturnRequestEffect {
     private actions$;
     private orderConnector;
@@ -11,8 +10,4 @@ export declare class OrderReturnRequestEffect {
     cancelReturnRequest$: Observable<UserActions.OrderReturnRequestAction>;
     loadReturnRequestList$: Observable<UserActions.OrderReturnRequestAction>;
     constructor(actions$: Actions, orderConnector: UserOrderConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OrderReturnRequestEffect, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<OrderReturnRequestEffect>;
 }
-
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib3JkZXItcmV0dXJuLXJlcXVlc3QuZWZmZWN0LmQudHMiLCJzb3VyY2VzIjpbIm9yZGVyLXJldHVybi1yZXF1ZXN0LmVmZmVjdC5kLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7OztBQUlBOzs7Ozs7Ozs7O0FBUUEiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBBY3Rpb25zIH0gZnJvbSAnQG5ncngvZWZmZWN0cyc7XG5pbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBVc2VyT3JkZXJDb25uZWN0b3IgfSBmcm9tICcuLi8uLi9jb25uZWN0b3JzL29yZGVyL3VzZXItb3JkZXIuY29ubmVjdG9yJztcbmltcG9ydCB7IFVzZXJBY3Rpb25zIH0gZnJvbSAnLi4vYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBPcmRlclJldHVyblJlcXVlc3RFZmZlY3Qge1xuICAgIHByaXZhdGUgYWN0aW9ucyQ7XG4gICAgcHJpdmF0ZSBvcmRlckNvbm5lY3RvcjtcbiAgICBjcmVhdGVSZXR1cm5SZXF1ZXN0JDogT2JzZXJ2YWJsZTxVc2VyQWN0aW9ucy5PcmRlclJldHVyblJlcXVlc3RBY3Rpb24+O1xuICAgIGxvYWRSZXR1cm5SZXF1ZXN0JDogT2JzZXJ2YWJsZTxVc2VyQWN0aW9ucy5PcmRlclJldHVyblJlcXVlc3RBY3Rpb24+O1xuICAgIGNhbmNlbFJldHVyblJlcXVlc3QkOiBPYnNlcnZhYmxlPFVzZXJBY3Rpb25zLk9yZGVyUmV0dXJuUmVxdWVzdEFjdGlvbj47XG4gICAgbG9hZFJldHVyblJlcXVlc3RMaXN0JDogT2JzZXJ2YWJsZTxVc2VyQWN0aW9ucy5PcmRlclJldHVyblJlcXVlc3RBY3Rpb24+O1xuICAgIGNvbnN0cnVjdG9yKGFjdGlvbnMkOiBBY3Rpb25zLCBvcmRlckNvbm5lY3RvcjogVXNlck9yZGVyQ29ubmVjdG9yKTtcbn1cbiJdfQ==
