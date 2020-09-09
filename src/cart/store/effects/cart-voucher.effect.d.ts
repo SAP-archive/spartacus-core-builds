@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { GlobalMessageService } from '../../../global-message/facade/global-message.service';
 import { CartVoucherConnector } from '../../connectors/voucher/cart-voucher.connector';
 import { CartActions } from '../actions/index';
+import * as ɵngcc0 from '@angular/core';
 export declare class CartVoucherEffects {
     private actions$;
     private cartVoucherConnector;
@@ -11,4 +12,8 @@ export declare class CartVoucherEffects {
     addCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.LoadCart | CartActions.CartProcessesDecrement>;
     removeCartVoucher$: Observable<CartActions.CartVoucherAction | CartActions.LoadCart>;
     private showGlobalMessage;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartVoucherEffects, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CartVoucherEffects>;
 }
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2FydC12b3VjaGVyLmVmZmVjdC5kLnRzIiwic291cmNlcyI6WyJjYXJ0LXZvdWNoZXIuZWZmZWN0LmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7OztBQUtBOzs7Ozs7Ozs7O0FBUUEiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBBY3Rpb25zIH0gZnJvbSAnQG5ncngvZWZmZWN0cyc7XG5pbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBHbG9iYWxNZXNzYWdlU2VydmljZSB9IGZyb20gJy4uLy4uLy4uL2dsb2JhbC1tZXNzYWdlL2ZhY2FkZS9nbG9iYWwtbWVzc2FnZS5zZXJ2aWNlJztcbmltcG9ydCB7IENhcnRWb3VjaGVyQ29ubmVjdG9yIH0gZnJvbSAnLi4vLi4vY29ubmVjdG9ycy92b3VjaGVyL2NhcnQtdm91Y2hlci5jb25uZWN0b3InO1xuaW1wb3J0IHsgQ2FydEFjdGlvbnMgfSBmcm9tICcuLi9hY3Rpb25zL2luZGV4JztcbmV4cG9ydCBkZWNsYXJlIGNsYXNzIENhcnRWb3VjaGVyRWZmZWN0cyB7XG4gICAgcHJpdmF0ZSBhY3Rpb25zJDtcbiAgICBwcml2YXRlIGNhcnRWb3VjaGVyQ29ubmVjdG9yO1xuICAgIHByaXZhdGUgbWVzc2FnZVNlcnZpY2U7XG4gICAgY29uc3RydWN0b3IoYWN0aW9ucyQ6IEFjdGlvbnMsIGNhcnRWb3VjaGVyQ29ubmVjdG9yOiBDYXJ0Vm91Y2hlckNvbm5lY3RvciwgbWVzc2FnZVNlcnZpY2U6IEdsb2JhbE1lc3NhZ2VTZXJ2aWNlKTtcbiAgICBhZGRDYXJ0Vm91Y2hlciQ6IE9ic2VydmFibGU8Q2FydEFjdGlvbnMuQ2FydFZvdWNoZXJBY3Rpb24gfCBDYXJ0QWN0aW9ucy5Mb2FkQ2FydCB8IENhcnRBY3Rpb25zLkNhcnRQcm9jZXNzZXNEZWNyZW1lbnQ+O1xuICAgIHJlbW92ZUNhcnRWb3VjaGVyJDogT2JzZXJ2YWJsZTxDYXJ0QWN0aW9ucy5DYXJ0Vm91Y2hlckFjdGlvbiB8IENhcnRBY3Rpb25zLkxvYWRDYXJ0PjtcbiAgICBwcml2YXRlIHNob3dHbG9iYWxNZXNzYWdlO1xufVxuIl19

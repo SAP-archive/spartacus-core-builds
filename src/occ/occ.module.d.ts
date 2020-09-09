@@ -1,4 +1,18 @@
 import { ModuleWithProviders } from '@angular/core';
+import * as ɵngcc0 from '@angular/core';
+import * as ɵngcc1 from './adapters/asm/asm-occ.module';
+import * as ɵngcc2 from './adapters/cms/cms-occ.module';
+import * as ɵngcc3 from './adapters/cart/cart-occ.module';
+import * as ɵngcc4 from './adapters/checkout/checkout-occ.module';
+import * as ɵngcc5 from './adapters/product/product-occ.module';
+import * as ɵngcc6 from './adapters/site-context/site-context-occ.module';
+import * as ɵngcc7 from './adapters/store-finder/store-finder-occ.module';
+import * as ɵngcc8 from './adapters/user/user-occ.module';
+import * as ɵngcc9 from './config-loader/occ-config-loader.module';
 export declare class OccModule {
     static forRoot(): ModuleWithProviders<OccModule>;
+    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<OccModule, never, [typeof ɵngcc1.AsmOccModule, typeof ɵngcc2.CmsOccModule, typeof ɵngcc3.CartOccModule, typeof ɵngcc4.CheckoutOccModule, typeof ɵngcc5.ProductOccModule, typeof ɵngcc6.SiteContextOccModule, typeof ɵngcc7.StoreFinderOccModule, typeof ɵngcc8.UserOccModule, typeof ɵngcc9.OccConfigLoaderModule], never>;
+    static ɵinj: ɵngcc0.ɵɵInjectorDef<OccModule>;
 }
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib2NjLm1vZHVsZS5kLnRzIiwic291cmNlcyI6WyJvY2MubW9kdWxlLmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7Ozs7O0FBQ0E7Ozs7QUFFQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE1vZHVsZVdpdGhQcm92aWRlcnMgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmV4cG9ydCBkZWNsYXJlIGNsYXNzIE9jY01vZHVsZSB7XG4gICAgc3RhdGljIGZvclJvb3QoKTogTW9kdWxlV2l0aFByb3ZpZGVyczxPY2NNb2R1bGU+O1xufVxuIl19
