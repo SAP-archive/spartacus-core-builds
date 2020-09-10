@@ -1,0 +1,43 @@
+import { __decorate } from "tslib";
+import { Injectable } from '@angular/core';
+import { CostCenterAdapter } from './cost-center.adapter';
+import * as i0 from "@angular/core";
+import * as i1 from "./cost-center.adapter";
+var CostCenterConnector = /** @class */ (function () {
+    function CostCenterConnector(adapter) {
+        this.adapter = adapter;
+    }
+    CostCenterConnector.prototype.get = function (userId, costCenterCode) {
+        return this.adapter.load(userId, costCenterCode);
+    };
+    CostCenterConnector.prototype.getList = function (userId, params) {
+        return this.adapter.loadList(userId, params);
+    };
+    CostCenterConnector.prototype.create = function (userId, costCenter) {
+        return this.adapter.create(userId, costCenter);
+    };
+    CostCenterConnector.prototype.update = function (userId, costCenterCode, costCenter) {
+        return this.adapter.update(userId, costCenterCode, costCenter);
+    };
+    CostCenterConnector.prototype.getBudgets = function (userId, costCenterCode, params) {
+        return this.adapter.loadBudgets(userId, costCenterCode, params);
+    };
+    CostCenterConnector.prototype.assignBudget = function (userId, costCenterCode, budgetCode) {
+        return this.adapter.assignBudget(userId, costCenterCode, budgetCode);
+    };
+    CostCenterConnector.prototype.unassignBudget = function (userId, costCenterCode, budgetCode) {
+        return this.adapter.unassignBudget(userId, costCenterCode, budgetCode);
+    };
+    CostCenterConnector.ctorParameters = function () { return [
+        { type: CostCenterAdapter }
+    ]; };
+    CostCenterConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CostCenterConnector_Factory() { return new CostCenterConnector(i0.ɵɵinject(i1.CostCenterAdapter)); }, token: CostCenterConnector, providedIn: "root" });
+    CostCenterConnector = __decorate([
+        Injectable({
+            providedIn: 'root',
+        })
+    ], CostCenterConnector);
+    return CostCenterConnector;
+}());
+export { CostCenterConnector };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29zdC1jZW50ZXIuY29ubmVjdG9yLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL29yZ2FuaXphdGlvbi9jb25uZWN0b3JzL2Nvc3QtY2VudGVyL2Nvc3QtY2VudGVyLmNvbm5lY3Rvci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUczQyxPQUFPLEVBQUUsaUJBQWlCLEVBQUUsTUFBTSx1QkFBdUIsQ0FBQzs7O0FBUTFEO0lBQ0UsNkJBQXNCLE9BQTBCO1FBQTFCLFlBQU8sR0FBUCxPQUFPLENBQW1CO0lBQUcsQ0FBQztJQUVwRCxpQ0FBRyxHQUFILFVBQUksTUFBYyxFQUFFLGNBQXNCO1FBQ3hDLE9BQU8sSUFBSSxDQUFDLE9BQU8sQ0FBQyxJQUFJLENBQUMsTUFBTSxFQUFFLGNBQWMsQ0FBQyxDQUFDO0lBQ25ELENBQUM7SUFFRCxxQ0FBTyxHQUFQLFVBQ0UsTUFBYyxFQUNkLE1BQXdCO1FBRXhCLE9BQU8sSUFBSSxDQUFDLE9BQU8sQ0FBQyxRQUFRLENBQUMsTUFBTSxFQUFFLE1BQU0sQ0FBQyxDQUFDO0lBQy9DLENBQUM7SUFFRCxvQ0FBTSxHQUFOLFVBQU8sTUFBYyxFQUFFLFVBQXNCO1FBQzNDLE9BQU8sSUFBSSxDQUFDLE9BQU8sQ0FBQyxNQUFNLENBQUMsTUFBTSxFQUFFLFVBQVUsQ0FBQyxDQUFDO0lBQ2pELENBQUM7SUFFRCxvQ0FBTSxHQUFOLFVBQ0UsTUFBYyxFQUNkLGNBQXNCLEVBQ3RCLFVBQXNCO1FBRXRCLE9BQU8sSUFBSSxDQUFDLE9BQU8sQ0FBQyxNQUFNLENBQUMsTUFBTSxFQUFFLGNBQWMsRUFBRSxVQUFVLENBQUMsQ0FBQztJQUNqRSxDQUFDO0lBRUQsd0NBQVUsR0FBVixVQUNFLE1BQWMsRUFDZCxjQUFzQixFQUN0QixNQUF3QjtRQUV4QixPQUFPLElBQUksQ0FBQyxPQUFPLENBQUMsV0FBVyxDQUFDLE1BQU0sRUFBRSxjQUFjLEVBQUUsTUFBTSxDQUFDLENBQUM7SUFDbEUsQ0FBQztJQUVELDBDQUFZLEdBQVosVUFDRSxNQUFjLEVBQ2QsY0FBc0IsRUFDdEIsVUFBa0I7UUFFbEIsT0FBTyxJQUFJLENBQUMsT0FBTyxDQUFDLFlBQVksQ0FBQyxNQUFNLEVBQUUsY0FBYyxFQUFFLFVBQVUsQ0FBQyxDQUFDO0lBQ3ZFLENBQUM7SUFFRCw0Q0FBYyxHQUFkLFVBQ0UsTUFBYyxFQUNkLGNBQXNCLEVBQ3RCLFVBQWtCO1FBRWxCLE9BQU8sSUFBSSxDQUFDLE9BQU8sQ0FBQyxjQUFjLENBQUMsTUFBTSxFQUFFLGNBQWMsRUFBRSxVQUFVLENBQUMsQ0FBQztJQUN6RSxDQUFDOztnQkEvQzhCLGlCQUFpQjs7O0lBRHJDLG1CQUFtQjtRQUgvQixVQUFVLENBQUM7WUFDVixVQUFVLEVBQUUsTUFBTTtTQUNuQixDQUFDO09BQ1csbUJBQW1CLENBaUQvQjs4QkE1REQ7Q0E0REMsQUFqREQsSUFpREM7U0FqRFksbUJBQW1CIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnO1xuaW1wb3J0IHsgQ29zdENlbnRlciB9IGZyb20gJy4uLy4uLy4uL21vZGVsL29yZy11bml0Lm1vZGVsJztcbmltcG9ydCB7IENvc3RDZW50ZXJBZGFwdGVyIH0gZnJvbSAnLi9jb3N0LWNlbnRlci5hZGFwdGVyJztcbmltcG9ydCB7IEIyQlNlYXJjaENvbmZpZyB9IGZyb20gJy4uLy4uL21vZGVsL3NlYXJjaC1jb25maWcnO1xuaW1wb3J0IHsgRW50aXRpZXNNb2RlbCB9IGZyb20gJy4uLy4uLy4uL21vZGVsL21pc2MubW9kZWwnO1xuaW1wb3J0IHsgQnVkZ2V0IH0gZnJvbSAnLi4vLi4vLi4vbW9kZWwvYnVkZ2V0Lm1vZGVsJztcblxuQEluamVjdGFibGUoe1xuICBwcm92aWRlZEluOiAncm9vdCcsXG59KVxuZXhwb3J0IGNsYXNzIENvc3RDZW50ZXJDb25uZWN0b3Ige1xuICBjb25zdHJ1Y3Rvcihwcm90ZWN0ZWQgYWRhcHRlcjogQ29zdENlbnRlckFkYXB0ZXIpIHt9XG5cbiAgZ2V0KHVzZXJJZDogc3RyaW5nLCBjb3N0Q2VudGVyQ29kZTogc3RyaW5nKTogT2JzZXJ2YWJsZTxDb3N0Q2VudGVyPiB7XG4gICAgcmV0dXJuIHRoaXMuYWRhcHRlci5sb2FkKHVzZXJJZCwgY29zdENlbnRlckNvZGUpO1xuICB9XG5cbiAgZ2V0TGlzdChcbiAgICB1c2VySWQ6IHN0cmluZyxcbiAgICBwYXJhbXM/OiBCMkJTZWFyY2hDb25maWdcbiAgKTogT2JzZXJ2YWJsZTxFbnRpdGllc01vZGVsPENvc3RDZW50ZXI+PiB7XG4gICAgcmV0dXJuIHRoaXMuYWRhcHRlci5sb2FkTGlzdCh1c2VySWQsIHBhcmFtcyk7XG4gIH1cblxuICBjcmVhdGUodXNlcklkOiBzdHJpbmcsIGNvc3RDZW50ZXI6IENvc3RDZW50ZXIpOiBPYnNlcnZhYmxlPENvc3RDZW50ZXI+IHtcbiAgICByZXR1cm4gdGhpcy5hZGFwdGVyLmNyZWF0ZSh1c2VySWQsIGNvc3RDZW50ZXIpO1xuICB9XG5cbiAgdXBkYXRlKFxuICAgIHVzZXJJZDogc3RyaW5nLFxuICAgIGNvc3RDZW50ZXJDb2RlOiBzdHJpbmcsXG4gICAgY29zdENlbnRlcjogQ29zdENlbnRlclxuICApOiBPYnNlcnZhYmxlPENvc3RDZW50ZXI+IHtcbiAgICByZXR1cm4gdGhpcy5hZGFwdGVyLnVwZGF0ZSh1c2VySWQsIGNvc3RDZW50ZXJDb2RlLCBjb3N0Q2VudGVyKTtcbiAgfVxuXG4gIGdldEJ1ZGdldHMoXG4gICAgdXNlcklkOiBzdHJpbmcsXG4gICAgY29zdENlbnRlckNvZGU6IHN0cmluZyxcbiAgICBwYXJhbXM/OiBCMkJTZWFyY2hDb25maWdcbiAgKTogT2JzZXJ2YWJsZTxFbnRpdGllc01vZGVsPEJ1ZGdldD4+IHtcbiAgICByZXR1cm4gdGhpcy5hZGFwdGVyLmxvYWRCdWRnZXRzKHVzZXJJZCwgY29zdENlbnRlckNvZGUsIHBhcmFtcyk7XG4gIH1cblxuICBhc3NpZ25CdWRnZXQoXG4gICAgdXNlcklkOiBzdHJpbmcsXG4gICAgY29zdENlbnRlckNvZGU6IHN0cmluZyxcbiAgICBidWRnZXRDb2RlOiBzdHJpbmdcbiAgKTogT2JzZXJ2YWJsZTxhbnk+IHtcbiAgICByZXR1cm4gdGhpcy5hZGFwdGVyLmFzc2lnbkJ1ZGdldCh1c2VySWQsIGNvc3RDZW50ZXJDb2RlLCBidWRnZXRDb2RlKTtcbiAgfVxuXG4gIHVuYXNzaWduQnVkZ2V0KFxuICAgIHVzZXJJZDogc3RyaW5nLFxuICAgIGNvc3RDZW50ZXJDb2RlOiBzdHJpbmcsXG4gICAgYnVkZ2V0Q29kZTogc3RyaW5nXG4gICk6IE9ic2VydmFibGU8YW55PiB7XG4gICAgcmV0dXJuIHRoaXMuYWRhcHRlci51bmFzc2lnbkJ1ZGdldCh1c2VySWQsIGNvc3RDZW50ZXJDb2RlLCBidWRnZXRDb2RlKTtcbiAgfVxufVxuIl19

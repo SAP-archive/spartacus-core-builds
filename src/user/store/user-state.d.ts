@@ -4,6 +4,7 @@ import { ConsentTemplate } from '../../model/consent.model';
 import { ConsignmentTracking } from '../../model/consignment-tracking.model';
 import { Title, User } from '../../model/misc.model';
 import { Order, OrderHistoryList, ReturnRequest, ReturnRequestList } from '../../model/order.model';
+import { CostCenter } from '../../model/org-unit.model';
 import { StateUtils } from '../../state';
 import { CustomerCouponSearchResult } from '../../model/customer-coupon.model';
 import { NotificationPreference } from '../../model';
@@ -28,6 +29,7 @@ export declare const USER_ADDRESSES = "[User] User Addresses";
 export declare const USER_RETURN_REQUESTS = "[User] Order Return Requests";
 export declare const USER_RETURN_REQUEST_DETAILS = "[User] Return Request Details";
 export declare const USER_ORDER_DETAILS = "[User] User Order Details";
+export declare const USER_COST_CENTERS = "[User] User Cost Centers";
 export declare const REGIONS = "[User] Regions";
 export declare const CUSTOMER_COUPONS = "[User] Customer Coupons";
 export declare const SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = "subscribeCustomerCoupon";
@@ -56,6 +58,7 @@ export interface UserState {
     customerCoupons: StateUtils.LoaderState<CustomerCouponSearchResult>;
     notificationPreferences: StateUtils.LoaderState<NotificationPreference[]>;
     productInterests: StateUtils.LoaderState<ProductInterestSearchResult>;
+    costCenters: StateUtils.LoaderState<CostCenter[]>;
 }
 export interface RegionsState {
     entities: Region[];

@@ -47,6 +47,10 @@ export declare const LOAD_CHECKOUT_DETAILS_FAIL = "[Checkout] Load Checkout Deta
 export declare const LOAD_CHECKOUT_DETAILS_SUCCESS = "[Checkout] Load Checkout Details Success";
 export declare const CHECKOUT_CLEAR_MISCS_DATA = "[Checkout] Clear Miscs Data";
 export declare const PAYMENT_PROCESS_SUCCESS = "[Checkout] Payment Process Success";
+export declare const SET_COST_CENTER = "[Checkout] Set Cost Center";
+export declare const SET_COST_CENTER_FAIL = "[Checkout] Set Cost Center Fail";
+export declare const SET_COST_CENTER_SUCCESS = "[Checkout] Set Cost Center Success";
+export declare const RESET_SET_COST_CENTER_PROCESS = "[Checkout] Reset Set Cost Center Process";
 export declare class AddDeliveryAddress implements Action {
     payload: {
         userId: string;
@@ -314,4 +318,31 @@ export declare class ClearCheckoutDeliveryModeFail extends EntityProcessesDecrem
         error: any;
     });
 }
-export declare type CheckoutAction = AddDeliveryAddress | AddDeliveryAddressFail | AddDeliveryAddressSuccess | SetDeliveryAddress | SetDeliveryAddressFail | SetDeliveryAddressSuccess | ResetSetDeliveryAddressProcess | LoadSupportedDeliveryModes | LoadSupportedDeliveryModesFail | LoadSupportedDeliveryModesSuccess | SetDeliveryMode | SetDeliveryModeFail | SetDeliveryModeSuccess | ResetSetDeliveryModeProcess | ClearSupportedDeliveryModes | CreatePaymentDetails | CreatePaymentDetailsFail | CreatePaymentDetailsSuccess | SetPaymentDetails | SetPaymentDetailsFail | SetPaymentDetailsSuccess | ResetSetPaymentDetailsProcess | PlaceOrder | PlaceOrderFail | PlaceOrderSuccess | ClearCheckoutStep | ClearCheckoutData | ClearCheckoutDeliveryAddress | ClearCheckoutDeliveryAddressFail | ClearCheckoutDeliveryAddressSuccess | ClearCheckoutDeliveryMode | ClearCheckoutDeliveryModeFail | ClearCheckoutDeliveryModeSuccess | LoadCheckoutDetails | LoadCheckoutDetailsFail | LoadCheckoutDetailsSuccess | CheckoutClearMiscsData;
+export declare class SetCostCenter extends StateUtils.EntityLoadAction {
+    payload: {
+        userId: string;
+        cartId: string;
+        costCenterId: string;
+    };
+    readonly type = "[Checkout] Set Cost Center";
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+        costCenterId: string;
+    });
+}
+export declare class SetCostCenterFail extends StateUtils.EntityFailAction {
+    payload: any;
+    readonly type = "[Checkout] Set Cost Center Fail";
+    constructor(payload: any);
+}
+export declare class SetCostCenterSuccess extends StateUtils.EntitySuccessAction {
+    payload: string;
+    readonly type = "[Checkout] Set Cost Center Success";
+    constructor(payload: string);
+}
+export declare class ResetSetCostCenterProcess extends StateUtils.EntityLoaderResetAction {
+    readonly type = "[Checkout] Reset Set Cost Center Process";
+    constructor();
+}
+export declare type CheckoutAction = AddDeliveryAddress | AddDeliveryAddressFail | AddDeliveryAddressSuccess | SetDeliveryAddress | SetDeliveryAddressFail | SetDeliveryAddressSuccess | ResetSetDeliveryAddressProcess | LoadSupportedDeliveryModes | LoadSupportedDeliveryModesFail | LoadSupportedDeliveryModesSuccess | SetDeliveryMode | SetDeliveryModeFail | SetDeliveryModeSuccess | ResetSetDeliveryModeProcess | ClearSupportedDeliveryModes | CreatePaymentDetails | CreatePaymentDetailsFail | CreatePaymentDetailsSuccess | SetPaymentDetails | SetPaymentDetailsFail | SetPaymentDetailsSuccess | ResetSetPaymentDetailsProcess | PlaceOrder | PlaceOrderFail | PlaceOrderSuccess | ClearCheckoutStep | ClearCheckoutData | ClearCheckoutDeliveryAddress | ClearCheckoutDeliveryAddressFail | ClearCheckoutDeliveryAddressSuccess | ClearCheckoutDeliveryMode | ClearCheckoutDeliveryModeFail | ClearCheckoutDeliveryModeSuccess | LoadCheckoutDetails | LoadCheckoutDetailsFail | LoadCheckoutDetailsSuccess | CheckoutClearMiscsData | SetCostCenter | SetCostCenterFail | SetCostCenterSuccess | ResetSetCostCenterProcess;

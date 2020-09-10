@@ -17,3 +17,4 @@ export * from './user-orders.effect';
 export * from './user-register.effect';
 export * from './customer-coupon.effect';
 export * from './product-interests.effect';
+export * from './user-consents.effect';
