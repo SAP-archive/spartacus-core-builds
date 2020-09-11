@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Cart } from '../../../model/cart.model';
 import { CheckoutCostCenterAdapter } from '../../../checkout/connectors/cost-center/checkout-cost-center.adapter';
+import { Cart } from '../../../model/cart.model';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccCheckoutCostCenterAdapter implements CheckoutCostCenterAdapter {

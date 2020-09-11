@@ -1,6 +1,6 @@
 import { GeoPoint } from '../../../model/misc.model';
+import { SearchConfig } from '../../../product/model/search-config';
 import { StateUtils } from '../../../state/utils/index';
-import { StoreFinderSearchConfig } from '../../model/search-config';
 export declare const FIND_STORES_ON_HOLD = "[StoreFinder] On Hold";
 export declare const FIND_STORES = "[StoreFinder] Find Stores";
 export declare const FIND_STORES_FAIL = "[StoreFinder] Find Stores Fail";
@@ -15,7 +15,7 @@ export declare class FindStoresOnHold extends StateUtils.LoaderLoadAction {
 export declare class FindStores extends StateUtils.LoaderLoadAction {
     payload: {
         queryText: string;
-        searchConfig?: StoreFinderSearchConfig;
+        searchConfig?: SearchConfig;
         longitudeLatitude?: GeoPoint;
         useMyLocation?: boolean;
         countryIsoCode?: string;
@@ -24,7 +24,7 @@ export declare class FindStores extends StateUtils.LoaderLoadAction {
     readonly type = "[StoreFinder] Find Stores";
     constructor(payload: {
         queryText: string;
-        searchConfig?: StoreFinderSearchConfig;
+        searchConfig?: SearchConfig;
         longitudeLatitude?: GeoPoint;
         useMyLocation?: boolean;
         countryIsoCode?: string;

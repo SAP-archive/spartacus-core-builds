@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PaymentTypeAdapter } from '../../../checkout/connectors/payment-type/payment-type.adapter';
-import { PaymentType, Cart } from '../../../model/cart.model';
+import { Cart, PaymentType } from '../../../model/cart.model';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccCheckoutPaymentTypeAdapter implements PaymentTypeAdapter {

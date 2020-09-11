@@ -3980,22 +3980,6 @@ export declare namespace Occ {
     enum NotificationType {
         BACK_IN_STOCK = "BACK_IN_STOCK"
     }
-    interface Budget {
-        active?: boolean;
-        budget?: number;
-        code?: string;
-        currency?: Currency;
-        endDate?: string;
-        startDate?: string;
-        name?: string;
-        orgUnit?: B2BUnit;
-        costCenters?: CostCenter[];
-    }
-    interface BudgetsList {
-        budgets?: Budget[];
-        pagination?: PaginationModel;
-        sorts?: SortModel[];
-    }
     interface CostCenter {
         active?: string;
         activeFlag?: boolean;

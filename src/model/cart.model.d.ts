@@ -1,8 +1,8 @@
 import { Address } from './address.model';
 import { Currency } from './misc.model';
 import { DeliveryMode, OrderEntry, PickupOrderEntryGroup, PromotionOrderEntryConsumed } from './order.model';
-import { Price, Promotion } from './product.model';
 import { CostCenter } from './org-unit.model';
+import { Price, Promotion } from './product.model';
 export interface PromotionResult {
     consumedEntries?: PromotionOrderEntryConsumed[];
     description?: string;
@@ -66,10 +66,6 @@ export interface PaymentDetails {
 export interface SaveCartResult {
     savedCartData?: Cart;
 }
-export interface B2BPaymentType {
-    code?: string;
-    displayName?: string;
-}
 export interface Cart {
     appliedOrderPromotions?: PromotionResult[];
     appliedProductPromotions?: PromotionResult[];
@@ -90,7 +86,7 @@ export interface Cart {
     net?: boolean;
     orderDiscounts?: Price;
     paymentInfo?: PaymentDetails;
-    paymentType?: B2BPaymentType;
+    paymentType?: PaymentType;
     pickupItemsQuantity?: number;
     pickupOrderGroups?: PickupOrderEntryGroup[];
     potentialOrderPromotions?: PromotionResult[];

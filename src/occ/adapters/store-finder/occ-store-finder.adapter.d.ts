@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { GeoPoint } from '../../../model/misc.model';
 import { PointOfService } from '../../../model/point-of-service.model';
 import { StoreCount, StoreFinderSearchPage } from '../../../model/store-finder.model';
+import { SearchConfig } from '../../../product/model/search-config';
 import { StoreFinderAdapter } from '../../../store-finder/connectors/store-finder.adapter';
-import { StoreFinderSearchConfig } from '../../../store-finder/model';
 import { ConverterService } from '../../../util/converter.service';
 import { Occ } from '../../occ-models/occ.models';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
@@ -13,8 +13,8 @@ export declare class OccStoreFinderAdapter implements StoreFinderAdapter {
     protected occEndpointsService: OccEndpointsService;
     protected converterService: ConverterService;
     constructor(http: HttpClient, occEndpointsService: OccEndpointsService, converterService: ConverterService);
-    search(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, radius?: number): Observable<StoreFinderSearchPage>;
+    search(query: string, searchConfig: SearchConfig, longitudeLatitude?: GeoPoint, radius?: number): Observable<StoreFinderSearchPage>;
     loadCounts(): Observable<StoreCount[]>;
     load(storeId: string): Observable<PointOfService>;
-    protected callOccFindStores(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, radius?: number): Observable<Occ.StoreFinderSearchPage>;
+    protected callOccFindStores(query: string, searchConfig: SearchConfig, longitudeLatitude?: GeoPoint, radius?: number): Observable<Occ.StoreFinderSearchPage>;
 }

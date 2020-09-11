@@ -4688,6 +4688,7 @@
             }
             /* tslint:disable:max-line-length */
             httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
+            // TODO(#8877): Should we improve configurable endpoints for this use case?
             return this.http
                 .put(this.getCartEndpoint(userId) + cartId + '/paymenttype', {}, {
                 params: httpParams,
@@ -4719,6 +4720,7 @@
             var httpParams = new http.HttpParams().set('costCenterId', costCenterId);
             /* tslint:disable:max-line-length */
             httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
+            // TODO(#8877): Should we improve configurable endpoints for this use case?
             return this.http
                 .put(this.getCartEndpoint(userId) + cartId + '/costcenter', {}, {
                 params: httpParams,
@@ -5199,6 +5201,72 @@
         return CmsOccModule;
     }());
 
+    var OccCostCenterNormalizer = /** @class */ (function () {
+        function OccCostCenterNormalizer() {
+        }
+        OccCostCenterNormalizer.prototype.convert = function (source, target) {
+            if (target === undefined) {
+                target = __assign({}, source);
+            }
+            return target;
+        };
+        OccCostCenterNormalizer = __decorate([
+            core.Injectable()
+        ], OccCostCenterNormalizer);
+        return OccCostCenterNormalizer;
+    }());
+
+    var COST_CENTER_NORMALIZER = new core.InjectionToken('CostCenterNormalizer');
+    var COST_CENTERS_NORMALIZER = new core.InjectionToken('CostCentersListNormalizer');
+
+    var OccCostCenterListNormalizer = /** @class */ (function () {
+        function OccCostCenterListNormalizer(converter) {
+            this.converter = converter;
+        }
+        OccCostCenterListNormalizer.prototype.convert = function (source, target) {
+            var _this = this;
+            if (target === undefined) {
+                target = __assign(__assign({}, source), { values: source.costCenters.map(function (costCenter) { return (__assign({}, _this.converter.convert(costCenter, COST_CENTER_NORMALIZER))); }) });
+            }
+            return target;
+        };
+        OccCostCenterListNormalizer.ctorParameters = function () { return [
+            { type: ConverterService }
+        ]; };
+        OccCostCenterListNormalizer = __decorate([
+            core.Injectable()
+        ], OccCostCenterListNormalizer);
+        return OccCostCenterListNormalizer;
+    }());
+
+    var defaultOccCostCentersConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    costCenters: '/costcenters',
+                },
+            },
+        },
+    };
+
+    var CostCenterOccModule = /** @class */ (function () {
+        function CostCenterOccModule() {
+        }
+        CostCenterOccModule = __decorate([
+            core.NgModule({
+                imports: [common.CommonModule, ConfigModule.withConfig(defaultOccCostCentersConfig)],
+                providers: [
+                    {
+                        provide: COST_CENTERS_NORMALIZER,
+                        useClass: OccCostCenterListNormalizer,
+                        multi: true,
+                    },
+                ],
+            })
+        ], CostCenterOccModule);
+        return CostCenterOccModule;
+    }());
+
     var ProductImageNormalizer = /** @class */ (function () {
         function ProductImageNormalizer(config) {
             this.config = config;
@@ -5554,12 +5622,7 @@
                 .pipe(operators.pluck('suggestions'), this.converter.pipeableMany(PRODUCT_SUGGESTION_NORMALIZER));
         };
         OccProductSearchAdapter.prototype.getSearchEndpoint = function (query, searchConfig) {
-            return this.occEndpoints.getUrl('productSearch', {}, {
-                query: query,
-                pageSize: searchConfig.pageSize,
-                currentPage: searchConfig.currentPage,
-                sort: searchConfig.sortCode,
-            });
+            return this.occEndpoints.getUrl('productSearch', {}, __assign({ query: query }, searchConfig));
         };
         OccProductSearchAdapter.prototype.getSuggestionEndpoint = function (term, max) {
             return this.occEndpoints.getUrl('productSuggestions', {}, { term: term, max: max });
@@ -6848,6 +6911,12 @@
         return UserConsentAdapter;
     }());
 
+    var UserCostCenterAdapter = /** @class */ (function () {
+        function UserCostCenterAdapter() {
+        }
+        return UserCostCenterAdapter;
+    }());
+
     var CustomerCouponAdapter = /** @class */ (function () {
         function CustomerCouponAdapter() {
         }
@@ -6860,12 +6929,6 @@
         function UserInterestsAdapter() {
         }
         return UserInterestsAdapter;
-    }());
-
-    var UserCostCenterAdapter = /** @class */ (function () {
-        function UserCostCenterAdapter() {
-        }
-        return UserCostCenterAdapter;
     }());
 
     var UserNotificationPreferenceAdapter = /** @class */ (function () {
@@ -7068,6 +7131,33 @@
         },
     };
 
+    var OccUserCostCenterAdapter = /** @class */ (function () {
+        function OccUserCostCenterAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        OccUserCostCenterAdapter.prototype.loadActiveList = function (userId) {
+            // TODO(#8877): Use configurable endpoints
+            var params = new http.HttpParams().set('fields', 'DEFAULT,unit(BASIC,addresses(DEFAULT))');
+            return this.http
+                .get(this.getCostCentersEndpoint(userId), { params: params })
+                .pipe(this.converter.pipeable(COST_CENTERS_NORMALIZER));
+        };
+        OccUserCostCenterAdapter.prototype.getCostCentersEndpoint = function (userId, params) {
+            return this.occEndpoints.getUrl('costCenters', { userId: userId }, params);
+        };
+        OccUserCostCenterAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService }
+        ]; };
+        OccUserCostCenterAdapter = __decorate([
+            core.Injectable()
+        ], OccUserCostCenterAdapter);
+        return OccUserCostCenterAdapter;
+    }());
+
     var headers = new http.HttpHeaders({
         'Content-Type': 'application/json',
     });
@@ -7135,85 +7225,6 @@
             core.Injectable()
         ], OccUserInterestsAdapter);
         return OccUserInterestsAdapter;
-    }());
-
-    var COST_CENTER_NORMALIZER = new core.InjectionToken('CostCenterNormalizer');
-    var COST_CENTERS_NORMALIZER = new core.InjectionToken('CostCentersListNormalizer');
-
-    var BUDGET_NORMALIZER = new core.InjectionToken('BudgetNormalizer');
-    var BUDGETS_NORMALIZER = new core.InjectionToken('BudgetsListNormalizer');
-
-    var OccCostCenterAdapter = /** @class */ (function () {
-        function OccCostCenterAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        OccCostCenterAdapter.prototype.load = function (userId, costCenterCode) {
-            return this.http
-                .get(this.getCostCenterEndpoint(userId, costCenterCode))
-                .pipe(this.converter.pipeable(COST_CENTER_NORMALIZER));
-        };
-        OccCostCenterAdapter.prototype.loadList = function (userId, params) {
-            return this.http
-                .get(this.getAllCostCentersEndpoint(userId, params))
-                .pipe(this.converter.pipeable(COST_CENTERS_NORMALIZER));
-        };
-        OccCostCenterAdapter.prototype.loadActiveList = function (userId) {
-            var params = new http.HttpParams().set('fields', 'DEFAULT,unit(BASIC,addresses(DEFAULT))');
-            return this.http
-                .get(this.getCostCentersEndpoint(userId), { params: params })
-                .pipe(this.converter.pipeable(COST_CENTERS_NORMALIZER));
-        };
-        OccCostCenterAdapter.prototype.create = function (userId, costCenter) {
-            return this.http
-                .post(this.getCostCentersEndpoint(userId), costCenter)
-                .pipe(this.converter.pipeable(COST_CENTER_NORMALIZER));
-        };
-        OccCostCenterAdapter.prototype.update = function (userId, costCenterCode, costCenter) {
-            return this.http
-                .patch(this.getCostCenterEndpoint(userId, costCenterCode), costCenter)
-                .pipe(this.converter.pipeable(COST_CENTER_NORMALIZER));
-        };
-        OccCostCenterAdapter.prototype.loadBudgets = function (userId, costCenterCode, params) {
-            return this.http
-                .get(this.getBudgetsEndpoint(userId, costCenterCode, params))
-                .pipe(this.converter.pipeable(BUDGETS_NORMALIZER));
-        };
-        OccCostCenterAdapter.prototype.assignBudget = function (userId, costCenterCode, budgetCode) {
-            return this.http.post(this.getBudgetsEndpoint(userId, costCenterCode, { budgetCode: budgetCode }), null);
-        };
-        OccCostCenterAdapter.prototype.unassignBudget = function (userId, costCenterCode, budgetCode) {
-            return this.http.delete(this.getBudgetEndpoint(userId, costCenterCode, budgetCode));
-        };
-        OccCostCenterAdapter.prototype.getCostCenterEndpoint = function (userId, costCenterCode) {
-            return this.occEndpoints.getUrl('costCenter', { userId: userId, costCenterCode: costCenterCode });
-        };
-        OccCostCenterAdapter.prototype.getCostCentersEndpoint = function (userId, params) {
-            return this.occEndpoints.getUrl('costCenters', { userId: userId }, params);
-        };
-        OccCostCenterAdapter.prototype.getAllCostCentersEndpoint = function (userId, params) {
-            return this.occEndpoints.getUrl('costCentersAll', { userId: userId }, params);
-        };
-        OccCostCenterAdapter.prototype.getBudgetsEndpoint = function (userId, costCenterCode, params) {
-            return this.occEndpoints.getUrl('costCenterBudgets', { userId: userId, costCenterCode: costCenterCode }, params);
-        };
-        OccCostCenterAdapter.prototype.getBudgetEndpoint = function (userId, costCenterCode, budgetCode) {
-            return this.occEndpoints.getUrl('costCenterBudget', {
-                userId: userId,
-                costCenterCode: costCenterCode,
-                budgetCode: budgetCode,
-            });
-        };
-        OccCostCenterAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCostCenterAdapter = __decorate([
-            core.Injectable()
-        ], OccCostCenterAdapter);
-        return OccCostCenterAdapter;
     }());
 
     var NOTIFICATION_PREFERENCE_SERIALIZER = new core.InjectionToken('NotificationPreferenceSerializer');
@@ -7300,7 +7311,7 @@
                         useClass: OccUserNotificationPreferenceAdapter,
                     },
                     { provide: UserInterestsAdapter, useClass: OccUserInterestsAdapter },
-                    { provide: UserCostCenterAdapter, useClass: OccCostCenterAdapter },
+                    { provide: UserCostCenterAdapter, useClass: OccUserCostCenterAdapter },
                     {
                         provide: PRODUCT_INTERESTS_NORMALIZER,
                         useExisting: OccUserInterestsNormalizer,
@@ -8898,105 +8909,6 @@
         }
     }
 
-    var CostCenterAdapter = /** @class */ (function () {
-        function CostCenterAdapter() {
-        }
-        return CostCenterAdapter;
-    }());
-
-    var OccCostCenterListNormalizer = /** @class */ (function () {
-        function OccCostCenterListNormalizer(converter) {
-            this.converter = converter;
-        }
-        OccCostCenterListNormalizer.prototype.convert = function (source, target) {
-            var _this = this;
-            if (target === undefined) {
-                target = __assign(__assign({}, source), { values: source.costCenters.map(function (costCenter) { return (__assign({}, _this.converter.convert(costCenter, COST_CENTER_NORMALIZER))); }) });
-            }
-            return target;
-        };
-        OccCostCenterListNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
-        ]; };
-        OccCostCenterListNormalizer = __decorate([
-            core.Injectable()
-        ], OccCostCenterListNormalizer);
-        return OccCostCenterListNormalizer;
-    }());
-
-    var defaultOccOrganizationConfig = {
-        backend: {
-            occ: {
-                endpoints: {
-                    budgets: '/users/${userId}/budgets',
-                    budget: '/users/${userId}/budgets/${budgetCode}',
-                    orgUnitsAvailable: '/users/${userId}/availableOrgUnitNodes',
-                    orgUnitsTree: '/users/${userId}/orgUnitsRootNodeTree',
-                    orgUnitsApprovalProcesses: '/users/${userId}/orgUnitsAvailableApprovalProcesses',
-                    orgUnits: '/users/${userId}/orgUnits',
-                    orgUnit: '/users/${userId}/orgUnits/${orgUnitId}',
-                    orgUnitUsers: '/users/${userId}/orgUnits/${orgUnitId}/availableUsers/${roleId}',
-                    orgUnitApprovers: '/users/${userId}/orgUnits/${orgUnitId}/orgCustomers/${orgCustomerId}/roles',
-                    orgUnitApprover: '/users/${userId}/orgUnits/${orgUnitId}/orgCustomers/${orgCustomerId}/roles/${roleId}',
-                    orgUnitUserRoles: '/users/${userId}/orgCustomers/${orgCustomerId}/roles',
-                    orgUnitUserRole: '/users/${userId}/orgCustomers/${orgCustomerId}/roles/${roleId}',
-                    orgUnitsAddresses: '/users/${userId}/orgUnits/${orgUnitId}/addresses',
-                    orgUnitsAddress: '/users/${userId}/orgUnits/${orgUnitId}/addresses/${addressId}',
-                    userGroups: '/users/${userId}/orgUnitUserGroups',
-                    userGroup: '/users/${userId}/orgUnitUserGroups/${userGroupId}',
-                    userGroupAvailableOrderApprovalPermissions: '/users/${userId}/orgUnitUserGroups/${userGroupId}/availableOrderApprovalPermissions',
-                    userGroupAvailableOrgCustomers: '/users/${userId}/orgUnitUserGroups/${userGroupId}/availableOrgCustomers',
-                    userGroupMembers: '/users/${userId}/orgUnitUserGroups/${userGroupId}/members',
-                    userGroupMember: '/users/${userId}/orgUnitUserGroups/${userGroupId}/members/${orgCustomerId}',
-                    userGroupOrderApprovalPermissions: '/users/${userId}/orgUnitUserGroups/${userGroupId}/orderApprovalPermissions',
-                    userGroupOrderApprovalPermission: '/users/${userId}/orgUnitUserGroups/${userGroupId}/orderApprovalPermissions/${orderApprovalPermissionCode}',
-                    costCenters: '/costcenters',
-                    costCenter: '/costcenters/${costCenterCode}',
-                    costCentersAll: '/costcentersall',
-                    costCenterBudgets: '/costcenters/${costCenterCode}/budgets',
-                    costCenterBudget: '/costcenters/${costCenterCode}/budgets/${budgetCode}',
-                    permissions: '/users/${userId}/orderApprovalPermissions',
-                    permission: '/users/${userId}/orderApprovalPermissions/${orderApprovalPermissionCode}',
-                    orderApprovalPermissionTypes: '/orderApprovalPermissionTypes',
-                    b2bUsers: '/users/${userId}/orgCustomers',
-                    b2bUser: '/users/${userId}/orgCustomers/${orgCustomerId}',
-                    b2bUserApprovers: '/users/${userId}/orgCustomers/${orgCustomerId}/approvers',
-                    b2bUserApprover: '/users/${userId}/orgCustomers/${orgCustomerId}/approvers/${approverId}',
-                    b2bUserUserGroups: '/users/${userId}/orgCustomers/${orgCustomerId}/orgUserGroups',
-                    b2bUserUserGroup: '/users/${userId}/orgCustomers/${orgCustomerId}/orgUserGroups/${userGroupId}',
-                    b2bUserPermissions: '/users/${userId}/orgCustomers/${orgCustomerId}/permissions',
-                    b2bUserPermission: '/users/${userId}/orgCustomers/${orgCustomerId}/permissions/${permissionId}',
-                },
-            },
-        },
-    };
-
-    var OrganizationOccModule = /** @class */ (function () {
-        function OrganizationOccModule() {
-        }
-        OrganizationOccModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    ConfigModule.withConfig(defaultOccOrganizationConfig),
-                ],
-                providers: [
-                    {
-                        provide: CostCenterAdapter,
-                        useClass: OccCostCenterAdapter,
-                    },
-                    {
-                        provide: COST_CENTERS_NORMALIZER,
-                        useClass: OccCostCenterListNormalizer,
-                        multi: true,
-                    },
-                ],
-            })
-        ], OrganizationOccModule);
-        return OrganizationOccModule;
-    }());
-
     var OccModule = /** @class */ (function () {
         function OccModule() {
         }
@@ -9028,7 +8940,7 @@
                     StoreFinderOccModule,
                     UserOccModule,
                     OccConfigLoaderModule.forRoot(),
-                    OrganizationOccModule,
+                    CostCenterOccModule,
                 ],
             })
         ], OccModule);
@@ -19051,6 +18963,42 @@
         return CardTypesEffects;
     }());
 
+    /**
+     * Normalizes HttpErrorResponse to HttpErrorModel.
+     *
+     * Can be used as a safe and generic way for embodying http errors into
+     * NgRx Action payload, as it will strip potentially unserializable parts from
+     * it and warn in debug mode if passed error is not instance of HttpErrorModel
+     * (which usually happens when logic in NgRx Effect is not sealed correctly)
+     */
+    function normalizeHttpError(error) {
+        if (error instanceof http.HttpErrorResponse) {
+            var normalizedError = {
+                message: error.message,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            };
+            // include backend's error details
+            if (Array.isArray(error.error.errors)) {
+                normalizedError.details = error.error.errors;
+            }
+            else if (typeof error.error.error === 'string') {
+                normalizedError.details = [
+                    {
+                        type: error.error.error,
+                        message: error.error.error_description,
+                    },
+                ];
+            }
+            return normalizedError;
+        }
+        if (core.isDevMode()) {
+            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
+        }
+        return undefined;
+    }
+
     var CheckoutConnector = /** @class */ (function () {
         function CheckoutConnector(adapter) {
             this.adapter = adapter;
@@ -19300,6 +19248,7 @@
                 return _this.checkoutCostCenterConnector
                     .setCostCenter(payload.userId, payload.cartId, payload.costCenterId)
                     .pipe(operators.mergeMap(function (data) { return [
+                    // TODO(#8877): We should trigger load cart not already assign the data. We might have misconfiguration between this cart model and load cart model
                     new LoadCartSuccess({
                         cart: data,
                         cartId: payload.cartId,
@@ -19315,7 +19264,7 @@
                         cartId: payload.cartId,
                     }),
                 ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new SetCostCenterFail(makeErrorSerializable(error)));
+                    return rxjs.of(new SetCostCenterFail(normalizeHttpError(error)));
                 }));
             }), withdrawOn(this.contextChange$));
         }
@@ -19411,7 +19360,7 @@
                 return _this.paymentTypeConnector.getPaymentTypes().pipe(operators.map(function (paymentTypes) {
                     return new LoadPaymentTypesSuccess(paymentTypes);
                 }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadPaymentTypesFail(makeErrorSerializable(error)));
+                    return rxjs.of(new LoadPaymentTypesFail(normalizeHttpError(error)));
                 }));
             }));
             this.setPaymentType$ = this.actions$.pipe(effects$c.ofType(SET_PAYMENT_TYPE), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
@@ -19428,7 +19377,7 @@
                         new SetPaymentTypeSuccess(data),
                     ];
                 }), operators.catchError(function (error) {
-                    return rxjs.of(new SetPaymentTypeFail(makeErrorSerializable(error)));
+                    return rxjs.of(new SetPaymentTypeFail(normalizeHttpError(error)));
                 }));
             }));
         }
@@ -23341,58 +23290,21 @@
         return KymaModule;
     }());
 
-    var CostCenterConnector = /** @class */ (function () {
-        function CostCenterConnector(adapter) {
-            this.adapter = adapter;
+    var CostCenterModule = /** @class */ (function () {
+        function CostCenterModule() {
         }
-        CostCenterConnector.prototype.get = function (userId, costCenterCode) {
-            return this.adapter.load(userId, costCenterCode);
-        };
-        CostCenterConnector.prototype.getList = function (userId, params) {
-            return this.adapter.loadList(userId, params);
-        };
-        CostCenterConnector.prototype.create = function (userId, costCenter) {
-            return this.adapter.create(userId, costCenter);
-        };
-        CostCenterConnector.prototype.update = function (userId, costCenterCode, costCenter) {
-            return this.adapter.update(userId, costCenterCode, costCenter);
-        };
-        CostCenterConnector.prototype.getBudgets = function (userId, costCenterCode, params) {
-            return this.adapter.loadBudgets(userId, costCenterCode, params);
-        };
-        CostCenterConnector.prototype.assignBudget = function (userId, costCenterCode, budgetCode) {
-            return this.adapter.assignBudget(userId, costCenterCode, budgetCode);
-        };
-        CostCenterConnector.prototype.unassignBudget = function (userId, costCenterCode, budgetCode) {
-            return this.adapter.unassignBudget(userId, costCenterCode, budgetCode);
-        };
-        CostCenterConnector.ctorParameters = function () { return [
-            { type: CostCenterAdapter }
-        ]; };
-        CostCenterConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CostCenterConnector_Factory() { return new CostCenterConnector(core.ɵɵinject(CostCenterAdapter)); }, token: CostCenterConnector, providedIn: "root" });
-        CostCenterConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CostCenterConnector);
-        return CostCenterConnector;
-    }());
-
-    var OrganizationModule = /** @class */ (function () {
-        function OrganizationModule() {
-        }
-        OrganizationModule_1 = OrganizationModule;
-        OrganizationModule.forRoot = function () {
+        CostCenterModule_1 = CostCenterModule;
+        CostCenterModule.forRoot = function () {
             return {
-                ngModule: OrganizationModule_1,
+                ngModule: CostCenterModule_1,
                 providers: [],
             };
         };
-        var OrganizationModule_1;
-        OrganizationModule = OrganizationModule_1 = __decorate([
+        var CostCenterModule_1;
+        CostCenterModule = CostCenterModule_1 = __decorate([
             core.NgModule({})
-        ], OrganizationModule);
-        return OrganizationModule;
+        ], CostCenterModule);
+        return CostCenterModule;
     }());
 
     var defaultPersonalizationConfig = {
@@ -28462,10 +28374,12 @@
             this.actions$ = actions$;
             this.userCostCenterConnector = userCostCenterConnector;
             this.loadActiveCostCenters$ = this.actions$.pipe(effects$c.ofType(LOAD_ACTIVE_COST_CENTERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.userCostCenterConnector.getActiveList(payload).pipe(operators.map(function (data) {
+                return _this.userCostCenterConnector.getActiveList(payload).pipe(
+                // TODO(#8875): Should we use here serialize utils?
+                operators.map(function (data) {
                     return new LoadActiveCostCentersSuccess(data.values);
                 }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadActiveCostCentersFail(makeErrorSerializable(error)));
+                    return rxjs.of(new LoadActiveCostCentersFail(normalizeHttpError(error)));
                 }));
             }));
         }
@@ -28543,42 +28457,6 @@
         return UserModule;
     }());
 
-    /**
-     * Normalizes HttpErrorResponse to HttpErrorModel.
-     *
-     * Can be used as a safe and generic way for embodying http errors into
-     * NgRx Action payload, as it will strip potentially unserializable parts from
-     * it and warn in debug mode if passed error is not instance of HttpErrorModel
-     * (which usually happens when logic in NgRx Effect is not sealed correctly)
-     */
-    function normalizeHttpError(error) {
-        if (error instanceof http.HttpErrorResponse) {
-            var normalizedError = {
-                message: error.message,
-                status: error.status,
-                statusText: error.statusText,
-                url: error.url,
-            };
-            // include backend's error details
-            if (Array.isArray(error.error.errors)) {
-                normalizedError.details = error.error.errors;
-            }
-            else if (typeof error.error.error === 'string') {
-                normalizedError.details = [
-                    {
-                        type: error.error.error,
-                        message: error.error.error_description,
-                    },
-                ];
-            }
-            return normalizedError;
-        }
-        if (core.isDevMode()) {
-            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
-        }
-        return undefined;
-    }
-
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
@@ -28616,8 +28494,6 @@
     exports.AuthSelectors = authGroup_selectors;
     exports.AuthService = AuthService;
     exports.BASE_SITE_CONTEXT_ID = BASE_SITE_CONTEXT_ID;
-    exports.BUDGETS_NORMALIZER = BUDGETS_NORMALIZER;
-    exports.BUDGET_NORMALIZER = BUDGET_NORMALIZER;
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
     exports.BaseSiteService = BaseSiteService;
@@ -28712,8 +28588,8 @@
     exports.ContentPageMetaResolver = ContentPageMetaResolver;
     exports.ContextServiceMap = ContextServiceMap;
     exports.ConverterService = ConverterService;
-    exports.CostCenterAdapter = CostCenterAdapter;
-    exports.CostCenterConnector = CostCenterConnector;
+    exports.CostCenterModule = CostCenterModule;
+    exports.CostCenterOccModule = CostCenterOccModule;
     exports.CurrencyService = CurrencyService;
     exports.CustomerCouponAdapter = CustomerCouponAdapter;
     exports.CustomerCouponConnector = CustomerCouponConnector;
@@ -28814,6 +28690,8 @@
     exports.OccConfig = OccConfig;
     exports.OccConfigLoaderModule = OccConfigLoaderModule;
     exports.OccConfigLoaderService = OccConfigLoaderService;
+    exports.OccCostCenterListNormalizer = OccCostCenterListNormalizer;
+    exports.OccCostCenterNormalizer = OccCostCenterNormalizer;
     exports.OccCustomerCouponAdapter = OccCustomerCouponAdapter;
     exports.OccEndpointsService = OccEndpointsService;
     exports.OccFieldsService = OccFieldsService;
@@ -28842,7 +28720,6 @@
     exports.OpenIdAuthenticationTokenService = OpenIdAuthenticationTokenService;
     exports.OrderPlacedEvent = OrderPlacedEvent;
     exports.OrderReturnRequestService = OrderReturnRequestService;
-    exports.OrganizationModule = OrganizationModule;
     exports.PASSWORD_PATTERN = PASSWORD_PATTERN;
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
     exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
@@ -29158,131 +29035,129 @@
     exports.ɵfg = defaultOccCartConfig;
     exports.ɵfh = OccSaveCartAdapter;
     exports.ɵfi = defaultOccCheckoutConfig;
-    exports.ɵfj = defaultOccProductConfig;
-    exports.ɵfk = defaultOccSiteContextConfig;
-    exports.ɵfl = defaultOccStoreFinderConfig;
-    exports.ɵfm = defaultOccUserConfig;
-    exports.ɵfn = UserNotificationPreferenceAdapter;
-    exports.ɵfo = OccCostCenterAdapter;
-    exports.ɵfp = OrganizationOccModule;
-    exports.ɵfq = defaultOccOrganizationConfig;
-    exports.ɵfr = OccCostCenterListNormalizer;
-    exports.ɵfs = defaultPersonalizationConfig;
-    exports.ɵft = interceptors$3;
-    exports.ɵfu = OccPersonalizationIdInterceptor;
-    exports.ɵfv = OccPersonalizationTimeInterceptor;
-    exports.ɵfw = ProcessStoreModule;
-    exports.ɵfx = getReducers$9;
-    exports.ɵfy = reducerToken$9;
-    exports.ɵfz = reducerProvider$9;
+    exports.ɵfj = defaultOccCostCentersConfig;
+    exports.ɵfk = defaultOccProductConfig;
+    exports.ɵfl = defaultOccSiteContextConfig;
+    exports.ɵfm = defaultOccStoreFinderConfig;
+    exports.ɵfn = defaultOccUserConfig;
+    exports.ɵfo = UserNotificationPreferenceAdapter;
+    exports.ɵfp = OccUserCostCenterAdapter;
+    exports.ɵfq = defaultPersonalizationConfig;
+    exports.ɵfr = interceptors$3;
+    exports.ɵfs = OccPersonalizationIdInterceptor;
+    exports.ɵft = OccPersonalizationTimeInterceptor;
+    exports.ɵfu = ProcessStoreModule;
+    exports.ɵfv = getReducers$9;
+    exports.ɵfw = reducerToken$9;
+    exports.ɵfx = reducerProvider$9;
+    exports.ɵfy = productStoreConfigFactory;
+    exports.ɵfz = ProductStoreModule;
     exports.ɵg = anonymousConsentsStoreConfigFactory;
-    exports.ɵga = productStoreConfigFactory;
-    exports.ɵgb = ProductStoreModule;
-    exports.ɵgc = getReducers$a;
-    exports.ɵgd = reducerToken$a;
-    exports.ɵge = reducerProvider$a;
-    exports.ɵgf = clearProductsState;
-    exports.ɵgg = metaReducers$5;
-    exports.ɵgh = effects$9;
-    exports.ɵgi = ProductReferencesEffects;
-    exports.ɵgj = ProductReviewsEffects;
-    exports.ɵgk = ProductsSearchEffects;
-    exports.ɵgl = ProductEffects;
-    exports.ɵgm = reducer$i;
-    exports.ɵgn = entityScopedLoaderReducer;
-    exports.ɵgo = scopedLoaderReducer;
-    exports.ɵgp = reducer$k;
-    exports.ɵgq = reducer$j;
+    exports.ɵga = getReducers$a;
+    exports.ɵgb = reducerToken$a;
+    exports.ɵgc = reducerProvider$a;
+    exports.ɵgd = clearProductsState;
+    exports.ɵge = metaReducers$5;
+    exports.ɵgf = effects$9;
+    exports.ɵgg = ProductReferencesEffects;
+    exports.ɵgh = ProductReviewsEffects;
+    exports.ɵgi = ProductsSearchEffects;
+    exports.ɵgj = ProductEffects;
+    exports.ɵgk = reducer$i;
+    exports.ɵgl = entityScopedLoaderReducer;
+    exports.ɵgm = scopedLoaderReducer;
+    exports.ɵgn = reducer$k;
+    exports.ɵgo = reducer$j;
+    exports.ɵgp = PageMetaResolver;
+    exports.ɵgq = CouponSearchPageResolver;
     exports.ɵgr = PageMetaResolver;
-    exports.ɵgs = CouponSearchPageResolver;
-    exports.ɵgt = PageMetaResolver;
-    exports.ɵgu = addExternalRoutesFactory;
-    exports.ɵgv = getReducers$6;
-    exports.ɵgw = reducer$d;
-    exports.ɵgx = reducerToken$6;
-    exports.ɵgy = reducerProvider$6;
-    exports.ɵgz = CustomSerializer;
+    exports.ɵgs = addExternalRoutesFactory;
+    exports.ɵgt = getReducers$6;
+    exports.ɵgu = reducer$d;
+    exports.ɵgv = reducerToken$6;
+    exports.ɵgw = reducerProvider$6;
+    exports.ɵgx = CustomSerializer;
+    exports.ɵgy = effects$6;
+    exports.ɵgz = RouterEffects;
     exports.ɵh = AnonymousConsentsStoreModule;
-    exports.ɵha = effects$6;
-    exports.ɵhb = RouterEffects;
-    exports.ɵhc = siteContextStoreConfigFactory;
-    exports.ɵhd = SiteContextStoreModule;
-    exports.ɵhe = getReducers$1;
-    exports.ɵhf = reducerToken$1;
-    exports.ɵhg = reducerProvider$1;
-    exports.ɵhh = effects$2;
-    exports.ɵhi = LanguagesEffects;
-    exports.ɵhj = CurrenciesEffects;
-    exports.ɵhk = BaseSiteEffects;
-    exports.ɵhl = reducer$3;
-    exports.ɵhm = reducer$2;
-    exports.ɵhn = reducer$1;
-    exports.ɵho = defaultSiteContextConfigFactory;
-    exports.ɵhp = initializeContext;
-    exports.ɵhq = contextServiceProviders;
-    exports.ɵhr = SiteContextRoutesHandler;
-    exports.ɵhs = SiteContextUrlSerializer;
-    exports.ɵht = siteContextParamsProviders;
-    exports.ɵhu = baseSiteConfigValidator;
-    exports.ɵhv = interceptors$4;
-    exports.ɵhw = CmsTicketInterceptor;
-    exports.ɵhx = StoreFinderStoreModule;
-    exports.ɵhy = getReducers$b;
-    exports.ɵhz = reducerToken$b;
+    exports.ɵha = siteContextStoreConfigFactory;
+    exports.ɵhb = SiteContextStoreModule;
+    exports.ɵhc = getReducers$1;
+    exports.ɵhd = reducerToken$1;
+    exports.ɵhe = reducerProvider$1;
+    exports.ɵhf = effects$2;
+    exports.ɵhg = LanguagesEffects;
+    exports.ɵhh = CurrenciesEffects;
+    exports.ɵhi = BaseSiteEffects;
+    exports.ɵhj = reducer$3;
+    exports.ɵhk = reducer$2;
+    exports.ɵhl = reducer$1;
+    exports.ɵhm = defaultSiteContextConfigFactory;
+    exports.ɵhn = initializeContext;
+    exports.ɵho = contextServiceProviders;
+    exports.ɵhp = SiteContextRoutesHandler;
+    exports.ɵhq = SiteContextUrlSerializer;
+    exports.ɵhr = siteContextParamsProviders;
+    exports.ɵhs = baseSiteConfigValidator;
+    exports.ɵht = interceptors$4;
+    exports.ɵhu = CmsTicketInterceptor;
+    exports.ɵhv = StoreFinderStoreModule;
+    exports.ɵhw = getReducers$b;
+    exports.ɵhx = reducerToken$b;
+    exports.ɵhy = reducerProvider$b;
+    exports.ɵhz = effects$a;
     exports.ɵi = TRANSFER_STATE_META_REDUCER;
-    exports.ɵia = reducerProvider$b;
-    exports.ɵib = effects$a;
-    exports.ɵic = FindStoresEffect;
-    exports.ɵid = ViewAllStoresEffect;
-    exports.ɵie = defaultStoreFinderConfig;
-    exports.ɵif = UserStoreModule;
-    exports.ɵig = getReducers$c;
-    exports.ɵih = reducerToken$c;
-    exports.ɵii = reducerProvider$c;
-    exports.ɵij = clearUserState;
-    exports.ɵik = metaReducers$7;
-    exports.ɵil = effects$b;
-    exports.ɵim = BillingCountriesEffect;
-    exports.ɵin = ClearMiscsDataEffect;
-    exports.ɵio = ConsignmentTrackingEffects;
-    exports.ɵip = DeliveryCountriesEffects;
-    exports.ɵiq = NotificationPreferenceEffects;
-    exports.ɵir = OrderDetailsEffect;
-    exports.ɵis = OrderReturnRequestEffect;
-    exports.ɵit = UserPaymentMethodsEffects;
-    exports.ɵiu = RegionsEffects;
-    exports.ɵiv = ResetPasswordEffects;
-    exports.ɵiw = TitlesEffects;
-    exports.ɵix = UserAddressesEffects;
-    exports.ɵiy = UserConsentsEffect;
-    exports.ɵiz = UserDetailsEffects;
+    exports.ɵia = FindStoresEffect;
+    exports.ɵib = ViewAllStoresEffect;
+    exports.ɵic = defaultStoreFinderConfig;
+    exports.ɵid = UserStoreModule;
+    exports.ɵie = getReducers$c;
+    exports.ɵif = reducerToken$c;
+    exports.ɵig = reducerProvider$c;
+    exports.ɵih = clearUserState;
+    exports.ɵii = metaReducers$7;
+    exports.ɵij = effects$b;
+    exports.ɵik = BillingCountriesEffect;
+    exports.ɵil = ClearMiscsDataEffect;
+    exports.ɵim = ConsignmentTrackingEffects;
+    exports.ɵin = DeliveryCountriesEffects;
+    exports.ɵio = NotificationPreferenceEffects;
+    exports.ɵip = OrderDetailsEffect;
+    exports.ɵiq = OrderReturnRequestEffect;
+    exports.ɵir = UserPaymentMethodsEffects;
+    exports.ɵis = RegionsEffects;
+    exports.ɵit = ResetPasswordEffects;
+    exports.ɵiu = TitlesEffects;
+    exports.ɵiv = UserAddressesEffects;
+    exports.ɵiw = UserConsentsEffect;
+    exports.ɵix = UserDetailsEffects;
+    exports.ɵiy = UserOrdersEffect;
+    exports.ɵiz = UserRegisterEffects;
     exports.ɵj = STORAGE_SYNC_META_REDUCER;
-    exports.ɵja = UserOrdersEffect;
-    exports.ɵjb = UserRegisterEffects;
-    exports.ɵjc = CustomerCouponEffects;
-    exports.ɵjd = ProductInterestsEffect;
-    exports.ɵje = ForgotPasswordEffects;
-    exports.ɵjf = UpdateEmailEffects;
-    exports.ɵjg = UpdatePasswordEffects;
-    exports.ɵjh = UserNotificationPreferenceConnector;
-    exports.ɵji = UserCostCenterEffects;
-    exports.ɵjj = reducer$w;
-    exports.ɵjk = reducer$u;
-    exports.ɵjl = reducer$l;
-    exports.ɵjm = reducer$v;
-    exports.ɵjn = reducer$q;
-    exports.ɵjo = reducer$x;
-    exports.ɵjp = reducer$p;
-    exports.ɵjq = reducer$A;
-    exports.ɵjr = reducer$n;
-    exports.ɵjs = reducer$t;
-    exports.ɵjt = reducer$r;
-    exports.ɵju = reducer$s;
-    exports.ɵjv = reducer$m;
-    exports.ɵjw = reducer$y;
-    exports.ɵjx = reducer$o;
-    exports.ɵjy = reducer$z;
-    exports.ɵjz = reducer$B;
+    exports.ɵja = CustomerCouponEffects;
+    exports.ɵjb = ProductInterestsEffect;
+    exports.ɵjc = ForgotPasswordEffects;
+    exports.ɵjd = UpdateEmailEffects;
+    exports.ɵje = UpdatePasswordEffects;
+    exports.ɵjf = UserNotificationPreferenceConnector;
+    exports.ɵjg = UserCostCenterEffects;
+    exports.ɵjh = reducer$w;
+    exports.ɵji = reducer$u;
+    exports.ɵjj = reducer$l;
+    exports.ɵjk = reducer$v;
+    exports.ɵjl = reducer$q;
+    exports.ɵjm = reducer$x;
+    exports.ɵjn = reducer$p;
+    exports.ɵjo = reducer$A;
+    exports.ɵjp = reducer$n;
+    exports.ɵjq = reducer$t;
+    exports.ɵjr = reducer$r;
+    exports.ɵjs = reducer$s;
+    exports.ɵjt = reducer$m;
+    exports.ɵju = reducer$y;
+    exports.ɵjv = reducer$o;
+    exports.ɵjw = reducer$z;
+    exports.ɵjx = reducer$B;
     exports.ɵk = stateMetaReducers;
     exports.ɵl = getStorageSyncReducer;
     exports.ɵm = getTransferStateReducer;

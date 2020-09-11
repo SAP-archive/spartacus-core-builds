@@ -1,0 +1,10 @@
+export var defaultOccCostCentersConfig = {
+    backend: {
+        occ: {
+            endpoints: {
+                costCenters: '/costcenters',
+            },
+        },
+    },
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGVmYXVsdC1vY2MtY29zdC1jZW50ZXJzLWNvbmZpZy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9vY2MvYWRhcHRlcnMvY29zdC1jZW50ZXIvZGVmYXVsdC1vY2MtY29zdC1jZW50ZXJzLWNvbmZpZy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFFQSxNQUFNLENBQUMsSUFBTSwyQkFBMkIsR0FBYztJQUNwRCxPQUFPLEVBQUU7UUFDUCxHQUFHLEVBQUU7WUFDSCxTQUFTLEVBQUU7Z0JBQ1QsV0FBVyxFQUFFLGNBQWM7YUFDNUI7U0FDRjtLQUNGO0NBQ0YsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE9jY0NvbmZpZyB9IGZyb20gJy4uLy4uL2NvbmZpZy9vY2MtY29uZmlnJztcblxuZXhwb3J0IGNvbnN0IGRlZmF1bHRPY2NDb3N0Q2VudGVyc0NvbmZpZzogT2NjQ29uZmlnID0ge1xuICBiYWNrZW5kOiB7XG4gICAgb2NjOiB7XG4gICAgICBlbmRwb2ludHM6IHtcbiAgICAgICAgY29zdENlbnRlcnM6ICcvY29zdGNlbnRlcnMnLFxuICAgICAgfSxcbiAgICB9LFxuICB9LFxufTtcbiJdfQ==

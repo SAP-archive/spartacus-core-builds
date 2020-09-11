@@ -1,11 +1,11 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { GlobalMessageService } from '../../global-message/index';
 import { GeoPoint } from '../../model/misc.model';
+import { SearchConfig } from '../../product/model/search-config';
+import { RoutingService } from '../../routing/index';
 import { WindowRef } from '../../window/window-ref';
 import { FindStoresState, StateWithStoreFinder, ViewAllStoresState } from '../store/store-finder-state';
-import { StoreFinderSearchConfig } from './../model/search-config';
-import { GlobalMessageService } from '../../global-message/index';
-import { RoutingService } from '../../routing/index';
 export declare class StoreFinderService {
     protected store: Store<StateWithStoreFinder>;
     protected winRef: WindowRef;
@@ -38,7 +38,7 @@ export declare class StoreFinderService {
      * @param useMyLocation current location coordinates
      * @param radius radius of the scope from the center point
      */
-    findStoresAction(queryText: string, searchConfig?: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, countryIsoCode?: string, useMyLocation?: boolean, radius?: number): void;
+    findStoresAction(queryText: string, searchConfig?: SearchConfig, longitudeLatitude?: GeoPoint, countryIsoCode?: string, useMyLocation?: boolean, radius?: number): void;
     /**
      * View all stores
      */
