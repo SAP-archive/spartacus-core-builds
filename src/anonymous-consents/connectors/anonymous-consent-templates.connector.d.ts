@@ -1,13 +1,9 @@
 import { Observable } from 'rxjs';
 import { AnonymousConsent, ConsentTemplate } from '../../model/consent.model';
 import { AnonymousConsentTemplatesAdapter } from './anonymous-consent-templates.adapter';
-import * as ɵngcc0 from '@angular/core';
 export declare class AnonymousConsentTemplatesConnector {
     protected adapter: AnonymousConsentTemplatesAdapter;
     constructor(adapter: AnonymousConsentTemplatesAdapter);
     loadAnonymousConsentTemplates(): Observable<ConsentTemplate[]>;
     loadAnonymousConsents(): Observable<AnonymousConsent[]> | null;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AnonymousConsentTemplatesConnector, never>;
 }
-
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYW5vbnltb3VzLWNvbnNlbnQtdGVtcGxhdGVzLmNvbm5lY3Rvci5kLnRzIiwic291cmNlcyI6WyJhbm9ueW1vdXMtY29uc2VudC10ZW1wbGF0ZXMuY29ubmVjdG9yLmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7QUFHQTs7Ozs7O0FBS0EiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBBbm9ueW1vdXNDb25zZW50LCBDb25zZW50VGVtcGxhdGUgfSBmcm9tICcuLi8uLi9tb2RlbC9jb25zZW50Lm1vZGVsJztcbmltcG9ydCB7IEFub255bW91c0NvbnNlbnRUZW1wbGF0ZXNBZGFwdGVyIH0gZnJvbSAnLi9hbm9ueW1vdXMtY29uc2VudC10ZW1wbGF0ZXMuYWRhcHRlcic7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBBbm9ueW1vdXNDb25zZW50VGVtcGxhdGVzQ29ubmVjdG9yIHtcbiAgICBwcm90ZWN0ZWQgYWRhcHRlcjogQW5vbnltb3VzQ29uc2VudFRlbXBsYXRlc0FkYXB0ZXI7XG4gICAgY29uc3RydWN0b3IoYWRhcHRlcjogQW5vbnltb3VzQ29uc2VudFRlbXBsYXRlc0FkYXB0ZXIpO1xuICAgIGxvYWRBbm9ueW1vdXNDb25zZW50VGVtcGxhdGVzKCk6IE9ic2VydmFibGU8Q29uc2VudFRlbXBsYXRlW10+O1xuICAgIGxvYWRBbm9ueW1vdXNDb25zZW50cygpOiBPYnNlcnZhYmxlPEFub255bW91c0NvbnNlbnRbXT4gfCBudWxsO1xufVxuIl19

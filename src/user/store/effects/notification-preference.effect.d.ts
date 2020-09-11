@@ -2,15 +2,10 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { UserNotificationPreferenceConnector } from '../../connectors/notification-preference/user-notification-preference.connector';
 import { UserActions } from '../actions/index';
-import * as ɵngcc0 from '@angular/core';
 export declare class NotificationPreferenceEffects {
     private actions$;
     private connector;
     loadPreferences$: Observable<UserActions.NotificationPreferenceAction>;
     updatePreferences$: Observable<UserActions.NotificationPreferenceAction>;
     constructor(actions$: Actions, connector: UserNotificationPreferenceConnector);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<NotificationPreferenceEffects, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<NotificationPreferenceEffects>;
 }
-
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibm90aWZpY2F0aW9uLXByZWZlcmVuY2UuZWZmZWN0LmQudHMiLCJzb3VyY2VzIjpbIm5vdGlmaWNhdGlvbi1wcmVmZXJlbmNlLmVmZmVjdC5kLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7OztBQUlBOzs7Ozs7OztBQU1BIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQWN0aW9ucyB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnO1xuaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnO1xuaW1wb3J0IHsgVXNlck5vdGlmaWNhdGlvblByZWZlcmVuY2VDb25uZWN0b3IgfSBmcm9tICcuLi8uLi9jb25uZWN0b3JzL25vdGlmaWNhdGlvbi1wcmVmZXJlbmNlL3VzZXItbm90aWZpY2F0aW9uLXByZWZlcmVuY2UuY29ubmVjdG9yJztcbmltcG9ydCB7IFVzZXJBY3Rpb25zIH0gZnJvbSAnLi4vYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBOb3RpZmljYXRpb25QcmVmZXJlbmNlRWZmZWN0cyB7XG4gICAgcHJpdmF0ZSBhY3Rpb25zJDtcbiAgICBwcml2YXRlIGNvbm5lY3RvcjtcbiAgICBsb2FkUHJlZmVyZW5jZXMkOiBPYnNlcnZhYmxlPFVzZXJBY3Rpb25zLk5vdGlmaWNhdGlvblByZWZlcmVuY2VBY3Rpb24+O1xuICAgIHVwZGF0ZVByZWZlcmVuY2VzJDogT2JzZXJ2YWJsZTxVc2VyQWN0aW9ucy5Ob3RpZmljYXRpb25QcmVmZXJlbmNlQWN0aW9uPjtcbiAgICBjb25zdHJ1Y3RvcihhY3Rpb25zJDogQWN0aW9ucywgY29ubmVjdG9yOiBVc2VyTm90aWZpY2F0aW9uUHJlZmVyZW5jZUNvbm5lY3Rvcik7XG59XG4iXX0=

@@ -1,13 +1,9 @@
 import { Observable } from 'rxjs';
 import { UserNotificationPreferenceAdapter } from './user-notification-preference.adapter';
 import { NotificationPreference } from '../../../model/notification-preference.model';
-import * as ɵngcc0 from '@angular/core';
 export declare class UserNotificationPreferenceConnector {
     protected adapter: UserNotificationPreferenceAdapter;
     constructor(adapter: UserNotificationPreferenceAdapter);
     loadAll(userId: string): Observable<NotificationPreference[]>;
     update(userId: string, preferences: NotificationPreference[]): Observable<{}>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserNotificationPreferenceConnector, never>;
 }
-
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXNlci1ub3RpZmljYXRpb24tcHJlZmVyZW5jZS5jb25uZWN0b3IuZC50cyIsInNvdXJjZXMiOlsidXNlci1ub3RpZmljYXRpb24tcHJlZmVyZW5jZS5jb25uZWN0b3IuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7OztBQUdBOzs7Ozs7QUFLQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE9ic2VydmFibGUgfSBmcm9tICdyeGpzJztcbmltcG9ydCB7IFVzZXJOb3RpZmljYXRpb25QcmVmZXJlbmNlQWRhcHRlciB9IGZyb20gJy4vdXNlci1ub3RpZmljYXRpb24tcHJlZmVyZW5jZS5hZGFwdGVyJztcbmltcG9ydCB7IE5vdGlmaWNhdGlvblByZWZlcmVuY2UgfSBmcm9tICcuLi8uLi8uLi9tb2RlbC9ub3RpZmljYXRpb24tcHJlZmVyZW5jZS5tb2RlbCc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBVc2VyTm90aWZpY2F0aW9uUHJlZmVyZW5jZUNvbm5lY3RvciB7XG4gICAgcHJvdGVjdGVkIGFkYXB0ZXI6IFVzZXJOb3RpZmljYXRpb25QcmVmZXJlbmNlQWRhcHRlcjtcbiAgICBjb25zdHJ1Y3RvcihhZGFwdGVyOiBVc2VyTm90aWZpY2F0aW9uUHJlZmVyZW5jZUFkYXB0ZXIpO1xuICAgIGxvYWRBbGwodXNlcklkOiBzdHJpbmcpOiBPYnNlcnZhYmxlPE5vdGlmaWNhdGlvblByZWZlcmVuY2VbXT47XG4gICAgdXBkYXRlKHVzZXJJZDogc3RyaW5nLCBwcmVmZXJlbmNlczogTm90aWZpY2F0aW9uUHJlZmVyZW5jZVtdKTogT2JzZXJ2YWJsZTx7fT47XG59XG4iXX0=

@@ -2,14 +2,9 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { ClientAuthenticationTokenService } from '../../services/client-authentication/client-authentication-token.service';
 import { AuthActions } from '../actions/index';
-import * as ɵngcc0 from '@angular/core';
 export declare class ClientTokenEffect {
     private actions$;
     private clientAuthenticationTokenService;
     loadClientToken$: Observable<AuthActions.ClientTokenAction>;
     constructor(actions$: Actions, clientAuthenticationTokenService: ClientAuthenticationTokenService);
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientTokenEffect, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<ClientTokenEffect>;
 }
-
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2xpZW50LXRva2VuLmVmZmVjdC5kLnRzIiwic291cmNlcyI6WyJjbGllbnQtdG9rZW4uZWZmZWN0LmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7O0FBSUE7Ozs7Ozs7QUFLQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEFjdGlvbnMgfSBmcm9tICdAbmdyeC9lZmZlY3RzJztcbmltcG9ydCB7IE9ic2VydmFibGUgfSBmcm9tICdyeGpzJztcbmltcG9ydCB7IENsaWVudEF1dGhlbnRpY2F0aW9uVG9rZW5TZXJ2aWNlIH0gZnJvbSAnLi4vLi4vc2VydmljZXMvY2xpZW50LWF1dGhlbnRpY2F0aW9uL2NsaWVudC1hdXRoZW50aWNhdGlvbi10b2tlbi5zZXJ2aWNlJztcbmltcG9ydCB7IEF1dGhBY3Rpb25zIH0gZnJvbSAnLi4vYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBDbGllbnRUb2tlbkVmZmVjdCB7XG4gICAgcHJpdmF0ZSBhY3Rpb25zJDtcbiAgICBwcml2YXRlIGNsaWVudEF1dGhlbnRpY2F0aW9uVG9rZW5TZXJ2aWNlO1xuICAgIGxvYWRDbGllbnRUb2tlbiQ6IE9ic2VydmFibGU8QXV0aEFjdGlvbnMuQ2xpZW50VG9rZW5BY3Rpb24+O1xuICAgIGNvbnN0cnVjdG9yKGFjdGlvbnMkOiBBY3Rpb25zLCBjbGllbnRBdXRoZW50aWNhdGlvblRva2VuU2VydmljZTogQ2xpZW50QXV0aGVudGljYXRpb25Ub2tlblNlcnZpY2UpO1xufVxuIl19
