@@ -1,4 +1,19 @@
 import { ModuleWithProviders } from '@angular/core';
+import * as ɵngcc0 from '@angular/core';
+import * as ɵngcc1 from './adapters/asm/asm-occ.module';
+import * as ɵngcc2 from './adapters/cms/cms-occ.module';
+import * as ɵngcc3 from './adapters/cart/cart-occ.module';
+import * as ɵngcc4 from './adapters/checkout/checkout-occ.module';
+import * as ɵngcc5 from './adapters/product/product-occ.module';
+import * as ɵngcc6 from './adapters/site-context/site-context-occ.module';
+import * as ɵngcc7 from './adapters/store-finder/store-finder-occ.module';
+import * as ɵngcc8 from './adapters/user/user-occ.module';
+import * as ɵngcc9 from './config-loader/occ-config-loader.module';
+import * as ɵngcc10 from './adapters/cost-center/cost-center-occ.module';
 export declare class OccModule {
     static forRoot(): ModuleWithProviders<OccModule>;
+    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<OccModule, never, [typeof ɵngcc1.AsmOccModule, typeof ɵngcc2.CmsOccModule, typeof ɵngcc3.CartOccModule, typeof ɵngcc4.CheckoutOccModule, typeof ɵngcc5.ProductOccModule, typeof ɵngcc6.SiteContextOccModule, typeof ɵngcc7.StoreFinderOccModule, typeof ɵngcc8.UserOccModule, typeof ɵngcc9.OccConfigLoaderModule, typeof ɵngcc10.CostCenterOccModule], never>;
+    static ɵinj: ɵngcc0.ɵɵInjectorDef<OccModule>;
 }
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib2NjLm1vZHVsZS5kLnRzIiwic291cmNlcyI6WyJvY2MubW9kdWxlLmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7Ozs7OztBQUNBOzs7O0FBRUEiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBNb2R1bGVXaXRoUHJvdmlkZXJzIH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBPY2NNb2R1bGUge1xuICAgIHN0YXRpYyBmb3JSb290KCk6IE1vZHVsZVdpdGhQcm92aWRlcnM8T2NjTW9kdWxlPjtcbn1cbiJdfQ==

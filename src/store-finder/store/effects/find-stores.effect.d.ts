@@ -2,10 +2,15 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { StoreFinderConnector } from '../../connectors/store-finder.connector';
 import { StoreFinderActions } from '../actions/index';
+import * as ɵngcc0 from '@angular/core';
 export declare class FindStoresEffect {
     private actions$;
     private storeFinderConnector;
     constructor(actions$: Actions, storeFinderConnector: StoreFinderConnector);
     findStores$: Observable<StoreFinderActions.FindStoresSuccess | StoreFinderActions.FindStoresFail>;
     findStoreById$: Observable<StoreFinderActions.FindStoreByIdSuccess | StoreFinderActions.FindStoreByIdFail>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<FindStoresEffect, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<FindStoresEffect>;
 }
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZmluZC1zdG9yZXMuZWZmZWN0LmQudHMiLCJzb3VyY2VzIjpbImZpbmQtc3RvcmVzLmVmZmVjdC5kLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7OztBQUlBOzs7Ozs7OztBQU1BIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQWN0aW9ucyB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnO1xuaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnO1xuaW1wb3J0IHsgU3RvcmVGaW5kZXJDb25uZWN0b3IgfSBmcm9tICcuLi8uLi9jb25uZWN0b3JzL3N0b3JlLWZpbmRlci5jb25uZWN0b3InO1xuaW1wb3J0IHsgU3RvcmVGaW5kZXJBY3Rpb25zIH0gZnJvbSAnLi4vYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBGaW5kU3RvcmVzRWZmZWN0IHtcbiAgICBwcml2YXRlIGFjdGlvbnMkO1xuICAgIHByaXZhdGUgc3RvcmVGaW5kZXJDb25uZWN0b3I7XG4gICAgY29uc3RydWN0b3IoYWN0aW9ucyQ6IEFjdGlvbnMsIHN0b3JlRmluZGVyQ29ubmVjdG9yOiBTdG9yZUZpbmRlckNvbm5lY3Rvcik7XG4gICAgZmluZFN0b3JlcyQ6IE9ic2VydmFibGU8U3RvcmVGaW5kZXJBY3Rpb25zLkZpbmRTdG9yZXNTdWNjZXNzIHwgU3RvcmVGaW5kZXJBY3Rpb25zLkZpbmRTdG9yZXNGYWlsPjtcbiAgICBmaW5kU3RvcmVCeUlkJDogT2JzZXJ2YWJsZTxTdG9yZUZpbmRlckFjdGlvbnMuRmluZFN0b3JlQnlJZFN1Y2Nlc3MgfCBTdG9yZUZpbmRlckFjdGlvbnMuRmluZFN0b3JlQnlJZEZhaWw+O1xufVxuIl19

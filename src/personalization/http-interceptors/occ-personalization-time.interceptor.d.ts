@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { OccEndpointsService } from '../../occ/services/occ-endpoints.service';
 import { PersonalizationConfig } from '../config/personalization-config';
 import { WindowRef } from '../../window/window-ref';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccPersonalizationTimeInterceptor implements HttpInterceptor {
     private config;
     private occEndpoints;
@@ -13,4 +14,7 @@ export declare class OccPersonalizationTimeInterceptor implements HttpIntercepto
     private enabled;
     constructor(config: PersonalizationConfig, occEndpoints: OccEndpointsService, winRef: WindowRef, platform: any);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccPersonalizationTimeInterceptor, never>;
 }
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib2NjLXBlcnNvbmFsaXphdGlvbi10aW1lLmludGVyY2VwdG9yLmQudHMiLCJzb3VyY2VzIjpbIm9jYy1wZXJzb25hbGl6YXRpb24tdGltZS5pbnRlcmNlcHRvci5kLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7QUFLQTs7Ozs7Ozs7Ozs7QUFVQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEh0dHBFdmVudCwgSHR0cEhhbmRsZXIsIEh0dHBJbnRlcmNlcHRvciwgSHR0cFJlcXVlc3QgfSBmcm9tICdAYW5ndWxhci9jb21tb24vaHR0cCc7XG5pbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBPY2NFbmRwb2ludHNTZXJ2aWNlIH0gZnJvbSAnLi4vLi4vb2NjL3NlcnZpY2VzL29jYy1lbmRwb2ludHMuc2VydmljZSc7XG5pbXBvcnQgeyBQZXJzb25hbGl6YXRpb25Db25maWcgfSBmcm9tICcuLi9jb25maWcvcGVyc29uYWxpemF0aW9uLWNvbmZpZyc7XG5pbXBvcnQgeyBXaW5kb3dSZWYgfSBmcm9tICcuLi8uLi93aW5kb3cvd2luZG93LXJlZic7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBPY2NQZXJzb25hbGl6YXRpb25UaW1lSW50ZXJjZXB0b3IgaW1wbGVtZW50cyBIdHRwSW50ZXJjZXB0b3Ige1xuICAgIHByaXZhdGUgY29uZmlnO1xuICAgIHByaXZhdGUgb2NjRW5kcG9pbnRzO1xuICAgIHByaXZhdGUgd2luUmVmO1xuICAgIHByaXZhdGUgcGxhdGZvcm07XG4gICAgcHJpdmF0ZSB0aW1lc3RhbXA7XG4gICAgcHJpdmF0ZSByZXF1ZXN0SGVhZGVyO1xuICAgIHByaXZhdGUgZW5hYmxlZDtcbiAgICBjb25zdHJ1Y3Rvcihjb25maWc6IFBlcnNvbmFsaXphdGlvbkNvbmZpZywgb2NjRW5kcG9pbnRzOiBPY2NFbmRwb2ludHNTZXJ2aWNlLCB3aW5SZWY6IFdpbmRvd1JlZiwgcGxhdGZvcm06IGFueSk7XG4gICAgaW50ZXJjZXB0KHJlcXVlc3Q6IEh0dHBSZXF1ZXN0PGFueT4sIG5leHQ6IEh0dHBIYW5kbGVyKTogT2JzZXJ2YWJsZTxIdHRwRXZlbnQ8YW55Pj47XG59XG4iXX0=

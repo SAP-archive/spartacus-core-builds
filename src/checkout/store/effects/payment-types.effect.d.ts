@@ -3,10 +3,15 @@ import { Observable } from 'rxjs';
 import { CartActions } from '../../../cart/store/actions/index';
 import { PaymentTypeConnector } from '../../connectors/payment-type/payment-type.connector';
 import { CheckoutActions } from '../actions/index';
+import * as ɵngcc0 from '@angular/core';
 export declare class PaymentTypesEffects {
     private actions$;
     private paymentTypeConnector;
     loadPaymentTypes$: Observable<CheckoutActions.LoadPaymentTypesSuccess | CheckoutActions.LoadPaymentTypesFail>;
     setPaymentType$: Observable<CheckoutActions.SetPaymentTypeSuccess | CheckoutActions.SetPaymentTypeFail | CartActions.LoadCartSuccess | CheckoutActions.ClearCheckoutData>;
     constructor(actions$: Actions, paymentTypeConnector: PaymentTypeConnector);
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<PaymentTypesEffects, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<PaymentTypesEffects>;
 }
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicGF5bWVudC10eXBlcy5lZmZlY3QuZC50cyIsInNvdXJjZXMiOlsicGF5bWVudC10eXBlcy5lZmZlY3QuZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7O0FBS0E7Ozs7Ozs7O0FBTUEiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBBY3Rpb25zIH0gZnJvbSAnQG5ncngvZWZmZWN0cyc7XG5pbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBDYXJ0QWN0aW9ucyB9IGZyb20gJy4uLy4uLy4uL2NhcnQvc3RvcmUvYWN0aW9ucy9pbmRleCc7XG5pbXBvcnQgeyBQYXltZW50VHlwZUNvbm5lY3RvciB9IGZyb20gJy4uLy4uL2Nvbm5lY3RvcnMvcGF5bWVudC10eXBlL3BheW1lbnQtdHlwZS5jb25uZWN0b3InO1xuaW1wb3J0IHsgQ2hlY2tvdXRBY3Rpb25zIH0gZnJvbSAnLi4vYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBQYXltZW50VHlwZXNFZmZlY3RzIHtcbiAgICBwcml2YXRlIGFjdGlvbnMkO1xuICAgIHByaXZhdGUgcGF5bWVudFR5cGVDb25uZWN0b3I7XG4gICAgbG9hZFBheW1lbnRUeXBlcyQ6IE9ic2VydmFibGU8Q2hlY2tvdXRBY3Rpb25zLkxvYWRQYXltZW50VHlwZXNTdWNjZXNzIHwgQ2hlY2tvdXRBY3Rpb25zLkxvYWRQYXltZW50VHlwZXNGYWlsPjtcbiAgICBzZXRQYXltZW50VHlwZSQ6IE9ic2VydmFibGU8Q2hlY2tvdXRBY3Rpb25zLlNldFBheW1lbnRUeXBlU3VjY2VzcyB8IENoZWNrb3V0QWN0aW9ucy5TZXRQYXltZW50VHlwZUZhaWwgfCBDYXJ0QWN0aW9ucy5Mb2FkQ2FydFN1Y2Nlc3MgfCBDaGVja291dEFjdGlvbnMuQ2xlYXJDaGVja291dERhdGE+O1xuICAgIGNvbnN0cnVjdG9yKGFjdGlvbnMkOiBBY3Rpb25zLCBwYXltZW50VHlwZUNvbm5lY3RvcjogUGF5bWVudFR5cGVDb25uZWN0b3IpO1xufVxuIl19
