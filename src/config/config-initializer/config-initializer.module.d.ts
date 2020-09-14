@@ -1,12 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { ConfigInitializerService } from './config-initializer.service';
 import { ConfigInitializer } from './config-initializer';
-import * as ɵngcc0 from '@angular/core';
 export declare function configInitializerFactory(configInitializer: ConfigInitializerService, initializers: ConfigInitializer[]): () => Promise<void>;
 export declare class ConfigInitializerModule {
     static forRoot(): ModuleWithProviders<ConfigInitializerModule>;
-    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<ConfigInitializerModule, never, never, never>;
-    static ɵinj: ɵngcc0.ɵɵInjectorDef<ConfigInitializerModule>;
 }
-
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uZmlnLWluaXRpYWxpemVyLm1vZHVsZS5kLnRzIiwic291cmNlcyI6WyJjb25maWctaW5pdGlhbGl6ZXIubW9kdWxlLmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7QUFHQTs7Ozs7QUFHQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE1vZHVsZVdpdGhQcm92aWRlcnMgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IENvbmZpZ0luaXRpYWxpemVyU2VydmljZSB9IGZyb20gJy4vY29uZmlnLWluaXRpYWxpemVyLnNlcnZpY2UnO1xuaW1wb3J0IHsgQ29uZmlnSW5pdGlhbGl6ZXIgfSBmcm9tICcuL2NvbmZpZy1pbml0aWFsaXplcic7XG5leHBvcnQgZGVjbGFyZSBmdW5jdGlvbiBjb25maWdJbml0aWFsaXplckZhY3RvcnkoY29uZmlnSW5pdGlhbGl6ZXI6IENvbmZpZ0luaXRpYWxpemVyU2VydmljZSwgaW5pdGlhbGl6ZXJzOiBDb25maWdJbml0aWFsaXplcltdKTogKCkgPT4gUHJvbWlzZTx2b2lkPjtcbmV4cG9ydCBkZWNsYXJlIGNsYXNzIENvbmZpZ0luaXRpYWxpemVyTW9kdWxlIHtcbiAgICBzdGF0aWMgZm9yUm9vdCgpOiBNb2R1bGVXaXRoUHJvdmlkZXJzPENvbmZpZ0luaXRpYWxpemVyTW9kdWxlPjtcbn1cbiJdfQ==
