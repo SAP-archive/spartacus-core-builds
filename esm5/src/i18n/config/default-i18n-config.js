@@ -1,7 +1,0 @@
-export var defaultI18nConfig = {
-    i18n: {
-        fallbackLang: false,
-        debug: false,
-    },
-};
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGVmYXVsdC1pMThuLWNvbmZpZy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9pMThuL2NvbmZpZy9kZWZhdWx0LWkxOG4tY29uZmlnLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBLE1BQU0sQ0FBQyxJQUFNLGlCQUFpQixHQUFlO0lBQzNDLElBQUksRUFBRTtRQUNKLFlBQVksRUFBRSxLQUFLO1FBQ25CLEtBQUssRUFBRSxLQUFLO0tBQ2I7Q0FDRixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSTE4bkNvbmZpZyB9IGZyb20gJy4vaTE4bi1jb25maWcnO1xuXG5leHBvcnQgY29uc3QgZGVmYXVsdEkxOG5Db25maWc6IEkxOG5Db25maWcgPSB7XG4gIGkxOG46IHtcbiAgICBmYWxsYmFja0xhbmc6IGZhbHNlLFxuICAgIGRlYnVnOiBmYWxzZSxcbiAgfSxcbn07XG4iXX0=

@@ -4,4 +4,4 @@ import { DeliveryCountriesState, DeliveryCountryEntities, StateWithUser } from '
 export declare const getDeliveryCountriesState: MemoizedSelector<StateWithUser, DeliveryCountriesState>;
 export declare const getDeliveryCountriesEntites: MemoizedSelector<StateWithUser, DeliveryCountryEntities>;
 export declare const getAllDeliveryCountries: MemoizedSelector<StateWithUser, Country[]>;
-export declare const countrySelectorFactory: (isocode: string) => MemoizedSelector<StateWithUser, Country, import("@ngrx/store").DefaultProjectorFn<Country>>;
+export declare const countrySelectorFactory: (isocode: string) => MemoizedSelector<StateWithUser, Country>;

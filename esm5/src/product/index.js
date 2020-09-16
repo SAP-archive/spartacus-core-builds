@@ -1,9 +1,0 @@
-export * from './connectors/index';
-export * from './facade/index';
-export * from './model/index';
-export * from './product.module';
-export * from './services/index';
-export * from './store/actions/index';
-export * from './store/product-state';
-export * from './store/selectors/index';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcHJvZHVjdC9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxjQUFjLG9CQUFvQixDQUFDO0FBQ25DLGNBQWMsZ0JBQWdCLENBQUM7QUFDL0IsY0FBYyxlQUFlLENBQUM7QUFDOUIsY0FBYyxrQkFBa0IsQ0FBQztBQUNqQyxjQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGNBQWMsdUJBQXVCLENBQUM7QUFDdEMsY0FBYyx1QkFBdUIsQ0FBQztBQUN0QyxjQUFjLHlCQUF5QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9jb25uZWN0b3JzL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vZmFjYWRlL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWwvaW5kZXgnO1xuZXhwb3J0ICogZnJvbSAnLi9wcm9kdWN0Lm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL3NlcnZpY2VzL2luZGV4JztcbmV4cG9ydCAqIGZyb20gJy4vc3RvcmUvYWN0aW9ucy9pbmRleCc7XG5leHBvcnQgKiBmcm9tICcuL3N0b3JlL3Byb2R1Y3Qtc3RhdGUnO1xuZXhwb3J0ICogZnJvbSAnLi9zdG9yZS9zZWxlY3RvcnMvaW5kZXgnO1xuIl19

@@ -1,56 +1,59 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
     typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, (function (exports, core, store, rxjs, operators, common, http, router, effects$c, platformBrowser, routerStore, i18next, i18nextXhrBackend) { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, (function (exports, i0, i1$1, rxjs, operators, i1$2, i1, i4, i3, i5, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
 
-    i18next = i18next && Object.prototype.hasOwnProperty.call(i18next, 'default') ? i18next['default'] : i18next;
-    i18nextXhrBackend = i18nextXhrBackend && Object.prototype.hasOwnProperty.call(i18nextXhrBackend, 'default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
+    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+    var i18next__default = /*#__PURE__*/_interopDefaultLegacy(i18next);
+    var i18nextXhrBackend__default = /*#__PURE__*/_interopDefaultLegacy(i18nextXhrBackend);
 
     /*! *****************************************************************************
-    Copyright (c) Microsoft Corporation. All rights reserved.
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-    this file except in compliance with the License. You may obtain a copy of the
-    License at http://www.apache.org/licenses/LICENSE-2.0
+    Copyright (c) Microsoft Corporation.
 
-    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-    MERCHANTABLITY OR NON-INFRINGEMENT.
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
 
-    See the Apache Version 2.0 License for specific language governing permissions
-    and limitations under the License.
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
     /* global Reflect, Promise */
-
-    var extendStatics = function(d, b) {
+    var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b)
+                if (Object.prototype.hasOwnProperty.call(b, p))
+                    d[p] = b[p]; };
         return extendStatics(d, b);
     };
-
     function __extends(d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     }
-
-    var __assign = function() {
+    var __assign = function () {
         __assign = Object.assign || function __assign(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+                for (var p in s)
+                    if (Object.prototype.hasOwnProperty.call(s, p))
+                        t[p] = s[p];
             }
             return t;
         };
         return __assign.apply(this, arguments);
     };
-
     function __rest(s, e) {
         var t = {};
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-            t[p] = s[p];
+        for (var p in s)
+            if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+                t[p] = s[p];
         if (s != null && typeof Object.getOwnPropertySymbols === "function")
             for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
                 if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
@@ -58,150 +61,253 @@
             }
         return t;
     }
-
     function __decorate(decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+            r = Reflect.decorate(decorators, target, key, desc);
+        else
+            for (var i = decorators.length - 1; i >= 0; i--)
+                if (d = decorators[i])
+                    r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     }
-
     function __param(paramIndex, decorator) {
-        return function (target, key) { decorator(target, key, paramIndex); }
+        return function (target, key) { decorator(target, key, paramIndex); };
     }
-
     function __metadata(metadataKey, metadataValue) {
-        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+            return Reflect.metadata(metadataKey, metadataValue);
     }
-
     function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+            function fulfilled(value) { try {
+                step(generator.next(value));
+            }
+            catch (e) {
+                reject(e);
+            } }
+            function rejected(value) { try {
+                step(generator["throw"](value));
+            }
+            catch (e) {
+                reject(e);
+            } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     }
-
     function __generator(thisArg, body) {
-        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        var _ = { label: 0, sent: function () { if (t[0] & 1)
+                throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
         function verb(n) { return function (v) { return step([n, v]); }; }
         function step(op) {
-            if (f) throw new TypeError("Generator is already executing.");
-            while (_) try {
-                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-                if (y = 0, t) op = [op[0] & 2, t.value];
-                switch (op[0]) {
-                    case 0: case 1: t = op; break;
-                    case 4: _.label++; return { value: op[1], done: false };
-                    case 5: _.label++; y = op[1]; op = [0]; continue;
-                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                    default:
-                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                        if (t[2]) _.ops.pop();
-                        _.trys.pop(); continue;
+            if (f)
+                throw new TypeError("Generator is already executing.");
+            while (_)
+                try {
+                    if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done)
+                        return t;
+                    if (y = 0, t)
+                        op = [op[0] & 2, t.value];
+                    switch (op[0]) {
+                        case 0:
+                        case 1:
+                            t = op;
+                            break;
+                        case 4:
+                            _.label++;
+                            return { value: op[1], done: false };
+                        case 5:
+                            _.label++;
+                            y = op[1];
+                            op = [0];
+                            continue;
+                        case 7:
+                            op = _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                        default:
+                            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                                _ = 0;
+                                continue;
+                            }
+                            if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) {
+                                _.label = op[1];
+                                break;
+                            }
+                            if (op[0] === 6 && _.label < t[1]) {
+                                _.label = t[1];
+                                t = op;
+                                break;
+                            }
+                            if (t && _.label < t[2]) {
+                                _.label = t[2];
+                                _.ops.push(op);
+                                break;
+                            }
+                            if (t[2])
+                                _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                    }
+                    op = body.call(thisArg, _);
                 }
-                op = body.call(thisArg, _);
-            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+                catch (e) {
+                    op = [6, e];
+                    y = 0;
+                }
+                finally {
+                    f = t = 0;
+                }
+            if (op[0] & 5)
+                throw op[1];
+            return { value: op[0] ? op[1] : void 0, done: true };
         }
     }
-
-    function __exportStar(m, exports) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    var __createBinding = Object.create ? (function (o, m, k, k2) {
+        if (k2 === undefined)
+            k2 = k;
+        Object.defineProperty(o, k2, { enumerable: true, get: function () { return m[k]; } });
+    }) : (function (o, m, k, k2) {
+        if (k2 === undefined)
+            k2 = k;
+        o[k2] = m[k];
+    });
+    function __exportStar(m, o) {
+        for (var p in m)
+            if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p))
+                __createBinding(o, m, p);
     }
-
     function __values(o) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
-        if (m) return m.call(o);
-        return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m)
+            return m.call(o);
+        if (o && typeof o.length === "number")
+            return {
+                next: function () {
+                    if (o && i >= o.length)
+                        o = void 0;
+                    return { value: o && o[i++], done: !o };
+                }
+            };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     }
-
     function __read(o, n) {
         var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) return o;
+        if (!m)
+            return o;
         var i = m.call(o), r, ar = [], e;
         try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
+                ar.push(r.value);
         }
-        catch (error) { e = { error: error }; }
+        catch (error) {
+            e = { error: error };
+        }
         finally {
             try {
-                if (r && !r.done && (m = i["return"])) m.call(i);
+                if (r && !r.done && (m = i["return"]))
+                    m.call(i);
             }
-            finally { if (e) throw e.error; }
+            finally {
+                if (e)
+                    throw e.error;
+            }
         }
         return ar;
     }
-
     function __spread() {
         for (var ar = [], i = 0; i < arguments.length; i++)
             ar = ar.concat(__read(arguments[i]));
         return ar;
     }
-
     function __spreadArrays() {
-        for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+        for (var s = 0, i = 0, il = arguments.length; i < il; i++)
+            s += arguments[i].length;
         for (var r = Array(s), k = 0, i = 0; i < il; i++)
             for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
                 r[k] = a[j];
         return r;
-    };
-
+    }
+    ;
     function __await(v) {
         return this instanceof __await ? (this.v = v, this) : new __await(v);
     }
-
     function __asyncGenerator(thisArg, _arguments, generator) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        if (!Symbol.asyncIterator)
+            throw new TypeError("Symbol.asyncIterator is not defined.");
         var g = generator.apply(thisArg, _arguments || []), i, q = [];
         return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+        function verb(n) { if (g[n])
+            i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+        function resume(n, v) { try {
+            step(g[n](v));
+        }
+        catch (e) {
+            settle(q[0][3], e);
+        } }
         function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
         function fulfill(value) { resume("next", value); }
         function reject(value) { resume("throw", value); }
-        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+        function settle(f, v) { if (f(v), q.shift(), q.length)
+            resume(q[0][0], q[0][1]); }
     }
-
     function __asyncDelegator(o) {
         var i, p;
         return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
         function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
     }
-
     function __asyncValues(o) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        if (!Symbol.asyncIterator)
+            throw new TypeError("Symbol.asyncIterator is not defined.");
         var m = o[Symbol.asyncIterator], i;
         return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
         function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function (v) { resolve({ value: v, done: d }); }, reject); }
     }
-
     function __makeTemplateObject(cooked, raw) {
-        if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+        if (Object.defineProperty) {
+            Object.defineProperty(cooked, "raw", { value: raw });
+        }
+        else {
+            cooked.raw = raw;
+        }
         return cooked;
+    }
+    ;
+    var __setModuleDefault = Object.create ? (function (o, v) {
+        Object.defineProperty(o, "default", { enumerable: true, value: v });
+    }) : function (o, v) {
+        o["default"] = v;
     };
-
     function __importStar(mod) {
-        if (mod && mod.__esModule) return mod;
+        if (mod && mod.__esModule)
+            return mod;
         var result = {};
-        if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-        result.default = mod;
+        if (mod != null)
+            for (var k in mod)
+                if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+                    __createBinding(result, mod, k);
+        __setModuleDefault(result, mod);
         return result;
     }
-
     function __importDefault(mod) {
         return (mod && mod.__esModule) ? mod : { default: mod };
+    }
+    function __classPrivateFieldGet(receiver, privateMap) {
+        if (!privateMap.has(receiver)) {
+            throw new TypeError("attempted to get private field on non-instance");
+        }
+        return privateMap.get(receiver);
+    }
+    function __classPrivateFieldSet(receiver, privateMap, value) {
+        if (!privateMap.has(receiver)) {
+            throw new TypeError("attempted to set private field on non-instance");
+        }
+        privateMap.set(receiver, value);
+        return value;
     }
 
     var defaultAnonymousConsentsConfig = {
@@ -241,7 +347,7 @@
             if (headers) {
                 return headers.append(headerName, JSON.stringify(interceptorParam));
             }
-            headers = new http.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
+            headers = new i1.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
             return headers;
         };
         InterceptorUtil.removeHeader = function (headerName, request) {
@@ -368,16 +474,16 @@
     var ENTITY_SUCCESS_ACTION = '[ENTITY] LOAD SUCCESS';
     var ENTITY_RESET_ACTION = '[ENTITY] RESET';
     function entityLoadMeta(entityType, id) {
-        return __assign(__assign({}, loadMeta(entityType)), entityMeta(entityType, id));
+        return Object.assign(Object.assign({}, loadMeta(entityType)), entityMeta(entityType, id));
     }
     function entityFailMeta(entityType, id, error) {
-        return __assign(__assign({}, failMeta(entityType, error)), entityMeta(entityType, id));
+        return Object.assign(Object.assign({}, failMeta(entityType, error)), entityMeta(entityType, id));
     }
     function entitySuccessMeta(entityType, id) {
-        return __assign(__assign({}, successMeta(entityType)), entityMeta(entityType, id));
+        return Object.assign(Object.assign({}, successMeta(entityType)), entityMeta(entityType, id));
     }
     function entityResetMeta(entityType, id) {
-        return __assign(__assign({}, resetMeta(entityType)), entityMeta(entityType, id));
+        return Object.assign(Object.assign({}, resetMeta(entityType)), entityMeta(entityType, id));
     }
     var EntityLoadAction = /** @class */ (function () {
         function EntityLoadAction(entityType, id) {
@@ -429,17 +535,17 @@
                 action.meta.entityType === entityType) {
                 var entity = action.meta.loader;
                 if (entity.load) {
-                    return __assign(__assign({}, state), { loading: true, value: reducer ? reducer(state.value, action) : state.value });
+                    return Object.assign(Object.assign({}, state), { loading: true, value: reducer ? reducer(state.value, action) : state.value });
                 }
                 else if (entity.error) {
-                    return __assign(__assign({}, state), { loading: false, error: true, success: false, value: reducer ? reducer(state.value, action) : undefined });
+                    return Object.assign(Object.assign({}, state), { loading: false, error: true, success: false, value: reducer ? reducer(state.value, action) : undefined });
                 }
                 else if (entity.success) {
-                    return __assign(__assign({}, state), { value: reducer ? reducer(state.value, action) : action.payload, loading: false, error: false, success: true });
+                    return Object.assign(Object.assign({}, state), { value: reducer ? reducer(state.value, action) : action.payload, loading: false, error: false, success: true });
                 }
                 else {
                     // reset state action
-                    return __assign(__assign({}, initialLoaderState), { value: reducer
+                    return Object.assign(Object.assign({}, initialLoaderState), { value: reducer
                             ? reducer(initialLoaderState.value, action)
                             : initialLoaderState.value });
                 }
@@ -447,7 +553,7 @@
             if (reducer) {
                 var newValue = reducer(state.value, action);
                 if (newValue !== state.value) {
-                    return __assign(__assign({}, state), { value: newValue });
+                    return Object.assign(Object.assign({}, state), { value: newValue });
                 }
             }
             return state;
@@ -531,14 +637,14 @@
             for (var i = 0; i < ids.length; i++) {
                 var id = ids[i];
                 var subAction = partitionPayload
-                    ? __assign(__assign({}, action), { payload: action.payload[i] }) : action;
+                    ? Object.assign(Object.assign({}, action), { payload: action.payload[i] }) : action;
                 var newState = reducer(state.entities[id], subAction);
                 if (newState) {
                     entityUpdates[id] = newState;
                 }
             }
             if (Object.keys(entityUpdates).length > 0) {
-                return __assign(__assign({}, state), { entities: __assign(__assign({}, state.entities), entityUpdates) });
+                return Object.assign(Object.assign({}, state), { entities: Object.assign(Object.assign({}, state.entities), entityUpdates) });
             }
             return state;
         };
@@ -571,7 +677,7 @@
     }
     function processesLoaderResetMeta(entityType) {
         // processes reset action is a reset action for loader reducer, but not the other way around
-        return __assign(__assign({}, resetMeta(entityType)), { processesCountDiff: null });
+        return Object.assign(Object.assign({}, resetMeta(entityType)), { processesCountDiff: null });
     }
     var ProcessesLoaderResetAction = /** @class */ (function () {
         function ProcessesLoaderResetAction(entityType) {
@@ -599,13 +705,13 @@
     var ENTITY_PROCESSES_INCREMENT_ACTION = '[ENTITY] PROCESSES INCREMENT';
     var ENTITY_PROCESSES_DECREMENT_ACTION = '[ENTITY] PROCESSES DECREMENT';
     function entityProcessesLoaderResetMeta(entityType, id) {
-        return __assign(__assign({}, processesLoaderResetMeta(entityType)), entityMeta(entityType, id));
+        return Object.assign(Object.assign({}, processesLoaderResetMeta(entityType)), entityMeta(entityType, id));
     }
     function entityProcessesIncrementMeta(entityType, id) {
-        return __assign(__assign({}, processesIncrementMeta(entityType)), entityMeta(entityType, id));
+        return Object.assign(Object.assign({}, processesIncrementMeta(entityType)), entityMeta(entityType, id));
     }
     function entityProcessesDecrementMeta(entityType, id) {
-        return __assign(__assign({}, processesDecrementMeta(entityType)), entityMeta(entityType, id));
+        return Object.assign(Object.assign({}, processesDecrementMeta(entityType)), entityMeta(entityType, id));
     }
     var EntityProcessesLoaderResetAction = /** @class */ (function () {
         function EntityProcessesLoaderResetAction(entityType, id) {
@@ -644,31 +750,31 @@
      */
     function processesLoaderReducer(entityType, reducer) {
         return function (state, action) {
-            if (state === void 0) { state = __assign(__assign({}, initialProcessesState), initialLoaderState); }
+            if (state === void 0) { state = Object.assign(Object.assign({}, initialProcessesState), initialLoaderState); }
             var loaderState = loaderReducer(entityType, reducer)(state, action);
             if (action.meta && action.meta.entityType === entityType) {
                 var processesCountDiff = action.meta.processesCountDiff;
-                if (core.isDevMode() && state.processesCount + processesCountDiff < 0) {
+                if (i0.isDevMode() && state.processesCount + processesCountDiff < 0) {
                     console.error("Action '" + action.type + "' sets processesCount to value < 0!\n" +
                         'Make sure to keep processesCount in sync.\n' +
                         'There should always be only one decrement action for each increment action.\n' +
                         "Make sure that you don't reset state in between those actions.\n", action);
                 }
                 if (processesCountDiff) {
-                    return __assign(__assign({}, loaderState), { processesCount: state.processesCount
+                    return Object.assign(Object.assign({}, loaderState), { processesCount: state.processesCount
                             ? state.processesCount + processesCountDiff
                             : processesCountDiff });
                 }
                 else if (processesCountDiff === null) {
                     // reset action
-                    return __assign(__assign({}, loaderState), initialProcessesState);
+                    return Object.assign(Object.assign({}, loaderState), initialProcessesState);
                 }
             }
             return loaderState;
         };
     }
 
-    var initialProcessesLoaderState = __assign(__assign({}, initialLoaderState), initialProcessesState);
+    var initialProcessesLoaderState = Object.assign(Object.assign({}, initialLoaderState), initialProcessesState);
     function entityHasPendingProcessesSelector(state, id) {
         var entityState = entityLoaderStateSelector(state, id);
         return hasPendingProcessesSelector(entityState);
@@ -1065,16 +1171,16 @@
         RevokeUserTokenFail: RevokeUserTokenFail
     });
 
-    var getAuthState = store.createFeatureSelector(AUTH_FEATURE);
+    var getAuthState = i1$1.createFeatureSelector(AUTH_FEATURE);
 
     var ɵ0 = function (state) { return state.clientToken; };
-    var getClientTokenState = store.createSelector(getAuthState, ɵ0);
+    var getClientTokenState = i1$1.createSelector(getAuthState, ɵ0);
 
     var getUserTokenSelector = function (state) { return state.token; };
     var ɵ0$1 = getUserTokenSelector;
     var ɵ1 = function (state) { return state.userToken; };
-    var getUserTokenState = store.createSelector(getAuthState, ɵ1);
-    var getUserToken = store.createSelector(getUserTokenState, getUserTokenSelector);
+    var getUserTokenState = i1$1.createSelector(getAuthState, ɵ1);
+    var getUserToken = i1$1.createSelector(getUserTokenState, getUserTokenSelector);
 
     var authGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -1135,7 +1241,7 @@
          * Returns the user's token
          */
         AuthService.prototype.getUserToken = function () {
-            return this.store.pipe(store.select(getUserToken));
+            return this.store.pipe(i1$1.select(getUserToken));
         };
         /**
          * Refreshes the user token
@@ -1172,7 +1278,7 @@
          */
         AuthService.prototype.getClientToken = function () {
             var _this = this;
-            return this.store.pipe(store.select(getClientTokenState), operators.filter(function (state) {
+            return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
                 if (_this.isClientTokenLoaded(state)) {
                     return true;
                 }
@@ -1191,9 +1297,7 @@
         AuthService.prototype.refreshClientToken = function () {
             var _this = this;
             this.store.dispatch(new LoadClientToken());
-            return this.store.pipe(store.select(getClientTokenState), operators.filter(function (state) {
-                return _this.isClientTokenLoaded(state);
-            }), operators.map(function (state) { return state.value; }));
+            return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) { return _this.isClientTokenLoaded(state); }), operators.map(function (state) { return state.value; }));
         };
         AuthService.prototype.isClientTokenLoaded = function (state) {
             return (state.success || state.error) && !state.loading;
@@ -1204,17 +1308,17 @@
         AuthService.prototype.isUserLoggedIn = function () {
             return this.getUserToken().pipe(operators.map(function (userToken) { return Boolean(userToken) && Boolean(userToken.access_token); }));
         };
-        AuthService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        AuthService.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(core.ɵɵinject(store.Store)); }, token: AuthService, providedIn: "root" });
-        AuthService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], AuthService);
         return AuthService;
     }());
+    AuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.ɵɵinject(i1$1.Store)); }, token: AuthService, providedIn: "root" });
+    AuthService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
 
     var ClientErrorHandlingService = /** @class */ (function () {
         function ClientErrorHandlingService(authService) {
@@ -1234,17 +1338,17 @@
             });
             return request;
         };
-        ClientErrorHandlingService.ctorParameters = function () { return [
-            { type: AuthService }
-        ]; };
-        ClientErrorHandlingService.ɵprov = core.ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(core.ɵɵinject(AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
-        ClientErrorHandlingService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ClientErrorHandlingService);
         return ClientErrorHandlingService;
     }());
+    ClientErrorHandlingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(i0.ɵɵinject(AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
+    ClientErrorHandlingService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ClientErrorHandlingService.ctorParameters = function () { return [
+        { type: AuthService }
+    ]; };
 
     var WindowRef = /** @class */ (function () {
         function WindowRef(document) {
@@ -1256,21 +1360,21 @@
             get: function () {
                 return typeof window !== 'undefined' ? window : undefined;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(WindowRef.prototype, "sessionStorage", {
             get: function () {
                 return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(WindowRef.prototype, "localStorage", {
             get: function () {
                 return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(WindowRef.prototype, "resize$", {
@@ -1288,21 +1392,20 @@
                     return rxjs.fromEvent(this.nativeWindow, 'resize').pipe(operators.debounceTime(300), operators.startWith({ target: this.nativeWindow }), operators.distinctUntilChanged());
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
-        WindowRef.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
-        ]; };
-        WindowRef.ɵprov = core.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(core.ɵɵinject(common.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
-        WindowRef = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            }),
-            __param(0, core.Inject(common.DOCUMENT))
-        ], WindowRef);
         return WindowRef;
     }());
+    WindowRef.ɵprov = i0.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.ɵɵinject(i1$2.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+    WindowRef.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    WindowRef.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
+    ]; };
 
     var UrlParsingService = /** @class */ (function () {
         function UrlParsingService(router) {
@@ -1314,76 +1417,72 @@
         };
         UrlParsingService.prototype._getPrimarySegmentsFromUrlTree = function (tree) {
             var segments = tree.segments.map(function (s) { return s.path; });
-            var childrenSegments = tree.children[router.PRIMARY_OUTLET]
-                ? this._getPrimarySegmentsFromUrlTree(tree.children[router.PRIMARY_OUTLET])
+            var childrenSegments = tree.children[i4.PRIMARY_OUTLET]
+                ? this._getPrimarySegmentsFromUrlTree(tree.children[i4.PRIMARY_OUTLET])
                 : [];
             return segments.concat(childrenSegments);
         };
-        UrlParsingService.ctorParameters = function () { return [
-            { type: router.Router }
-        ]; };
-        UrlParsingService.ɵprov = core.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(core.ɵɵinject(router.Router)); }, token: UrlParsingService, providedIn: "root" });
-        UrlParsingService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], UrlParsingService);
         return UrlParsingService;
     }());
+    UrlParsingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.ɵɵinject(i4.Router)); }, token: UrlParsingService, providedIn: "root" });
+    UrlParsingService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    UrlParsingService.ctorParameters = function () { return [
+        { type: i4.Router }
+    ]; };
 
     var isParam = function (segment) { return segment.startsWith(':'); };
     var getParamName = function (segment) { return segment.slice(1); }; // it just removes leading ':'
-    var ensureLeadingSlash = function (path) {
-        return path.startsWith('/') ? path : '/' + path;
-    };
-    var removeLeadingSlash = function (path) {
-        return path.startsWith('/') ? path.slice(1) : path;
-    };
+    var ensureLeadingSlash = function (path) { return path.startsWith('/') ? path : '/' + path; };
+    var removeLeadingSlash = function (path) { return path.startsWith('/') ? path.slice(1) : path; };
 
     /**
      * Global Configuration injection token, can be used to inject configuration to any part of the app
      */
-    var Config = new core.InjectionToken('Configuration', {
+    var Config = new i0.InjectionToken('Configuration', {
         providedIn: 'root',
-        factory: function () { return deepMerge({}, core.inject(DefaultConfig), core.inject(RootConfig)); },
+        factory: function () { return deepMerge({}, i0.inject(DefaultConfig), i0.inject(RootConfig)); },
     });
     /**
      * Default Configuration token, used to build Global Configuration, built from DefaultConfigChunks
      */
-    var DefaultConfig = new core.InjectionToken('DefaultConfiguration', {
+    var DefaultConfig = new i0.InjectionToken('DefaultConfiguration', {
         providedIn: 'root',
-        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = core.inject(DefaultConfigChunk, core.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
+        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = i0.inject(DefaultConfigChunk, i0.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
     });
     /**
      * Root Configuration token, used to build Global Configuration, built from ConfigChunks
      */
-    var RootConfig = new core.InjectionToken('RootConfiguration', {
+    var RootConfig = new i0.InjectionToken('RootConfiguration', {
         providedIn: 'root',
-        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = core.inject(ConfigChunk, core.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
+        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = i0.inject(ConfigChunk, i0.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
     });
     /**
      * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
      * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
      */
-    var ConfigChunk = new core.InjectionToken('ConfigurationChunk');
+    var ConfigChunk = new i0.InjectionToken('ConfigurationChunk');
     /**
      * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
      * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
      *
      * General rule is, that all config provided in libraries should be provided as default config.
      */
-    var DefaultConfigChunk = new core.InjectionToken('DefaultConfigurationChunk');
+    var DefaultConfigChunk = new i0.InjectionToken('DefaultConfigurationChunk');
 
     var RoutingConfig = /** @class */ (function () {
         function RoutingConfig() {
         }
-        RoutingConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return core.ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
-        RoutingConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], RoutingConfig);
         return RoutingConfig;
     }());
+    RoutingConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return i0.ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
+    RoutingConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var RoutingConfigService = /** @class */ (function () {
         function RoutingConfigService(config) {
@@ -1406,7 +1505,7 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 console.warn.apply(console, __spread(args));
             }
         };
@@ -1445,20 +1544,20 @@
          * to read quickly the route name by the path.
          */
         RoutingConfigService.prototype.initRouteNamesByPath = function () {
-            var e_1, _a;
+            var e_1, _d;
             var _this = this;
-            var _b, _c, _d;
+            var _a, _b, _c;
             this.routeNamesByPath = {};
             var _loop_1 = function (routeName, routeConfig) {
-                (_d = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _d === void 0 ? void 0 : _d.forEach(function (path) {
-                    if (core.isDevMode() && _this.routeNamesByPath[path]) {
+                (_c = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _c === void 0 ? void 0 : _c.forEach(function (path) {
+                    if (i0.isDevMode() && _this.routeNamesByPath[path]) {
                         console.error("The same path '" + path + "' is configured for two different route names: '" + _this.routeNamesByPath[path] + "' and '" + routeName);
                     }
                     _this.routeNamesByPath[path] = routeName;
                 });
             };
             try {
-                for (var _e = __values(Object.entries((_c = (_b = this.config) === null || _b === void 0 ? void 0 : _b.routing) === null || _c === void 0 ? void 0 : _c.routes)), _f = _e.next(); !_f.done; _f = _e.next()) {
+                for (var _e = __values(Object.entries((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes)), _f = _e.next(); !_f.done; _f = _e.next()) {
                     var _g = __read(_f.value, 2), routeName = _g[0], routeConfig = _g[1];
                     _loop_1(routeName, routeConfig);
                 }
@@ -1466,20 +1565,20 @@
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_f && !_f.done && (_a = _e.return)) _a.call(_e);
+                    if (_f && !_f.done && (_d = _e.return)) _d.call(_e);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
         };
-        RoutingConfigService.ctorParameters = function () { return [
-            { type: RoutingConfig }
-        ]; };
-        RoutingConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(core.ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
-        RoutingConfigService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], RoutingConfigService);
         return RoutingConfigService;
     }());
+    RoutingConfigService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(i0.ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
+    RoutingConfigService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    RoutingConfigService.ctorParameters = function () { return [
+        { type: RoutingConfig }
+    ]; };
 
     var SemanticPathService = /** @class */ (function () {
         function SemanticPathService(routingConfigService, urlParser) {
@@ -1580,12 +1679,10 @@
         };
         SemanticPathService.prototype.findPathWithFillableParams = function (routeConfig, params) {
             var _this = this;
-            var foundPath = routeConfig.paths.find(function (path) {
-                return _this.getParams(path).every(function (paramName) {
-                    var mappedParamName = _this.getMappedParamName(paramName, routeConfig.paramsMapping);
-                    return params[mappedParamName] !== undefined;
-                });
-            });
+            var foundPath = routeConfig.paths.find(function (path) { return _this.getParams(path).every(function (paramName) {
+                var mappedParamName = _this.getMappedParamName(paramName, routeConfig.paramsMapping);
+                return params[mappedParamName] !== undefined;
+            }); });
             if (foundPath === undefined || foundPath === null) {
                 this.warn("No configured path matches all its params to given object. ", "Route config: ", routeConfig, "Params object: ", params);
                 return null;
@@ -1609,20 +1706,20 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 console.warn.apply(console, __spread(args));
             }
         };
-        SemanticPathService.ctorParameters = function () { return [
-            { type: RoutingConfigService },
-            { type: UrlParsingService }
-        ]; };
-        SemanticPathService.ɵprov = core.ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
-        SemanticPathService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], SemanticPathService);
         return SemanticPathService;
     }());
+    SemanticPathService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(i0.ɵɵinject(RoutingConfigService), i0.ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
+    SemanticPathService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    SemanticPathService.ctorParameters = function () { return [
+        { type: RoutingConfigService },
+        { type: UrlParsingService }
+    ]; };
 
     var ROUTER_GO = '[Router] Go';
     var ROUTER_GO_BY_URL = '[Router] Go By Url';
@@ -1669,23 +1766,17 @@
 
     var ROUTING_FEATURE = 'router';
 
-    var getRouterFeatureState = store.createFeatureSelector(ROUTING_FEATURE);
+    var getRouterFeatureState = i1$1.createFeatureSelector(ROUTING_FEATURE);
     var ɵ0$2 = function (state) { return state.router; };
-    var getRouterState = store.createSelector(getRouterFeatureState, ɵ0$2);
-    var ɵ1$1 = function (routingState) {
-        return (routingState.state && routingState.state.semanticRoute) || '';
-    };
-    var getSemanticRoute = store.createSelector(getRouterState, ɵ1$1);
-    var ɵ2 = function (routingState) {
-        return (routingState.state && routingState.state.context) || { id: '' };
-    };
-    var getPageContext = store.createSelector(getRouterState, ɵ2);
-    var ɵ3 = function (routingState) {
-        return routingState.nextState && routingState.nextState.context;
-    };
-    var getNextPageContext = store.createSelector(getRouterState, ɵ3);
+    var getRouterState = i1$1.createSelector(getRouterFeatureState, ɵ0$2);
+    var ɵ1$1 = function (routingState) { return (routingState.state && routingState.state.semanticRoute) || ''; };
+    var getSemanticRoute = i1$1.createSelector(getRouterState, ɵ1$1);
+    var ɵ2 = function (routingState) { return (routingState.state && routingState.state.context) || { id: '' }; };
+    var getPageContext = i1$1.createSelector(getRouterState, ɵ2);
+    var ɵ3 = function (routingState) { return routingState.nextState && routingState.nextState.context; };
+    var getNextPageContext = i1$1.createSelector(getRouterState, ɵ3);
     var ɵ4 = function (context) { return !!context; };
-    var isNavigating = store.createSelector(getNextPageContext, ɵ4);
+    var isNavigating = i1$1.createSelector(getNextPageContext, ɵ4);
 
     var routingGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -1712,25 +1803,25 @@
          * Get the current router state
          */
         RoutingService.prototype.getRouterState = function () {
-            return this.store.pipe(store.select(getRouterState));
+            return this.store.pipe(i1$1.select(getRouterState));
         };
         /**
          * Get the `PageContext` from the state
          */
         RoutingService.prototype.getPageContext = function () {
-            return this.store.pipe(store.select(getPageContext));
+            return this.store.pipe(i1$1.select(getPageContext));
         };
         /**
          * Get the next `PageContext` from the state
          */
         RoutingService.prototype.getNextPageContext = function () {
-            return this.store.pipe(store.select(getNextPageContext));
+            return this.store.pipe(i1$1.select(getNextPageContext));
         };
         /**
          * Get the `isNavigating` info from the state
          */
         RoutingService.prototype.isNavigating = function () {
-            return this.store.pipe(store.select(isNavigating));
+            return this.store.pipe(i1$1.select(isNavigating));
         };
         /**
          * Navigation with a new state into history
@@ -1780,19 +1871,19 @@
                 extras: extras,
             }));
         };
-        RoutingService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: WindowRef },
-            { type: SemanticPathService }
-        ]; };
-        RoutingService.ɵprov = core.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(core.ɵɵinject(store.Store), core.ɵɵinject(WindowRef), core.ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
-        RoutingService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], RoutingService);
         return RoutingService;
     }());
+    RoutingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
+    RoutingService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    RoutingService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: WindowRef },
+        { type: SemanticPathService }
+    ]; };
 
     var UserErrorHandlingService = /** @class */ (function () {
         function UserErrorHandlingService(authService, routingService) {
@@ -1834,18 +1925,18 @@
             });
             return request;
         };
-        UserErrorHandlingService.ctorParameters = function () { return [
-            { type: AuthService },
-            { type: RoutingService }
-        ]; };
-        UserErrorHandlingService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(core.ɵɵinject(AuthService), core.ɵɵinject(RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
-        UserErrorHandlingService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserErrorHandlingService);
         return UserErrorHandlingService;
     }());
+    UserErrorHandlingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(i0.ɵɵinject(AuthService), i0.ɵɵinject(RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
+    UserErrorHandlingService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserErrorHandlingService.ctorParameters = function () { return [
+        { type: AuthService },
+        { type: RoutingService }
+    ]; };
 
     var OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
     var AuthErrorInterceptor = /** @class */ (function () {
@@ -1861,7 +1952,7 @@
                 request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
             }
             return next.handle(request).pipe(operators.catchError(function (errResponse) {
-                if (errResponse instanceof http.HttpErrorResponse) {
+                if (errResponse instanceof i1.HttpErrorResponse) {
                     switch (errResponse.status) {
                         case 401: // Unauthorized
                             if (isClientTokenRequest) {
@@ -1911,17 +2002,17 @@
             }
             return false;
         };
-        AuthErrorInterceptor.ctorParameters = function () { return [
-            { type: UserErrorHandlingService },
-            { type: ClientErrorHandlingService },
-            { type: AuthService }
-        ]; };
-        AuthErrorInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthErrorInterceptor_Factory() { return new AuthErrorInterceptor(core.ɵɵinject(UserErrorHandlingService), core.ɵɵinject(ClientErrorHandlingService), core.ɵɵinject(AuthService)); }, token: AuthErrorInterceptor, providedIn: "root" });
-        AuthErrorInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], AuthErrorInterceptor);
         return AuthErrorInterceptor;
     }());
+    AuthErrorInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthErrorInterceptor_Factory() { return new AuthErrorInterceptor(i0.ɵɵinject(UserErrorHandlingService), i0.ɵɵinject(ClientErrorHandlingService), i0.ɵɵinject(AuthService)); }, token: AuthErrorInterceptor, providedIn: "root" });
+    AuthErrorInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    AuthErrorInterceptor.ctorParameters = function () { return [
+        { type: UserErrorHandlingService },
+        { type: ClientErrorHandlingService },
+        { type: AuthService }
+    ]; };
 
     var DynamicTemplate = /** @class */ (function () {
         function DynamicTemplate() {
@@ -1970,15 +2061,15 @@
     var SiteContextConfig = /** @class */ (function () {
         function SiteContextConfig() {
         }
-        SiteContextConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function SiteContextConfig_Factory() { return core.ɵɵinject(Config); }, token: SiteContextConfig, providedIn: "root" });
-        SiteContextConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], SiteContextConfig);
         return SiteContextConfig;
     }());
+    SiteContextConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function SiteContextConfig_Factory() { return i0.ɵɵinject(Config); }, token: SiteContextConfig, providedIn: "root" });
+    SiteContextConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var LANGUAGE_CONTEXT_ID = 'language';
     var CURRENCY_CONTEXT_ID = 'currency';
@@ -2139,44 +2230,42 @@
 
     var SITE_CONTEXT_FEATURE = 'siteContext';
 
-    var getSiteContextState = store.createFeatureSelector(SITE_CONTEXT_FEATURE);
+    var getSiteContextState = i1$1.createFeatureSelector(SITE_CONTEXT_FEATURE);
 
-    var ɵ0$3 = function (state) {
-        return state && state.baseSite && state.baseSite.activeSite;
-    };
-    var getActiveBaseSite = store.createSelector(getSiteContextState, ɵ0$3);
+    var ɵ0$3 = function (state) { return state && state.baseSite && state.baseSite.activeSite; };
+    var getActiveBaseSite = i1$1.createSelector(getSiteContextState, ɵ0$3);
     var ɵ1$2 = function (state) { return state && state.baseSite && state.baseSite.details; };
-    var getBaseSiteData = store.createSelector(getSiteContextState, ɵ1$2);
+    var getBaseSiteData = i1$1.createSelector(getSiteContextState, ɵ1$2);
 
     var currenciesEntitiesSelector = function (state) { return state.entities; };
     var ɵ0$4 = currenciesEntitiesSelector;
     var activeCurrencySelector = function (state) { return state.activeCurrency; };
     var ɵ1$3 = activeCurrencySelector;
     var ɵ2$1 = function (state) { return state.currencies; };
-    var getCurrenciesState = store.createSelector(getSiteContextState, ɵ2$1);
-    var getCurrenciesEntities = store.createSelector(getCurrenciesState, currenciesEntitiesSelector);
-    var getActiveCurrency = store.createSelector(getCurrenciesState, activeCurrencySelector);
+    var getCurrenciesState = i1$1.createSelector(getSiteContextState, ɵ2$1);
+    var getCurrenciesEntities = i1$1.createSelector(getCurrenciesState, currenciesEntitiesSelector);
+    var getActiveCurrency = i1$1.createSelector(getCurrenciesState, activeCurrencySelector);
     var ɵ3$1 = function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
     };
-    var getAllCurrencies = store.createSelector(getCurrenciesEntities, ɵ3$1);
+    var getAllCurrencies = i1$1.createSelector(getCurrenciesEntities, ɵ3$1);
 
     var activeLanguageSelector = function (state) { return state.activeLanguage; };
     var ɵ0$5 = activeLanguageSelector;
     var languagesEntitiesSelector = function (state) { return state.entities; };
     var ɵ1$4 = languagesEntitiesSelector;
     var ɵ2$2 = function (state) { return state.languages; };
-    var getLanguagesState = store.createSelector(getSiteContextState, ɵ2$2);
-    var getLanguagesEntities = store.createSelector(getLanguagesState, languagesEntitiesSelector);
-    var getActiveLanguage = store.createSelector(getLanguagesState, activeLanguageSelector);
+    var getLanguagesState = i1$1.createSelector(getSiteContextState, ɵ2$2);
+    var getLanguagesEntities = i1$1.createSelector(getLanguagesState, languagesEntitiesSelector);
+    var getActiveLanguage = i1$1.createSelector(getLanguagesState, activeLanguageSelector);
     var ɵ3$2 = function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
     };
-    var getAllLanguages = store.createSelector(getLanguagesEntities, ɵ3$2);
+    var getAllLanguages = i1$1.createSelector(getLanguagesEntities, ɵ3$2);
 
     var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -2206,7 +2295,7 @@
          * Represents the current baseSite uid.
          */
         BaseSiteService.prototype.getActive = function () {
-            return this.store.pipe(store.select(getActiveBaseSite), operators.filter(function (active) { return Boolean(active); }));
+            return this.store.pipe(i1$1.select(getActiveBaseSite), operators.filter(function (active) { return Boolean(active); }));
         };
         /**
          * We currently don't support switching baseSite at run time
@@ -2217,7 +2306,7 @@
         BaseSiteService.prototype.setActive = function (baseSite) {
             var _this = this;
             return this.store
-                .pipe(store.select(getActiveBaseSite), operators.take(1))
+                .pipe(i1$1.select(getActiveBaseSite), operators.take(1))
                 .subscribe(function (activeBaseSite) {
                 if (baseSite && activeBaseSite !== baseSite) {
                     _this.store.dispatch(new SetActiveBaseSite(baseSite));
@@ -2243,21 +2332,21 @@
          */
         BaseSiteService.prototype.getBaseSiteData = function () {
             var _this = this;
-            return this.store.pipe(store.select(getBaseSiteData), operators.tap(function (baseSite) {
+            return this.store.pipe(i1$1.select(getBaseSiteData), operators.tap(function (baseSite) {
                 if (Object.keys(baseSite).length === 0) {
                     _this.store.dispatch(new LoadBaseSite());
                 }
             }));
         };
-        BaseSiteService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: SiteContextConfig }
-        ]; };
-        BaseSiteService = __decorate([
-            core.Injectable()
-        ], BaseSiteService);
         return BaseSiteService;
     }());
+    BaseSiteService.decorators = [
+        { type: i0.Injectable }
+    ];
+    BaseSiteService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: SiteContextConfig }
+    ]; };
 
     var CustomEncoder = /** @class */ (function () {
         function CustomEncoder() {
@@ -2282,15 +2371,15 @@
         function OccConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        OccConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function OccConfig_Factory() { return core.ɵɵinject(Config); }, token: OccConfig, providedIn: "root" });
-        OccConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], OccConfig);
         return OccConfig;
     }(SiteContextConfig));
+    OccConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccConfig_Factory() { return i0.ɵɵinject(Config); }, token: OccConfig, providedIn: "root" });
+    OccConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var DEFAULT_SCOPE = 'default';
 
@@ -2310,7 +2399,7 @@
                 var _a;
                 return ((_a = this._activeBaseSite) !== null && _a !== void 0 ? _a : getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -2358,7 +2447,7 @@
          * @param scope
          */
         OccEndpointsService.prototype.getUrl = function (endpoint, urlParams, queryParams, scope) {
-            var _a;
+            var _d;
             endpoint = this.getEndpointForScope(endpoint, scope);
             if (urlParams) {
                 Object.keys(urlParams).forEach(function (key) {
@@ -2370,10 +2459,10 @@
                 var httpParamsOptions = { encoder: new CustomEncoder() };
                 if (endpoint.includes('?')) {
                     var queryParamsFromEndpoint = void 0;
-                    _a = __read(endpoint.split('?'), 2), endpoint = _a[0], queryParamsFromEndpoint = _a[1];
-                    httpParamsOptions = __assign(__assign({}, httpParamsOptions), { fromString: queryParamsFromEndpoint });
+                    _d = __read(endpoint.split('?'), 2), endpoint = _d[0], queryParamsFromEndpoint = _d[1];
+                    httpParamsOptions = Object.assign(Object.assign({}, httpParamsOptions), { fromString: queryParamsFromEndpoint });
                 }
-                var httpParams_1 = new http.HttpParams(httpParamsOptions);
+                var httpParams_1 = new i1.HttpParams(httpParamsOptions);
                 Object.keys(queryParams).forEach(function (key) {
                     var value = queryParams[key];
                     if (value !== undefined) {
@@ -2403,7 +2492,7 @@
                 if (scope === DEFAULT_SCOPE && typeof endpointConfig === 'string') {
                     return endpointConfig;
                 }
-                if (core.isDevMode()) {
+                if (i0.isDevMode()) {
                     console.warn(endpoint + " endpoint configuration missing for scope \"" + scope + "\"");
                 }
             }
@@ -2411,19 +2500,18 @@
                 ? endpointConfig
                 : endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[DEFAULT_SCOPE]) || endpoint);
         };
-        OccEndpointsService.ctorParameters = function () { return [
-            { type: OccConfig },
-            { type: BaseSiteService, decorators: [{ type: core.Optional }] }
-        ]; };
-        OccEndpointsService.ɵprov = core.ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(core.ɵɵinject(OccConfig), core.ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
-        OccEndpointsService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            }),
-            __param(1, core.Optional())
-        ], OccEndpointsService);
         return OccEndpointsService;
     }());
+    OccEndpointsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(i0.ɵɵinject(OccConfig), i0.ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
+    OccEndpointsService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    OccEndpointsService.ctorParameters = function () { return [
+        { type: OccConfig },
+        { type: BaseSiteService, decorators: [{ type: i0.Optional }] }
+    ]; };
 
     var ClientTokenInterceptor = /** @class */ (function () {
         function ClientTokenInterceptor(authService, occEndpoints) {
@@ -2450,16 +2538,16 @@
             }
             return rxjs.of(null);
         };
-        ClientTokenInterceptor.ctorParameters = function () { return [
-            { type: AuthService },
-            { type: OccEndpointsService }
-        ]; };
-        ClientTokenInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(core.ɵɵinject(AuthService), core.ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
-        ClientTokenInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], ClientTokenInterceptor);
         return ClientTokenInterceptor;
     }());
+    ClientTokenInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(i0.ɵɵinject(AuthService), i0.ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
+    ClientTokenInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ClientTokenInterceptor.ctorParameters = function () { return [
+        { type: AuthService },
+        { type: OccEndpointsService }
+    ]; };
 
     var UserTokenInterceptor = /** @class */ (function () {
         function UserTokenInterceptor(authService, occEndpoints) {
@@ -2484,16 +2572,16 @@
         UserTokenInterceptor.prototype.isOccUrl = function (url) {
             return url.includes(this.occEndpoints.getBaseEndpoint());
         };
-        UserTokenInterceptor.ctorParameters = function () { return [
-            { type: AuthService },
-            { type: OccEndpointsService }
-        ]; };
-        UserTokenInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function UserTokenInterceptor_Factory() { return new UserTokenInterceptor(core.ɵɵinject(AuthService), core.ɵɵinject(OccEndpointsService)); }, token: UserTokenInterceptor, providedIn: "root" });
-        UserTokenInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], UserTokenInterceptor);
         return UserTokenInterceptor;
     }());
+    UserTokenInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserTokenInterceptor_Factory() { return new UserTokenInterceptor(i0.ɵɵinject(AuthService), i0.ɵɵinject(OccEndpointsService)); }, token: UserTokenInterceptor, providedIn: "root" });
+    UserTokenInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    UserTokenInterceptor.ctorParameters = function () { return [
+        { type: AuthService },
+        { type: OccEndpointsService }
+    ]; };
 
     var TokenRevocationInterceptor = /** @class */ (function () {
         function TokenRevocationInterceptor() {
@@ -2514,58 +2602,57 @@
             var isTokenRevocationHeaderPresent = InterceptorUtil.getInterceptorParam(TOKEN_REVOCATION_HEADER, request.headers);
             return Boolean(isTokenRevocationHeaderPresent);
         };
-        TokenRevocationInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(); }, token: TokenRevocationInterceptor, providedIn: "root" });
-        TokenRevocationInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], TokenRevocationInterceptor);
         return TokenRevocationInterceptor;
     }());
+    TokenRevocationInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(); }, token: TokenRevocationInterceptor, providedIn: "root" });
+    TokenRevocationInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    TokenRevocationInterceptor.ctorParameters = function () { return []; };
 
     var interceptors = [
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: ClientTokenInterceptor,
             multi: true,
         },
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: UserTokenInterceptor,
             multi: true,
         },
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: AuthErrorInterceptor,
             multi: true,
         },
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: TokenRevocationInterceptor,
             multi: true,
         },
     ];
-
 
     (function (StorageSyncType) {
         StorageSyncType["NO_STORAGE"] = "NO_STORAGE";
         StorageSyncType["LOCAL_STORAGE"] = "LOCAL_STORAGE";
         StorageSyncType["SESSION_STORAGE"] = "SESSION_STORAGE";
     })(exports.StorageSyncType || (exports.StorageSyncType = {}));
-
     (function (StateTransferType) {
         StateTransferType["TRANSFER_STATE"] = "SSR";
     })(exports.StateTransferType || (exports.StateTransferType = {}));
     var StateConfig = /** @class */ (function () {
         function StateConfig() {
         }
-        StateConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function StateConfig_Factory() { return core.ɵɵinject(Config); }, token: StateConfig, providedIn: "root" });
-        StateConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], StateConfig);
         return StateConfig;
     }());
+    StateConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function StateConfig_Factory() { return i0.ɵɵinject(Config); }, token: StateConfig, providedIn: "root" });
+    StateConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
     var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
@@ -2592,11 +2679,11 @@
         return function (reducer) {
             return function (state, action) {
                 var newState = reducer(state, action);
-                if (action.type === store.INIT || action.type === store.UPDATE) {
+                if (action.type === i1$1.INIT || action.type === i1$1.UPDATE) {
                     var rehydratedState = rehydrate(config, winRef);
                     return deepMerge({}, newState, rehydratedState);
                 }
-                if (action.type !== store.INIT) {
+                if (action.type !== i1$1.INIT) {
                     // handle local storage
                     var localStorageKeys = filterKeysByType(storageSyncConfig.keys, exports.StorageSyncType.LOCAL_STORAGE);
                     var localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, exports.StorageSyncType.LOCAL_STORAGE);
@@ -2666,17 +2753,17 @@
         return !Boolean(storage);
     }
 
-    var CX_KEY = platformBrowser.makeStateKey('cx-state');
+    var CX_KEY = i5.makeStateKey('cx-state');
     function getTransferStateReducer(platformId, transferState, config) {
         if (transferState &&
             config &&
             config.state &&
             config.state.ssrTransfer &&
             config.state.ssrTransfer.keys) {
-            if (common.isPlatformBrowser(platformId)) {
+            if (i1$2.isPlatformBrowser(platformId)) {
                 return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
-            else if (common.isPlatformServer(platformId)) {
+            else if (i1$2.isPlatformServer(platformId)) {
                 return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
         }
@@ -2699,7 +2786,7 @@
         var transferStateKeys = filterKeysByType(keys, exports.StateTransferType.TRANSFER_STATE);
         return function (reducer) {
             return function (state, action) {
-                if (action.type === store.INIT) {
+                if (action.type === i1$1.INIT) {
                     if (!state) {
                         state = reducer(state, action);
                     }
@@ -2718,31 +2805,31 @@
         };
     }
 
-    var TRANSFER_STATE_META_REDUCER = new core.InjectionToken('TransferStateMetaReducer');
-    var STORAGE_SYNC_META_REDUCER = new core.InjectionToken('StorageSyncMetaReducer');
+    var TRANSFER_STATE_META_REDUCER = new i0.InjectionToken('TransferStateMetaReducer');
+    var STORAGE_SYNC_META_REDUCER = new i0.InjectionToken('StorageSyncMetaReducer');
     var ɵ0$6 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
     var stateMetaReducers = [
         {
             provide: TRANSFER_STATE_META_REDUCER,
             useFactory: ɵ0$6,
             deps: [
-                core.PLATFORM_ID,
-                [new core.Optional(), platformBrowser.TransferState],
-                [new core.Optional(), Config],
+                i0.PLATFORM_ID,
+                [new i0.Optional(), i5.TransferState],
+                [new i0.Optional(), Config],
             ],
         },
         {
             provide: STORAGE_SYNC_META_REDUCER,
             useFactory: ɵ1$5,
-            deps: [WindowRef, [new core.Optional(), Config]],
+            deps: [WindowRef, [new i0.Optional(), Config]],
         },
         {
-            provide: store.META_REDUCERS,
+            provide: i1$1.META_REDUCERS,
             useExisting: TRANSFER_STATE_META_REDUCER,
             multi: true,
         },
         {
-            provide: store.META_REDUCERS,
+            provide: i1$1.META_REDUCERS,
             useExisting: STORAGE_SYNC_META_REDUCER,
             multi: true,
         },
@@ -2812,21 +2899,19 @@
     var StateModule = /** @class */ (function () {
         function StateModule() {
         }
-        StateModule_1 = StateModule;
         StateModule.forRoot = function () {
             return {
-                ngModule: StateModule_1,
+                ngModule: StateModule,
                 providers: __spread(stateMetaReducers, [
                     provideDefaultConfig(defaultStateConfig),
                 ]),
             };
         };
-        var StateModule_1;
-        StateModule = StateModule_1 = __decorate([
-            core.NgModule({})
-        ], StateModule);
         return StateModule;
     }());
+    StateModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
 
     /**
      * @deprecated since 2.1, use normalizeHttpError instead
@@ -2858,7 +2943,7 @@
                 reason: error.stack,
             };
         }
-        if (error instanceof http.HttpErrorResponse) {
+        if (error instanceof i1.HttpErrorResponse) {
             var serializableError = error.error;
             if (isObject(error.error)) {
                 serializableError = JSON.stringify(error.error, circularReplacer());
@@ -2879,15 +2964,15 @@
         function AuthConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        AuthConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return core.ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
-        AuthConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], AuthConfig);
         return AuthConfig;
     }(OccConfig));
+    AuthConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return i0.ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
+    AuthConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var ClientAuthenticationTokenService = /** @class */ (function () {
         function ClientAuthenticationTokenService(config, http, occEndpointsService) {
@@ -2897,56 +2982,54 @@
         }
         ClientAuthenticationTokenService.prototype.loadClientAuthenticationToken = function () {
             var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new http.HttpParams()
+            var params = new i1.HttpParams()
                 .set('client_id', encodeURIComponent(this.config.authentication.client_id))
                 .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
                 .set('grant_type', 'client_credentials');
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http.post(url, params, { headers: headers });
         };
-        ClientAuthenticationTokenService.ctorParameters = function () { return [
-            { type: AuthConfig },
-            { type: http.HttpClient },
-            { type: OccEndpointsService }
-        ]; };
-        ClientAuthenticationTokenService.ɵprov = core.ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(core.ɵɵinject(AuthConfig), core.ɵɵinject(http.HttpClient), core.ɵɵinject(OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
-        ClientAuthenticationTokenService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ClientAuthenticationTokenService);
         return ClientAuthenticationTokenService;
     }());
+    ClientAuthenticationTokenService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(i0.ɵɵinject(AuthConfig), i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
+    ClientAuthenticationTokenService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ClientAuthenticationTokenService.ctorParameters = function () { return [
+        { type: AuthConfig },
+        { type: i1.HttpClient },
+        { type: OccEndpointsService }
+    ]; };
 
     var ClientTokenEffect = /** @class */ (function () {
         function ClientTokenEffect(actions$, clientAuthenticationTokenService) {
             var _this = this;
             this.actions$ = actions$;
             this.clientAuthenticationTokenService = clientAuthenticationTokenService;
-            this.loadClientToken$ = this.actions$.pipe(effects$c.ofType(LOAD_CLIENT_TOKEN), operators.exhaustMap(function () {
+            this.loadClientToken$ = this.actions$.pipe(i3.ofType(LOAD_CLIENT_TOKEN), operators.exhaustMap(function () {
                 return _this.clientAuthenticationTokenService
                     .loadClientAuthenticationToken()
                     .pipe(operators.map(function (token) {
                     return new LoadClientTokenSuccess(token);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadClientTokenFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadClientTokenFail(makeErrorSerializable(error))); }));
             }));
         }
-        ClientTokenEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: ClientAuthenticationTokenService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
-        ClientTokenEffect = __decorate([
-            core.Injectable()
-        ], ClientTokenEffect);
         return ClientTokenEffect;
     }());
+    ClientTokenEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    ClientTokenEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ClientAuthenticationTokenService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
 
     var UserAuthenticationTokenService = /** @class */ (function () {
         function UserAuthenticationTokenService(http, config, occEndpointsService) {
@@ -2956,13 +3039,13 @@
         }
         UserAuthenticationTokenService.prototype.loadToken = function (userId, password) {
             var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new http.HttpParams()
+            var params = new i1.HttpParams()
                 .set('client_id', this.config.authentication.client_id)
                 .set('client_secret', this.config.authentication.client_secret)
                 .set('grant_type', 'password')
                 .set('username', userId)
                 .set('password', password);
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http
@@ -2971,12 +3054,12 @@
         };
         UserAuthenticationTokenService.prototype.refreshToken = function (refreshToken) {
             var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new http.HttpParams()
+            var params = new i1.HttpParams()
                 .set('client_id', encodeURIComponent(this.config.authentication.client_id))
                 .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
                 .set('refresh_token', encodeURI(refreshToken))
                 .set('grant_type', 'refresh_token');
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http
@@ -2985,35 +3068,35 @@
         };
         UserAuthenticationTokenService.prototype.revoke = function (userToken) {
             var url = this.occEndpointsService.getRawEndpoint('revoke');
-            var headers = InterceptorUtil.createHeader(TOKEN_REVOCATION_HEADER, true, new http.HttpHeaders({
+            var headers = InterceptorUtil.createHeader(TOKEN_REVOCATION_HEADER, true, new i1.HttpHeaders({
                 Authorization: userToken.token_type + " " + userToken.access_token,
                 'Content-Type': 'application/x-www-form-urlencoded',
             }));
-            var params = new http.HttpParams().set('token', userToken.access_token);
+            var params = new i1.HttpParams().set('token', userToken.access_token);
             return this.http
                 .post(url, params, { headers: headers })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
         };
-        UserAuthenticationTokenService.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: AuthConfig },
-            { type: OccEndpointsService }
-        ]; };
-        UserAuthenticationTokenService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(core.ɵɵinject(http.HttpClient), core.ɵɵinject(AuthConfig), core.ɵɵinject(OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
-        UserAuthenticationTokenService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserAuthenticationTokenService);
         return UserAuthenticationTokenService;
     }());
+    UserAuthenticationTokenService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(AuthConfig), i0.ɵɵinject(OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
+    UserAuthenticationTokenService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserAuthenticationTokenService.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: AuthConfig },
+        { type: OccEndpointsService }
+    ]; };
 
     var UserTokenEffects = /** @class */ (function () {
         function UserTokenEffects(actions$, userTokenService) {
             var _this = this;
             this.actions$ = actions$;
             this.userTokenService = userTokenService;
-            this.loadUserToken$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
+            this.loadUserToken$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
                 var userId = _a.userId, password = _a.password;
                 return _this.userTokenService.loadToken(userId, password).pipe(operators.map(function (token) {
                     var date = new Date();
@@ -3021,49 +3104,45 @@
                     token.expiration_time = date.toJSON();
                     token.userId = OCC_USER_ID_CURRENT;
                     return new LoadUserTokenSuccess(token);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadUserTokenFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserTokenFail(makeErrorSerializable(error))); }));
             }));
-            this.login$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map(function () { return new Login(); }));
-            this.refreshUserToken$ = this.actions$.pipe(effects$c.ofType(REFRESH_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (_a) {
+            this.login$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map(function () { return new Login(); }));
+            this.refreshUserToken$ = this.actions$.pipe(i3.ofType(REFRESH_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (_a) {
                 var refreshToken = _a.refreshToken;
                 return _this.userTokenService.refreshToken(refreshToken).pipe(operators.map(function (token) {
                     var date = new Date();
                     date.setSeconds(date.getSeconds() + token.expires_in);
                     token.expiration_time = date.toJSON();
                     return new RefreshUserTokenSuccess(token);
-                }, operators.catchError(function (error) {
-                    return rxjs.of(new RefreshUserTokenFail(makeErrorSerializable(error)));
-                })));
+                }, operators.catchError(function (error) { return rxjs.of(new RefreshUserTokenFail(makeErrorSerializable(error))); })));
             }));
-            this.revokeUserToken$ = this.actions$.pipe(effects$c.ofType(REVOKE_USER_TOKEN), operators.map(function (action) {
+            this.revokeUserToken$ = this.actions$.pipe(i3.ofType(REVOKE_USER_TOKEN), operators.map(function (action) {
                 return action.payload;
             }), operators.mergeMap(function (userToken) {
                 return _this.userTokenService.revoke(userToken).pipe(operators.map(function () { return new RevokeUserTokenSuccess(userToken); }), operators.catchError(function (error) { return rxjs.of(new RevokeUserTokenFail(error)); }));
             }));
         }
-        UserTokenEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserAuthenticationTokenService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UserTokenEffects.prototype, "loadUserToken$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserTokenEffects.prototype, "login$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserTokenEffects.prototype, "revokeUserToken$", void 0);
-        UserTokenEffects = __decorate([
-            core.Injectable()
-        ], UserTokenEffects);
         return UserTokenEffects;
     }());
+    UserTokenEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserTokenEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserAuthenticationTokenService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserTokenEffects.prototype, "loadUserToken$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserTokenEffects.prototype, "login$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserTokenEffects.prototype, "revokeUserToken$", void 0);
 
     var effects = [UserTokenEffects, ClientTokenEffect];
 
@@ -3073,15 +3152,15 @@
         switch (action.type) {
             case LOAD_USER_TOKEN:
             case REFRESH_USER_TOKEN: {
-                return __assign({}, state);
+                return Object.assign({}, state);
             }
             case LOAD_USER_TOKEN_SUCCESS:
             case REFRESH_USER_TOKEN_SUCCESS: {
-                return __assign(__assign({}, state), action.payload);
+                return Object.assign(Object.assign({}, state), action.payload);
             }
             case LOAD_USER_TOKEN_FAIL:
             case REFRESH_USER_TOKEN_FAIL: {
-                return __assign({}, state);
+                return Object.assign({}, state);
             }
         }
         return state;
@@ -3089,11 +3168,11 @@
 
     function getReducers() {
         return {
-            userToken: store.combineReducers({ token: reducer }),
+            userToken: i1$1.combineReducers({ token: reducer }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
         };
     }
-    var reducerToken = new core.InjectionToken('AuthReducers');
+    var reducerToken = new i0.InjectionToken('AuthReducers');
     var reducerProvider = {
         provide: reducerToken,
         useFactory: getReducers,
@@ -3101,7 +3180,7 @@
     function clearAuthState(reducer) {
         return function (state, action) {
             if (action.type === LOGOUT) {
-                state = __assign(__assign({}, state), { userToken: undefined });
+                state = Object.assign(Object.assign({}, state), { userToken: undefined });
             }
             return reducer(state, action);
         };
@@ -3129,42 +3208,40 @@
     var AuthStoreModule = /** @class */ (function () {
         function AuthStoreModule() {
         }
-        AuthStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    StateModule,
-                    store.StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers: metaReducers }),
-                    effects$c.EffectsModule.forFeature(effects),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(authStoreConfigFactory),
-                    reducerProvider,
-                ],
-            })
-        ], AuthStoreModule);
         return AuthStoreModule;
     }());
+    AuthStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        StateModule,
+                        i1$1.StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers: metaReducers }),
+                        i3.EffectsModule.forFeature(effects),
+                    ],
+                    providers: [
+                        provideDefaultConfigFactory(authStoreConfigFactory),
+                        reducerProvider,
+                    ],
+                },] }
+    ];
 
     var AuthModule = /** @class */ (function () {
         function AuthModule() {
         }
-        AuthModule_1 = AuthModule;
         AuthModule.forRoot = function () {
             return {
-                ngModule: AuthModule_1,
+                ngModule: AuthModule,
                 providers: __spread([provideDefaultConfig(defaultAuthConfig)], interceptors),
             };
         };
-        var AuthModule_1;
-        AuthModule = AuthModule_1 = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule, AuthStoreModule],
-            })
-        ], AuthModule);
         return AuthModule;
     }());
+    AuthModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule, AuthStoreModule],
+                },] }
+    ];
 
     var AuthRedirectService = /** @class */ (function () {
         /**
@@ -3223,18 +3300,18 @@
                 initialUrl: initialUrl,
             };
         };
-        AuthRedirectService.ctorParameters = function () { return [
-            { type: RoutingService },
-            { type: router.Router }
-        ]; };
-        AuthRedirectService.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(core.ɵɵinject(RoutingService), core.ɵɵinject(router.Router)); }, token: AuthRedirectService, providedIn: "root" });
-        AuthRedirectService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], AuthRedirectService);
         return AuthRedirectService;
     }());
+    AuthRedirectService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(i0.ɵɵinject(RoutingService), i0.ɵɵinject(i4.Router)); }, token: AuthRedirectService, providedIn: "root" });
+    AuthRedirectService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthRedirectService.ctorParameters = function () { return [
+        { type: RoutingService },
+        { type: i4.Router }
+    ]; };
 
     var AuthGuard = /** @class */ (function () {
         function AuthGuard(routingService, authService, authRedirectService, router) {
@@ -3253,20 +3330,20 @@
                 return !!token.access_token;
             }));
         };
-        AuthGuard.ctorParameters = function () { return [
-            { type: RoutingService },
-            { type: AuthService },
-            { type: AuthRedirectService },
-            { type: router.Router }
-        ]; };
-        AuthGuard.ɵprov = core.ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(core.ɵɵinject(RoutingService), core.ɵɵinject(AuthService), core.ɵɵinject(AuthRedirectService), core.ɵɵinject(router.Router)); }, token: AuthGuard, providedIn: "root" });
-        AuthGuard = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], AuthGuard);
         return AuthGuard;
     }());
+    AuthGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(i0.ɵɵinject(RoutingService), i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(i4.Router)); }, token: AuthGuard, providedIn: "root" });
+    AuthGuard.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthGuard.ctorParameters = function () { return [
+        { type: RoutingService },
+        { type: AuthService },
+        { type: AuthRedirectService },
+        { type: i4.Router }
+    ]; };
 
     var NotAuthGuard = /** @class */ (function () {
         function NotAuthGuard(routingService, authService, authRedirectService) {
@@ -3285,38 +3362,34 @@
                 return !token.access_token;
             }));
         };
-        NotAuthGuard.ctorParameters = function () { return [
-            { type: RoutingService },
-            { type: AuthService },
-            { type: AuthRedirectService }
-        ]; };
-        NotAuthGuard.ɵprov = core.ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(core.ɵɵinject(RoutingService), core.ɵɵinject(AuthService), core.ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
-        NotAuthGuard = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], NotAuthGuard);
         return NotAuthGuard;
     }());
-
+    NotAuthGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(i0.ɵɵinject(RoutingService), i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
+    NotAuthGuard.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    NotAuthGuard.ctorParameters = function () { return [
+        { type: RoutingService },
+        { type: AuthService },
+        { type: AuthRedirectService }
+    ]; };
 
     (function (CountryType) {
         CountryType["BILLING"] = "BILLING";
         CountryType["SHIPPING"] = "SHIPPING";
     })(exports.CountryType || (exports.CountryType = {}));
 
-
     (function (PromotionLocation) {
         PromotionLocation["ActiveCart"] = "CART";
         PromotionLocation["Checkout"] = "CHECKOUT";
         PromotionLocation["Order"] = "ORDER";
     })(exports.PromotionLocation || (exports.PromotionLocation = {}));
-
     (function (B2BPaymentTypeEnum) {
         B2BPaymentTypeEnum["ACCOUNT_PAYMENT"] = "ACCOUNT";
         B2BPaymentTypeEnum["CARD_PAYMENT"] = "CARD";
     })(exports.B2BPaymentTypeEnum || (exports.B2BPaymentTypeEnum = {}));
-
 
     (function (PageType) {
         PageType["CONTENT_PAGE"] = "ContentPage";
@@ -3324,7 +3397,6 @@
         PageType["CATEGORY_PAGE"] = "CategoryPage";
         PageType["CATALOG_PAGE"] = "CatalogPage";
     })(exports.PageType || (exports.PageType = {}));
-
     (function (CmsBannerCarouselEffect) {
         CmsBannerCarouselEffect["FADE"] = "FADE";
         CmsBannerCarouselEffect["ZOOM"] = "ZOOM";
@@ -3332,19 +3404,16 @@
         CmsBannerCarouselEffect["TURNDOWN"] = "TURNDOWN";
     })(exports.CmsBannerCarouselEffect || (exports.CmsBannerCarouselEffect = {}));
 
-
     (function (ANONYMOUS_CONSENT_STATUS) {
         ANONYMOUS_CONSENT_STATUS["GIVEN"] = "GIVEN";
         ANONYMOUS_CONSENT_STATUS["WITHDRAWN"] = "WITHDRAWN";
     })(exports.ANONYMOUS_CONSENT_STATUS || (exports.ANONYMOUS_CONSENT_STATUS = {}));
     var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
 
-
     (function (ImageType) {
         ImageType["PRIMARY"] = "PRIMARY";
         ImageType["GALLERY"] = "GALLERY";
     })(exports.ImageType || (exports.ImageType = {}));
-
 
     (function (B2BUserGroup) {
         B2BUserGroup["B2B_ADMIN_GROUP"] = "b2badmingroup";
@@ -3353,18 +3422,15 @@
         B2BUserGroup["B2B_APPROVER_GROUP"] = "b2bapprovergroup";
     })(exports.B2BUserGroup || (exports.B2BUserGroup = {}));
 
-
     (function (VariantType) {
         VariantType["SIZE"] = "ApparelSizeVariantProduct";
         VariantType["STYLE"] = "ApparelStyleVariantProduct";
         VariantType["COLOR"] = "ElectronicsColorVariantProduct";
     })(exports.VariantType || (exports.VariantType = {}));
-
     (function (PriceType) {
         PriceType["BUY"] = "BUY";
         PriceType["FROM"] = "FROM";
     })(exports.PriceType || (exports.PriceType = {}));
-
     (function (VariantQualifier) {
         VariantQualifier["SIZE"] = "size";
         VariantQualifier["STYLE"] = "style";
@@ -3375,7 +3441,6 @@
     })(exports.VariantQualifier || (exports.VariantQualifier = {}));
 
     var testestsd = 'sare';
-
 
     (function (NotificationType) {
         NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
@@ -3516,16 +3581,16 @@
         AnonymousConsentCheckUpdatedVersions: AnonymousConsentCheckUpdatedVersions
     });
 
-    var getAnonymousConsentState = store.createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
+    var getAnonymousConsentState = i1$1.createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
 
     var ɵ0$8 = function (state) { return state.templates; };
-    var getAnonymousConsentTemplatesState = store.createSelector(getAnonymousConsentState, ɵ0$8);
-    var getAnonymousConsentTemplatesValue = store.createSelector(getAnonymousConsentTemplatesState, loaderValueSelector);
-    var getAnonymousConsentTemplatesLoading = store.createSelector(getAnonymousConsentTemplatesState, loaderLoadingSelector);
-    var getAnonymousConsentTemplatesSuccess = store.createSelector(getAnonymousConsentTemplatesState, loaderSuccessSelector);
-    var getAnonymousConsentTemplatesError = store.createSelector(getAnonymousConsentTemplatesState, loaderErrorSelector);
+    var getAnonymousConsentTemplatesState = i1$1.createSelector(getAnonymousConsentState, ɵ0$8);
+    var getAnonymousConsentTemplatesValue = i1$1.createSelector(getAnonymousConsentTemplatesState, loaderValueSelector);
+    var getAnonymousConsentTemplatesLoading = i1$1.createSelector(getAnonymousConsentTemplatesState, loaderLoadingSelector);
+    var getAnonymousConsentTemplatesSuccess = i1$1.createSelector(getAnonymousConsentTemplatesState, loaderSuccessSelector);
+    var getAnonymousConsentTemplatesError = i1$1.createSelector(getAnonymousConsentTemplatesState, loaderErrorSelector);
     var getAnonymousConsentTemplate = function (templateCode) {
-        return store.createSelector(getAnonymousConsentTemplatesValue, function (templates) {
+        return i1$1.createSelector(getAnonymousConsentTemplatesValue, function (templates) {
             return templates
                 ? templates.find(function (template) { return template.id === templateCode; })
                 : null;
@@ -3533,17 +3598,13 @@
     };
 
     var ɵ0$9 = function (state) { return state.ui.updated; };
-    var getAnonymousConsentTemplatesUpdate = store.createSelector(getAnonymousConsentState, ɵ0$9);
+    var getAnonymousConsentTemplatesUpdate = i1$1.createSelector(getAnonymousConsentState, ɵ0$9);
     var ɵ1$6 = function (state) { return state.ui.bannerDismissed; };
-    var getAnonymousConsentsBannerDismissed = store.createSelector(getAnonymousConsentState, ɵ1$6);
+    var getAnonymousConsentsBannerDismissed = i1$1.createSelector(getAnonymousConsentState, ɵ1$6);
 
     var ɵ0$a = function (state) { return state.consents; };
-    var getAnonymousConsents = store.createSelector(getAnonymousConsentState, ɵ0$a);
-    var getAnonymousConsentByTemplateCode = function (templateCode) {
-        return store.createSelector(getAnonymousConsents, function (consents) {
-            return consents.find(function (consent) { return consent.templateCode === templateCode; });
-        });
-    };
+    var getAnonymousConsents = i1$1.createSelector(getAnonymousConsentState, ɵ0$a);
+    var getAnonymousConsentByTemplateCode = function (templateCode) { return i1$1.createSelector(getAnonymousConsents, function (consents) { return consents.find(function (consent) { return consent.templateCode === templateCode; }); }); };
 
     var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -3585,7 +3646,7 @@
         AnonymousConsentsService.prototype.getTemplates = function (loadIfMissing) {
             var _this = this;
             if (loadIfMissing === void 0) { loadIfMissing = false; }
-            return rxjs.iif(function () { return loadIfMissing; }, this.store.pipe(store.select(getAnonymousConsentTemplatesValue), operators.withLatestFrom(this.getLoadTemplatesLoading()), operators.filter(function (_a) {
+            return rxjs.iif(function () { return loadIfMissing; }, this.store.pipe(i1$1.select(getAnonymousConsentTemplatesValue), operators.withLatestFrom(this.getLoadTemplatesLoading()), operators.filter(function (_a) {
                 var _b = __read(_a, 2), _templates = _b[0], loading = _b[1];
                 return !loading;
             }), operators.tap(function (_a) {
@@ -3599,32 +3660,32 @@
             }), operators.map(function (_a) {
                 var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
                 return templates;
-            })), this.store.pipe(store.select(getAnonymousConsentTemplatesValue)));
+            })), this.store.pipe(i1$1.select(getAnonymousConsentTemplatesValue)));
         };
         /**
          * Returns the anonymous consent templates with the given template code.
          * @param templateCode a template code by which to filter anonymous consent templates.
          */
         AnonymousConsentsService.prototype.getTemplate = function (templateCode) {
-            return this.store.pipe(store.select(getAnonymousConsentTemplate(templateCode)));
+            return this.store.pipe(i1$1.select(getAnonymousConsentTemplate(templateCode)));
         };
         /**
          * Returns an indicator for the loading status for the anonymous consent templates.
          */
         AnonymousConsentsService.prototype.getLoadTemplatesLoading = function () {
-            return this.store.pipe(store.select(getAnonymousConsentTemplatesLoading));
+            return this.store.pipe(i1$1.select(getAnonymousConsentTemplatesLoading));
         };
         /**
          * Returns an indicator for the success status for the anonymous consent templates.
          */
         AnonymousConsentsService.prototype.getLoadTemplatesSuccess = function () {
-            return this.store.pipe(store.select(getAnonymousConsentTemplatesSuccess));
+            return this.store.pipe(i1$1.select(getAnonymousConsentTemplatesSuccess));
         };
         /**
          * Returns an indicator for the error status for the anonymous consent templates.
          */
         AnonymousConsentsService.prototype.getLoadTemplatesError = function () {
-            return this.store.pipe(store.select(getAnonymousConsentTemplatesError));
+            return this.store.pipe(i1$1.select(getAnonymousConsentTemplatesError));
         };
         /**
          * Resets the loading, success and error indicators for the anonymous consent templates.
@@ -3636,7 +3697,7 @@
          * Returns all the anonymous consents.
          */
         AnonymousConsentsService.prototype.getConsents = function () {
-            return this.store.pipe(store.select(getAnonymousConsents));
+            return this.store.pipe(i1$1.select(getAnonymousConsents));
         };
         /**
          * Puts the provided anonymous consents into the store.
@@ -3653,9 +3714,7 @@
          */
         AnonymousConsentsService.prototype.getConsent = function (templateId) {
             var _this = this;
-            return this.authService.isUserLoggedIn().pipe(operators.filter(function (authenticated) { return !authenticated; }), operators.tap(function () { return _this.getTemplates(true); }), operators.switchMap(function () {
-                return _this.store.pipe(store.select(getAnonymousConsentByTemplateCode(templateId)));
-            }));
+            return this.authService.isUserLoggedIn().pipe(operators.filter(function (authenticated) { return !authenticated; }), operators.tap(function () { return _this.getTemplates(true); }), operators.switchMap(function () { return _this.store.pipe(i1$1.select(getAnonymousConsentByTemplateCode(templateId))); }));
         };
         /**
          * Give a consent for the given `templateCode`
@@ -3669,9 +3728,7 @@
          */
         AnonymousConsentsService.prototype.giveAllConsents = function () {
             var _this = this;
-            return this.getTemplates(true).pipe(operators.tap(function (templates) {
-                return templates.forEach(function (template) { return _this.giveConsent(template.id); });
-            }));
+            return this.getTemplates(true).pipe(operators.tap(function (templates) { return templates.forEach(function (template) { return _this.giveConsent(template.id); }); }));
         };
         /**
          * Returns `true` if the provided `consent` is given.
@@ -3692,9 +3749,7 @@
          */
         AnonymousConsentsService.prototype.withdrawAllConsents = function () {
             var _this = this;
-            return this.getTemplates(true).pipe(operators.tap(function (templates) {
-                return templates.forEach(function (template) { return _this.withdrawConsent(template.id); });
-            }));
+            return this.getTemplates(true).pipe(operators.tap(function (templates) { return templates.forEach(function (template) { return _this.withdrawConsent(template.id); }); }));
         };
         /**
          * Returns `true` if the provided `consent` is withdrawn.
@@ -3717,7 +3772,7 @@
          * Returns `true` if the banner was dismissed, `false` otherwise.
          */
         AnonymousConsentsService.prototype.isBannerDismissed = function () {
-            return this.store.pipe(store.select(getAnonymousConsentsBannerDismissed));
+            return this.store.pipe(i1$1.select(getAnonymousConsentsBannerDismissed));
         };
         /**
          * Returns `true` if the consent templates were updated on the back-end.
@@ -3725,9 +3780,7 @@
          */
         AnonymousConsentsService.prototype.getTemplatesUpdated = function () {
             var _this = this;
-            return this.getTemplates(true).pipe(operators.switchMap(function () {
-                return _this.store.pipe(store.select(getAnonymousConsentTemplatesUpdate));
-            }));
+            return this.getTemplates(true).pipe(operators.switchMap(function () { return _this.store.pipe(i1$1.select(getAnonymousConsentTemplatesUpdate)); }));
         };
         /**
          * Toggles the `updated` slice of the state
@@ -3809,16 +3862,16 @@
             var previousRawConsents = this.serializeAndEncode(previousConsents);
             return newRawConsents !== previousRawConsents;
         };
-        AnonymousConsentsService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        AnonymousConsentsService.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentsService_Factory() { return new AnonymousConsentsService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: AnonymousConsentsService, providedIn: "root" });
-        AnonymousConsentsService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], AnonymousConsentsService);
         return AnonymousConsentsService;
     }());
+    AnonymousConsentsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentsService_Factory() { return new AnonymousConsentsService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: AnonymousConsentsService, providedIn: "root" });
+    AnonymousConsentsService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    AnonymousConsentsService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var AsmAdapter = /** @class */ (function () {
         function AsmAdapter() {
@@ -3841,17 +3894,17 @@
         function AsmConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        AsmConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function AsmConfig_Factory() { return core.ɵɵinject(Config); }, token: AsmConfig, providedIn: "root" });
-        AsmConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], AsmConfig);
         return AsmConfig;
     }(OccConfig));
+    AsmConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmConfig_Factory() { return i0.ɵɵinject(Config); }, token: AsmConfig, providedIn: "root" });
+    AsmConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
-    var CUSTOMER_SEARCH_PAGE_NORMALIZER = new core.InjectionToken('CustomerSearchPageNormalizer');
+    var CUSTOMER_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('CustomerSearchPageNormalizer');
 
     var ConverterService = /** @class */ (function () {
         function ConverterService(injector) {
@@ -3916,9 +3969,7 @@
         ConverterService.prototype.convertMany = function (sources, injectionToken) {
             var _this = this;
             if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
-                return sources.map(function (source) {
-                    return _this.convertSource(source, injectionToken);
-                });
+                return sources.map(function (source) { return _this.convertSource(source, injectionToken); });
             }
             else {
                 return sources;
@@ -3929,17 +3980,17 @@
                 return converter.convert(source, target);
             }, undefined);
         };
-        ConverterService.ctorParameters = function () { return [
-            { type: core.Injector }
-        ]; };
-        ConverterService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(core.ɵɵinject(core.INJECTOR)); }, token: ConverterService, providedIn: "root" });
-        ConverterService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ConverterService);
         return ConverterService;
     }());
+    ConverterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(i0.ɵɵinject(i0.INJECTOR)); }, token: ConverterService, providedIn: "root" });
+    ConverterService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ConverterService.ctorParameters = function () { return [
+        { type: i0.Injector }
+    ]; };
 
     var OccAsmAdapter = /** @class */ (function () {
         function OccAsmAdapter(http, occEndpointsService, converterService, config, baseSiteService) {
@@ -3954,8 +4005,8 @@
                 .subscribe(function (value) { return (_this.activeBaseSite = value); });
         }
         OccAsmAdapter.prototype.customerSearch = function (options) {
-            var headers = InterceptorUtil.createHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, true, new http.HttpHeaders());
-            var params = new http.HttpParams()
+            var headers = InterceptorUtil.createHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, true, new i1.HttpHeaders());
+            var params = new i1.HttpParams()
                 .set('baseSite', this.activeBaseSite)
                 .set('sort', 'byNameAsc');
             if (typeof options['query'] !== 'undefined') {
@@ -3969,36 +4020,36 @@
                 .get(url, { headers: headers, params: params })
                 .pipe(this.converterService.pipeable(CUSTOMER_SEARCH_PAGE_NORMALIZER));
         };
-        OccAsmAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService },
-            { type: AsmConfig },
-            { type: BaseSiteService }
-        ]; };
-        OccAsmAdapter = __decorate([
-            core.Injectable()
-        ], OccAsmAdapter);
         return OccAsmAdapter;
     }());
+    OccAsmAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccAsmAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService },
+        { type: AsmConfig },
+        { type: BaseSiteService }
+    ]; };
 
     var AsmOccModule = /** @class */ (function () {
         function AsmOccModule() {
         }
-        AsmOccModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule],
-                providers: [
-                    provideDefaultConfig(defaultOccAsmConfig),
-                    {
-                        provide: AsmAdapter,
-                        useClass: OccAsmAdapter,
-                    },
-                ],
-            })
-        ], AsmOccModule);
         return AsmOccModule;
     }());
+    AsmOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    providers: [
+                        provideDefaultConfig(defaultOccAsmConfig),
+                        {
+                            provide: AsmAdapter,
+                            useClass: OccAsmAdapter,
+                        },
+                    ],
+                },] }
+    ];
 
     var CartAdapter = /** @class */ (function () {
         function CartAdapter() {
@@ -4006,7 +4057,7 @@
         return CartAdapter;
     }());
 
-    var CART_NORMALIZER = new core.InjectionToken('CartNormalizer');
+    var CART_NORMALIZER = new i0.InjectionToken('CartNormalizer');
 
     var CartEntryAdapter = /** @class */ (function () {
         function CartEntryAdapter() {
@@ -4026,7 +4077,7 @@
         return CartVoucherAdapter;
     }());
 
-    var PRODUCT_NORMALIZER = new core.InjectionToken('ProductNormalizer');
+    var PRODUCT_NORMALIZER = new i0.InjectionToken('ProductNormalizer');
 
     var OccCartNormalizer = /** @class */ (function () {
         function OccCartNormalizer(converter) {
@@ -4035,10 +4086,10 @@
         OccCartNormalizer.prototype.convert = function (source, target) {
             var _this = this;
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             if (source && source.entries) {
-                target.entries = source.entries.map(function (entry) { return (__assign(__assign({}, entry), { product: _this.converter.convert(entry.product, PRODUCT_NORMALIZER) })); });
+                target.entries = source.entries.map(function (entry) { return (Object.assign(Object.assign({}, entry), { product: _this.converter.convert(entry.product, PRODUCT_NORMALIZER) })); });
             }
             this.removeDuplicatePromotions(source, target);
             return target;
@@ -4066,15 +4117,15 @@
                 return i === b.indexOf(JSON.stringify(p));
             });
         };
-        OccCartNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
-        ]; };
-        OccCartNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccCartNormalizer_Factory() { return new OccCartNormalizer(core.ɵɵinject(ConverterService)); }, token: OccCartNormalizer, providedIn: "root" });
-        OccCartNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccCartNormalizer);
         return OccCartNormalizer;
     }());
+    OccCartNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccCartNormalizer_Factory() { return new OccCartNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccCartNormalizer, providedIn: "root" });
+    OccCartNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccCartNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
 
     var defaultOccCartConfig = {
         backend: {
@@ -4096,7 +4147,7 @@
         },
     };
 
-    var CART_MODIFICATION_NORMALIZER = new core.InjectionToken('CartModificationNormalizer');
+    var CART_MODIFICATION_NORMALIZER = new i0.InjectionToken('CartModificationNormalizer');
 
     var OccCartEntryAdapter = /** @class */ (function () {
         function OccCartEntryAdapter(http, occEndpointsService, converterService) {
@@ -4107,7 +4158,7 @@
         OccCartEntryAdapter.prototype.add = function (userId, cartId, productCode, quantity) {
             if (quantity === void 0) { quantity = 1; }
             var toAdd = JSON.stringify({});
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             var url = this.occEndpointsService.getUrl('addEntries', {
@@ -4123,16 +4174,16 @@
             if (pickupStore) {
                 params = { pickupStore: pickupStore };
             }
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            var url = this.occEndpointsService.getUrl('updateEntries', { userId: userId, cartId: cartId, entryNumber: entryNumber }, __assign({ qty: qty }, params));
+            var url = this.occEndpointsService.getUrl('updateEntries', { userId: userId, cartId: cartId, entryNumber: entryNumber }, Object.assign({ qty: qty }, params));
             return this.http
                 .patch(url, {}, { headers: headers })
                 .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
         };
         OccCartEntryAdapter.prototype.remove = function (userId, cartId, entryNumber) {
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             var url = this.occEndpointsService.getUrl('removeEntries', {
@@ -4142,18 +4193,18 @@
             });
             return this.http.delete(url, { headers: headers });
         };
-        OccCartEntryAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCartEntryAdapter = __decorate([
-            core.Injectable()
-        ], OccCartEntryAdapter);
         return OccCartEntryAdapter;
     }());
+    OccCartEntryAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCartEntryAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var CART_VOUCHER_NORMALIZER = new core.InjectionToken('CartVoucherNormalizer');
+    var CART_VOUCHER_NORMALIZER = new i0.InjectionToken('CartVoucherNormalizer');
 
     var OccCartVoucherAdapter = /** @class */ (function () {
         function OccCartVoucherAdapter(http, occEndpoints, converter) {
@@ -4165,7 +4216,7 @@
             return this.occEndpoints.getUrl('cartVoucher', { userId: userId, cartId: cartId });
         };
         OccCartVoucherAdapter.prototype.getHeaders = function (userId) {
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             if (userId === OCC_USER_ID_ANONYMOUS) {
@@ -4176,7 +4227,7 @@
         OccCartVoucherAdapter.prototype.add = function (userId, cartId, voucherId) {
             var url = this.getCartVoucherEndpoint(userId, cartId);
             var toAdd = JSON.stringify({});
-            var params = new http.HttpParams().set('voucherId', voucherId);
+            var params = new i1.HttpParams().set('voucherId', voucherId);
             var headers = this.getHeaders(userId);
             return this.http.post(url, toAdd, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
         };
@@ -4189,16 +4240,16 @@
                 .delete(url, { headers: headers })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
         };
-        OccCartVoucherAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCartVoucherAdapter = __decorate([
-            core.Injectable()
-        ], OccCartVoucherAdapter);
         return OccCartVoucherAdapter;
     }());
+    OccCartVoucherAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCartVoucherAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var OccCartAdapter = /** @class */ (function () {
         function OccCartAdapter(http, occEndpointsService, converterService) {
@@ -4245,36 +4296,36 @@
                 .pipe(this.converterService.pipeable(CART_NORMALIZER));
         };
         OccCartAdapter.prototype.delete = function (userId, cartId) {
-            var headers = new http.HttpHeaders();
+            var headers = new i1.HttpHeaders();
             if (userId === OCC_USER_ID_ANONYMOUS) {
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
             }
             return this.http.delete(this.occEndpointsService.getUrl('deleteCart', { userId: userId, cartId: cartId }), { headers: headers });
         };
         OccCartAdapter.prototype.addEmail = function (userId, cartId, email) {
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            var httpParams = new http.HttpParams().set('email', email);
+            var httpParams = new i1.HttpParams().set('email', email);
             var url = this.occEndpointsService.getUrl('addEmail', {
                 userId: userId,
                 cartId: cartId,
             });
             return this.http.put(url, httpParams, { headers: headers });
         };
-        OccCartAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCartAdapter = __decorate([
-            core.Injectable()
-        ], OccCartAdapter);
         return OccCartAdapter;
     }());
+    OccCartAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCartAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var SAVE_CART_NORMALIZER = new core.InjectionToken('SaveCartNormalizer');
+    var SAVE_CART_NORMALIZER = new i0.InjectionToken('SaveCartNormalizer');
 
     var OccSaveCartAdapter = /** @class */ (function () {
         function OccSaveCartAdapter(http, occEndpointsService, converterService) {
@@ -4283,67 +4334,67 @@
             this.converterService = converterService;
         }
         OccSaveCartAdapter.prototype.saveCart = function (userId, cartId, saveCartName, saveCartDescription) {
-            var httpParams = new http.HttpParams();
+            var httpParams = new i1.HttpParams();
             if (Boolean(saveCartName)) {
                 httpParams = httpParams.set('saveCartName', saveCartName);
             }
             if (Boolean(saveCartDescription)) {
                 httpParams = httpParams.set('saveCartDescription', saveCartDescription);
             }
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http
                 .patch(this.occEndpointsService.getUrl('saveCart', { userId: userId, cartId: cartId }), httpParams, { headers: headers })
                 .pipe(this.converterService.pipeable(SAVE_CART_NORMALIZER));
         };
-        OccSaveCartAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccSaveCartAdapter = __decorate([
-            core.Injectable()
-        ], OccSaveCartAdapter);
         return OccSaveCartAdapter;
     }());
+    OccSaveCartAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccSaveCartAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var CartOccModule = /** @class */ (function () {
         function CartOccModule() {
         }
-        CartOccModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule],
-                providers: [
-                    provideDefaultConfig(defaultOccCartConfig),
-                    {
-                        provide: CartAdapter,
-                        useClass: OccCartAdapter,
-                    },
-                    {
-                        provide: CART_NORMALIZER,
-                        useExisting: OccCartNormalizer,
-                        multi: true,
-                    },
-                    {
-                        provide: CartEntryAdapter,
-                        useClass: OccCartEntryAdapter,
-                    },
-                    {
-                        provide: CartVoucherAdapter,
-                        useClass: OccCartVoucherAdapter,
-                    },
-                    {
-                        provide: SaveCartAdapter,
-                        useClass: OccSaveCartAdapter,
-                    },
-                ],
-            })
-        ], CartOccModule);
         return CartOccModule;
     }());
+    CartOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    providers: [
+                        provideDefaultConfig(defaultOccCartConfig),
+                        {
+                            provide: CartAdapter,
+                            useClass: OccCartAdapter,
+                        },
+                        {
+                            provide: CART_NORMALIZER,
+                            useExisting: OccCartNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: CartEntryAdapter,
+                            useClass: OccCartEntryAdapter,
+                        },
+                        {
+                            provide: CartVoucherAdapter,
+                            useClass: OccCartVoucherAdapter,
+                        },
+                        {
+                            provide: SaveCartAdapter,
+                            useClass: OccSaveCartAdapter,
+                        },
+                    ],
+                },] }
+    ];
 
-    var ORDER_NORMALIZER = new core.InjectionToken('OrderNormalizer');
+    var ORDER_NORMALIZER = new i0.InjectionToken('OrderNormalizer');
 
     // To be changed to a more optimised params after ticket: C3PO-1076
     var FULL_PARAMS = 'fields=FULL';
@@ -4360,10 +4411,10 @@
             return this.occEndpoints.getEndpoint(orderEndpoint);
         };
         OccCheckoutAdapter.prototype.placeOrder = function (userId, cartId) {
-            var params = new http.HttpParams({
+            var params = new i1.HttpParams({
                 fromString: 'cartId=' + cartId + '&' + FULL_PARAMS,
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             if (userId === OCC_USER_ID_ANONYMOUS) {
@@ -4375,7 +4426,7 @@
         };
         OccCheckoutAdapter.prototype.loadCheckoutDetails = function (userId, cartId) {
             var url = this.getEndpoint(userId, CARTS_ENDPOINT) + cartId;
-            var params = new http.HttpParams({
+            var params = new i1.HttpParams({
                 fromString: "fields=" + CHECKOUT_PARAMS,
             });
             return this.http.get(url, { params: params });
@@ -4388,22 +4439,22 @@
             var url = "" + this.getEndpoint(userId, CARTS_ENDPOINT) + cartId + "/deliverymode";
             return this.http.delete(url);
         };
-        OccCheckoutAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCheckoutAdapter = __decorate([
-            core.Injectable()
-        ], OccCheckoutAdapter);
         return OccCheckoutAdapter;
     }());
+    OccCheckoutAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCheckoutAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var DELIVERY_MODE_NORMALIZER = new core.InjectionToken('DeliveryModeNormalizer');
+    var DELIVERY_MODE_NORMALIZER = new i0.InjectionToken('DeliveryModeNormalizer');
 
-    var ADDRESS_NORMALIZER = new core.InjectionToken('AddressNormalizer');
-    var ADDRESS_SERIALIZER = new core.InjectionToken('AddressSerializer');
-    var ADDRESS_VALIDATION_NORMALIZER = new core.InjectionToken('AddressValidationNormalizer');
+    var ADDRESS_NORMALIZER = new i0.InjectionToken('AddressNormalizer');
+    var ADDRESS_SERIALIZER = new i0.InjectionToken('AddressSerializer');
+    var ADDRESS_VALIDATION_NORMALIZER = new i0.InjectionToken('AddressValidationNormalizer');
 
     var OccCheckoutDeliveryAdapter = /** @class */ (function () {
         function OccCheckoutDeliveryAdapter(http, occEndpoints, converter) {
@@ -4419,7 +4470,7 @@
             address = this.converter.convert(address, ADDRESS_SERIALIZER);
             return this.http
                 .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
-                headers: new http.HttpHeaders().set('Content-Type', 'application/json'),
+                headers: new i1.HttpHeaders().set('Content-Type', 'application/json'),
             })
                 .pipe(this.converter.pipeable(ADDRESS_NORMALIZER));
         };
@@ -4443,20 +4494,20 @@
                 .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
                 .pipe(operators.pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
         };
-        OccCheckoutDeliveryAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCheckoutDeliveryAdapter = __decorate([
-            core.Injectable()
-        ], OccCheckoutDeliveryAdapter);
         return OccCheckoutDeliveryAdapter;
     }());
+    OccCheckoutDeliveryAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCheckoutDeliveryAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var PAYMENT_DETAILS_NORMALIZER = new core.InjectionToken('PaymentDetailsNormalizer');
-    var PAYMENT_DETAILS_SERIALIZER = new core.InjectionToken('PaymentDetailsSerializer');
-    var CARD_TYPE_NORMALIZER = new core.InjectionToken('CardTypeNormalizer');
+    var PAYMENT_DETAILS_NORMALIZER = new i0.InjectionToken('PaymentDetailsNormalizer');
+    var PAYMENT_DETAILS_SERIALIZER = new i0.InjectionToken('PaymentDetailsSerializer');
+    var CARD_TYPE_NORMALIZER = new i0.InjectionToken('CardTypeNormalizer');
 
     var ENDPOINT_CARD_TYPES = 'cardtypes';
     var OccCheckoutPaymentAdapter = /** @class */ (function () {
@@ -4508,11 +4559,11 @@
                 '/payment/sop/request?responseUrl=sampleUrl');
         };
         OccCheckoutPaymentAdapter.prototype.createSubWithProvider = function (postUrl, parameters) {
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
                 Accept: 'text/html',
             });
-            var httpParams = new http.HttpParams({ encoder: new CustomEncoder() });
+            var httpParams = new i1.HttpParams({ encoder: new CustomEncoder() });
             Object.keys(parameters).forEach(function (key) {
                 httpParams = httpParams.append(key, parameters[key]);
             });
@@ -4522,11 +4573,11 @@
             });
         };
         OccCheckoutPaymentAdapter.prototype.createDetailsWithParameters = function (userId, cartId, parameters) {
-            var httpParams = new http.HttpParams({ encoder: new CustomEncoder() });
+            var httpParams = new i1.HttpParams({ encoder: new CustomEncoder() });
             Object.keys(parameters).forEach(function (key) {
                 httpParams = httpParams.append(key, parameters[key]);
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http.post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers: headers });
@@ -4595,18 +4646,18 @@
                 return result;
             }, {});
         };
-        OccCheckoutPaymentAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCheckoutPaymentAdapter = __decorate([
-            core.Injectable()
-        ], OccCheckoutPaymentAdapter);
         return OccCheckoutPaymentAdapter;
     }());
+    OccCheckoutPaymentAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCheckoutPaymentAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var PAYMENT_TYPE_NORMALIZER = new core.InjectionToken('PaymentTypeNormalizer');
+    var PAYMENT_TYPE_NORMALIZER = new i0.InjectionToken('PaymentTypeNormalizer');
 
     var ENDPOINT_PAYMENT_TYPES = 'paymenttypes';
     var OccCheckoutPaymentTypeAdapter = /** @class */ (function () {
@@ -4621,7 +4672,7 @@
                 .pipe(operators.map(function (paymentTypeList) { return paymentTypeList.paymentTypes; }), this.converter.pipeableMany(PAYMENT_TYPE_NORMALIZER));
         };
         OccCheckoutPaymentTypeAdapter.prototype.setPaymentType = function (userId, cartId, paymentType, purchaseOrderNumber) {
-            var httpParams = new http.HttpParams().set('paymentType', paymentType);
+            var httpParams = new i1.HttpParams().set('paymentType', paymentType);
             if (purchaseOrderNumber !== undefined) {
                 httpParams = httpParams.set('purchaseOrderNumber', purchaseOrderNumber);
             }
@@ -4638,16 +4689,16 @@
             var cartEndpoint = 'users/' + userId + '/carts/';
             return this.occEndpoints.getEndpoint(cartEndpoint);
         };
-        OccCheckoutPaymentTypeAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCheckoutPaymentTypeAdapter = __decorate([
-            core.Injectable()
-        ], OccCheckoutPaymentTypeAdapter);
         return OccCheckoutPaymentTypeAdapter;
     }());
+    OccCheckoutPaymentTypeAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCheckoutPaymentTypeAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var OccCheckoutCostCenterAdapter = /** @class */ (function () {
         function OccCheckoutCostCenterAdapter(http, occEndpoints, converter) {
@@ -4656,7 +4707,7 @@
             this.converter = converter;
         }
         OccCheckoutCostCenterAdapter.prototype.setCostCenter = function (userId, cartId, costCenterId) {
-            var httpParams = new http.HttpParams().set('costCenterId', costCenterId);
+            var httpParams = new i1.HttpParams().set('costCenterId', costCenterId);
             /* tslint:disable:max-line-length */
             httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
             // TODO(#8877): Should we improve configurable endpoints for this use case?
@@ -4670,16 +4721,16 @@
             var cartEndpoint = 'users/' + userId + '/carts/';
             return this.occEndpoints.getEndpoint(cartEndpoint);
         };
-        OccCheckoutCostCenterAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCheckoutCostCenterAdapter = __decorate([
-            core.Injectable()
-        ], OccCheckoutCostCenterAdapter);
         return OccCheckoutCostCenterAdapter;
     }());
+    OccCheckoutCostCenterAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCheckoutCostCenterAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var CheckoutAdapter = /** @class */ (function () {
         function CheckoutAdapter() {
@@ -4694,35 +4745,31 @@
         OccOrderNormalizer.prototype.convert = function (source, target) {
             var _this = this;
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             if (source.entries) {
-                target.entries = source.entries.map(function (entry) {
-                    return _this.convertOrderEntry(entry);
-                });
+                target.entries = source.entries.map(function (entry) { return _this.convertOrderEntry(entry); });
             }
             if (source.consignments) {
-                target.consignments = source.consignments.map(function (consignment) { return (__assign(__assign({}, consignment), { entries: consignment.entries.map(function (entry) { return (__assign(__assign({}, entry), { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); }) })); });
+                target.consignments = source.consignments.map(function (consignment) { return (Object.assign(Object.assign({}, consignment), { entries: consignment.entries.map(function (entry) { return (Object.assign(Object.assign({}, entry), { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); }) })); });
             }
             if (source.unconsignedEntries) {
-                target.unconsignedEntries = source.unconsignedEntries.map(function (entry) {
-                    return _this.convertOrderEntry(entry);
-                });
+                target.unconsignedEntries = source.unconsignedEntries.map(function (entry) { return _this.convertOrderEntry(entry); });
             }
             return target;
         };
         OccOrderNormalizer.prototype.convertOrderEntry = function (source) {
-            return __assign(__assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+            return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
         };
-        OccOrderNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
-        ]; };
-        OccOrderNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(core.ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
-        OccOrderNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccOrderNormalizer);
         return OccOrderNormalizer;
     }());
+    OccOrderNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
+    OccOrderNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccOrderNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
 
     var CheckoutDeliveryAdapter = /** @class */ (function () {
         function CheckoutDeliveryAdapter() {
@@ -4762,46 +4809,46 @@
     var CheckoutOccModule = /** @class */ (function () {
         function CheckoutOccModule() {
         }
-        CheckoutOccModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule],
-                providers: [
-                    provideDefaultConfig(defaultOccCheckoutConfig),
-                    {
-                        provide: CheckoutAdapter,
-                        useClass: OccCheckoutAdapter,
-                    },
-                    { provide: ORDER_NORMALIZER, useExisting: OccOrderNormalizer, multi: true },
-                    {
-                        provide: CheckoutDeliveryAdapter,
-                        useClass: OccCheckoutDeliveryAdapter,
-                    },
-                    {
-                        provide: CheckoutPaymentAdapter,
-                        useClass: OccCheckoutPaymentAdapter,
-                    },
-                    {
-                        provide: PaymentTypeAdapter,
-                        useClass: OccCheckoutPaymentTypeAdapter,
-                    },
-                    {
-                        provide: CheckoutCostCenterAdapter,
-                        useClass: OccCheckoutCostCenterAdapter,
-                    },
-                ],
-            })
-        ], CheckoutOccModule);
         return CheckoutOccModule;
     }());
+    CheckoutOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    providers: [
+                        provideDefaultConfig(defaultOccCheckoutConfig),
+                        {
+                            provide: CheckoutAdapter,
+                            useClass: OccCheckoutAdapter,
+                        },
+                        { provide: ORDER_NORMALIZER, useExisting: OccOrderNormalizer, multi: true },
+                        {
+                            provide: CheckoutDeliveryAdapter,
+                            useClass: OccCheckoutDeliveryAdapter,
+                        },
+                        {
+                            provide: CheckoutPaymentAdapter,
+                            useClass: OccCheckoutPaymentAdapter,
+                        },
+                        {
+                            provide: PaymentTypeAdapter,
+                            useClass: OccCheckoutPaymentTypeAdapter,
+                        },
+                        {
+                            provide: CheckoutCostCenterAdapter,
+                            useClass: OccCheckoutCostCenterAdapter,
+                        },
+                    ],
+                },] }
+    ];
 
-    var CMS_PAGE_NORMALIZER = new core.InjectionToken('CmsPageNormalizer');
+    var CMS_PAGE_NORMALIZER = new i0.InjectionToken('CmsPageNormalizer');
 
     var OccCmsPageAdapter = /** @class */ (function () {
-        function OccCmsPageAdapter(http$1, occEndpoints, converter) {
-            this.http = http$1;
+        function OccCmsPageAdapter(http, occEndpoints, converter) {
+            this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.headers = new http.HttpHeaders().set('Content-Type', 'application/json');
+            this.headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
         }
         OccCmsPageAdapter.prototype.load = function (pageContext, fields) {
             // load page by Id
@@ -4824,7 +4871,7 @@
         };
         OccCmsPageAdapter.prototype.getPagesEndpoint = function (params, fields) {
             fields = fields ? fields : 'DEFAULT';
-            return this.occEndpoints.getUrl('pages', {}, __assign({ fields: fields }, params));
+            return this.occEndpoints.getUrl('pages', {}, Object.assign({ fields: fields }, params));
         };
         OccCmsPageAdapter.prototype.getPagesRequestParams = function (pageContext) {
             var httpParams = {};
@@ -4840,25 +4887,25 @@
             }
             return httpParams;
         };
-        OccCmsPageAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCmsPageAdapter = __decorate([
-            core.Injectable()
-        ], OccCmsPageAdapter);
         return OccCmsPageAdapter;
     }());
+    OccCmsPageAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCmsPageAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var CMS_COMPONENT_NORMALIZER = new core.InjectionToken('CmsComponentNormalizer');
+    var CMS_COMPONENT_NORMALIZER = new i0.InjectionToken('CmsComponentNormalizer');
 
     var OccCmsComponentAdapter = /** @class */ (function () {
-        function OccCmsComponentAdapter(http$1, occEndpoints, converter) {
-            this.http = http$1;
+        function OccCmsComponentAdapter(http, occEndpoints, converter) {
+            this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.headers = new http.HttpHeaders().set('Content-Type', 'application/json');
+            this.headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
         }
         OccCmsComponentAdapter.prototype.load = function (id, pageContext) {
             return this.http
@@ -4871,7 +4918,7 @@
             if (fields === void 0) { fields = 'DEFAULT'; }
             if (currentPage === void 0) { currentPage = 0; }
             if (pageSize === void 0) { pageSize = ids.length; }
-            var requestParams = __assign(__assign({}, this.getContextParams(pageContext)), this.getPaginationParams(currentPage, pageSize, sort));
+            var requestParams = Object.assign(Object.assign({}, this.getContextParams(pageContext)), this.getPaginationParams(currentPage, pageSize, sort));
             requestParams['componentIds'] = ids.toString();
             return this.http
                 .get(this.getComponentsEndpoint(requestParams, fields), {
@@ -4884,7 +4931,7 @@
             if (currentPage === void 0) { currentPage = 0; }
             if (pageSize === void 0) { pageSize = ids.length; }
             var idList = { idList: ids };
-            var requestParams = __assign(__assign({}, this.getContextParams(pageContext)), this.getPaginationParams(currentPage, pageSize, sort));
+            var requestParams = Object.assign(Object.assign({}, this.getContextParams(pageContext)), this.getPaginationParams(currentPage, pageSize, sort));
             return this.http
                 .post(this.getComponentsEndpoint(requestParams, fields), idList, {
                 headers: this.headers,
@@ -4895,7 +4942,7 @@
             return this.occEndpoints.getUrl('component', { id: id }, this.getContextParams(pageContext));
         };
         OccCmsComponentAdapter.prototype.getComponentsEndpoint = function (requestParams, fields) {
-            return this.occEndpoints.getUrl('components', {}, __assign({ fields: fields }, requestParams));
+            return this.occEndpoints.getUrl('components', {}, Object.assign({ fields: fields }, requestParams));
         };
         OccCmsComponentAdapter.prototype.getPaginationParams = function (currentPage, pageSize, sort) {
             var requestParams = {};
@@ -4928,21 +4975,19 @@
             }
             return requestParams;
         };
-        OccCmsComponentAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCmsComponentAdapter = __decorate([
-            core.Injectable()
-        ], OccCmsComponentAdapter);
         return OccCmsComponentAdapter;
     }());
+    OccCmsComponentAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCmsComponentAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var JSP_INCLUDE_CMS_COMPONENT_TYPE = 'JspIncludeComponent';
     var CMS_FLEX_COMPONENT_TYPE = 'CMSFlexComponent';
-    /** Strategy to control the loading strategy of DOM elements. */
-
     (function (DeferLoadingStrategy) {
         /** Defers loading of DOM elements until element is near/in the users view port */
         DeferLoadingStrategy["DEFER"] = "DEFERRED-LOADING";
@@ -4954,15 +4999,15 @@
         function CmsConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        CmsConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsConfig_Factory() { return core.ɵɵinject(Config); }, token: CmsConfig, providedIn: "root" });
-        CmsConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], CmsConfig);
         return CmsConfig;
     }(OccConfig));
+    CmsConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsConfig_Factory() { return i0.ɵɵinject(Config); }, token: CmsConfig, providedIn: "root" });
+    CmsConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var OccCmsPageNormalizer = /** @class */ (function () {
         function OccCmsPageNormalizer() {
@@ -5091,12 +5136,12 @@
                 finally { if (e_4) throw e_4.error; }
             }
         };
-        OccCmsPageNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccCmsPageNormalizer_Factory() { return new OccCmsPageNormalizer(); }, token: OccCmsPageNormalizer, providedIn: "root" });
-        OccCmsPageNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccCmsPageNormalizer);
         return OccCmsPageNormalizer;
     }());
+    OccCmsPageNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccCmsPageNormalizer_Factory() { return new OccCmsPageNormalizer(); }, token: OccCmsPageNormalizer, providedIn: "root" });
+    OccCmsPageNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
 
     /**
      * Abstract class that can be used to implement custom loader logic
@@ -5117,46 +5162,46 @@
     var CmsOccModule = /** @class */ (function () {
         function CmsOccModule() {
         }
-        CmsOccModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule],
-                providers: [
-                    {
-                        provide: CmsPageAdapter,
-                        useClass: OccCmsPageAdapter,
-                    },
-                    {
-                        provide: CMS_PAGE_NORMALIZER,
-                        useExisting: OccCmsPageNormalizer,
-                        multi: true,
-                    },
-                    {
-                        provide: CmsComponentAdapter,
-                        useClass: OccCmsComponentAdapter,
-                    },
-                ],
-            })
-        ], CmsOccModule);
         return CmsOccModule;
     }());
+    CmsOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    providers: [
+                        {
+                            provide: CmsPageAdapter,
+                            useClass: OccCmsPageAdapter,
+                        },
+                        {
+                            provide: CMS_PAGE_NORMALIZER,
+                            useExisting: OccCmsPageNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: CmsComponentAdapter,
+                            useClass: OccCmsComponentAdapter,
+                        },
+                    ],
+                },] }
+    ];
 
     var OccCostCenterNormalizer = /** @class */ (function () {
         function OccCostCenterNormalizer() {
         }
         OccCostCenterNormalizer.prototype.convert = function (source, target) {
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             return target;
         };
-        OccCostCenterNormalizer = __decorate([
-            core.Injectable()
-        ], OccCostCenterNormalizer);
         return OccCostCenterNormalizer;
     }());
+    OccCostCenterNormalizer.decorators = [
+        { type: i0.Injectable }
+    ];
 
-    var COST_CENTER_NORMALIZER = new core.InjectionToken('CostCenterNormalizer');
-    var COST_CENTERS_NORMALIZER = new core.InjectionToken('CostCentersListNormalizer');
+    var COST_CENTER_NORMALIZER = new i0.InjectionToken('CostCenterNormalizer');
+    var COST_CENTERS_NORMALIZER = new i0.InjectionToken('CostCentersListNormalizer');
 
     var OccCostCenterListNormalizer = /** @class */ (function () {
         function OccCostCenterListNormalizer(converter) {
@@ -5165,18 +5210,18 @@
         OccCostCenterListNormalizer.prototype.convert = function (source, target) {
             var _this = this;
             if (target === undefined) {
-                target = __assign(__assign({}, source), { values: source.costCenters.map(function (costCenter) { return (__assign({}, _this.converter.convert(costCenter, COST_CENTER_NORMALIZER))); }) });
+                target = Object.assign(Object.assign({}, source), { values: source.costCenters.map(function (costCenter) { return (Object.assign({}, _this.converter.convert(costCenter, COST_CENTER_NORMALIZER))); }) });
             }
             return target;
         };
-        OccCostCenterListNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
-        ]; };
-        OccCostCenterListNormalizer = __decorate([
-            core.Injectable()
-        ], OccCostCenterListNormalizer);
         return OccCostCenterListNormalizer;
     }());
+    OccCostCenterListNormalizer.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCostCenterListNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
 
     // PRIVATE API
     /**
@@ -5249,9 +5294,7 @@
          */
         MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
             var _this = this;
-            this.sources.forEach(function (source) {
-                return _this.bindSourceToConsumer(source, consumer);
-            });
+            this.sources.forEach(function (source) { return _this.bindSourceToConsumer(source, consumer); });
         };
         /**
          * Stops passing all values from already added sources to consumer
@@ -5332,7 +5375,7 @@
         EventService.prototype.register = function (eventType, source$) {
             var eventMeta = this.getEventMeta(eventType);
             if (eventMeta.mergingSubject.has(source$)) {
-                if (core.isDevMode()) {
+                if (i0.isDevMode()) {
                     console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
                 }
             }
@@ -5347,7 +5390,7 @@
          */
         EventService.prototype.get = function (eventType) {
             var output$ = this.getEventMeta(eventType).mergingSubject.output$;
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 output$ = this.getValidatedEventStream(output$, eventType);
             }
             return output$;
@@ -5377,7 +5420,7 @@
          * Returns the event meta object for the given event type
          */
         EventService.prototype.getEventMeta = function (eventType) {
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 this.validateEventType(eventType);
             }
             if (!this.eventsMeta.get(eventType)) {
@@ -5416,14 +5459,14 @@
                 }
             }));
         };
-        EventService.ɵprov = core.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
-        EventService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], EventService);
         return EventService;
     }());
+    EventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+    EventService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     /**
      * Will be thrown in case lazy loaded modules are loaded and instantiated.
@@ -5440,15 +5483,15 @@
     var FeaturesConfig = /** @class */ (function () {
         function FeaturesConfig() {
         }
-        FeaturesConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function FeaturesConfig_Factory() { return core.ɵɵinject(Config); }, token: FeaturesConfig, providedIn: "root" });
-        FeaturesConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], FeaturesConfig);
         return FeaturesConfig;
     }());
+    FeaturesConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function FeaturesConfig_Factory() { return i0.ɵɵinject(Config); }, token: FeaturesConfig, providedIn: "root" });
+    FeaturesConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     function isFeatureConfig(config) {
         return typeof config === 'object' && config.features;
@@ -5497,17 +5540,17 @@
         FeatureConfigService.prototype.isEnabled = function (feature) {
             return isFeatureEnabled(this.config, feature);
         };
-        FeatureConfigService.ctorParameters = function () { return [
-            { type: FeaturesConfig }
-        ]; };
-        FeatureConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-        FeatureConfigService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], FeatureConfigService);
         return FeatureConfigService;
     }());
+    FeatureConfigService.ɵprov = i0.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(i0.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+    FeatureConfigService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    FeatureConfigService.ctorParameters = function () { return [
+        { type: FeaturesConfig }
+    ]; };
 
     var FeatureLevelDirective = /** @class */ (function () {
         function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
@@ -5527,24 +5570,24 @@
                     this.hasView = false;
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
-        FeatureLevelDirective.ctorParameters = function () { return [
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: FeatureConfigService }
-        ]; };
-        __decorate([
-            core.Input()
-        ], FeatureLevelDirective.prototype, "cxFeatureLevel", null);
-        FeatureLevelDirective = __decorate([
-            core.Directive({
-                selector: '[cxFeatureLevel]',
-            })
-        ], FeatureLevelDirective);
         return FeatureLevelDirective;
     }());
+    FeatureLevelDirective.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cxFeatureLevel]',
+                },] }
+    ];
+    FeatureLevelDirective.ctorParameters = function () { return [
+        { type: i0.TemplateRef },
+        { type: i0.ViewContainerRef },
+        { type: FeatureConfigService }
+    ]; };
+    FeatureLevelDirective.propDecorators = {
+        cxFeatureLevel: [{ type: i0.Input }]
+    };
 
     var FeatureDirective = /** @class */ (function () {
         function FeatureDirective(templateRef, viewContainer, featureConfig) {
@@ -5564,32 +5607,31 @@
                     this.hasView = false;
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
-        FeatureDirective.ctorParameters = function () { return [
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: FeatureConfigService }
-        ]; };
-        __decorate([
-            core.Input()
-        ], FeatureDirective.prototype, "cxFeature", null);
-        FeatureDirective = __decorate([
-            core.Directive({
-                selector: '[cxFeature]',
-            })
-        ], FeatureDirective);
         return FeatureDirective;
     }());
+    FeatureDirective.decorators = [
+        { type: i0.Directive, args: [{
+                    selector: '[cxFeature]',
+                },] }
+    ];
+    FeatureDirective.ctorParameters = function () { return [
+        { type: i0.TemplateRef },
+        { type: i0.ViewContainerRef },
+        { type: FeatureConfigService }
+    ]; };
+    FeatureDirective.propDecorators = {
+        cxFeature: [{ type: i0.Input }]
+    };
 
     var FeaturesConfigModule = /** @class */ (function () {
         function FeaturesConfigModule() {
         }
-        FeaturesConfigModule_1 = FeaturesConfigModule;
         FeaturesConfigModule.forRoot = function (defaultLevel) {
             return {
-                ngModule: FeaturesConfigModule_1,
+                ngModule: FeaturesConfigModule,
                 providers: [
                     provideDefaultConfig({
                         features: {
@@ -5599,15 +5641,14 @@
                 ],
             };
         };
-        var FeaturesConfigModule_1;
-        FeaturesConfigModule = FeaturesConfigModule_1 = __decorate([
-            core.NgModule({
-                declarations: [FeatureLevelDirective, FeatureDirective],
-                exports: [FeatureLevelDirective, FeatureDirective],
-            })
-        ], FeaturesConfigModule);
         return FeaturesConfigModule;
     }());
+    FeaturesConfigModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    declarations: [FeatureLevelDirective, FeatureDirective],
+                    exports: [FeatureLevelDirective, FeatureDirective],
+                },] }
+    ];
 
     var ConfigurationService = /** @class */ (function () {
         function ConfigurationService(rootConfig, defaultConfig, events, config) {
@@ -5627,11 +5668,11 @@
         }
         // We are extracting ambient configuration from lazy loaded modules
         ConfigurationService.prototype.processModule = function (moduleInitialized) {
-            var defaultConfigs = moduleInitialized.moduleRef.injector.get(DefaultConfigChunk, null, core.InjectFlags.Self);
+            var defaultConfigs = moduleInitialized.moduleRef.injector.get(DefaultConfigChunk, null, i0.InjectFlags.Self);
             if (defaultConfigs === null || defaultConfigs === void 0 ? void 0 : defaultConfigs.length) {
                 deepMerge.apply(void 0, __spread([this.ambientDefaultConfig], defaultConfigs));
             }
-            var configs = moduleInitialized.moduleRef.injector.get(ConfigChunk, null, core.InjectFlags.Self);
+            var configs = moduleInitialized.moduleRef.injector.get(ConfigChunk, null, i0.InjectFlags.Self);
             if (configs === null || configs === void 0 ? void 0 : configs.length) {
                 deepMerge.apply(void 0, __spread([this.ambientConfig], configs));
             }
@@ -5651,30 +5692,26 @@
             }
             this.unifiedConfig$.complete();
         };
-        ConfigurationService.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [RootConfig,] }] },
-            { type: undefined, decorators: [{ type: core.Inject, args: [DefaultConfig,] }] },
-            { type: EventService },
-            { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] }
-        ]; };
-        ConfigurationService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConfigurationService_Factory() { return new ConfigurationService(core.ɵɵinject(RootConfig), core.ɵɵinject(DefaultConfig), core.ɵɵinject(EventService), core.ɵɵinject(Config)); }, token: ConfigurationService, providedIn: "root" });
-        ConfigurationService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            }),
-            __param(0, core.Inject(RootConfig)),
-            __param(1, core.Inject(DefaultConfig)),
-            __param(3, core.Inject(Config))
-        ], ConfigurationService);
         return ConfigurationService;
     }());
+    ConfigurationService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigurationService_Factory() { return new ConfigurationService(i0.ɵɵinject(RootConfig), i0.ɵɵinject(DefaultConfig), i0.ɵɵinject(EventService), i0.ɵɵinject(Config)); }, token: ConfigurationService, providedIn: "root" });
+    ConfigurationService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ConfigurationService.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: i0.Inject, args: [RootConfig,] }] },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [DefaultConfig,] }] },
+        { type: EventService },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [Config,] }] }
+    ]; };
 
     var ConfigModule = /** @class */ (function () {
         // To make sure ConfigurationService will be instantiated, we inject it into
         // module constructor
         function ConfigModule(_configurationService) {
         }
-        ConfigModule_1 = ConfigModule;
         /**
          * Import ConfigModule and contribute config to the global configuration
          *
@@ -5684,7 +5721,7 @@
          */
         ConfigModule.withConfig = function (config) {
             return {
-                ngModule: ConfigModule_1,
+                ngModule: ConfigModule,
                 providers: [provideConfig(config)],
             };
         };
@@ -5698,7 +5735,7 @@
          */
         ConfigModule.withConfigFactory = function (configFactory, deps) {
             return {
-                ngModule: ConfigModule_1,
+                ngModule: ConfigModule,
                 providers: [provideConfigFactory(configFactory, deps)],
             };
         };
@@ -5710,19 +5747,18 @@
         ConfigModule.forRoot = function (config) {
             if (config === void 0) { config = {}; }
             return {
-                ngModule: ConfigModule_1,
+                ngModule: ConfigModule,
                 providers: [provideConfig(config)],
             };
         };
-        var ConfigModule_1;
-        ConfigModule.ctorParameters = function () { return [
-            { type: ConfigurationService }
-        ]; };
-        ConfigModule = ConfigModule_1 = __decorate([
-            core.NgModule({})
-        ], ConfigModule);
         return ConfigModule;
     }());
+    ConfigModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
+    ConfigModule.ctorParameters = function () { return [
+        { type: ConfigurationService }
+    ]; };
 
     var defaultOccCostCentersConfig = {
         backend: {
@@ -5737,20 +5773,20 @@
     var CostCenterOccModule = /** @class */ (function () {
         function CostCenterOccModule() {
         }
-        CostCenterOccModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, ConfigModule.withConfig(defaultOccCostCentersConfig)],
-                providers: [
-                    {
-                        provide: COST_CENTERS_NORMALIZER,
-                        useClass: OccCostCenterListNormalizer,
-                        multi: true,
-                    },
-                ],
-            })
-        ], CostCenterOccModule);
         return CostCenterOccModule;
     }());
+    CostCenterOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, ConfigModule.withConfig(defaultOccCostCentersConfig)],
+                    providers: [
+                        {
+                            provide: COST_CENTERS_NORMALIZER,
+                            useClass: OccCostCenterListNormalizer,
+                            multi: true,
+                        },
+                    ],
+                },] }
+    ];
 
     var ProductImageNormalizer = /** @class */ (function () {
         function ProductImageNormalizer(config) {
@@ -5758,7 +5794,7 @@
         }
         ProductImageNormalizer.prototype.convert = function (source, target) {
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             if (source.images) {
                 target.images = this.normalize(source.images);
@@ -5794,7 +5830,7 @@
                         else {
                             imageContainer = images[image.imageType];
                         }
-                        var targetImage = __assign({}, image);
+                        var targetImage = Object.assign({}, image);
                         targetImage.url = this.normalizeImageUrl(targetImage.url);
                         imageContainer[image.format] = targetImage;
                     }
@@ -5824,22 +5860,22 @@
                 this.config.backend.occ.baseUrl ||
                 '') + url);
         };
-        ProductImageNormalizer.ctorParameters = function () { return [
-            { type: OccConfig }
-        ]; };
-        ProductImageNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductImageNormalizer_Factory() { return new ProductImageNormalizer(core.ɵɵinject(OccConfig)); }, token: ProductImageNormalizer, providedIn: "root" });
-        ProductImageNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], ProductImageNormalizer);
         return ProductImageNormalizer;
     }());
+    ProductImageNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductImageNormalizer_Factory() { return new ProductImageNormalizer(i0.ɵɵinject(OccConfig)); }, token: ProductImageNormalizer, providedIn: "root" });
+    ProductImageNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ProductImageNormalizer.ctorParameters = function () { return [
+        { type: OccConfig }
+    ]; };
 
     var ProductReferenceNormalizer = /** @class */ (function () {
         function ProductReferenceNormalizer() {
         }
         ProductReferenceNormalizer.prototype.convert = function (source, target) {
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             if (source.productReferences) {
                 target.productReferences = this.normalize(source.productReferences);
@@ -5876,11 +5912,11 @@
             }
             return references;
         };
-        ProductReferenceNormalizer = __decorate([
-            core.Injectable()
-        ], ProductReferenceNormalizer);
         return ProductReferenceNormalizer;
     }());
+    ProductReferenceNormalizer.decorators = [
+        { type: i0.Injectable }
+    ];
 
     var OccProductSearchPageNormalizer = /** @class */ (function () {
         function OccProductSearchPageNormalizer(converterService) {
@@ -5894,12 +5930,10 @@
         OccProductSearchPageNormalizer.prototype.convert = function (source, target) {
             var _this = this;
             if (target === void 0) { target = {}; }
-            target = __assign(__assign({}, target), source);
+            target = Object.assign(Object.assign({}, target), source);
             this.normalizeFacets(target);
             if (source.products) {
-                target.products = source.products.map(function (product) {
-                    return _this.converterService.convert(product, PRODUCT_NORMALIZER);
-                });
+                target.products = source.products.map(function (product) { return _this.converterService.convert(product, PRODUCT_NORMALIZER); });
             }
             return target;
         };
@@ -5947,15 +5981,15 @@
                 });
             }
         };
-        OccProductSearchPageNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
-        ]; };
-        OccProductSearchPageNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccProductSearchPageNormalizer_Factory() { return new OccProductSearchPageNormalizer(core.ɵɵinject(ConverterService)); }, token: OccProductSearchPageNormalizer, providedIn: "root" });
-        OccProductSearchPageNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccProductSearchPageNormalizer);
         return OccProductSearchPageNormalizer;
     }());
+    OccProductSearchPageNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccProductSearchPageNormalizer_Factory() { return new OccProductSearchPageNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccProductSearchPageNormalizer, providedIn: "root" });
+    OccProductSearchPageNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccProductSearchPageNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
 
     var OccProductReferencesListNormalizer = /** @class */ (function () {
         function OccProductReferencesListNormalizer(converter) {
@@ -5965,22 +5999,22 @@
             var _this = this;
             if (target === void 0) { target = []; }
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             if (source && source.references) {
-                target = source.references.map(function (reference) { return (__assign(__assign({}, reference), { target: _this.converter.convert(reference.target, PRODUCT_NORMALIZER) })); });
+                target = source.references.map(function (reference) { return (Object.assign(Object.assign({}, reference), { target: _this.converter.convert(reference.target, PRODUCT_NORMALIZER) })); });
                 return target;
             }
         };
-        OccProductReferencesListNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
-        ]; };
-        OccProductReferencesListNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccProductReferencesListNormalizer_Factory() { return new OccProductReferencesListNormalizer(core.ɵɵinject(ConverterService)); }, token: OccProductReferencesListNormalizer, providedIn: "root" });
-        OccProductReferencesListNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccProductReferencesListNormalizer);
         return OccProductReferencesListNormalizer;
     }());
+    OccProductReferencesListNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccProductReferencesListNormalizer_Factory() { return new OccProductReferencesListNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccProductReferencesListNormalizer, providedIn: "root" });
+    OccProductReferencesListNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccProductReferencesListNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
 
     var ProductNameNormalizer = /** @class */ (function () {
         function ProductNameNormalizer(config) {
@@ -5988,7 +6022,7 @@
         }
         ProductNameNormalizer.prototype.convert = function (source, target) {
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             if (source.name) {
                 target.name = this.normalize(source.name);
@@ -5999,17 +6033,17 @@
         ProductNameNormalizer.prototype.normalize = function (name) {
             return name.replace(/<[^>]*>/g, '');
         };
-        ProductNameNormalizer.ctorParameters = function () { return [
-            { type: OccConfig }
-        ]; };
-        ProductNameNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductNameNormalizer_Factory() { return new ProductNameNormalizer(core.ɵɵinject(OccConfig)); }, token: ProductNameNormalizer, providedIn: "root" });
-        ProductNameNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], ProductNameNormalizer);
         return ProductNameNormalizer;
     }());
+    ProductNameNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductNameNormalizer_Factory() { return new ProductNameNormalizer(i0.ɵɵinject(OccConfig)); }, token: ProductNameNormalizer, providedIn: "root" });
+    ProductNameNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ProductNameNormalizer.ctorParameters = function () { return [
+        { type: OccConfig }
+    ]; };
 
-    var PRODUCT_REFERENCES_NORMALIZER = new core.InjectionToken('ProductReferencesListNormalizer');
+    var PRODUCT_REFERENCES_NORMALIZER = new i0.InjectionToken('ProductReferencesListNormalizer');
 
     var OccProductReferencesAdapter = /** @class */ (function () {
         function OccProductReferencesAdapter(http, occEndpoints, converter) {
@@ -6027,19 +6061,19 @@
                 productCode: code,
             }, { referenceType: reference, pageSize: pageSize });
         };
-        OccProductReferencesAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccProductReferencesAdapter = __decorate([
-            core.Injectable()
-        ], OccProductReferencesAdapter);
         return OccProductReferencesAdapter;
     }());
+    OccProductReferencesAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccProductReferencesAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var PRODUCT_REVIEW_NORMALIZER = new core.InjectionToken('ProductReviewNormalizer');
-    var PRODUCT_REVIEW_SERIALIZER = new core.InjectionToken('ProductReviewSerializer');
+    var PRODUCT_REVIEW_NORMALIZER = new i0.InjectionToken('ProductReviewNormalizer');
+    var PRODUCT_REVIEW_SERIALIZER = new i0.InjectionToken('ProductReviewSerializer');
 
     var OccProductReviewsAdapter = /** @class */ (function () {
         function OccProductReviewsAdapter(http, occEndpoints, converter) {
@@ -6054,7 +6088,7 @@
         };
         OccProductReviewsAdapter.prototype.post = function (productCode, review) {
             review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             var body = new URLSearchParams();
@@ -6071,19 +6105,19 @@
                 productCode: code,
             }, { maxCount: maxCount });
         };
-        OccProductReviewsAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccProductReviewsAdapter = __decorate([
-            core.Injectable()
-        ], OccProductReviewsAdapter);
         return OccProductReviewsAdapter;
     }());
+    OccProductReviewsAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccProductReviewsAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var PRODUCT_SEARCH_PAGE_NORMALIZER = new core.InjectionToken('ProductSearchPageNormalizer');
-    var PRODUCT_SUGGESTION_NORMALIZER = new core.InjectionToken('ProductSuggestionNormalizer');
+    var PRODUCT_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('ProductSearchPageNormalizer');
+    var PRODUCT_SUGGESTION_NORMALIZER = new i0.InjectionToken('ProductSuggestionNormalizer');
 
     var DEFAULT_SEARCH_CONFIG = {
         pageSize: 20,
@@ -6107,21 +6141,21 @@
                 .pipe(operators.pluck('suggestions'), this.converter.pipeableMany(PRODUCT_SUGGESTION_NORMALIZER));
         };
         OccProductSearchAdapter.prototype.getSearchEndpoint = function (query, searchConfig) {
-            return this.occEndpoints.getUrl('productSearch', {}, __assign({ query: query }, searchConfig));
+            return this.occEndpoints.getUrl('productSearch', {}, Object.assign({ query: query }, searchConfig));
         };
         OccProductSearchAdapter.prototype.getSuggestionEndpoint = function (term, max) {
             return this.occEndpoints.getUrl('productSuggestions', {}, { term: term, max: max });
         };
-        OccProductSearchAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccProductSearchAdapter = __decorate([
-            core.Injectable()
-        ], OccProductSearchAdapter);
         return OccProductSearchAdapter;
     }());
+    OccProductSearchAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccProductSearchAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     /**
      * Merge occ fields parameters
@@ -6129,9 +6163,7 @@
      * @param fields Fields definition as string or object
      */
     function mergeFields(fields) {
-        var parsedFields = fields.map(function (f) {
-            return typeof f === 'string' ? parseFields(f) : f;
-        });
+        var parsedFields = fields.map(function (f) { return typeof f === 'string' ? parseFields(f) : f; });
         var mergedFields = optimizeFields(deepMerge.apply(void 0, __spread([{}], parsedFields)));
         return stringifyFields(mergedFields);
     }
@@ -6259,9 +6291,9 @@
             var e_1, _a, e_2, _b;
             var groupedByUrls = {};
             try {
-                for (var _c = __values(models), _d = _c.next(); !_d.done; _d = _c.next()) {
-                    var model = _d.value;
-                    var _e = __read(this.splitFields(model.url), 2), urlPart = _e[0], fields = _e[1];
+                for (var models_1 = __values(models), models_1_1 = models_1.next(); !models_1_1.done; models_1_1 = models_1.next()) {
+                    var model = models_1_1.value;
+                    var _c = __read(this.splitFields(model.url), 2), urlPart = _c[0], fields = _c[1];
                     if (!groupedByUrls[urlPart]) {
                         groupedByUrls[urlPart] = {};
                     }
@@ -6272,14 +6304,14 @@
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+                    if (models_1_1 && !models_1_1.done && (_a = models_1.return)) _a.call(models_1);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
             var mergedUrls = {};
             try {
-                for (var _f = __values(Object.entries(groupedByUrls)), _g = _f.next(); !_g.done; _g = _f.next()) {
-                    var _h = __read(_g.value, 2), url = _h[0], group = _h[1];
+                for (var _d = __values(Object.entries(groupedByUrls)), _e = _d.next(); !_e.done; _e = _d.next()) {
+                    var _f = __read(_e.value, 2), url = _f[0], group = _f[1];
                     var urlWithFields = this.getUrlWithFields(url, Object.values(group).map(function (lo) { return lo.fields; }));
                     mergedUrls[urlWithFields] = group;
                 }
@@ -6287,7 +6319,7 @@
             catch (e_2_1) { e_2 = { error: e_2_1 }; }
             finally {
                 try {
-                    if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
+                    if (_e && !_e.done && (_b = _d.return)) _b.call(_d);
                 }
                 finally { if (e_2) throw e_2.error; }
             }
@@ -6336,17 +6368,17 @@
             }
             return url;
         };
-        OccFieldsService.ctorParameters = function () { return [
-            { type: http.HttpClient }
-        ]; };
-        OccFieldsService.ɵprov = core.ɵɵdefineInjectable({ factory: function OccFieldsService_Factory() { return new OccFieldsService(core.ɵɵinject(http.HttpClient)); }, token: OccFieldsService, providedIn: "root" });
-        OccFieldsService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], OccFieldsService);
         return OccFieldsService;
     }());
+    OccFieldsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccFieldsService_Factory() { return new OccFieldsService(i0.ɵɵinject(i1.HttpClient)); }, token: OccFieldsService, providedIn: "root" });
+    OccFieldsService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    OccFieldsService.ctorParameters = function () { return [
+        { type: i1.HttpClient }
+    ]; };
 
     var OccRequestsOptimizerService = /** @class */ (function () {
         function OccRequestsOptimizerService(http, occFields) {
@@ -6371,31 +6403,31 @@
                 var groupedModels = Object.values(groupedModelsSet);
                 if (groupedModels.length === 1) {
                     // only one scope for url, we can pass the data straightaway
-                    result.push(__assign(__assign({}, groupedModels[0].scopedData), { data$: dataFactory(url) }));
+                    result.push(Object.assign(Object.assign({}, groupedModels[0].scopedData), { data$: dataFactory(url) }));
                 }
                 else {
                     // multiple scopes per url
                     // we have to split the model per each scope
                     var data$_1 = dataFactory(url).pipe(operators.shareReplay(1));
                     groupedModels.forEach(function (modelData) {
-                        result.push(__assign(__assign({}, modelData.scopedData), { data$: data$_1.pipe(operators.map(function (data) { return extractFields(data, modelData.fields); })) }));
+                        result.push(Object.assign(Object.assign({}, modelData.scopedData), { data$: data$_1.pipe(operators.map(function (data) { return extractFields(data, modelData.fields); })) }));
                     });
                 }
             });
             return result;
         };
-        OccRequestsOptimizerService.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccFieldsService }
-        ]; };
-        OccRequestsOptimizerService.ɵprov = core.ɵɵdefineInjectable({ factory: function OccRequestsOptimizerService_Factory() { return new OccRequestsOptimizerService(core.ɵɵinject(http.HttpClient), core.ɵɵinject(OccFieldsService)); }, token: OccRequestsOptimizerService, providedIn: "root" });
-        OccRequestsOptimizerService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], OccRequestsOptimizerService);
         return OccRequestsOptimizerService;
     }());
+    OccRequestsOptimizerService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccRequestsOptimizerService_Factory() { return new OccRequestsOptimizerService(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(OccFieldsService)); }, token: OccRequestsOptimizerService, providedIn: "root" });
+    OccRequestsOptimizerService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    OccRequestsOptimizerService.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccFieldsService }
+    ]; };
 
     var OccProductAdapter = /** @class */ (function () {
         function OccProductAdapter(http, occEndpoints, converter, requestsOptimizer) {
@@ -6417,26 +6449,24 @@
             }); });
             return this.requestsOptimizer
                 .scopedDataLoad(scopedDataWithUrls)
-                .map(function (scopedProduct) {
-                return (__assign(__assign({}, scopedProduct), { data$: scopedProduct.data$.pipe(_this.converter.pipeable(PRODUCT_NORMALIZER)) }));
-            });
+                .map(function (scopedProduct) { return (Object.assign(Object.assign({}, scopedProduct), { data$: scopedProduct.data$.pipe(_this.converter.pipeable(PRODUCT_NORMALIZER)) })); });
         };
         OccProductAdapter.prototype.getEndpoint = function (code, scope) {
             return this.occEndpoints.getUrl('product', {
                 productCode: code,
             }, undefined, scope);
         };
-        OccProductAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService },
-            { type: OccRequestsOptimizerService }
-        ]; };
-        OccProductAdapter = __decorate([
-            core.Injectable()
-        ], OccProductAdapter);
         return OccProductAdapter;
     }());
+    OccProductAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccProductAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService },
+        { type: OccRequestsOptimizerService }
+    ]; };
 
     var ProductAdapter = /** @class */ (function () {
         function ProductAdapter() {
@@ -6461,7 +6491,6 @@
         }
         return ProductSearchAdapter;
     }());
-
 
     (function (ProductScope) {
         ProductScope["LIST"] = "list";
@@ -6505,57 +6534,57 @@
     var ProductOccModule = /** @class */ (function () {
         function ProductOccModule() {
         }
-        ProductOccModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule],
-                providers: [
-                    provideDefaultConfig(defaultOccProductConfig),
-                    {
-                        provide: ProductAdapter,
-                        useClass: OccProductAdapter,
-                    },
-                    {
-                        provide: PRODUCT_NORMALIZER,
-                        useExisting: ProductImageNormalizer,
-                        multi: true,
-                    },
-                    {
-                        provide: PRODUCT_NORMALIZER,
-                        useExisting: ProductNameNormalizer,
-                        multi: true,
-                    },
-                    {
-                        provide: ProductReferencesAdapter,
-                        useClass: OccProductReferencesAdapter,
-                    },
-                    {
-                        provide: PRODUCT_REFERENCES_NORMALIZER,
-                        useExisting: OccProductReferencesListNormalizer,
-                        multi: true,
-                    },
-                    {
-                        provide: ProductSearchAdapter,
-                        useClass: OccProductSearchAdapter,
-                    },
-                    {
-                        provide: PRODUCT_SEARCH_PAGE_NORMALIZER,
-                        useExisting: OccProductSearchPageNormalizer,
-                        multi: true,
-                    },
-                    {
-                        provide: ProductReviewsAdapter,
-                        useClass: OccProductReviewsAdapter,
-                    },
-                ],
-            })
-        ], ProductOccModule);
         return ProductOccModule;
     }());
+    ProductOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    providers: [
+                        provideDefaultConfig(defaultOccProductConfig),
+                        {
+                            provide: ProductAdapter,
+                            useClass: OccProductAdapter,
+                        },
+                        {
+                            provide: PRODUCT_NORMALIZER,
+                            useExisting: ProductImageNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: PRODUCT_NORMALIZER,
+                            useExisting: ProductNameNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ProductReferencesAdapter,
+                            useClass: OccProductReferencesAdapter,
+                        },
+                        {
+                            provide: PRODUCT_REFERENCES_NORMALIZER,
+                            useExisting: OccProductReferencesListNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ProductSearchAdapter,
+                            useClass: OccProductSearchAdapter,
+                        },
+                        {
+                            provide: PRODUCT_SEARCH_PAGE_NORMALIZER,
+                            useExisting: OccProductSearchPageNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ProductReviewsAdapter,
+                            useClass: OccProductReviewsAdapter,
+                        },
+                    ],
+                },] }
+    ];
 
-    var LANGUAGE_NORMALIZER = new core.InjectionToken('LanguageNormalizer');
-    var CURRENCY_NORMALIZER = new core.InjectionToken('CurrencyNormalizer');
-    var COUNTRY_NORMALIZER = new core.InjectionToken('CountryNormalizer');
-    var REGION_NORMALIZER = new core.InjectionToken('RegionNormalizer');
+    var LANGUAGE_NORMALIZER = new i0.InjectionToken('LanguageNormalizer');
+    var CURRENCY_NORMALIZER = new i0.InjectionToken('CurrencyNormalizer');
+    var COUNTRY_NORMALIZER = new i0.InjectionToken('CountryNormalizer');
+    var REGION_NORMALIZER = new i0.InjectionToken('RegionNormalizer');
 
     var OccSiteAdapter = /** @class */ (function () {
         function OccSiteAdapter(http, occEndpointsService, converterService) {
@@ -6588,7 +6617,7 @@
             var urlSplits = baseUrl.split('/');
             var activeSite = urlSplits.pop();
             var url = urlSplits.join('/') + '/basesites';
-            var params = new http.HttpParams({
+            var params = new i1.HttpParams({
                 fromString: 'fields=FULL',
             });
             return this.http
@@ -6597,16 +6626,16 @@
                 return siteList.baseSites.find(function (site) { return site.uid === activeSite; });
             }));
         };
-        OccSiteAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccSiteAdapter = __decorate([
-            core.Injectable()
-        ], OccSiteAdapter);
         return OccSiteAdapter;
     }());
+    OccSiteAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccSiteAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var SiteAdapter = /** @class */ (function () {
         function SiteAdapter() {
@@ -6641,7 +6670,7 @@
          */
         CurrencyService.prototype.getAll = function () {
             var _this = this;
-            return this.store.pipe(store.select(getAllCurrencies), operators.tap(function (currencies) {
+            return this.store.pipe(i1$1.select(getAllCurrencies), operators.tap(function (currencies) {
                 if (!currencies) {
                     _this.store.dispatch(new LoadCurrencies());
                 }
@@ -6651,7 +6680,7 @@
          * Represents the isocode of the active currency.
          */
         CurrencyService.prototype.getActive = function () {
-            return this.store.pipe(store.select(getActiveCurrency), operators.filter(function (active) { return Boolean(active); }));
+            return this.store.pipe(i1$1.select(getActiveCurrency), operators.filter(function (active) { return Boolean(active); }));
         };
         /**
          * Sets the active language.
@@ -6659,7 +6688,7 @@
         CurrencyService.prototype.setActive = function (isocode) {
             var _this = this;
             return this.store
-                .pipe(store.select(getActiveCurrency), operators.take(1))
+                .pipe(i1$1.select(getActiveCurrency), operators.take(1))
                 .subscribe(function (activeCurrency) {
                 if (activeCurrency !== isocode) {
                     _this.store.dispatch(new SetActiveCurrency(isocode));
@@ -6689,16 +6718,16 @@
                 this.setActive(getContextParameterDefault(this.config, CURRENCY_CONTEXT_ID));
             }
         };
-        CurrencyService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: WindowRef },
-            { type: SiteContextConfig }
-        ]; };
-        CurrencyService = __decorate([
-            core.Injectable()
-        ], CurrencyService);
         return CurrencyService;
     }());
+    CurrencyService.decorators = [
+        { type: i0.Injectable }
+    ];
+    CurrencyService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: WindowRef },
+        { type: SiteContextConfig }
+    ]; };
 
     /**
      * Facade that provides easy access to language state, actions and selectors.
@@ -6714,7 +6743,7 @@
          */
         LanguageService.prototype.getAll = function () {
             var _this = this;
-            return this.store.pipe(store.select(getAllLanguages), operators.tap(function (languages) {
+            return this.store.pipe(i1$1.select(getAllLanguages), operators.tap(function (languages) {
                 if (!languages) {
                     _this.store.dispatch(new LoadLanguages());
                 }
@@ -6724,7 +6753,7 @@
          * Represents the isocode of the active language.
          */
         LanguageService.prototype.getActive = function () {
-            return this.store.pipe(store.select(getActiveLanguage), operators.filter(function (active) { return Boolean(active); }));
+            return this.store.pipe(i1$1.select(getActiveLanguage), operators.filter(function (active) { return Boolean(active); }));
         };
         /**
          * Sets the active language.
@@ -6732,7 +6761,7 @@
         LanguageService.prototype.setActive = function (isocode) {
             var _this = this;
             return this.store
-                .pipe(store.select(getActiveLanguage), operators.take(1))
+                .pipe(i1$1.select(getActiveLanguage), operators.take(1))
                 .subscribe(function (activeLanguage) {
                 if (activeLanguage !== isocode) {
                     _this.store.dispatch(new SetActiveLanguage(isocode));
@@ -6762,16 +6791,16 @@
                 this.setActive(getContextParameterDefault(this.config, LANGUAGE_CONTEXT_ID));
             }
         };
-        LanguageService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: WindowRef },
-            { type: SiteContextConfig }
-        ]; };
-        LanguageService = __decorate([
-            core.Injectable()
-        ], LanguageService);
         return LanguageService;
     }());
+    LanguageService.decorators = [
+        { type: i0.Injectable }
+    ];
+    LanguageService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: WindowRef },
+        { type: SiteContextConfig }
+    ]; };
 
     var SiteContextInterceptor = /** @class */ (function () {
         function SiteContextInterceptor(languageService, currencyService, occEndpoints, config) {
@@ -6800,41 +6829,41 @@
             }
             return next.handle(request);
         };
-        SiteContextInterceptor.ctorParameters = function () { return [
-            { type: LanguageService },
-            { type: CurrencyService },
-            { type: OccEndpointsService },
-            { type: SiteContextConfig }
-        ]; };
-        SiteContextInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function SiteContextInterceptor_Factory() { return new SiteContextInterceptor(core.ɵɵinject(LanguageService), core.ɵɵinject(CurrencyService), core.ɵɵinject(OccEndpointsService), core.ɵɵinject(SiteContextConfig)); }, token: SiteContextInterceptor, providedIn: "root" });
-        SiteContextInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], SiteContextInterceptor);
         return SiteContextInterceptor;
     }());
+    SiteContextInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function SiteContextInterceptor_Factory() { return new SiteContextInterceptor(i0.ɵɵinject(LanguageService), i0.ɵɵinject(CurrencyService), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(SiteContextConfig)); }, token: SiteContextInterceptor, providedIn: "root" });
+    SiteContextInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    SiteContextInterceptor.ctorParameters = function () { return [
+        { type: LanguageService },
+        { type: CurrencyService },
+        { type: OccEndpointsService },
+        { type: SiteContextConfig }
+    ]; };
 
     var SiteContextOccModule = /** @class */ (function () {
         function SiteContextOccModule() {
         }
-        SiteContextOccModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule],
-                providers: [
-                    provideDefaultConfig(defaultOccSiteContextConfig),
-                    {
-                        provide: SiteAdapter,
-                        useClass: OccSiteAdapter,
-                    },
-                    {
-                        provide: http.HTTP_INTERCEPTORS,
-                        useExisting: SiteContextInterceptor,
-                        multi: true,
-                    },
-                ],
-            })
-        ], SiteContextOccModule);
         return SiteContextOccModule;
     }());
+    SiteContextOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    providers: [
+                        provideDefaultConfig(defaultOccSiteContextConfig),
+                        {
+                            provide: SiteAdapter,
+                            useClass: OccSiteAdapter,
+                        },
+                        {
+                            provide: i1.HTTP_INTERCEPTORS,
+                            useExisting: SiteContextInterceptor,
+                            multi: true,
+                        },
+                    ],
+                },] }
+    ];
 
     var StoreFinderAdapter = /** @class */ (function () {
         function StoreFinderAdapter() {
@@ -6867,19 +6896,19 @@
         StoreFinderConnector.prototype.get = function (storeId) {
             return this.adapter.load(storeId);
         };
-        StoreFinderConnector.ctorParameters = function () { return [
-            { type: StoreFinderAdapter }
-        ]; };
-        StoreFinderConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(core.ɵɵinject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
-        StoreFinderConnector = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], StoreFinderConnector);
         return StoreFinderConnector;
     }());
+    StoreFinderConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(i0.ɵɵinject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
+    StoreFinderConnector.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    StoreFinderConnector.ctorParameters = function () { return [
+        { type: StoreFinderAdapter }
+    ]; };
 
-    var POINT_OF_SERVICE_NORMALIZER = new core.InjectionToken('PointOfServiceNormalizer');
-    var STORE_FINDER_SEARCH_PAGE_NORMALIZER = new core.InjectionToken('StoreFinderSearchPageNormalizer');
-    var STORE_COUNT_NORMALIZER = new core.InjectionToken('StoreCountNormalizer');
+    var POINT_OF_SERVICE_NORMALIZER = new i0.InjectionToken('PointOfServiceNormalizer');
+    var STORE_FINDER_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('StoreFinderSearchPageNormalizer');
+    var STORE_COUNT_NORMALIZER = new i0.InjectionToken('StoreCountNormalizer');
 
     var OccStoreFinderAdapter = /** @class */ (function () {
         function OccStoreFinderAdapter(http, occEndpointsService, converterService) {
@@ -6924,34 +6953,34 @@
             }
             return this.http.get(this.occEndpointsService.getUrl('stores', undefined, params));
         };
-        OccStoreFinderAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccStoreFinderAdapter = __decorate([
-            core.Injectable()
-        ], OccStoreFinderAdapter);
         return OccStoreFinderAdapter;
     }());
+    OccStoreFinderAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccStoreFinderAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var StoreFinderOccModule = /** @class */ (function () {
         function StoreFinderOccModule() {
         }
-        StoreFinderOccModule = __decorate([
-            core.NgModule({
-                providers: [
-                    provideDefaultConfig(defaultOccStoreFinderConfig),
-                    { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
-                ],
-            })
-        ], StoreFinderOccModule);
         return StoreFinderOccModule;
     }());
+    StoreFinderOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    providers: [
+                        provideDefaultConfig(defaultOccStoreFinderConfig),
+                        { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
+                    ],
+                },] }
+    ];
 
-    var ANONYMOUS_CONSENT_NORMALIZER = new core.InjectionToken('AnonymousConsentNormalizer');
+    var ANONYMOUS_CONSENT_NORMALIZER = new i0.InjectionToken('AnonymousConsentNormalizer');
 
-    var CONSENT_TEMPLATE_NORMALIZER = new core.InjectionToken('ConsentTemplateNormalizer');
+    var CONSENT_TEMPLATE_NORMALIZER = new i0.InjectionToken('ConsentTemplateNormalizer');
 
     var OccAnonymousConsentTemplatesAdapter = /** @class */ (function () {
         function OccAnonymousConsentTemplatesAdapter(http, occEndpoints, converter) {
@@ -6970,16 +6999,16 @@
                 .head(url, { observe: 'response' })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (response) { return response.headers.get(ANONYMOUS_CONSENTS_HEADER); }), this.converter.pipeable(ANONYMOUS_CONSENT_NORMALIZER));
         };
-        OccAnonymousConsentTemplatesAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccAnonymousConsentTemplatesAdapter = __decorate([
-            core.Injectable()
-        ], OccAnonymousConsentTemplatesAdapter);
         return OccAnonymousConsentTemplatesAdapter;
     }());
+    OccAnonymousConsentTemplatesAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccAnonymousConsentTemplatesAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var OccUserAddressAdapter = /** @class */ (function () {
         function OccUserAddressAdapter(http, occEndpoints, converter) {
@@ -6989,7 +7018,7 @@
         }
         OccUserAddressAdapter.prototype.loadAll = function (userId) {
             var url = this.occEndpoints.getUrl('addresses', { userId: userId });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -6998,7 +7027,7 @@
         };
         OccUserAddressAdapter.prototype.add = function (userId, address) {
             var url = this.occEndpoints.getUrl('addresses', { userId: userId });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             address = this.converter.convert(address, ADDRESS_SERIALIZER);
@@ -7011,7 +7040,7 @@
                 userId: userId,
                 addressId: addressId,
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             address = this.converter.convert(address, ADDRESS_SERIALIZER);
@@ -7021,7 +7050,7 @@
         };
         OccUserAddressAdapter.prototype.verify = function (userId, address) {
             var url = this.occEndpoints.getUrl('addressVerification', { userId: userId });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             if (userId === OCC_USER_ID_ANONYMOUS) {
@@ -7037,23 +7066,23 @@
                 userId: userId,
                 addressId: addressId,
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
                 .delete(url, { headers: headers })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
         };
-        OccUserAddressAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccUserAddressAdapter = __decorate([
-            core.Injectable()
-        ], OccUserAddressAdapter);
         return OccUserAddressAdapter;
     }());
+    OccUserAddressAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserAddressAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var OccUserConsentAdapter = /** @class */ (function () {
         function OccUserConsentAdapter(http, occEndpoints, converter) {
@@ -7063,17 +7092,17 @@
         }
         OccUserConsentAdapter.prototype.loadConsents = function (userId) {
             var url = this.occEndpoints.getUrl('consentTemplates', { userId: userId });
-            var headers = new http.HttpHeaders({ 'Cache-Control': 'no-cache' });
+            var headers = new i1.HttpHeaders({ 'Cache-Control': 'no-cache' });
             return this.http
                 .get(url, { headers: headers })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (consentList) { return consentList.consentTemplates; }), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
         };
         OccUserConsentAdapter.prototype.giveConsent = function (userId, consentTemplateId, consentTemplateVersion) {
             var url = this.occEndpoints.getUrl('consents', { userId: userId });
-            var httpParams = new http.HttpParams()
+            var httpParams = new i1.HttpParams()
                 .set('consentTemplateId', consentTemplateId)
                 .set('consentTemplateVersion', consentTemplateVersion.toString());
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Cache-Control': 'no-cache',
             });
@@ -7082,7 +7111,7 @@
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(CONSENT_TEMPLATE_NORMALIZER));
         };
         OccUserConsentAdapter.prototype.withdrawConsent = function (userId, consentCode) {
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Cache-Control': 'no-cache',
             });
             var url = this.occEndpoints.getUrl('consentDetail', {
@@ -7091,22 +7120,22 @@
             });
             return this.http.delete(url, { headers: headers });
         };
-        OccUserConsentAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccUserConsentAdapter = __decorate([
-            core.Injectable()
-        ], OccUserConsentAdapter);
         return OccUserConsentAdapter;
     }());
+    OccUserConsentAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserConsentAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var ORDER_HISTORY_NORMALIZER = new core.InjectionToken('OrderHistoryNormalizer');
-    var CONSIGNMENT_TRACKING_NORMALIZER = new core.InjectionToken('ConsignmentTrackingNormalizer');
-    var ORDER_RETURN_REQUEST_NORMALIZER = new core.InjectionToken('OrderReturnRequestNormalizer');
-    var ORDER_RETURN_REQUEST_INPUT_SERIALIZER = new core.InjectionToken('OrderReturnRequestInputSerializer');
-    var ORDER_RETURNS_NORMALIZER = new core.InjectionToken('OrderReturnsNormalizer');
+    var ORDER_HISTORY_NORMALIZER = new i0.InjectionToken('OrderHistoryNormalizer');
+    var CONSIGNMENT_TRACKING_NORMALIZER = new i0.InjectionToken('ConsignmentTrackingNormalizer');
+    var ORDER_RETURN_REQUEST_NORMALIZER = new i0.InjectionToken('OrderReturnRequestNormalizer');
+    var ORDER_RETURN_REQUEST_INPUT_SERIALIZER = new i0.InjectionToken('OrderReturnRequestInputSerializer');
+    var ORDER_RETURNS_NORMALIZER = new i0.InjectionToken('OrderReturnsNormalizer');
 
     var OccUserOrderAdapter = /** @class */ (function () {
         function OccUserOrderAdapter(http, occEndpoints, converter) {
@@ -7119,7 +7148,7 @@
                 userId: userId,
                 orderId: orderCode,
             });
-            var headers = new http.HttpHeaders();
+            var headers = new i1.HttpHeaders();
             if (userId === OCC_USER_ID_ANONYMOUS) {
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
             }
@@ -7159,7 +7188,7 @@
                 userId: userId,
                 orderId: orderCode,
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -7170,7 +7199,7 @@
             var url = this.occEndpoints.getUrl('returnOrder', {
                 userId: userId,
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             returnRequestInput = this.converter.convert(returnRequestInput, ORDER_RETURN_REQUEST_INPUT_SERIALIZER);
@@ -7206,23 +7235,23 @@
                 userId: userId,
                 returnRequestCode: returnRequestCode,
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
                 .patch(url, returnRequestModification, { headers: headers })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
         };
-        OccUserOrderAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccUserOrderAdapter = __decorate([
-            core.Injectable()
-        ], OccUserOrderAdapter);
         return OccUserOrderAdapter;
     }());
+    OccUserOrderAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserOrderAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var OccUserPaymentAdapter = /** @class */ (function () {
         function OccUserPaymentAdapter(http, occEndpoints, converter) {
@@ -7232,7 +7261,7 @@
         }
         OccUserPaymentAdapter.prototype.loadAll = function (userId) {
             var url = this.occEndpoints.getUrl('paymentDetailsAll', { userId: userId }) + '?saved=true';
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -7244,7 +7273,7 @@
                 userId: userId,
                 paymentDetailId: paymentMethodID,
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -7256,7 +7285,7 @@
                 userId: userId,
                 paymentDetailId: paymentMethodID,
             });
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -7265,21 +7294,21 @@
             { billingAddress: { titleCode: 'mr' }, defaultPayment: true }, { headers: headers })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
         };
-        OccUserPaymentAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccUserPaymentAdapter = __decorate([
-            core.Injectable()
-        ], OccUserPaymentAdapter);
         return OccUserPaymentAdapter;
     }());
+    OccUserPaymentAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserPaymentAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var USER_NORMALIZER = new core.InjectionToken('UserNormalizer');
-    var USER_SERIALIZER = new core.InjectionToken('UserSerializer');
-    var USER_SIGN_UP_SERIALIZER = new core.InjectionToken('UserSignUpSerializer');
-    var TITLE_NORMALIZER = new core.InjectionToken('TitleNormalizer');
+    var USER_NORMALIZER = new i0.InjectionToken('UserNormalizer');
+    var USER_SERIALIZER = new i0.InjectionToken('UserSerializer');
+    var USER_SIGN_UP_SERIALIZER = new i0.InjectionToken('UserSignUpSerializer');
+    var TITLE_NORMALIZER = new i0.InjectionToken('TitleNormalizer');
 
     var OccUserAdapter = /** @class */ (function () {
         function OccUserAdapter(http, occEndpoints, converter) {
@@ -7300,7 +7329,7 @@
         };
         OccUserAdapter.prototype.register = function (user) {
             var url = this.occEndpoints.getUrl('userRegister');
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -7311,11 +7340,11 @@
         };
         OccUserAdapter.prototype.registerGuest = function (guid, password) {
             var url = this.occEndpoints.getUrl('userRegister');
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            var httpParams = new http.HttpParams()
+            var httpParams = new i1.HttpParams()
                 .set('guid', guid)
                 .set('password', password);
             return this.http
@@ -7324,8 +7353,8 @@
         };
         OccUserAdapter.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
             var url = this.occEndpoints.getUrl('userForgotPassword');
-            var httpParams = new http.HttpParams().set('userId', userEmailAddress);
-            var headers = new http.HttpHeaders({
+            var httpParams = new i1.HttpParams().set('userId', userEmailAddress);
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -7333,7 +7362,7 @@
         };
         OccUserAdapter.prototype.resetPassword = function (token, newPassword) {
             var url = this.occEndpoints.getUrl('userResetPassword');
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -7341,20 +7370,20 @@
         };
         OccUserAdapter.prototype.updateEmail = function (userId, currentPassword, newUserId) {
             var url = this.occEndpoints.getUrl('userUpdateLoginId', { userId: userId });
-            var httpParams = new http.HttpParams()
+            var httpParams = new i1.HttpParams()
                 .set('password', currentPassword)
                 .set('newLogin', newUserId);
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http.put(url, httpParams, { headers: headers });
         };
         OccUserAdapter.prototype.updatePassword = function (userId, oldPassword, newPassword) {
             var url = this.occEndpoints.getUrl('userUpdatePassword', { userId: userId });
-            var httpParams = new http.HttpParams()
+            var httpParams = new i1.HttpParams()
                 .set('old', oldPassword)
                 .set('new', newPassword);
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http.put(url, httpParams, { headers: headers });
@@ -7367,16 +7396,16 @@
             var url = this.occEndpoints.getUrl('titles');
             return this.http.get(url).pipe(operators.map(function (titleList) { return titleList.titles; }), this.converter.pipeableMany(TITLE_NORMALIZER));
         };
-        OccUserAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccUserAdapter = __decorate([
-            core.Injectable()
-        ], OccUserAdapter);
         return OccUserAdapter;
     }());
+    OccUserAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var AnonymousConsentTemplatesAdapter = /** @class */ (function () {
         function AnonymousConsentTemplatesAdapter() {
@@ -7408,7 +7437,7 @@
         return CustomerCouponAdapter;
     }());
 
-    var PRODUCT_INTERESTS_NORMALIZER = new core.InjectionToken('ProductInterestsNormalizer');
+    var PRODUCT_INTERESTS_NORMALIZER = new i0.InjectionToken('ProductInterestsNormalizer');
 
     var UserInterestsAdapter = /** @class */ (function () {
         function UserInterestsAdapter() {
@@ -7440,7 +7469,7 @@
         return UserAdapter;
     }());
 
-    var CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new core.InjectionToken('CustomerCouponSearchResultNormalizer');
+    var CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new i0.InjectionToken('CustomerCouponSearchResultNormalizer');
 
     var OccCustomerCouponAdapter = /** @class */ (function () {
         function OccCustomerCouponAdapter(http, occEndpoints, converter) {
@@ -7454,7 +7483,7 @@
                 return rxjs.of({});
             }
             var url = this.occEndpoints.getUrl('customerCoupons', { userId: userId });
-            var params = new http.HttpParams().set('sort', sort ? sort : 'startDate:asc');
+            var params = new i1.HttpParams().set('sort', sort ? sort : 'startDate:asc');
             if (pageSize) {
                 params = params.set('pageSize', pageSize.toString());
             }
@@ -7491,20 +7520,20 @@
             return this.http.post(url, { headers: headers });
         };
         OccCustomerCouponAdapter.prototype.newHttpHeader = function () {
-            return new http.HttpHeaders({
+            return new i1.HttpHeaders({
                 'Content-Type': 'application/json',
             });
         };
-        OccCustomerCouponAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccCustomerCouponAdapter = __decorate([
-            core.Injectable()
-        ], OccCustomerCouponAdapter);
         return OccCustomerCouponAdapter;
     }());
+    OccCustomerCouponAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCustomerCouponAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var AnonymousConsentNormalizer = /** @class */ (function () {
         function AnonymousConsentNormalizer(anonymousConsentsService) {
@@ -7515,15 +7544,15 @@
             target = this.anonymousConsentsService.decodeAndDeserialize(source);
             return target;
         };
-        AnonymousConsentNormalizer.ctorParameters = function () { return [
-            { type: AnonymousConsentsService }
-        ]; };
-        AnonymousConsentNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(core.ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
-        AnonymousConsentNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], AnonymousConsentNormalizer);
         return AnonymousConsentNormalizer;
     }());
+    AnonymousConsentNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(i0.ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
+    AnonymousConsentNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    AnonymousConsentNormalizer.ctorParameters = function () { return [
+        { type: AnonymousConsentsService }
+    ]; };
 
     var OccReturnRequestNormalizer = /** @class */ (function () {
         function OccReturnRequestNormalizer(converter) {
@@ -7532,25 +7561,25 @@
         OccReturnRequestNormalizer.prototype.convert = function (source, target) {
             var _this = this;
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             if (source.returnEntries) {
-                target.returnEntries = source.returnEntries.map(function (entry) { return (__assign(__assign({}, entry), { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); });
+                target.returnEntries = source.returnEntries.map(function (entry) { return (Object.assign(Object.assign({}, entry), { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); });
             }
             return target;
         };
         OccReturnRequestNormalizer.prototype.convertOrderEntry = function (source) {
-            return __assign(__assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+            return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
         };
-        OccReturnRequestNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
-        ]; };
-        OccReturnRequestNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(core.ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
-        OccReturnRequestNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccReturnRequestNormalizer);
         return OccReturnRequestNormalizer;
     }());
+    OccReturnRequestNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
+    OccReturnRequestNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccReturnRequestNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
 
     var OccUserInterestsNormalizer = /** @class */ (function () {
         function OccUserInterestsNormalizer(converter) {
@@ -7559,22 +7588,22 @@
         OccUserInterestsNormalizer.prototype.convert = function (source, target) {
             var _this = this;
             if (target === undefined) {
-                target = __assign({}, source);
+                target = Object.assign({}, source);
             }
             if (source && source.results) {
-                target.results = source.results.map(function (result) { return (__assign(__assign({}, result), { product: _this.converter.convert(result.product, PRODUCT_NORMALIZER) })); });
+                target.results = source.results.map(function (result) { return (Object.assign(Object.assign({}, result), { product: _this.converter.convert(result.product, PRODUCT_NORMALIZER) })); });
             }
             return target;
         };
-        OccUserInterestsNormalizer.ctorParameters = function () { return [
-            { type: ConverterService }
-        ]; };
-        OccUserInterestsNormalizer.ɵprov = core.ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(core.ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
-        OccUserInterestsNormalizer = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccUserInterestsNormalizer);
         return OccUserInterestsNormalizer;
     }());
+    OccUserInterestsNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
+    OccUserInterestsNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccUserInterestsNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
 
     var defaultOccUserConfig = {
         backend: {
@@ -7624,7 +7653,7 @@
         }
         OccUserCostCenterAdapter.prototype.loadActiveList = function (userId) {
             // TODO(#8877): Use configurable endpoints
-            var params = new http.HttpParams().set('fields', 'DEFAULT,unit(BASIC,addresses(DEFAULT))');
+            var params = new i1.HttpParams().set('fields', 'DEFAULT,unit(BASIC,addresses(DEFAULT))');
             return this.http
                 .get(this.getCostCentersEndpoint(userId), { params: params })
                 .pipe(this.converter.pipeable(COST_CENTERS_NORMALIZER));
@@ -7632,18 +7661,18 @@
         OccUserCostCenterAdapter.prototype.getCostCentersEndpoint = function (userId, params) {
             return this.occEndpoints.getUrl('costCenters', { userId: userId }, params);
         };
-        OccUserCostCenterAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        OccUserCostCenterAdapter = __decorate([
-            core.Injectable()
-        ], OccUserCostCenterAdapter);
         return OccUserCostCenterAdapter;
     }());
+    OccUserCostCenterAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserCostCenterAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
-    var headers = new http.HttpHeaders({
+    var headers = new i1.HttpHeaders({
         'Content-Type': 'application/json',
     });
     var OccUserInterestsAdapter = /** @class */ (function () {
@@ -7654,7 +7683,7 @@
             this.converter = converter;
         }
         OccUserInterestsAdapter.prototype.getInterests = function (userId, pageSize, currentPage, sort, productCode, notificationType) {
-            var params = new http.HttpParams().set('sort', sort ? sort : 'name:asc');
+            var params = new i1.HttpParams().set('sort', sort ? sort : 'name:asc');
             if (pageSize) {
                 params = params.set('pageSize', pageSize.toString());
             }
@@ -7678,7 +7707,7 @@
             var _this = this;
             var r = [];
             item.productInterestEntry.forEach(function (entry) {
-                var params = new http.HttpParams()
+                var params = new i1.HttpParams()
                     .set('productCode', item.product.code)
                     .set('notificationType', entry.interestType);
                 r.push(_this.http
@@ -7690,7 +7719,7 @@
             return rxjs.forkJoin(r);
         };
         OccUserInterestsAdapter.prototype.addInterest = function (userId, productCode, notificationType) {
-            var params = new http.HttpParams()
+            var params = new i1.HttpParams()
                 .set('productCode', productCode)
                 .set('notificationType', notificationType.toString());
             return this.http
@@ -7700,20 +7729,20 @@
             })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
         };
-        OccUserInterestsAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: OccConfig },
-            { type: ConverterService }
-        ]; };
-        OccUserInterestsAdapter = __decorate([
-            core.Injectable()
-        ], OccUserInterestsAdapter);
         return OccUserInterestsAdapter;
     }());
+    OccUserInterestsAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserInterestsAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: OccConfig },
+        { type: ConverterService }
+    ]; };
 
-    var NOTIFICATION_PREFERENCE_SERIALIZER = new core.InjectionToken('NotificationPreferenceSerializer');
-    var NOTIFICATION_PREFERENCE_NORMALIZER = new core.InjectionToken('NotificationPreferenceNormalizer');
+    var NOTIFICATION_PREFERENCE_SERIALIZER = new i0.InjectionToken('NotificationPreferenceSerializer');
+    var NOTIFICATION_PREFERENCE_NORMALIZER = new i0.InjectionToken('NotificationPreferenceNormalizer');
 
     var UserNotificationPreferenceConnector = /** @class */ (function () {
         function UserNotificationPreferenceConnector(adapter) {
@@ -7725,19 +7754,19 @@
         UserNotificationPreferenceConnector.prototype.update = function (userId, preferences) {
             return this.adapter.update(userId, preferences);
         };
-        UserNotificationPreferenceConnector.ctorParameters = function () { return [
-            { type: UserNotificationPreferenceAdapter }
-        ]; };
-        UserNotificationPreferenceConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(core.ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
-        UserNotificationPreferenceConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserNotificationPreferenceConnector);
         return UserNotificationPreferenceConnector;
     }());
+    UserNotificationPreferenceConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(i0.ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
+    UserNotificationPreferenceConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserNotificationPreferenceConnector.ctorParameters = function () { return [
+        { type: UserNotificationPreferenceAdapter }
+    ]; };
 
-    var headers$1 = new http.HttpHeaders({
+    var headers$1 = new i1.HttpHeaders({
         'Content-Type': 'application/json',
     });
     var OccUserNotificationPreferenceAdapter = /** @class */ (function () {
@@ -7759,64 +7788,64 @@
                 .patch(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), { preferences: preferences }, { headers: headers$1 })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
         };
-        OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: ConverterService },
-            { type: OccEndpointsService }
-        ]; };
-        OccUserNotificationPreferenceAdapter = __decorate([
-            core.Injectable()
-        ], OccUserNotificationPreferenceAdapter);
         return OccUserNotificationPreferenceAdapter;
     }());
+    OccUserNotificationPreferenceAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: ConverterService },
+        { type: OccEndpointsService }
+    ]; };
 
     var UserOccModule = /** @class */ (function () {
         function UserOccModule() {
         }
-        UserOccModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule],
-                providers: [
-                    provideDefaultConfig(defaultOccUserConfig),
-                    { provide: UserAdapter, useClass: OccUserAdapter },
-                    { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
-                    { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
-                    {
-                        provide: AnonymousConsentTemplatesAdapter,
-                        useClass: OccAnonymousConsentTemplatesAdapter,
-                    },
-                    {
-                        provide: UserPaymentAdapter,
-                        useClass: OccUserPaymentAdapter,
-                    },
-                    { provide: UserOrderAdapter, useClass: OccUserOrderAdapter },
-                    { provide: CustomerCouponAdapter, useClass: OccCustomerCouponAdapter },
-                    {
-                        provide: UserNotificationPreferenceAdapter,
-                        useClass: OccUserNotificationPreferenceAdapter,
-                    },
-                    { provide: UserInterestsAdapter, useClass: OccUserInterestsAdapter },
-                    { provide: UserCostCenterAdapter, useClass: OccUserCostCenterAdapter },
-                    {
-                        provide: PRODUCT_INTERESTS_NORMALIZER,
-                        useExisting: OccUserInterestsNormalizer,
-                        multi: true,
-                    },
-                    {
-                        provide: ORDER_RETURN_REQUEST_NORMALIZER,
-                        useExisting: OccReturnRequestNormalizer,
-                        multi: true,
-                    },
-                    {
-                        provide: ANONYMOUS_CONSENT_NORMALIZER,
-                        useExisting: AnonymousConsentNormalizer,
-                        multi: true,
-                    },
-                ],
-            })
-        ], UserOccModule);
         return UserOccModule;
     }());
+    UserOccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    providers: [
+                        provideDefaultConfig(defaultOccUserConfig),
+                        { provide: UserAdapter, useClass: OccUserAdapter },
+                        { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
+                        { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
+                        {
+                            provide: AnonymousConsentTemplatesAdapter,
+                            useClass: OccAnonymousConsentTemplatesAdapter,
+                        },
+                        {
+                            provide: UserPaymentAdapter,
+                            useClass: OccUserPaymentAdapter,
+                        },
+                        { provide: UserOrderAdapter, useClass: OccUserOrderAdapter },
+                        { provide: CustomerCouponAdapter, useClass: OccCustomerCouponAdapter },
+                        {
+                            provide: UserNotificationPreferenceAdapter,
+                            useClass: OccUserNotificationPreferenceAdapter,
+                        },
+                        { provide: UserInterestsAdapter, useClass: OccUserInterestsAdapter },
+                        { provide: UserCostCenterAdapter, useClass: OccUserCostCenterAdapter },
+                        {
+                            provide: PRODUCT_INTERESTS_NORMALIZER,
+                            useExisting: OccUserInterestsNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ORDER_RETURN_REQUEST_NORMALIZER,
+                            useExisting: OccReturnRequestNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ANONYMOUS_CONSENT_NORMALIZER,
+                            useExisting: AnonymousConsentNormalizer,
+                            multi: true,
+                        },
+                    ],
+                },] }
+    ];
 
     var JavaRegExpConverter = /** @class */ (function () {
         function JavaRegExpConverter() {
@@ -7857,30 +7886,30 @@
                 return new RegExp(jsSyntax, modifiers);
             }
             catch (error) {
-                if (core.isDevMode()) {
+                if (i0.isDevMode()) {
                     console.warn("WARNING: Could not convert Java regexp into Javascript. Original regexp: " + javaSyntax + " \nMessage: " + error);
                 }
                 return null;
             }
         };
-        JavaRegExpConverter.ɵprov = core.ɵɵdefineInjectable({ factory: function JavaRegExpConverter_Factory() { return new JavaRegExpConverter(); }, token: JavaRegExpConverter, providedIn: "root" });
-        JavaRegExpConverter = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], JavaRegExpConverter);
         return JavaRegExpConverter;
     }());
+    JavaRegExpConverter.ɵprov = i0.ɵɵdefineInjectable({ factory: function JavaRegExpConverter_Factory() { return new JavaRegExpConverter(); }, token: JavaRegExpConverter, providedIn: "root" });
+    JavaRegExpConverter.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
 
-    var CONFIG_INITIALIZER = new core.InjectionToken('ConfigInitializer');
-    var CONFIG_INITIALIZER_FORROOT_GUARD = new core.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
+    var CONFIG_INITIALIZER = new i0.InjectionToken('ConfigInitializer');
+    var CONFIG_INITIALIZER_FORROOT_GUARD = new i0.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
 
     /**
      * The url of the server request when running SSR
      * */
-    var SERVER_REQUEST_URL = new core.InjectionToken('SERVER_REQUEST_URL');
+    var SERVER_REQUEST_URL = new i0.InjectionToken('SERVER_REQUEST_URL');
     /**
      * The url of the server request host when running SSR
      * */
-    var SERVER_REQUEST_ORIGIN = new core.InjectionToken('SERVER_REQUEST_ORIGIN');
+    var SERVER_REQUEST_ORIGIN = new i0.InjectionToken('SERVER_REQUEST_ORIGIN');
 
     var OccLoadedConfigConverter = /** @class */ (function () {
         function OccLoadedConfigConverter(javaRegExpConverter) {
@@ -7888,9 +7917,7 @@
         }
         OccLoadedConfigConverter.prototype.fromOccBaseSites = function (baseSites, currentUrl) {
             var _this = this;
-            var baseSite = baseSites.find(function (site) {
-                return _this.isCurrentBaseSite(site, currentUrl);
-            });
+            var baseSite = baseSites.find(function (site) { return _this.isCurrentBaseSite(site, currentUrl); });
             if (!baseSite) {
                 throw this.getError("Current url (" + currentUrl + ") doesn't match with any of url patterns of any base site.");
             }
@@ -7942,9 +7969,7 @@
          */
         OccLoadedConfigConverter.prototype.getUrlParams = function (params) {
             var STOREFRONT_PARAM = 'storefront';
-            return (params || []).map(function (param) {
-                return param === STOREFRONT_PARAM ? BASE_SITE_CONTEXT_ID : param;
-            });
+            return (params || []).map(function (param) { return param === STOREFRONT_PARAM ? BASE_SITE_CONTEXT_ID : param; });
         };
         /**
          * Returns iso codes in a array, where the first element is the default iso code.
@@ -7971,15 +7996,15 @@
         OccLoadedConfigConverter.prototype.getError = function (message) {
             return new Error("Error: Cannot get base site config! " + message);
         };
-        OccLoadedConfigConverter.ctorParameters = function () { return [
-            { type: JavaRegExpConverter }
-        ]; };
-        OccLoadedConfigConverter.ɵprov = core.ɵɵdefineInjectable({ factory: function OccLoadedConfigConverter_Factory() { return new OccLoadedConfigConverter(core.ɵɵinject(JavaRegExpConverter)); }, token: OccLoadedConfigConverter, providedIn: "root" });
-        OccLoadedConfigConverter = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccLoadedConfigConverter);
         return OccLoadedConfigConverter;
     }());
+    OccLoadedConfigConverter.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccLoadedConfigConverter_Factory() { return new OccLoadedConfigConverter(i0.ɵɵinject(JavaRegExpConverter)); }, token: OccLoadedConfigConverter, providedIn: "root" });
+    OccLoadedConfigConverter.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccLoadedConfigConverter.ctorParameters = function () { return [
+        { type: JavaRegExpConverter }
+    ]; };
 
     var OccSitesConfigLoader = /** @class */ (function () {
         function OccSitesConfigLoader(config, http) {
@@ -7991,14 +8016,14 @@
             get: function () {
                 return ((this.config.backend.occ.baseUrl || '') + this.config.backend.occ.prefix);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(OccSitesConfigLoader.prototype, "url", {
             get: function () {
                 return "" + this.baseEndpoint + this.endpoint;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         OccSitesConfigLoader.prototype.load = function () {
@@ -8012,18 +8037,18 @@
                 return baseSites;
             }));
         };
-        OccSitesConfigLoader.ctorParameters = function () { return [
-            { type: OccConfig },
-            { type: http.HttpClient }
-        ]; };
-        OccSitesConfigLoader.ɵprov = core.ɵɵdefineInjectable({ factory: function OccSitesConfigLoader_Factory() { return new OccSitesConfigLoader(core.ɵɵinject(OccConfig), core.ɵɵinject(http.HttpClient)); }, token: OccSitesConfigLoader, providedIn: "root" });
-        OccSitesConfigLoader = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], OccSitesConfigLoader);
         return OccSitesConfigLoader;
     }());
+    OccSitesConfigLoader.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccSitesConfigLoader_Factory() { return new OccSitesConfigLoader(i0.ɵɵinject(OccConfig), i0.ɵɵinject(i1.HttpClient)); }, token: OccSitesConfigLoader, providedIn: "root" });
+    OccSitesConfigLoader.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccSitesConfigLoader.ctorParameters = function () { return [
+        { type: OccConfig },
+        { type: i1.HttpClient }
+    ]; };
 
-    var EXTERNAL_CONFIG_TRANSFER_ID = platformBrowser.makeStateKey('cx-external-config');
+    var EXTERNAL_CONFIG_TRANSFER_ID = i5.makeStateKey('cx-external-config');
     var OccConfigLoaderService = /** @class */ (function () {
         function OccConfigLoaderService(platform, document, config, sitesConfigLoader, converter, transferState, serverRequestUrl) {
             this.platform = platform;
@@ -8036,17 +8061,17 @@
         }
         Object.defineProperty(OccConfigLoaderService.prototype, "currentUrl", {
             get: function () {
-                if (common.isPlatformBrowser(this.platform)) {
+                if (i1$2.isPlatformBrowser(this.platform)) {
                     return this.document.location.href;
                 }
                 if (this.serverRequestUrl) {
                     return this.serverRequestUrl;
                 }
-                if (core.isDevMode()) {
+                if (i0.isDevMode()) {
                     console.error("Please provide token 'SERVER_REQUEST_URL' with the requested URL for SSR");
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -8055,9 +8080,7 @@
         OccConfigLoaderService.prototype.loadConfig = function () {
             var _this = this;
             return this.get()
-                .pipe(operators.tap(function (externalConfig) { return _this.transfer(externalConfig); }), operators.map(function (externalConfig) {
-                return deepMerge.apply(void 0, __spread([{}], _this.getConfigChunks(externalConfig)));
-            }))
+                .pipe(operators.tap(function (externalConfig) { return _this.transfer(externalConfig); }), operators.map(function (externalConfig) { return deepMerge.apply(void 0, __spread([{}], _this.getConfigChunks(externalConfig))); }))
                 .toPromise();
         };
         /**
@@ -8076,15 +8099,13 @@
             var _this = this;
             return this.sitesConfigLoader
                 .load()
-                .pipe(operators.map(function (baseSites) {
-                return _this.converter.fromOccBaseSites(baseSites, _this.currentUrl);
-            }));
+                .pipe(operators.map(function (baseSites) { return _this.converter.fromOccBaseSites(baseSites, _this.currentUrl); }));
         };
         /**
          * Tries to rehydrate external config in the browser from SSR
          */
         OccConfigLoaderService.prototype.rehydrate = function () {
-            if (this.transferState && common.isPlatformBrowser(this.platform)) {
+            if (this.transferState && i1$2.isPlatformBrowser(this.platform)) {
                 return this.transferState.get(EXTERNAL_CONFIG_TRANSFER_ID, undefined);
             }
         };
@@ -8095,7 +8116,7 @@
          */
         OccConfigLoaderService.prototype.transfer = function (externalConfig) {
             if (this.transferState &&
-                common.isPlatformServer(this.platform) &&
+                i1$2.isPlatformServer(this.platform) &&
                 externalConfig) {
                 this.transferState.set(EXTERNAL_CONFIG_TRANSFER_ID, externalConfig);
             }
@@ -8111,32 +8132,26 @@
             var fallbackLangExists = typeof (this.config &&
                 this.config.i18n &&
                 this.config.i18n.fallbackLang) !== 'undefined';
-            if (fallbackLangExists && core.isDevMode()) {
+            if (fallbackLangExists && i0.isDevMode()) {
                 console.warn("There is an already provided static config for 'i18n.fallbackLang', so the value from OCC loaded config is ignored.");
             }
             return !fallbackLangExists;
         };
-        OccConfigLoaderService.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] },
-            { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] },
-            { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] },
-            { type: OccSitesConfigLoader },
-            { type: OccLoadedConfigConverter },
-            { type: platformBrowser.TransferState, decorators: [{ type: core.Optional }] },
-            { type: String, decorators: [{ type: core.Optional }, { type: core.Inject, args: [SERVER_REQUEST_URL,] }] }
-        ]; };
-        OccConfigLoaderService.ɵprov = core.ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(core.ɵɵinject(core.PLATFORM_ID), core.ɵɵinject(common.DOCUMENT), core.ɵɵinject(Config), core.ɵɵinject(OccSitesConfigLoader), core.ɵɵinject(OccLoadedConfigConverter), core.ɵɵinject(platformBrowser.TransferState, 8), core.ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
-        OccConfigLoaderService = __decorate([
-            core.Injectable({ providedIn: 'root' }),
-            __param(0, core.Inject(core.PLATFORM_ID)),
-            __param(1, core.Inject(common.DOCUMENT)),
-            __param(2, core.Inject(Config)),
-            __param(5, core.Optional()),
-            __param(6, core.Optional()),
-            __param(6, core.Inject(SERVER_REQUEST_URL))
-        ], OccConfigLoaderService);
         return OccConfigLoaderService;
     }());
+    OccConfigLoaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(i0.ɵɵinject(i0.PLATFORM_ID), i0.ɵɵinject(i1$2.DOCUMENT), i0.ɵɵinject(Config), i0.ɵɵinject(OccSitesConfigLoader), i0.ɵɵinject(OccLoadedConfigConverter), i0.ɵɵinject(i5.TransferState, 8), i0.ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
+    OccConfigLoaderService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccConfigLoaderService.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [Config,] }] },
+        { type: OccSitesConfigLoader },
+        { type: OccLoadedConfigConverter },
+        { type: i5.TransferState, decorators: [{ type: i0.Optional }] },
+        { type: String, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [SERVER_REQUEST_URL,] }] }
+    ]; };
 
     /**
      * Initializes the Spartacus config asynchronously basing on the external config
@@ -8159,10 +8174,9 @@
     var OccConfigLoaderModule = /** @class */ (function () {
         function OccConfigLoaderModule() {
         }
-        OccConfigLoaderModule_1 = OccConfigLoaderModule;
         OccConfigLoaderModule.forRoot = function () {
             return {
-                ngModule: OccConfigLoaderModule_1,
+                ngModule: OccConfigLoaderModule,
                 providers: [
                     {
                         provide: CONFIG_INITIALIZER,
@@ -8173,12 +8187,11 @@
                 ],
             };
         };
-        var OccConfigLoaderModule_1;
-        OccConfigLoaderModule = OccConfigLoaderModule_1 = __decorate([
-            core.NgModule()
-        ], OccConfigLoaderModule);
         return OccConfigLoaderModule;
     }());
+    OccConfigLoaderModule.decorators = [
+        { type: i0.NgModule }
+    ];
 
     var OCC_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
     var OCC_BASE_URL_META_TAG_PLACEHOLDER = 'OCC_BACKEND_BASE_URL_VALUE';
@@ -8202,8 +8215,8 @@
     }
     function provideConfigFromMetaTags() {
         return [
-            provideConfigFactory(occServerConfigFromMetaTagFactory, [platformBrowser.Meta]),
-            provideConfigFactory(mediaServerConfigFromMetaTagFactory, [platformBrowser.Meta]),
+            provideConfigFactory(occServerConfigFromMetaTagFactory, [i5.Meta]),
+            provideConfigFactory(mediaServerConfigFromMetaTagFactory, [i5.Meta]),
         ];
     }
 
@@ -8255,19 +8268,18 @@
             get: function () {
                 return this.config.backend.occ;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
-        WithCredentialsInterceptor.ctorParameters = function () { return [
-            { type: OccConfig }
-        ]; };
-        WithCredentialsInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function WithCredentialsInterceptor_Factory() { return new WithCredentialsInterceptor(core.ɵɵinject(OccConfig)); }, token: WithCredentialsInterceptor, providedIn: "root" });
-        WithCredentialsInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], WithCredentialsInterceptor);
         return WithCredentialsInterceptor;
     }());
-
+    WithCredentialsInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function WithCredentialsInterceptor_Factory() { return new WithCredentialsInterceptor(i0.ɵɵinject(OccConfig)); }, token: WithCredentialsInterceptor, providedIn: "root" });
+    WithCredentialsInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    WithCredentialsInterceptor.ctorParameters = function () { return [
+        { type: OccConfig }
+    ]; };
 
     (function (Occ) {
         /**
@@ -9361,7 +9373,7 @@
         })(Period = Occ.Period || (Occ.Period = {}));
     })(exports.Occ || (exports.Occ = {}));
 
-    var ConfigValidatorToken = new core.InjectionToken('ConfigurationValidator');
+    var ConfigValidatorToken = new i0.InjectionToken('ConfigurationValidator');
     /**
      * Use to probide config validation at app bootstrap (when all config chunks are merged)
      *
@@ -9397,13 +9409,12 @@
     var OccModule = /** @class */ (function () {
         function OccModule() {
         }
-        OccModule_1 = OccModule;
         OccModule.forRoot = function () {
             return {
-                ngModule: OccModule_1,
+                ngModule: OccModule,
                 providers: [
                     {
-                        provide: http.HTTP_INTERCEPTORS,
+                        provide: i1.HTTP_INTERCEPTORS,
                         useExisting: WithCredentialsInterceptor,
                         multi: true,
                     },
@@ -9412,25 +9423,24 @@
                 ],
             };
         };
-        var OccModule_1;
-        OccModule = OccModule_1 = __decorate([
-            core.NgModule({
-                imports: [
-                    AsmOccModule,
-                    CmsOccModule,
-                    CartOccModule,
-                    CheckoutOccModule,
-                    ProductOccModule,
-                    SiteContextOccModule,
-                    StoreFinderOccModule,
-                    UserOccModule,
-                    OccConfigLoaderModule.forRoot(),
-                    CostCenterOccModule,
-                ],
-            })
-        ], OccModule);
         return OccModule;
     }());
+    OccModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        AsmOccModule,
+                        CmsOccModule,
+                        CartOccModule,
+                        CheckoutOccModule,
+                        ProductOccModule,
+                        SiteContextOccModule,
+                        StoreFinderOccModule,
+                        UserOccModule,
+                        OccConfigLoaderModule.forRoot(),
+                        CostCenterOccModule,
+                    ],
+                },] }
+    ];
 
     var LoadingScopesService = /** @class */ (function () {
         function LoadingScopesService(config) {
@@ -9497,32 +9507,32 @@
                 this.config.backend.loadingScopes[model];
             return (scopesConfig[scope] && scopesConfig[scope].maxAge) * 1000 || 0;
         };
-        LoadingScopesService.ctorParameters = function () { return [
-            { type: OccConfig }
-        ]; };
-        LoadingScopesService.ɵprov = core.ɵɵdefineInjectable({ factory: function LoadingScopesService_Factory() { return new LoadingScopesService(core.ɵɵinject(OccConfig)); }, token: LoadingScopesService, providedIn: "root" });
-        LoadingScopesService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], LoadingScopesService);
         return LoadingScopesService;
     }());
+    LoadingScopesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function LoadingScopesService_Factory() { return new LoadingScopesService(i0.ɵɵinject(OccConfig)); }, token: LoadingScopesService, providedIn: "root" });
+    LoadingScopesService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    LoadingScopesService.ctorParameters = function () { return [
+        { type: OccConfig }
+    ]; };
 
     var AnonymousConsentsConfig = /** @class */ (function (_super) {
         __extends(AnonymousConsentsConfig, _super);
         function AnonymousConsentsConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        AnonymousConsentsConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentsConfig_Factory() { return core.ɵɵinject(Config); }, token: AnonymousConsentsConfig, providedIn: "root" });
-        AnonymousConsentsConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], AnonymousConsentsConfig);
         return AnonymousConsentsConfig;
     }(OccConfig));
+    AnonymousConsentsConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentsConfig_Factory() { return i0.ɵɵinject(Config); }, token: AnonymousConsentsConfig, providedIn: "root" });
+    AnonymousConsentsConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var AnonymousConsentsInterceptor = /** @class */ (function () {
         function AnonymousConsentsInterceptor(anonymousConsentsService, authService, occEndpoints, config) {
@@ -9540,7 +9550,7 @@
                 }
                 var clonedRequest = _this.handleRequest(consents, request);
                 return next.handle(clonedRequest).pipe(operators.tap(function (event) {
-                    if (event instanceof http.HttpResponse &&
+                    if (event instanceof i1.HttpResponse &&
                         event.url.startsWith(_this.occEndpoints.getUrl('anonymousConsentTemplates'))) {
                         _this.handleResponse(isUserLoggedIn, event.headers.get(ANONYMOUS_CONSENTS_HEADER), consents);
                     }
@@ -9595,22 +9605,22 @@
             }
             return givenConsents;
         };
-        AnonymousConsentsInterceptor.ctorParameters = function () { return [
-            { type: AnonymousConsentsService },
-            { type: AuthService },
-            { type: OccEndpointsService },
-            { type: AnonymousConsentsConfig }
-        ]; };
-        AnonymousConsentsInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentsInterceptor_Factory() { return new AnonymousConsentsInterceptor(core.ɵɵinject(AnonymousConsentsService), core.ɵɵinject(AuthService), core.ɵɵinject(OccEndpointsService), core.ɵɵinject(AnonymousConsentsConfig)); }, token: AnonymousConsentsInterceptor, providedIn: "root" });
-        AnonymousConsentsInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], AnonymousConsentsInterceptor);
         return AnonymousConsentsInterceptor;
     }());
+    AnonymousConsentsInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentsInterceptor_Factory() { return new AnonymousConsentsInterceptor(i0.ɵɵinject(AnonymousConsentsService), i0.ɵɵinject(AuthService), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(AnonymousConsentsConfig)); }, token: AnonymousConsentsInterceptor, providedIn: "root" });
+    AnonymousConsentsInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    AnonymousConsentsInterceptor.ctorParameters = function () { return [
+        { type: AnonymousConsentsService },
+        { type: AuthService },
+        { type: OccEndpointsService },
+        { type: AnonymousConsentsConfig }
+    ]; };
 
     var interceptors$1 = [
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: AnonymousConsentsInterceptor,
             multi: true,
         },
@@ -9652,10 +9662,8 @@
         StateEventService.prototype.getFromAction = function (mapping) {
             var _this = this;
             return this.actionsSubject
-                .pipe(effects$c.ofType.apply(void 0, __spread([].concat(mapping.action))))
-                .pipe(operators.map(function (action) {
-                return _this.createEvent(action, mapping.event, mapping.factory);
-            }));
+                .pipe(i3.ofType.apply(void 0, __spread([].concat(mapping.action))))
+                .pipe(operators.map(function (action) { return _this.createEvent(action, mapping.event, mapping.factory); }));
         };
         /**
          * Creates an event instance for given class out from the action object.
@@ -9674,18 +9682,18 @@
                 ? factory(action)
                 : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
         };
-        StateEventService.ctorParameters = function () { return [
-            { type: store.ActionsSubject },
-            { type: EventService }
-        ]; };
-        StateEventService.ɵprov = core.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(core.ɵɵinject(store.ActionsSubject), core.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
-        StateEventService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], StateEventService);
         return StateEventService;
     }());
+    StateEventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(i0.ɵɵinject(i1$1.ActionsSubject), i0.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
+    StateEventService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    StateEventService.ctorParameters = function () { return [
+        { type: i1$1.ActionsSubject },
+        { type: EventService }
+    ]; };
 
     var StatePersistenceService = /** @class */ (function () {
         function StatePersistenceService(winRef) {
@@ -9731,43 +9739,35 @@
         StatePersistenceService.prototype.generateKeyWithContext = function (context, key) {
             return "spartacus\u26BF" + [].concat(context).join('⚿') + "\u26BF" + key;
         };
-        StatePersistenceService.ctorParameters = function () { return [
-            { type: WindowRef }
-        ]; };
-        StatePersistenceService.ɵprov = core.ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(core.ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
-        StatePersistenceService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], StatePersistenceService);
         return StatePersistenceService;
     }());
+    StatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(i0.ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
+    StatePersistenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    StatePersistenceService.ctorParameters = function () { return [
+        { type: WindowRef }
+    ]; };
 
     var PROCESS_FEATURE = 'process';
 
     function getProcessState() {
-        return store.createFeatureSelector(PROCESS_FEATURE);
+        return i1$1.createFeatureSelector(PROCESS_FEATURE);
     }
 
     function getProcessStateFactory(processId) {
-        return store.createSelector(getProcessState(), function (entityState) {
-            return entityLoaderStateSelector(entityState, processId);
-        });
+        return i1$1.createSelector(getProcessState(), function (entityState) { return entityLoaderStateSelector(entityState, processId); });
     }
     function getProcessLoadingFactory(processId) {
-        return store.createSelector(getProcessStateFactory(processId), function (loaderState) {
-            return loaderLoadingSelector(loaderState);
-        });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
     }
     function getProcessSuccessFactory(processId) {
-        return store.createSelector(getProcessStateFactory(processId), function (loaderState) {
-            return loaderSuccessSelector(loaderState);
-        });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
     }
     function getProcessErrorFactory(processId) {
-        return store.createSelector(getProcessStateFactory(processId), function (loaderState) {
-            return loaderErrorSelector(loaderState);
-        });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
     }
 
     var process_selectors = /*#__PURE__*/Object.freeze({
@@ -11651,205 +11651,147 @@
         LoadActiveCostCentersSuccess: LoadActiveCostCentersSuccess
     });
 
-    var getUserState = store.createFeatureSelector(USER_FEATURE);
+    var getUserState = i1$1.createFeatureSelector(USER_FEATURE);
 
     var ɵ0$b = function (state) { return state.billingCountries; };
-    var getBillingCountriesState = store.createSelector(getUserState, ɵ0$b);
+    var getBillingCountriesState = i1$1.createSelector(getUserState, ɵ0$b);
     var ɵ1$7 = function (state) { return state.entities; };
-    var getBillingCountriesEntites = store.createSelector(getBillingCountriesState, ɵ1$7);
-    var ɵ2$3 = function (entites) {
-        return Object.keys(entites).map(function (isocode) { return entites[isocode]; });
-    };
-    var getAllBillingCountries = store.createSelector(getBillingCountriesEntites, ɵ2$3);
+    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, ɵ1$7);
+    var ɵ2$3 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, ɵ2$3);
 
     var ɵ0$c = function (state) { return state.consignmentTracking; };
-    var getConsignmentTrackingState = store.createSelector(getUserState, ɵ0$c);
+    var getConsignmentTrackingState = i1$1.createSelector(getUserState, ɵ0$c);
     var ɵ1$8 = function (state) { return state.tracking; };
-    var getConsignmentTracking = store.createSelector(getConsignmentTrackingState, ɵ1$8);
+    var getConsignmentTracking = i1$1.createSelector(getConsignmentTrackingState, ɵ1$8);
 
     var ɵ0$d = function (state) { return state.countries; };
-    var getDeliveryCountriesState = store.createSelector(getUserState, ɵ0$d);
+    var getDeliveryCountriesState = i1$1.createSelector(getUserState, ɵ0$d);
     var ɵ1$9 = function (state) { return state.entities; };
-    var getDeliveryCountriesEntites = store.createSelector(getDeliveryCountriesState, ɵ1$9);
-    var ɵ2$4 = function (entites) {
-        return Object.keys(entites).map(function (isocode) { return entites[isocode]; });
-    };
-    var getAllDeliveryCountries = store.createSelector(getDeliveryCountriesEntites, ɵ2$4);
-    var countrySelectorFactory = function (isocode) {
-        return store.createSelector(getDeliveryCountriesEntites, function (entities) {
-            return Object.keys(entities).length !== 0 ? entities[isocode] : null;
-        });
-    };
+    var getDeliveryCountriesEntites = i1$1.createSelector(getDeliveryCountriesState, ɵ1$9);
+    var ɵ2$4 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+    var getAllDeliveryCountries = i1$1.createSelector(getDeliveryCountriesEntites, ɵ2$4);
+    var countrySelectorFactory = function (isocode) { return i1$1.createSelector(getDeliveryCountriesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[isocode] : null; }); };
 
     var ɵ0$e = function (state) { return state.order; };
-    var getOrderState = store.createSelector(getUserState, ɵ0$e);
-    var ɵ1$a = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getOrderDetails = store.createSelector(getOrderState, ɵ1$a);
+    var getOrderState = i1$1.createSelector(getUserState, ɵ0$e);
+    var ɵ1$a = function (state) { return loaderValueSelector(state); };
+    var getOrderDetails = i1$1.createSelector(getOrderState, ɵ1$a);
 
     var ɵ0$f = function (state) { return state.orderReturn; };
-    var getOrderReturnRequestState = store.createSelector(getUserState, ɵ0$f);
+    var getOrderReturnRequestState = i1$1.createSelector(getUserState, ɵ0$f);
     var ɵ1$b = function (state) { return loaderValueSelector(state); };
-    var getOrderReturnRequest = store.createSelector(getOrderReturnRequestState, ɵ1$b);
+    var getOrderReturnRequest = i1$1.createSelector(getOrderReturnRequestState, ɵ1$b);
     var ɵ2$5 = function (state) { return loaderLoadingSelector(state); };
-    var getOrderReturnRequestLoading = store.createSelector(getOrderReturnRequestState, ɵ2$5);
-    var ɵ3$3 = function (state) {
-        return loaderSuccessSelector(state) &&
-            !loaderLoadingSelector(state);
-    };
-    var getOrderReturnRequestSuccess = store.createSelector(getOrderReturnRequestState, ɵ3$3);
+    var getOrderReturnRequestLoading = i1$1.createSelector(getOrderReturnRequestState, ɵ2$5);
+    var ɵ3$3 = function (state) { return loaderSuccessSelector(state) &&
+        !loaderLoadingSelector(state); };
+    var getOrderReturnRequestSuccess = i1$1.createSelector(getOrderReturnRequestState, ɵ3$3);
     var ɵ4$1 = function (state) { return state.orderReturnList; };
-    var getOrderReturnRequestListState = store.createSelector(getUserState, ɵ4$1);
-    var ɵ5 = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getOrderReturnRequestList = store.createSelector(getOrderReturnRequestListState, ɵ5);
+    var getOrderReturnRequestListState = i1$1.createSelector(getUserState, ɵ4$1);
+    var ɵ5 = function (state) { return loaderValueSelector(state); };
+    var getOrderReturnRequestList = i1$1.createSelector(getOrderReturnRequestListState, ɵ5);
 
     var ɵ0$g = function (state) { return state.payments; };
-    var getPaymentMethodsState = store.createSelector(getUserState, ɵ0$g);
-    var ɵ1$c = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getPaymentMethods = store.createSelector(getPaymentMethodsState, ɵ1$c);
-    var ɵ2$6 = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getPaymentMethodsLoading = store.createSelector(getPaymentMethodsState, ɵ2$6);
-    var ɵ3$4 = function (state) {
-        return loaderSuccessSelector(state) &&
-            !loaderLoadingSelector(state);
-    };
-    var getPaymentMethodsLoadedSuccess = store.createSelector(getPaymentMethodsState, ɵ3$4);
+    var getPaymentMethodsState = i1$1.createSelector(getUserState, ɵ0$g);
+    var ɵ1$c = function (state) { return loaderValueSelector(state); };
+    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, ɵ1$c);
+    var ɵ2$6 = function (state) { return loaderLoadingSelector(state); };
+    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, ɵ2$6);
+    var ɵ3$4 = function (state) { return loaderSuccessSelector(state) &&
+        !loaderLoadingSelector(state); };
+    var getPaymentMethodsLoadedSuccess = i1$1.createSelector(getPaymentMethodsState, ɵ3$4);
 
     var ɵ0$h = function (state) { return state.regions; };
-    var getRegionsLoaderState = store.createSelector(getUserState, ɵ0$h);
+    var getRegionsLoaderState = i1$1.createSelector(getUserState, ɵ0$h);
     var ɵ1$d = function (state) {
         return loaderValueSelector(state).entities;
     };
-    var getAllRegions = store.createSelector(getRegionsLoaderState, ɵ1$d);
+    var getAllRegions = i1$1.createSelector(getRegionsLoaderState, ɵ1$d);
     var ɵ2$7 = function (state) { return ({
         loaded: loaderSuccessSelector(state),
         loading: loaderLoadingSelector(state),
         regions: loaderValueSelector(state).entities,
         country: loaderValueSelector(state).country,
     }); };
-    var getRegionsDataAndLoading = store.createSelector(getRegionsLoaderState, ɵ2$7);
-    var ɵ3$5 = function (state) {
-        return loaderValueSelector(state).country;
-    };
-    var getRegionsCountry = store.createSelector(getRegionsLoaderState, ɵ3$5);
-    var ɵ4$2 = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getRegionsLoading = store.createSelector(getRegionsLoaderState, ɵ4$2);
-    var ɵ5$1 = function (state) {
-        return loaderSuccessSelector(state);
-    };
-    var getRegionsLoaded = store.createSelector(getRegionsLoaderState, ɵ5$1);
+    var getRegionsDataAndLoading = i1$1.createSelector(getRegionsLoaderState, ɵ2$7);
+    var ɵ3$5 = function (state) { return loaderValueSelector(state).country; };
+    var getRegionsCountry = i1$1.createSelector(getRegionsLoaderState, ɵ3$5);
+    var ɵ4$2 = function (state) { return loaderLoadingSelector(state); };
+    var getRegionsLoading = i1$1.createSelector(getRegionsLoaderState, ɵ4$2);
+    var ɵ5$1 = function (state) { return loaderSuccessSelector(state); };
+    var getRegionsLoaded = i1$1.createSelector(getRegionsLoaderState, ɵ5$1);
 
     var ɵ0$i = function (state) { return state.resetPassword; };
-    var getResetPassword = store.createSelector(getUserState, ɵ0$i);
+    var getResetPassword = i1$1.createSelector(getUserState, ɵ0$i);
 
     var ɵ0$j = function (state) { return state.titles; };
-    var getTitlesState = store.createSelector(getUserState, ɵ0$j);
+    var getTitlesState = i1$1.createSelector(getUserState, ɵ0$j);
     var ɵ1$e = function (state) { return state.entities; };
-    var getTitlesEntites = store.createSelector(getTitlesState, ɵ1$e);
-    var ɵ2$8 = function (entites) {
-        return Object.keys(entites).map(function (code) { return entites[code]; });
-    };
-    var getAllTitles = store.createSelector(getTitlesEntites, ɵ2$8);
-    var titleSelectorFactory = function (code) {
-        return store.createSelector(getTitlesEntites, function (entities) {
-            return Object.keys(entities).length !== 0 ? entities[code] : null;
-        });
-    };
+    var getTitlesEntites = i1$1.createSelector(getTitlesState, ɵ1$e);
+    var ɵ2$8 = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
+    var getAllTitles = i1$1.createSelector(getTitlesEntites, ɵ2$8);
+    var titleSelectorFactory = function (code) { return i1$1.createSelector(getTitlesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[code] : null; }); };
 
     var ɵ0$k = function (state) { return state.addresses; };
-    var getAddressesLoaderState = store.createSelector(getUserState, ɵ0$k);
-    var ɵ1$f = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getAddresses = store.createSelector(getAddressesLoaderState, ɵ1$f);
-    var ɵ2$9 = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getAddressesLoading = store.createSelector(getAddressesLoaderState, ɵ2$9);
-    var ɵ3$6 = function (state) {
-        return loaderSuccessSelector(state) &&
-            !loaderLoadingSelector(state);
-    };
-    var getAddressesLoadedSuccess = store.createSelector(getAddressesLoaderState, ɵ3$6);
+    var getAddressesLoaderState = i1$1.createSelector(getUserState, ɵ0$k);
+    var ɵ1$f = function (state) { return loaderValueSelector(state); };
+    var getAddresses = i1$1.createSelector(getAddressesLoaderState, ɵ1$f);
+    var ɵ2$9 = function (state) { return loaderLoadingSelector(state); };
+    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, ɵ2$9);
+    var ɵ3$6 = function (state) { return loaderSuccessSelector(state) &&
+        !loaderLoadingSelector(state); };
+    var getAddressesLoadedSuccess = i1$1.createSelector(getAddressesLoaderState, ɵ3$6);
 
     var ɵ0$l = function (state) { return state.consents; };
-    var getConsentsState = store.createSelector(getUserState, ɵ0$l);
-    var getConsentsValue = store.createSelector(getConsentsState, loaderValueSelector);
-    var getConsentByTemplateId = function (templateId) {
-        return store.createSelector(getConsentsValue, function (templates) {
-            return templates.find(function (template) { return template.id === templateId; });
-        });
-    };
-    var getConsentsLoading = store.createSelector(getConsentsState, loaderLoadingSelector);
-    var getConsentsSuccess = store.createSelector(getConsentsState, loaderSuccessSelector);
-    var getConsentsError = store.createSelector(getConsentsState, loaderErrorSelector);
+    var getConsentsState = i1$1.createSelector(getUserState, ɵ0$l);
+    var getConsentsValue = i1$1.createSelector(getConsentsState, loaderValueSelector);
+    var getConsentByTemplateId = function (templateId) { return i1$1.createSelector(getConsentsValue, function (templates) { return templates.find(function (template) { return template.id === templateId; }); }); };
+    var getConsentsLoading = i1$1.createSelector(getConsentsState, loaderLoadingSelector);
+    var getConsentsSuccess = i1$1.createSelector(getConsentsState, loaderSuccessSelector);
+    var getConsentsError = i1$1.createSelector(getConsentsState, loaderErrorSelector);
 
     var ɵ0$m = function (state) { return state.account; };
-    var getDetailsState = store.createSelector(getUserState, ɵ0$m);
+    var getDetailsState = i1$1.createSelector(getUserState, ɵ0$m);
     var ɵ1$g = function (state) { return state.details; };
-    var getDetails = store.createSelector(getDetailsState, ɵ1$g);
+    var getDetails = i1$1.createSelector(getDetailsState, ɵ1$g);
 
     var ɵ0$n = function (state) { return state.orders; };
-    var getOrdersState = store.createSelector(getUserState, ɵ0$n);
-    var ɵ1$h = function (state) {
-        return loaderSuccessSelector(state);
-    };
-    var getOrdersLoaded = store.createSelector(getOrdersState, ɵ1$h);
-    var ɵ2$a = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getOrders = store.createSelector(getOrdersState, ɵ2$a);
+    var getOrdersState = i1$1.createSelector(getUserState, ɵ0$n);
+    var ɵ1$h = function (state) { return loaderSuccessSelector(state); };
+    var getOrdersLoaded = i1$1.createSelector(getOrdersState, ɵ1$h);
+    var ɵ2$a = function (state) { return loaderValueSelector(state); };
+    var getOrders = i1$1.createSelector(getOrdersState, ɵ2$a);
 
     var ɵ0$o = function (state) { return state.customerCoupons; };
-    var getCustomerCouponsState = store.createSelector(getUserState, ɵ0$o);
-    var ɵ1$i = function (state) {
-        return loaderSuccessSelector(state);
-    };
-    var getCustomerCouponsLoaded = store.createSelector(getCustomerCouponsState, ɵ1$i);
-    var ɵ2$b = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getCustomerCouponsLoading = store.createSelector(getCustomerCouponsState, ɵ2$b);
+    var getCustomerCouponsState = i1$1.createSelector(getUserState, ɵ0$o);
+    var ɵ1$i = function (state) { return loaderSuccessSelector(state); };
+    var getCustomerCouponsLoaded = i1$1.createSelector(getCustomerCouponsState, ɵ1$i);
+    var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerCouponsLoading = i1$1.createSelector(getCustomerCouponsState, ɵ2$b);
     var ɵ3$7 = function (state) { return loaderValueSelector(state); };
-    var getCustomerCoupons = store.createSelector(getCustomerCouponsState, ɵ3$7);
+    var getCustomerCoupons = i1$1.createSelector(getCustomerCouponsState, ɵ3$7);
 
     var ɵ0$p = function (state) { return state.notificationPreferences; };
-    var getPreferencesLoaderState = store.createSelector(getUserState, ɵ0$p);
+    var getPreferencesLoaderState = i1$1.createSelector(getUserState, ɵ0$p);
     var ɵ1$j = function (state) { return loaderValueSelector(state); };
-    var getPreferences = store.createSelector(getPreferencesLoaderState, ɵ1$j);
-    var ɵ2$c = function (state) {
-        return loaderValueSelector(state).filter(function (p) { return p.enabled; });
-    };
-    var getEnabledPreferences = store.createSelector(getPreferencesLoaderState, ɵ2$c);
+    var getPreferences = i1$1.createSelector(getPreferencesLoaderState, ɵ1$j);
+    var ɵ2$c = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
+    var getEnabledPreferences = i1$1.createSelector(getPreferencesLoaderState, ɵ2$c);
     var ɵ3$8 = function (state) { return loaderLoadingSelector(state); };
-    var getPreferencesLoading = store.createSelector(getPreferencesLoaderState, ɵ3$8);
+    var getPreferencesLoading = i1$1.createSelector(getPreferencesLoaderState, ɵ3$8);
 
     var ɵ0$q = function (state) { return state.productInterests; };
-    var getInterestsState = store.createSelector(getUserState, ɵ0$q);
-    var ɵ1$k = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getInterests = store.createSelector(getInterestsState, ɵ1$k);
-    var ɵ2$d = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getInterestsLoading = store.createSelector(getInterestsState, ɵ2$d);
+    var getInterestsState = i1$1.createSelector(getUserState, ɵ0$q);
+    var ɵ1$k = function (state) { return loaderValueSelector(state); };
+    var getInterests = i1$1.createSelector(getInterestsState, ɵ1$k);
+    var ɵ2$d = function (state) { return loaderLoadingSelector(state); };
+    var getInterestsLoading = i1$1.createSelector(getInterestsState, ɵ2$d);
 
     var ɵ0$r = function (state) { return state.costCenters; };
-    var getCostCentersState = store.createSelector(getUserState, ɵ0$r);
-    var ɵ1$l = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getCostCenters = store.createSelector(getCostCentersState, ɵ1$l);
+    var getCostCentersState = i1$1.createSelector(getUserState, ɵ0$r);
+    var ɵ1$l = function (state) { return loaderValueSelector(state); };
+    var getCostCenters = i1$1.createSelector(getCostCentersState, ɵ1$l);
 
     var usersGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -11943,7 +11885,7 @@
         UserConsentService.prototype.getConsents = function (loadIfMissing) {
             var _this = this;
             if (loadIfMissing === void 0) { loadIfMissing = false; }
-            return rxjs.iif(function () { return loadIfMissing; }, this.store.pipe(store.select(getConsentsValue), operators.withLatestFrom(this.getConsentsResultLoading(), this.getConsentsResultSuccess()), operators.filter(function (_a) {
+            return rxjs.iif(function () { return loadIfMissing; }, this.store.pipe(i1$1.select(getConsentsValue), operators.withLatestFrom(this.getConsentsResultLoading(), this.getConsentsResultSuccess()), operators.filter(function (_a) {
                 var _b = __read(_a, 3), _templates = _b[0], loading = _b[1], _success = _b[2];
                 return !loading;
             }), operators.tap(function (_a) {
@@ -11960,25 +11902,25 @@
             }), operators.map(function (_a) {
                 var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
                 return templates;
-            })), this.store.pipe(store.select(getConsentsValue)));
+            })), this.store.pipe(i1$1.select(getConsentsValue)));
         };
         /**
          * Returns the consents loading flag
          */
         UserConsentService.prototype.getConsentsResultLoading = function () {
-            return this.store.pipe(store.select(getConsentsLoading));
+            return this.store.pipe(i1$1.select(getConsentsLoading));
         };
         /**
          * Returns the consents success flag
          */
         UserConsentService.prototype.getConsentsResultSuccess = function () {
-            return this.store.pipe(store.select(getConsentsSuccess));
+            return this.store.pipe(i1$1.select(getConsentsSuccess));
         };
         /**
          * Returns the consents error flag
          */
         UserConsentService.prototype.getConsentsResultError = function () {
-            return this.store.pipe(store.select(getConsentsError));
+            return this.store.pipe(i1$1.select(getConsentsError));
         };
         /**
          * Resets the processing state for consent retrieval
@@ -11995,9 +11937,7 @@
          */
         UserConsentService.prototype.getConsent = function (templateId) {
             var _this = this;
-            return this.authService.isUserLoggedIn().pipe(operators.filter(Boolean), operators.tap(function () { return _this.getConsents(true); }), operators.switchMap(function () {
-                return _this.store.pipe(store.select(getConsentByTemplateId(templateId)));
-            }), operators.filter(function (template) { return Boolean(template); }), operators.map(function (template) { return template.currentConsent; }));
+            return this.authService.isUserLoggedIn().pipe(operators.filter(Boolean), operators.tap(function () { return _this.getConsents(true); }), operators.switchMap(function () { return _this.store.pipe(i1$1.select(getConsentByTemplateId(templateId))); }), operators.filter(function (template) { return Boolean(template); }), operators.map(function (template) { return template.currentConsent; }));
         };
         /**
          * Returns `true` if the consent is truthy and if `consentWithdrawnDate` doesn't exist.
@@ -12041,19 +11981,19 @@
          * Returns the give consent process loading flag
          */
         UserConsentService.prototype.getGiveConsentResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
         };
         /**
          * Returns the give consent process success flag
          */
         UserConsentService.prototype.getGiveConsentResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
         };
         /**
          * Returns the give consent process error flag
          */
         UserConsentService.prototype.getGiveConsentResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
         };
         /**
          * Resents the give consent process flags
@@ -12078,19 +12018,19 @@
          * Returns the withdraw consent process loading flag
          */
         UserConsentService.prototype.getWithdrawConsentResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
         };
         /**
          * Returns the withdraw consent process success flag
          */
         UserConsentService.prototype.getWithdrawConsentResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
         };
         /**
          * Returns the withdraw consent process error flag
          */
         UserConsentService.prototype.getWithdrawConsentResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
         };
         /**
          * Resets the process flags for withdraw consent
@@ -12130,18 +12070,18 @@
             }
             return updatedTemplateList;
         };
-        UserConsentService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserConsentService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
-        UserConsentService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserConsentService);
         return UserConsentService;
     }());
+    UserConsentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
+    UserConsentService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserConsentService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var AnonymousConsentTemplatesConnector = /** @class */ (function () {
         function AnonymousConsentTemplatesConnector(adapter) {
@@ -12156,17 +12096,17 @@
                 ? this.adapter.loadAnonymousConsents()
                 : null;
         };
-        AnonymousConsentTemplatesConnector.ctorParameters = function () { return [
-            { type: AnonymousConsentTemplatesAdapter }
-        ]; };
-        AnonymousConsentTemplatesConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function AnonymousConsentTemplatesConnector_Factory() { return new AnonymousConsentTemplatesConnector(core.ɵɵinject(AnonymousConsentTemplatesAdapter)); }, token: AnonymousConsentTemplatesConnector, providedIn: "root" });
-        AnonymousConsentTemplatesConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], AnonymousConsentTemplatesConnector);
         return AnonymousConsentTemplatesConnector;
     }());
+    AnonymousConsentTemplatesConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentTemplatesConnector_Factory() { return new AnonymousConsentTemplatesConnector(i0.ɵɵinject(AnonymousConsentTemplatesAdapter)); }, token: AnonymousConsentTemplatesConnector, providedIn: "root" });
+    AnonymousConsentTemplatesConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AnonymousConsentTemplatesConnector.ctorParameters = function () { return [
+        { type: AnonymousConsentTemplatesAdapter }
+    ]; };
 
     var AnonymousConsentsEffects = /** @class */ (function () {
         function AnonymousConsentsEffects(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService) {
@@ -12177,7 +12117,7 @@
             this.anonymousConsentsConfig = anonymousConsentsConfig;
             this.anonymousConsentService = anonymousConsentService;
             this.userConsentService = userConsentService;
-            this.checkConsentVersions$ = this.actions$.pipe(effects$c.ofType(ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS), operators.withLatestFrom(this.anonymousConsentService.getConsents()), operators.concatMap(function (_a) {
+            this.checkConsentVersions$ = this.actions$.pipe(i3.ofType(ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS), operators.withLatestFrom(this.anonymousConsentService.getConsents()), operators.concatMap(function (_a) {
                 var _b = __read(_a, 2), _ = _b[0], currentConsents = _b[1];
                 // TODO{#8158} - remove this if block
                 if (!_this.anonymousConsentTemplatesConnector.loadAnonymousConsents()) {
@@ -12189,15 +12129,11 @@
                     var currentConsentVersions = currentConsents.map(function (consent) { return consent.templateVersion; });
                     var newConsentVersions = newConsents.map(function (consent) { return consent.templateVersion; });
                     return _this.detectUpdatedVersion(currentConsentVersions, newConsentVersions);
-                }), operators.switchMap(function (updated) {
-                    return updated
-                        ? rxjs.of(new LoadAnonymousConsentTemplates())
-                        : rxjs.EMPTY;
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error)));
-                }));
+                }), operators.switchMap(function (updated) { return updated
+                    ? rxjs.of(new LoadAnonymousConsentTemplates())
+                    : rxjs.EMPTY; }), operators.catchError(function (error) { return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error))); }));
             }));
-            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$c.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.withLatestFrom(this.anonymousConsentService.getTemplates()), operators.concatMap(function (_a) {
+            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(i3.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.withLatestFrom(this.anonymousConsentService.getTemplates()), operators.concatMap(function (_a) {
                 var _b = __read(_a, 2), _ = _b[0], currentConsentTemplates = _b[1];
                 return _this.anonymousConsentTemplatesConnector
                     .loadAnonymousConsentTemplates()
@@ -12211,110 +12147,102 @@
                         new LoadAnonymousConsentTemplatesSuccess(newConsentTemplates),
                         new ToggleAnonymousConsentTemplatesUpdated(updated),
                     ];
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error))); }));
             }));
-            this.transferAnonymousConsentsToUser$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function () { return Boolean(_this.anonymousConsentsConfig.anonymousConsents); }), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(REGISTER_USER_SUCCESS))), operators.filter(function (_a) {
+            this.transferAnonymousConsentsToUser$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function () { return Boolean(_this.anonymousConsentsConfig.anonymousConsents); }), operators.withLatestFrom(this.actions$.pipe(i3.ofType(REGISTER_USER_SUCCESS))), operators.filter(function (_a) {
                 var _b = __read(_a, 2), registerAction = _b[1];
                 return Boolean(registerAction);
-            }), operators.switchMap(function () {
-                return _this.anonymousConsentService.getConsents().pipe(operators.withLatestFrom(_this.authService.getOccUserId(), _this.anonymousConsentService.getTemplates(), _this.authService.isUserLoggedIn()), operators.filter(function (_a) {
-                    var _b = __read(_a, 4), loggedIn = _b[3];
-                    return loggedIn;
-                }), operators.concatMap(function (_a) {
-                    var e_1, _b, e_2, _c;
-                    var _d = __read(_a, 4), consents = _d[0], userId = _d[1], templates = _d[2], _loggedIn = _d[3];
-                    var actions = [];
-                    try {
-                        for (var consents_1 = __values(consents), consents_1_1 = consents_1.next(); !consents_1_1.done; consents_1_1 = consents_1.next()) {
-                            var consent = consents_1_1.value;
-                            if (_this.anonymousConsentService.isConsentGiven(consent) &&
-                                (!_this.anonymousConsentsConfig.anonymousConsents
-                                    .requiredConsents ||
-                                    !_this.anonymousConsentsConfig.anonymousConsents.requiredConsents.includes(consent.templateCode))) {
+            }), operators.switchMap(function () { return _this.anonymousConsentService.getConsents().pipe(operators.withLatestFrom(_this.authService.getOccUserId(), _this.anonymousConsentService.getTemplates(), _this.authService.isUserLoggedIn()), operators.filter(function (_a) {
+                var _b = __read(_a, 4), loggedIn = _b[3];
+                return loggedIn;
+            }), operators.concatMap(function (_a) {
+                var e_1, _b, e_2, _c;
+                var _d = __read(_a, 4), consents = _d[0], userId = _d[1], templates = _d[2], _loggedIn = _d[3];
+                var actions = [];
+                try {
+                    for (var consents_1 = __values(consents), consents_1_1 = consents_1.next(); !consents_1_1.done; consents_1_1 = consents_1.next()) {
+                        var consent = consents_1_1.value;
+                        if (_this.anonymousConsentService.isConsentGiven(consent) &&
+                            (!_this.anonymousConsentsConfig.anonymousConsents
+                                .requiredConsents ||
+                                !_this.anonymousConsentsConfig.anonymousConsents.requiredConsents.includes(consent.templateCode))) {
+                            try {
+                                for (var templates_1 = (e_2 = void 0, __values(templates)), templates_1_1 = templates_1.next(); !templates_1_1.done; templates_1_1 = templates_1.next()) {
+                                    var template = templates_1_1.value;
+                                    if (template.id === consent.templateCode) {
+                                        actions.push(new TransferAnonymousConsent({
+                                            userId: userId,
+                                            consentTemplateId: template.id,
+                                            consentTemplateVersion: template.version,
+                                        }));
+                                        break;
+                                    }
+                                }
+                            }
+                            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                            finally {
                                 try {
-                                    for (var templates_1 = (e_2 = void 0, __values(templates)), templates_1_1 = templates_1.next(); !templates_1_1.done; templates_1_1 = templates_1.next()) {
-                                        var template = templates_1_1.value;
-                                        if (template.id === consent.templateCode) {
-                                            actions.push(new TransferAnonymousConsent({
-                                                userId: userId,
-                                                consentTemplateId: template.id,
-                                                consentTemplateVersion: template.version,
-                                            }));
-                                            break;
-                                        }
-                                    }
+                                    if (templates_1_1 && !templates_1_1.done && (_c = templates_1.return)) _c.call(templates_1);
                                 }
-                                catch (e_2_1) { e_2 = { error: e_2_1 }; }
-                                finally {
-                                    try {
-                                        if (templates_1_1 && !templates_1_1.done && (_c = templates_1.return)) _c.call(templates_1);
-                                    }
-                                    finally { if (e_2) throw e_2.error; }
-                                }
+                                finally { if (e_2) throw e_2.error; }
                             }
                         }
                     }
-                    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-                    finally {
-                        try {
-                            if (consents_1_1 && !consents_1_1.done && (_b = consents_1.return)) _b.call(consents_1);
-                        }
-                        finally { if (e_1) throw e_1.error; }
-                    }
-                    if (actions.length > 0) {
-                        return actions;
-                    }
-                    return rxjs.EMPTY;
-                }));
-            }));
-            this.giveRequiredConsentsToUser$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function (action) {
-                return Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
-                    Boolean(_this.anonymousConsentsConfig.anonymousConsents.requiredConsents) &&
-                    Boolean(action);
-            }), operators.concatMap(function () {
-                return _this.userConsentService.getConsentsResultSuccess().pipe(operators.withLatestFrom(_this.authService.getOccUserId(), _this.userConsentService.getConsents(), _this.authService.isUserLoggedIn()), operators.filter(function (_a) {
-                    var _b = __read(_a, 4), loggedIn = _b[3];
-                    return loggedIn;
-                }), operators.tap(function (_a) {
-                    var _b = __read(_a, 4), loaded = _b[0], _userId = _b[1], _templates = _b[2], _loggedIn = _b[3];
-                    if (!loaded) {
-                        _this.userConsentService.loadConsents();
-                    }
-                }), operators.map(function (_a) {
-                    var _b = __read(_a, 4), _loaded = _b[0], userId = _b[1], templates = _b[2], _loggedIn = _b[3];
-                    return { userId: userId, templates: templates };
-                }), operators.concatMap(function (_a) {
-                    var e_3, _b;
-                    var userId = _a.userId, templates = _a.templates;
-                    var actions = [];
+                }
+                catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                finally {
                     try {
-                        for (var templates_2 = __values(templates), templates_2_1 = templates_2.next(); !templates_2_1.done; templates_2_1 = templates_2.next()) {
-                            var template = templates_2_1.value;
-                            if (_this.userConsentService.isConsentWithdrawn(template.currentConsent) &&
-                                _this.anonymousConsentsConfig.anonymousConsents.requiredConsents.includes(template.id)) {
-                                actions.push(new GiveUserConsent({
-                                    userId: userId,
-                                    consentTemplateId: template.id,
-                                    consentTemplateVersion: template.version,
-                                }));
-                            }
+                        if (consents_1_1 && !consents_1_1.done && (_b = consents_1.return)) _b.call(consents_1);
+                    }
+                    finally { if (e_1) throw e_1.error; }
+                }
+                if (actions.length > 0) {
+                    return actions;
+                }
+                return rxjs.EMPTY;
+            })); }));
+            this.giveRequiredConsentsToUser$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function (action) { return Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
+                Boolean(_this.anonymousConsentsConfig.anonymousConsents.requiredConsents) &&
+                Boolean(action); }), operators.concatMap(function () { return _this.userConsentService.getConsentsResultSuccess().pipe(operators.withLatestFrom(_this.authService.getOccUserId(), _this.userConsentService.getConsents(), _this.authService.isUserLoggedIn()), operators.filter(function (_a) {
+                var _b = __read(_a, 4), loggedIn = _b[3];
+                return loggedIn;
+            }), operators.tap(function (_a) {
+                var _b = __read(_a, 4), loaded = _b[0], _userId = _b[1], _templates = _b[2], _loggedIn = _b[3];
+                if (!loaded) {
+                    _this.userConsentService.loadConsents();
+                }
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 4), _loaded = _b[0], userId = _b[1], templates = _b[2], _loggedIn = _b[3];
+                return { userId: userId, templates: templates };
+            }), operators.concatMap(function (_a) {
+                var e_3, _b;
+                var userId = _a.userId, templates = _a.templates;
+                var actions = [];
+                try {
+                    for (var templates_2 = __values(templates), templates_2_1 = templates_2.next(); !templates_2_1.done; templates_2_1 = templates_2.next()) {
+                        var template = templates_2_1.value;
+                        if (_this.userConsentService.isConsentWithdrawn(template.currentConsent) &&
+                            _this.anonymousConsentsConfig.anonymousConsents.requiredConsents.includes(template.id)) {
+                            actions.push(new GiveUserConsent({
+                                userId: userId,
+                                consentTemplateId: template.id,
+                                consentTemplateVersion: template.version,
+                            }));
                         }
                     }
-                    catch (e_3_1) { e_3 = { error: e_3_1 }; }
-                    finally {
-                        try {
-                            if (templates_2_1 && !templates_2_1.done && (_b = templates_2.return)) _b.call(templates_2);
-                        }
-                        finally { if (e_3) throw e_3.error; }
+                }
+                catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                finally {
+                    try {
+                        if (templates_2_1 && !templates_2_1.done && (_b = templates_2.return)) _b.call(templates_2);
                     }
-                    if (actions.length > 0) {
-                        return actions;
-                    }
-                    return rxjs.EMPTY;
-                }));
-            }));
+                    finally { if (e_3) throw e_3.error; }
+                }
+                if (actions.length > 0) {
+                    return actions;
+                }
+                return rxjs.EMPTY;
+            })); }));
         }
         /**
          * Compares the given versions and determines if there's a mismatch,
@@ -12334,31 +12262,31 @@
             }
             return false;
         };
-        AnonymousConsentsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: AnonymousConsentTemplatesConnector },
-            { type: AuthService },
-            { type: AnonymousConsentsConfig },
-            { type: AnonymousConsentsService },
-            { type: UserConsentService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], AnonymousConsentsEffects.prototype, "checkConsentVersions$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], AnonymousConsentsEffects.prototype, "loadAnonymousConsentTemplates$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], AnonymousConsentsEffects.prototype, "transferAnonymousConsentsToUser$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
-        AnonymousConsentsEffects = __decorate([
-            core.Injectable()
-        ], AnonymousConsentsEffects);
         return AnonymousConsentsEffects;
     }());
+    AnonymousConsentsEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    AnonymousConsentsEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: AnonymousConsentTemplatesConnector },
+        { type: AuthService },
+        { type: AnonymousConsentsConfig },
+        { type: AnonymousConsentsService },
+        { type: UserConsentService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], AnonymousConsentsEffects.prototype, "checkConsentVersions$", void 0);
+    __decorate([
+        i3.Effect()
+    ], AnonymousConsentsEffects.prototype, "loadAnonymousConsentTemplates$", void 0);
+    __decorate([
+        i3.Effect()
+    ], AnonymousConsentsEffects.prototype, "transferAnonymousConsentsToUser$", void 0);
+    __decorate([
+        i3.Effect()
+    ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
 
     var effects$1 = [AnonymousConsentsEffects];
 
@@ -12381,17 +12309,17 @@
         SiteConnector.prototype.getBaseSite = function () {
             return this.adapter.loadBaseSite();
         };
-        SiteConnector.ctorParameters = function () { return [
-            { type: SiteAdapter }
-        ]; };
-        SiteConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(core.ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
-        SiteConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SiteConnector);
         return SiteConnector;
     }());
+    SiteConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(i0.ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+    SiteConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    SiteConnector.ctorParameters = function () { return [
+        { type: SiteAdapter }
+    ]; };
 
     var ContextServiceMap = /** @class */ (function () {
         function ContextServiceMap() {
@@ -12484,7 +12412,7 @@
                 return (!this.initializerGuard ||
                     (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -12511,9 +12439,7 @@
                         return [2 /*return*/, this.config];
                     }
                     return [2 /*return*/, this.ongoingScopes$
-                            .pipe(operators.filter(function (ongoingScopes) {
-                            return ongoingScopes && _this.areReady(scopes, ongoingScopes);
-                        }), operators.take(1), operators.mapTo(this.config))
+                            .pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config))
                             .toPromise()];
                 });
             });
@@ -12627,7 +12553,7 @@
                                 if (!initializer.scopes || !initializer.scopes.length) {
                                     throw new Error('CONFIG_INITIALIZER should provide scope!');
                                 }
-                                if (core.isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
+                                if (i0.isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
                                     console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
                                 }
                                 ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
@@ -12673,23 +12599,19 @@
                 });
             });
         };
-        ConfigInitializerService.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] },
-            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] },
-            { type: undefined, decorators: [{ type: core.Inject, args: [RootConfig,] }] }
-        ]; };
-        ConfigInitializerService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(core.ɵɵinject(Config), core.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), core.ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
-        ConfigInitializerService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            }),
-            __param(0, core.Inject(Config)),
-            __param(1, core.Optional()),
-            __param(1, core.Inject(CONFIG_INITIALIZER_FORROOT_GUARD)),
-            __param(2, core.Inject(RootConfig))
-        ], ConfigInitializerService);
         return ConfigInitializerService;
     }());
+    ConfigInitializerService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(i0.ɵɵinject(Config), i0.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), i0.ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
+    ConfigInitializerService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ConfigInitializerService.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: i0.Inject, args: [Config,] }] },
+        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [RootConfig,] }] }
+    ]; };
 
     var SiteContextParamsService = /** @class */ (function () {
         function SiteContextParamsService(config, injector, serviceMap) {
@@ -12746,22 +12668,20 @@
             if (params.length === 0) {
                 return rxjs.of([]);
             }
-            return rxjs.combineLatest(params.map(function (param) {
-                return _this.getSiteContextService(param)
-                    .getActive()
-                    .pipe(operators.distinctUntilChanged());
-            })).pipe(operators.filter(function (value) { return value.every(function (param) { return !!param; }); }));
+            return rxjs.combineLatest(params.map(function (param) { return _this.getSiteContextService(param)
+                .getActive()
+                .pipe(operators.distinctUntilChanged()); })).pipe(operators.filter(function (value) { return value.every(function (param) { return !!param; }); }));
         };
-        SiteContextParamsService.ctorParameters = function () { return [
-            { type: SiteContextConfig },
-            { type: core.Injector },
-            { type: ContextServiceMap }
-        ]; };
-        SiteContextParamsService = __decorate([
-            core.Injectable()
-        ], SiteContextParamsService);
         return SiteContextParamsService;
     }());
+    SiteContextParamsService.decorators = [
+        { type: i0.Injectable }
+    ];
+    SiteContextParamsService.ctorParameters = function () { return [
+        { type: SiteContextConfig },
+        { type: i0.Injector },
+        { type: ContextServiceMap }
+    ]; };
 
     var UrlSplit = /(^[^#?]*)(.*)/; // used to split url into path and query/fragment parts
     var SiteContextUrlSerializer = /** @class */ (function (_super) {
@@ -12775,14 +12695,14 @@
             get: function () {
                 return this.siteContextParams.getUrlEncodingParameters();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(SiteContextUrlSerializer.prototype, "hasContextInRoutes", {
             get: function () {
                 return this.urlEncodingParameters.length > 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         SiteContextUrlSerializer.prototype.parse = function (url) {
@@ -12841,14 +12761,14 @@
                 .join('/');
             return contextRoutePart + url;
         };
-        SiteContextUrlSerializer.ctorParameters = function () { return [
-            { type: SiteContextParamsService }
-        ]; };
-        SiteContextUrlSerializer = __decorate([
-            core.Injectable()
-        ], SiteContextUrlSerializer);
         return SiteContextUrlSerializer;
-    }(router.DefaultUrlSerializer));
+    }(i4.DefaultUrlSerializer));
+    SiteContextUrlSerializer.decorators = [
+        { type: i0.Injectable }
+    ];
+    SiteContextUrlSerializer.ctorParameters = function () { return [
+        { type: SiteContextParamsService }
+    ]; };
 
     var SiteContextRoutesHandler = /** @class */ (function () {
         function SiteContextRoutesHandler(siteContextParams, serializer, injector) {
@@ -12872,8 +12792,8 @@
         SiteContextRoutesHandler.prototype.init = function () {
             var _this = this;
             return new Promise(function (resolve) {
-                _this.router = _this.injector.get(router.Router);
-                _this.location = _this.injector.get(common.Location);
+                _this.router = _this.injector.get(i4.Router);
+                _this.location = _this.injector.get(i1$2.Location);
                 var routingParams = _this.siteContextParams.getUrlEncodingParameters();
                 if (routingParams.length) {
                     _this.subscribeChanges(routingParams);
@@ -12919,14 +12839,12 @@
             var _this = this;
             var contextInitialized = false;
             this.subscription.add(this.router.events
-                .pipe(operators.filter(function (event) {
-                return event instanceof router.NavigationStart ||
-                    event instanceof router.NavigationEnd ||
-                    event instanceof router.NavigationError ||
-                    event instanceof router.NavigationCancel;
-            }))
+                .pipe(operators.filter(function (event) { return event instanceof i4.NavigationStart ||
+                event instanceof i4.NavigationEnd ||
+                event instanceof i4.NavigationError ||
+                event instanceof i4.NavigationCancel; }))
                 .subscribe(function (event) {
-                _this.isNavigating = event instanceof router.NavigationStart;
+                _this.isNavigating = event instanceof i4.NavigationStart;
                 if (_this.isNavigating) {
                     _this.setContextParamsFromRoute(event.url);
                     if (!contextInitialized) {
@@ -12944,26 +12862,24 @@
         SiteContextRoutesHandler.prototype.setContextParamsFromRoute = function (url) {
             var _this = this;
             var params = this.serializer.urlExtractContextParameters(url).params;
-            Object.keys(params).forEach(function (param) {
-                return _this.siteContextParams.setValue(param, params[param]);
-            });
+            Object.keys(params).forEach(function (param) { return _this.siteContextParams.setValue(param, params[param]); });
         };
         SiteContextRoutesHandler.prototype.ngOnDestroy = function () {
             this.subscription.unsubscribe();
         };
-        SiteContextRoutesHandler.ctorParameters = function () { return [
-            { type: SiteContextParamsService },
-            { type: SiteContextUrlSerializer },
-            { type: core.Injector }
-        ]; };
-        SiteContextRoutesHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(core.ɵɵinject(SiteContextParamsService), core.ɵɵinject(SiteContextUrlSerializer), core.ɵɵinject(core.INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
-        SiteContextRoutesHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SiteContextRoutesHandler);
         return SiteContextRoutesHandler;
     }());
+    SiteContextRoutesHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(i0.ɵɵinject(SiteContextParamsService), i0.ɵɵinject(SiteContextUrlSerializer), i0.ɵɵinject(i0.INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
+    SiteContextRoutesHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    SiteContextRoutesHandler.ctorParameters = function () { return [
+        { type: SiteContextParamsService },
+        { type: SiteContextUrlSerializer },
+        { type: i0.Injector }
+    ]; };
 
     function initializeContext(baseSiteService, langService, currService, configInit, siteContextRoutesHandler) {
         return function () {
@@ -12981,7 +12897,7 @@
         LanguageService,
         CurrencyService,
         {
-            provide: core.APP_INITIALIZER,
+            provide: i0.APP_INITIALIZER,
             useFactory: initializeContext,
             deps: [
                 BaseSiteService,
@@ -12998,7 +12914,7 @@
     var siteContextParamsProviders = [
         SiteContextParamsService,
         SiteContextUrlSerializer,
-        { provide: router.UrlSerializer, useExisting: SiteContextUrlSerializer },
+        { provide: i4.UrlSerializer, useExisting: SiteContextUrlSerializer },
     ];
 
     var LanguagesEffects = /** @class */ (function () {
@@ -13008,12 +12924,10 @@
             this.siteConnector = siteConnector;
             this.winRef = winRef;
             this.state = state;
-            this.loadLanguages$ = this.actions$.pipe(effects$c.ofType(LOAD_LANGUAGES), operators.exhaustMap(function () {
-                return _this.siteConnector.getLanguages().pipe(operators.map(function (languages) { return new LoadLanguagesSuccess(languages); }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error)));
-                }));
+            this.loadLanguages$ = this.actions$.pipe(i3.ofType(LOAD_LANGUAGES), operators.exhaustMap(function () {
+                return _this.siteConnector.getLanguages().pipe(operators.map(function (languages) { return new LoadLanguagesSuccess(languages); }), operators.catchError(function (error) { return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error))); }));
             }));
-            this.persist$ = this.actions$.pipe(effects$c.ofType(SET_ACTIVE_LANGUAGE), operators.tap(function (action) {
+            this.persist$ = this.actions$.pipe(i3.ofType(SET_ACTIVE_LANGUAGE), operators.tap(function (action) {
                 if (_this.winRef.sessionStorage) {
                     _this.winRef.sessionStorage.setItem('language', action.payload);
                 }
@@ -13028,26 +12942,26 @@
                 return new LanguageChange({ previous: previous, current: current });
             }));
         }
-        LanguagesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: SiteConnector },
-            { type: WindowRef },
-            { type: store.Store }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], LanguagesEffects.prototype, "loadLanguages$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], LanguagesEffects.prototype, "persist$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], LanguagesEffects.prototype, "activateLanguage$", void 0);
-        LanguagesEffects = __decorate([
-            core.Injectable()
-        ], LanguagesEffects);
         return LanguagesEffects;
     }());
+    LanguagesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    LanguagesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: SiteConnector },
+        { type: WindowRef },
+        { type: i1$1.Store }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], LanguagesEffects.prototype, "loadLanguages$", void 0);
+    __decorate([
+        i3.Effect()
+    ], LanguagesEffects.prototype, "persist$", void 0);
+    __decorate([
+        i3.Effect()
+    ], LanguagesEffects.prototype, "activateLanguage$", void 0);
 
     var CurrenciesEffects = /** @class */ (function () {
         function CurrenciesEffects(actions$, siteConnector, winRef, state) {
@@ -13056,14 +12970,10 @@
             this.siteConnector = siteConnector;
             this.winRef = winRef;
             this.state = state;
-            this.loadCurrencies$ = this.actions$.pipe(effects$c.ofType(LOAD_CURRENCIES), operators.exhaustMap(function () {
-                return _this.siteConnector.getCurrencies().pipe(operators.map(function (currencies) {
-                    return new LoadCurrenciesSuccess(currencies);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error)));
-                }));
+            this.loadCurrencies$ = this.actions$.pipe(i3.ofType(LOAD_CURRENCIES), operators.exhaustMap(function () {
+                return _this.siteConnector.getCurrencies().pipe(operators.map(function (currencies) { return new LoadCurrenciesSuccess(currencies); }), operators.catchError(function (error) { return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error))); }));
             }));
-            this.persist$ = this.actions$.pipe(effects$c.ofType(SET_ACTIVE_CURRENCY), operators.tap(function (action) {
+            this.persist$ = this.actions$.pipe(i3.ofType(SET_ACTIVE_CURRENCY), operators.tap(function (action) {
                 if (_this.winRef.sessionStorage) {
                     _this.winRef.sessionStorage.setItem('currency', action.payload);
                 }
@@ -13078,50 +12988,48 @@
                 return new CurrencyChange({ previous: previous, current: current });
             }));
         }
-        CurrenciesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: SiteConnector },
-            { type: WindowRef },
-            { type: store.Store }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CurrenciesEffects.prototype, "persist$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
-        CurrenciesEffects = __decorate([
-            core.Injectable()
-        ], CurrenciesEffects);
         return CurrenciesEffects;
     }());
+    CurrenciesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CurrenciesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: SiteConnector },
+        { type: WindowRef },
+        { type: i1$1.Store }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CurrenciesEffects.prototype, "persist$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
 
     var BaseSiteEffects = /** @class */ (function () {
         function BaseSiteEffects(actions$, siteConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadBaseSite$ = this.actions$.pipe(effects$c.ofType(LOAD_BASE_SITE), operators.exhaustMap(function () {
-                return _this.siteConnector.getBaseSite().pipe(operators.map(function (baseSite) { return new LoadBaseSiteSuccess(baseSite); }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadBaseSiteFail(makeErrorSerializable(error)));
-                }));
+            this.loadBaseSite$ = this.actions$.pipe(i3.ofType(LOAD_BASE_SITE), operators.exhaustMap(function () {
+                return _this.siteConnector.getBaseSite().pipe(operators.map(function (baseSite) { return new LoadBaseSiteSuccess(baseSite); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSiteFail(makeErrorSerializable(error))); }));
             }));
         }
-        BaseSiteEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: SiteConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
-        BaseSiteEffects = __decorate([
-            core.Injectable()
-        ], BaseSiteEffects);
         return BaseSiteEffects;
     }());
+    BaseSiteEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    BaseSiteEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: SiteConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
 
     var effects$2 = [
         LanguagesEffects,
@@ -13137,10 +13045,10 @@
         if (state === void 0) { state = initialState$1; }
         switch (action.type) {
             case LOAD_BASE_SITE_SUCCESS: {
-                return __assign(__assign({}, state), { details: action.payload });
+                return Object.assign(Object.assign({}, state), { details: action.payload });
             }
             case SET_ACTIVE_BASE_SITE: {
-                return __assign(__assign({}, state), { activeSite: action.payload });
+                return Object.assign(Object.assign({}, state), { activeSite: action.payload });
             }
         }
         return state;
@@ -13157,13 +13065,13 @@
                 var currencies = action.payload;
                 var entities = currencies.reduce(function (currEntities, currency) {
                     var _a;
-                    return __assign(__assign({}, currEntities), (_a = {}, _a[currency.isocode] = currency, _a));
-                }, __assign({}, state.entities));
-                return __assign(__assign({}, state), { entities: entities });
+                    return Object.assign(Object.assign({}, currEntities), (_a = {}, _a[currency.isocode] = currency, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case SET_ACTIVE_CURRENCY: {
                 var isocode = action.payload;
-                return __assign(__assign({}, state), { activeCurrency: isocode });
+                return Object.assign(Object.assign({}, state), { activeCurrency: isocode });
             }
         }
         return state;
@@ -13180,13 +13088,13 @@
                 var languages = action.payload;
                 var entities = languages.reduce(function (langEntities, language) {
                     var _a;
-                    return __assign(__assign({}, langEntities), (_a = {}, _a[language.isocode] = language, _a));
-                }, __assign({}, state.entities));
-                return __assign(__assign({}, state), { entities: entities });
+                    return Object.assign(Object.assign({}, langEntities), (_a = {}, _a[language.isocode] = language, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case SET_ACTIVE_LANGUAGE: {
                 var isocode = action.payload;
-                return __assign(__assign({}, state), { activeLanguage: isocode });
+                return Object.assign(Object.assign({}, state), { activeLanguage: isocode });
             }
         }
         return state;
@@ -13199,7 +13107,7 @@
             baseSite: reducer$1,
         };
     }
-    var reducerToken$1 = new core.InjectionToken('SiteContextReducers');
+    var reducerToken$1 = new i0.InjectionToken('SiteContextReducers');
     var reducerProvider$1 = {
         provide: reducerToken$1,
         useFactory: getReducers$1,
@@ -13220,31 +13128,30 @@
     var SiteContextStoreModule = /** @class */ (function () {
         function SiteContextStoreModule() {
         }
-        SiteContextStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
-                    effects$c.EffectsModule.forFeature(effects$2),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(siteContextStoreConfigFactory),
-                    reducerProvider$1,
-                ],
-            })
-        ], SiteContextStoreModule);
         return SiteContextStoreModule;
     }());
+    SiteContextStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
+                        i3.EffectsModule.forFeature(effects$2),
+                    ],
+                    providers: [
+                        provideDefaultConfigFactory(siteContextStoreConfigFactory),
+                        reducerProvider$1,
+                    ],
+                },] }
+    ];
 
     // @dynamic
     var SiteContextModule = /** @class */ (function () {
         function SiteContextModule() {
         }
-        SiteContextModule_1 = SiteContextModule;
         SiteContextModule.forRoot = function () {
             return {
-                ngModule: SiteContextModule_1,
+                ngModule: SiteContextModule,
                 providers: __spread([
                     provideDefaultConfigFactory(defaultSiteContextConfigFactory),
                     contextServiceMapProvider
@@ -13253,14 +13160,13 @@
                 ]),
             };
         };
-        var SiteContextModule_1;
-        SiteContextModule = SiteContextModule_1 = __decorate([
-            core.NgModule({
-                imports: [StateModule, SiteContextStoreModule],
-            })
-        ], SiteContextModule);
         return SiteContextModule;
     }());
+    SiteContextModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [StateModule, SiteContextStoreModule],
+                },] }
+    ];
 
     var initialState$4 = false;
     function reducer$4(state, action) {
@@ -13291,7 +13197,7 @@
         }
         return consents.map(function (consent) {
             if (consent.templateCode === templateCode) {
-                consent = __assign(__assign({}, consent), { consentState: status });
+                consent = Object.assign(Object.assign({}, consent), { consentState: status });
             }
             return consent;
         });
@@ -13316,13 +13222,13 @@
         return {
             templates: loaderReducer(ANONYMOUS_CONSENTS),
             consents: reducer$6,
-            ui: store.combineReducers({
+            ui: i1$1.combineReducers({
                 bannerDismissed: reducer$4,
                 updated: reducer$5,
             }),
         };
     }
-    var reducerToken$2 = new core.InjectionToken('AnonymousConsentsReducers');
+    var reducerToken$2 = new i0.InjectionToken('AnonymousConsentsReducers');
     var reducerProvider$2 = {
         provide: reducerToken$2,
         useFactory: getReducers$2,
@@ -13331,7 +13237,7 @@
         return function (state, action) {
             if (action.type === LOGOUT ||
                 action.type === LANGUAGE_CHANGE) {
-                state = __assign(__assign({}, state), { templates: undefined });
+                state = Object.assign(Object.assign({}, state), { templates: undefined });
             }
             return reducer(state, action);
         };
@@ -13356,46 +13262,44 @@
     var AnonymousConsentsStoreModule = /** @class */ (function () {
         function AnonymousConsentsStoreModule() {
         }
-        AnonymousConsentsStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    StateModule,
-                    store.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
-                        metaReducers: metaReducers$1,
-                    }),
-                    effects$c.EffectsModule.forFeature(effects$1),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
-                    reducerProvider$2,
-                ],
-            })
-        ], AnonymousConsentsStoreModule);
         return AnonymousConsentsStoreModule;
     }());
+    AnonymousConsentsStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        StateModule,
+                        i1$1.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
+                            metaReducers: metaReducers$1,
+                        }),
+                        i3.EffectsModule.forFeature(effects$1),
+                    ],
+                    providers: [
+                        provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
+                        reducerProvider$2,
+                    ],
+                },] }
+    ];
 
     var AnonymousConsentsModule = /** @class */ (function () {
         function AnonymousConsentsModule() {
         }
-        AnonymousConsentsModule_1 = AnonymousConsentsModule;
         AnonymousConsentsModule.forRoot = function () {
             return {
-                ngModule: AnonymousConsentsModule_1,
+                ngModule: AnonymousConsentsModule,
                 providers: __spread(interceptors$1, [
                     AnonymousConsentsService,
                     provideDefaultConfig(defaultAnonymousConsentsConfig),
                 ]),
             };
         };
-        var AnonymousConsentsModule_1;
-        AnonymousConsentsModule = AnonymousConsentsModule_1 = __decorate([
-            core.NgModule({
-                imports: [AnonymousConsentsStoreModule],
-            })
-        ], AnonymousConsentsModule);
         return AnonymousConsentsModule;
     }());
+    AnonymousConsentsModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [AnonymousConsentsStoreModule],
+                },] }
+    ];
 
     var defaultAsmConfig = {
         asm: {
@@ -13419,17 +13323,17 @@
         AsmConnector.prototype.customerSearch = function (options) {
             return this.asmAdapter.customerSearch(options);
         };
-        AsmConnector.ctorParameters = function () { return [
-            { type: AsmAdapter }
-        ]; };
-        AsmConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(core.ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
-        AsmConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], AsmConnector);
         return AsmConnector;
     }());
+    AsmConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(i0.ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
+    AsmConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AsmConnector.ctorParameters = function () { return [
+        { type: AsmAdapter }
+    ]; };
 
     var ASM_UI_UPDATE = '[Asm] UI Update';
     var AsmUiUpdate = /** @class */ (function () {
@@ -13550,56 +13454,50 @@
             var _this = this;
             this.actions$ = actions$;
             this.asmConnector = asmConnector;
-            this.customerSearch$ = this.actions$.pipe(effects$c.ofType(CUSTOMER_SEARCH), operators.map(function (action) { return action.payload; }), operators.switchMap(function (options) {
-                return _this.asmConnector.customerSearch(options).pipe(operators.map(function (customerSearchResults) {
-                    return new CustomerSearchSuccess(customerSearchResults);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new CustomerSearchFail(makeErrorSerializable(error)));
-                }));
-            }));
+            this.customerSearch$ = this.actions$.pipe(i3.ofType(CUSTOMER_SEARCH), operators.map(function (action) { return action.payload; }), operators.switchMap(function (options) { return _this.asmConnector.customerSearch(options).pipe(operators.map(function (customerSearchResults) {
+                return new CustomerSearchSuccess(customerSearchResults);
+            }), operators.catchError(function (error) { return rxjs.of(new CustomerSearchFail(makeErrorSerializable(error))); })); }));
         }
-        CustomerEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: AsmConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CustomerEffects.prototype, "customerSearch$", void 0);
-        CustomerEffects = __decorate([
-            core.Injectable()
-        ], CustomerEffects);
         return CustomerEffects;
     }());
+    CustomerEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CustomerEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: AsmConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CustomerEffects.prototype, "customerSearch$", void 0);
 
     var CustomerSupportAgentTokenEffects = /** @class */ (function () {
         function CustomerSupportAgentTokenEffects(actions$, userTokenService) {
             var _this = this;
             this.actions$ = actions$;
             this.userTokenService = userTokenService;
-            this.loadCustomerSupportAgentToken$ = this.actions$.pipe(effects$c.ofType(LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
+            this.loadCustomerSupportAgentToken$ = this.actions$.pipe(i3.ofType(LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
                 var userId = _a.userId, password = _a.password;
                 return _this.userTokenService.loadToken(userId, password).pipe(operators.map(function (token) {
                     var date = new Date();
                     date.setSeconds(date.getSeconds() + token.expires_in);
                     token.expiration_time = date.toJSON();
                     return new LoadCustomerSupportAgentTokenSuccess(token);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error))); }));
             }));
         }
-        CustomerSupportAgentTokenEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserAuthenticationTokenService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
-        CustomerSupportAgentTokenEffects = __decorate([
-            core.Injectable()
-        ], CustomerSupportAgentTokenEffects);
         return CustomerSupportAgentTokenEffects;
     }());
+    CustomerSupportAgentTokenEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CustomerSupportAgentTokenEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserAuthenticationTokenService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
 
     var effects$3 = [
         CustomerEffects,
@@ -13611,7 +13509,7 @@
         if (state === void 0) { state = initialState$7; }
         switch (action.type) {
             case ASM_UI_UPDATE: {
-                return __assign(__assign({}, state), action.payload);
+                return Object.assign(Object.assign({}, state), action.payload);
             }
             default: {
                 return state;
@@ -13626,7 +13524,7 @@
             csagentToken: loaderReducer(CSAGENT_TOKEN_DATA),
         };
     }
-    var reducerToken$3 = new core.InjectionToken('AsmReducers');
+    var reducerToken$3 = new i0.InjectionToken('AsmReducers');
     var reducerProvider$3 = {
         provide: reducerToken$3,
         useFactory: getReducers$3,
@@ -13634,7 +13532,7 @@
     function clearCustomerSupportAgentAsmState(reducer) {
         return function (state, action) {
             if (action.type === LOGOUT_CUSTOMER_SUPPORT_AGENT) {
-                state = __assign(__assign({}, state), { customerSearchResult: undefined, csagentToken: undefined });
+                state = Object.assign(Object.assign({}, state), { customerSearchResult: undefined, csagentToken: undefined });
             }
             return reducer(state, action);
         };
@@ -13664,44 +13562,36 @@
     var AsmStoreModule = /** @class */ (function () {
         function AsmStoreModule() {
         }
-        AsmStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    StateModule,
-                    store.StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
-                    effects$c.EffectsModule.forFeature(effects$3),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(asmStoreConfigFactory),
-                    reducerProvider$3,
-                ],
-            })
-        ], AsmStoreModule);
         return AsmStoreModule;
     }());
-
-
-    (function (GlobalMessageType) {
-        GlobalMessageType["MSG_TYPE_CONFIRMATION"] = "[GlobalMessage] Confirmation";
-        GlobalMessageType["MSG_TYPE_ERROR"] = "[GlobalMessage] Error";
-        GlobalMessageType["MSG_TYPE_INFO"] = "[GlobalMessage] Information";
-        GlobalMessageType["MSG_TYPE_WARNING"] = "[GlobalMessage] Warning";
-    })(exports.GlobalMessageType || (exports.GlobalMessageType = {}));
+    AsmStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        StateModule,
+                        i1$1.StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
+                        i3.EffectsModule.forFeature(effects$3),
+                    ],
+                    providers: [
+                        provideDefaultConfigFactory(asmStoreConfigFactory),
+                        reducerProvider$3,
+                    ],
+                },] }
+    ];
 
     var GlobalMessageConfig = /** @class */ (function () {
         function GlobalMessageConfig() {
         }
-        GlobalMessageConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function GlobalMessageConfig_Factory() { return core.ɵɵinject(Config); }, token: GlobalMessageConfig, providedIn: "root" });
-        GlobalMessageConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], GlobalMessageConfig);
         return GlobalMessageConfig;
     }());
+    GlobalMessageConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobalMessageConfig_Factory() { return i0.ɵɵinject(Config); }, token: GlobalMessageConfig, providedIn: "root" });
+    GlobalMessageConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var ADD_MESSAGE = '[Global-message] Add a Message';
     var REMOVE_MESSAGE = '[Global-message] Remove a Message';
@@ -13740,15 +13630,15 @@
 
     var GLOBAL_MESSAGE_FEATURE = 'global-message';
 
-    var getGlobalMessageState = store.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+    var getGlobalMessageState = i1$1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
     var ɵ0$s = function (state) { return state.entities; };
-    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, ɵ0$s);
+    var getGlobalMessageEntities = i1$1.createSelector(getGlobalMessageState, ɵ0$s);
     var getGlobalMessageEntitiesByType = function (type) {
-        return store.createSelector(getGlobalMessageEntities, function (entities) { return entities && entities[type]; });
+        return i1$1.createSelector(getGlobalMessageEntities, function (entities) { return entities && entities[type]; });
     };
     var getGlobalMessageCountByType = function (type) {
-        return store.createSelector(getGlobalMessageEntitiesByType(type), function (entities) { return entities && entities.length; });
+        return i1$1.createSelector(getGlobalMessageEntitiesByType(type), function (entities) { return entities && entities.length; });
     };
 
     var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -13768,7 +13658,7 @@
          * Get all global messages
          */
         GlobalMessageService.prototype.get = function () {
-            return this.store.pipe(store.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
+            return this.store.pipe(i1$1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
         };
         /**
          * Add one message into store
@@ -13797,17 +13687,24 @@
                 })
                 : new RemoveMessagesByType(type));
         };
-        GlobalMessageService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        GlobalMessageService.ɵprov = core.ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(core.ɵɵinject(store.Store)); }, token: GlobalMessageService, providedIn: "root" });
-        GlobalMessageService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], GlobalMessageService);
         return GlobalMessageService;
     }());
+    GlobalMessageService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(i0.ɵɵinject(i1$1.Store)); }, token: GlobalMessageService, providedIn: "root" });
+    GlobalMessageService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    GlobalMessageService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
+
+    (function (GlobalMessageType) {
+        GlobalMessageType["MSG_TYPE_CONFIRMATION"] = "[GlobalMessage] Confirmation";
+        GlobalMessageType["MSG_TYPE_ERROR"] = "[GlobalMessage] Error";
+        GlobalMessageType["MSG_TYPE_INFO"] = "[GlobalMessage] Information";
+        GlobalMessageType["MSG_TYPE_WARNING"] = "[GlobalMessage] Warning";
+    })(exports.GlobalMessageType || (exports.GlobalMessageType = {}));
 
     var HttpResponseStatus;
     (function (HttpResponseStatus) {
@@ -13833,22 +13730,22 @@
         HttpErrorHandler.prototype.hasMatch = function (errorResponse) {
             return errorResponse.status === this.responseStatus;
         };
-        HttpErrorHandler.ctorParameters = function () { return [
-            { type: GlobalMessageService }
-        ]; };
-        HttpErrorHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
-        HttpErrorHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], HttpErrorHandler);
         return HttpErrorHandler;
     }());
+    HttpErrorHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(i0.ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+    HttpErrorHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    HttpErrorHandler.ctorParameters = function () { return [
+        { type: GlobalMessageService }
+    ]; };
 
     var BadGatewayHandler = /** @class */ (function (_super) {
         __extends(BadGatewayHandler, _super);
         function BadGatewayHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             _this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
             return _this;
         }
@@ -13858,14 +13755,14 @@
         BadGatewayHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        BadGatewayHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(core.ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
-        BadGatewayHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], BadGatewayHandler);
         return BadGatewayHandler;
     }(HttpErrorHandler));
+    BadGatewayHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(i0.ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
+    BadGatewayHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     /**
      * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
@@ -13928,7 +13825,7 @@
     var BadRequestHandler = /** @class */ (function (_super) {
         __extends(BadRequestHandler, _super);
         function BadRequestHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             _this.responseStatus = HttpResponseStatus.BAD_REQUEST;
             return _this;
         }
@@ -13982,10 +13879,8 @@
         BadRequestHandler.prototype.handleVoucherOperationError = function (_request, response) {
             var _this = this;
             this.getErrors(response)
-                .filter(function (e) {
-                return e.message === 'coupon.invalid.code.provided' &&
-                    e.type === 'VoucherOperationError';
-            })
+                .filter(function (e) { return e.message === 'coupon.invalid.code.provided' &&
+                e.type === 'VoucherOperationError'; })
                 .forEach(function () {
                 _this.globalMessageService.add({ key: 'httpHandlers.invalidCodeProvided' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
             });
@@ -13997,19 +13892,19 @@
         BadRequestHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        BadRequestHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(core.ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
-        BadRequestHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], BadRequestHandler);
         return BadRequestHandler;
     }(HttpErrorHandler));
+    BadRequestHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(i0.ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
+    BadRequestHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     var ConflictHandler = /** @class */ (function (_super) {
         __extends(ConflictHandler, _super);
         function ConflictHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             _this.responseStatus = HttpResponseStatus.CONFLICT;
             return _this;
         }
@@ -14019,19 +13914,19 @@
         ConflictHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        ConflictHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(core.ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
-        ConflictHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ConflictHandler);
         return ConflictHandler;
     }(HttpErrorHandler));
+    ConflictHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(i0.ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
+    ConflictHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     var ForbiddenHandler = /** @class */ (function (_super) {
         __extends(ForbiddenHandler, _super);
         function ForbiddenHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             _this.responseStatus = HttpResponseStatus.FORBIDDEN;
             return _this;
         }
@@ -14041,19 +13936,19 @@
         ForbiddenHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        ForbiddenHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(core.ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
-        ForbiddenHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ForbiddenHandler);
         return ForbiddenHandler;
     }(HttpErrorHandler));
+    ForbiddenHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(i0.ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+    ForbiddenHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     var GatewayTimeoutHandler = /** @class */ (function (_super) {
         __extends(GatewayTimeoutHandler, _super);
         function GatewayTimeoutHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             _this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
             return _this;
         }
@@ -14063,19 +13958,19 @@
         GatewayTimeoutHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        GatewayTimeoutHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(core.ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
-        GatewayTimeoutHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], GatewayTimeoutHandler);
         return GatewayTimeoutHandler;
     }(HttpErrorHandler));
+    GatewayTimeoutHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(i0.ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+    GatewayTimeoutHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     var InternalServerErrorHandler = /** @class */ (function (_super) {
         __extends(InternalServerErrorHandler, _super);
         function InternalServerErrorHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             _this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
             return _this;
         }
@@ -14085,19 +13980,19 @@
         InternalServerErrorHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        InternalServerErrorHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
-        InternalServerErrorHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], InternalServerErrorHandler);
         return InternalServerErrorHandler;
     }(HttpErrorHandler));
+    InternalServerErrorHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(i0.ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
+    InternalServerErrorHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     var NotFoundHandler = /** @class */ (function (_super) {
         __extends(NotFoundHandler, _super);
         function NotFoundHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             _this.responseStatus = HttpResponseStatus.NOT_FOUND;
             return _this;
         }
@@ -14106,14 +14001,14 @@
         NotFoundHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        NotFoundHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(core.ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
-        NotFoundHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], NotFoundHandler);
         return NotFoundHandler;
     }(HttpErrorHandler));
+    NotFoundHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(i0.ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+    NotFoundHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     /**
      * Handles Oauth client errors when a 401 is returned. This is the case for failing
@@ -14129,7 +14024,7 @@
         }
         UnauthorizedErrorHandler.prototype.handleError = function (_request, response) {
             var _a, _b;
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 console.warn("There's a problem with the \"Oauth client\" configuration. You must configure a matching Oauth client in the backend and Spartacus.");
             }
             if (((_a = response.error) === null || _a === void 0 ? void 0 : _a.error) === 'invalid_client') {
@@ -14144,17 +14039,17 @@
         UnauthorizedErrorHandler.prototype.getPriority = function () {
             return -10 /* LOW */;
         };
-        UnauthorizedErrorHandler.ctorParameters = function () { return [
-            { type: GlobalMessageService }
-        ]; };
-        UnauthorizedErrorHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
-        UnauthorizedErrorHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UnauthorizedErrorHandler);
         return UnauthorizedErrorHandler;
     }(HttpErrorHandler));
+    UnauthorizedErrorHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(i0.ɵɵinject(GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
+    UnauthorizedErrorHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UnauthorizedErrorHandler.ctorParameters = function () { return [
+        { type: GlobalMessageService }
+    ]; };
 
     /**
      * Unknown Error Handler works as an fallback, to handle errors that were
@@ -14163,7 +14058,7 @@
     var UnknownErrorHandler = /** @class */ (function (_super) {
         __extends(UnknownErrorHandler, _super);
         function UnknownErrorHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.apply(this, __spread(arguments)) || this;
             _this.responseStatus = HttpResponseStatus.UNKNOWN;
             return _this;
         }
@@ -14174,7 +14069,7 @@
             return true;
         };
         UnknownErrorHandler.prototype.handleError = function () {
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 console.warn("Unknown http response error: " + this.responseStatus);
             }
         };
@@ -14184,14 +14079,14 @@
         UnknownErrorHandler.prototype.getPriority = function () {
             return -50 /* FALLBACK */;
         };
-        UnknownErrorHandler.ɵprov = core.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
-        UnknownErrorHandler = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UnknownErrorHandler);
         return UnknownErrorHandler;
     }(HttpErrorHandler));
+    UnknownErrorHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(i0.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+    UnknownErrorHandler.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     /**
      * Helper logic to resolve best matching Applicable
@@ -14235,7 +14130,7 @@
         HttpErrorInterceptor.prototype.intercept = function (request, next) {
             var _this = this;
             return next.handle(request).pipe(operators.catchError(function (response) {
-                if (response instanceof http.HttpErrorResponse) {
+                if (response instanceof i1.HttpErrorResponse) {
                     _this.handleErrorResponse(request, response);
                     return rxjs.throwError(response);
                 }
@@ -14254,16 +14149,15 @@
         HttpErrorInterceptor.prototype.getResponseHandler = function (response) {
             return resolveApplicable(this.handlers, [response]);
         };
-        HttpErrorInterceptor.ctorParameters = function () { return [
-            { type: Array, decorators: [{ type: core.Inject, args: [HttpErrorHandler,] }] }
-        ]; };
-        HttpErrorInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function HttpErrorInterceptor_Factory() { return new HttpErrorInterceptor(core.ɵɵinject(HttpErrorHandler)); }, token: HttpErrorInterceptor, providedIn: "root" });
-        HttpErrorInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' }),
-            __param(0, core.Inject(HttpErrorHandler))
-        ], HttpErrorInterceptor);
         return HttpErrorInterceptor;
     }());
+    HttpErrorInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function HttpErrorInterceptor_Factory() { return new HttpErrorInterceptor(i0.ɵɵinject(HttpErrorHandler)); }, token: HttpErrorInterceptor, providedIn: "root" });
+    HttpErrorInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    HttpErrorInterceptor.ctorParameters = function () { return [
+        { type: Array, decorators: [{ type: i0.Inject, args: [HttpErrorHandler,] }] }
+    ]; };
 
     var errorHandlers = [
         {
@@ -14314,7 +14208,7 @@
     ];
     var httpErrorInterceptors = [
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: HttpErrorInterceptor,
             multi: true,
         },
@@ -14330,11 +14224,11 @@
             case ADD_MESSAGE: {
                 var message = action.payload;
                 if (state.entities[message.type] === undefined) {
-                    return __assign(__assign({}, state), { entities: __assign(__assign({}, state.entities), (_a = {}, _a[message.type] = [message.text], _a)) });
+                    return Object.assign(Object.assign({}, state), { entities: Object.assign(Object.assign({}, state.entities), (_a = {}, _a[message.type] = [message.text], _a)) });
                 }
                 else {
                     var currentMessages = state.entities[message.type];
-                    return __assign(__assign({}, state), { entities: __assign(__assign({}, state.entities), (_b = {}, _b[message.type] = __spread(currentMessages, [message.text]), _b)) });
+                    return Object.assign(Object.assign({}, state), { entities: Object.assign(Object.assign({}, state.entities), (_b = {}, _b[message.type] = __spread(currentMessages, [message.text]), _b)) });
                 }
             }
             case REMOVE_MESSAGE: {
@@ -14346,11 +14240,11 @@
                 }
                 var messages = __spread(state.entities[msgType]);
                 messages.splice(msgIndex, 1);
-                return __assign(__assign({}, state), { entities: __assign(__assign({}, state.entities), (_c = {}, _c[msgType] = messages, _c)) });
+                return Object.assign(Object.assign({}, state), { entities: Object.assign(Object.assign({}, state.entities), (_c = {}, _c[msgType] = messages, _c)) });
             }
             case REMOVE_MESSAGES_BY_TYPE: {
-                var entities = __assign(__assign({}, state.entities), (_d = {}, _d[action.payload] = [], _d));
-                return __assign(__assign({}, state), { entities: entities });
+                var entities = Object.assign(Object.assign({}, state.entities), (_d = {}, _d[action.payload] = [], _d));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
         }
         return state;
@@ -14359,7 +14253,7 @@
     function getReducers$4() {
         return reducer$8;
     }
-    var reducerToken$4 = new core.InjectionToken('GlobalMessageReducers');
+    var reducerToken$4 = new i0.InjectionToken('GlobalMessageReducers');
     var reducerProvider$4 = {
         provide: reducerToken$4,
         useFactory: getReducers$4,
@@ -14368,17 +14262,17 @@
     var GlobalMessageStoreModule = /** @class */ (function () {
         function GlobalMessageStoreModule() {
         }
-        GlobalMessageStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    StateModule,
-                    store.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
-                ],
-                providers: [reducerProvider$4],
-            })
-        ], GlobalMessageStoreModule);
         return GlobalMessageStoreModule;
     }());
+    GlobalMessageStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        StateModule,
+                        i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                    ],
+                    providers: [reducerProvider$4],
+                },] }
+    ];
 
     function shallowEqualObjects(objA, objB) {
         if (objA === objB) {
@@ -14457,58 +14351,51 @@
     }
 
     var GlobalMessageEffect = /** @class */ (function () {
-        function GlobalMessageEffect(actions$, store$1, config, platformId) {
+        function GlobalMessageEffect(actions$, store, config, platformId) {
             var _this = this;
             this.actions$ = actions$;
-            this.store = store$1;
+            this.store = store;
             this.config = config;
             this.platformId = platformId;
-            this.removeDuplicated$ = this.actions$.pipe(effects$c.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap(function (message) {
-                return rxjs.of(message.text).pipe(operators.withLatestFrom(_this.store.pipe(store.select(getGlobalMessageEntitiesByType(message.type)))), operators.filter(function (_a) {
-                    var _b = __read(_a, 2), text = _b[0], messages = _b[1];
-                    return countOfDeepEqualObjects(text, messages) > 1;
-                }), operators.map(function (_a) {
-                    var _b = __read(_a, 2), text = _b[0], messages = _b[1];
-                    return new RemoveMessage({
-                        type: message.type,
-                        index: indexOfFirstOccurrence(text, messages),
-                    });
-                }));
-            }));
-            this.hideAfterDelay$ = common.isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
-                ? this.actions$.pipe(effects$c.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.concatMap(function (message) {
+            this.removeDuplicated$ = this.actions$.pipe(i3.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap(function (message) { return rxjs.of(message.text).pipe(operators.withLatestFrom(_this.store.pipe(i1$1.select(getGlobalMessageEntitiesByType(message.type)))), operators.filter(function (_a) {
+                var _b = __read(_a, 2), text = _b[0], messages = _b[1];
+                return countOfDeepEqualObjects(text, messages) > 1;
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 2), text = _b[0], messages = _b[1];
+                return new RemoveMessage({
+                    type: message.type,
+                    index: indexOfFirstOccurrence(text, messages),
+                });
+            })); }));
+            this.hideAfterDelay$ = i1$2.isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
+                ? this.actions$.pipe(i3.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.concatMap(function (message) {
                     var config = _this.config.globalMessages[message.type];
-                    return _this.store.pipe(store.select(getGlobalMessageCountByType(message.type)), operators.take(1), operators.filter(function (count) {
-                        return ((config && config.timeout !== undefined) || message.timeout) &&
-                            count &&
-                            count > 0;
-                    }), operators.delay(message.timeout || config.timeout), operators.switchMap(function () {
-                        return rxjs.of(new RemoveMessage({
-                            type: message.type,
-                            index: 0,
-                        }));
-                    }));
+                    return _this.store.pipe(i1$1.select(getGlobalMessageCountByType(message.type)), operators.take(1), operators.filter(function (count) { return ((config && config.timeout !== undefined) || message.timeout) &&
+                        count &&
+                        count > 0; }), operators.delay(message.timeout || config.timeout), operators.switchMap(function () { return rxjs.of(new RemoveMessage({
+                        type: message.type,
+                        index: 0,
+                    })); }));
                 }))
                 : rxjs.EMPTY;
         }
-        GlobalMessageEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: store.Store },
-            { type: GlobalMessageConfig },
-            { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
-        GlobalMessageEffect = __decorate([
-            core.Injectable(),
-            __param(3, core.Inject(core.PLATFORM_ID))
-        ], GlobalMessageEffect);
         return GlobalMessageEffect;
     }());
+    GlobalMessageEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    GlobalMessageEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: i1$1.Store },
+        { type: GlobalMessageConfig },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
+    __decorate([
+        i3.Effect()
+    ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
 
     function defaultGlobalMessageConfigFactory() {
         var _a;
@@ -14533,52 +14420,42 @@
     var GlobalMessageModule = /** @class */ (function () {
         function GlobalMessageModule() {
         }
-        GlobalMessageModule_1 = GlobalMessageModule;
         GlobalMessageModule.forRoot = function () {
             return {
-                ngModule: GlobalMessageModule_1,
+                ngModule: GlobalMessageModule,
                 providers: __spread(errorHandlers, httpErrorInterceptors),
             };
         };
-        var GlobalMessageModule_1;
-        GlobalMessageModule = GlobalMessageModule_1 = __decorate([
-            core.NgModule({
-                imports: [
-                    GlobalMessageStoreModule,
-                    effects$c.EffectsModule.forFeature([GlobalMessageEffect]),
-                ],
-                providers: [provideDefaultConfigFactory(defaultGlobalMessageConfigFactory)],
-            })
-        ], GlobalMessageModule);
         return GlobalMessageModule;
     }());
+    GlobalMessageModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        GlobalMessageStoreModule,
+                        i3.EffectsModule.forFeature([GlobalMessageEffect]),
+                    ],
+                    providers: [provideDefaultConfigFactory(defaultGlobalMessageConfigFactory)],
+                },] }
+    ];
 
-    var getAsmState = store.createFeatureSelector(ASM_FEATURE);
+    var getAsmState = i1$1.createFeatureSelector(ASM_FEATURE);
 
     var ɵ0$t = function (state) { return state.asmUi; };
-    var getAsmUi = store.createSelector(getAsmState, ɵ0$t);
+    var getAsmUi = i1$1.createSelector(getAsmState, ɵ0$t);
 
     var ɵ0$u = function (state) { return state.customerSearchResult; };
-    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, ɵ0$u);
-    var ɵ1$m = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, ɵ1$m);
-    var ɵ2$e = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getCustomerSearchResultsLoading = store.createSelector(getCustomerSearchResultsLoaderState, ɵ2$e);
+    var getCustomerSearchResultsLoaderState = i1$1.createSelector(getAsmState, ɵ0$u);
+    var ɵ1$m = function (state) { return loaderValueSelector(state); };
+    var getCustomerSearchResults = i1$1.createSelector(getCustomerSearchResultsLoaderState, ɵ1$m);
+    var ɵ2$e = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerSearchResultsLoading = i1$1.createSelector(getCustomerSearchResultsLoaderState, ɵ2$e);
 
     var ɵ0$v = function (state) { return state.csagentToken; };
-    var getCustomerSupportAgentTokenState = store.createSelector(getAsmState, ɵ0$v);
-    var ɵ1$n = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, ɵ1$n);
-    var ɵ2$f = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
+    var getCustomerSupportAgentTokenState = i1$1.createSelector(getAsmState, ɵ0$v);
+    var ɵ1$n = function (state) { return loaderValueSelector(state); };
+    var getCustomerSupportAgentToken = i1$1.createSelector(getCustomerSupportAgentTokenState, ɵ1$n);
+    var ɵ2$f = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerSupportAgentTokenLoading = i1$1.createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
 
     var asmGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -14618,7 +14495,7 @@
          * @param customerId
          */
         AsmAuthService.prototype.startCustomerEmulationSession = function (customerSupportAgentToken, customerId) {
-            this.authService.authorizeWithToken(__assign(__assign({}, customerSupportAgentToken), { userId: customerId }));
+            this.authService.authorizeWithToken(Object.assign(Object.assign({}, customerSupportAgentToken), { userId: customerId }));
         };
         /**
          * Utility function to determine if a given token is a customer emulation session token.
@@ -14633,13 +14510,13 @@
          * Returns the customer support agent's token
          */
         AsmAuthService.prototype.getCustomerSupportAgentToken = function () {
-            return this.store.pipe(store.select(getCustomerSupportAgentToken));
+            return this.store.pipe(i1$1.select(getCustomerSupportAgentToken));
         };
         /**
          * Returns the customer support agent's token loading status
          */
         AsmAuthService.prototype.getCustomerSupportAgentTokenLoading = function () {
-            return this.store.pipe(store.select(getCustomerSupportAgentTokenLoading));
+            return this.store.pipe(i1$1.select(getCustomerSupportAgentTokenLoading));
         };
         /**
          * Logout a customer support agent
@@ -14653,18 +14530,18 @@
                 _this.store.dispatch(new RevokeUserToken(userToken));
             });
         };
-        AsmAuthService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        AsmAuthService.ɵprov = core.ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: AsmAuthService, providedIn: "root" });
-        AsmAuthService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], AsmAuthService);
         return AsmAuthService;
     }());
+    AsmAuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: AsmAuthService, providedIn: "root" });
+    AsmAuthService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AsmAuthService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var CustomerSupportAgentErrorHandlingService = /** @class */ (function () {
         function CustomerSupportAgentErrorHandlingService(asmAuthService, globalMessageService) {
@@ -14677,16 +14554,16 @@
                 key: 'asm.csagentTokenExpired',
             }, exports.GlobalMessageType.MSG_TYPE_ERROR);
         };
-        CustomerSupportAgentErrorHandlingService.ctorParameters = function () { return [
-            { type: AsmAuthService },
-            { type: GlobalMessageService }
-        ]; };
-        CustomerSupportAgentErrorHandlingService.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerSupportAgentErrorHandlingService_Factory() { return new CustomerSupportAgentErrorHandlingService(core.ɵɵinject(AsmAuthService), core.ɵɵinject(GlobalMessageService)); }, token: CustomerSupportAgentErrorHandlingService, providedIn: "root" });
-        CustomerSupportAgentErrorHandlingService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], CustomerSupportAgentErrorHandlingService);
         return CustomerSupportAgentErrorHandlingService;
     }());
+    CustomerSupportAgentErrorHandlingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerSupportAgentErrorHandlingService_Factory() { return new CustomerSupportAgentErrorHandlingService(i0.ɵɵinject(AsmAuthService), i0.ɵɵinject(GlobalMessageService)); }, token: CustomerSupportAgentErrorHandlingService, providedIn: "root" });
+    CustomerSupportAgentErrorHandlingService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    CustomerSupportAgentErrorHandlingService.ctorParameters = function () { return [
+        { type: AsmAuthService },
+        { type: GlobalMessageService }
+    ]; };
 
     var CustomerSupportAgentAuthErrorInterceptor = /** @class */ (function () {
         function CustomerSupportAgentAuthErrorInterceptor(csagentErrorHandlingService) {
@@ -14699,7 +14576,7 @@
                 request = InterceptorUtil.removeHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request);
             }
             return next.handle(request).pipe(operators.catchError(function (errResponse) {
-                if (errResponse instanceof http.HttpErrorResponse) {
+                if (errResponse instanceof i1.HttpErrorResponse) {
                     // Unauthorized
                     if (isCustomerSupportAgentRequest && errResponse.status === 401) {
                         _this.csagentErrorHandlingService.terminateCustomerSupportAgentExpiredSession();
@@ -14713,15 +14590,15 @@
             var isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
             return Boolean(isRequestMapping);
         };
-        CustomerSupportAgentAuthErrorInterceptor.ctorParameters = function () { return [
-            { type: CustomerSupportAgentErrorHandlingService }
-        ]; };
-        CustomerSupportAgentAuthErrorInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerSupportAgentAuthErrorInterceptor_Factory() { return new CustomerSupportAgentAuthErrorInterceptor(core.ɵɵinject(CustomerSupportAgentErrorHandlingService)); }, token: CustomerSupportAgentAuthErrorInterceptor, providedIn: "root" });
-        CustomerSupportAgentAuthErrorInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], CustomerSupportAgentAuthErrorInterceptor);
         return CustomerSupportAgentAuthErrorInterceptor;
     }());
+    CustomerSupportAgentAuthErrorInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerSupportAgentAuthErrorInterceptor_Factory() { return new CustomerSupportAgentAuthErrorInterceptor(i0.ɵɵinject(CustomerSupportAgentErrorHandlingService)); }, token: CustomerSupportAgentAuthErrorInterceptor, providedIn: "root" });
+    CustomerSupportAgentAuthErrorInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    CustomerSupportAgentAuthErrorInterceptor.ctorParameters = function () { return [
+        { type: CustomerSupportAgentErrorHandlingService }
+    ]; };
 
     var CustomerSupportAgentTokenInterceptor = /** @class */ (function () {
         function CustomerSupportAgentTokenInterceptor(asmAuthService) {
@@ -14745,24 +14622,24 @@
             }
             return rxjs.of(null);
         };
-        CustomerSupportAgentTokenInterceptor.ctorParameters = function () { return [
-            { type: AsmAuthService }
-        ]; };
-        CustomerSupportAgentTokenInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(core.ɵɵinject(AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
-        CustomerSupportAgentTokenInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], CustomerSupportAgentTokenInterceptor);
         return CustomerSupportAgentTokenInterceptor;
     }());
+    CustomerSupportAgentTokenInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(i0.ɵɵinject(AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
+    CustomerSupportAgentTokenInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    CustomerSupportAgentTokenInterceptor.ctorParameters = function () { return [
+        { type: AsmAuthService }
+    ]; };
 
     var interceptors$2 = [
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: CustomerSupportAgentTokenInterceptor,
             multi: true,
         },
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: CustomerSupportAgentAuthErrorInterceptor,
             multi: true,
         },
@@ -14771,21 +14648,19 @@
     var AsmModule = /** @class */ (function () {
         function AsmModule() {
         }
-        AsmModule_1 = AsmModule;
         AsmModule.forRoot = function () {
             return {
-                ngModule: AsmModule_1,
+                ngModule: AsmModule,
                 providers: __spread(interceptors$2, [provideDefaultConfig(defaultAsmConfig)]),
             };
         };
-        var AsmModule_1;
-        AsmModule = AsmModule_1 = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule, AsmStoreModule],
-            })
-        ], AsmModule);
         return AsmModule;
     }());
+    AsmModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule, AsmStoreModule],
+                },] }
+    ];
 
     var AsmService = /** @class */ (function () {
         function AsmService(store) {
@@ -14808,13 +14683,13 @@
          * Returns the customer search result data.
          */
         AsmService.prototype.getCustomerSearchResults = function () {
-            return this.store.pipe(store.select(getCustomerSearchResults));
+            return this.store.pipe(i1$1.select(getCustomerSearchResults));
         };
         /**
          * Returns the customer search result loading status.
          */
         AsmService.prototype.getCustomerSearchResultsLoading = function () {
-            return this.store.pipe(store.select(getCustomerSearchResultsLoading));
+            return this.store.pipe(i1$1.select(getCustomerSearchResultsLoading));
         };
         /**
          * Updates the state of the ASM UI
@@ -14826,19 +14701,19 @@
          * Get the state of the ASM UI
          */
         AsmService.prototype.getAsmUiState = function () {
-            return this.store.pipe(store.select(getAsmUi));
+            return this.store.pipe(i1$1.select(getAsmUi));
         };
-        AsmService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        AsmService.ɵprov = core.ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(core.ɵɵinject(store.Store)); }, token: AsmService, providedIn: "root" });
-        AsmService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], AsmService);
         return AsmService;
     }());
+    AsmService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(i0.ɵɵinject(i1$1.Store)); }, token: AsmService, providedIn: "root" });
+    AsmService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AsmService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
 
     /**
      * Abstract class that can be used to resolve meta data for specific pages.
@@ -14885,45 +14760,37 @@
      */
     var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
 
-    var getMultiCartState = store.createFeatureSelector(MULTI_CART_FEATURE);
+    var getMultiCartState = i1$1.createFeatureSelector(MULTI_CART_FEATURE);
     var ɵ0$w = function (state) { return state.carts; };
-    var getMultiCartEntities = store.createSelector(getMultiCartState, ɵ0$w);
+    var getMultiCartEntities = i1$1.createSelector(getMultiCartState, ɵ0$w);
     var getCartEntitySelectorFactory = function (cartId) {
-        return store.createSelector(getMultiCartEntities, function (state) {
-            return entityProcessesLoaderStateSelector(state, cartId);
-        });
+        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityProcessesLoaderStateSelector(state, cartId); });
     };
     var getCartSelectorFactory = function (cartId) {
-        return store.createSelector(getMultiCartEntities, function (state) {
-            return entityValueSelector(state, cartId);
-        });
+        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityValueSelector(state, cartId); });
     };
     var getCartIsStableSelectorFactory = function (cartId) {
-        return store.createSelector(getMultiCartEntities, function (state) {
-            return entityIsStableSelector(state, cartId);
-        });
+        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityIsStableSelector(state, cartId); });
     };
     var getCartHasPendingProcessesSelectorFactory = function (cartId) {
-        return store.createSelector(getMultiCartEntities, function (state) {
-            return entityHasPendingProcessesSelector(state, cartId);
-        });
+        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityHasPendingProcessesSelector(state, cartId); });
     };
     var getCartEntriesSelectorFactory = function (cartId) {
-        return store.createSelector(getCartSelectorFactory(cartId), function (state) {
+        return i1$1.createSelector(getCartSelectorFactory(cartId), function (state) {
             return state && state.entries ? state.entries : [];
         });
     };
     var getCartEntrySelectorFactory = function (cartId, productCode) {
-        return store.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
+        return i1$1.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
             return state
                 ? state.find(function (entry) { return entry.product.code === productCode; })
                 : undefined;
         });
     };
     var ɵ1$o = function (state) { return state.active; };
-    var getActiveCartId = store.createSelector(getMultiCartState, ɵ1$o);
+    var getActiveCartId = i1$1.createSelector(getMultiCartState, ɵ1$o);
     var ɵ2$g = function (state) { return state.wishList; };
-    var getWishListId = store.createSelector(getMultiCartState, ɵ2$g);
+    var getWishListId = i1$1.createSelector(getMultiCartState, ɵ2$g);
 
     var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -15543,7 +15410,7 @@
          * @param cartId
          */
         MultiCartService.prototype.getCart = function (cartId) {
-            return this.store.pipe(store.select(getCartSelectorFactory(cartId)));
+            return this.store.pipe(i1$1.select(getCartSelectorFactory(cartId)));
         };
         /**
          * Returns cart entity from store (cart with loading, error, success flags) as an observable
@@ -15551,7 +15418,7 @@
          * @param cartId
          */
         MultiCartService.prototype.getCartEntity = function (cartId) {
-            return this.store.pipe(store.select(getCartEntitySelectorFactory(cartId)));
+            return this.store.pipe(i1$1.select(getCartEntitySelectorFactory(cartId)));
         };
         /**
          * Returns true when there are no operations on that in progress and it is not currently loading
@@ -15559,7 +15426,7 @@
          * @param cartId
          */
         MultiCartService.prototype.isStable = function (cartId) {
-            return this.store.pipe(store.select(getCartIsStableSelectorFactory(cartId)), 
+            return this.store.pipe(i1$1.select(getCartIsStableSelectorFactory(cartId)), 
             // We dispatch a lot of actions just after finishing some process or loading, so we want this flag not to flicker.
             // This flickering should only be avoided when switching from false to true
             // Start of loading should be showed instantly (no debounce)
@@ -15625,7 +15492,7 @@
          * @param cartId
          */
         MultiCartService.prototype.getEntries = function (cartId) {
-            return this.store.pipe(store.select(getCartEntriesSelectorFactory(cartId)));
+            return this.store.pipe(i1$1.select(getCartEntriesSelectorFactory(cartId)));
         };
         /**
          * Add entry to cart
@@ -15703,7 +15570,7 @@
          * @param productCode
          */
         MultiCartService.prototype.getEntry = function (cartId, productCode) {
-            return this.store.pipe(store.select(getCartEntrySelectorFactory(cartId, productCode)));
+            return this.store.pipe(i1$1.select(getCartEntrySelectorFactory(cartId, productCode)));
         };
         /**
          * Assign email to the cart
@@ -15731,29 +15598,29 @@
                 cartId: cartId,
             }));
         };
-        MultiCartService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        MultiCartService.ɵprov = core.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(core.ɵɵinject(store.Store)); }, token: MultiCartService, providedIn: "root" });
-        MultiCartService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], MultiCartService);
         return MultiCartService;
     }());
+    MultiCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(i0.ɵɵinject(i1$1.Store)); }, token: MultiCartService, providedIn: "root" });
+    MultiCartService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    MultiCartService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
 
     var ActiveCartService = /** @class */ (function () {
-        function ActiveCartService(store$1, authService, multiCartService) {
+        function ActiveCartService(store, authService, multiCartService) {
             var _this = this;
-            this.store = store$1;
+            this.store = store;
             this.authService = authService;
             this.multiCartService = multiCartService;
             this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
             this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
             this.subscription = new rxjs.Subscription();
             this.userId = OCC_USER_ID_ANONYMOUS;
-            this.activeCartId$ = this.store.pipe(store.select(getActiveCartId), operators.map(function (cartId) {
+            this.activeCartId$ = this.store.pipe(i1$1.select(getActiveCartId), operators.map(function (cartId) {
                 if (!cartId) {
                     return OCC_CART_ID_CURRENT;
                 }
@@ -15933,11 +15800,9 @@
                 return cartSelector$;
             }), operators.filter(function (cartState) { return !cartState.loading; }), 
             // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
-            operators.filter(function (cartState) {
-                return _this.userId === OCC_USER_ID_ANONYMOUS ||
-                    cartState.success ||
-                    cartState.error;
-            }), operators.take(1), operators.switchMap(function (cartState) {
+            operators.filter(function (cartState) { return _this.userId === OCC_USER_ID_ANONYMOUS ||
+                cartState.success ||
+                cartState.error; }), operators.take(1), operators.switchMap(function (cartState) {
                 if (_this.isEmpty(cartState.value)) {
                     _this.multiCartService.createCart({
                         userId: _this.userId,
@@ -15987,9 +15852,7 @@
          */
         ActiveCartService.prototype.getEntry = function (productCode) {
             var _this = this;
-            return this.activeCartId$.pipe(operators.switchMap(function (cartId) {
-                return _this.multiCartService.getEntry(cartId, productCode);
-            }), operators.distinctUntilChanged());
+            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getEntry(cartId, productCode); }), operators.distinctUntilChanged());
         };
         /**
          * Assign email to cart
@@ -16053,19 +15916,19 @@
                 this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
             );
         };
-        ActiveCartService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: MultiCartService }
-        ]; };
-        ActiveCartService.ɵprov = core.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
-        ActiveCartService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ActiveCartService);
         return ActiveCartService;
     }());
+    ActiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+    ActiveCartService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ActiveCartService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: MultiCartService }
+    ]; };
 
     /**
      *
@@ -16077,9 +15940,7 @@
      * @param notifier
      */
     function withdrawOn(notifier) {
-        return function (source) {
-            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
-        };
+        return function (source) { return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source)); };
     }
 
     var CartEntryConnector = /** @class */ (function () {
@@ -16095,88 +15956,76 @@
         CartEntryConnector.prototype.remove = function (userId, cartId, entryNumber) {
             return this.adapter.remove(userId, cartId, entryNumber);
         };
-        CartEntryConnector.ctorParameters = function () { return [
-            { type: CartEntryAdapter }
-        ]; };
-        CartEntryConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core.ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
-        CartEntryConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartEntryConnector);
         return CartEntryConnector;
     }());
+    CartEntryConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(i0.ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+    CartEntryConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CartEntryConnector.ctorParameters = function () { return [
+        { type: CartEntryAdapter }
+    ]; };
 
     var CartEntryEffects = /** @class */ (function () {
         function CartEntryEffects(actions$, cartEntryConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.cartEntryConnector = cartEntryConnector;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.addEntry$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+            this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.addEntry$ = this.actions$.pipe(i3.ofType(CART_ADD_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
                 return _this.cartEntryConnector
                     .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
-                    .pipe(operators.map(function (cartModification) {
-                    return new CartAddEntrySuccess(__assign(__assign({}, payload), cartModification));
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartAddEntryFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        new LoadCart({
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                    ]);
-                }));
+                    .pipe(operators.map(function (cartModification) { return new CartAddEntrySuccess(Object.assign(Object.assign({}, payload), cartModification)); }), operators.catchError(function (error) { return rxjs.from([
+                    new CartAddEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                    new LoadCart({
+                        cartId: payload.cartId,
+                        userId: payload.userId,
+                    }),
+                ]); }));
             }), withdrawOn(this.contextChange$));
-            this.removeEntry$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.cartEntryConnector
-                    .remove(payload.userId, payload.cartId, payload.entryNumber)
-                    .pipe(operators.map(function () {
-                    return new CartRemoveEntrySuccess(__assign({}, payload));
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartRemoveEntryFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        new LoadCart({
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                    ]);
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.updateEntry$ = this.actions$.pipe(effects$c.ofType(CART_UPDATE_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.cartEntryConnector
-                    .update(payload.userId, payload.cartId, payload.entryNumber, payload.quantity)
-                    .pipe(operators.map(function () {
-                    return new CartUpdateEntrySuccess(__assign({}, payload));
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartUpdateEntryFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        new LoadCart({
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                    ]);
-                }));
-            }), withdrawOn(this.contextChange$));
+            this.removeEntry$ = this.actions$.pipe(i3.ofType(CART_REMOVE_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.cartEntryConnector
+                .remove(payload.userId, payload.cartId, payload.entryNumber)
+                .pipe(operators.map(function () {
+                return new CartRemoveEntrySuccess(Object.assign({}, payload));
+            }), operators.catchError(function (error) { return rxjs.from([
+                new CartRemoveEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new LoadCart({
+                    cartId: payload.cartId,
+                    userId: payload.userId,
+                }),
+            ]); })); }), withdrawOn(this.contextChange$));
+            this.updateEntry$ = this.actions$.pipe(i3.ofType(CART_UPDATE_ENTRY), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.cartEntryConnector
+                .update(payload.userId, payload.cartId, payload.entryNumber, payload.quantity)
+                .pipe(operators.map(function () {
+                return new CartUpdateEntrySuccess(Object.assign({}, payload));
+            }), operators.catchError(function (error) { return rxjs.from([
+                new CartUpdateEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new LoadCart({
+                    cartId: payload.cartId,
+                    userId: payload.userId,
+                }),
+            ]); })); }), withdrawOn(this.contextChange$));
         }
-        CartEntryEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartEntryConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CartEntryEffects.prototype, "addEntry$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEntryEffects.prototype, "removeEntry$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEntryEffects.prototype, "updateEntry$", void 0);
-        CartEntryEffects = __decorate([
-            core.Injectable()
-        ], CartEntryEffects);
         return CartEntryEffects;
     }());
+    CartEntryEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CartEntryEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CartEntryConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CartEntryEffects.prototype, "addEntry$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEntryEffects.prototype, "removeEntry$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEntryEffects.prototype, "updateEntry$", void 0);
 
     var CartVoucherConnector = /** @class */ (function () {
         function CartVoucherConnector(adapter) {
@@ -16188,17 +16037,17 @@
         CartVoucherConnector.prototype.remove = function (userId, cartId, voucherId) {
             return this.adapter.remove(userId, cartId, voucherId);
         };
-        CartVoucherConnector.ctorParameters = function () { return [
-            { type: CartVoucherAdapter }
-        ]; };
-        CartVoucherConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(core.ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
-        CartVoucherConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartVoucherConnector);
         return CartVoucherConnector;
     }());
+    CartVoucherConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(i0.ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
+    CartVoucherConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CartVoucherConnector.ctorParameters = function () { return [
+        { type: CartVoucherAdapter }
+    ]; };
 
     var CartVoucherEffects = /** @class */ (function () {
         function CartVoucherEffects(actions$, cartVoucherConnector, messageService) {
@@ -16206,24 +16055,22 @@
             this.actions$ = actions$;
             this.cartVoucherConnector = cartVoucherConnector;
             this.messageService = messageService;
-            this.addCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.addCartVoucher$ = this.actions$.pipe(i3.ofType(CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.cartVoucherConnector
                     .add(payload.userId, payload.cartId, payload.voucherId)
                     .pipe(operators.map(function () {
                     _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, exports.GlobalMessageType.MSG_TYPE_CONFIRMATION);
-                    return new CartAddVoucherSuccess(__assign({}, payload));
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartAddVoucherFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        new CartProcessesDecrement(payload.cartId),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ]);
-                }));
+                    return new CartAddVoucherSuccess(Object.assign({}, payload));
+                }), operators.catchError(function (error) { return rxjs.from([
+                    new CartAddVoucherFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                    new CartProcessesDecrement(payload.cartId),
+                    new LoadCart({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                ]); }));
             }));
-            this.removeCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_VOUCHER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.removeCartVoucher$ = this.actions$.pipe(i3.ofType(CART_REMOVE_VOUCHER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.cartVoucherConnector
                     .remove(payload.userId, payload.cartId, payload.voucherId)
                     .pipe(operators.map(function () {
@@ -16233,41 +16080,39 @@
                         cartId: payload.cartId,
                         voucherId: payload.voucherId,
                     });
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new CartRemoveVoucherFail({
-                            error: makeErrorSerializable(error),
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                            voucherId: payload.voucherId,
-                        }),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ]);
-                }));
+                }), operators.catchError(function (error) { return rxjs.from([
+                    new CartRemoveVoucherFail({
+                        error: makeErrorSerializable(error),
+                        cartId: payload.cartId,
+                        userId: payload.userId,
+                        voucherId: payload.voucherId,
+                    }),
+                    new LoadCart({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                ]); }));
             }));
         }
         CartVoucherEffects.prototype.showGlobalMessage = function (text, param, messageType) {
             this.messageService.add({ key: text, params: { voucherCode: param } }, messageType);
         };
-        CartVoucherEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartVoucherConnector },
-            { type: GlobalMessageService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
-        CartVoucherEffects = __decorate([
-            core.Injectable()
-        ], CartVoucherEffects);
         return CartVoucherEffects;
     }());
+    CartVoucherEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CartVoucherEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CartVoucherConnector },
+        { type: GlobalMessageService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
 
     var VERIFY_ADDRESS = '[Checkout] Verify Address';
     var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
@@ -16966,73 +16811,69 @@
         CartConnector.prototype.addEmail = function (userId, cartId, email) {
             return this.adapter.addEmail(userId, cartId, email);
         };
-        CartConnector.ctorParameters = function () { return [
-            { type: CartAdapter }
-        ]; };
-        CartConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(core.ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
-        CartConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartConnector);
         return CartConnector;
     }());
+    CartConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(i0.ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
+    CartConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CartConnector.ctorParameters = function () { return [
+        { type: CartAdapter }
+    ]; };
 
     var CartEffects = /** @class */ (function () {
-        function CartEffects(actions$, cartConnector, store$1) {
+        function CartEffects(actions$, cartConnector, store) {
             var _this = this;
             this.actions$ = actions$;
             this.cartConnector = cartConnector;
-            this.store = store$1;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.loadCart$ = this.actions$.pipe(effects$c.ofType(LOAD_CART), operators.map(function (action) { return action.payload; }), operators.groupBy(function (payload) { return payload.cartId; }), operators.mergeMap(function (group$) {
-                return group$.pipe(operators.switchMap(function (payload) {
-                    return rxjs.of(payload).pipe(operators.withLatestFrom(_this.store.pipe(store.select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
-                }), operators.filter(function (_a) {
-                    var _b = __read(_a, 2), _ = _b[0], hasPendingProcesses = _b[1];
-                    return !hasPendingProcesses;
-                }), operators.map(function (_a) {
-                    var _b = __read(_a, 1), payload = _b[0];
-                    return payload;
-                }), operators.switchMap(function (payload) {
-                    return _this.cartConnector.load(payload.userId, payload.cartId).pipe(operators.mergeMap(function (cart) {
-                        var actions = [];
-                        if (cart) {
-                            actions.push(new LoadCartSuccess(__assign(__assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })));
-                            if (payload.cartId === OCC_CART_ID_CURRENT) {
-                                // Removing cart from entity object under `current` key as it is no longer needed.
-                                // Current cart is loaded under it's code entity.
-                                actions.push(new RemoveCart({ cartId: OCC_CART_ID_CURRENT }));
-                            }
+            this.store = store;
+            this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.loadCart$ = this.actions$.pipe(i3.ofType(LOAD_CART), operators.map(function (action) { return action.payload; }), operators.groupBy(function (payload) { return payload.cartId; }), operators.mergeMap(function (group$) { return group$.pipe(operators.switchMap(function (payload) {
+                return rxjs.of(payload).pipe(operators.withLatestFrom(_this.store.pipe(i1$1.select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
+            }), operators.filter(function (_b) {
+                var _c = __read(_b, 2), _ = _c[0], hasPendingProcesses = _c[1];
+                return !hasPendingProcesses;
+            }), operators.map(function (_b) {
+                var _c = __read(_b, 1), payload = _c[0];
+                return payload;
+            }), operators.switchMap(function (payload) {
+                return _this.cartConnector.load(payload.userId, payload.cartId).pipe(operators.mergeMap(function (cart) {
+                    var actions = [];
+                    if (cart) {
+                        actions.push(new LoadCartSuccess(Object.assign(Object.assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })));
+                        if (payload.cartId === OCC_CART_ID_CURRENT) {
+                            // Removing cart from entity object under `current` key as it is no longer needed.
+                            // Current cart is loaded under it's code entity.
+                            actions.push(new RemoveCart({ cartId: OCC_CART_ID_CURRENT }));
                         }
-                        else {
-                            actions = [
-                                new LoadCartFail(__assign(__assign({}, payload), { error: {} })),
-                            ];
+                    }
+                    else {
+                        actions = [
+                            new LoadCartFail(Object.assign(Object.assign({}, payload), { error: {} })),
+                        ];
+                    }
+                    return actions;
+                }), operators.catchError(function (error) {
+                    var _a;
+                    if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
+                        var couponExpiredErrors = error.error.errors.filter(function (err) { return err.reason === 'invalid'; });
+                        if (couponExpiredErrors.length > 0) {
+                            // Reload in case of expired coupon.
+                            return rxjs.of(new LoadCart(Object.assign({}, payload)));
                         }
-                        return actions;
-                    }), operators.catchError(function (error) {
-                        var _a;
-                        if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
-                            var couponExpiredErrors = error.error.errors.filter(function (err) { return err.reason === 'invalid'; });
-                            if (couponExpiredErrors.length > 0) {
-                                // Reload in case of expired coupon.
-                                return rxjs.of(new LoadCart(__assign({}, payload)));
-                            }
-                            var cartNotFoundErrors = error.error.errors.filter(function (err) {
-                                return isCartNotFoundError(err) ||
-                                    err.reason === 'UnknownResourceError';
-                            });
-                            if (cartNotFoundErrors.length > 0) {
-                                // Remove cart as it doesn't exist on backend (selective cart always exists).
-                                return rxjs.of(new RemoveCart({ cartId: payload.cartId }));
-                            }
+                        var cartNotFoundErrors = error.error.errors.filter(function (err) { return isCartNotFoundError(err) ||
+                            err.reason === 'UnknownResourceError'; });
+                        if (cartNotFoundErrors.length > 0) {
+                            // Remove cart as it doesn't exist on backend (selective cart always exists).
+                            return rxjs.of(new RemoveCart({ cartId: payload.cartId }));
                         }
-                        return rxjs.of(new LoadCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })));
-                    }));
+                    }
+                    return rxjs.of(new LoadCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })));
                 }));
-            }), withdrawOn(this.contextChange$));
-            this.createCart$ = this.actions$.pipe(effects$c.ofType(CREATE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            })); }), withdrawOn(this.contextChange$));
+            this.createCart$ = this.actions$.pipe(i3.ofType(CREATE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.cartConnector
                     .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
                     .pipe(operators.switchMap(function (cart) {
@@ -17047,17 +16888,15 @@
                         }));
                     }
                     return __spread([
-                        new CreateCartSuccess(__assign(__assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })),
+                        new CreateCartSuccess(Object.assign(Object.assign({}, payload), { cart: cart, cartId: getCartIdByUserId(cart, payload.userId) })),
                         new SetTempCart({
                             cart: cart,
                             tempCartId: payload.tempCartId,
                         })
                     ], conditionalActions);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new CreateCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new CreateCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) }))); }));
             }), withdrawOn(this.contextChange$));
-            this.mergeCart$ = this.actions$.pipe(effects$c.ofType(MERGE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.mergeCart$ = this.actions$.pipe(i3.ofType(MERGE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(operators.mergeMap(function (currentCart) {
                     return [
                         new CreateCart({
@@ -17071,93 +16910,81 @@
                 }));
             }), withdrawOn(this.contextChange$));
             // TODO(#7241): Remove when AddVoucherSuccess actions will extend processes actions
-            this.refresh$ = this.actions$.pipe(effects$c.ofType(CART_ADD_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return rxjs.from([
-                    new CartProcessesDecrement(payload.cartId),
+            this.refresh$ = this.actions$.pipe(i3.ofType(CART_ADD_VOUCHER_SUCCESS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return rxjs.from([
+                new CartProcessesDecrement(payload.cartId),
+                new LoadCart({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+            ]); }));
+            // TODO: Switch to automatic cart reload on processes count reaching 0 for cart entity
+            this.refreshWithoutProcesses$ = this.actions$.pipe(i3.ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new LoadCart({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            }); }));
+            this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.mergeMap(function () {
+                return [new ResetCartDetails()];
+            }));
+            this.addEmail$ = this.actions$.pipe(i3.ofType(ADD_EMAIL_TO_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.cartConnector
+                .addEmail(payload.userId, payload.cartId, payload.email)
+                .pipe(operators.mergeMap(function () {
+                return [
+                    new AddEmailToCartSuccess(Object.assign({}, payload)),
                     new LoadCart({
                         userId: payload.userId,
                         cartId: payload.cartId,
                     }),
-                ]);
-            }));
-            // TODO: Switch to automatic cart reload on processes count reaching 0 for cart entity
-            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
-                return new LoadCart({
+                ];
+            }), operators.catchError(function (error) { return rxjs.from([
+                new AddEmailToCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new LoadCart({
                     userId: payload.userId,
                     cartId: payload.cartId,
-                });
-            }));
-            this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.mergeMap(function () {
-                return [new ResetCartDetails()];
-            }));
-            this.addEmail$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartConnector
-                    .addEmail(payload.userId, payload.cartId, payload.email)
-                    .pipe(operators.mergeMap(function () {
-                    return [
-                        new AddEmailToCartSuccess(__assign({}, payload)),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ];
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new AddEmailToCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ]);
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.deleteCart$ = this.actions$.pipe(effects$c.ofType(DELETE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartConnector.delete(payload.userId, payload.cartId).pipe(operators.map(function () {
-                    return new DeleteCartSuccess(__assign({}, payload));
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new DeleteCartFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        // Error might happen in higher backend layer and cart could still be removed.
-                        // When load fail with NotFound error then RemoveCart action will kick in and clear that cart in our state.
-                        new LoadCart(__assign({}, payload)),
-                    ]);
-                }));
-            }));
+                }),
+            ]); })); }), withdrawOn(this.contextChange$));
+            this.deleteCart$ = this.actions$.pipe(i3.ofType(DELETE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.cartConnector.delete(payload.userId, payload.cartId).pipe(operators.map(function () {
+                return new DeleteCartSuccess(Object.assign({}, payload));
+            }), operators.catchError(function (error) { return rxjs.from([
+                new DeleteCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                // Error might happen in higher backend layer and cart could still be removed.
+                // When load fail with NotFound error then RemoveCart action will kick in and clear that cart in our state.
+                new LoadCart(Object.assign({}, payload)),
+            ]); })); }));
         }
-        CartEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartConnector },
-            { type: store.Store }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "loadCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "createCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "mergeCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "refresh$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "refreshWithoutProcesses$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "addEmail$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CartEffects.prototype, "deleteCart$", void 0);
-        CartEffects = __decorate([
-            core.Injectable()
-        ], CartEffects);
         return CartEffects;
     }());
+    CartEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CartEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CartConnector },
+        { type: i1$1.Store }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CartEffects.prototype, "loadCart$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEffects.prototype, "createCart$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEffects.prototype, "mergeCart$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEffects.prototype, "refresh$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEffects.prototype, "refreshWithoutProcesses$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEffects.prototype, "addEmail$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CartEffects.prototype, "deleteCart$", void 0);
 
     var SaveCartConnector = /** @class */ (function () {
         function SaveCartConnector(adapter) {
@@ -17166,27 +16993,27 @@
         SaveCartConnector.prototype.saveCart = function (userId, cartId, saveCartName, saveCartDescription) {
             return this.adapter.saveCart(userId, cartId, saveCartName, saveCartDescription);
         };
-        SaveCartConnector.ctorParameters = function () { return [
-            { type: SaveCartAdapter }
-        ]; };
-        SaveCartConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(core.ɵɵinject(SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
-        SaveCartConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SaveCartConnector);
         return SaveCartConnector;
     }());
+    SaveCartConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(i0.ɵɵinject(SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
+    SaveCartConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    SaveCartConnector.ctorParameters = function () { return [
+        { type: SaveCartAdapter }
+    ]; };
 
     var WishListEffects = /** @class */ (function () {
-        function WishListEffects(actions$, cartConnector, saveCartConnector, authService, store$1) {
+        function WishListEffects(actions$, cartConnector, saveCartConnector, authService, store) {
             var _this = this;
             this.actions$ = actions$;
             this.cartConnector = cartConnector;
             this.saveCartConnector = saveCartConnector;
             this.authService = authService;
-            this.store = store$1;
-            this.createWishList$ = this.actions$.pipe(effects$c.ofType(CREATE_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.store = store;
+            this.createWishList$ = this.actions$.pipe(i3.ofType(CREATE_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.cartConnector.create(payload.userId).pipe(operators.switchMap(function (cart) {
                     return _this.saveCartConnector
                         .saveCart(payload.userId, cart.code, payload.name, payload.description)
@@ -17195,17 +17022,15 @@
                             cart: saveCartResult.savedCartData,
                             userId: payload.userId,
                         }),
-                    ]; }), operators.catchError(function (error) {
-                        return rxjs.from([
-                            new CreateWishListFail({
-                                cartId: cart.code,
-                                error: makeErrorSerializable(error),
-                            }),
-                        ]);
-                    }));
+                    ]; }), operators.catchError(function (error) { return rxjs.from([
+                        new CreateWishListFail({
+                            cartId: cart.code,
+                            error: makeErrorSerializable(error),
+                        }),
+                    ]); }));
                 }));
             }));
-            this.loadWishList$ = this.actions$.pipe(effects$c.ofType(LOAD_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+            this.loadWishList$ = this.actions$.pipe(i3.ofType(LOAD_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
                 var userId = payload.userId, customerId = payload.customerId, tempCartId = payload.tempCartId;
                 return _this.cartConnector.loadAll(userId).pipe(operators.switchMap(function (carts) {
                     if (carts) {
@@ -17231,18 +17056,16 @@
                             ];
                         }
                     }
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new LoadWishListFail({
-                            userId: userId,
-                            cartId: tempCartId,
-                            customerId: customerId,
-                            error: makeErrorSerializable(error),
-                        }),
-                    ]);
-                }));
+                }), operators.catchError(function (error) { return rxjs.from([
+                    new LoadWishListFail({
+                        userId: userId,
+                        cartId: tempCartId,
+                        customerId: customerId,
+                        error: makeErrorSerializable(error),
+                    }),
+                ]); }));
             }));
-            this.resetWishList$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(store.select(getWishListId))), operators.switchMap(function (_a) {
+            this.resetWishList$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(i1$1.select(getWishListId))), operators.switchMap(function (_a) {
                 var _b = __read(_a, 3), userId = _b[1], wishListId = _b[2];
                 if (Boolean(wishListId)) {
                     return _this.cartConnector.load(userId, wishListId).pipe(operators.switchMap(function (wishList) { return [
@@ -17251,40 +17074,38 @@
                             userId: userId,
                             cartId: getCartIdByUserId(wishList, userId),
                         }),
-                    ]; }), operators.catchError(function (error) {
-                        return rxjs.from([
-                            new LoadWishListFail({
-                                userId: userId,
-                                cartId: wishListId,
-                                error: makeErrorSerializable(error),
-                            }),
-                        ]);
-                    }));
+                    ]; }), operators.catchError(function (error) { return rxjs.from([
+                        new LoadWishListFail({
+                            userId: userId,
+                            cartId: wishListId,
+                            error: makeErrorSerializable(error),
+                        }),
+                    ]); }));
                 }
                 return rxjs.EMPTY;
             }));
         }
-        WishListEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartConnector },
-            { type: SaveCartConnector },
-            { type: AuthService },
-            { type: store.Store }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], WishListEffects.prototype, "createWishList$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], WishListEffects.prototype, "loadWishList$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], WishListEffects.prototype, "resetWishList$", void 0);
-        WishListEffects = __decorate([
-            core.Injectable()
-        ], WishListEffects);
         return WishListEffects;
     }());
+    WishListEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    WishListEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CartConnector },
+        { type: SaveCartConnector },
+        { type: AuthService },
+        { type: i1$1.Store }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], WishListEffects.prototype, "createWishList$", void 0);
+    __decorate([
+        i3.Effect()
+    ], WishListEffects.prototype, "loadWishList$", void 0);
+    __decorate([
+        i3.Effect()
+    ], WishListEffects.prototype, "resetWishList$", void 0);
 
     var activeCartInitialState = '';
     var wishListInitialState = '';
@@ -17349,7 +17170,7 @@
         };
     }
     var multiCartMetaReducers = [clearMultiCartState];
-    var multiCartReducerToken = new core.InjectionToken('MultiCartReducers');
+    var multiCartReducerToken = new i0.InjectionToken('MultiCartReducers');
     function getMultiCartReducers() {
         return {
             carts: entityProcessesLoaderReducer(MULTI_CART_DATA, cartEntitiesReducer),
@@ -17435,31 +17256,31 @@
          * @param actionType type(s) of actions
          */
         CartEventBuilder.prototype.getAction = function (actionType) {
-            return this.actionsSubject.pipe(effects$c.ofType.apply(void 0, __spread([].concat(actionType))));
+            return this.actionsSubject.pipe(i3.ofType.apply(void 0, __spread([].concat(actionType))));
         };
-        CartEventBuilder.ctorParameters = function () { return [
-            { type: store.ActionsSubject },
-            { type: EventService },
-            { type: ActiveCartService }
-        ]; };
-        CartEventBuilder.ɵprov = core.ɵɵdefineInjectable({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(core.ɵɵinject(store.ActionsSubject), core.ɵɵinject(EventService), core.ɵɵinject(ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
-        CartEventBuilder = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], CartEventBuilder);
         return CartEventBuilder;
     }());
+    CartEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(i0.ɵɵinject(i1$1.ActionsSubject), i0.ɵɵinject(EventService), i0.ɵɵinject(ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
+    CartEventBuilder.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    CartEventBuilder.ctorParameters = function () { return [
+        { type: i1$1.ActionsSubject },
+        { type: EventService },
+        { type: ActiveCartService }
+    ]; };
 
     var CartEventModule = /** @class */ (function () {
         function CartEventModule(_CartEventBuilder) {
         }
-        CartEventModule.ctorParameters = function () { return [
-            { type: CartEventBuilder }
-        ]; };
-        CartEventModule = __decorate([
-            core.NgModule({})
-        ], CartEventModule);
         return CartEventModule;
     }());
+    CartEventModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
+    CartEventModule.ctorParameters = function () { return [
+        { type: CartEventBuilder }
+    ]; };
 
     var CMS_FEATURE = 'cms';
     var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
@@ -17625,22 +17446,18 @@
         CmsSetPageFailIndex: CmsSetPageFailIndex
     });
 
-    var getCmsState = store.createFeatureSelector(CMS_FEATURE);
+    var getCmsState = i1$1.createFeatureSelector(CMS_FEATURE);
 
     var ɵ0$x = function (state) { return state.components; };
-    var getComponentsState = store.createSelector(getCmsState, ɵ0$x);
+    var getComponentsState = i1$1.createSelector(getCmsState, ɵ0$x);
     var componentsContextSelectorFactory = function (uid) {
-        return store.createSelector(getComponentsState, function (componentsState) {
-            return entitySelector(componentsState, uid);
-        });
+        return i1$1.createSelector(getComponentsState, function (componentsState) { return entitySelector(componentsState, uid); });
     };
     var componentsLoaderStateSelectorFactory = function (uid, context) {
-        return store.createSelector(componentsContextSelectorFactory(uid), function (componentsContext) {
-            return (componentsContext &&
-                componentsContext.pageContext &&
-                componentsContext.pageContext[context]) ||
-                initialLoaderState;
-        });
+        return i1$1.createSelector(componentsContextSelectorFactory(uid), function (componentsContext) { return (componentsContext &&
+            componentsContext.pageContext &&
+            componentsContext.pageContext[context]) ||
+            initialLoaderState; });
     };
     /**
      * This selector will return:
@@ -17652,12 +17469,10 @@
      * @param context
      */
     var componentsContextExistsSelectorFactory = function (uid, context) {
-        return store.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState); });
+        return i1$1.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState); });
     };
     var componentsDataSelectorFactory = function (uid) {
-        return store.createSelector(componentsContextSelectorFactory(uid), function (state) {
-            return state ? state.component : undefined;
-        });
+        return i1$1.createSelector(componentsContextSelectorFactory(uid), function (state) { return state ? state.component : undefined; });
     };
     /**
      * This selector will return:
@@ -17669,7 +17484,7 @@
      * @param context
      */
     var componentsSelectorFactory = function (uid, context) {
-        return store.createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), function (componentState, exists) {
+        return i1$1.createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), function (componentState, exists) {
             switch (exists) {
                 case true:
                     return componentState;
@@ -17682,14 +17497,12 @@
     };
 
     var ɵ0$y = function (state) { return state.navigation; };
-    var getNavigationEntryItemState = store.createSelector(getCmsState, ɵ0$y);
+    var getNavigationEntryItemState = i1$1.createSelector(getCmsState, ɵ0$y);
     var getSelectedNavigationEntryItemState = function (nodeId) {
-        return store.createSelector(getNavigationEntryItemState, function (nodes) {
-            return entityLoaderStateSelector(nodes, nodeId);
-        });
+        return i1$1.createSelector(getNavigationEntryItemState, function (nodes) { return entityLoaderStateSelector(nodes, nodeId); });
     };
     var getNavigationEntryItems = function (nodeId) {
-        return store.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
+        return i1$1.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
     };
 
     var getPageEntitiesSelector = function (state) { return state.pageData.entities; };
@@ -17746,37 +17559,17 @@
     };
     var ɵ2$h = getPageComponentTypesSelector;
     var ɵ3$9 = function (state) { return state.page; };
-    var getPageState = store.createSelector(getCmsState, ɵ3$9);
+    var getPageState = i1$1.createSelector(getCmsState, ɵ3$9);
     var ɵ4$3 = function (page) { return page.index; };
-    var getPageStateIndex = store.createSelector(getPageState, ɵ4$3);
-    var getPageStateIndexEntityLoaderState = function (pageContext) {
-        return store.createSelector(getPageStateIndex, function (index) {
-            return getIndexByType(index, pageContext.type);
-        });
-    };
-    var getPageStateIndexLoaderState = function (pageContext) {
-        return store.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) {
-            return entityLoaderStateSelector(indexState, pageContext.id);
-        });
-    };
-    var getPageStateIndexValue = function (pageContext) {
-        return store.createSelector(getPageStateIndexLoaderState(pageContext), function (entity) {
-            return loaderValueSelector(entity);
-        });
-    };
-    var getPageEntities = store.createSelector(getPageState, getPageEntitiesSelector);
-    var getPageData = function (pageContext) {
-        return store.createSelector(getPageEntities, getPageStateIndexValue(pageContext), function (entities, indexValue) {
-            return entities[indexValue];
-        });
-    };
-    var getPageComponentTypes = function (pageContext) {
-        return store.createSelector(getPageData(pageContext), function (pageData) {
-            return getPageComponentTypesSelector(pageData);
-        });
-    };
+    var getPageStateIndex = i1$1.createSelector(getPageState, ɵ4$3);
+    var getPageStateIndexEntityLoaderState = function (pageContext) { return i1$1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); }); };
+    var getPageStateIndexLoaderState = function (pageContext) { return i1$1.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) { return entityLoaderStateSelector(indexState, pageContext.id); }); };
+    var getPageStateIndexValue = function (pageContext) { return i1$1.createSelector(getPageStateIndexLoaderState(pageContext), function (entity) { return loaderValueSelector(entity); }); };
+    var getPageEntities = i1$1.createSelector(getPageState, getPageEntitiesSelector);
+    var getPageData = function (pageContext) { return i1$1.createSelector(getPageEntities, getPageStateIndexValue(pageContext), function (entities, indexValue) { return entities[indexValue]; }); };
+    var getPageComponentTypes = function (pageContext) { return i1$1.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); }); };
     var getCurrentSlotSelectorFactory = function (pageContext, position) {
-        return store.createSelector(getPageData(pageContext), function (entity) {
+        return i1$1.createSelector(getPageData(pageContext), function (entity) {
             if (entity) {
                 return entity.slots[position] || { components: [] };
             }
@@ -17844,9 +17637,7 @@
             var _this = this;
             return this.routingService
                 .getPageContext()
-                .pipe(operators.switchMap(function (pageContext) {
-                return _this.store.select(getPageData(pageContext));
-            }));
+                .pipe(operators.switchMap(function (pageContext) { return _this.store.select(getPageData(pageContext)); }));
         };
         /**
          * Get CMS component data by uid
@@ -17877,14 +17668,12 @@
         CmsService.prototype.createComponentData = function (uid, pageContext) {
             var _this = this;
             if (!pageContext) {
-                return this.routingService.getPageContext().pipe(operators.filter(function (currentContext) { return !!currentContext; }), operators.switchMap(function (currentContext) {
-                    return _this.getComponentData(uid, currentContext);
-                }));
+                return this.routingService.getPageContext().pipe(operators.filter(function (currentContext) { return !!currentContext; }), operators.switchMap(function (currentContext) { return _this.getComponentData(uid, currentContext); }));
             }
             var context = serializePageContext(pageContext, true);
             var loading$ = rxjs.combineLatest([
                 this.routingService.getNextPageContext(),
-                this.store.pipe(store.select(componentsLoaderStateSelectorFactory(uid, context))),
+                this.store.pipe(i1$1.select(componentsLoaderStateSelectorFactory(uid, context))),
             ]).pipe(operators.observeOn(rxjs.queueScheduler), operators.tap(function (_a) {
                 var _b = __read(_a, 2), nextContext = _b[0], loadingState = _b[1];
                 var attemptedLoad = loadingState.loading || loadingState.success || loadingState.error;
@@ -17898,7 +17687,7 @@
                     _this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
                 }
             }));
-            var component$ = this.store.pipe(store.select(componentsSelectorFactory(uid, context)), operators.filter(function (component) { return component !== undefined; }));
+            var component$ = this.store.pipe(i1$1.select(componentsSelectorFactory(uid, context)), operators.filter(function (component) { return component !== undefined; }));
             return rxjs.using(function () { return loading$.subscribe(); }, function () { return component$; }).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
@@ -17909,16 +17698,14 @@
             var _this = this;
             return this.routingService
                 .getPageContext()
-                .pipe(operators.switchMap(function (pageContext) {
-                return _this.store.pipe(store.select(getCurrentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
-            }));
+                .pipe(operators.switchMap(function (pageContext) { return _this.store.pipe(i1$1.select(getCurrentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean)); }));
         };
         /**
          * Given navigation node uid, get items (with id and type) inside the navigation entries
          * @param navigationNodeUid : uid of the navigation node
          */
         CmsService.prototype.getNavigationEntryItems = function (navigationNodeUid) {
-            return this.store.pipe(store.select(getNavigationEntryItems(navigationNodeUid)));
+            return this.store.pipe(i1$1.select(getNavigationEntryItems(navigationNodeUid)));
         };
         /**
          * Load navigation items data
@@ -17939,9 +17726,7 @@
             this.routingService
                 .getPageContext()
                 .pipe(operators.take(1))
-                .subscribe(function (pageContext) {
-                return _this.store.dispatch(new LoadCmsPageData(pageContext));
-            });
+                .subscribe(function (pageContext) { return _this.store.dispatch(new LoadCmsPageData(pageContext)); });
         };
         /**
          * Refresh the cms page content by page Id
@@ -17965,14 +17750,14 @@
          * @param pageContext
          */
         CmsService.prototype.getPageState = function (pageContext) {
-            return this.store.pipe(store.select(getPageData(pageContext)));
+            return this.store.pipe(i1$1.select(getPageData(pageContext)));
         };
         /**
          * Given pageContext, return the CMS page data
          * @param pageContext
          */
         CmsService.prototype.getPageComponentTypes = function (pageContext) {
-            return this.store.pipe(store.select(getPageComponentTypes(pageContext)));
+            return this.store.pipe(i1$1.select(getPageComponentTypes(pageContext)));
         };
         /**
          * Given pageContext, return whether the CMS page data exists or not
@@ -17981,7 +17766,7 @@
         CmsService.prototype.hasPage = function (pageContext, forceReload) {
             var _this = this;
             if (forceReload === void 0) { forceReload = false; }
-            return this.store.pipe(store.select(getPageStateIndexLoaderState(pageContext)), operators.tap(function (entity) {
+            return this.store.pipe(i1$1.select(getPageStateIndexLoaderState(pageContext)), operators.tap(function (entity) {
                 var attemptedLoad = entity.loading || entity.success || entity.error;
                 var shouldReload = forceReload && !entity.loading;
                 if (!attemptedLoad || shouldReload) {
@@ -18003,29 +17788,26 @@
         CmsService.prototype.getPage = function (pageContext, forceReload) {
             var _this = this;
             if (forceReload === void 0) { forceReload = false; }
-            return this.hasPage(pageContext, forceReload).pipe(operators.switchMap(function (hasPage) {
-                return hasPage ? _this.getPageState(pageContext) : rxjs.of(null);
-            }));
+            return this.hasPage(pageContext, forceReload).pipe(operators.switchMap(function (hasPage) { return hasPage ? _this.getPageState(pageContext) : rxjs.of(null); }));
         };
         CmsService.prototype.getPageIndex = function (pageContext) {
-            return this.store.pipe(store.select(getPageStateIndexValue(pageContext)));
+            return this.store.pipe(i1$1.select(getPageStateIndexValue(pageContext)));
         };
         CmsService.prototype.setPageFailIndex = function (pageContext, value) {
             this.store.dispatch(new CmsSetPageFailIndex(pageContext, value));
         };
-        CmsService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: RoutingService }
-        ]; };
-        CmsService.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(core.ɵɵinject(store.Store), core.ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
-        CmsService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CmsService);
         return CmsService;
     }());
-
+    CmsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
+    CmsService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CmsService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: RoutingService }
+    ]; };
 
     (function (PageRobotsMeta) {
         PageRobotsMeta["INDEX"] = "INDEX";
@@ -18065,17 +17847,17 @@
         CartPageMetaResolver.prototype.resolveRobots = function () {
             return rxjs.of([exports.PageRobotsMeta.NOFOLLOW, exports.PageRobotsMeta.NOINDEX]);
         };
-        CartPageMetaResolver.ctorParameters = function () { return [
-            { type: CmsService }
-        ]; };
-        CartPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(core.ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
-        CartPageMetaResolver = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartPageMetaResolver);
         return CartPageMetaResolver;
     }(PageMetaResolver));
+    CartPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(i0.ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
+    CartPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CartPageMetaResolver.ctorParameters = function () { return [
+        { type: CmsService }
+    ]; };
 
     var MultiCartStatePersistenceService = /** @class */ (function () {
         function MultiCartStatePersistenceService(statePersistenceService, store, siteContextParamsService) {
@@ -18093,7 +17875,7 @@
             });
         };
         MultiCartStatePersistenceService.prototype.getCartState = function () {
-            return this.store.pipe(store.select(getMultiCartState), operators.filter(function (state) { return !!state; }), operators.distinctUntilKeyChanged('active'), operators.map(function (state) {
+            return this.store.pipe(i1$1.select(getMultiCartState), operators.filter(function (state) { return !!state; }), operators.distinctUntilKeyChanged('active'), operators.map(function (state) {
                 return {
                     active: state.active,
                 };
@@ -18105,43 +17887,43 @@
                 this.store.dispatch(new SetActiveCartId(state.active));
             }
         };
-        MultiCartStatePersistenceService.ctorParameters = function () { return [
-            { type: StatePersistenceService },
-            { type: store.Store },
-            { type: SiteContextParamsService }
-        ]; };
-        MultiCartStatePersistenceService.ɵprov = core.ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(core.ɵɵinject(StatePersistenceService), core.ɵɵinject(store.Store), core.ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
-        MultiCartStatePersistenceService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], MultiCartStatePersistenceService);
         return MultiCartStatePersistenceService;
     }());
+    MultiCartStatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(i0.ɵɵinject(StatePersistenceService), i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
+    MultiCartStatePersistenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    MultiCartStatePersistenceService.ctorParameters = function () { return [
+        { type: StatePersistenceService },
+        { type: i1$1.Store },
+        { type: SiteContextParamsService }
+    ]; };
 
     var MultiCartEffects = /** @class */ (function () {
         function MultiCartEffects(actions$) {
             this.actions$ = actions$;
-            this.setTempCart$ = this.actions$.pipe(effects$c.ofType(SET_TEMP_CART), operators.map(function (action) {
+            this.setTempCart$ = this.actions$.pipe(i3.ofType(SET_TEMP_CART), operators.map(function (action) {
                 return new RemoveCart({ cartId: action.payload.tempCartId });
             }));
             // TODO(#7241): Remove when we drop ADD_VOUCHER process and we sort out checkout and cart dependencies
-            this.processesIncrement$ = this.actions$.pipe(effects$c.ofType(CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
+            this.processesIncrement$ = this.actions$.pipe(i3.ofType(CART_ADD_VOUCHER), operators.map(function (action) { return action.payload; }), operators.map(function (payload) { return new CartProcessesIncrement(payload.cartId); }));
         }
-        MultiCartEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], MultiCartEffects.prototype, "setTempCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], MultiCartEffects.prototype, "processesIncrement$", void 0);
-        MultiCartEffects = __decorate([
-            core.Injectable()
-        ], MultiCartEffects);
         return MultiCartEffects;
     }());
+    MultiCartEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    MultiCartEffects.ctorParameters = function () { return [
+        { type: i3.Actions }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], MultiCartEffects.prototype, "setTempCart$", void 0);
+    __decorate([
+        i3.Effect()
+    ], MultiCartEffects.prototype, "processesIncrement$", void 0);
 
     var effects$4 = [
         CartEffects,
@@ -18153,37 +17935,34 @@
     var MultiCartStoreModule = /** @class */ (function () {
         function MultiCartStoreModule() {
         }
-        MultiCartStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    StateModule,
-                    store.StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
-                        metaReducers: multiCartMetaReducers,
-                    }),
-                    effects$c.EffectsModule.forFeature(effects$4),
-                ],
-                providers: [multiCartReducerProvider],
-            })
-        ], MultiCartStoreModule);
         return MultiCartStoreModule;
     }());
+    MultiCartStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        StateModule,
+                        i1$1.StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
+                            metaReducers: multiCartMetaReducers,
+                        }),
+                        i3.EffectsModule.forFeature(effects$4),
+                    ],
+                    providers: [multiCartReducerProvider],
+                },] }
+    ];
 
     function cartStatePersistenceFactory(cartStatePersistenceService, configInit) {
-        var result = function () {
-            return configInit.getStableConfig('context').then(function () {
-                cartStatePersistenceService.sync();
-            });
-        };
+        var result = function () { return configInit.getStableConfig('context').then(function () {
+            cartStatePersistenceService.sync();
+        }); };
         return result;
     }
     var CartModule = /** @class */ (function () {
         function CartModule() {
         }
-        CartModule_1 = CartModule;
         CartModule.forRoot = function () {
             return {
-                ngModule: CartModule_1,
+                ngModule: CartModule,
                 providers: [
                     {
                         provide: PageMetaResolver,
@@ -18191,7 +17970,7 @@
                         multi: true,
                     },
                     {
-                        provide: core.APP_INITIALIZER,
+                        provide: i0.APP_INITIALIZER,
                         useFactory: cartStatePersistenceFactory,
                         deps: [MultiCartStatePersistenceService, ConfigInitializerService],
                         multi: true,
@@ -18199,27 +17978,26 @@
                 ],
             };
         };
-        var CartModule_1;
-        CartModule = CartModule_1 = __decorate([
-            core.NgModule({
-                imports: [MultiCartStoreModule, CartEventModule],
-            })
-        ], CartModule);
         return CartModule;
     }());
+    CartModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [MultiCartStoreModule, CartEventModule],
+                },] }
+    ];
 
     var CartConfig = /** @class */ (function () {
         function CartConfig() {
         }
-        CartConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function CartConfig_Factory() { return core.ɵɵinject(Config); }, token: CartConfig, providedIn: "root" });
-        CartConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], CartConfig);
         return CartConfig;
     }());
+    CartConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartConfig_Factory() { return i0.ɵɵinject(Config); }, token: CartConfig, providedIn: "root" });
+    CartConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var CartVoucherService = /** @class */ (function () {
         function CartVoucherService(store, authService, activeCartService) {
@@ -18255,7 +18033,7 @@
          * @deprecated since 2.0
          */
         CartVoucherService.prototype.getAddVoucherResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
         };
         // TODO(#7241): Remove when switching to event system for add voucher
         /**
@@ -18263,7 +18041,7 @@
          * @deprecated since 2.0
          */
         CartVoucherService.prototype.getAddVoucherResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
         };
         // TODO(#7241): Remove when switching to event system for add voucher
         /**
@@ -18271,7 +18049,7 @@
          * @deprecated since 2.0
          */
         CartVoucherService.prototype.getAddVoucherResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
         };
         // TODO(#7241): Remove when switching to event system for add voucher
         /**
@@ -18292,19 +18070,19 @@
                 ]).pipe(operators.take(1));
             }
         };
-        CartVoucherService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: ActiveCartService }
-        ]; };
-        CartVoucherService.ɵprov = core.ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
-        CartVoucherService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartVoucherService);
         return CartVoucherService;
     }());
+    CartVoucherService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
+    CartVoucherService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CartVoucherService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
 
     var UserService = /** @class */ (function () {
         function UserService(store, authService) {
@@ -18316,7 +18094,7 @@
          */
         UserService.prototype.get = function () {
             var _this = this;
-            return this.store.pipe(store.select(getDetails), operators.tap(function (details) {
+            return this.store.pipe(i1$1.select(getDetails), operators.tap(function (details) {
                 if (Object.keys(details).length === 0) {
                     _this.load();
                 }
@@ -18354,19 +18132,19 @@
          * Returns the register user process loading flag
          */
         UserService.prototype.getRegisterUserResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
         };
         /**
          * Returns the register user process success flag
          */
         UserService.prototype.getRegisterUserResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
         };
         /**
          * Returns the register user process error flag
          */
         UserService.prototype.getRegisterUserResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
         };
         /**
          * Resets the register user process flags
@@ -18387,19 +18165,19 @@
          * Returns the remove user loading flag
          */
         UserService.prototype.getRemoveUserResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
         };
         /**
          * Returns the remove user failure outcome.
          */
         UserService.prototype.getRemoveUserResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
         };
         /**
          * Returns the remove user process success outcome.
          */
         UserService.prototype.getRemoveUserResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
         };
         /**
          * Resets the remove user process state. The state needs to be reset after the process
@@ -18412,7 +18190,7 @@
          * Returns titles
          */
         UserService.prototype.getTitles = function () {
-            return this.store.pipe(store.select(getAllTitles));
+            return this.store.pipe(i1$1.select(getAllTitles));
         };
         /**
          * Retrieves titles
@@ -18424,7 +18202,7 @@
          * Return whether user's password is successfully reset
          */
         UserService.prototype.isPasswordReset = function () {
-            return this.store.pipe(store.select(getResetPassword));
+            return this.store.pipe(i1$1.select(getResetPassword));
         };
         /**
          * Updates the user's details
@@ -18443,19 +18221,19 @@
          * Returns the update user's personal details loading flag
          */
         UserService.prototype.getUpdatePersonalDetailsResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
         };
         /**
          * Returns the update user's personal details error flag
          */
         UserService.prototype.getUpdatePersonalDetailsResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
         };
         /**
          * Returns the update user's personal details success flag
          */
         UserService.prototype.getUpdatePersonalDetailsResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
         };
         /**
          * Resets the update user details processing state
@@ -18494,19 +18272,19 @@
          * Returns the update user's email success flag
          */
         UserService.prototype.getUpdateEmailResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
         };
         /**
          * Returns the update user's email error flag
          */
         UserService.prototype.getUpdateEmailResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
         };
         /**
          * Returns the update user's email loading flag
          */
         UserService.prototype.getUpdateEmailResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
         };
         /**
          * Resets the update user's email processing state
@@ -18533,19 +18311,19 @@
          * Returns the update password loading flag
          */
         UserService.prototype.getUpdatePasswordResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
         };
         /**
          * Returns the update password failure outcome.
          */
         UserService.prototype.getUpdatePasswordResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
         };
         /**
          * Returns the update password process success outcome.
          */
         UserService.prototype.getUpdatePasswordResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
         };
         /**
          * Resets the update password process state. The state needs to be reset after the process
@@ -18554,16 +18332,16 @@
         UserService.prototype.resetUpdatePasswordProcessState = function () {
             this.store.dispatch(new UpdatePasswordReset());
         };
-        UserService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
-        UserService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], UserService);
         return UserService;
     }());
+    UserService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
+    UserService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    UserService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var CartConfigService = /** @class */ (function () {
         function CartConfigService(config) {
@@ -18573,17 +18351,17 @@
             var _a, _b, _c;
             return Boolean((_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.cart) === null || _b === void 0 ? void 0 : _b.selectiveCart) === null || _c === void 0 ? void 0 : _c.enabled);
         };
-        CartConfigService.ctorParameters = function () { return [
-            { type: CartConfig }
-        ]; };
-        CartConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function CartConfigService_Factory() { return new CartConfigService(core.ɵɵinject(CartConfig)); }, token: CartConfigService, providedIn: "root" });
-        CartConfigService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CartConfigService);
         return CartConfigService;
     }());
+    CartConfigService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartConfigService_Factory() { return new CartConfigService(i0.ɵɵinject(CartConfig)); }, token: CartConfigService, providedIn: "root" });
+    CartConfigService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CartConfigService.ctorParameters = function () { return [
+        { type: CartConfig }
+    ]; };
 
     var SelectiveCartService = /** @class */ (function () {
         function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
@@ -18699,22 +18477,22 @@
         SelectiveCartService.prototype.isLoggedIn = function (userId) {
             return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
         };
-        SelectiveCartService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: UserService },
-            { type: AuthService },
-            { type: MultiCartService },
-            { type: BaseSiteService },
-            { type: CartConfigService }
-        ]; };
-        SelectiveCartService.ɵprov = core.ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(core.ɵɵinject(store.Store), core.ɵɵinject(UserService), core.ɵɵinject(AuthService), core.ɵɵinject(MultiCartService), core.ɵɵinject(BaseSiteService), core.ɵɵinject(CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
-        SelectiveCartService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SelectiveCartService);
         return SelectiveCartService;
     }());
+    SelectiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(UserService), i0.ɵɵinject(AuthService), i0.ɵɵinject(MultiCartService), i0.ɵɵinject(BaseSiteService), i0.ɵɵinject(CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
+    SelectiveCartService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    SelectiveCartService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: UserService },
+        { type: AuthService },
+        { type: MultiCartService },
+        { type: BaseSiteService },
+        { type: CartConfigService }
+    ]; };
 
     var WishListService = /** @class */ (function () {
         function WishListService(store, authService, userService, multiCartService) {
@@ -18795,29 +18573,27 @@
         };
         WishListService.prototype.getWishListLoading = function () {
             var _this = this;
-            return this.getWishListId().pipe(operators.switchMap(function (wishListId) {
-                return _this.multiCartService
-                    .isStable(wishListId)
-                    .pipe(operators.map(function (stable) { return !stable; }));
-            }));
+            return this.getWishListId().pipe(operators.switchMap(function (wishListId) { return _this.multiCartService
+                .isStable(wishListId)
+                .pipe(operators.map(function (stable) { return !stable; })); }));
         };
         WishListService.prototype.getWishListId = function () {
-            return this.store.pipe(store.select(getWishListId));
+            return this.store.pipe(i1$1.select(getWishListId));
         };
-        WishListService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: UserService },
-            { type: MultiCartService }
-        ]; };
-        WishListService.ɵprov = core.ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(UserService), core.ɵɵinject(MultiCartService)); }, token: WishListService, providedIn: "root" });
-        WishListService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], WishListService);
         return WishListService;
     }());
+    WishListService.ɵprov = i0.ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(UserService), i0.ɵɵinject(MultiCartService)); }, token: WishListService, providedIn: "root" });
+    WishListService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    WishListService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: UserService },
+        { type: MultiCartService }
+    ]; };
 
     /**
      * Indicates that a user has successfully placed an order
@@ -18848,29 +18624,29 @@
                 event: OrderPlacedEvent,
             });
         };
-        CheckoutEventBuilder.ctorParameters = function () { return [
-            { type: StateEventService }
-        ]; };
-        CheckoutEventBuilder.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(core.ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
-        CheckoutEventBuilder = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutEventBuilder);
         return CheckoutEventBuilder;
     }());
+    CheckoutEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(i0.ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
+    CheckoutEventBuilder.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutEventBuilder.ctorParameters = function () { return [
+        { type: StateEventService }
+    ]; };
 
     var CheckoutEventModule = /** @class */ (function () {
         function CheckoutEventModule(_checkoutEventBuilder) {
         }
-        CheckoutEventModule.ctorParameters = function () { return [
-            { type: CheckoutEventBuilder }
-        ]; };
-        CheckoutEventModule = __decorate([
-            core.NgModule({})
-        ], CheckoutEventModule);
         return CheckoutEventModule;
     }());
+    CheckoutEventModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
+    CheckoutEventModule.ctorParameters = function () { return [
+        { type: CheckoutEventBuilder }
+    ]; };
 
     var TranslationService = /** @class */ (function () {
         function TranslationService() {
@@ -18898,27 +18674,25 @@
         }
         CheckoutPageMetaResolver.prototype.resolveTitle = function () {
             var _this = this;
-            return this.cart$.pipe(operators.switchMap(function (c) {
-                return _this.translation.translate('pageMetaResolver.checkout.title', {
-                    count: c.totalItems,
-                });
-            }));
+            return this.cart$.pipe(operators.switchMap(function (c) { return _this.translation.translate('pageMetaResolver.checkout.title', {
+                count: c.totalItems,
+            }); }));
         };
         CheckoutPageMetaResolver.prototype.resolveRobots = function () {
             return rxjs.of([exports.PageRobotsMeta.NOFOLLOW, exports.PageRobotsMeta.NOINDEX]);
         };
-        CheckoutPageMetaResolver.ctorParameters = function () { return [
-            { type: TranslationService },
-            { type: ActiveCartService }
-        ]; };
-        CheckoutPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(core.ɵɵinject(TranslationService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
-        CheckoutPageMetaResolver = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutPageMetaResolver);
         return CheckoutPageMetaResolver;
     }(PageMetaResolver));
+    CheckoutPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(i0.ɵɵinject(TranslationService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+    CheckoutPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutPageMetaResolver.ctorParameters = function () { return [
+        { type: TranslationService },
+        { type: ActiveCartService }
+    ]; };
 
     var initialState$9 = {
         results: {},
@@ -18928,13 +18702,13 @@
         switch (action.type) {
             case VERIFY_ADDRESS_SUCCESS: {
                 var results = action.payload;
-                return __assign(__assign({}, state), { results: results });
+                return Object.assign(Object.assign({}, state), { results: results });
             }
             case VERIFY_ADDRESS_FAIL: {
-                return __assign(__assign({}, state), { results: 'FAIL' });
+                return Object.assign(Object.assign({}, state), { results: 'FAIL' });
             }
             case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
-                return __assign(__assign({}, state), { results: {} });
+                return Object.assign(Object.assign({}, state), { results: {} });
             }
         }
         return state;
@@ -18951,9 +18725,9 @@
                 var cardTypes = action.payload;
                 var entities = cardTypes.reduce(function (cardTypesEntities, name) {
                     var _a;
-                    return __assign(__assign({}, cardTypesEntities), (_a = {}, _a[name.code] = name, _a));
-                }, __assign({}, state.entities));
-                return __assign(__assign({}, state), { entities: entities });
+                    return Object.assign(Object.assign({}, cardTypesEntities), (_a = {}, _a[name.code] = name, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
                 return initialState$a;
@@ -18978,15 +18752,15 @@
         switch (action.type) {
             case SET_PAYMENT_TYPE_SUCCESS: {
                 var cart = action.payload;
-                return __assign(__assign({}, state), { poNumber: __assign(__assign({}, state.poNumber), { po: cart.purchaseOrderNumber }) });
+                return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { po: cart.purchaseOrderNumber }) });
             }
             case SET_COST_CENTER_SUCCESS: {
-                return __assign(__assign({}, state), { poNumber: __assign(__assign({}, state.poNumber), { costCenter: action.payload }) });
+                return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { costCenter: action.payload }) });
             }
             case ADD_DELIVERY_ADDRESS_SUCCESS:
             case SET_DELIVERY_ADDRESS_SUCCESS: {
                 var address = action.payload;
-                return __assign(__assign({}, state), { address: address });
+                return Object.assign(Object.assign({}, state), { address: address });
             }
             case LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: {
                 var supportedModes = action.payload;
@@ -18995,28 +18769,28 @@
                 }
                 var supported = supportedModes.reduce(function (modes, mode) {
                     var _a;
-                    return __assign(__assign({}, modes), (_a = {}, _a[mode.code] = mode, _a));
-                }, __assign({}, state.deliveryMode.supported));
-                return __assign(__assign({}, state), { deliveryMode: __assign(__assign({}, state.deliveryMode), { supported: supported }) });
+                    return Object.assign(Object.assign({}, modes), (_a = {}, _a[mode.code] = mode, _a));
+                }, Object.assign({}, state.deliveryMode.supported));
+                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: supported }) });
             }
             case SET_DELIVERY_MODE_SUCCESS: {
                 var selected = action.payload;
-                return __assign(__assign({}, state), { deliveryMode: __assign(__assign({}, state.deliveryMode), { selected: selected }) });
+                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: selected }) });
             }
             case CREATE_PAYMENT_DETAILS_SUCCESS:
             case SET_PAYMENT_DETAILS_SUCCESS: {
-                return __assign(__assign({}, state), { paymentDetails: action.payload });
+                return Object.assign(Object.assign({}, state), { paymentDetails: action.payload });
             }
             case CREATE_PAYMENT_DETAILS_FAIL: {
                 var paymentDetails = action.payload;
                 if (paymentDetails['hasError']) {
-                    return __assign(__assign({}, state), { paymentDetails: paymentDetails });
+                    return Object.assign(Object.assign({}, state), { paymentDetails: paymentDetails });
                 }
                 return state;
             }
             case PLACE_ORDER_SUCCESS: {
                 var orderDetails = action.payload;
-                return __assign(__assign({}, state), { orderDetails: orderDetails });
+                return Object.assign(Object.assign({}, state), { orderDetails: orderDetails });
             }
             case CLEAR_CHECKOUT_DATA: {
                 return initialState$b;
@@ -19025,29 +18799,29 @@
                 var stepNumber = action.payload;
                 switch (stepNumber) {
                     case 1: {
-                        return __assign(__assign({}, state), { address: {} });
+                        return Object.assign(Object.assign({}, state), { address: {} });
                     }
                     case 2: {
-                        return __assign(__assign({}, state), { deliveryMode: __assign(__assign({}, state.deliveryMode), { supported: {}, selected: '' }) });
+                        return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {}, selected: '' }) });
                     }
                     case 3: {
-                        return __assign(__assign({}, state), { paymentDetails: {} });
+                        return Object.assign(Object.assign({}, state), { paymentDetails: {} });
                     }
                 }
                 return state;
             }
             case CLEAR_SUPPORTED_DELIVERY_MODES:
             case CHECKOUT_CLEAR_MISCS_DATA: {
-                return __assign(__assign({}, state), { deliveryMode: __assign(__assign({}, state.deliveryMode), { supported: {} }) });
+                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {} }) });
             }
             case LOAD_CHECKOUT_DETAILS_SUCCESS: {
-                return __assign(__assign({}, state), { address: action.payload.deliveryAddress, deliveryMode: __assign(__assign({}, state.deliveryMode), { selected: action.payload.deliveryMode && action.payload.deliveryMode.code }), paymentDetails: action.payload.paymentInfo });
+                return Object.assign(Object.assign({}, state), { address: action.payload.deliveryAddress, deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: action.payload.deliveryMode && action.payload.deliveryMode.code }), paymentDetails: action.payload.paymentInfo });
             }
             case CLEAR_CHECKOUT_DELIVERY_ADDRESS: {
-                return __assign(__assign({}, state), { address: {} });
+                return Object.assign(Object.assign({}, state), { address: {} });
             }
             case CLEAR_CHECKOUT_DELIVERY_MODE: {
-                return __assign(__assign({}, state), { deliveryMode: __assign(__assign({}, state.deliveryMode), { selected: '' }) });
+                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: '' }) });
             }
         }
         return state;
@@ -19064,15 +18838,15 @@
                 var paymentTypes = action.payload;
                 var entities = paymentTypes.reduce(function (paymentTypesEntities, name) {
                     var _a;
-                    return __assign(__assign({}, paymentTypesEntities), (_a = {}, _a[name.code] = name, _a));
-                }, __assign({}, state.entities));
-                return __assign(__assign({}, state), { entities: entities });
+                    return Object.assign(Object.assign({}, paymentTypesEntities), (_a = {}, _a[name.code] = name, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case SET_PAYMENT_TYPE_SUCCESS: {
-                return __assign(__assign({}, state), { selected: action.payload.paymentType.code });
+                return Object.assign(Object.assign({}, state), { selected: action.payload.paymentType.code });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return __assign(__assign({}, state), { selected: undefined });
+                return Object.assign(Object.assign({}, state), { selected: undefined });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
                 return initialState$c;
@@ -19080,12 +18854,8 @@
         }
         return state;
     }
-    var getPaymentTypesEntites = function (state) {
-        return state.entities;
-    };
-    var getSelectedPaymentType = function (state) {
-        return state.selected;
-    };
+    var getPaymentTypesEntites = function (state) { return state.entities; };
+    var getSelectedPaymentType = function (state) { return state.selected; };
 
     function getReducers$5() {
         return {
@@ -19095,7 +18865,7 @@
             paymentTypes: reducer$c,
         };
     }
-    var reducerToken$5 = new core.InjectionToken('CheckoutReducers');
+    var reducerToken$5 = new i0.InjectionToken('CheckoutReducers');
     var reducerProvider$5 = {
         provide: reducerToken$5,
         useFactory: getReducers$5,
@@ -19120,41 +18890,37 @@
         UserAddressConnector.prototype.delete = function (userId, addressId) {
             return this.adapter.delete(userId, addressId);
         };
-        UserAddressConnector.ctorParameters = function () { return [
-            { type: UserAddressAdapter }
-        ]; };
-        UserAddressConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(core.ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
-        UserAddressConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserAddressConnector);
         return UserAddressConnector;
     }());
+    UserAddressConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(i0.ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+    UserAddressConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserAddressConnector.ctorParameters = function () { return [
+        { type: UserAddressAdapter }
+    ]; };
 
     var AddressVerificationEffect = /** @class */ (function () {
         function AddressVerificationEffect(actions$, userAddressConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userAddressConnector = userAddressConnector;
-            this.verifyAddress$ = this.actions$.pipe(effects$c.ofType(VERIFY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(operators.map(function (data) { return new VerifyAddressSuccess(data); }), operators.catchError(function (error) {
-                    return rxjs.of(new VerifyAddressFail(makeErrorSerializable(error)));
-                }));
-            }));
+            this.verifyAddress$ = this.actions$.pipe(i3.ofType(VERIFY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(operators.map(function (data) { return new VerifyAddressSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new VerifyAddressFail(makeErrorSerializable(error))); })); }));
         }
-        AddressVerificationEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserAddressConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
-        AddressVerificationEffect = __decorate([
-            core.Injectable()
-        ], AddressVerificationEffect);
         return AddressVerificationEffect;
     }());
+    AddressVerificationEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    AddressVerificationEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserAddressConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
 
     var CheckoutPaymentConnector = /** @class */ (function () {
         function CheckoutPaymentConnector(adapter) {
@@ -19169,41 +18935,39 @@
         CheckoutPaymentConnector.prototype.getCardTypes = function () {
             return this.adapter.loadCardTypes();
         };
-        CheckoutPaymentConnector.ctorParameters = function () { return [
-            { type: CheckoutPaymentAdapter }
-        ]; };
-        CheckoutPaymentConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(core.ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
-        CheckoutPaymentConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutPaymentConnector);
         return CheckoutPaymentConnector;
     }());
+    CheckoutPaymentConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(i0.ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+    CheckoutPaymentConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutPaymentConnector.ctorParameters = function () { return [
+        { type: CheckoutPaymentAdapter }
+    ]; };
 
     var CardTypesEffects = /** @class */ (function () {
         function CardTypesEffects(actions$, checkoutPaymentConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.checkoutPaymentConnector = checkoutPaymentConnector;
-            this.loadCardTypes$ = this.actions$.pipe(effects$c.ofType(LOAD_CARD_TYPES), operators.switchMap(function () {
-                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadCardTypesFail(makeErrorSerializable(error)));
-                }));
+            this.loadCardTypes$ = this.actions$.pipe(i3.ofType(LOAD_CARD_TYPES), operators.switchMap(function () {
+                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(makeErrorSerializable(error))); }));
             }));
         }
-        CardTypesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CheckoutPaymentConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
-        CardTypesEffects = __decorate([
-            core.Injectable()
-        ], CardTypesEffects);
         return CardTypesEffects;
     }());
+    CardTypesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CardTypesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CheckoutPaymentConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
 
     /**
      * Normalizes HttpErrorResponse to HttpErrorModel.
@@ -19214,7 +18978,7 @@
      * (which usually happens when logic in NgRx Effect is not sealed correctly)
      */
     function normalizeHttpError(error) {
-        if (error instanceof http.HttpErrorResponse) {
+        if (error instanceof i1.HttpErrorResponse) {
             var normalizedError = {
                 message: error.message,
                 status: error.status,
@@ -19235,7 +18999,7 @@
             }
             return normalizedError;
         }
-        if (core.isDevMode()) {
+        if (i0.isDevMode()) {
             console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
         }
         return undefined;
@@ -19257,17 +19021,17 @@
         CheckoutConnector.prototype.clearCheckoutDeliveryMode = function (userId, cartId) {
             return this.adapter.clearCheckoutDeliveryMode(userId, cartId);
         };
-        CheckoutConnector.ctorParameters = function () { return [
-            { type: CheckoutAdapter }
-        ]; };
-        CheckoutConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(core.ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
-        CheckoutConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutConnector);
         return CheckoutConnector;
     }());
+    CheckoutConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(i0.ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+    CheckoutConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutConnector.ctorParameters = function () { return [
+        { type: CheckoutAdapter }
+    ]; };
 
     var CheckoutCostCenterConnector = /** @class */ (function () {
         function CheckoutCostCenterConnector(adapter) {
@@ -19276,17 +19040,17 @@
         CheckoutCostCenterConnector.prototype.setCostCenter = function (userId, cartId, costCenterId) {
             return this.adapter.setCostCenter(userId, cartId, costCenterId);
         };
-        CheckoutCostCenterConnector.ctorParameters = function () { return [
-            { type: CheckoutCostCenterAdapter }
-        ]; };
-        CheckoutCostCenterConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutCostCenterConnector_Factory() { return new CheckoutCostCenterConnector(core.ɵɵinject(CheckoutCostCenterAdapter)); }, token: CheckoutCostCenterConnector, providedIn: "root" });
-        CheckoutCostCenterConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutCostCenterConnector);
         return CheckoutCostCenterConnector;
     }());
+    CheckoutCostCenterConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCostCenterConnector_Factory() { return new CheckoutCostCenterConnector(i0.ɵɵinject(CheckoutCostCenterAdapter)); }, token: CheckoutCostCenterConnector, providedIn: "root" });
+    CheckoutCostCenterConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutCostCenterConnector.ctorParameters = function () { return [
+        { type: CheckoutCostCenterAdapter }
+    ]; };
 
     var CheckoutDeliveryConnector = /** @class */ (function () {
         function CheckoutDeliveryConnector(adapter) {
@@ -19307,17 +19071,17 @@
         CheckoutDeliveryConnector.prototype.getSupportedModes = function (userId, cartId) {
             return this.adapter.getSupportedModes(userId, cartId);
         };
-        CheckoutDeliveryConnector.ctorParameters = function () { return [
-            { type: CheckoutDeliveryAdapter }
-        ]; };
-        CheckoutDeliveryConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(core.ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
-        CheckoutDeliveryConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutDeliveryConnector);
         return CheckoutDeliveryConnector;
     }());
+    CheckoutDeliveryConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(i0.ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
+    CheckoutDeliveryConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutDeliveryConnector.ctorParameters = function () { return [
+        { type: CheckoutDeliveryAdapter }
+    ]; };
 
     var CheckoutEffects = /** @class */ (function () {
         function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutCostCenterConnector, checkoutConnector) {
@@ -19327,41 +19091,37 @@
             this.checkoutPaymentConnector = checkoutPaymentConnector;
             this.checkoutCostCenterConnector = checkoutCostCenterConnector;
             this.checkoutConnector = checkoutConnector;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.addDeliveryAddress$ = this.actions$.pipe(effects$c.ofType(ADD_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.checkoutDeliveryConnector
-                    .createAddress(payload.userId, payload.cartId, payload.address)
-                    .pipe(operators.mergeMap(function (address) {
-                    address['titleCode'] = payload.address.titleCode;
-                    if (payload.address.region && payload.address.region.isocodeShort) {
-                        Object.assign(address.region, {
-                            isocodeShort: payload.address.region.isocodeShort,
-                        });
-                    }
-                    if (payload.userId === OCC_USER_ID_ANONYMOUS) {
-                        return [
-                            new SetDeliveryAddress({
-                                userId: payload.userId,
-                                cartId: payload.cartId,
-                                address: address,
-                            }),
-                        ];
-                    }
-                    else {
-                        return [
-                            new LoadUserAddresses(payload.userId),
-                            new SetDeliveryAddress({
-                                userId: payload.userId,
-                                cartId: payload.cartId,
-                                address: address,
-                            }),
-                        ];
-                    }
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new AddDeliveryAddressFail(makeErrorSerializable(error)));
-                }));
-            }), withdrawOn(this.contextChange$));
-            this.setDeliveryAddress$ = this.actions$.pipe(effects$c.ofType(SET_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.addDeliveryAddress$ = this.actions$.pipe(i3.ofType(ADD_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.checkoutDeliveryConnector
+                .createAddress(payload.userId, payload.cartId, payload.address)
+                .pipe(operators.mergeMap(function (address) {
+                address['titleCode'] = payload.address.titleCode;
+                if (payload.address.region && payload.address.region.isocodeShort) {
+                    Object.assign(address.region, {
+                        isocodeShort: payload.address.region.isocodeShort,
+                    });
+                }
+                if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                    return [
+                        new SetDeliveryAddress({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                            address: address,
+                        }),
+                    ];
+                }
+                else {
+                    return [
+                        new LoadUserAddresses(payload.userId),
+                        new SetDeliveryAddress({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                            address: address,
+                        }),
+                    ];
+                }
+            }), operators.catchError(function (error) { return rxjs.of(new AddDeliveryAddressFail(makeErrorSerializable(error))); })); }), withdrawOn(this.contextChange$));
+            this.setDeliveryAddress$ = this.actions$.pipe(i3.ofType(SET_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.checkoutDeliveryConnector
                     .setAddress(payload.userId, payload.cartId, payload.address.id)
                     .pipe(operators.mergeMap(function () { return [
@@ -19376,28 +19136,24 @@
                         userId: payload.userId,
                         cartId: payload.cartId,
                     }),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new SetDeliveryAddressFail(makeErrorSerializable(error)));
-                }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryAddressFail(makeErrorSerializable(error))); }));
             }), withdrawOn(this.contextChange$));
-            this.loadSupportedDeliveryModes$ = this.actions$.pipe(effects$c.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.loadSupportedDeliveryModes$ = this.actions$.pipe(i3.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.checkoutDeliveryConnector
                     .getSupportedModes(payload.userId, payload.cartId)
                     .pipe(operators.map(function (data) {
                     return new LoadSupportedDeliveryModesSuccess(data);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error))); }));
             }), withdrawOn(this.contextChange$));
-            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE), operators.mergeMap(function () { return [
+            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE), operators.mergeMap(function () { return [
                 new ResetLoadSupportedDeliveryModesProcess(),
                 new ResetLoadPaymentTypesProcess(),
                 new CheckoutClearMiscsData(),
             ]; }));
-            this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE), operators.map(function () { return new ClearSupportedDeliveryModes(); }));
-            this.clearCheckoutDataOnLogout$ = this.actions$.pipe(effects$c.ofType(LOGOUT), operators.map(function () { return new ClearCheckoutData(); }));
-            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(effects$c.ofType(LOGIN), operators.map(function () { return new ClearCheckoutData(); }));
-            this.setDeliveryMode$ = this.actions$.pipe(effects$c.ofType(SET_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE), operators.map(function () { return new ClearSupportedDeliveryModes(); }));
+            this.clearCheckoutDataOnLogout$ = this.actions$.pipe(i3.ofType(LOGOUT), operators.map(function () { return new ClearCheckoutData(); }));
+            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(i3.ofType(LOGIN), operators.map(function () { return new ClearCheckoutData(); }));
+            this.setDeliveryMode$ = this.actions$.pipe(i3.ofType(SET_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.checkoutDeliveryConnector
                     .setMode(payload.userId, payload.cartId, payload.selectedModeId)
                     .pipe(operators.mergeMap(function () {
@@ -19408,11 +19164,9 @@
                             cartId: payload.cartId,
                         }),
                     ];
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new SetDeliveryModeFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryModeFail(makeErrorSerializable(error))); }));
             }), withdrawOn(this.contextChange$));
-            this.createPaymentDetails$ = this.actions$.pipe(effects$c.ofType(CREATE_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.createPaymentDetails$ = this.actions$.pipe(i3.ofType(CREATE_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 // get information for creating a subscription directly with payment provider
                 return _this.checkoutPaymentConnector
                     .create(payload.userId, payload.cartId, payload.paymentDetails)
@@ -19426,67 +19180,49 @@
                             new CreatePaymentDetailsSuccess(details),
                         ];
                     }
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new CreatePaymentDetailsFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new CreatePaymentDetailsFail(makeErrorSerializable(error))); }));
             }), withdrawOn(this.contextChange$));
-            this.setPaymentDetails$ = this.actions$.pipe(effects$c.ofType(SET_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.setPaymentDetails$ = this.actions$.pipe(i3.ofType(SET_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.checkoutPaymentConnector
                     .set(payload.userId, payload.cartId, payload.paymentDetails.id)
-                    .pipe(operators.map(function () {
-                    return new SetPaymentDetailsSuccess(payload.paymentDetails);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new SetPaymentDetailsFail(makeErrorSerializable(error)));
-                }));
+                    .pipe(operators.map(function () { return new SetPaymentDetailsSuccess(payload.paymentDetails); }), operators.catchError(function (error) { return rxjs.of(new SetPaymentDetailsFail(makeErrorSerializable(error))); }));
             }), withdrawOn(this.contextChange$));
-            this.placeOrder$ = this.actions$.pipe(effects$c.ofType(PLACE_ORDER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.placeOrder$ = this.actions$.pipe(i3.ofType(PLACE_ORDER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.checkoutConnector
                     .placeOrder(payload.userId, payload.cartId)
                     .pipe(operators.switchMap(function (data) { return [
                     new RemoveCart({ cartId: payload.cartId }),
                     new PlaceOrderSuccess(data),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new PlaceOrderFail(makeErrorSerializable(error)));
-                }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new PlaceOrderFail(makeErrorSerializable(error))); }));
             }), withdrawOn(this.contextChange$));
-            this.loadCheckoutDetails$ = this.actions$.pipe(effects$c.ofType(LOAD_CHECKOUT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.loadCheckoutDetails$ = this.actions$.pipe(i3.ofType(LOAD_CHECKOUT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.checkoutConnector
                     .loadCheckoutDetails(payload.userId, payload.cartId)
-                    .pipe(operators.map(function (data) {
-                    return new LoadCheckoutDetailsSuccess(data);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)));
-                }));
+                    .pipe(operators.map(function (data) { return new LoadCheckoutDetailsSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new LoadCheckoutDetailsFail(makeErrorSerializable(error))); }));
             }), withdrawOn(this.contextChange$));
-            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
+            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(i3.ofType(MERGE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
                 return new LoadCheckoutDetails({
                     userId: payload.userId,
                     cartId: payload.cartId,
                 });
             }));
-            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.switchMap(function (payload) {
+            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(i3.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.switchMap(function (payload) {
                 return _this.checkoutConnector
                     .clearCheckoutDeliveryAddress(payload.userId, payload.cartId)
-                    .pipe(operators.map(function () { return new ClearCheckoutDeliveryAddressSuccess(); }), operators.catchError(function (error) {
-                    return rxjs.of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error)));
-                }));
+                    .pipe(operators.map(function () { return new ClearCheckoutDeliveryAddressSuccess(); }), operators.catchError(function (error) { return rxjs.of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error))); }));
             }), withdrawOn(this.contextChange$));
-            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.concatMap(function (payload) {
+            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(i3.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.concatMap(function (payload) {
                 return _this.checkoutConnector
                     .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
-                    .pipe(operators.map(function () {
-                    return new ClearCheckoutDeliveryModeSuccess(__assign({}, payload));
-                }), operators.catchError(function (error) {
-                    return rxjs.from([
-                        new ClearCheckoutDeliveryModeFail(__assign(__assign({}, payload), { error: makeErrorSerializable(error) })),
-                        new LoadCart({
-                            cartId: payload.cartId,
-                            userId: payload.userId,
-                        }),
-                    ]);
-                }));
+                    .pipe(operators.map(function () { return new ClearCheckoutDeliveryModeSuccess(Object.assign({}, payload)); }), operators.catchError(function (error) { return rxjs.from([
+                    new ClearCheckoutDeliveryModeFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                    new LoadCart({
+                        cartId: payload.cartId,
+                        userId: payload.userId,
+                    }),
+                ]); }));
             }), withdrawOn(this.contextChange$));
-            this.setCostCenter$ = this.actions$.pipe(effects$c.ofType(SET_COST_CENTER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.setCostCenter$ = this.actions$.pipe(i3.ofType(SET_COST_CENTER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.checkoutCostCenterConnector
                     .setCostCenter(payload.userId, payload.cartId, payload.costCenterId)
                     .pipe(operators.mergeMap(function (data) { return [
@@ -19505,71 +19241,69 @@
                         userId: payload.userId,
                         cartId: payload.cartId,
                     }),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new SetCostCenterFail(normalizeHttpError(error)));
-                }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new SetCostCenterFail(normalizeHttpError(error))); }));
             }), withdrawOn(this.contextChange$));
         }
-        CheckoutEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CheckoutDeliveryConnector },
-            { type: CheckoutPaymentConnector },
-            { type: CheckoutCostCenterConnector },
-            { type: CheckoutConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "addDeliveryAddress$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "setDeliveryAddress$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "clearCheckoutMiscsDataOnLanguageChange$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "clearDeliveryModesOnCurrencyChange$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "clearCheckoutDataOnLogout$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "createPaymentDetails$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "setPaymentDetails$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "placeOrder$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CheckoutEffects.prototype, "setCostCenter$", void 0);
-        CheckoutEffects = __decorate([
-            core.Injectable()
-        ], CheckoutEffects);
         return CheckoutEffects;
     }());
+    CheckoutEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CheckoutEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CheckoutDeliveryConnector },
+        { type: CheckoutPaymentConnector },
+        { type: CheckoutCostCenterConnector },
+        { type: CheckoutConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "addDeliveryAddress$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "setDeliveryAddress$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutMiscsDataOnLanguageChange$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearDeliveryModesOnCurrencyChange$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutDataOnLogout$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "createPaymentDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "setPaymentDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "placeOrder$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "setCostCenter$", void 0);
 
     var PaymentTypeConnector = /** @class */ (function () {
         function PaymentTypeConnector(adapter) {
@@ -19581,31 +19315,27 @@
         PaymentTypeConnector.prototype.setPaymentType = function (userId, cartId, typeCode, poNumber) {
             return this.adapter.setPaymentType(userId, cartId, typeCode, poNumber);
         };
-        PaymentTypeConnector.ctorParameters = function () { return [
-            { type: PaymentTypeAdapter }
-        ]; };
-        PaymentTypeConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function PaymentTypeConnector_Factory() { return new PaymentTypeConnector(core.ɵɵinject(PaymentTypeAdapter)); }, token: PaymentTypeConnector, providedIn: "root" });
-        PaymentTypeConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], PaymentTypeConnector);
         return PaymentTypeConnector;
     }());
+    PaymentTypeConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function PaymentTypeConnector_Factory() { return new PaymentTypeConnector(i0.ɵɵinject(PaymentTypeAdapter)); }, token: PaymentTypeConnector, providedIn: "root" });
+    PaymentTypeConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    PaymentTypeConnector.ctorParameters = function () { return [
+        { type: PaymentTypeAdapter }
+    ]; };
 
     var PaymentTypesEffects = /** @class */ (function () {
         function PaymentTypesEffects(actions$, paymentTypeConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.paymentTypeConnector = paymentTypeConnector;
-            this.loadPaymentTypes$ = this.actions$.pipe(effects$c.ofType(LOAD_PAYMENT_TYPES), operators.switchMap(function () {
-                return _this.paymentTypeConnector.getPaymentTypes().pipe(operators.map(function (paymentTypes) {
-                    return new LoadPaymentTypesSuccess(paymentTypes);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadPaymentTypesFail(normalizeHttpError(error)));
-                }));
+            this.loadPaymentTypes$ = this.actions$.pipe(i3.ofType(LOAD_PAYMENT_TYPES), operators.switchMap(function () {
+                return _this.paymentTypeConnector.getPaymentTypes().pipe(operators.map(function (paymentTypes) { return new LoadPaymentTypesSuccess(paymentTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadPaymentTypesFail(normalizeHttpError(error))); }));
             }));
-            this.setPaymentType$ = this.actions$.pipe(effects$c.ofType(SET_PAYMENT_TYPE), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.setPaymentType$ = this.actions$.pipe(i3.ofType(SET_PAYMENT_TYPE), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.paymentTypeConnector
                     .setPaymentType(payload.userId, payload.cartId, payload.typeCode, payload.poNumber)
                     .pipe(operators.mergeMap(function (data) {
@@ -19618,26 +19348,24 @@
                         new ClearCheckoutData(),
                         new SetPaymentTypeSuccess(data),
                     ];
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new SetPaymentTypeFail(normalizeHttpError(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new SetPaymentTypeFail(normalizeHttpError(error))); }));
             }));
         }
-        PaymentTypesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: PaymentTypeConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], PaymentTypesEffects.prototype, "loadPaymentTypes$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], PaymentTypesEffects.prototype, "setPaymentType$", void 0);
-        PaymentTypesEffects = __decorate([
-            core.Injectable()
-        ], PaymentTypesEffects);
         return PaymentTypesEffects;
     }());
+    PaymentTypesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    PaymentTypesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: PaymentTypeConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], PaymentTypesEffects.prototype, "loadPaymentTypes$", void 0);
+    __decorate([
+        i3.Effect()
+    ], PaymentTypesEffects.prototype, "setPaymentType$", void 0);
 
     var effects$5 = [
         CheckoutEffects,
@@ -19649,27 +19377,26 @@
     var CheckoutStoreModule = /** @class */ (function () {
         function CheckoutStoreModule() {
         }
-        CheckoutStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    store.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5),
-                    effects$c.EffectsModule.forFeature(effects$5),
-                ],
-                providers: [reducerProvider$5],
-            })
-        ], CheckoutStoreModule);
         return CheckoutStoreModule;
     }());
+    CheckoutStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5),
+                        i3.EffectsModule.forFeature(effects$5),
+                    ],
+                    providers: [reducerProvider$5],
+                },] }
+    ];
 
     var CheckoutModule = /** @class */ (function () {
         function CheckoutModule() {
         }
-        CheckoutModule_1 = CheckoutModule;
         CheckoutModule.forRoot = function () {
             return {
-                ngModule: CheckoutModule_1,
+                ngModule: CheckoutModule,
                 providers: [
                     {
                         provide: PageMetaResolver,
@@ -19679,47 +19406,38 @@
                 ],
             };
         };
-        var CheckoutModule_1;
-        CheckoutModule = CheckoutModule_1 = __decorate([
-            core.NgModule({
-                imports: [CheckoutStoreModule, CheckoutEventModule],
-            })
-        ], CheckoutModule);
         return CheckoutModule;
     }());
+    CheckoutModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [CheckoutStoreModule, CheckoutEventModule],
+                },] }
+    ];
 
     var getDeliveryAddressSelector = function (state) { return state.address; };
     var ɵ0$A = getDeliveryAddressSelector;
-    var getDeliveryModeSelector = function (state) {
-        return state.deliveryMode;
-    };
+    var getDeliveryModeSelector = function (state) { return state.deliveryMode; };
     var ɵ1$q = getDeliveryModeSelector;
-    var getPaymentDetailsSelector = function (state) {
-        return state.paymentDetails;
-    };
+    var getPaymentDetailsSelector = function (state) { return state.paymentDetails; };
     var ɵ2$i = getPaymentDetailsSelector;
-    var getOrderDetailsSelector = function (state) {
-        return state.orderDetails;
-    };
+    var getOrderDetailsSelector = function (state) { return state.orderDetails; };
     var ɵ3$a = getOrderDetailsSelector;
-    var getCheckoutState = store.createFeatureSelector(CHECKOUT_FEATURE);
+    var getCheckoutState = i1$1.createFeatureSelector(CHECKOUT_FEATURE);
     var ɵ4$4 = function (checkoutState) { return checkoutState.steps; };
-    var getCheckoutStepsState = store.createSelector(getCheckoutState, ɵ4$4);
-    var ɵ5$2 = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getCheckoutSteps = store.createSelector(getCheckoutStepsState, ɵ5$2);
-    var getDeliveryAddress = store.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
-    var getDeliveryMode = store.createSelector(getCheckoutSteps, getDeliveryModeSelector);
+    var getCheckoutStepsState = i1$1.createSelector(getCheckoutState, ɵ4$4);
+    var ɵ5$2 = function (state) { return loaderValueSelector(state); };
+    var getCheckoutSteps = i1$1.createSelector(getCheckoutStepsState, ɵ5$2);
+    var getDeliveryAddress = i1$1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+    var getDeliveryMode = i1$1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
     var ɵ6 = function (deliveryMode) {
         return (deliveryMode &&
             Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
     };
-    var getSupportedDeliveryModes = store.createSelector(getDeliveryMode, ɵ6);
+    var getSupportedDeliveryModes = i1$1.createSelector(getDeliveryMode, ɵ6);
     var ɵ7 = function (deliveryMode) {
         return deliveryMode && deliveryMode.selected;
     };
-    var getSelectedDeliveryModeCode = store.createSelector(getDeliveryMode, ɵ7);
+    var getSelectedDeliveryModeCode = i1$1.createSelector(getDeliveryMode, ɵ7);
     var ɵ8 = function (deliveryMode) {
         if (deliveryMode.selected !== '') {
             if (Object.keys(deliveryMode.supported).length === 0) {
@@ -19728,39 +19446,37 @@
             return deliveryMode.supported[deliveryMode.selected];
         }
     };
-    var getSelectedDeliveryMode = store.createSelector(getDeliveryMode, ɵ8);
-    var getPaymentDetails = store.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
-    var getCheckoutOrderDetails = store.createSelector(getCheckoutSteps, getOrderDetailsSelector);
-    var ɵ9 = function (state) {
-        return loaderSuccessSelector(state) &&
-            !loaderLoadingSelector(state);
-    };
-    var getCheckoutDetailsLoaded = store.createSelector(getCheckoutStepsState, ɵ9);
+    var getSelectedDeliveryMode = i1$1.createSelector(getDeliveryMode, ɵ8);
+    var getPaymentDetails = i1$1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+    var getCheckoutOrderDetails = i1$1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
+    var ɵ9 = function (state) { return loaderSuccessSelector(state) &&
+        !loaderLoadingSelector(state); };
+    var getCheckoutDetailsLoaded = i1$1.createSelector(getCheckoutStepsState, ɵ9);
     var ɵ10 = function (state) { return state.poNumber.po; };
-    var getPoNumer = store.createSelector(getCheckoutSteps, ɵ10);
+    var getPoNumer = i1$1.createSelector(getCheckoutSteps, ɵ10);
     var ɵ11 = function (state) { return state.poNumber.costCenter; };
-    var getCostCenter = store.createSelector(getCheckoutSteps, ɵ11);
+    var getCostCenter = i1$1.createSelector(getCheckoutSteps, ɵ11);
 
     var ɵ0$B = function (state) { return state.addressVerification; };
-    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, ɵ0$B);
-    var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+    var getAddressVerificationResultsState = i1$1.createSelector(getCheckoutState, ɵ0$B);
+    var getAddressVerificationResults$1 = i1$1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
     var ɵ0$C = function (state) { return state.cardTypes; };
-    var getCardTypesState = store.createSelector(getCheckoutState, ɵ0$C);
-    var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
+    var getCardTypesState = i1$1.createSelector(getCheckoutState, ɵ0$C);
+    var getCardTypesEntites$1 = i1$1.createSelector(getCardTypesState, getCardTypesEntites);
     var ɵ1$r = function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     };
-    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, ɵ1$r);
+    var getAllCardTypes = i1$1.createSelector(getCardTypesEntites$1, ɵ1$r);
 
     var ɵ0$D = function (state) { return state.paymentTypes; };
-    var getPaymentTypesState = store.createSelector(getCheckoutState, ɵ0$D);
-    var getPaymentTypesEntites$1 = store.createSelector(getPaymentTypesState, getPaymentTypesEntites);
+    var getPaymentTypesState = i1$1.createSelector(getCheckoutState, ɵ0$D);
+    var getPaymentTypesEntites$1 = i1$1.createSelector(getPaymentTypesState, getPaymentTypesEntites);
     var ɵ1$s = function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     };
-    var getAllPaymentTypes = store.createSelector(getPaymentTypesEntites$1, ɵ1$s);
-    var getSelectedPaymentType$1 = store.createSelector(getPaymentTypesState, getSelectedPaymentType);
+    var getAllPaymentTypes = i1$1.createSelector(getPaymentTypesEntites$1, ɵ1$s);
+    var getSelectedPaymentType$1 = i1$1.createSelector(getPaymentTypesState, getSelectedPaymentType);
 
     var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -19863,13 +19579,13 @@
          * Get status of checkout details loaded
          */
         CheckoutService.prototype.getCheckoutDetailsLoaded = function () {
-            return this.checkoutStore.pipe(store.select(getCheckoutDetailsLoaded));
+            return this.checkoutStore.pipe(i1$1.select(getCheckoutDetailsLoaded));
         };
         /**
          * Get order details
          */
         CheckoutService.prototype.getOrderDetails = function () {
-            return this.checkoutStore.pipe(store.select(getCheckoutOrderDetails));
+            return this.checkoutStore.pipe(i1$1.select(getCheckoutOrderDetails));
         };
         CheckoutService.prototype.actionAllowed = function () {
             var userId;
@@ -19880,19 +19596,19 @@
             return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
                 this.activeCartService.isGuestCart());
         };
-        CheckoutService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: ActiveCartService }
-        ]; };
-        CheckoutService.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
-        CheckoutService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutService);
         return CheckoutService;
     }());
+    CheckoutService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+    CheckoutService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
 
     var CheckoutDeliveryService = /** @class */ (function () {
         function CheckoutDeliveryService(checkoutStore, authService, activeCartService) {
@@ -19905,7 +19621,7 @@
          */
         CheckoutDeliveryService.prototype.getSupportedDeliveryModes = function () {
             var _this = this;
-            return this.checkoutStore.pipe(store.select(getSupportedDeliveryModes), operators.withLatestFrom(this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), operators.tap(function (_a) {
+            return this.checkoutStore.pipe(i1$1.select(getSupportedDeliveryModes), operators.withLatestFrom(this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), operators.tap(function (_a) {
                 var _b = __read(_a, 2), loadingState = _b[1];
                 if (!(loadingState.loading || loadingState.success || loadingState.error)) {
                     _this.loadSupportedDeliveryModes();
@@ -19916,25 +19632,25 @@
          * Get selected delivery mode
          */
         CheckoutDeliveryService.prototype.getSelectedDeliveryMode = function () {
-            return this.checkoutStore.pipe(store.select(getSelectedDeliveryMode));
+            return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryMode));
         };
         /**
          * Get selected delivery mode code
          */
         CheckoutDeliveryService.prototype.getSelectedDeliveryModeCode = function () {
-            return this.checkoutStore.pipe(store.select(getSelectedDeliveryModeCode));
+            return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryModeCode));
         };
         /**
          * Get delivery address
          */
         CheckoutDeliveryService.prototype.getDeliveryAddress = function () {
-            return this.checkoutStore.pipe(store.select(getDeliveryAddress));
+            return this.checkoutStore.pipe(i1$1.select(getDeliveryAddress));
         };
         /**
          * Get status about successfully set Delivery Address
          */
         CheckoutDeliveryService.prototype.getSetDeliveryAddressProcess = function () {
-            return this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
         };
         /**
          * Clear info about process of setting Delivery Address
@@ -19946,7 +19662,7 @@
          * Get status about of set Delivery Mode process
          */
         CheckoutDeliveryService.prototype.getSetDeliveryModeProcess = function () {
-            return this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
         };
         /**
          * Clear info about process of setting Delivery Mode
@@ -19964,7 +19680,7 @@
          * Get status about of set supported Delivery Modes process
          */
         CheckoutDeliveryService.prototype.getLoadSupportedDeliveryModeProcess = function () {
-            return this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
         };
         /**
          * Clear supported delivery modes loaded in last checkout process
@@ -19976,7 +19692,7 @@
          * Get address verification results
          */
         CheckoutDeliveryService.prototype.getAddressVerificationResults = function () {
-            return this.checkoutStore.pipe(store.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
+            return this.checkoutStore.pipe(i1$1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
         };
         /**
          * Create and set a delivery address using the address param
@@ -20160,19 +19876,19 @@
             return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
                 this.activeCartService.isGuestCart());
         };
-        CheckoutDeliveryService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: ActiveCartService }
-        ]; };
-        CheckoutDeliveryService.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
-        CheckoutDeliveryService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutDeliveryService);
         return CheckoutDeliveryService;
     }());
+    CheckoutDeliveryService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+    CheckoutDeliveryService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutDeliveryService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
 
     var CheckoutPaymentService = /** @class */ (function () {
         function CheckoutPaymentService(checkoutStore, authService, activeCartService) {
@@ -20184,19 +19900,19 @@
          * Get card types
          */
         CheckoutPaymentService.prototype.getCardTypes = function () {
-            return this.checkoutStore.pipe(store.select(getAllCardTypes));
+            return this.checkoutStore.pipe(i1$1.select(getAllCardTypes));
         };
         /**
          * Get payment details
          */
         CheckoutPaymentService.prototype.getPaymentDetails = function () {
-            return this.checkoutStore.pipe(store.select(getPaymentDetails));
+            return this.checkoutStore.pipe(i1$1.select(getPaymentDetails));
         };
         /**
          * Get status about set Payment Details process
          */
         CheckoutPaymentService.prototype.getSetPaymentDetailsResultProcess = function () {
-            return this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
         };
         /**
          * Clear info about process of setting Payment Details
@@ -20275,19 +19991,19 @@
             return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
                 this.activeCartService.isGuestCart());
         };
-        CheckoutPaymentService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: ActiveCartService }
-        ]; };
-        CheckoutPaymentService.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
-        CheckoutPaymentService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutPaymentService);
         return CheckoutPaymentService;
     }());
+    CheckoutPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
+    CheckoutPaymentService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutPaymentService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
 
     var PaymentTypeService = /** @class */ (function () {
         function PaymentTypeService(checkoutStore, authService, activeCartService) {
@@ -20300,7 +20016,7 @@
          */
         PaymentTypeService.prototype.getPaymentTypes = function () {
             var _this = this;
-            return this.checkoutStore.pipe(store.select(getAllPaymentTypes), operators.withLatestFrom(this.checkoutStore.pipe(store.select(getProcessStateFactory(GET_PAYMENT_TYPES_PROCESS_ID)))), operators.tap(function (_a) {
+            return this.checkoutStore.pipe(i1$1.select(getAllPaymentTypes), operators.withLatestFrom(this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(GET_PAYMENT_TYPES_PROCESS_ID)))), operators.tap(function (_a) {
                 var _b = __read(_a, 2), _ = _b[0], loadingState = _b[1];
                 if (!(loadingState.loading || loadingState.success || loadingState.error)) {
                     _this.loadPaymentTypes();
@@ -20343,7 +20059,7 @@
             var _this = this;
             return rxjs.combineLatest([
                 this.activeCartService.getActive(),
-                this.checkoutStore.pipe(store.select(getSelectedPaymentType$1)),
+                this.checkoutStore.pipe(i1$1.select(getSelectedPaymentType$1)),
             ]).pipe(operators.tap(function (_a) {
                 var _b = __read(_a, 2), cart = _b[0], selected = _b[1];
                 if (selected === undefined) {
@@ -20370,7 +20086,7 @@
             var _this = this;
             return rxjs.combineLatest([
                 this.activeCartService.getActive(),
-                this.checkoutStore.pipe(store.select(getPoNumer)),
+                this.checkoutStore.pipe(i1$1.select(getPoNumer)),
             ]).pipe(operators.tap(function (_a) {
                 var _b = __read(_a, 2), cart = _b[0], po = _b[1];
                 if (po === undefined && cart && cart.purchaseOrderNumber) {
@@ -20381,19 +20097,19 @@
                 return po;
             }));
         };
-        PaymentTypeService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: ActiveCartService }
-        ]; };
-        PaymentTypeService.ɵprov = core.ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
-        PaymentTypeService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], PaymentTypeService);
         return PaymentTypeService;
     }());
+    PaymentTypeService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
+    PaymentTypeService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    PaymentTypeService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
 
     var CheckoutCostCenterService = /** @class */ (function () {
         function CheckoutCostCenterService(checkoutStore, authService, activeCartService) {
@@ -20429,7 +20145,7 @@
             var _this = this;
             return rxjs.combineLatest([
                 this.activeCartService.getActive(),
-                this.checkoutStore.pipe(store.select(getCostCenter)),
+                this.checkoutStore.pipe(i1$1.select(getCostCenter)),
             ]).pipe(operators.filter(function (_a) {
                 var _b = __read(_a, 1), cart = _b[0];
                 return Boolean(cart);
@@ -20442,19 +20158,19 @@
                 return costCenterId;
             }));
         };
-        CheckoutCostCenterService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService },
-            { type: ActiveCartService }
-        ]; };
-        CheckoutCostCenterService.ɵprov = core.ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService), core.ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
-        CheckoutCostCenterService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CheckoutCostCenterService);
         return CheckoutCostCenterService;
     }());
+    CheckoutCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
+    CheckoutCostCenterService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutCostCenterService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
 
     var defaultCmsModuleConfig = {
         backend: {
@@ -20507,35 +20223,35 @@
                 .translate('common.home')
                 .pipe(operators.map(function (label) { return [{ label: label, link: '/' }]; }));
         };
-        ContentPageMetaResolver.ctorParameters = function () { return [
-            { type: CmsService },
-            { type: TranslationService }
-        ]; };
-        ContentPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(core.ɵɵinject(CmsService), core.ɵɵinject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
-        ContentPageMetaResolver = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ContentPageMetaResolver);
         return ContentPageMetaResolver;
     }(PageMetaResolver));
+    ContentPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(i0.ɵɵinject(CmsService), i0.ɵɵinject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
+    ContentPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ContentPageMetaResolver.ctorParameters = function () { return [
+        { type: CmsService },
+        { type: TranslationService }
+    ]; };
 
     var CmsPageTitleModule = /** @class */ (function () {
         function CmsPageTitleModule() {
         }
-        CmsPageTitleModule = __decorate([
-            core.NgModule({
-                providers: [
-                    {
-                        provide: PageMetaResolver,
-                        useExisting: ContentPageMetaResolver,
-                        multi: true,
-                    },
-                ],
-            })
-        ], CmsPageTitleModule);
         return CmsPageTitleModule;
     }());
+    CmsPageTitleModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    providers: [
+                        {
+                            provide: PageMetaResolver,
+                            useExisting: ContentPageMetaResolver,
+                            multi: true,
+                        },
+                    ],
+                },] }
+    ];
 
     function bufferDebounceTime(time, scheduler) {
         if (time === void 0) { time = 0; }
@@ -20557,15 +20273,15 @@
         function CmsStructureConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        CmsStructureConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsStructureConfig_Factory() { return core.ɵɵinject(Config); }, token: CmsStructureConfig, providedIn: "root" });
-        CmsStructureConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], CmsStructureConfig);
         return CmsStructureConfig;
     }(CmsConfig));
+    CmsStructureConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsStructureConfig_Factory() { return i0.ɵɵinject(Config); }, token: CmsStructureConfig, providedIn: "root" });
+    CmsStructureConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     /**
      * Service that provides access to CMS structure from a static
@@ -20633,7 +20349,7 @@
                 if (page) {
                     // serialize page data
                     if (!pageStructure.page) {
-                        pageStructure.page = __assign({}, page);
+                        pageStructure.page = Object.assign({}, page);
                         pageStructure.page.slots = {};
                     }
                     if (!pageStructure.page.slots) {
@@ -20717,7 +20433,7 @@
                             this.cmsDataConfig.cmsStructure.components) {
                             var component = this.cmsDataConfig.cmsStructure.components[componentId];
                             if (component) {
-                                components.push(__assign({ uid: componentId }, component));
+                                components.push(Object.assign({ uid: componentId }, component));
                             }
                         }
                     }
@@ -20738,17 +20454,17 @@
                 ? this.cmsDataConfig.cmsStructure.components[componentId]
                 : undefined;
         };
-        CmsStructureConfigService.ctorParameters = function () { return [
-            { type: CmsStructureConfig }
-        ]; };
-        CmsStructureConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(core.ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
-        CmsStructureConfigService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CmsStructureConfigService);
         return CmsStructureConfigService;
     }());
+    CmsStructureConfigService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(i0.ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
+    CmsStructureConfigService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CmsStructureConfigService.ctorParameters = function () { return [
+        { type: CmsStructureConfig }
+    ]; };
 
     var CmsComponentConnector = /** @class */ (function () {
         function CmsComponentConnector(cmsStructureConfigService, adapter, config) {
@@ -20760,11 +20476,9 @@
             var _this = this;
             return this.cmsStructureConfigService
                 .getComponentFromConfig(id)
-                .pipe(operators.switchMap(function (configuredComponent) {
-                return configuredComponent
-                    ? rxjs.of(configuredComponent)
-                    : _this.adapter.load(id, pageContext);
-            }));
+                .pipe(operators.switchMap(function (configuredComponent) { return configuredComponent
+                ? rxjs.of(configuredComponent)
+                : _this.adapter.load(id, pageContext); }));
         };
         CmsComponentConnector.prototype.getList = function (ids, pageContext) {
             var _this = this;
@@ -20786,33 +20500,29 @@
                 }
             }));
         };
-        CmsComponentConnector.ctorParameters = function () { return [
-            { type: CmsStructureConfigService },
-            { type: CmsComponentAdapter },
-            { type: OccConfig }
-        ]; };
-        CmsComponentConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(core.ɵɵinject(CmsStructureConfigService), core.ɵɵinject(CmsComponentAdapter), core.ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
-        CmsComponentConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CmsComponentConnector);
         return CmsComponentConnector;
     }());
+    CmsComponentConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(i0.ɵɵinject(CmsStructureConfigService), i0.ɵɵinject(CmsComponentAdapter), i0.ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
+    CmsComponentConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CmsComponentConnector.ctorParameters = function () { return [
+        { type: CmsStructureConfigService },
+        { type: CmsComponentAdapter },
+        { type: OccConfig }
+    ]; };
 
     var ComponentsEffects = /** @class */ (function () {
         function ComponentsEffects(actions$, cmsComponentConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.cmsComponentConnector = cmsComponentConnector;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
-            this.loadComponent$ = effects$c.createEffect(function () { return function (_a) {
+            this.contextChange$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
+            this.loadComponent$ = i3.createEffect(function () { return function (_a) {
                 var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-                return _this.actions$.pipe(effects$c.ofType(LOAD_CMS_COMPONENT), operators.groupBy(function (actions) { return serializePageContext(actions.payload.pageContext); }), operators.mergeMap(function (actionGroup) {
-                    return actionGroup.pipe(bufferDebounceTime(debounce, scheduler), operators.mergeMap(function (actions) {
-                        return _this.loadComponentsEffect(actions.map(function (action) { return action.payload.uid; }), actions[0].payload.pageContext);
-                    }));
-                }), withdrawOn(_this.contextChange$));
+                return _this.actions$.pipe(i3.ofType(LOAD_CMS_COMPONENT), operators.groupBy(function (actions) { return serializePageContext(actions.payload.pageContext); }), operators.mergeMap(function (actionGroup) { return actionGroup.pipe(bufferDebounceTime(debounce, scheduler), operators.mergeMap(function (actions) { return _this.loadComponentsEffect(actions.map(function (action) { return action.payload.uid; }), actions[0].payload.pageContext); })); }), withdrawOn(_this.contextChange$));
             }; });
         }
         ComponentsEffects.prototype.loadComponentsEffect = function (componentUids, pageContext) {
@@ -20847,25 +20557,21 @@
                     }));
                 });
                 return rxjs.from(actions);
-            }), operators.catchError(function (error) {
-                return rxjs.from(componentUids.map(function (uid) {
-                    return new LoadCmsComponentFail({
-                        uid: uid,
-                        error: makeErrorSerializable(error),
-                        pageContext: pageContext,
-                    });
-                }));
-            }));
+            }), operators.catchError(function (error) { return rxjs.from(componentUids.map(function (uid) { return new LoadCmsComponentFail({
+                uid: uid,
+                error: makeErrorSerializable(error),
+                pageContext: pageContext,
+            }); })); }));
         };
-        ComponentsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CmsComponentConnector }
-        ]; };
-        ComponentsEffects = __decorate([
-            core.Injectable()
-        ], ComponentsEffects);
         return ComponentsEffects;
     }());
+    ComponentsEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ComponentsEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CmsComponentConnector }
+    ]; };
 
     /**
      * @license
@@ -20945,10 +20651,8 @@
         });
         var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
         var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-        return function (url) {
-            return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); });
-        };
+        return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+            !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
     }
     /**
      * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
@@ -20979,17 +20683,15 @@
             });
             var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
             var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-            return function (url) {
-                return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-                    !excludePatterns.some(function (pattern) { return pattern.regex.test(url); });
-            };
+            return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
         };
-        GlobService.ɵprov = core.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-        GlobService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], GlobService);
         return GlobService;
     }());
+    GlobService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+    GlobService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
 
     var UrlMatcherService = /** @class */ (function () {
         function UrlMatcherService(globService) {
@@ -21010,7 +20712,7 @@
             var _this = this;
             var matchers = paths.map(function (path) { return _this.getFromPath(path); });
             var matcher = this.getCombined(matchers);
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 matcher['_paths'] = paths; // property added for easier debugging of routes
             }
             return matcher;
@@ -21028,7 +20730,7 @@
                 }
                 return null;
             };
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 matcher['_matchers'] = matchers; // property added for easier debugging of routes
             }
             return matcher;
@@ -21083,7 +20785,7 @@
                 }
                 return { consumed: segments.slice(0, parts.length), posParams: posParams };
             };
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 matcher['_path'] = path; // property added for easier debugging of routes
             }
             return matcher;
@@ -21097,7 +20799,7 @@
                     ? null
                     : { consumed: segments, posParams: {} };
             };
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 matcher['_originalMatcher'] = originalMatcher; // property added for easier debugging of routes
             }
             return matcher;
@@ -21113,20 +20815,20 @@
                     ? { consumed: segments, posParams: {} }
                     : null;
             };
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 matcher['_globPatterns'] = globPatterns; // property added for easier debugging of routes
             }
             return matcher;
         };
-        UrlMatcherService.ctorParameters = function () { return [
-            { type: GlobService }
-        ]; };
-        UrlMatcherService.ɵprov = core.ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(core.ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
-        UrlMatcherService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], UrlMatcherService);
         return UrlMatcherService;
     }());
+    UrlMatcherService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(i0.ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
+    UrlMatcherService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    UrlMatcherService.ctorParameters = function () { return [
+        { type: GlobService }
+    ]; };
 
     var ConfigurableRoutesService = /** @class */ (function () {
         function ConfigurableRoutesService(injector, routingConfigService, urlMatcherService) {
@@ -21150,8 +20852,8 @@
          */
         ConfigurableRoutesService.prototype.configure = function () {
             // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
-            var router$1 = this.injector.get(router.Router);
-            router$1.resetConfig(this.configureRoutes(router$1.config));
+            var router = this.injector.get(i4.Router);
+            router.resetConfig(this.configureRoutes(router.config));
         };
         /**
          * Sets the property `path` or `matcher` for the given routes, based on the Spartacus' routing configuration.
@@ -21183,19 +20885,19 @@
                 this.validateRouteConfig(routeConfig, routeName, route);
                 if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.disabled) {
                     delete route.path;
-                    return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
+                    return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
                 }
                 else if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) {
                     delete route.path;
-                    return __assign(__assign({}, route), { matcher: this.resolveUrlMatchers(route, routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) });
+                    return Object.assign(Object.assign({}, route), { matcher: this.resolveUrlMatchers(route, routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) });
                 }
                 else if (((_a = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _a === void 0 ? void 0 : _a.length) === 1) {
                     delete route.matcher;
-                    return __assign(__assign({}, route), { path: routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths[0] });
+                    return Object.assign(Object.assign({}, route), { path: routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths[0] });
                 }
                 else {
                     delete route.path;
-                    return __assign(__assign({}, route), { matcher: this.urlMatcherService.getFromPaths((routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) || []) });
+                    return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFromPaths((routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) || []) });
                 }
             }
             return route; // if route doesn't have a name, just pass the original route
@@ -21234,7 +20936,7 @@
             return route.data && route.data.cxRoute;
         };
         ConfigurableRoutesService.prototype.validateRouteConfig = function (routeConfig, routeName, route) {
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
                 // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
                 if (routeConfig === null ||
@@ -21253,21 +20955,21 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 console.warn.apply(console, __spread(args));
             }
         };
-        ConfigurableRoutesService.ctorParameters = function () { return [
-            { type: core.Injector },
-            { type: RoutingConfigService },
-            { type: UrlMatcherService }
-        ]; };
-        ConfigurableRoutesService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core.ɵɵinject(core.INJECTOR), core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
-        ConfigurableRoutesService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], ConfigurableRoutesService);
         return ConfigurableRoutesService;
     }());
+    ConfigurableRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(RoutingConfigService), i0.ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+    ConfigurableRoutesService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ConfigurableRoutesService.ctorParameters = function () { return [
+        { type: i0.Injector },
+        { type: RoutingConfigService },
+        { type: UrlMatcherService }
+    ]; };
 
     var UrlPipe = /** @class */ (function () {
         function UrlPipe(urlService) {
@@ -21276,16 +20978,16 @@
         UrlPipe.prototype.transform = function (commands) {
             return this.urlService.transform(commands);
         };
-        UrlPipe.ctorParameters = function () { return [
-            { type: SemanticPathService }
-        ]; };
-        UrlPipe = __decorate([
-            core.Pipe({
-                name: 'cxUrl',
-            })
-        ], UrlPipe);
         return UrlPipe;
     }());
+    UrlPipe.decorators = [
+        { type: i0.Pipe, args: [{
+                    name: 'cxUrl',
+                },] }
+    ];
+    UrlPipe.ctorParameters = function () { return [
+        { type: SemanticPathService }
+    ]; };
 
     var ProductURLPipe = /** @class */ (function () {
         function ProductURLPipe(semanticPath) {
@@ -21294,42 +20996,42 @@
         ProductURLPipe.prototype.transform = function (product) {
             return this.semanticPath.transform({ cxRoute: 'product', params: product });
         };
-        ProductURLPipe.ctorParameters = function () { return [
-            { type: SemanticPathService }
-        ]; };
-        ProductURLPipe = __decorate([
-            core.Pipe({
-                name: 'cxProductUrl',
-            })
-        ], ProductURLPipe);
         return ProductURLPipe;
     }());
+    ProductURLPipe.decorators = [
+        { type: i0.Pipe, args: [{
+                    name: 'cxProductUrl',
+                },] }
+    ];
+    ProductURLPipe.ctorParameters = function () { return [
+        { type: SemanticPathService }
+    ]; };
 
     var UrlModule = /** @class */ (function () {
         function UrlModule() {
         }
-        UrlModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule],
-                declarations: [UrlPipe, ProductURLPipe],
-                exports: [UrlPipe, ProductURLPipe],
-            })
-        ], UrlModule);
         return UrlModule;
     }());
+    UrlModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule],
+                    declarations: [UrlPipe, ProductURLPipe],
+                    exports: [UrlPipe, ProductURLPipe],
+                },] }
+    ];
 
     var ExternalRoutesConfig = /** @class */ (function () {
         function ExternalRoutesConfig() {
         }
-        ExternalRoutesConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function ExternalRoutesConfig_Factory() { return core.ɵɵinject(Config); }, token: ExternalRoutesConfig, providedIn: "root" });
-        ExternalRoutesConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], ExternalRoutesConfig);
         return ExternalRoutesConfig;
     }());
+    ExternalRoutesConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesConfig_Factory() { return i0.ɵɵinject(Config); }, token: ExternalRoutesConfig, providedIn: "root" });
+    ExternalRoutesConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var ExternalRoutesGuard = /** @class */ (function () {
         function ExternalRoutesGuard(winRef, platformId) {
@@ -21340,7 +21042,7 @@
          * Redirects to different storefront system for anticipated URL
          */
         ExternalRoutesGuard.prototype.canActivate = function (route, state) {
-            if (common.isPlatformBrowser(this.platformId)) {
+            if (i1$2.isPlatformBrowser(this.platformId)) {
                 this.redirect(route, state);
             }
             return false;
@@ -21354,17 +21056,16 @@
                 window.location.href = state.url;
             }
         };
-        ExternalRoutesGuard.ctorParameters = function () { return [
-            { type: WindowRef },
-            { type: Object, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
-        ]; };
-        ExternalRoutesGuard.ɵprov = core.ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(core.ɵɵinject(WindowRef), core.ɵɵinject(core.PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
-        ExternalRoutesGuard = __decorate([
-            core.Injectable({ providedIn: 'root' }),
-            __param(1, core.Inject(core.PLATFORM_ID))
-        ], ExternalRoutesGuard);
         return ExternalRoutesGuard;
     }());
+    ExternalRoutesGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(i0.ɵɵinject(WindowRef), i0.ɵɵinject(i0.PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
+    ExternalRoutesGuard.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ExternalRoutesGuard.ctorParameters = function () { return [
+        { type: WindowRef },
+        { type: Object, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+    ]; };
 
     function addExternalRoutesFactory(service) {
         var result = function () {
@@ -21386,17 +21087,17 @@
             get: function () {
                 return ((this.config && this.config.routing && this.config.routing.internal) || []);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
          * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
          */
         ExternalRoutesService.prototype.addRoutes = function () {
-            var router$1 = this.injector.get(router.Router);
+            var router = this.injector.get(i4.Router);
             var newRoutes = this.getRoutes();
             if (newRoutes.length) {
-                router$1.resetConfig(__spread(newRoutes, router$1.config));
+                router.resetConfig(__spread(newRoutes, router.config));
             }
         };
         /**
@@ -21422,19 +21123,19 @@
             var matcher = this.urlMatcherService.getFromGlob(this.internalUrlPatterns);
             return this.urlMatcherService.getOpposite(matcher); // the external route should be activated only when it's NOT an internal route
         };
-        ExternalRoutesService.ctorParameters = function () { return [
-            { type: ExternalRoutesConfig },
-            { type: UrlMatcherService },
-            { type: core.Injector }
-        ]; };
-        ExternalRoutesService.ɵprov = core.ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(core.ɵɵinject(ExternalRoutesConfig), core.ɵɵinject(UrlMatcherService), core.ɵɵinject(core.INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
-        ExternalRoutesService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ExternalRoutesService);
         return ExternalRoutesService;
     }());
+    ExternalRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(i0.ɵɵinject(ExternalRoutesConfig), i0.ɵɵinject(UrlMatcherService), i0.ɵɵinject(i0.INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
+    ExternalRoutesService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ExternalRoutesService.ctorParameters = function () { return [
+        { type: ExternalRoutesConfig },
+        { type: UrlMatcherService },
+        { type: i0.Injector }
+    ]; };
 
     /**
      * Prepends the external route that redirects to a different storefront system for configured URLs
@@ -21442,13 +21143,12 @@
     var ExternalRoutesModule = /** @class */ (function () {
         function ExternalRoutesModule() {
         }
-        ExternalRoutesModule_1 = ExternalRoutesModule;
         ExternalRoutesModule.forRoot = function () {
             return {
-                ngModule: ExternalRoutesModule_1,
+                ngModule: ExternalRoutesModule,
                 providers: [
                     {
-                        provide: core.APP_INITIALIZER,
+                        provide: i0.APP_INITIALIZER,
                         multi: true,
                         useFactory: addExternalRoutesFactory,
                         deps: [ExternalRoutesService],
@@ -21456,12 +21156,11 @@
                 ],
             };
         };
-        var ExternalRoutesModule_1;
-        ExternalRoutesModule = ExternalRoutesModule_1 = __decorate([
-            core.NgModule()
-        ], ExternalRoutesModule);
         return ExternalRoutesModule;
     }());
+    ExternalRoutesModule.decorators = [
+        { type: i0.NgModule }
+    ];
 
     var PageContext = /** @class */ (function () {
         function PageContext(id, type) {
@@ -21478,16 +21177,14 @@
             this.nonProtectedPaths = []; // arrays of paths' segments list
             if (this.shouldProtect) {
                 // pre-process config for performance:
-                this.nonProtectedPaths = this.getNonProtectedPaths().map(function (path) {
-                    return _this.getSegments(path);
-                });
+                this.nonProtectedPaths = this.getNonProtectedPaths().map(function (path) { return _this.getSegments(path); });
             }
         }
         Object.defineProperty(ProtectedRoutesService.prototype, "routingConfig", {
             get: function () {
                 return this.config && this.config.routing;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ProtectedRoutesService.prototype, "shouldProtect", {
@@ -21499,7 +21196,7 @@
             get: function () {
                 return this.routingConfig.protected;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -21514,9 +21211,7 @@
          */
         ProtectedRoutesService.prototype.matchAnyPath = function (urlSegments, pathsSegments) {
             var _this = this;
-            return pathsSegments.some(function (pathSegments) {
-                return _this.matchPath(urlSegments, pathSegments);
-            });
+            return pathsSegments.some(function (pathSegments) { return _this.matchPath(urlSegments, pathSegments); });
         };
         /**
          * Tells whether the url matches the path
@@ -21539,13 +21234,11 @@
          * Returns a list of paths that are not protected
          */
         ProtectedRoutesService.prototype.getNonProtectedPaths = function () {
-            return Object.values(this.routingConfig.routes).reduce(function (acc, routeConfig) {
-                return routeConfig.protected === false && // must be explicitly false, ignore undefined
-                    routeConfig.paths &&
-                    routeConfig.paths.length
-                    ? acc.concat(routeConfig.paths)
-                    : acc;
-            }, []);
+            return Object.values(this.routingConfig.routes).reduce(function (acc, routeConfig) { return routeConfig.protected === false && // must be explicitly false, ignore undefined
+                routeConfig.paths &&
+                routeConfig.paths.length
+                ? acc.concat(routeConfig.paths)
+                : acc; }, []);
         };
         /**
          * Splits the url by slashes
@@ -21553,15 +21246,15 @@
         ProtectedRoutesService.prototype.getSegments = function (url) {
             return (url || '').split('/');
         };
-        ProtectedRoutesService.ctorParameters = function () { return [
-            { type: RoutingConfig }
-        ]; };
-        ProtectedRoutesService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(core.ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
-        ProtectedRoutesService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], ProtectedRoutesService);
         return ProtectedRoutesService;
     }());
+    ProtectedRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(i0.ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
+    ProtectedRoutesService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ProtectedRoutesService.ctorParameters = function () { return [
+        { type: RoutingConfig }
+    ]; };
 
     var ProtectedRoutesGuard = /** @class */ (function () {
         function ProtectedRoutesGuard(service, authGuard) {
@@ -21580,16 +21273,16 @@
             }
             return rxjs.of(true);
         };
-        ProtectedRoutesGuard.ctorParameters = function () { return [
-            { type: ProtectedRoutesService },
-            { type: AuthGuard }
-        ]; };
-        ProtectedRoutesGuard.ɵprov = core.ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(core.ɵɵinject(ProtectedRoutesService), core.ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
-        ProtectedRoutesGuard = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], ProtectedRoutesGuard);
         return ProtectedRoutesGuard;
     }());
+    ProtectedRoutesGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(i0.ɵɵinject(ProtectedRoutesService), i0.ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
+    ProtectedRoutesGuard.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ProtectedRoutesGuard.ctorParameters = function () { return [
+        { type: ProtectedRoutesService },
+        { type: AuthGuard }
+    ]; };
 
     var RouterEffects = /** @class */ (function () {
         function RouterEffects(actions$, router, location) {
@@ -21597,47 +21290,47 @@
             this.actions$ = actions$;
             this.router = router;
             this.location = location;
-            this.navigate$ = this.actions$.pipe(effects$c.ofType(ROUTER_GO), operators.map(function (action) { return action.payload; }), operators.tap(function (_a) {
+            this.navigate$ = this.actions$.pipe(i3.ofType(ROUTER_GO), operators.map(function (action) { return action.payload; }), operators.tap(function (_a) {
                 var path = _a.path, queryParams = _a.query, extras = _a.extras;
-                _this.router.navigate(path, __assign({ queryParams: queryParams }, extras));
+                _this.router.navigate(path, Object.assign({ queryParams: queryParams }, extras));
             }));
-            this.navigateBuUrl$ = this.actions$.pipe(effects$c.ofType(ROUTER_GO_BY_URL), operators.map(function (action) { return action.payload; }), operators.tap(function (url) {
+            this.navigateBuUrl$ = this.actions$.pipe(i3.ofType(ROUTER_GO_BY_URL), operators.map(function (action) { return action.payload; }), operators.tap(function (url) {
                 _this.router.navigateByUrl(url);
             }));
-            this.clearCmsRoutes$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap(function () {
+            this.clearCmsRoutes$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap(function () {
                 var filteredConfig = _this.router.config.filter(function (route) { return !(route.data && route.data.cxCmsRouteContext); });
                 if (filteredConfig.length !== _this.router.config.length) {
                     _this.router.resetConfig(filteredConfig);
                 }
             }));
-            this.navigateBack$ = this.actions$.pipe(effects$c.ofType(ROUTER_BACK), operators.tap(function () { return _this.location.back(); }));
-            this.navigateForward$ = this.actions$.pipe(effects$c.ofType(ROUTER_FORWARD), operators.tap(function () { return _this.location.forward(); }));
+            this.navigateBack$ = this.actions$.pipe(i3.ofType(ROUTER_BACK), operators.tap(function () { return _this.location.back(); }));
+            this.navigateForward$ = this.actions$.pipe(i3.ofType(ROUTER_FORWARD), operators.tap(function () { return _this.location.forward(); }));
         }
-        RouterEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: router.Router },
-            { type: common.Location }
-        ]; };
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], RouterEffects.prototype, "navigate$", void 0);
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], RouterEffects.prototype, "navigateBuUrl$", void 0);
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], RouterEffects.prototype, "navigateBack$", void 0);
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], RouterEffects.prototype, "navigateForward$", void 0);
-        RouterEffects = __decorate([
-            core.Injectable()
-        ], RouterEffects);
         return RouterEffects;
     }());
+    RouterEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    RouterEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: i4.Router },
+        { type: i1$2.Location }
+    ]; };
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "navigate$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "navigateBuUrl$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "navigateBack$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "navigateForward$", void 0);
 
     var effects$6 = [RouterEffects];
 
@@ -21663,14 +21356,14 @@
     function reducer$d(state, action) {
         if (state === void 0) { state = initialState$d; }
         switch (action.type) {
-            case routerStore.ROUTER_NAVIGATION: {
-                return __assign(__assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
+            case fromNgrxRouter.ROUTER_NAVIGATION: {
+                return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
             }
-            case routerStore.ROUTER_ERROR:
-            case routerStore.ROUTER_CANCEL: {
-                return __assign(__assign({}, state), { nextState: undefined });
+            case fromNgrxRouter.ROUTER_ERROR:
+            case fromNgrxRouter.ROUTER_CANCEL: {
+                return Object.assign(Object.assign({}, state), { nextState: undefined });
             }
-            case routerStore.ROUTER_NAVIGATED: {
+            case fromNgrxRouter.ROUTER_NAVIGATED: {
                 return {
                     state: action.payload.routerState,
                     navigationId: action.payload.event.id,
@@ -21682,7 +21375,7 @@
             }
         }
     }
-    var reducerToken$6 = new core.InjectionToken('RouterReducers');
+    var reducerToken$6 = new i0.InjectionToken('RouterReducers');
     var reducerProvider$6 = {
         provide: reducerToken$6,
         useFactory: getReducers$6,
@@ -21789,14 +21482,14 @@
             // don't start with slash. So we remove the leading slash:
             return this.routingConfig.getRouteName(path.substr(1));
         };
-        CustomSerializer.ctorParameters = function () { return [
-            { type: RoutingConfigService }
-        ]; };
-        CustomSerializer = __decorate([
-            core.Injectable()
-        ], CustomSerializer);
         return CustomSerializer;
     }());
+    CustomSerializer.decorators = [
+        { type: i0.Injectable }
+    ];
+    CustomSerializer.ctorParameters = function () { return [
+        { type: RoutingConfigService }
+    ]; };
 
     function initConfigurableRoutes(service) {
         var result = function () { return service.init(); }; // workaround for AOT compilation (see https://stackoverflow.com/a/51977115)
@@ -21805,18 +21498,17 @@
     var RoutingModule = /** @class */ (function () {
         function RoutingModule() {
         }
-        RoutingModule_1 = RoutingModule;
         RoutingModule.forRoot = function () {
             return {
-                ngModule: RoutingModule_1,
+                ngModule: RoutingModule,
                 providers: [
                     reducerProvider$6,
                     {
-                        provide: routerStore.RouterStateSerializer,
+                        provide: fromNgrxRouter.RouterStateSerializer,
                         useClass: CustomSerializer,
                     },
                     {
-                        provide: core.APP_INITIALIZER,
+                        provide: i0.APP_INITIALIZER,
                         useFactory: initConfigurableRoutes,
                         deps: [ConfigurableRoutesService],
                         multi: true,
@@ -21824,21 +21516,20 @@
                 ],
             };
         };
-        var RoutingModule_1;
-        RoutingModule = RoutingModule_1 = __decorate([
-            core.NgModule({
-                imports: [
-                    store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
-                    effects$c.EffectsModule.forFeature(effects$6),
-                    routerStore.StoreRouterConnectingModule.forRoot({
-                        routerState: 1 /* Minimal */,
-                        stateKey: ROUTING_FEATURE,
-                    }),
-                ],
-            })
-        ], RoutingModule);
         return RoutingModule;
     }());
+    RoutingModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$1.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
+                        i3.EffectsModule.forFeature(effects$6),
+                        fromNgrxRouter.StoreRouterConnectingModule.forRoot({
+                            routerState: 1 /* Minimal */,
+                            stateKey: ROUTING_FEATURE,
+                        }),
+                    ],
+                },] }
+    ];
 
     function getDefaultUrlMatcherFactory(routingConfigService, urlMatcherService) {
         var factory = function (route) {
@@ -21858,11 +21549,9 @@
      *
      * Note: Matchers will "match" a route, but do not contribute to the creation of the route, nor do they guard routes.
      */
-    var DEFAULT_URL_MATCHER = new core.InjectionToken('DEFAULT_URL_MATCHER', {
+    var DEFAULT_URL_MATCHER = new i0.InjectionToken('DEFAULT_URL_MATCHER', {
         providedIn: 'root',
-        factory: function () {
-            return getDefaultUrlMatcherFactory(core.inject(RoutingConfigService), core.inject(UrlMatcherService));
-        },
+        factory: function () { return getDefaultUrlMatcherFactory(i0.inject(RoutingConfigService), i0.inject(UrlMatcherService)); },
     });
 
     var NavigationEntryItemEffects = /** @class */ (function () {
@@ -21871,7 +21560,7 @@
             this.actions$ = actions$;
             this.cmsComponentConnector = cmsComponentConnector;
             this.routingService = routingService;
-            this.loadNavigationItems$ = this.actions$.pipe(effects$c.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
+            this.loadNavigationItems$ = this.actions$.pipe(i3.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
                 return {
                     ids: _this.getIdListByItemType(payload.items),
                     nodeId: payload.nodeId,
@@ -21882,14 +21571,10 @@
                         // download all items in one request
                         return _this.cmsComponentConnector
                             .getList(data.ids.componentIds, pageContext)
-                            .pipe(operators.map(function (components) {
-                            return new LoadCmsNavigationItemsSuccess({
-                                nodeId: data.nodeId,
-                                components: components,
-                            });
-                        }), operators.catchError(function (error) {
-                            return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
-                        }));
+                            .pipe(operators.map(function (components) { return new LoadCmsNavigationItemsSuccess({
+                            nodeId: data.nodeId,
+                            components: components,
+                        }); }), operators.catchError(function (error) { return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error))); }));
                     }));
                 }
                 else if (data.ids.pageIds.length > 0) {
@@ -21923,19 +21608,19 @@
             });
             return { pageIds: pageIds, componentIds: componentIds, mediaIds: mediaIds };
         };
-        NavigationEntryItemEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CmsComponentConnector },
-            { type: RoutingService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
-        NavigationEntryItemEffects = __decorate([
-            core.Injectable()
-        ], NavigationEntryItemEffects);
         return NavigationEntryItemEffects;
     }());
+    NavigationEntryItemEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    NavigationEntryItemEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CmsComponentConnector },
+        { type: RoutingService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
 
     var CmsPageConnector = /** @class */ (function () {
         function CmsPageConnector(cmsPageAdapter, cmsStructureConfigService) {
@@ -21954,7 +21639,7 @@
                 .pipe(operators.switchMap(function (loadFromConfig) {
                 if (!loadFromConfig) {
                     return _this.cmsPageAdapter.load(pageContext).pipe(operators.catchError(function (error) {
-                        if (error instanceof http.HttpErrorResponse &&
+                        if (error instanceof i1.HttpErrorResponse &&
                             error.status === 400) {
                             return rxjs.of({});
                         }
@@ -21977,18 +21662,18 @@
         CmsPageConnector.prototype.mergeDefaultPageStructure = function (pageContext, pageStructure) {
             return this.cmsStructureConfigService.mergePageStructure(pageContext.id, pageStructure);
         };
-        CmsPageConnector.ctorParameters = function () { return [
-            { type: CmsPageAdapter },
-            { type: CmsStructureConfigService }
-        ]; };
-        CmsPageConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(core.ɵɵinject(CmsPageAdapter), core.ɵɵinject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
-        CmsPageConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CmsPageConnector);
         return CmsPageConnector;
     }());
+    CmsPageConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(i0.ɵɵinject(CmsPageAdapter), i0.ɵɵinject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
+    CmsPageConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CmsPageConnector.ctorParameters = function () { return [
+        { type: CmsPageAdapter },
+        { type: CmsStructureConfigService }
+    ]; };
 
     var PageEffects = /** @class */ (function () {
         function PageEffects(actions$, cmsPageConnector, routingService) {
@@ -21996,53 +21681,43 @@
             this.actions$ = actions$;
             this.cmsPageConnector = cmsPageConnector;
             this.routingService = routingService;
-            this.refreshPage$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap(function () {
-                return _this.routingService.getRouterState().pipe(operators.filter(function (routerState) {
-                    return routerState &&
-                        routerState.state &&
-                        routerState.state.cmsRequired &&
-                        !routerState.nextState;
-                }), operators.take(1), operators.map(function (routerState) { return routerState.state.context; }), operators.mergeMap(function (context) { return rxjs.of(new LoadCmsPageData(context)); }));
-            }));
-            this.loadPageData$ = this.actions$.pipe(effects$c.ofType(LOAD_CMS_PAGE_DATA), operators.map(function (action) { return action.payload; }), operators.groupBy(function (pageContext) { return serializePageContext(pageContext); }), operators.mergeMap(function (group) {
-                return group.pipe(operators.switchMap(function (pageContext) {
-                    return _this.cmsPageConnector.get(pageContext).pipe(operators.mergeMap(function (cmsStructure) {
-                        var actions = [
-                            new CmsGetComponentFromPage(cmsStructure.components.map(function (component) { return ({
-                                component: component,
-                                pageContext: pageContext,
-                            }); })),
-                            new LoadCmsPageDataSuccess(pageContext, cmsStructure.page),
-                        ];
-                        var pageLabel = cmsStructure.page.label;
-                        // For content pages the page label returned from backend can be different than page ID initially assumed from route.
-                        // In such a case let's save the success response not only for initially assumed page ID, but also for correct page label.
-                        if (pageLabel && pageLabel !== pageContext.id) {
-                            actions.unshift(new CmsSetPageSuccessIndex({ id: pageLabel, type: pageContext.type }, cmsStructure.page));
-                        }
-                        return actions;
-                    }), operators.catchError(function (error) {
-                        return rxjs.of(new LoadCmsPageDataFail(pageContext, makeErrorSerializable(error)));
-                    }));
-                }));
-            }));
+            this.refreshPage$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap(function () { return _this.routingService.getRouterState().pipe(operators.filter(function (routerState) { return routerState &&
+                routerState.state &&
+                routerState.state.cmsRequired &&
+                !routerState.nextState; }), operators.take(1), operators.map(function (routerState) { return routerState.state.context; }), operators.mergeMap(function (context) { return rxjs.of(new LoadCmsPageData(context)); })); }));
+            this.loadPageData$ = this.actions$.pipe(i3.ofType(LOAD_CMS_PAGE_DATA), operators.map(function (action) { return action.payload; }), operators.groupBy(function (pageContext) { return serializePageContext(pageContext); }), operators.mergeMap(function (group) { return group.pipe(operators.switchMap(function (pageContext) { return _this.cmsPageConnector.get(pageContext).pipe(operators.mergeMap(function (cmsStructure) {
+                var actions = [
+                    new CmsGetComponentFromPage(cmsStructure.components.map(function (component) { return ({
+                        component: component,
+                        pageContext: pageContext,
+                    }); })),
+                    new LoadCmsPageDataSuccess(pageContext, cmsStructure.page),
+                ];
+                var pageLabel = cmsStructure.page.label;
+                // For content pages the page label returned from backend can be different than page ID initially assumed from route.
+                // In such a case let's save the success response not only for initially assumed page ID, but also for correct page label.
+                if (pageLabel && pageLabel !== pageContext.id) {
+                    actions.unshift(new CmsSetPageSuccessIndex({ id: pageLabel, type: pageContext.type }, cmsStructure.page));
+                }
+                return actions;
+            }), operators.catchError(function (error) { return rxjs.of(new LoadCmsPageDataFail(pageContext, makeErrorSerializable(error))); })); })); }));
         }
-        PageEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CmsPageConnector },
-            { type: RoutingService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], PageEffects.prototype, "refreshPage$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], PageEffects.prototype, "loadPageData$", void 0);
-        PageEffects = __decorate([
-            core.Injectable()
-        ], PageEffects);
         return PageEffects;
     }());
+    PageEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    PageEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CmsPageConnector },
+        { type: RoutingService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], PageEffects.prototype, "refreshPage$", void 0);
+    __decorate([
+        i3.Effect()
+    ], PageEffects.prototype, "loadPageData$", void 0);
 
     var effects$7 = [
         PageEffects,
@@ -22071,23 +21746,23 @@
             case LOAD_CMS_COMPONENT: {
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 var context = serializePageContext(action.payload.pageContext, true);
-                return __assign(__assign({}, state), { pageContext: __assign(__assign({}, state.pageContext), (_a = {}, _a[context] = pageContextReducer(state.pageContext[context], action), _a)) });
+                return Object.assign(Object.assign({}, state), { pageContext: Object.assign(Object.assign({}, state.pageContext), (_a = {}, _a[context] = pageContextReducer(state.pageContext[context], action), _a)) });
             }
             case LOAD_CMS_COMPONENT_FAIL: {
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 var context = serializePageContext(action.payload.pageContext, true);
-                return __assign(__assign({}, state), { pageContext: __assign(__assign({}, state.pageContext), (_b = {}, _b[context] = pageContextReducer(state.pageContext[context], action), _b)) });
+                return Object.assign(Object.assign({}, state), { pageContext: Object.assign(Object.assign({}, state.pageContext), (_b = {}, _b[context] = pageContextReducer(state.pageContext[context], action), _b)) });
             }
             case LOAD_CMS_COMPONENT_SUCCESS: {
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 var context = serializePageContext(action.payload.pageContext, true);
-                return __assign(__assign({}, state), { component: action.payload.component, pageContext: __assign(__assign({}, state.pageContext), (_c = {}, _c[context] = pageContextReducer(state.pageContext[context], action), _c)) });
+                return Object.assign(Object.assign({}, state), { component: action.payload.component, pageContext: Object.assign(Object.assign({}, state.pageContext), (_c = {}, _c[context] = pageContextReducer(state.pageContext[context], action), _c)) });
             }
             case CMS_GET_COMPONENT_FROM_PAGE: {
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 if (!Array.isArray(action.payload)) {
                     var context = serializePageContext(action.payload.pageContext, true);
-                    return __assign(__assign({}, state), { component: action.payload.component, pageContext: __assign(__assign({}, state.pageContext), (_d = {}, _d[context] = pageContextReducer(state.pageContext[context], action), _d)) });
+                    return Object.assign(Object.assign({}, state), { component: action.payload.component, pageContext: Object.assign(Object.assign({}, state.pageContext), (_d = {}, _d[context] = pageContextReducer(state.pageContext[context], action), _d)) });
                 }
             }
         }
@@ -22103,9 +21778,9 @@
                     var components = action.payload.components;
                     var newItem = components.reduce(function (compItems, component) {
                         var _a;
-                        return __assign(__assign({}, compItems), (_a = {}, _a[component.uid + "_AbstractCMSComponent"] = component, _a));
-                    }, __assign({}));
-                    return __assign(__assign({}, state), newItem);
+                        return Object.assign(Object.assign({}, compItems), (_a = {}, _a[component.uid + "_AbstractCMSComponent"] = component, _a));
+                    }, Object.assign({}));
+                    return Object.assign(Object.assign({}, state), newItem);
                 }
             }
         }
@@ -22119,7 +21794,7 @@
         switch (action.type) {
             case LOAD_CMS_PAGE_DATA_SUCCESS: {
                 var page = action.payload;
-                return __assign(__assign({}, state), { entities: __assign(__assign({}, state.entities), (_a = {}, _a[page.pageId] = page, _a)) });
+                return Object.assign(Object.assign({}, state), { entities: Object.assign(Object.assign({}, state.entities), (_a = {}, _a[page.pageId] = page, _a)) });
             }
         }
         return state;
@@ -22151,9 +21826,9 @@
 
     function getReducers$7() {
         return {
-            page: store.combineReducers({
+            page: i1$1.combineReducers({
                 pageData: reducer$g,
-                index: store.combineReducers({
+                index: i1$1.combineReducers({
                     content: entityLoaderReducer(exports.PageType.CONTENT_PAGE, reducer$h(exports.PageType.CONTENT_PAGE)),
                     product: entityLoaderReducer(exports.PageType.PRODUCT_PAGE, reducer$h(exports.PageType.PRODUCT_PAGE)),
                     category: entityLoaderReducer(exports.PageType.CATEGORY_PAGE, reducer$h(exports.PageType.CATEGORY_PAGE)),
@@ -22164,7 +21839,7 @@
             navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
         };
     }
-    var reducerToken$7 = new core.InjectionToken('CmsReducers');
+    var reducerToken$7 = new i0.InjectionToken('CmsReducers');
     var reducerProvider$7 = {
         provide: reducerToken$7,
         useFactory: getReducers$7,
@@ -22196,42 +21871,40 @@
     var CmsStoreModule = /** @class */ (function () {
         function CmsStoreModule() {
         }
-        CmsStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    StateModule,
-                    store.StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
-                    effects$c.EffectsModule.forFeature(effects$7),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(cmsStoreConfigFactory),
-                    reducerProvider$7,
-                ],
-            })
-        ], CmsStoreModule);
         return CmsStoreModule;
     }());
+    CmsStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        StateModule,
+                        i1$1.StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
+                        i3.EffectsModule.forFeature(effects$7),
+                    ],
+                    providers: [
+                        provideDefaultConfigFactory(cmsStoreConfigFactory),
+                        reducerProvider$7,
+                    ],
+                },] }
+    ];
 
     var CmsModule = /** @class */ (function () {
         function CmsModule() {
         }
-        CmsModule_1 = CmsModule;
         CmsModule.forRoot = function () {
             return {
-                ngModule: CmsModule_1,
+                ngModule: CmsModule,
                 providers: [CmsService, provideDefaultConfig(defaultCmsModuleConfig)],
             };
         };
-        var CmsModule_1;
-        CmsModule = CmsModule_1 = __decorate([
-            core.NgModule({
-                imports: [CmsStoreModule, CmsPageTitleModule],
-            })
-        ], CmsModule);
         return CmsModule;
     }());
+    CmsModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [CmsStoreModule, CmsPageTitleModule],
+                },] }
+    ];
 
     var PageMetaService = /** @class */ (function () {
         function PageMetaService(resolvers, cms) {
@@ -22276,14 +21949,12 @@
             var _this = this;
             var resolveMethods = Object.keys(this.resolverMethods)
                 .filter(function (key) { return metaResolver[_this.resolverMethods[key]]; })
-                .map(function (key) {
-                return metaResolver[_this.resolverMethods[key]]().pipe(operators.map(function (data) {
-                    var _a;
-                    return (_a = {},
-                        _a[key] = data,
-                        _a);
-                }));
-            });
+                .map(function (key) { return metaResolver[_this.resolverMethods[key]]().pipe(operators.map(function (data) {
+                var _a;
+                return (_a = {},
+                    _a[key] = data,
+                    _a);
+            })); });
             return rxjs.combineLatest(resolveMethods).pipe(operators.debounceTime(0), // avoid partial data emissions when all methods resolve at the same time
             operators.map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
         };
@@ -22296,20 +21967,18 @@
         PageMetaService.prototype.getMetaResolver = function (page) {
             return resolveApplicable(this.resolvers, [page], [page]);
         };
-        PageMetaService.ctorParameters = function () { return [
-            { type: Array, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PageMetaResolver,] }] },
-            { type: CmsService }
-        ]; };
-        PageMetaService.ɵprov = core.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(core.ɵɵinject(PageMetaResolver, 8), core.ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
-        PageMetaService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            }),
-            __param(0, core.Optional()),
-            __param(0, core.Inject(PageMetaResolver))
-        ], PageMetaService);
         return PageMetaService;
     }());
+    PageMetaService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(i0.ɵɵinject(PageMetaResolver, 8), i0.ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
+    PageMetaService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    PageMetaService.ctorParameters = function () { return [
+        { type: Array, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [PageMetaResolver,] }] },
+        { type: CmsService }
+    ]; };
 
     var SmartEditService = /** @class */ (function () {
         function SmartEditService(cmsService, routingService, baseSiteService, zone, winRef) {
@@ -22323,21 +21992,21 @@
             this._launchedInSmartEdit = false;
             this.getCmsTicket();
             if (winRef.nativeWindow) {
-                var window_1 = winRef.nativeWindow;
+                var window = winRef.nativeWindow;
                 // rerender components and slots after editing
-                window_1.smartedit = window_1.smartedit || {};
-                window_1.smartedit.renderComponent = function (componentId, componentType, parentId) {
+                window.smartedit = window.smartedit || {};
+                window.smartedit.renderComponent = function (componentId, componentType, parentId) {
                     return _this.renderComponent(componentId, componentType, parentId);
                 };
                 // reprocess page
-                window_1.smartedit.reprocessPage = this.reprocessPage;
+                window.smartedit.reprocessPage = this.reprocessPage;
             }
         }
         Object.defineProperty(SmartEditService.prototype, "cmsTicketId", {
             get: function () {
                 return this._cmsTicketId;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         SmartEditService.prototype.getCmsTicket = function () {
@@ -22385,12 +22054,8 @@
                     _this.goToPreviewPage(cmsPage);
                     // remove old page contract
                     var previousContract_1 = [];
-                    Array.from(_this.winRef.document.body.classList).forEach(function (attr) {
-                        return previousContract_1.push(attr);
-                    });
-                    previousContract_1.forEach(function (attr) {
-                        return _this.winRef.document.body.classList.remove(attr);
-                    });
+                    Array.from(_this.winRef.document.body.classList).forEach(function (attr) { return previousContract_1.push(attr); });
+                    previousContract_1.forEach(function (attr) { return _this.winRef.document.body.classList.remove(attr); });
                     // add new page contract
                     if (cmsPage.properties && cmsPage.properties.smartedit) {
                         var seClasses = cmsPage.properties.smartedit.classes.split(' ');
@@ -22450,21 +22115,21 @@
         SmartEditService.prototype.isLaunchedInSmartEdit = function () {
             return this._launchedInSmartEdit;
         };
-        SmartEditService.ctorParameters = function () { return [
-            { type: CmsService },
-            { type: RoutingService },
-            { type: BaseSiteService },
-            { type: core.NgZone },
-            { type: WindowRef }
-        ]; };
-        SmartEditService.ɵprov = core.ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(core.ɵɵinject(CmsService), core.ɵɵinject(RoutingService), core.ɵɵinject(BaseSiteService), core.ɵɵinject(core.NgZone), core.ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
-        SmartEditService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SmartEditService);
         return SmartEditService;
     }());
+    SmartEditService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(i0.ɵɵinject(CmsService), i0.ɵɵinject(RoutingService), i0.ɵɵinject(BaseSiteService), i0.ɵɵinject(i0.NgZone), i0.ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+    SmartEditService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    SmartEditService.ctorParameters = function () { return [
+        { type: CmsService },
+        { type: RoutingService },
+        { type: BaseSiteService },
+        { type: i0.NgZone },
+        { type: WindowRef }
+    ]; };
 
     var DynamicAttributeService = /** @class */ (function () {
         function DynamicAttributeService(smartEditService) {
@@ -22506,17 +22171,17 @@
                 });
             }
         };
-        DynamicAttributeService.ctorParameters = function () { return [
-            { type: SmartEditService }
-        ]; };
-        DynamicAttributeService.ɵprov = core.ɵɵdefineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(core.ɵɵinject(SmartEditService)); }, token: DynamicAttributeService, providedIn: "root" });
-        DynamicAttributeService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], DynamicAttributeService);
         return DynamicAttributeService;
     }());
+    DynamicAttributeService.ɵprov = i0.ɵɵdefineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(i0.ɵɵinject(SmartEditService)); }, token: DynamicAttributeService, providedIn: "root" });
+    DynamicAttributeService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    DynamicAttributeService.ctorParameters = function () { return [
+        { type: SmartEditService }
+    ]; };
 
     function configInitializerFactory(configInitializer, initializers) {
         var isReady = function () { return configInitializer.initialize(initializers); };
@@ -22525,37 +22190,35 @@
     var ConfigInitializerModule = /** @class */ (function () {
         function ConfigInitializerModule() {
         }
-        ConfigInitializerModule_1 = ConfigInitializerModule;
         ConfigInitializerModule.forRoot = function () {
             return {
-                ngModule: ConfigInitializerModule_1,
+                ngModule: ConfigInitializerModule,
                 providers: [
                     {
                         provide: CONFIG_INITIALIZER_FORROOT_GUARD,
                         useValue: true,
                     },
                     {
-                        provide: core.APP_INITIALIZER,
+                        provide: i0.APP_INITIALIZER,
                         multi: true,
                         useFactory: configInitializerFactory,
                         deps: [
                             ConfigInitializerService,
-                            [new core.Optional(), CONFIG_INITIALIZER],
+                            [new i0.Optional(), CONFIG_INITIALIZER],
                         ],
                     },
                 ],
             };
         };
-        var ConfigInitializerModule_1;
-        ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
-            core.NgModule({})
-        ], ConfigInitializerModule);
         return ConfigInitializerModule;
     }());
+    ConfigInitializerModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
 
     function configValidatorFactory(configInitializer, validators) {
         var validate = function () {
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 configInitializer
                     .getStableConfig()
                     .then(function (config) { return validateConfig(config, validators || []); });
@@ -22572,29 +22235,27 @@
     var ConfigValidatorModule = /** @class */ (function () {
         function ConfigValidatorModule() {
         }
-        ConfigValidatorModule_1 = ConfigValidatorModule;
         ConfigValidatorModule.forRoot = function () {
             return {
-                ngModule: ConfigValidatorModule_1,
+                ngModule: ConfigValidatorModule,
                 providers: [
                     {
-                        provide: core.APP_INITIALIZER,
+                        provide: i0.APP_INITIALIZER,
                         multi: true,
                         useFactory: configValidatorFactory,
                         deps: [
                             ConfigInitializerService,
-                            [new core.Optional(), ConfigValidatorToken],
+                            [new i0.Optional(), ConfigValidatorToken],
                         ],
                     },
                 ],
             };
         };
-        var ConfigValidatorModule_1;
-        ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
-            core.NgModule()
-        ], ConfigValidatorModule);
         return ConfigValidatorModule;
     }());
+    ConfigValidatorModule.decorators = [
+        { type: i0.NgModule }
+    ];
 
     function getCookie(cookie, name) {
         var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
@@ -22602,7 +22263,7 @@
         return (result && decodeURIComponent(result[1])) || '';
     }
 
-    var TEST_CONFIG_COOKIE_NAME = new core.InjectionToken('TEST_CONFIG_COOKIE_NAME');
+    var TEST_CONFIG_COOKIE_NAME = new i0.InjectionToken('TEST_CONFIG_COOKIE_NAME');
     function parseConfigJSON(config) {
         try {
             return JSON.parse(decodeURIComponent(config));
@@ -22612,7 +22273,7 @@
         }
     }
     function configFromCookieFactory(cookieName, platform, document) {
-        if (common.isPlatformBrowser(platform) && cookieName) {
+        if (i1$2.isPlatformBrowser(platform) && cookieName) {
             var config = getCookie(document.cookie, cookieName);
             return parseConfigJSON(config);
         }
@@ -22626,7 +22287,6 @@
     var TestConfigModule = /** @class */ (function () {
         function TestConfigModule() {
         }
-        TestConfigModule_1 = TestConfigModule;
         /**
          * Injects JSON config from the cookie of the given name.
          *
@@ -22636,7 +22296,7 @@
          */
         TestConfigModule.forRoot = function (options) {
             return {
-                ngModule: TestConfigModule_1,
+                ngModule: TestConfigModule,
                 providers: [
                     {
                         provide: TEST_CONFIG_COOKIE_NAME,
@@ -22644,18 +22304,17 @@
                     },
                     provideConfigFactory(configFromCookieFactory, [
                         TEST_CONFIG_COOKIE_NAME,
-                        core.PLATFORM_ID,
-                        common.DOCUMENT,
+                        i0.PLATFORM_ID,
+                        i1$2.DOCUMENT,
                     ]),
                 ],
             };
         };
-        var TestConfigModule_1;
-        TestConfigModule = TestConfigModule_1 = __decorate([
-            core.NgModule({})
-        ], TestConfigModule);
         return TestConfigModule;
     }());
+    TestConfigModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
 
     // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
     var CxDatePipe = /** @class */ (function (_super) {
@@ -22671,7 +22330,7 @@
         CxDatePipe.prototype.getLang = function () {
             var lang = this.getActiveLang();
             try {
-                common.getLocaleId(lang);
+                i1$2.getLocaleId(lang);
                 return lang;
             }
             catch (_a) {
@@ -22688,18 +22347,18 @@
             return result;
         };
         CxDatePipe.prototype.reportMissingLocaleData = function (lang) {
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
             }
         };
-        CxDatePipe.ctorParameters = function () { return [
-            { type: LanguageService }
-        ]; };
-        CxDatePipe = __decorate([
-            core.Pipe({ name: 'cxDate' })
-        ], CxDatePipe);
         return CxDatePipe;
-    }(common.DatePipe));
+    }(i1$2.DatePipe));
+    CxDatePipe.decorators = [
+        { type: i0.Pipe, args: [{ name: 'cxDate' },] }
+    ];
+    CxDatePipe.ctorParameters = function () { return [
+        { type: LanguageService }
+    ]; };
 
     var TranslatePipe = /** @class */ (function () {
         function TranslatePipe(service, cd) {
@@ -22709,7 +22368,7 @@
         TranslatePipe.prototype.transform = function (input, options) {
             if (options === void 0) { options = {}; }
             if (!input) {
-                if (core.isDevMode()) {
+                if (i0.isDevMode()) {
                     console.error("The given input for the cxTranslate pipe (" + input + ") is invalid and cannot be translated");
                 }
                 return;
@@ -22719,7 +22378,7 @@
             }
             var key = typeof input === 'string' ? input : input.key;
             if (typeof input !== 'string') {
-                options = __assign(__assign({}, options), input.params);
+                options = Object.assign(Object.assign({}, options), input.params);
             }
             this.translate(key, options);
             return this.translatedValue;
@@ -22747,28 +22406,28 @@
                 this.sub.unsubscribe();
             }
         };
-        TranslatePipe.ctorParameters = function () { return [
-            { type: TranslationService },
-            { type: core.ChangeDetectorRef }
-        ]; };
-        TranslatePipe = __decorate([
-            core.Pipe({ name: 'cxTranslate', pure: false })
-        ], TranslatePipe);
         return TranslatePipe;
     }());
+    TranslatePipe.decorators = [
+        { type: i0.Pipe, args: [{ name: 'cxTranslate', pure: false },] }
+    ];
+    TranslatePipe.ctorParameters = function () { return [
+        { type: TranslationService },
+        { type: i0.ChangeDetectorRef }
+    ]; };
 
     var I18nConfig = /** @class */ (function () {
         function I18nConfig() {
         }
-        I18nConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function I18nConfig_Factory() { return core.ɵɵinject(Config); }, token: I18nConfig, providedIn: "root" });
-        I18nConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], I18nConfig);
         return I18nConfig;
     }());
+    I18nConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function I18nConfig_Factory() { return i0.ɵɵinject(Config); }, token: I18nConfig, providedIn: "root" });
+    I18nConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var TranslationChunkService = /** @class */ (function () {
         function TranslationChunkService(config) {
@@ -22791,7 +22450,7 @@
                     }
                 });
             });
-            if (Object.keys(this.duplicates).length > 0 && core.isDevMode()) {
+            if (Object.keys(this.duplicates).length > 0 && i0.isDevMode()) {
                 this.warnDuplicates(this.duplicates);
             }
         }
@@ -22811,17 +22470,17 @@
             });
             console.warn("Duplicated keys has been found in the config of i18n chunks:\n" + dupes.join('\n'));
         };
-        TranslationChunkService.ctorParameters = function () { return [
-            { type: I18nConfig }
-        ]; };
-        TranslationChunkService.ɵprov = core.ɵɵdefineInjectable({ factory: function TranslationChunkService_Factory() { return new TranslationChunkService(core.ɵɵinject(I18nConfig)); }, token: TranslationChunkService, providedIn: "root" });
-        TranslationChunkService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], TranslationChunkService);
         return TranslationChunkService;
     }());
+    TranslationChunkService.ɵprov = i0.ɵɵdefineInjectable({ factory: function TranslationChunkService_Factory() { return new TranslationChunkService(i0.ɵɵinject(I18nConfig)); }, token: TranslationChunkService, providedIn: "root" });
+    TranslationChunkService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    TranslationChunkService.ctorParameters = function () { return [
+        { type: I18nConfig }
+    ]; };
 
     var defaultI18nConfig = {
         i18n: {
@@ -22831,45 +22490,43 @@
     };
 
     function i18nextInit(configInit, languageService, httpClient, serverRequestOrigin) {
-        return function () {
-            return configInit.getStableConfig('i18n').then(function (config) {
-                var i18nextConfig = {
-                    ns: [],
-                    fallbackLng: config.i18n.fallbackLang,
-                    debug: config.i18n.debug,
-                    interpolation: {
-                        escapeValue: false,
-                    },
+        return function () { return configInit.getStableConfig('i18n').then(function (config) {
+            var i18nextConfig = {
+                ns: [],
+                fallbackLng: config.i18n.fallbackLang,
+                debug: config.i18n.debug,
+                interpolation: {
+                    escapeValue: false,
+                },
+            };
+            if (config.i18n.backend) {
+                i18next__default['default'].use(i18nextXhrBackend__default['default']);
+                var loadPath = getLoadPath(config.i18n.backend.loadPath, serverRequestOrigin);
+                var backend = {
+                    loadPath: loadPath,
+                    ajax: i18nextGetHttpClient(httpClient),
                 };
-                if (config.i18n.backend) {
-                    i18next.use(i18nextXhrBackend);
-                    var loadPath = getLoadPath(config.i18n.backend.loadPath, serverRequestOrigin);
-                    var backend = {
-                        loadPath: loadPath,
-                        ajax: i18nextGetHttpClient(httpClient),
-                    };
-                    i18nextConfig = __assign(__assign({}, i18nextConfig), { backend: backend });
-                }
-                return i18next.init(i18nextConfig, function () {
-                    // Don't use i18next's 'resources' config key for adding static translations,
-                    // because it will disable loading chunks from backend. We add resources here, in the init's callback.
-                    i18nextAddTranslations(config.i18n.resources);
-                    syncI18nextWithSiteContext(languageService);
-                });
+                i18nextConfig = Object.assign(Object.assign({}, i18nextConfig), { backend: backend });
+            }
+            return i18next__default['default'].init(i18nextConfig, function () {
+                // Don't use i18next's 'resources' config key for adding static translations,
+                // because it will disable loading chunks from backend. We add resources here, in the init's callback.
+                i18nextAddTranslations(config.i18n.resources);
+                syncI18nextWithSiteContext(languageService);
             });
-        };
+        }); };
     }
     function i18nextAddTranslations(resources) {
         if (resources === void 0) { resources = {}; }
         Object.keys(resources).forEach(function (lang) {
             Object.keys(resources[lang]).forEach(function (chunkName) {
-                i18next.addResourceBundle(lang, chunkName, resources[lang][chunkName], true, true);
+                i18next__default['default'].addResourceBundle(lang, chunkName, resources[lang][chunkName], true, true);
             });
         });
     }
     function syncI18nextWithSiteContext(language) {
         // always update language of i18next on site context (language) change
-        language.getActive().subscribe(function (lang) { return i18next.changeLanguage(lang); });
+        language.getActive().subscribe(function (lang) { return i18next__default['default'].changeLanguage(lang); });
     }
     /**
      * Returns a function appropriate for i18next to make http calls for JSON files.
@@ -22909,13 +22566,13 @@
     var ɵ0$E = i18nextInit;
     var i18nextProviders = [
         {
-            provide: core.APP_INITIALIZER,
+            provide: i0.APP_INITIALIZER,
             useFactory: ɵ0$E,
             deps: [
                 ConfigInitializerService,
                 LanguageService,
-                http.HttpClient,
-                [new core.Optional(), SERVER_REQUEST_ORIGIN],
+                i1.HttpClient,
+                [new i0.Optional(), SERVER_REQUEST_ORIGIN],
             ],
             multi: true,
         },
@@ -22929,11 +22586,11 @@
             this.NAMESPACE_SEPARATOR = ':';
         }
         I18nextTranslationService.prototype.translate = function (key, options, whitespaceUntilLoaded) {
-            // If we've already loaded the chunk (or failed to load), we should immediately emit the value
-            // (or the fallback value in case the key is missing).
             var _this = this;
             if (options === void 0) { options = {}; }
             if (whitespaceUntilLoaded === void 0) { whitespaceUntilLoaded = false; }
+            // If we've already loaded the chunk (or failed to load), we should immediately emit the value
+            // (or the fallback value in case the key is missing).
             // Moreover, we SHOULD emit a value (or a fallback value) synchronously (not in a promise/setTimeout).
             // Otherwise, we the will trigger additional deferred change detection in a view that consumes the returned observable,
             // which together with `switchMap` operator may lead to an infinite loop.
@@ -22941,83 +22598,81 @@
             var namespacedKey = this.getNamespacedKey(key, chunkName);
             return new rxjs.Observable(function (subscriber) {
                 var translate = function () {
-                    if (!i18next.isInitialized) {
+                    if (!i18next__default['default'].isInitialized) {
                         return;
                     }
-                    if (i18next.exists(namespacedKey, options)) {
-                        subscriber.next(i18next.t(namespacedKey, options));
+                    if (i18next__default['default'].exists(namespacedKey, options)) {
+                        subscriber.next(i18next__default['default'].t(namespacedKey, options));
                     }
                     else {
                         if (whitespaceUntilLoaded) {
                             subscriber.next(_this.NON_BREAKING_SPACE);
                         }
-                        i18next.loadNamespaces(chunkName, function () {
-                            if (!i18next.exists(namespacedKey, options)) {
+                        i18next__default['default'].loadNamespaces(chunkName, function () {
+                            if (!i18next__default['default'].exists(namespacedKey, options)) {
                                 _this.reportMissingKey(key, chunkName);
                                 subscriber.next(_this.getFallbackValue(namespacedKey));
                             }
                             else {
-                                subscriber.next(i18next.t(namespacedKey, options));
+                                subscriber.next(i18next__default['default'].t(namespacedKey, options));
                             }
                         });
                     }
                 };
                 translate();
-                i18next.on('languageChanged', translate);
-                return function () { return i18next.off('languageChanged', translate); };
+                i18next__default['default'].on('languageChanged', translate);
+                return function () { return i18next__default['default'].off('languageChanged', translate); };
             });
         };
         I18nextTranslationService.prototype.loadChunks = function (chunkNames) {
-            return i18next.loadNamespaces(chunkNames);
+            return i18next__default['default'].loadNamespaces(chunkNames);
         };
         /**
          * Returns a fallback value in case when the given key is missing
          * @param key
          */
         I18nextTranslationService.prototype.getFallbackValue = function (key) {
-            return core.isDevMode() ? "[" + key + "]" : this.NON_BREAKING_SPACE;
+            return i0.isDevMode() ? "[" + key + "]" : this.NON_BREAKING_SPACE;
         };
         I18nextTranslationService.prototype.reportMissingKey = function (key, chunkName) {
-            if (core.isDevMode()) {
+            if (i0.isDevMode()) {
                 console.warn("Translation key missing '" + key + "' in the chunk '" + chunkName + "'");
             }
         };
         I18nextTranslationService.prototype.getNamespacedKey = function (key, chunk) {
             return chunk + this.NAMESPACE_SEPARATOR + key;
         };
-        I18nextTranslationService.ctorParameters = function () { return [
-            { type: I18nConfig },
-            { type: TranslationChunkService }
-        ]; };
-        I18nextTranslationService.ɵprov = core.ɵɵdefineInjectable({ factory: function I18nextTranslationService_Factory() { return new I18nextTranslationService(core.ɵɵinject(I18nConfig), core.ɵɵinject(TranslationChunkService)); }, token: I18nextTranslationService, providedIn: "root" });
-        I18nextTranslationService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], I18nextTranslationService);
         return I18nextTranslationService;
     }());
+    I18nextTranslationService.ɵprov = i0.ɵɵdefineInjectable({ factory: function I18nextTranslationService_Factory() { return new I18nextTranslationService(i0.ɵɵinject(I18nConfig), i0.ɵɵinject(TranslationChunkService)); }, token: I18nextTranslationService, providedIn: "root" });
+    I18nextTranslationService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    I18nextTranslationService.ctorParameters = function () { return [
+        { type: I18nConfig },
+        { type: TranslationChunkService }
+    ]; };
 
     var I18nModule = /** @class */ (function () {
         function I18nModule() {
         }
-        I18nModule_1 = I18nModule;
         I18nModule.forRoot = function () {
             return {
-                ngModule: I18nModule_1,
+                ngModule: I18nModule,
                 providers: __spread([
                     provideDefaultConfig(defaultI18nConfig),
                     { provide: TranslationService, useExisting: I18nextTranslationService }
                 ], i18nextProviders),
             };
         };
-        var I18nModule_1;
-        I18nModule = I18nModule_1 = __decorate([
-            core.NgModule({
-                declarations: [TranslatePipe, CxDatePipe],
-                exports: [TranslatePipe, CxDatePipe],
-            })
-        ], I18nModule);
         return I18nModule;
     }());
+    I18nModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    declarations: [TranslatePipe, CxDatePipe],
+                    exports: [TranslatePipe, CxDatePipe],
+                },] }
+    ];
 
     function mockTranslate(key, options) {
         if (options === void 0) { options = {}; }
@@ -23038,15 +22693,15 @@
             }
             var key = typeof input === 'string' ? input : input.key;
             if (typeof input !== 'string') {
-                options = __assign(__assign({}, options), input.params);
+                options = Object.assign(Object.assign({}, options), input.params);
             }
             return mockTranslate(key, options);
         };
-        MockTranslatePipe = __decorate([
-            core.Pipe({ name: 'cxTranslate' })
-        ], MockTranslatePipe);
         return MockTranslatePipe;
     }());
+    MockTranslatePipe.decorators = [
+        { type: i0.Pipe, args: [{ name: 'cxTranslate' },] }
+    ];
 
     var MockTranslationService = /** @class */ (function () {
         function MockTranslationService() {
@@ -23063,11 +22718,11 @@
         MockTranslationService.prototype.loadChunks = function (_chunks) {
             return Promise.resolve();
         };
-        MockTranslationService = __decorate([
-            core.Injectable()
-        ], MockTranslationService);
         return MockTranslationService;
     }());
+    MockTranslationService.decorators = [
+        { type: i0.Injectable }
+    ];
 
     var MockDatePipe = /** @class */ (function (_super) {
         __extends(MockDatePipe, _super);
@@ -23077,41 +22732,41 @@
         MockDatePipe.prototype.transform = function (value, format, timezone) {
             return _super.prototype.transform.call(this, value, format, timezone, 'en');
         };
-        MockDatePipe = __decorate([
-            core.Pipe({ name: 'cxDate' })
-        ], MockDatePipe);
         return MockDatePipe;
-    }(common.DatePipe));
+    }(i1$2.DatePipe));
+    MockDatePipe.decorators = [
+        { type: i0.Pipe, args: [{ name: 'cxDate' },] }
+    ];
 
     var I18nTestingModule = /** @class */ (function () {
         function I18nTestingModule() {
         }
-        I18nTestingModule = __decorate([
-            core.NgModule({
-                declarations: [MockTranslatePipe, MockDatePipe],
-                exports: [MockTranslatePipe, MockDatePipe],
-                providers: [
-                    { provide: TranslationService, useClass: MockTranslationService },
-                ],
-            })
-        ], I18nTestingModule);
         return I18nTestingModule;
     }());
+    I18nTestingModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    declarations: [MockTranslatePipe, MockDatePipe],
+                    exports: [MockTranslatePipe, MockDatePipe],
+                    providers: [
+                        { provide: TranslationService, useClass: MockTranslationService },
+                    ],
+                },] }
+    ];
 
     var KymaConfig = /** @class */ (function (_super) {
         __extends(KymaConfig, _super);
         function KymaConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        KymaConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function KymaConfig_Factory() { return core.ɵɵinject(Config); }, token: KymaConfig, providedIn: "root" });
-        KymaConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], KymaConfig);
         return KymaConfig;
     }(OccConfig));
+    KymaConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function KymaConfig_Factory() { return i0.ɵɵinject(Config); }, token: KymaConfig, providedIn: "root" });
+    KymaConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var KYMA_FEATURE = 'kyma';
     var OPEN_ID_TOKEN_DATA = '[Kyma Auth] Open ID Token Data';
@@ -23160,14 +22815,14 @@
         LoadOpenIdTokenSuccess: LoadOpenIdTokenSuccess
     });
 
-    var getKymaState = store.createFeatureSelector(KYMA_FEATURE);
+    var getKymaState = i1$1.createFeatureSelector(KYMA_FEATURE);
 
     var ɵ0$F = function (state) { return state.openIdToken; };
-    var getOpenIdTokenState = store.createSelector(getKymaState, ɵ0$F);
-    var getOpenIdTokenValue = store.createSelector(getOpenIdTokenState, loaderValueSelector);
-    var getOpenIdTokenLoading = store.createSelector(getOpenIdTokenState, loaderLoadingSelector);
-    var getOpenIdTokenSuccess = store.createSelector(getOpenIdTokenState, loaderSuccessSelector);
-    var getOpenIdTokenError = store.createSelector(getOpenIdTokenState, loaderErrorSelector);
+    var getOpenIdTokenState = i1$1.createSelector(getKymaState, ɵ0$F);
+    var getOpenIdTokenValue = i1$1.createSelector(getOpenIdTokenState, loaderValueSelector);
+    var getOpenIdTokenLoading = i1$1.createSelector(getOpenIdTokenState, loaderLoadingSelector);
+    var getOpenIdTokenSuccess = i1$1.createSelector(getOpenIdTokenState, loaderSuccessSelector);
+    var getOpenIdTokenError = i1$1.createSelector(getOpenIdTokenState, loaderErrorSelector);
 
     var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -23197,19 +22852,19 @@
          * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
          */
         KymaService.prototype.getOpenIdToken = function () {
-            return this.store.pipe(store.select(getOpenIdTokenValue));
+            return this.store.pipe(i1$1.select(getOpenIdTokenValue));
         };
-        KymaService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        KymaService.ɵprov = core.ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(core.ɵɵinject(store.Store)); }, token: KymaService, providedIn: "root" });
-        KymaService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], KymaService);
         return KymaService;
     }());
+    KymaService.ɵprov = i0.ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(i0.ɵɵinject(i1$1.Store)); }, token: KymaService, providedIn: "root" });
+    KymaService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    KymaService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
 
     var defaultKymaConfig = {
         authentication: {
@@ -23226,14 +22881,14 @@
         }
         OpenIdAuthenticationTokenService.prototype.loadOpenIdAuthenticationToken = function (username, password) {
             var url = this.getOAuthEndpoint();
-            var params = new http.HttpParams()
+            var params = new i1.HttpParams()
                 .set('client_id', encodeURIComponent(this.config.authentication.kyma_client_id))
                 .set('client_secret', encodeURIComponent(this.config.authentication.kyma_client_secret))
                 .set('grant_type', 'password') // authorization_code, client_credentials, password
                 .set('username', username)
                 .set('password', password)
                 .set('scope', 'openid');
-            var headers = new http.HttpHeaders({
+            var headers = new i1.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http
@@ -23243,54 +22898,50 @@
         OpenIdAuthenticationTokenService.prototype.getOAuthEndpoint = function () {
             return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
         };
-        OpenIdAuthenticationTokenService.ctorParameters = function () { return [
-            { type: KymaConfig },
-            { type: http.HttpClient }
-        ]; };
-        OpenIdAuthenticationTokenService.ɵprov = core.ɵɵdefineInjectable({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(core.ɵɵinject(KymaConfig), core.ɵɵinject(http.HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
-        OpenIdAuthenticationTokenService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], OpenIdAuthenticationTokenService);
         return OpenIdAuthenticationTokenService;
     }());
+    OpenIdAuthenticationTokenService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(i0.ɵɵinject(KymaConfig), i0.ɵɵinject(i1.HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
+    OpenIdAuthenticationTokenService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    OpenIdAuthenticationTokenService.ctorParameters = function () { return [
+        { type: KymaConfig },
+        { type: i1.HttpClient }
+    ]; };
 
     var OpenIdTokenEffect = /** @class */ (function () {
         function OpenIdTokenEffect(actions$, openIdTokenService) {
             var _this = this;
             this.actions$ = actions$;
             this.openIdTokenService = openIdTokenService;
-            this.triggerOpenIdTokenLoading$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN))), operators.map(function (_a) {
+            this.triggerOpenIdTokenLoading$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN))), operators.map(function (_a) {
                 var _b = __read(_a, 2), loginAction = _b[1];
                 return new LoadOpenIdToken({
                     username: loginAction.payload.userId,
                     password: loginAction.payload.password,
                 });
             }));
-            this.loadOpenIdToken$ = this.actions$.pipe(effects$c.ofType(LOAD_OPEN_ID_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) {
-                return _this.openIdTokenService
-                    .loadOpenIdAuthenticationToken(payload.username, payload.password)
-                    .pipe(operators.map(function (token) { return new LoadOpenIdTokenSuccess(token); }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadOpenIdTokenFail(makeErrorSerializable(error)));
-                }));
-            }));
+            this.loadOpenIdToken$ = this.actions$.pipe(i3.ofType(LOAD_OPEN_ID_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) { return _this.openIdTokenService
+                .loadOpenIdAuthenticationToken(payload.username, payload.password)
+                .pipe(operators.map(function (token) { return new LoadOpenIdTokenSuccess(token); }), operators.catchError(function (error) { return rxjs.of(new LoadOpenIdTokenFail(makeErrorSerializable(error))); })); }));
         }
-        OpenIdTokenEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: OpenIdAuthenticationTokenService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
-        OpenIdTokenEffect = __decorate([
-            core.Injectable()
-        ], OpenIdTokenEffect);
         return OpenIdTokenEffect;
     }());
+    OpenIdTokenEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    OpenIdTokenEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: OpenIdAuthenticationTokenService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
+    __decorate([
+        i3.Effect()
+    ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
 
     var effects$8 = [OpenIdTokenEffect];
 
@@ -23299,7 +22950,7 @@
             openIdToken: loaderReducer(OPEN_ID_TOKEN_DATA),
         };
     }
-    var reducerToken$8 = new core.InjectionToken('KymaReducers');
+    var reducerToken$8 = new i0.InjectionToken('KymaReducers');
     var reducerProvider$8 = {
         provide: reducerToken$8,
         useFactory: getReducers$8,
@@ -23307,7 +22958,7 @@
     function clearKymaState(reducer) {
         return function (state, action) {
             if (action.type === LOGOUT) {
-                state = __assign(__assign({}, state), { openIdToken: undefined });
+                state = Object.assign(Object.assign({}, state), { openIdToken: undefined });
             }
             return reducer(state, action);
         };
@@ -23330,52 +22981,50 @@
     var KymaStoreModule = /** @class */ (function () {
         function KymaStoreModule() {
         }
-        KymaStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    StateModule,
-                    store.StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
-                    effects$c.EffectsModule.forFeature(effects$8),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(kymaStoreConfigFactory),
-                    reducerProvider$8,
-                ],
-            })
-        ], KymaStoreModule);
         return KymaStoreModule;
     }());
+    KymaStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        StateModule,
+                        i1$1.StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
+                        i3.EffectsModule.forFeature(effects$8),
+                    ],
+                    providers: [
+                        provideDefaultConfigFactory(kymaStoreConfigFactory),
+                        reducerProvider$8,
+                    ],
+                },] }
+    ];
 
     var KymaModule = /** @class */ (function () {
         function KymaModule() {
         }
-        KymaModule = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule, http.HttpClientModule, KymaStoreModule],
-                providers: [provideDefaultConfig(defaultKymaConfig)],
-            })
-        ], KymaModule);
         return KymaModule;
     }());
+    KymaModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1$2.CommonModule, i1.HttpClientModule, KymaStoreModule],
+                    providers: [provideDefaultConfig(defaultKymaConfig)],
+                },] }
+    ];
 
     var CostCenterModule = /** @class */ (function () {
         function CostCenterModule() {
         }
-        CostCenterModule_1 = CostCenterModule;
         CostCenterModule.forRoot = function () {
             return {
-                ngModule: CostCenterModule_1,
+                ngModule: CostCenterModule,
                 providers: [],
             };
         };
-        var CostCenterModule_1;
-        CostCenterModule = CostCenterModule_1 = __decorate([
-            core.NgModule({})
-        ], CostCenterModule);
         return CostCenterModule;
     }());
+    CostCenterModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
 
     var defaultPersonalizationConfig = {
         personalization: {
@@ -23394,15 +23043,15 @@
     var PersonalizationConfig = /** @class */ (function () {
         function PersonalizationConfig() {
         }
-        PersonalizationConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function PersonalizationConfig_Factory() { return core.ɵɵinject(Config); }, token: PersonalizationConfig, providedIn: "root" });
-        PersonalizationConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], PersonalizationConfig);
         return PersonalizationConfig;
     }());
+    PersonalizationConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function PersonalizationConfig_Factory() { return i0.ɵɵinject(Config); }, token: PersonalizationConfig, providedIn: "root" });
+    PersonalizationConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var PERSONALIZATION_ID_KEY = 'personalization-id';
     var OccPersonalizationIdInterceptor = /** @class */ (function () {
@@ -23412,7 +23061,7 @@
             this.winRef = winRef;
             this.platform = platform;
             this.enabled = false;
-            if (common.isPlatformBrowser(this.platform)) {
+            if (i1$2.isPlatformBrowser(this.platform)) {
                 this.enabled =
                     (this.winRef.localStorage && this.config.personalization.enabled) ||
                         false;
@@ -23440,7 +23089,7 @@
                 });
             }
             return next.handle(request).pipe(operators.tap(function (event) {
-                if (event instanceof http.HttpResponse) {
+                if (event instanceof i1.HttpResponse) {
                     if (event.headers.keys().includes(_this.requestHeader)) {
                         var receivedId = event.headers.get(_this.requestHeader);
                         if (_this.personalizationId !== receivedId) {
@@ -23451,19 +23100,18 @@
                 }
             }));
         };
-        OccPersonalizationIdInterceptor.ctorParameters = function () { return [
-            { type: PersonalizationConfig },
-            { type: OccEndpointsService },
-            { type: WindowRef },
-            { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
-        ]; };
-        OccPersonalizationIdInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function OccPersonalizationIdInterceptor_Factory() { return new OccPersonalizationIdInterceptor(core.ɵɵinject(PersonalizationConfig), core.ɵɵinject(OccEndpointsService), core.ɵɵinject(WindowRef), core.ɵɵinject(core.PLATFORM_ID)); }, token: OccPersonalizationIdInterceptor, providedIn: "root" });
-        OccPersonalizationIdInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' }),
-            __param(3, core.Inject(core.PLATFORM_ID))
-        ], OccPersonalizationIdInterceptor);
         return OccPersonalizationIdInterceptor;
     }());
+    OccPersonalizationIdInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccPersonalizationIdInterceptor_Factory() { return new OccPersonalizationIdInterceptor(i0.ɵɵinject(PersonalizationConfig), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(WindowRef), i0.ɵɵinject(i0.PLATFORM_ID)); }, token: OccPersonalizationIdInterceptor, providedIn: "root" });
+    OccPersonalizationIdInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccPersonalizationIdInterceptor.ctorParameters = function () { return [
+        { type: PersonalizationConfig },
+        { type: OccEndpointsService },
+        { type: WindowRef },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+    ]; };
 
     var PERSONALIZATION_TIME_KEY = 'personalization-time';
     var OccPersonalizationTimeInterceptor = /** @class */ (function () {
@@ -23473,7 +23121,7 @@
             this.winRef = winRef;
             this.platform = platform;
             this.enabled = false;
-            if (common.isPlatformBrowser(this.platform)) {
+            if (i1$2.isPlatformBrowser(this.platform)) {
                 this.enabled =
                     (this.winRef.localStorage && this.config.personalization.enabled) ||
                         false;
@@ -23501,7 +23149,7 @@
                 });
             }
             return next.handle(request).pipe(operators.tap(function (event) {
-                if (event instanceof http.HttpResponse) {
+                if (event instanceof i1.HttpResponse) {
                     if (event.headers.keys().includes(_this.requestHeader)) {
                         var receivedTimestamp = event.headers.get(_this.requestHeader);
                         if (_this.timestamp !== receivedTimestamp) {
@@ -23512,28 +23160,27 @@
                 }
             }));
         };
-        OccPersonalizationTimeInterceptor.ctorParameters = function () { return [
-            { type: PersonalizationConfig },
-            { type: OccEndpointsService },
-            { type: WindowRef },
-            { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
-        ]; };
-        OccPersonalizationTimeInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function OccPersonalizationTimeInterceptor_Factory() { return new OccPersonalizationTimeInterceptor(core.ɵɵinject(PersonalizationConfig), core.ɵɵinject(OccEndpointsService), core.ɵɵinject(WindowRef), core.ɵɵinject(core.PLATFORM_ID)); }, token: OccPersonalizationTimeInterceptor, providedIn: "root" });
-        OccPersonalizationTimeInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' }),
-            __param(3, core.Inject(core.PLATFORM_ID))
-        ], OccPersonalizationTimeInterceptor);
         return OccPersonalizationTimeInterceptor;
     }());
+    OccPersonalizationTimeInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccPersonalizationTimeInterceptor_Factory() { return new OccPersonalizationTimeInterceptor(i0.ɵɵinject(PersonalizationConfig), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(WindowRef), i0.ɵɵinject(i0.PLATFORM_ID)); }, token: OccPersonalizationTimeInterceptor, providedIn: "root" });
+    OccPersonalizationTimeInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccPersonalizationTimeInterceptor.ctorParameters = function () { return [
+        { type: PersonalizationConfig },
+        { type: OccEndpointsService },
+        { type: WindowRef },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+    ]; };
 
     var interceptors$3 = [
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: OccPersonalizationIdInterceptor,
             multi: true,
         },
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: OccPersonalizationTimeInterceptor,
             multi: true,
         },
@@ -23542,21 +23189,19 @@
     var PersonalizationModule = /** @class */ (function () {
         function PersonalizationModule() {
         }
-        PersonalizationModule_1 = PersonalizationModule;
         PersonalizationModule.forRoot = function () {
             return {
-                ngModule: PersonalizationModule_1,
+                ngModule: PersonalizationModule,
                 providers: __spread([
                     provideDefaultConfig(defaultPersonalizationConfig)
                 ], interceptors$3),
             };
         };
-        var PersonalizationModule_1;
-        PersonalizationModule = PersonalizationModule_1 = __decorate([
-            core.NgModule({})
-        ], PersonalizationModule);
         return PersonalizationModule;
     }());
+    PersonalizationModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
 
     var PersonalizationContextService = /** @class */ (function () {
         function PersonalizationContextService(config, cmsService) {
@@ -23565,13 +23210,7 @@
         }
         PersonalizationContextService.prototype.getPersonalizationContext = function () {
             var _this = this;
-            return this.cmsService.getCurrentPage().pipe(operators.filter(Boolean), operators.map(function (page) {
-                return page.slots[_this.config.personalization.context.slotPosition];
-            }), operators.filter(Boolean), operators.map(function (slot) {
-                return slot.components.find(function (i) { return i.uid === _this.config.personalization.context.componentId; });
-            }), operators.filter(Boolean), operators.map(function (component) {
-                return _this.buildPersonalizationContext(component.properties.script.data);
-            }));
+            return this.cmsService.getCurrentPage().pipe(operators.filter(Boolean), operators.map(function (page) { return page.slots[_this.config.personalization.context.slotPosition]; }), operators.filter(Boolean), operators.map(function (slot) { return slot.components.find(function (i) { return i.uid === _this.config.personalization.context.componentId; }); }), operators.filter(Boolean), operators.map(function (component) { return _this.buildPersonalizationContext(component.properties.script.data); }));
         };
         PersonalizationContextService.prototype.buildPersonalizationContext = function (data) {
             var context = JSON.parse(atob(data));
@@ -23585,23 +23224,23 @@
             }
             return context;
         };
-        PersonalizationContextService.ctorParameters = function () { return [
-            { type: PersonalizationConfig },
-            { type: CmsService }
-        ]; };
-        PersonalizationContextService.ɵprov = core.ɵɵdefineInjectable({ factory: function PersonalizationContextService_Factory() { return new PersonalizationContextService(core.ɵɵinject(PersonalizationConfig), core.ɵɵinject(CmsService)); }, token: PersonalizationContextService, providedIn: "root" });
-        PersonalizationContextService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], PersonalizationContextService);
         return PersonalizationContextService;
     }());
+    PersonalizationContextService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PersonalizationContextService_Factory() { return new PersonalizationContextService(i0.ɵɵinject(PersonalizationConfig), i0.ɵɵinject(CmsService)); }, token: PersonalizationContextService, providedIn: "root" });
+    PersonalizationContextService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    PersonalizationContextService.ctorParameters = function () { return [
+        { type: PersonalizationConfig },
+        { type: CmsService }
+    ]; };
 
     function getReducers$9() {
         return entityLoaderReducer(PROCESS_FEATURE);
     }
-    var reducerToken$9 = new core.InjectionToken('ProcessReducers');
+    var reducerToken$9 = new i0.InjectionToken('ProcessReducers');
     var reducerProvider$9 = {
         provide: reducerToken$9,
         useFactory: getReducers$9,
@@ -23610,33 +23249,31 @@
     var ProcessStoreModule = /** @class */ (function () {
         function ProcessStoreModule() {
         }
-        ProcessStoreModule = __decorate([
-            core.NgModule({
-                imports: [StateModule, store.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
-                providers: [reducerProvider$9],
-            })
-        ], ProcessStoreModule);
         return ProcessStoreModule;
     }());
+    ProcessStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [StateModule, i1$1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
+                    providers: [reducerProvider$9],
+                },] }
+    ];
 
     var ProcessModule = /** @class */ (function () {
         function ProcessModule() {
         }
-        ProcessModule_1 = ProcessModule;
         ProcessModule.forRoot = function () {
             return {
-                ngModule: ProcessModule_1,
+                ngModule: ProcessModule,
                 providers: [],
             };
         };
-        var ProcessModule_1;
-        ProcessModule = ProcessModule_1 = __decorate([
-            core.NgModule({
-                imports: [ProcessStoreModule],
-            })
-        ], ProcessModule);
         return ProcessModule;
     }());
+    ProcessModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [ProcessStoreModule],
+                },] }
+    ];
 
     var ProductConnector = /** @class */ (function () {
         function ProductConnector(adapter) {
@@ -23649,21 +23286,21 @@
         ProductConnector.prototype.getMany = function (products) {
             var _this = this;
             if (!this.adapter.loadMany) {
-                return products.map(function (product) { return (__assign(__assign({}, product), { data$: _this.adapter.load(product.code, product.scope) })); });
+                return products.map(function (product) { return (Object.assign(Object.assign({}, product), { data$: _this.adapter.load(product.code, product.scope) })); });
             }
             return this.adapter.loadMany(products);
         };
-        ProductConnector.ctorParameters = function () { return [
-            { type: ProductAdapter }
-        ]; };
-        ProductConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(core.ɵɵinject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
-        ProductConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductConnector);
         return ProductConnector;
     }());
+    ProductConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(i0.ɵɵinject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
+    ProductConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductConnector.ctorParameters = function () { return [
+        { type: ProductAdapter }
+    ]; };
 
     var ProductReferencesConnector = /** @class */ (function () {
         function ProductReferencesConnector(adapter) {
@@ -23672,17 +23309,17 @@
         ProductReferencesConnector.prototype.get = function (productCode, referenceType, pageSize) {
             return this.adapter.load(productCode, referenceType, pageSize);
         };
-        ProductReferencesConnector.ctorParameters = function () { return [
-            { type: ProductReferencesAdapter }
-        ]; };
-        ProductReferencesConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(core.ɵɵinject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
-        ProductReferencesConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductReferencesConnector);
         return ProductReferencesConnector;
     }());
+    ProductReferencesConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(i0.ɵɵinject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
+    ProductReferencesConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductReferencesConnector.ctorParameters = function () { return [
+        { type: ProductReferencesAdapter }
+    ]; };
 
     var ProductReviewsConnector = /** @class */ (function () {
         function ProductReviewsConnector(adapter) {
@@ -23694,17 +23331,17 @@
         ProductReviewsConnector.prototype.add = function (productCode, review) {
             return this.adapter.post(productCode, review);
         };
-        ProductReviewsConnector.ctorParameters = function () { return [
-            { type: ProductReviewsAdapter }
-        ]; };
-        ProductReviewsConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(core.ɵɵinject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
-        ProductReviewsConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductReviewsConnector);
         return ProductReviewsConnector;
     }());
+    ProductReviewsConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(i0.ɵɵinject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+    ProductReviewsConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductReviewsConnector.ctorParameters = function () { return [
+        { type: ProductReviewsAdapter }
+    ]; };
 
     var ProductSearchConnector = /** @class */ (function () {
         function ProductSearchConnector(adapter) {
@@ -23716,17 +23353,17 @@
         ProductSearchConnector.prototype.getSuggestions = function (term, pageSize) {
             return this.adapter.loadSuggestions(term, pageSize);
         };
-        ProductSearchConnector.ctorParameters = function () { return [
-            { type: ProductSearchAdapter }
-        ]; };
-        ProductSearchConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(core.ɵɵinject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
-        ProductSearchConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductSearchConnector);
         return ProductSearchConnector;
     }());
+    ProductSearchConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(i0.ɵɵinject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
+    ProductSearchConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductSearchConnector.ctorParameters = function () { return [
+        { type: ProductSearchAdapter }
+    ]; };
 
     var LOAD_PRODUCT_REFERENCES = '[Product] Load Product References Data';
     var LOAD_PRODUCT_REFERENCES_FAIL = '[Product] Load Product References Data Fail';
@@ -23879,19 +23516,19 @@
     var EntityScopedLoaderActions;
     (function (EntityScopedLoaderActions) {
         function entityScopedLoadMeta(entityType, id, scope) {
-            return __assign(__assign({}, entityLoadMeta(entityType, id)), { scope: scope });
+            return Object.assign(Object.assign({}, entityLoadMeta(entityType, id)), { scope: scope });
         }
         EntityScopedLoaderActions.entityScopedLoadMeta = entityScopedLoadMeta;
         function entityScopedFailMeta(entityType, id, scope, error) {
-            return __assign(__assign({}, entityFailMeta(entityType, id, error)), { scope: scope });
+            return Object.assign(Object.assign({}, entityFailMeta(entityType, id, error)), { scope: scope });
         }
         EntityScopedLoaderActions.entityScopedFailMeta = entityScopedFailMeta;
         function entityScopedSuccessMeta(entityType, id, scope) {
-            return __assign(__assign({}, entitySuccessMeta(entityType, id)), { scope: scope });
+            return Object.assign(Object.assign({}, entitySuccessMeta(entityType, id)), { scope: scope });
         }
         EntityScopedLoaderActions.entityScopedSuccessMeta = entityScopedSuccessMeta;
         function entityScopedResetMeta(entityType, id, scope) {
-            return __assign(__assign({}, entityResetMeta(entityType, id)), { scope: scope });
+            return Object.assign(Object.assign({}, entityResetMeta(entityType, id)), { scope: scope });
         }
         EntityScopedLoaderActions.entityScopedResetMeta = entityScopedResetMeta;
         var EntityScopedLoadAction = /** @class */ (function () {
@@ -24010,12 +23647,12 @@
         LoadProductSuccess: LoadProductSuccess
     });
 
-    var getProductsState = store.createFeatureSelector(PRODUCT_FEATURE);
+    var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
 
     var ɵ0$G = function (state) { return state.references; };
-    var getProductReferencesState = store.createSelector(getProductsState, ɵ0$G);
+    var getProductReferencesState = i1$1.createSelector(getProductsState, ɵ0$G);
     var getSelectedProductReferencesFactory = function (productCode, referenceType) {
-        return store.createSelector(getProductReferencesState, function (referenceTypeData) {
+        return i1$1.createSelector(getProductReferencesState, function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
                 if (!!referenceTypeData.list) {
                     if (referenceType) {
@@ -24031,9 +23668,9 @@
     };
 
     var ɵ0$H = function (state) { return state.reviews; };
-    var getProductReviewsState = store.createSelector(getProductsState, ɵ0$H);
+    var getProductReviewsState = i1$1.createSelector(getProductsState, ɵ0$H);
     var getSelectedProductReviewsFactory = function (productCode) {
-        return store.createSelector(getProductReviewsState, function (reviewData) {
+        return i1$1.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
                 return reviewData.list;
             }
@@ -24051,14 +23688,14 @@
             case SEARCH_PRODUCTS_SUCCESS: {
                 var results = action.payload;
                 var res = action.auxiliary ? { auxResults: results } : { results: results };
-                return __assign(__assign({}, state), res);
+                return Object.assign(Object.assign({}, state), res);
             }
             case GET_PRODUCT_SUGGESTIONS_SUCCESS: {
                 var suggestions = action.payload;
-                return __assign(__assign({}, state), { suggestions: suggestions });
+                return Object.assign(Object.assign({}, state), { suggestions: suggestions });
             }
             case CLEAR_PRODUCT_SEARCH_RESULT: {
-                return __assign(__assign({}, state), { results: action.payload.clearPageResults ? {} : state.results, suggestions: action.payload.clearSearchboxResults
+                return Object.assign(Object.assign({}, state), { results: action.payload.clearPageResults ? {} : state.results, suggestions: action.payload.clearSearchboxResults
                         ? []
                         : state.suggestions, auxResults: action.payload.clearSearchboxResults
                         ? {}
@@ -24072,40 +23709,38 @@
     var getProductSuggestions = function (state) { return state.suggestions; };
 
     var ɵ0$I = function (state) { return state.search; };
-    var getProductsSearchState = store.createSelector(getProductsState, ɵ0$I);
-    var getSearchResults$1 = store.createSelector(getProductsSearchState, getSearchResults);
-    var getAuxSearchResults$1 = store.createSelector(getProductsSearchState, getAuxSearchResults);
-    var getProductSuggestions$1 = store.createSelector(getProductsSearchState, getProductSuggestions);
+    var getProductsSearchState = i1$1.createSelector(getProductsState, ɵ0$I);
+    var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
+    var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
+    var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
 
     var ɵ0$J = function (state) { return state.details; };
-    var getProductState = store.createSelector(getProductsState, ɵ0$J);
+    var getProductState = i1$1.createSelector(getProductsState, ɵ0$J);
     var getSelectedProductStateFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return store.createSelector(getProductState, function (details) {
-            return entityLoaderStateSelector(details, code)[scope] ||
-                initialLoaderState;
-        });
+        return i1$1.createSelector(getProductState, function (details) { return entityLoaderStateSelector(details, code)[scope] ||
+            initialLoaderState; });
     };
     var getSelectedProductFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return store.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderValueSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderValueSelector(productState); });
     };
     var getSelectedProductLoadingFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return store.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderLoadingSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderLoadingSelector(productState); });
     };
     var getSelectedProductSuccessFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return store.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderSuccessSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderSuccessSelector(productState); });
     };
     var getSelectedProductErrorFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return store.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderErrorSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderErrorSelector(productState); });
     };
     var ɵ1$t = function (details) {
         return Object.keys(details.entities);
     };
-    var getAllProductCodes = store.createSelector(getProductState, ɵ1$t);
+    var getAllProductCodes = i1$1.createSelector(getProductState, ɵ1$t);
 
     var productGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -24135,7 +23770,7 @@
         }
         ProductReferenceService.prototype.get = function (productCode, referenceType, pageSize) {
             var _this = this;
-            return this.store.pipe(store.select(getSelectedProductReferencesFactory(productCode, referenceType)), operators.tap(function (references) {
+            return this.store.pipe(i1$1.select(getSelectedProductReferencesFactory(productCode, referenceType)), operators.tap(function (references) {
                 if (references === undefined && productCode !== undefined) {
                     _this.store.dispatch(new LoadProductReferences({
                         productCode: productCode,
@@ -24148,17 +23783,17 @@
         ProductReferenceService.prototype.cleanReferences = function () {
             this.store.dispatch(new CleanProductReferences());
         };
-        ProductReferenceService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        ProductReferenceService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(core.ɵɵinject(store.Store)); }, token: ProductReferenceService, providedIn: "root" });
-        ProductReferenceService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductReferenceService);
         return ProductReferenceService;
     }());
+    ProductReferenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(i0.ɵɵinject(i1$1.Store)); }, token: ProductReferenceService, providedIn: "root" });
+    ProductReferenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductReferenceService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
 
     var ProductReviewService = /** @class */ (function () {
         function ProductReviewService(store) {
@@ -24166,7 +23801,7 @@
         }
         ProductReviewService.prototype.getByProductCode = function (productCode) {
             var _this = this;
-            return this.store.pipe(store.select(getSelectedProductReviewsFactory(productCode)), operators.tap(function (reviews) {
+            return this.store.pipe(i1$1.select(getSelectedProductReviewsFactory(productCode)), operators.tap(function (reviews) {
                 if (reviews === undefined && productCode !== undefined) {
                     _this.store.dispatch(new LoadProductReviews(productCode));
                 }
@@ -24178,17 +23813,17 @@
                 review: review,
             }));
         };
-        ProductReviewService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        ProductReviewService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductReviewService_Factory() { return new ProductReviewService(core.ɵɵinject(store.Store)); }, token: ProductReviewService, providedIn: "root" });
-        ProductReviewService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductReviewService);
         return ProductReviewService;
     }());
+    ProductReviewService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductReviewService_Factory() { return new ProductReviewService(i0.ɵɵinject(i1$1.Store)); }, token: ProductReviewService, providedIn: "root" });
+    ProductReviewService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductReviewService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
 
     var ProductSearchService = /** @class */ (function () {
         function ProductSearchService(store) {
@@ -24201,24 +23836,24 @@
             }));
         };
         ProductSearchService.prototype.getResults = function () {
-            return this.store.pipe(store.select(getSearchResults$1));
+            return this.store.pipe(i1$1.select(getSearchResults$1));
         };
         ProductSearchService.prototype.clearResults = function () {
             this.store.dispatch(new ClearProductSearchResult({
                 clearPageResults: true,
             }));
         };
-        ProductSearchService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        ProductSearchService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductSearchService_Factory() { return new ProductSearchService(core.ɵɵinject(store.Store)); }, token: ProductSearchService, providedIn: "root" });
-        ProductSearchService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductSearchService);
         return ProductSearchService;
     }());
+    ProductSearchService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductSearchService_Factory() { return new ProductSearchService(i0.ɵɵinject(i1$1.Store)); }, token: ProductSearchService, providedIn: "root" });
+    ProductSearchService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductSearchService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
 
     var ProductLoadingService = /** @class */ (function () {
         function ProductLoadingService(store, loadingScopes, actions$, platformId) {
@@ -24255,10 +23890,8 @@
                 finally { if (e_1) throw e_1.error; }
             }
             if (scopes.length > 1) {
-                this.products[productCode][this.getScopesIndex(scopes)] = rxjs.combineLatest(scopes.map(function (scope) { return _this.products[productCode][scope]; })).pipe(operators.auditTime(0), operators.map(function (productParts) {
-                    return productParts.every(Boolean)
-                        ? deepMerge.apply(void 0, __spread([{}], productParts)) : undefined;
-                }), operators.distinctUntilChanged());
+                this.products[productCode][this.getScopesIndex(scopes)] = rxjs.combineLatest(scopes.map(function (scope) { return _this.products[productCode][scope]; })).pipe(operators.auditTime(0), operators.map(function (productParts) { return productParts.every(Boolean)
+                    ? deepMerge.apply(void 0, __spread([{}], productParts)) : undefined; }), operators.distinctUntilChanged());
             }
         };
         ProductLoadingService.prototype.getScopesIndex = function (scopes) {
@@ -24272,17 +23905,15 @@
          */
         ProductLoadingService.prototype.getProductForScope = function (productCode, scope) {
             var _this = this;
-            var shouldLoad$ = this.store.pipe(store.select(getSelectedProductStateFactory(productCode, scope)), operators.map(function (productState) {
-                return !productState.loading && !productState.success && !productState.error;
-            }), operators.distinctUntilChanged(), operators.filter(function (x) { return x; }));
-            var isLoading$ = this.store.pipe(store.select(getSelectedProductLoadingFactory(productCode, scope)));
+            var shouldLoad$ = this.store.pipe(i1$1.select(getSelectedProductStateFactory(productCode, scope)), operators.map(function (productState) { return !productState.loading && !productState.success && !productState.error; }), operators.distinctUntilChanged(), operators.filter(function (x) { return x; }));
+            var isLoading$ = this.store.pipe(i1$1.select(getSelectedProductLoadingFactory(productCode, scope)));
             var productLoadLogic$ = rxjs.merge.apply(void 0, __spread([shouldLoad$], this.getProductReloadTriggers(productCode, scope))).pipe(operators.debounceTime(0), operators.withLatestFrom(isLoading$), operators.tap(function (_a) {
                 var _b = __read(_a, 2), isLoading = _b[1];
                 if (!isLoading) {
                     _this.store.dispatch(new LoadProduct(productCode, scope));
                 }
             }));
-            var productData$ = this.store.pipe(store.select(getSelectedProductFactory(productCode, scope)));
+            var productData$ = this.store.pipe(i1$1.select(getSelectedProductFactory(productCode, scope)));
             return rxjs.using(function () { return productLoadLogic$.subscribe(); }, function () { return productData$; }).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
@@ -24295,17 +23926,13 @@
             var triggers = [];
             // max age trigger add
             var maxAge = this.loadingScopes.getMaxAge('product', scope);
-            if (maxAge && common.isPlatformBrowser(this.platformId)) {
+            if (maxAge && i1$2.isPlatformBrowser(this.platformId)) {
                 // we want to grab load product success and load product fail for this product and scope
-                var loadFinish$ = this.actions$.pipe(operators.filter(function (action) {
-                    return (action.type === LOAD_PRODUCT_SUCCESS ||
-                        action.type === LOAD_PRODUCT_FAIL) &&
-                        action.meta.entityId === productCode &&
-                        action.meta.scope === scope;
-                }));
-                var loadStart$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT), operators.filter(function (action) {
-                    return action.payload === productCode && action.meta.scope === scope;
-                }));
+                var loadFinish$ = this.actions$.pipe(operators.filter(function (action) { return (action.type === LOAD_PRODUCT_SUCCESS ||
+                    action.type === LOAD_PRODUCT_FAIL) &&
+                    action.meta.entityId === productCode &&
+                    action.meta.scope === scope; }));
+                var loadStart$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT), operators.filter(function (action) { return action.payload === productCode && action.meta.scope === scope; }));
                 triggers.push(this.getMaxAgeTrigger(loadStart$, loadFinish$, maxAge));
             }
             return triggers;
@@ -24343,21 +23970,20 @@
             });
             return shouldReload$;
         };
-        ProductLoadingService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: LoadingScopesService },
-            { type: effects$c.Actions },
-            { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
-        ]; };
-        ProductLoadingService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(core.ɵɵinject(store.Store), core.ɵɵinject(LoadingScopesService), core.ɵɵinject(effects$c.Actions), core.ɵɵinject(core.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
-        ProductLoadingService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            }),
-            __param(3, core.Inject(core.PLATFORM_ID))
-        ], ProductLoadingService);
         return ProductLoadingService;
     }());
+    ProductLoadingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(LoadingScopesService), i0.ɵɵinject(i3.Actions), i0.ɵɵinject(i0.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
+    ProductLoadingService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductLoadingService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: LoadingScopesService },
+        { type: i3.Actions },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+    ]; };
 
     var ProductService = /** @class */ (function () {
         function ProductService(store, productLoading) {
@@ -24388,21 +24014,21 @@
          */
         ProductService.prototype.isLoading = function (productCode, scope) {
             if (scope === void 0) { scope = ''; }
-            return this.store.pipe(store.select(getSelectedProductLoadingFactory(productCode, scope)));
+            return this.store.pipe(i1$1.select(getSelectedProductLoadingFactory(productCode, scope)));
         };
         /**
          * Returns boolean observable for product's load success state
          */
         ProductService.prototype.isSuccess = function (productCode, scope) {
             if (scope === void 0) { scope = ''; }
-            return this.store.pipe(store.select(getSelectedProductSuccessFactory(productCode, scope)));
+            return this.store.pipe(i1$1.select(getSelectedProductSuccessFactory(productCode, scope)));
         };
         /**
          * Returns boolean observable for product's load error state
          */
         ProductService.prototype.hasError = function (productCode, scope) {
             if (scope === void 0) { scope = ''; }
-            return this.store.pipe(store.select(getSelectedProductErrorFactory(productCode, scope)));
+            return this.store.pipe(i1$1.select(getSelectedProductErrorFactory(productCode, scope)));
         };
         /**
          * Reloads the product. The product is loaded implicetly
@@ -24413,18 +24039,18 @@
             if (scope === void 0) { scope = ''; }
             this.store.dispatch(new LoadProduct(productCode, scope));
         };
-        ProductService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: ProductLoadingService }
-        ]; };
-        ProductService.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductService_Factory() { return new ProductService(core.ɵɵinject(store.Store), core.ɵɵinject(ProductLoadingService)); }, token: ProductService, providedIn: "root" });
-        ProductService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductService);
         return ProductService;
     }());
+    ProductService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductService_Factory() { return new ProductService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(ProductLoadingService)); }, token: ProductService, providedIn: "root" });
+    ProductService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: ProductLoadingService }
+    ]; };
 
     var SearchboxService = /** @class */ (function (_super) {
         __extends(SearchboxService, _super);
@@ -24441,7 +24067,7 @@
             }, true));
         };
         SearchboxService.prototype.getResults = function () {
-            return this.store.pipe(store.select(getAuxSearchResults$1));
+            return this.store.pipe(i1$1.select(getAuxSearchResults$1));
         };
         /**
          * clears the products and suggestions
@@ -24452,7 +24078,7 @@
             }));
         };
         SearchboxService.prototype.getSuggestionResults = function () {
-            return this.store.pipe(store.select(getProductSuggestions$1));
+            return this.store.pipe(i1$1.select(getProductSuggestions$1));
         };
         SearchboxService.prototype.searchSuggestions = function (query, searchConfig) {
             this.store.dispatch(new GetProductSuggestions({
@@ -24460,14 +24086,14 @@
                 searchConfig: searchConfig,
             }));
         };
-        SearchboxService.ɵprov = core.ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(core.ɵɵinject(store.Store)); }, token: SearchboxService, providedIn: "root" });
-        SearchboxService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SearchboxService);
         return SearchboxService;
     }(ProductSearchService));
+    SearchboxService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.ɵɵinject(i1$1.Store)); }, token: SearchboxService, providedIn: "root" });
+    SearchboxService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     /**
      * Resolves the page data for the Product Listing Page.
@@ -24508,20 +24134,20 @@
             return rxjs.combineLatest([
                 this.searchPage$.pipe(),
                 this.translation.translate('common.home'),
-            ]).pipe(operators.map(function (_a) {
-                var _b = __read(_a, 2), p = _b[0], label = _b[1];
+            ]).pipe(operators.map(function (_b) {
+                var _c = __read(_b, 2), p = _c[0], label = _c[1];
                 return p.breadcrumbs
                     ? _this.resolveBreadcrumbData(p, label)
                     : null;
             }));
         };
         CategoryPageMetaResolver.prototype.resolveBreadcrumbData = function (page, label) {
-            var e_1, _a;
+            var e_1, _b;
             var breadcrumbs = [];
             breadcrumbs.push({ label: label, link: '/' });
             try {
-                for (var _b = __values(page.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
-                    var br = _c.value;
+                for (var _c = __values(page.breadcrumbs), _d = _c.next(); !_d.done; _d = _c.next()) {
+                    var br = _d.value;
                     if (br.facetCode === 'category' || br.facetCode === 'allCategories') {
                         breadcrumbs.push({
                             label: br.facetValueName,
@@ -24539,33 +24165,29 @@
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                    if (_d && !_d.done && (_b = _c.return)) _b.call(_c);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
             return breadcrumbs;
         };
         CategoryPageMetaResolver.prototype.hasProductListComponent = function (page) {
-            return !!Object.keys(page.slots).find(function (key) {
-                return !!page.slots[key].components.find(function (comp) {
-                    return comp.typeCode === 'CMSProductListComponent' ||
-                        comp.typeCode === 'ProductGridComponent';
-                });
-            });
+            return !!Object.keys(page.slots).find(function (key) { return !!page.slots[key].components.find(function (comp) { return comp.typeCode === 'CMSProductListComponent' ||
+                comp.typeCode === 'ProductGridComponent'; }); });
         };
-        CategoryPageMetaResolver.ctorParameters = function () { return [
-            { type: ProductSearchService },
-            { type: CmsService },
-            { type: TranslationService }
-        ]; };
-        CategoryPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(core.ɵɵinject(ProductSearchService), core.ɵɵinject(CmsService), core.ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
-        CategoryPageMetaResolver = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CategoryPageMetaResolver);
         return CategoryPageMetaResolver;
     }(PageMetaResolver));
+    CategoryPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(i0.ɵɵinject(ProductSearchService), i0.ɵɵinject(CmsService), i0.ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+    CategoryPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CategoryPageMetaResolver.ctorParameters = function () { return [
+        { type: ProductSearchService },
+        { type: CmsService },
+        { type: TranslationService }
+    ]; };
 
     /**
      * Resolves page meta data for the search result page, in case it's used
@@ -24594,8 +24216,8 @@
                 this.translation.translate('common.home'),
                 this.translation.translate('myCoupons.myCoupons'),
                 this.authService.isUserLoggedIn(),
-            ]).pipe(operators.map(function (_a) {
-                var _b = __read(_a, 3), homeLabel = _b[0], couponLabel = _b[1], isLoggedIn = _b[2];
+            ]).pipe(operators.map(function (_c) {
+                var _d = __read(_c, 3), homeLabel = _d[0], couponLabel = _d[1], isLoggedIn = _d[2];
                 var breadcrumbs = [];
                 breadcrumbs.push({ label: homeLabel, link: '/' });
                 if (isLoggedIn) {
@@ -24611,12 +24233,10 @@
         };
         CouponSearchPageResolver.prototype.resolveTitle = function () {
             var _this = this;
-            return this.total$.pipe(operators.switchMap(function (total) {
-                return _this.translation.translate('pageMetaResolver.search.findProductTitle', {
-                    count: total,
-                    coupon: _this.couponCode,
-                });
-            }));
+            return this.total$.pipe(operators.switchMap(function (total) { return _this.translation.translate('pageMetaResolver.search.findProductTitle', {
+                count: total,
+                coupon: _this.couponCode,
+            }); }));
         };
         CouponSearchPageResolver.prototype.getScore = function (page) {
             return _super.prototype.getScore.call(this, page) + (this.couponCode ? 1 : -1);
@@ -24626,24 +24246,24 @@
                 var _a, _b;
                 return (_b = (_a = this.route.snapshot) === null || _a === void 0 ? void 0 : _a.queryParams) === null || _b === void 0 ? void 0 : _b.couponcode;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
-        CouponSearchPageResolver.ctorParameters = function () { return [
-            { type: ProductSearchService },
-            { type: TranslationService },
-            { type: AuthService },
-            { type: router.ActivatedRoute },
-            { type: SemanticPathService }
-        ]; };
-        CouponSearchPageResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(core.ɵɵinject(ProductSearchService), core.ɵɵinject(TranslationService), core.ɵɵinject(AuthService), core.ɵɵinject(router.ActivatedRoute), core.ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
-        CouponSearchPageResolver = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CouponSearchPageResolver);
         return CouponSearchPageResolver;
     }(PageMetaResolver));
+    CouponSearchPageResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(i0.ɵɵinject(ProductSearchService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(AuthService), i0.ɵɵinject(i4.ActivatedRoute), i0.ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
+    CouponSearchPageResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CouponSearchPageResolver.ctorParameters = function () { return [
+        { type: ProductSearchService },
+        { type: TranslationService },
+        { type: AuthService },
+        { type: i4.ActivatedRoute },
+        { type: SemanticPathService }
+    ]; };
 
     /**
      * Resolves the page data for the Product Detail Page
@@ -24671,11 +24291,9 @@
          */
         ProductPageMetaResolver.prototype.resolveHeading = function () {
             var _this = this;
-            return this.product$.pipe(operators.switchMap(function (p) {
-                return _this.translation.translate('pageMetaResolver.product.heading', {
-                    heading: p.name,
-                });
-            }));
+            return this.product$.pipe(operators.switchMap(function (p) { return _this.translation.translate('pageMetaResolver.product.heading', {
+                heading: p.name,
+            }); }));
         };
         /**
          * Resolves the page title for the Product Detail Page. The page title
@@ -24699,11 +24317,9 @@
          */
         ProductPageMetaResolver.prototype.resolveDescription = function () {
             var _this = this;
-            return this.product$.pipe(operators.switchMap(function (p) {
-                return _this.translation.translate('pageMetaResolver.product.description', {
-                    description: p.summary,
-                });
-            }));
+            return this.product$.pipe(operators.switchMap(function (p) { return _this.translation.translate('pageMetaResolver.product.description', {
+                description: p.summary,
+            }); }));
         };
         /**
          * Resolves breadcrumbs for the Product Detail Page. The breadcrumbs are driven by
@@ -24713,16 +24329,16 @@
             return rxjs.combineLatest([
                 this.product$.pipe(),
                 this.translation.translate('common.home'),
-            ]).pipe(operators.map(function (_a) {
-                var e_1, _b;
-                var _c = __read(_a, 2), p = _c[0], label = _c[1];
+            ]).pipe(operators.map(function (_d) {
+                var e_1, _e;
+                var _f = __read(_d, 2), p = _f[0], label = _f[1];
                 var breadcrumbs = [];
                 breadcrumbs.push({ label: label, link: '/' });
                 try {
-                    for (var _d = __values(p.categories || []), _e = _d.next(); !_e.done; _e = _d.next()) {
-                        var _f = _e.value, name_1 = _f.name, code = _f.code, url = _f.url;
+                    for (var _g = __values(p.categories || []), _h = _g.next(); !_h.done; _h = _g.next()) {
+                        var _j = _h.value, name = _j.name, code = _j.code, url = _j.url;
                         breadcrumbs.push({
-                            label: name_1 || code,
+                            label: name || code,
                             link: url,
                         });
                     }
@@ -24730,7 +24346,7 @@
                 catch (e_1_1) { e_1 = { error: e_1_1 }; }
                 finally {
                     try {
-                        if (_e && !_e.done && (_b = _d.return)) _b.call(_d);
+                        if (_h && !_h.done && (_e = _g.return)) _e.call(_g);
                     }
                     finally { if (e_1) throw e_1.error; }
                 }
@@ -24769,19 +24385,19 @@
         ProductPageMetaResolver.prototype.resolveRobots = function () {
             return rxjs.of([exports.PageRobotsMeta.FOLLOW, exports.PageRobotsMeta.INDEX]);
         };
-        ProductPageMetaResolver.ctorParameters = function () { return [
-            { type: RoutingService },
-            { type: ProductService },
-            { type: TranslationService }
-        ]; };
-        ProductPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(core.ɵɵinject(RoutingService), core.ɵɵinject(ProductService), core.ɵɵinject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
-        ProductPageMetaResolver = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], ProductPageMetaResolver);
         return ProductPageMetaResolver;
     }(PageMetaResolver));
+    ProductPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(i0.ɵɵinject(RoutingService), i0.ɵɵinject(ProductService), i0.ɵɵinject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
+    ProductPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ProductPageMetaResolver.ctorParameters = function () { return [
+        { type: RoutingService },
+        { type: ProductService },
+        { type: TranslationService }
+    ]; };
 
     /**
      * Resolves the page data for the Search Result Page based on the
@@ -24815,26 +24431,26 @@
                 });
             }));
         };
-        SearchPageMetaResolver.ctorParameters = function () { return [
-            { type: RoutingService },
-            { type: ProductSearchService },
-            { type: TranslationService }
-        ]; };
-        SearchPageMetaResolver.ɵprov = core.ɵɵdefineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(core.ɵɵinject(RoutingService), core.ɵɵinject(ProductSearchService), core.ɵɵinject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
-        SearchPageMetaResolver = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], SearchPageMetaResolver);
         return SearchPageMetaResolver;
     }(PageMetaResolver));
+    SearchPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(i0.ɵɵinject(RoutingService), i0.ɵɵinject(ProductSearchService), i0.ɵɵinject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
+    SearchPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    SearchPageMetaResolver.ctorParameters = function () { return [
+        { type: RoutingService },
+        { type: ProductSearchService },
+        { type: TranslationService }
+    ]; };
 
     var ProductReferencesEffects = /** @class */ (function () {
         function ProductReferencesEffects(actions$, productReferencesConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.productReferencesConnector = productReferencesConnector;
-            this.loadProductReferences$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT_REFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.loadProductReferences$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_REFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.productReferencesConnector
                     .get(payload.productCode, payload.referenceType, payload.pageSize)
                     .pipe(operators.map(function (data) {
@@ -24842,25 +24458,23 @@
                         productCode: payload.productCode,
                         list: data,
                     });
-                }), operators.catchError(function (_error) {
-                    return rxjs.of(new LoadProductReferencesFail({
-                        message: payload.productCode,
-                    }));
-                }));
+                }), operators.catchError(function (_error) { return rxjs.of(new LoadProductReferencesFail({
+                    message: payload.productCode,
+                })); }));
             }));
         }
-        ProductReferencesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: ProductReferencesConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
-        ProductReferencesEffects = __decorate([
-            core.Injectable()
-        ], ProductReferencesEffects);
         return ProductReferencesEffects;
     }());
+    ProductReferencesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductReferencesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ProductReferencesConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
 
     var ProductReviewsEffects = /** @class */ (function () {
         function ProductReviewsEffects(actions$, productReviewsConnector, globalMessageService) {
@@ -24868,68 +24482,60 @@
             this.actions$ = actions$;
             this.productReviewsConnector = productReviewsConnector;
             this.globalMessageService = globalMessageService;
-            this.loadProductReviews$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT_REVIEWS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (productCode) {
+            this.loadProductReviews$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_REVIEWS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (productCode) {
                 return _this.productReviewsConnector.get(productCode).pipe(operators.map(function (data) {
                     return new LoadProductReviewsSuccess({
                         productCode: productCode,
                         list: data,
                     });
-                }), operators.catchError(function (_error) {
-                    return rxjs.of(new LoadProductReviewsFail({
-                        message: productCode,
-                    }));
-                }));
+                }), operators.catchError(function (_error) { return rxjs.of(new LoadProductReviewsFail({
+                    message: productCode,
+                })); }));
             }));
-            this.postProductReview = this.actions$.pipe(effects$c.ofType(POST_PRODUCT_REVIEW), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.postProductReview = this.actions$.pipe(i3.ofType(POST_PRODUCT_REVIEW), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.productReviewsConnector
                     .add(payload.productCode, payload.review)
                     .pipe(operators.map(function (reviewResponse) {
                     return new PostProductReviewSuccess(reviewResponse);
-                }), operators.catchError(function (_error) {
-                    return rxjs.of(new PostProductReviewFail(payload.productCode));
-                }));
+                }), operators.catchError(function (_error) { return rxjs.of(new PostProductReviewFail(payload.productCode)); }));
             }));
-            this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(effects$c.ofType(POST_PRODUCT_REVIEW_SUCCESS), operators.tap(function () {
+            this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(i3.ofType(POST_PRODUCT_REVIEW_SUCCESS), operators.tap(function () {
                 _this.globalMessageService.add({ key: 'productReview.thankYouForReview' }, exports.GlobalMessageType.MSG_TYPE_CONFIRMATION);
             }));
         }
-        ProductReviewsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: ProductReviewsConnector },
-            { type: GlobalMessageService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], ProductReviewsEffects.prototype, "postProductReview", void 0);
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], ProductReviewsEffects.prototype, "showGlobalMessageOnPostProductReviewSuccess$", void 0);
-        ProductReviewsEffects = __decorate([
-            core.Injectable()
-        ], ProductReviewsEffects);
         return ProductReviewsEffects;
     }());
+    ProductReviewsEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductReviewsEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ProductReviewsConnector },
+        { type: GlobalMessageService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ProductReviewsEffects.prototype, "postProductReview", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], ProductReviewsEffects.prototype, "showGlobalMessageOnPostProductReviewSuccess$", void 0);
 
     var ProductsSearchEffects = /** @class */ (function () {
         function ProductsSearchEffects(actions$, productSearchConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.productSearchConnector = productSearchConnector;
-            this.searchProducts$ = this.actions$.pipe(effects$c.ofType(SEARCH_PRODUCTS), operators.groupBy(function (action) { return action.auxiliary; }), operators.mergeMap(function (group) {
-                return group.pipe(operators.switchMap(function (action) {
-                    return _this.productSearchConnector
-                        .search(action.payload.queryText, action.payload.searchConfig)
-                        .pipe(operators.map(function (data) {
-                        return new SearchProductsSuccess(data, action.auxiliary);
-                    }), operators.catchError(function (error) {
-                        return rxjs.of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary));
-                    }));
-                }));
-            }));
-            this.getProductSuggestions$ = this.actions$.pipe(effects$c.ofType(GET_PRODUCT_SUGGESTIONS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.searchProducts$ = this.actions$.pipe(i3.ofType(SEARCH_PRODUCTS), operators.groupBy(function (action) { return action.auxiliary; }), operators.mergeMap(function (group) { return group.pipe(operators.switchMap(function (action) {
+                return _this.productSearchConnector
+                    .search(action.payload.queryText, action.payload.searchConfig)
+                    .pipe(operators.map(function (data) {
+                    return new SearchProductsSuccess(data, action.auxiliary);
+                }), operators.catchError(function (error) { return rxjs.of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary)); }));
+            })); }));
+            this.getProductSuggestions$ = this.actions$.pipe(i3.ofType(GET_PRODUCT_SUGGESTIONS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.productSearchConnector
                     .getSuggestions(payload.term, payload.searchConfig.pageSize)
                     .pipe(operators.map(function (suggestions) {
@@ -24937,26 +24543,24 @@
                         return new GetProductSuggestionsSuccess([]);
                     }
                     return new GetProductSuggestionsSuccess(suggestions);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new GetProductSuggestionsFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new GetProductSuggestionsFail(makeErrorSerializable(error))); }));
             }));
         }
-        ProductsSearchEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: ProductSearchConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ProductsSearchEffects.prototype, "searchProducts$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
-        ProductsSearchEffects = __decorate([
-            core.Injectable()
-        ], ProductsSearchEffects);
         return ProductsSearchEffects;
     }());
+    ProductsSearchEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductsSearchEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ProductSearchConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ProductsSearchEffects.prototype, "searchProducts$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
 
     var ProductEffects = /** @class */ (function () {
         function ProductEffects(actions$, productConnector) {
@@ -24964,38 +24568,34 @@
             this.actions$ = actions$;
             this.productConnector = productConnector;
             // we want to cancel all ongoing requests when currency or language changes,
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.loadProduct$ = effects$c.createEffect(function () { return function (_a) {
+            this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.loadProduct$ = i3.createEffect(function () { return function (_a) {
                 var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-                return _this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT), operators.map(function (action) { return ({
+                return _this.actions$.pipe(i3.ofType(LOAD_PRODUCT), operators.map(function (action) { return ({
                     code: action.payload,
                     scope: action.meta.scope,
                 }); }), 
                 // we are grouping all load actions that happens at the same time
                 // to optimize loading and pass them all to productConnector.getMany
-                bufferDebounceTime(debounce, scheduler), operators.mergeMap(function (products) {
-                    return rxjs.merge.apply(void 0, __spread(_this.productConnector
-                        .getMany(products)
-                        .map(_this.productLoadEffect)));
-                }), withdrawOn(_this.contextChange$));
+                bufferDebounceTime(debounce, scheduler), operators.mergeMap(function (products) { return rxjs.merge.apply(void 0, __spread(_this.productConnector
+                    .getMany(products)
+                    .map(_this.productLoadEffect))); }), withdrawOn(_this.contextChange$));
             }; });
         }
         ProductEffects.prototype.productLoadEffect = function (productLoad) {
-            return productLoad.data$.pipe(operators.map(function (data) {
-                return new LoadProductSuccess(__assign({ code: productLoad.code }, data), productLoad.scope);
-            }), operators.catchError(function (error) {
+            return productLoad.data$.pipe(operators.map(function (data) { return new LoadProductSuccess(Object.assign({ code: productLoad.code }, data), productLoad.scope); }), operators.catchError(function (error) {
                 return rxjs.of(new LoadProductFail(productLoad.code, makeErrorSerializable(error), productLoad.scope));
             }));
         };
-        ProductEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: ProductConnector }
-        ]; };
-        ProductEffects = __decorate([
-            core.Injectable()
-        ], ProductEffects);
         return ProductEffects;
     }());
+    ProductEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ProductConnector }
+    ]; };
 
     var effects$9 = [
         ProductsSearchEffects,
@@ -25014,11 +24614,9 @@
             case LOAD_PRODUCT_REFERENCES_SUCCESS: {
                 var productCode = action.payload.productCode;
                 var list = action.payload.list;
-                return __assign(__assign({}, state), { list: __spread(state.list, (list ? list : [])).reduce(function (productReferences, productReference) {
-                        if (!productReferences.some(function (obj) {
-                            return obj.referenceType === productReference.referenceType &&
-                                obj.target.code === productReference.target.code;
-                        })) {
+                return Object.assign(Object.assign({}, state), { list: __spread(state.list, (list ? list : [])).reduce(function (productReferences, productReference) {
+                        if (!productReferences.some(function (obj) { return obj.referenceType === productReference.referenceType &&
+                            obj.target.code === productReference.target.code; })) {
                             productReferences.push(productReference);
                         }
                         return productReferences;
@@ -25043,18 +24641,14 @@
             case LOAD_PRODUCT_REVIEWS_SUCCESS: {
                 var productCode = action.payload.productCode;
                 var list = action.payload.list;
-                return __assign(__assign({}, state), { productCode: productCode,
+                return Object.assign(Object.assign({}, state), { productCode: productCode,
                     list: list });
             }
         }
         return state;
     }
-    var getReviewList = function (state) {
-        return state.list;
-    };
-    var getReviewProductCode = function (state) {
-        return state.productCode;
-    };
+    var getReviewList = function (state) { return state.list; };
+    var getReviewProductCode = function (state) { return state.productCode; };
 
     var initialScopedLoaderState = {};
     /**
@@ -25066,11 +24660,11 @@
     function scopedLoaderReducer(entityType, reducer) {
         var loader = loaderReducer(entityType, reducer);
         return function (state, action) {
-            var _a;
-            if (state === void 0) { state = initialScopedLoaderState; }
             var _b;
+            if (state === void 0) { state = initialScopedLoaderState; }
+            var _a;
             if (action && action.meta && action.meta.entityType === entityType) {
-                return __assign(__assign({}, state), (_a = {}, _a[(_b = action.meta.scope) !== null && _b !== void 0 ? _b : ''] = loader(state[action.meta.scope], action), _a));
+                return Object.assign(Object.assign({}, state), (_b = {}, _b[(_a = action.meta.scope) !== null && _a !== void 0 ? _a : ''] = loader(state[action.meta.scope], action), _b));
             }
             return state;
         };
@@ -25092,7 +24686,7 @@
             references: reducer$j,
         };
     }
-    var reducerToken$a = new core.InjectionToken('ProductReducers');
+    var reducerToken$a = new i0.InjectionToken('ProductReducers');
     var reducerProvider$a = {
         provide: reducerToken$a,
         useFactory: getReducers$a,
@@ -25123,22 +24717,22 @@
     var ProductStoreModule = /** @class */ (function () {
         function ProductStoreModule() {
         }
-        ProductStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    store.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
-                    effects$c.EffectsModule.forFeature(effects$9),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(productStoreConfigFactory),
-                    reducerProvider$a,
-                ],
-            })
-        ], ProductStoreModule);
         return ProductStoreModule;
     }());
+    ProductStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
+                        i3.EffectsModule.forFeature(effects$9),
+                    ],
+                    providers: [
+                        provideDefaultConfigFactory(productStoreConfigFactory),
+                        reducerProvider$a,
+                    ],
+                },] }
+    ];
 
     var pageTitleResolvers = [
         {
@@ -25165,21 +24759,19 @@
     var ProductModule = /** @class */ (function () {
         function ProductModule() {
         }
-        ProductModule_1 = ProductModule;
         ProductModule.forRoot = function () {
             return {
-                ngModule: ProductModule_1,
+                ngModule: ProductModule,
                 providers: __spread(pageTitleResolvers),
             };
         };
-        var ProductModule_1;
-        ProductModule = ProductModule_1 = __decorate([
-            core.NgModule({
-                imports: [ProductStoreModule],
-            })
-        ], ProductModule);
         return ProductModule;
     }());
+    ProductModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [ProductStoreModule],
+                },] }
+    ];
 
     var CmsTicketInterceptor = /** @class */ (function () {
         function CmsTicketInterceptor(service) {
@@ -25195,19 +24787,19 @@
             }
             return next.handle(request);
         };
-        CmsTicketInterceptor.ctorParameters = function () { return [
-            { type: SmartEditService }
-        ]; };
-        CmsTicketInterceptor.ɵprov = core.ɵɵdefineInjectable({ factory: function CmsTicketInterceptor_Factory() { return new CmsTicketInterceptor(core.ɵɵinject(SmartEditService)); }, token: CmsTicketInterceptor, providedIn: "root" });
-        CmsTicketInterceptor = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], CmsTicketInterceptor);
         return CmsTicketInterceptor;
     }());
+    CmsTicketInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsTicketInterceptor_Factory() { return new CmsTicketInterceptor(i0.ɵɵinject(SmartEditService)); }, token: CmsTicketInterceptor, providedIn: "root" });
+    CmsTicketInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    CmsTicketInterceptor.ctorParameters = function () { return [
+        { type: SmartEditService }
+    ]; };
 
     var interceptors$4 = [
         {
-            provide: http.HTTP_INTERCEPTORS,
+            provide: i1.HTTP_INTERCEPTORS,
             useExisting: CmsTicketInterceptor,
             multi: true,
         },
@@ -25216,19 +24808,17 @@
     var SmartEditModule = /** @class */ (function () {
         function SmartEditModule() {
         }
-        SmartEditModule_1 = SmartEditModule;
         SmartEditModule.forRoot = function () {
             return {
-                ngModule: SmartEditModule_1,
+                ngModule: SmartEditModule,
                 providers: __spread(interceptors$4),
             };
         };
-        var SmartEditModule_1;
-        SmartEditModule = SmartEditModule_1 = __decorate([
-            core.NgModule({})
-        ], SmartEditModule);
         return SmartEditModule;
     }());
+    SmartEditModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
 
     /**
      * The wrapper over the standard ngExpressEngine, that provides tokens for Spartacus
@@ -25245,7 +24835,7 @@
         NgExpressEngineDecorator.get = function (ngExpressEngine) {
             var result = function cxNgExpressEngine(setupOptions) {
                 return function (filePath, options, callback) {
-                    var engineInstance = ngExpressEngine(__assign(__assign({}, setupOptions), { providers: __spread(getServerRequestProviders(options), (setupOptions.providers || [])) }));
+                    var engineInstance = ngExpressEngine(Object.assign(Object.assign({}, setupOptions), { providers: __spread(getServerRequestProviders(options), (setupOptions.providers || [])) }));
                     return engineInstance(filePath, options, callback);
                 };
             };
@@ -25280,15 +24870,15 @@
     var StoreFinderConfig = /** @class */ (function () {
         function StoreFinderConfig() {
         }
-        StoreFinderConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function StoreFinderConfig_Factory() { return core.ɵɵinject(Config); }, token: StoreFinderConfig, providedIn: "root" });
-        StoreFinderConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], StoreFinderConfig);
         return StoreFinderConfig;
     }());
+    StoreFinderConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreFinderConfig_Factory() { return i0.ɵɵinject(Config); }, token: StoreFinderConfig, providedIn: "root" });
+    StoreFinderConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
 
     var STORE_FINDER_FEATURE = 'stores';
     var STORE_FINDER_DATA = '[StoreFinder] Store Finder Data';
@@ -25427,29 +25017,21 @@
         ViewAllStoresSuccess: ViewAllStoresSuccess
     });
 
-    var getStoreFinderState = store.createFeatureSelector(STORE_FINDER_FEATURE);
+    var getStoreFinderState = i1$1.createFeatureSelector(STORE_FINDER_FEATURE);
 
     var ɵ0$K = function (storesState) { return storesState.findStores; };
-    var getFindStoresState = store.createSelector(getStoreFinderState, ɵ0$K);
-    var ɵ1$u = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getFindStoresEntities = store.createSelector(getFindStoresState, ɵ1$u);
-    var ɵ2$j = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getStoresLoading = store.createSelector(getFindStoresState, ɵ2$j);
+    var getFindStoresState = i1$1.createSelector(getStoreFinderState, ɵ0$K);
+    var ɵ1$u = function (state) { return loaderValueSelector(state); };
+    var getFindStoresEntities = i1$1.createSelector(getFindStoresState, ɵ1$u);
+    var ɵ2$j = function (state) { return loaderLoadingSelector(state); };
+    var getStoresLoading = i1$1.createSelector(getFindStoresState, ɵ2$j);
 
     var ɵ0$L = function (storesState) { return storesState.viewAllStores; };
-    var getViewAllStoresState = store.createSelector(getStoreFinderState, ɵ0$L);
-    var ɵ1$v = function (state) {
-        return loaderValueSelector(state);
-    };
-    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, ɵ1$v);
-    var ɵ2$k = function (state) {
-        return loaderLoadingSelector(state);
-    };
-    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, ɵ2$k);
+    var getViewAllStoresState = i1$1.createSelector(getStoreFinderState, ɵ0$L);
+    var ɵ1$v = function (state) { return loaderValueSelector(state); };
+    var getViewAllStoresEntities = i1$1.createSelector(getViewAllStoresState, ɵ1$v);
+    var ɵ2$k = function (state) { return loaderLoadingSelector(state); };
+    var getViewAllStoresLoading = i1$1.createSelector(getViewAllStoresState, ɵ2$k);
 
     var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -25476,25 +25058,25 @@
          * Returns boolean observable for store's loading state
          */
         StoreFinderService.prototype.getStoresLoading = function () {
-            return this.store.pipe(store.select(getStoresLoading));
+            return this.store.pipe(i1$1.select(getStoresLoading));
         };
         /**
          * Returns observable for store's entities
          */
         StoreFinderService.prototype.getFindStoresEntities = function () {
-            return this.store.pipe(store.select(getFindStoresEntities));
+            return this.store.pipe(i1$1.select(getFindStoresEntities));
         };
         /**
          * Returns boolean observable for view all store's loading state
          */
         StoreFinderService.prototype.getViewAllStoresLoading = function () {
-            return this.store.pipe(store.select(getViewAllStoresLoading));
+            return this.store.pipe(i1$1.select(getViewAllStoresLoading));
         };
         /**
          * Returns observable for view all store's entities
          */
         StoreFinderService.prototype.getViewAllStoresEntities = function () {
-            return this.store.pipe(store.select(getViewAllStoresEntities));
+            return this.store.pipe(i1$1.select(getViewAllStoresEntities));
         };
         /**
          * Store finding action functionality
@@ -25556,20 +25138,20 @@
             }
             this.store.dispatch(callbackAction);
         };
-        StoreFinderService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: WindowRef },
-            { type: GlobalMessageService },
-            { type: RoutingService }
-        ]; };
-        StoreFinderService.ɵprov = core.ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(core.ɵɵinject(store.Store), core.ɵɵinject(WindowRef), core.ɵɵinject(GlobalMessageService), core.ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
-        StoreFinderService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], StoreFinderService);
         return StoreFinderService;
     }());
+    StoreFinderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
+    StoreFinderService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    StoreFinderService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: WindowRef },
+        { type: GlobalMessageService },
+        { type: RoutingService }
+    ]; };
 
     var StoreDataService = /** @class */ (function () {
         function StoreDataService() {
@@ -25640,14 +25222,14 @@
             var weekday = this.weekDays[date.getDay()];
             return location.openingHours.weekDayOpeningList.find(function (weekDayOpeningListItem) { return weekDayOpeningListItem.weekDay === weekday; });
         };
-        StoreDataService.ɵprov = core.ɵɵdefineInjectable({ factory: function StoreDataService_Factory() { return new StoreDataService(); }, token: StoreDataService, providedIn: "root" });
-        StoreDataService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], StoreDataService);
         return StoreDataService;
     }());
+    StoreDataService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreDataService_Factory() { return new StoreDataService(); }, token: StoreDataService, providedIn: "root" });
+    StoreDataService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
 
     var ExternalJsFileLoader = /** @class */ (function () {
         function ExternalJsFileLoader(document) {
@@ -25695,19 +25277,19 @@
             }
             return result;
         };
-        ExternalJsFileLoader.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
-        ]; };
-        ExternalJsFileLoader.ɵprov = core.ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(core.ɵɵinject(common.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
-        ExternalJsFileLoader = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            }),
-            __param(0, core.Inject(common.DOCUMENT))
-        ], ExternalJsFileLoader);
         return ExternalJsFileLoader;
     }());
+    ExternalJsFileLoader.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(i0.ɵɵinject(i1$2.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
+    ExternalJsFileLoader.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ExternalJsFileLoader.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
+    ]; };
 
+    /// <reference types="@types/googlemaps" />
     var GoogleMapRendererService = /** @class */ (function () {
         function GoogleMapRendererService(config, externalJsFileLoader, storeDataService) {
             this.config = config;
@@ -25802,19 +25384,19 @@
             this.initMap(mapElement, this.defineMapCenter(locations));
             this.createMarkers(locations, selectMarkerHandler);
         };
-        GoogleMapRendererService.ctorParameters = function () { return [
-            { type: StoreFinderConfig },
-            { type: ExternalJsFileLoader },
-            { type: StoreDataService }
-        ]; };
-        GoogleMapRendererService.ɵprov = core.ɵɵdefineInjectable({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(core.ɵɵinject(StoreFinderConfig), core.ɵɵinject(ExternalJsFileLoader), core.ɵɵinject(StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
-        GoogleMapRendererService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], GoogleMapRendererService);
         return GoogleMapRendererService;
     }());
+    GoogleMapRendererService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(i0.ɵɵinject(StoreFinderConfig), i0.ɵɵinject(ExternalJsFileLoader), i0.ɵɵinject(StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
+    GoogleMapRendererService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    GoogleMapRendererService.ctorParameters = function () { return [
+        { type: StoreFinderConfig },
+        { type: ExternalJsFileLoader },
+        { type: StoreDataService }
+    ]; };
 
     var defaultStoreFinderConfig = {
         googleMaps: {
@@ -25832,7 +25414,7 @@
             viewAllStores: loaderReducer(STORE_FINDER_DATA),
         };
     }
-    var reducerToken$b = new core.InjectionToken('StoreFinderReducers');
+    var reducerToken$b = new i0.InjectionToken('StoreFinderReducers');
     var reducerProvider$b = {
         provide: reducerToken$b,
         useFactory: getReducers$b,
@@ -25844,102 +25426,88 @@
             var _this = this;
             this.actions$ = actions$;
             this.storeFinderConnector = storeFinderConnector;
-            this.findStores$ = this.actions$.pipe(effects$c.ofType(FIND_STORES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.storeFinderConnector
-                    .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude, payload.radius)
-                    .pipe(operators.map(function (data) {
-                    if (payload.countryIsoCode) {
-                        data.stores = data.stores.filter(function (store) {
-                            return store.address.country.isocode === payload.countryIsoCode;
-                        });
-                        data.stores.sort(function (a, b) {
-                            return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-                        });
-                    }
-                    return new FindStoresSuccess(data);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new FindStoresFail(makeErrorSerializable(error)));
-                }));
-            }));
-            this.findStoreById$ = this.actions$.pipe(effects$c.ofType(FIND_STORE_BY_ID), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.storeFinderConnector.get(payload.storeId).pipe(operators.map(function (data) { return new FindStoreByIdSuccess(data); }), operators.catchError(function (error) {
-                    return rxjs.of(new FindStoreByIdFail(makeErrorSerializable(error)));
-                }));
-            }));
+            this.findStores$ = this.actions$.pipe(i3.ofType(FIND_STORES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.storeFinderConnector
+                .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude, payload.radius)
+                .pipe(operators.map(function (data) {
+                if (payload.countryIsoCode) {
+                    data.stores = data.stores.filter(function (store) { return store.address.country.isocode === payload.countryIsoCode; });
+                    data.stores.sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; });
+                }
+                return new FindStoresSuccess(data);
+            }), operators.catchError(function (error) { return rxjs.of(new FindStoresFail(makeErrorSerializable(error))); })); }));
+            this.findStoreById$ = this.actions$.pipe(i3.ofType(FIND_STORE_BY_ID), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.storeFinderConnector.get(payload.storeId).pipe(operators.map(function (data) { return new FindStoreByIdSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new FindStoreByIdFail(makeErrorSerializable(error))); })); }));
         }
-        FindStoresEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: StoreFinderConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], FindStoresEffect.prototype, "findStores$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], FindStoresEffect.prototype, "findStoreById$", void 0);
-        FindStoresEffect = __decorate([
-            core.Injectable()
-        ], FindStoresEffect);
         return FindStoresEffect;
     }());
+    FindStoresEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    FindStoresEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: StoreFinderConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], FindStoresEffect.prototype, "findStores$", void 0);
+    __decorate([
+        i3.Effect()
+    ], FindStoresEffect.prototype, "findStoreById$", void 0);
 
     var ViewAllStoresEffect = /** @class */ (function () {
         function ViewAllStoresEffect(actions$, storeFinderConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.storeFinderConnector = storeFinderConnector;
-            this.viewAllStores$ = this.actions$.pipe(effects$c.ofType(VIEW_ALL_STORES), operators.switchMap(function () {
+            this.viewAllStores$ = this.actions$.pipe(i3.ofType(VIEW_ALL_STORES), operators.switchMap(function () {
                 return _this.storeFinderConnector.getCounts().pipe(operators.map(function (data) {
                     data.sort(function (a, b) { return (a.name < b.name ? -1 : a.name > b.name ? 1 : 0); });
                     return new ViewAllStoresSuccess(data);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new ViewAllStoresFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new ViewAllStoresFail(makeErrorSerializable(error))); }));
             }));
         }
-        ViewAllStoresEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: StoreFinderConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
-        ViewAllStoresEffect = __decorate([
-            core.Injectable()
-        ], ViewAllStoresEffect);
         return ViewAllStoresEffect;
     }());
+    ViewAllStoresEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    ViewAllStoresEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: StoreFinderConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
 
     var effects$a = [FindStoresEffect, ViewAllStoresEffect];
 
     var StoreFinderStoreModule = /** @class */ (function () {
         function StoreFinderStoreModule() {
         }
-        StoreFinderStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    http.HttpClientModule,
-                    store.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
-                    effects$c.EffectsModule.forFeature(effects$a),
-                ],
-                providers: [reducerProvider$b],
-            })
-        ], StoreFinderStoreModule);
         return StoreFinderStoreModule;
     }());
+    StoreFinderStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        i1$1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
+                        i3.EffectsModule.forFeature(effects$a),
+                    ],
+                    providers: [reducerProvider$b],
+                },] }
+    ];
 
     var StoreFinderCoreModule = /** @class */ (function () {
         function StoreFinderCoreModule() {
         }
-        StoreFinderCoreModule = __decorate([
-            core.NgModule({
-                imports: [StoreFinderStoreModule],
-                providers: [provideDefaultConfig(defaultStoreFinderConfig)],
-            })
-        ], StoreFinderCoreModule);
         return StoreFinderCoreModule;
     }());
+    StoreFinderCoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [StoreFinderStoreModule],
+                    providers: [provideDefaultConfig(defaultStoreFinderConfig)],
+                },] }
+    ];
 
     var UserConnector = /** @class */ (function () {
         function UserConnector(adapter) {
@@ -25975,17 +25543,17 @@
         UserConnector.prototype.getTitles = function () {
             return this.adapter.loadTitles();
         };
-        UserConnector.ctorParameters = function () { return [
-            { type: UserAdapter }
-        ]; };
-        UserConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(core.ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
-        UserConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserConnector);
         return UserConnector;
     }());
+    UserConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(i0.ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
+    UserConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserConnector.ctorParameters = function () { return [
+        { type: UserAdapter }
+    ]; };
 
     var UserConsentConnector = /** @class */ (function () {
         function UserConsentConnector(adapter) {
@@ -26000,17 +25568,17 @@
         UserConsentConnector.prototype.withdrawConsent = function (userId, consentCode) {
             return this.adapter.withdrawConsent(userId, consentCode);
         };
-        UserConsentConnector.ctorParameters = function () { return [
-            { type: UserConsentAdapter }
-        ]; };
-        UserConsentConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(core.ɵɵinject(UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
-        UserConsentConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserConsentConnector);
         return UserConsentConnector;
     }());
+    UserConsentConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(i0.ɵɵinject(UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
+    UserConsentConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserConsentConnector.ctorParameters = function () { return [
+        { type: UserConsentAdapter }
+    ]; };
 
     var UserPaymentConnector = /** @class */ (function () {
         function UserPaymentConnector(adapter) {
@@ -26025,17 +25593,17 @@
         UserPaymentConnector.prototype.setDefault = function (userId, paymentMethodID) {
             return this.adapter.setDefault(userId, paymentMethodID);
         };
-        UserPaymentConnector.ctorParameters = function () { return [
-            { type: UserPaymentAdapter }
-        ]; };
-        UserPaymentConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(core.ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
-        UserPaymentConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserPaymentConnector);
         return UserPaymentConnector;
     }());
+    UserPaymentConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(i0.ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+    UserPaymentConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserPaymentConnector.ctorParameters = function () { return [
+        { type: UserPaymentAdapter }
+    ]; };
 
     var UserOrderConnector = /** @class */ (function () {
         function UserOrderConnector(adapter) {
@@ -26065,17 +25633,17 @@
         UserOrderConnector.prototype.cancelReturnRequest = function (userId, returnRequestCode, returnRequestModification) {
             return this.adapter.cancelReturnRequest(userId, returnRequestCode, returnRequestModification);
         };
-        UserOrderConnector.ctorParameters = function () { return [
-            { type: UserOrderAdapter }
-        ]; };
-        UserOrderConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(core.ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
-        UserOrderConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserOrderConnector);
         return UserOrderConnector;
     }());
+    UserOrderConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(i0.ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
+    UserOrderConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserOrderConnector.ctorParameters = function () { return [
+        { type: UserOrderAdapter }
+    ]; };
 
     var CustomerCouponConnector = /** @class */ (function () {
         function CustomerCouponConnector(adapter) {
@@ -26093,17 +25661,17 @@
         CustomerCouponConnector.prototype.claimCustomerCoupon = function (userId, couponCode) {
             return this.adapter.claimCustomerCoupon(userId, couponCode);
         };
-        CustomerCouponConnector.ctorParameters = function () { return [
-            { type: CustomerCouponAdapter }
-        ]; };
-        CustomerCouponConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerCouponConnector_Factory() { return new CustomerCouponConnector(core.ɵɵinject(CustomerCouponAdapter)); }, token: CustomerCouponConnector, providedIn: "root" });
-        CustomerCouponConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CustomerCouponConnector);
         return CustomerCouponConnector;
     }());
+    CustomerCouponConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerCouponConnector_Factory() { return new CustomerCouponConnector(i0.ɵɵinject(CustomerCouponAdapter)); }, token: CustomerCouponConnector, providedIn: "root" });
+    CustomerCouponConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CustomerCouponConnector.ctorParameters = function () { return [
+        { type: CustomerCouponAdapter }
+    ]; };
 
     var UserInterestsConnector = /** @class */ (function () {
         function UserInterestsConnector(adapter) {
@@ -26118,17 +25686,17 @@
         UserInterestsConnector.prototype.addInterest = function (userId, productCode, notificationType) {
             return this.adapter.addInterest(userId, productCode, notificationType);
         };
-        UserInterestsConnector.ctorParameters = function () { return [
-            { type: UserInterestsAdapter }
-        ]; };
-        UserInterestsConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserInterestsConnector_Factory() { return new UserInterestsConnector(core.ɵɵinject(UserInterestsAdapter)); }, token: UserInterestsConnector, providedIn: "root" });
-        UserInterestsConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserInterestsConnector);
         return UserInterestsConnector;
     }());
+    UserInterestsConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserInterestsConnector_Factory() { return new UserInterestsConnector(i0.ɵɵinject(UserInterestsAdapter)); }, token: UserInterestsConnector, providedIn: "root" });
+    UserInterestsConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserInterestsConnector.ctorParameters = function () { return [
+        { type: UserInterestsAdapter }
+    ]; };
 
     var UserCostCenterConnector = /** @class */ (function () {
         function UserCostCenterConnector(adapter) {
@@ -26137,17 +25705,17 @@
         UserCostCenterConnector.prototype.getActiveList = function (userId) {
             return this.adapter.loadActiveList(userId);
         };
-        UserCostCenterConnector.ctorParameters = function () { return [
-            { type: UserCostCenterAdapter }
-        ]; };
-        UserCostCenterConnector.ɵprov = core.ɵɵdefineInjectable({ factory: function UserCostCenterConnector_Factory() { return new UserCostCenterConnector(core.ɵɵinject(UserCostCenterAdapter)); }, token: UserCostCenterConnector, providedIn: "root" });
-        UserCostCenterConnector = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserCostCenterConnector);
         return UserCostCenterConnector;
     }());
+    UserCostCenterConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserCostCenterConnector_Factory() { return new UserCostCenterConnector(i0.ɵɵinject(UserCostCenterAdapter)); }, token: UserCostCenterConnector, providedIn: "root" });
+    UserCostCenterConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserCostCenterConnector.ctorParameters = function () { return [
+        { type: UserCostCenterAdapter }
+    ]; };
 
     /**
      * Unified facade for both anonymous and registered user consents.
@@ -26238,16 +25806,16 @@
             }
             return consent.code !== undefined;
         };
-        ConsentService.ctorParameters = function () { return [
-            { type: AnonymousConsentsService },
-            { type: UserConsentService }
-        ]; };
-        ConsentService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConsentService_Factory() { return new ConsentService(core.ɵɵinject(AnonymousConsentsService), core.ɵɵinject(UserConsentService)); }, token: ConsentService, providedIn: "root" });
-        ConsentService = __decorate([
-            core.Injectable({ providedIn: 'root' })
-        ], ConsentService);
         return ConsentService;
     }());
+    ConsentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConsentService_Factory() { return new ConsentService(i0.ɵɵinject(AnonymousConsentsService), i0.ɵɵinject(UserConsentService)); }, token: ConsentService, providedIn: "root" });
+    ConsentService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ConsentService.ctorParameters = function () { return [
+        { type: AnonymousConsentsService },
+        { type: UserConsentService }
+    ]; };
 
     var UserAddressService = /** @class */ (function () {
         function UserAddressService(store, authService) {
@@ -26322,16 +25890,16 @@
          * Returns addresses
          */
         UserAddressService.prototype.getAddresses = function () {
-            return this.store.pipe(store.select(getAddresses));
+            return this.store.pipe(i1$1.select(getAddresses));
         };
         /**
          * Returns a loading flag for addresses
          */
         UserAddressService.prototype.getAddressesLoading = function () {
-            return this.store.pipe(store.select(getAddressesLoading));
+            return this.store.pipe(i1$1.select(getAddressesLoading));
         };
         UserAddressService.prototype.getAddressesLoadedSuccess = function () {
-            return this.store.pipe(store.select(getAddressesLoadedSuccess));
+            return this.store.pipe(i1$1.select(getAddressesLoadedSuccess));
         };
         /**
          * Retrieves delivery countries
@@ -26343,14 +25911,14 @@
          * Returns all delivery countries
          */
         UserAddressService.prototype.getDeliveryCountries = function () {
-            return this.store.pipe(store.select(getAllDeliveryCountries));
+            return this.store.pipe(i1$1.select(getAllDeliveryCountries));
         };
         /**
          * Returns a country based on the provided `isocode`
          * @param isocode an isocode for a country
          */
         UserAddressService.prototype.getCountry = function (isocode) {
-            return this.store.pipe(store.select(countrySelectorFactory(isocode)));
+            return this.store.pipe(i1$1.select(countrySelectorFactory(isocode)));
         };
         /**
          * Retrieves regions for specified country by `countryIsoCode`
@@ -26370,7 +25938,7 @@
          */
         UserAddressService.prototype.getRegions = function (countryIsoCode) {
             var _this = this;
-            return this.store.pipe(store.select(getRegionsDataAndLoading), operators.map(function (_a) {
+            return this.store.pipe(i1$1.select(getRegionsDataAndLoading), operators.map(function (_a) {
                 var regions = _a.regions, country = _a.country, loading = _a.loading, loaded = _a.loaded;
                 if (!countryIsoCode && (loading || loaded)) {
                     _this.clearRegions();
@@ -26391,18 +25959,18 @@
                 return regions;
             }));
         };
-        UserAddressService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserAddressService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
-        UserAddressService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserAddressService);
         return UserAddressService;
     }());
+    UserAddressService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
+    UserAddressService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserAddressService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var UserOrderService = /** @class */ (function () {
         function UserOrderService(store, authService) {
@@ -26413,7 +25981,7 @@
          * Returns an order's detail
          */
         UserOrderService.prototype.getOrderDetails = function () {
-            return this.store.pipe(store.select(getOrderDetails));
+            return this.store.pipe(i1$1.select(getOrderDetails));
         };
         /**
          * Retrieves order's details
@@ -26440,7 +26008,7 @@
          */
         UserOrderService.prototype.getOrderHistoryList = function (pageSize) {
             var _this = this;
-            return this.store.pipe(store.select(getOrdersState), operators.tap(function (orderListState) {
+            return this.store.pipe(i1$1.select(getOrdersState), operators.tap(function (orderListState) {
                 var attemptedLoad = orderListState.loading ||
                     orderListState.success ||
                     orderListState.error;
@@ -26453,7 +26021,7 @@
          * Returns a loaded flag for order history list
          */
         UserOrderService.prototype.getOrderHistoryListLoaded = function () {
-            return this.store.pipe(store.select(getOrdersLoaded));
+            return this.store.pipe(i1$1.select(getOrdersLoaded));
         };
         /**
          * Retrieves an order list
@@ -26484,7 +26052,7 @@
          *  Returns a consignment tracking detail
          */
         UserOrderService.prototype.getConsignmentTracking = function () {
-            return this.store.pipe(store.select(getConsignmentTracking));
+            return this.store.pipe(i1$1.select(getConsignmentTracking));
         };
         /**
          * Retrieves consignment tracking details
@@ -26524,13 +26092,13 @@
          * Returns the cancel order loading flag
          */
         UserOrderService.prototype.getCancelOrderLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
         };
         /**
          * Returns the cancel order success flag
          */
         UserOrderService.prototype.getCancelOrderSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
         };
         /**
          * Resets the cancel order process flags
@@ -26538,18 +26106,18 @@
         UserOrderService.prototype.resetCancelOrderProcessState = function () {
             return this.store.dispatch(new ResetCancelOrderProcess());
         };
-        UserOrderService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserOrderService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
-        UserOrderService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserOrderService);
         return UserOrderService;
     }());
+    UserOrderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
+    UserOrderService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserOrderService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var CustomerCouponService = /** @class */ (function () {
         function CustomerCouponService(store, authService) {
@@ -26580,7 +26148,7 @@
         CustomerCouponService.prototype.getCustomerCoupons = function (pageSize) {
             var _this = this;
             return rxjs.combineLatest([
-                this.store.pipe(store.select(getCustomerCouponsState)),
+                this.store.pipe(i1$1.select(getCustomerCouponsState)),
                 this.getClaimCustomerCouponResultLoading(),
             ]).pipe(operators.filter(function (_a) {
                 var _b = __read(_a, 2), loading = _b[1];
@@ -26602,13 +26170,13 @@
          * Returns a loaded flag for customer coupons
          */
         CustomerCouponService.prototype.getCustomerCouponsLoaded = function () {
-            return this.store.pipe(store.select(getCustomerCouponsLoaded));
+            return this.store.pipe(i1$1.select(getCustomerCouponsLoaded));
         };
         /**
          * Returns a loading flag for customer coupons
          */
         CustomerCouponService.prototype.getCustomerCouponsLoading = function () {
-            return this.store.pipe(store.select(getCustomerCouponsLoading));
+            return this.store.pipe(i1$1.select(getCustomerCouponsLoading));
         };
         /**
          * Subscribe a CustomerCoupon Notification
@@ -26627,19 +26195,19 @@
          * Returns the subscribe customer coupon notification process loading flag
          */
         CustomerCouponService.prototype.getSubscribeCustomerCouponResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the subscribe customer coupon notification process success flag
          */
         CustomerCouponService.prototype.getSubscribeCustomerCouponResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the subscribe customer coupon notification process error flag
          */
         CustomerCouponService.prototype.getSubscribeCustomerCouponResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Unsubscribe a CustomerCoupon Notification
@@ -26658,19 +26226,19 @@
          * Returns the unsubscribe customer coupon notification process loading flag
          */
         CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the unsubscribe customer coupon notification process success flag
          */
         CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the unsubscribe customer coupon notification process error flag
          */
         CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Claim a CustomerCoupon
@@ -26689,26 +26257,26 @@
          * Returns the claim customer coupon notification process success flag
          */
         CustomerCouponService.prototype.getClaimCustomerCouponResultSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the claim customer coupon notification process loading flag
          */
         CustomerCouponService.prototype.getClaimCustomerCouponResultLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
         };
-        CustomerCouponService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        CustomerCouponService.ɵprov = core.ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
-        CustomerCouponService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], CustomerCouponService);
         return CustomerCouponService;
     }());
+    CustomerCouponService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
+    CustomerCouponService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CustomerCouponService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var UserPaymentService = /** @class */ (function () {
         function UserPaymentService(store, authService) {
@@ -26728,16 +26296,16 @@
          * Returns all user's payment methods
          */
         UserPaymentService.prototype.getPaymentMethods = function () {
-            return this.store.pipe(store.select(getPaymentMethods));
+            return this.store.pipe(i1$1.select(getPaymentMethods));
         };
         /**
          * Returns a loading flag for payment methods
          */
         UserPaymentService.prototype.getPaymentMethodsLoading = function () {
-            return this.store.pipe(store.select(getPaymentMethodsLoading));
+            return this.store.pipe(i1$1.select(getPaymentMethodsLoading));
         };
         UserPaymentService.prototype.getPaymentMethodsLoadedSuccess = function () {
-            return this.store.pipe(store.select(getPaymentMethodsLoadedSuccess));
+            return this.store.pipe(i1$1.select(getPaymentMethodsLoadedSuccess));
         };
         /**
          * Sets the payment as a default one
@@ -26770,7 +26338,7 @@
          * Returns all billing countries
          */
         UserPaymentService.prototype.getAllBillingCountries = function () {
-            return this.store.pipe(store.select(getAllBillingCountries));
+            return this.store.pipe(i1$1.select(getAllBillingCountries));
         };
         /**
          * Retrieves billing countries
@@ -26778,18 +26346,18 @@
         UserPaymentService.prototype.loadBillingCountries = function () {
             this.store.dispatch(new LoadBillingCountries());
         };
-        UserPaymentService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserPaymentService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
-        UserPaymentService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserPaymentService);
         return UserPaymentService;
     }());
+    UserPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
+    UserPaymentService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserPaymentService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var OrderReturnRequestService = /** @class */ (function () {
         function OrderReturnRequestService(store, authService) {
@@ -26814,14 +26382,14 @@
          * Return an order return request
          */
         OrderReturnRequestService.prototype.getOrderReturnRequest = function () {
-            return this.store.pipe(store.select(getOrderReturnRequest));
+            return this.store.pipe(i1$1.select(getOrderReturnRequest));
         };
         /**
          * Gets order return request list
          */
         OrderReturnRequestService.prototype.getOrderReturnRequestList = function (pageSize) {
             var _this = this;
-            return this.store.pipe(store.select(getOrderReturnRequestListState), operators.tap(function (returnListState) {
+            return this.store.pipe(i1$1.select(getOrderReturnRequestListState), operators.tap(function (returnListState) {
                 var attemptedLoad = returnListState.loading ||
                     returnListState.success ||
                     returnListState.error;
@@ -26872,13 +26440,13 @@
          * Get the order return request loading flag
          */
         OrderReturnRequestService.prototype.getReturnRequestLoading = function () {
-            return this.store.pipe(store.select(getOrderReturnRequestLoading));
+            return this.store.pipe(i1$1.select(getOrderReturnRequestLoading));
         };
         /**
          * Get the order return request success flag
          */
         OrderReturnRequestService.prototype.getReturnRequestSuccess = function () {
-            return this.store.pipe(store.select(getOrderReturnRequestSuccess));
+            return this.store.pipe(i1$1.select(getOrderReturnRequestSuccess));
         };
         /**
          * Cleaning order return request details
@@ -26903,13 +26471,13 @@
          * Returns the cancel return request loading flag
          */
         OrderReturnRequestService.prototype.getCancelReturnRequestLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(CANCEL_RETURN_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CANCEL_RETURN_PROCESS_ID)));
         };
         /**
          * Returns the cancel return request success flag
          */
         OrderReturnRequestService.prototype.getCancelReturnRequestSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(CANCEL_RETURN_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CANCEL_RETURN_PROCESS_ID)));
         };
         /**
          * Resets the cancel return request process flags
@@ -26917,18 +26485,18 @@
         OrderReturnRequestService.prototype.resetCancelReturnRequestProcessState = function () {
             return this.store.dispatch(new ResetCancelReturnProcess());
         };
-        OrderReturnRequestService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        OrderReturnRequestService.ɵprov = core.ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
-        OrderReturnRequestService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], OrderReturnRequestService);
         return OrderReturnRequestService;
     }());
+    OrderReturnRequestService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
+    OrderReturnRequestService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    OrderReturnRequestService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var UserNotificationPreferenceService = /** @class */ (function () {
         function UserNotificationPreferenceService(store, authService) {
@@ -26939,13 +26507,13 @@
          * Returns all notification preferences.
          */
         UserNotificationPreferenceService.prototype.getPreferences = function () {
-            return this.store.pipe(store.select(getPreferences));
+            return this.store.pipe(i1$1.select(getPreferences));
         };
         /**
          * Returns all enabled notification preferences.
          */
         UserNotificationPreferenceService.prototype.getEnabledPreferences = function () {
-            return this.store.pipe(store.select(getEnabledPreferences));
+            return this.store.pipe(i1$1.select(getEnabledPreferences));
         };
         /**
          * Loads all notification preferences.
@@ -26966,7 +26534,7 @@
          * Returns a loading flag for notification preferences.
          */
         UserNotificationPreferenceService.prototype.getPreferencesLoading = function () {
-            return this.store.pipe(store.select(getPreferencesLoading));
+            return this.store.pipe(i1$1.select(getPreferencesLoading));
         };
         /**
          * Updating notification preferences.
@@ -26994,18 +26562,18 @@
         UserNotificationPreferenceService.prototype.resetNotificationPreferences = function () {
             this.store.dispatch(new ResetNotificationPreferences());
         };
-        UserNotificationPreferenceService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserNotificationPreferenceService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
-        UserNotificationPreferenceService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserNotificationPreferenceService);
         return UserNotificationPreferenceService;
     }());
+    UserNotificationPreferenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+    UserNotificationPreferenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserNotificationPreferenceService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var UserInterestsService = /** @class */ (function () {
         function UserInterestsService(store, authService) {
@@ -27035,7 +26603,7 @@
          * Returns product interests
          */
         UserInterestsService.prototype.getProductInterests = function () {
-            return this.store.pipe(store.select(getInterests));
+            return this.store.pipe(i1$1.select(getInterests));
         };
         /**
          * Returns product interests
@@ -27043,7 +26611,7 @@
          */
         UserInterestsService.prototype.getAndLoadProductInterests = function (pageSize) {
             var _this = this;
-            return this.store.pipe(store.select(getInterestsState), operators.tap(function (interestListState) {
+            return this.store.pipe(i1$1.select(getInterestsState), operators.tap(function (interestListState) {
                 var attemptedLoad = interestListState.loading ||
                     interestListState.success ||
                     interestListState.error;
@@ -27056,7 +26624,7 @@
          * Returns a loading flag for product interests
          */
         UserInterestsService.prototype.getProdutInterestsLoading = function () {
-            return this.store.pipe(store.select(getInterestsLoading));
+            return this.store.pipe(i1$1.select(getInterestsLoading));
         };
         /**
          * Removes a ProductInterestRelation
@@ -27077,13 +26645,13 @@
          * Returns a loading flag for removing product interests.
          */
         UserInterestsService.prototype.getRemoveProdutInterestLoading = function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(REMOVE_PRODUCT_INTERESTS_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(REMOVE_PRODUCT_INTERESTS_PROCESS_ID)));
         };
         /**
          * Returns a success flag for removing a product interests.
          */
         UserInterestsService.prototype.getRemoveProdutInterestSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(REMOVE_PRODUCT_INTERESTS_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(REMOVE_PRODUCT_INTERESTS_PROCESS_ID)));
         };
         /**
          * Add a new product interest.
@@ -27105,13 +26673,13 @@
          * Returns a success flag for adding a product interest.
          */
         UserInterestsService.prototype.getAddProductInterestSuccess = function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(ADD_PRODUCT_INTEREST_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(ADD_PRODUCT_INTEREST_PROCESS_ID)));
         };
         /**
          * Returns a error flag for adding a product interest.
          */
         UserInterestsService.prototype.getAddProductInterestError = function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(ADD_PRODUCT_INTEREST_PROCESS_ID)));
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(ADD_PRODUCT_INTEREST_PROCESS_ID)));
         };
         /**
          * Reset product interest adding state.
@@ -27131,18 +26699,18 @@
         UserInterestsService.prototype.clearProductInterests = function () {
             this.store.dispatch(new ClearProductInterests());
         };
-        UserInterestsService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserInterestsService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
-        UserInterestsService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserInterestsService);
         return UserInterestsService;
     }());
+    UserInterestsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
+    UserInterestsService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserInterestsService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var UserCostCenterService = /** @class */ (function () {
         function UserCostCenterService(store, authService) {
@@ -27189,18 +26757,18 @@
                 }
             }));
         };
-        UserCostCenterService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        UserCostCenterService.ɵprov = core.ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
-        UserCostCenterService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], UserCostCenterService);
         return UserCostCenterService;
     }());
+    UserCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
+    UserCostCenterService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserCostCenterService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
 
     var initialState$l = {
         entities: {},
@@ -27212,9 +26780,9 @@
                 var billingCountries = action.payload;
                 var entities = billingCountries.reduce(function (countryEntities, name) {
                     var _a;
-                    return __assign(__assign({}, countryEntities), (_a = {}, _a[name.isocode] = name, _a));
-                }, __assign({}, state.entities));
-                return __assign(__assign({}, state), { entities: entities });
+                    return Object.assign(Object.assign({}, countryEntities), (_a = {}, _a[name.isocode] = name, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
                 return initialState$l;
@@ -27250,9 +26818,9 @@
                 var deliveryCountries = action.payload;
                 var entities = deliveryCountries.reduce(function (countryEntities, country) {
                     var _a;
-                    return __assign(__assign({}, countryEntities), (_a = {}, _a[country.isocode] = country, _a));
-                }, __assign({}, state.entities));
-                return __assign(__assign({}, state), { entities: entities });
+                    return Object.assign(Object.assign({}, countryEntities), (_a = {}, _a[country.isocode] = country, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
                 return initialState$n;
@@ -27313,7 +26881,7 @@
                 var entities = action.payload.entities;
                 var country = action.payload.country;
                 if (entities || country) {
-                    return __assign(__assign({}, state), { entities: entities,
+                    return Object.assign(Object.assign({}, state), { entities: entities,
                         country: country });
                 }
                 return initialState$r;
@@ -27343,9 +26911,9 @@
                 var titles = action.payload;
                 var entities = titles.reduce(function (titleEntities, name) {
                     var _a;
-                    return __assign(__assign({}, titleEntities), (_a = {}, _a[name.code] = name, _a));
-                }, __assign({}, state.entities));
-                return __assign(__assign({}, state), { entities: entities });
+                    return Object.assign(Object.assign({}, titleEntities), (_a = {}, _a[name.code] = name, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
                 return initialState$t;
@@ -27378,11 +26946,9 @@
             }
             case GIVE_USER_CONSENT_SUCCESS: {
                 var updatedConsentTemplate_1 = action.consentTemplate;
-                return state.map(function (consentTemplate) {
-                    return consentTemplate.id === updatedConsentTemplate_1.id
-                        ? updatedConsentTemplate_1
-                        : consentTemplate;
-                });
+                return state.map(function (consentTemplate) { return consentTemplate.id === updatedConsentTemplate_1.id
+                    ? updatedConsentTemplate_1
+                    : consentTemplate; });
             }
         }
         return state;
@@ -27396,8 +26962,8 @@
                 return action.payload;
             }
             case UPDATE_USER_DETAILS_SUCCESS: {
-                var updatedDetails = __assign(__assign({}, state), action.userUpdates);
-                return __assign(__assign({}, updatedDetails), { name: updatedDetails.firstName + " " + updatedDetails.lastName });
+                var updatedDetails = Object.assign(Object.assign({}, state), action.userUpdates);
+                return Object.assign(Object.assign({}, updatedDetails), { name: updatedDetails.firstName + " " + updatedDetails.lastName });
             }
         }
         return state;
@@ -27435,22 +27001,18 @@
             case SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: {
                 var updatedCustomerCoupon_1 = action.payload.coupon;
                 var customerCoupons_1 = new Array(state.coupons.length);
-                state.coupons.forEach(function (customerCoupon, index) {
-                    return customerCoupon.couponId === updatedCustomerCoupon_1.couponId
-                        ? (customerCoupons_1[index] = updatedCustomerCoupon_1)
-                        : (customerCoupons_1[index] = customerCoupon);
-                });
-                return __assign(__assign({}, state), { coupons: customerCoupons_1 });
+                state.coupons.forEach(function (customerCoupon, index) { return customerCoupon.couponId === updatedCustomerCoupon_1.couponId
+                    ? (customerCoupons_1[index] = updatedCustomerCoupon_1)
+                    : (customerCoupons_1[index] = customerCoupon); });
+                return Object.assign(Object.assign({}, state), { coupons: customerCoupons_1 });
             }
             case UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: {
                 var updatedCouponCode_1 = action.payload;
                 var customerCoupons_2 = new Array(state.coupons.length);
-                state.coupons.forEach(function (customerCoupon, index) {
-                    return customerCoupon.couponId === updatedCouponCode_1
-                        ? (customerCoupons_2[index] = __assign(__assign({}, customerCoupon), { notificationOn: false }))
-                        : (customerCoupons_2[index] = customerCoupon);
-                });
-                return __assign(__assign({}, state), { coupons: customerCoupons_2 });
+                state.coupons.forEach(function (customerCoupon, index) { return customerCoupon.couponId === updatedCouponCode_1
+                    ? (customerCoupons_2[index] = Object.assign(Object.assign({}, customerCoupon), { notificationOn: false }))
+                    : (customerCoupons_2[index] = customerCoupon); });
+                return Object.assign(Object.assign({}, state), { coupons: customerCoupons_2 });
             }
         }
         return state;
@@ -27505,7 +27067,7 @@
 
     function getReducers$c() {
         return {
-            account: store.combineReducers({
+            account: i1$1.combineReducers({
                 details: reducer$w,
             }),
             addresses: loaderReducer(USER_ADDRESSES, reducer$u),
@@ -27527,7 +27089,7 @@
             costCenters: loaderReducer(USER_COST_CENTERS, reducer$B),
         };
     }
-    var reducerToken$c = new core.InjectionToken('UserReducers');
+    var reducerToken$c = new i0.InjectionToken('UserReducers');
     var reducerProvider$c = {
         provide: reducerToken$c,
         useFactory: getReducers$c,
@@ -27547,102 +27109,94 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadBillingCountries$ = this.actions$.pipe(effects$c.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap(function () {
-                return _this.siteConnector.getCountries(exports.CountryType.BILLING).pipe(operators.map(function (countries) { return new LoadBillingCountriesSuccess(countries); }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadBillingCountriesFail(makeErrorSerializable(error)));
-                }));
+            this.loadBillingCountries$ = this.actions$.pipe(i3.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap(function () {
+                return _this.siteConnector.getCountries(exports.CountryType.BILLING).pipe(operators.map(function (countries) { return new LoadBillingCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadBillingCountriesFail(makeErrorSerializable(error))); }));
             }));
         }
-        BillingCountriesEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: SiteConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], BillingCountriesEffect.prototype, "loadBillingCountries$", void 0);
-        BillingCountriesEffect = __decorate([
-            core.Injectable()
-        ], BillingCountriesEffect);
         return BillingCountriesEffect;
     }());
+    BillingCountriesEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    BillingCountriesEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: SiteConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], BillingCountriesEffect.prototype, "loadBillingCountries$", void 0);
 
     var ClearMiscsDataEffect = /** @class */ (function () {
         function ClearMiscsDataEffect(actions$) {
             this.actions$ = actions$;
-            this.clearMiscsData$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map(function () {
+            this.clearMiscsData$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map(function () {
                 return new ClearUserMiscsData();
             }));
         }
-        ClearMiscsDataEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
-        ClearMiscsDataEffect = __decorate([
-            core.Injectable()
-        ], ClearMiscsDataEffect);
         return ClearMiscsDataEffect;
     }());
+    ClearMiscsDataEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    ClearMiscsDataEffect.ctorParameters = function () { return [
+        { type: i3.Actions }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
 
     var ConsignmentTrackingEffects = /** @class */ (function () {
         function ConsignmentTrackingEffects(actions$, userOrderConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userOrderConnector = userOrderConnector;
-            this.loadConsignmentTracking$ = this.actions$.pipe(effects$c.ofType(LOAD_CONSIGNMENT_TRACKING), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.loadConsignmentTracking$ = this.actions$.pipe(i3.ofType(LOAD_CONSIGNMENT_TRACKING), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.userOrderConnector
                     .getConsignmentTracking(payload.orderCode, payload.consignmentCode, payload.userId)
-                    .pipe(operators.map(function (tracking) {
-                    return new LoadConsignmentTrackingSuccess(tracking);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadConsignmentTrackingFail(makeErrorSerializable(error)));
-                }));
+                    .pipe(operators.map(function (tracking) { return new LoadConsignmentTrackingSuccess(tracking); }), operators.catchError(function (error) { return rxjs.of(new LoadConsignmentTrackingFail(makeErrorSerializable(error))); }));
             }));
         }
-        ConsignmentTrackingEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserOrderConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
-        ConsignmentTrackingEffects = __decorate([
-            core.Injectable()
-        ], ConsignmentTrackingEffects);
         return ConsignmentTrackingEffects;
     }());
+    ConsignmentTrackingEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ConsignmentTrackingEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserOrderConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
 
     var DeliveryCountriesEffects = /** @class */ (function () {
         function DeliveryCountriesEffects(actions$, siteConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadDeliveryCountries$ = this.actions$.pipe(effects$c.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap(function () {
-                return _this.siteConnector.getCountries(exports.CountryType.SHIPPING).pipe(operators.map(function (countries) { return new LoadDeliveryCountriesSuccess(countries); }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadDeliveryCountriesFail(makeErrorSerializable(error)));
-                }));
+            this.loadDeliveryCountries$ = this.actions$.pipe(i3.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap(function () {
+                return _this.siteConnector.getCountries(exports.CountryType.SHIPPING).pipe(operators.map(function (countries) { return new LoadDeliveryCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadDeliveryCountriesFail(makeErrorSerializable(error))); }));
             }));
         }
-        DeliveryCountriesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: SiteConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], DeliveryCountriesEffects.prototype, "loadDeliveryCountries$", void 0);
-        DeliveryCountriesEffects = __decorate([
-            core.Injectable()
-        ], DeliveryCountriesEffects);
         return DeliveryCountriesEffects;
     }());
+    DeliveryCountriesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    DeliveryCountriesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: SiteConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], DeliveryCountriesEffects.prototype, "loadDeliveryCountries$", void 0);
 
     var ForgotPasswordEffects = /** @class */ (function () {
         function ForgotPasswordEffects(actions$, userAccountConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.requestForgotPasswordEmail$ = this.actions$.pipe(effects$c.ofType(FORGOT_PASSWORD_EMAIL_REQUEST), operators.map(function (action) {
+            this.requestForgotPasswordEmail$ = this.actions$.pipe(i3.ofType(FORGOT_PASSWORD_EMAIL_REQUEST), operators.map(function (action) {
                 return action.payload;
             }), operators.concatMap(function (userEmailAddress) {
                 return _this.userAccountConnector
@@ -27653,59 +27207,45 @@
                         text: { key: 'forgottenPassword.passwordResetEmailSent' },
                         type: exports.GlobalMessageType.MSG_TYPE_CONFIRMATION,
                     }),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)));
-                }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error))); }));
             }));
         }
-        ForgotPasswordEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
-        ForgotPasswordEffects = __decorate([
-            core.Injectable()
-        ], ForgotPasswordEffects);
         return ForgotPasswordEffects;
     }());
+    ForgotPasswordEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ForgotPasswordEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
 
     var NotificationPreferenceEffects = /** @class */ (function () {
         function NotificationPreferenceEffects(actions$, connector) {
             var _this = this;
             this.actions$ = actions$;
             this.connector = connector;
-            this.loadPreferences$ = this.actions$.pipe(effects$c.ofType(LOAD_NOTIFICATION_PREFERENCES), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.connector.loadAll(payload).pipe(operators.map(function (preferences) {
-                    return new LoadNotificationPreferencesSuccess(preferences);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadNotificationPreferencesFail(makeErrorSerializable(error)));
-                }));
-            }));
-            this.updatePreferences$ = this.actions$.pipe(effects$c.ofType(UPDATE_NOTIFICATION_PREFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.connector.update(payload.userId, payload.preferences).pipe(operators.map(function () {
-                    return new UpdateNotificationPreferencesSuccess(payload.preferences);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new UpdateNotificationPreferencesFail(makeErrorSerializable(error)));
-                }));
-            }));
+            this.loadPreferences$ = this.actions$.pipe(i3.ofType(LOAD_NOTIFICATION_PREFERENCES), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.connector.loadAll(payload).pipe(operators.map(function (preferences) { return new LoadNotificationPreferencesSuccess(preferences); }), operators.catchError(function (error) { return rxjs.of(new LoadNotificationPreferencesFail(makeErrorSerializable(error))); })); }));
+            this.updatePreferences$ = this.actions$.pipe(i3.ofType(UPDATE_NOTIFICATION_PREFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.connector.update(payload.userId, payload.preferences).pipe(operators.map(function () { return new UpdateNotificationPreferencesSuccess(payload.preferences); }), operators.catchError(function (error) { return rxjs.of(new UpdateNotificationPreferencesFail(makeErrorSerializable(error))); })); }));
         }
-        NotificationPreferenceEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserNotificationPreferenceConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], NotificationPreferenceEffects.prototype, "loadPreferences$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], NotificationPreferenceEffects.prototype, "updatePreferences$", void 0);
-        NotificationPreferenceEffects = __decorate([
-            core.Injectable()
-        ], NotificationPreferenceEffects);
         return NotificationPreferenceEffects;
     }());
+    NotificationPreferenceEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    NotificationPreferenceEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserNotificationPreferenceConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], NotificationPreferenceEffects.prototype, "loadPreferences$", void 0);
+    __decorate([
+        i3.Effect()
+    ], NotificationPreferenceEffects.prototype, "updatePreferences$", void 0);
 
     var OrderDetailsEffect = /** @class */ (function () {
         function OrderDetailsEffect(actions$, orderConnector, globalMessageService) {
@@ -27713,200 +27253,172 @@
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
             this.globalMessageService = globalMessageService;
-            this.loadOrderDetails$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_DETAILS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.loadOrderDetails$ = this.actions$.pipe(i3.ofType(LOAD_ORDER_DETAILS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector.get(payload.userId, payload.orderCode).pipe(operators.map(function (order) {
                     return new LoadOrderDetailsSuccess(order);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadOrderDetailsFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadOrderDetailsFail(makeErrorSerializable(error))); }));
             }));
-            this.cancelOrder$ = this.actions$.pipe(effects$c.ofType(CANCEL_ORDER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.cancelOrder$ = this.actions$.pipe(i3.ofType(CANCEL_ORDER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .cancel(payload.userId, payload.orderCode, payload.cancelRequestInput)
                     .pipe(operators.map(function () { return new CancelOrderSuccess(); }), operators.catchError(function (error) {
                     var _a;
-                    (_a = error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach(function (err) {
-                        return _this.globalMessageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR);
-                    });
+                    (_a = error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach(function (err) { return _this.globalMessageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR); });
                     return rxjs.of(new CancelOrderFail(makeErrorSerializable(error)));
                 }));
             }));
         }
-        OrderDetailsEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserOrderConnector },
-            { type: GlobalMessageService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], OrderDetailsEffect.prototype, "cancelOrder$", void 0);
-        OrderDetailsEffect = __decorate([
-            core.Injectable()
-        ], OrderDetailsEffect);
         return OrderDetailsEffect;
     }());
+    OrderDetailsEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    OrderDetailsEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserOrderConnector },
+        { type: GlobalMessageService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], OrderDetailsEffect.prototype, "cancelOrder$", void 0);
 
     var OrderReturnRequestEffect = /** @class */ (function () {
         function OrderReturnRequestEffect(actions$, orderConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
-            this.createReturnRequest$ = this.actions$.pipe(effects$c.ofType(CREATE_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.createReturnRequest$ = this.actions$.pipe(i3.ofType(CREATE_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .return(payload.userId, payload.returnRequestInput)
-                    .pipe(operators.map(function (returnRequest) {
-                    return new CreateOrderReturnRequestSuccess(returnRequest);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new CreateOrderReturnRequestFail(makeErrorSerializable(error)));
-                }));
+                    .pipe(operators.map(function (returnRequest) { return new CreateOrderReturnRequestSuccess(returnRequest); }), operators.catchError(function (error) { return rxjs.of(new CreateOrderReturnRequestFail(makeErrorSerializable(error))); }));
             }));
-            this.loadReturnRequest$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.loadReturnRequest$ = this.actions$.pipe(i3.ofType(LOAD_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .getReturnRequestDetail(payload.userId, payload.returnRequestCode)
-                    .pipe(operators.map(function (returnRequest) {
-                    return new LoadOrderReturnRequestSuccess(returnRequest);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadOrderReturnRequestFail(makeErrorSerializable(error)));
-                }));
+                    .pipe(operators.map(function (returnRequest) { return new LoadOrderReturnRequestSuccess(returnRequest); }), operators.catchError(function (error) { return rxjs.of(new LoadOrderReturnRequestFail(makeErrorSerializable(error))); }));
             }));
-            this.cancelReturnRequest$ = this.actions$.pipe(effects$c.ofType(CANCEL_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.cancelReturnRequest$ = this.actions$.pipe(i3.ofType(CANCEL_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .cancelReturnRequest(payload.userId, payload.returnRequestCode, payload.returnRequestModification)
-                    .pipe(operators.map(function () { return new CancelOrderReturnRequestSuccess(); }), operators.catchError(function (error) {
-                    return rxjs.of(new CancelOrderReturnRequestFail(makeErrorSerializable(error)));
-                }));
+                    .pipe(operators.map(function () { return new CancelOrderReturnRequestSuccess(); }), operators.catchError(function (error) { return rxjs.of(new CancelOrderReturnRequestFail(makeErrorSerializable(error))); }));
             }));
-            this.loadReturnRequestList$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_RETURN_REQUEST_LIST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.loadReturnRequestList$ = this.actions$.pipe(i3.ofType(LOAD_ORDER_RETURN_REQUEST_LIST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .getReturnRequestList(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
-                    .pipe(operators.map(function (returnRequestList) {
-                    return new LoadOrderReturnRequestListSuccess(returnRequestList);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadOrderReturnRequestListFail(makeErrorSerializable(error)));
-                }));
+                    .pipe(operators.map(function (returnRequestList) { return new LoadOrderReturnRequestListSuccess(returnRequestList); }), operators.catchError(function (error) { return rxjs.of(new LoadOrderReturnRequestListFail(makeErrorSerializable(error))); }));
             }));
         }
-        OrderReturnRequestEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserOrderConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], OrderReturnRequestEffect.prototype, "createReturnRequest$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], OrderReturnRequestEffect.prototype, "loadReturnRequest$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], OrderReturnRequestEffect.prototype, "cancelReturnRequest$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], OrderReturnRequestEffect.prototype, "loadReturnRequestList$", void 0);
-        OrderReturnRequestEffect = __decorate([
-            core.Injectable()
-        ], OrderReturnRequestEffect);
         return OrderReturnRequestEffect;
     }());
+    OrderReturnRequestEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    OrderReturnRequestEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserOrderConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], OrderReturnRequestEffect.prototype, "createReturnRequest$", void 0);
+    __decorate([
+        i3.Effect()
+    ], OrderReturnRequestEffect.prototype, "loadReturnRequest$", void 0);
+    __decorate([
+        i3.Effect()
+    ], OrderReturnRequestEffect.prototype, "cancelReturnRequest$", void 0);
+    __decorate([
+        i3.Effect()
+    ], OrderReturnRequestEffect.prototype, "loadReturnRequestList$", void 0);
 
     var UserPaymentMethodsEffects = /** @class */ (function () {
         function UserPaymentMethodsEffects(actions$, userPaymentMethodConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userPaymentMethodConnector = userPaymentMethodConnector;
-            this.loadUserPaymentMethods$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_PAYMENT_METHODS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.loadUserPaymentMethods$ = this.actions$.pipe(i3.ofType(LOAD_USER_PAYMENT_METHODS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userPaymentMethodConnector.getAll(payload).pipe(operators.map(function (payments) {
                     return new LoadUserPaymentMethodsSuccess(payments);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error))); }));
             }));
-            this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$c.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.setDefaultUserPaymentMethod$ = this.actions$.pipe(i3.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userPaymentMethodConnector
                     .setDefault(payload.userId, payload.paymentMethodId)
                     .pipe(operators.switchMap(function (data) { return [
                     new SetDefaultUserPaymentMethodSuccess(data),
                     new LoadUserPaymentMethods(payload.userId),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)));
-                }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error))); }));
             }));
-            this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$c.ofType(DELETE_USER_PAYMENT_METHOD), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.deleteUserPaymentMethod$ = this.actions$.pipe(i3.ofType(DELETE_USER_PAYMENT_METHOD), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userPaymentMethodConnector
                     .delete(payload.userId, payload.paymentMethodId)
                     .pipe(operators.switchMap(function (data) { return [
                     new DeleteUserPaymentMethodSuccess(data),
                     new LoadUserPaymentMethods(payload.userId),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)));
-                }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error))); }));
             }));
         }
-        UserPaymentMethodsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserPaymentConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UserPaymentMethodsEffects.prototype, "loadUserPaymentMethods$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserPaymentMethodsEffects.prototype, "setDefaultUserPaymentMethod$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
-        UserPaymentMethodsEffects = __decorate([
-            core.Injectable()
-        ], UserPaymentMethodsEffects);
         return UserPaymentMethodsEffects;
     }());
+    UserPaymentMethodsEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserPaymentMethodsEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserPaymentConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserPaymentMethodsEffects.prototype, "loadUserPaymentMethods$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserPaymentMethodsEffects.prototype, "setDefaultUserPaymentMethod$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
 
     var RegionsEffects = /** @class */ (function () {
         function RegionsEffects(actions$, siteConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadRegions$ = this.actions$.pipe(effects$c.ofType(LOAD_REGIONS), operators.map(function (action) {
+            this.loadRegions$ = this.actions$.pipe(i3.ofType(LOAD_REGIONS), operators.map(function (action) {
                 return action.payload;
             }), operators.switchMap(function (countryCode) {
-                return _this.siteConnector.getRegions(countryCode).pipe(operators.map(function (regions) {
-                    return new LoadRegionsSuccess({
-                        entities: regions,
-                        country: countryCode,
-                    });
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error)));
-                }));
+                return _this.siteConnector.getRegions(countryCode).pipe(operators.map(function (regions) { return new LoadRegionsSuccess({
+                    entities: regions,
+                    country: countryCode,
+                }); }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error))); }));
             }));
-            this.resetRegions$ = this.actions$.pipe(effects$c.ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), operators.map(function () {
+            this.resetRegions$ = this.actions$.pipe(i3.ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), operators.map(function () {
                 return new LoaderResetAction(REGIONS);
             }));
         }
-        RegionsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: SiteConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], RegionsEffects.prototype, "loadRegions$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], RegionsEffects.prototype, "resetRegions$", void 0);
-        RegionsEffects = __decorate([
-            core.Injectable()
-        ], RegionsEffects);
         return RegionsEffects;
     }());
+    RegionsEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    RegionsEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: SiteConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], RegionsEffects.prototype, "loadRegions$", void 0);
+    __decorate([
+        i3.Effect()
+    ], RegionsEffects.prototype, "resetRegions$", void 0);
 
     var ResetPasswordEffects = /** @class */ (function () {
         function ResetPasswordEffects(actions$, userAccountConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.resetPassword$ = this.actions$.pipe(effects$c.ofType(RESET_PASSWORD), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
-                var token = _a.token, password = _a.password;
+            this.resetPassword$ = this.actions$.pipe(i3.ofType(RESET_PASSWORD), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_b) {
+                var token = _b.token, password = _b.password;
                 return _this.userAccountConnector.resetPassword(token, password).pipe(operators.switchMap(function () { return [
                     new ResetPasswordSuccess(),
                     new AddMessage({
@@ -27930,96 +27442,86 @@
                 }));
             }));
         }
-        ResetPasswordEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ResetPasswordEffects.prototype, "resetPassword$", void 0);
-        ResetPasswordEffects = __decorate([
-            core.Injectable()
-        ], ResetPasswordEffects);
         return ResetPasswordEffects;
     }());
+    ResetPasswordEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ResetPasswordEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ResetPasswordEffects.prototype, "resetPassword$", void 0);
 
     var TitlesEffects = /** @class */ (function () {
         function TitlesEffects(actions$, userAccountConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.loadTitles$ = this.actions$.pipe(effects$c.ofType(LOAD_TITLES), operators.switchMap(function () {
+            this.loadTitles$ = this.actions$.pipe(i3.ofType(LOAD_TITLES), operators.switchMap(function () {
                 return _this.userAccountConnector.getTitles().pipe(operators.map(function (titles) {
                     return new LoadTitlesSuccess(titles);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadTitlesFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadTitlesFail(makeErrorSerializable(error))); }));
             }));
         }
-        TitlesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], TitlesEffects.prototype, "loadTitles$", void 0);
-        TitlesEffects = __decorate([
-            core.Injectable()
-        ], TitlesEffects);
         return TitlesEffects;
     }());
+    TitlesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    TitlesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], TitlesEffects.prototype, "loadTitles$", void 0);
 
     var UpdateEmailEffects = /** @class */ (function () {
         function UpdateEmailEffects(actions$, userAccountConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.updateEmail$ = this.actions$.pipe(effects$c.ofType(UPDATE_EMAIL), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.userAccountConnector
-                    .updateEmail(payload.uid, payload.password, payload.newUid)
-                    .pipe(operators.map(function () { return new UpdateEmailSuccessAction(payload.newUid); }), operators.catchError(function (error) {
-                    return rxjs.of(new UpdateEmailErrorAction(makeErrorSerializable(error)));
-                }));
-            }));
+            this.updateEmail$ = this.actions$.pipe(i3.ofType(UPDATE_EMAIL), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.userAccountConnector
+                .updateEmail(payload.uid, payload.password, payload.newUid)
+                .pipe(operators.map(function () { return new UpdateEmailSuccessAction(payload.newUid); }), operators.catchError(function (error) { return rxjs.of(new UpdateEmailErrorAction(makeErrorSerializable(error))); })); }));
         }
-        UpdateEmailEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
-        UpdateEmailEffects = __decorate([
-            core.Injectable()
-        ], UpdateEmailEffects);
         return UpdateEmailEffects;
     }());
+    UpdateEmailEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UpdateEmailEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
 
     var UpdatePasswordEffects = /** @class */ (function () {
         function UpdatePasswordEffects(actions$, userAccountConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.updatePassword$ = this.actions$.pipe(effects$c.ofType(UPDATE_PASSWORD), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.userAccountConnector
-                    .updatePassword(payload.userId, payload.oldPassword, payload.newPassword)
-                    .pipe(operators.map(function () { return new UpdatePasswordSuccess(); }), operators.catchError(function (error) {
-                    return rxjs.of(new UpdatePasswordFail(makeErrorSerializable(error)));
-                }));
-            }));
+            this.updatePassword$ = this.actions$.pipe(i3.ofType(UPDATE_PASSWORD), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.userAccountConnector
+                .updatePassword(payload.userId, payload.oldPassword, payload.newPassword)
+                .pipe(operators.map(function () { return new UpdatePasswordSuccess(); }), operators.catchError(function (error) { return rxjs.of(new UpdatePasswordFail(makeErrorSerializable(error))); })); }));
         }
-        UpdatePasswordEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UpdatePasswordEffects.prototype, "updatePassword$", void 0);
-        UpdatePasswordEffects = __decorate([
-            core.Injectable()
-        ], UpdatePasswordEffects);
         return UpdatePasswordEffects;
     }());
+    UpdatePasswordEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UpdatePasswordEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UpdatePasswordEffects.prototype, "updatePassword$", void 0);
 
     var UserAddressesEffects = /** @class */ (function () {
         function UserAddressesEffects(actions$, userAddressConnector, userAddressService, messageService) {
@@ -28028,23 +27530,19 @@
             this.userAddressConnector = userAddressConnector;
             this.userAddressService = userAddressService;
             this.messageService = messageService;
-            this.loadUserAddresses$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_ADDRESSES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.loadUserAddresses$ = this.actions$.pipe(i3.ofType(LOAD_USER_ADDRESSES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userAddressConnector.getAll(payload).pipe(operators.map(function (addresses) {
                     return new LoadUserAddressesSuccess(addresses);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadUserAddressesFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserAddressesFail(makeErrorSerializable(error))); }));
             }));
-            this.addUserAddress$ = this.actions$.pipe(effects$c.ofType(ADD_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.addUserAddress$ = this.actions$.pipe(i3.ofType(ADD_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userAddressConnector
                     .add(payload.userId, payload.address)
                     .pipe(operators.map(function (data) {
                     return new AddUserAddressSuccess(data);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new AddUserAddressFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new AddUserAddressFail(makeErrorSerializable(error))); }));
             }));
-            this.updateUserAddress$ = this.actions$.pipe(effects$c.ofType(UPDATE_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.updateUserAddress$ = this.actions$.pipe(i3.ofType(UPDATE_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userAddressConnector
                     .update(payload.userId, payload.addressId, payload.address)
                     .pipe(operators.map(function (data) {
@@ -28057,37 +27555,33 @@
                     else {
                         return new UpdateUserAddressSuccess(data);
                     }
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new UpdateUserAddressFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new UpdateUserAddressFail(makeErrorSerializable(error))); }));
             }));
-            this.deleteUserAddress$ = this.actions$.pipe(effects$c.ofType(DELETE_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.deleteUserAddress$ = this.actions$.pipe(i3.ofType(DELETE_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userAddressConnector
                     .delete(payload.userId, payload.addressId)
                     .pipe(operators.map(function (data) {
                     return new DeleteUserAddressSuccess(data);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new DeleteUserAddressFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new DeleteUserAddressFail(makeErrorSerializable(error))); }));
             }));
             /**
              *  Reload addresses and notify about add success
              */
-            this.showGlobalMessageOnAddSuccess$ = this.actions$.pipe(effects$c.ofType(ADD_USER_ADDRESS_SUCCESS), operators.tap(function () {
+            this.showGlobalMessageOnAddSuccess$ = this.actions$.pipe(i3.ofType(ADD_USER_ADDRESS_SUCCESS), operators.tap(function () {
                 _this.loadAddresses();
                 _this.showGlobalMessage('addressForm.userAddressAddSuccess');
             }));
             /**
              *  Reload addresses and notify about update success
              */
-            this.showGlobalMessageOnUpdateSuccess$ = this.actions$.pipe(effects$c.ofType(UPDATE_USER_ADDRESS_SUCCESS), operators.tap(function () {
+            this.showGlobalMessageOnUpdateSuccess$ = this.actions$.pipe(i3.ofType(UPDATE_USER_ADDRESS_SUCCESS), operators.tap(function () {
                 _this.loadAddresses();
                 _this.showGlobalMessage('addressForm.userAddressUpdateSuccess');
             }));
             /**
              *  Reload addresses and notify about delete success
              */
-            this.showGlobalMessageOnDeleteSuccess$ = this.actions$.pipe(effects$c.ofType(DELETE_USER_ADDRESS_SUCCESS), operators.tap(function () {
+            this.showGlobalMessageOnDeleteSuccess$ = this.actions$.pipe(i3.ofType(DELETE_USER_ADDRESS_SUCCESS), operators.tap(function () {
                 _this.loadAddresses();
                 _this.showGlobalMessage('addressForm.userAddressDeleteSuccess');
             }));
@@ -28101,172 +27595,152 @@
         UserAddressesEffects.prototype.loadAddresses = function () {
             this.userAddressService.loadAddresses();
         };
-        UserAddressesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserAddressConnector },
-            { type: UserAddressService },
-            { type: GlobalMessageService }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UserAddressesEffects.prototype, "loadUserAddresses$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserAddressesEffects.prototype, "addUserAddress$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserAddressesEffects.prototype, "updateUserAddress$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserAddressesEffects.prototype, "deleteUserAddress$", void 0);
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], UserAddressesEffects.prototype, "showGlobalMessageOnAddSuccess$", void 0);
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], UserAddressesEffects.prototype, "showGlobalMessageOnUpdateSuccess$", void 0);
-        __decorate([
-            effects$c.Effect({ dispatch: false })
-        ], UserAddressesEffects.prototype, "showGlobalMessageOnDeleteSuccess$", void 0);
-        UserAddressesEffects = __decorate([
-            core.Injectable()
-        ], UserAddressesEffects);
         return UserAddressesEffects;
     }());
+    UserAddressesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserAddressesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserAddressConnector },
+        { type: UserAddressService },
+        { type: GlobalMessageService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserAddressesEffects.prototype, "loadUserAddresses$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserAddressesEffects.prototype, "addUserAddress$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserAddressesEffects.prototype, "updateUserAddress$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserAddressesEffects.prototype, "deleteUserAddress$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], UserAddressesEffects.prototype, "showGlobalMessageOnAddSuccess$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], UserAddressesEffects.prototype, "showGlobalMessageOnUpdateSuccess$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], UserAddressesEffects.prototype, "showGlobalMessageOnDeleteSuccess$", void 0);
 
     var UserConsentsEffect = /** @class */ (function () {
         function UserConsentsEffect(actions$, userConsentConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userConsentConnector = userConsentConnector;
-            this.resetConsents$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE), operators.map(function () { return new ResetLoadUserConsents(); }));
-            this.getConsents$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_CONSENTS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (userId) {
-                return _this.userConsentConnector.loadConsents(userId).pipe(operators.map(function (consents) { return new LoadUserConsentsSuccess(consents); }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadUserConsentsFail(makeErrorSerializable(error)));
-                }));
-            }));
-            this.giveConsent$ = this.actions$.pipe(effects$c.ofType(GIVE_USER_CONSENT, TRANSFER_ANONYMOUS_CONSENT), operators.concatMap(function (action) {
-                return _this.userConsentConnector
-                    .giveConsent(action.payload.userId, action.payload.consentTemplateId, action.payload.consentTemplateVersion)
-                    .pipe(operators.map(function (consent) { return new GiveUserConsentSuccess(consent); }), operators.catchError(function (error) {
-                    var errors = [
-                        new GiveUserConsentFail(makeErrorSerializable(error)),
-                    ];
-                    if (action.type === TRANSFER_ANONYMOUS_CONSENT &&
-                        error.status === 409) {
-                        errors.push(new RemoveMessagesByType(exports.GlobalMessageType.MSG_TYPE_ERROR));
-                    }
-                    return rxjs.of.apply(void 0, __spread(errors));
-                }));
-            }));
-            this.withdrawConsent$ = this.actions$.pipe(effects$c.ofType(WITHDRAW_USER_CONSENT), operators.map(function (action) { return action.payload; }), operators.concatMap(function (_a) {
+            this.resetConsents$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE), operators.map(function () { return new ResetLoadUserConsents(); }));
+            this.getConsents$ = this.actions$.pipe(i3.ofType(LOAD_USER_CONSENTS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (userId) { return _this.userConsentConnector.loadConsents(userId).pipe(operators.map(function (consents) { return new LoadUserConsentsSuccess(consents); }), operators.catchError(function (error) { return rxjs.of(new LoadUserConsentsFail(makeErrorSerializable(error))); })); }));
+            this.giveConsent$ = this.actions$.pipe(i3.ofType(GIVE_USER_CONSENT, TRANSFER_ANONYMOUS_CONSENT), operators.concatMap(function (action) { return _this.userConsentConnector
+                .giveConsent(action.payload.userId, action.payload.consentTemplateId, action.payload.consentTemplateVersion)
+                .pipe(operators.map(function (consent) { return new GiveUserConsentSuccess(consent); }), operators.catchError(function (error) {
+                var errors = [
+                    new GiveUserConsentFail(makeErrorSerializable(error)),
+                ];
+                if (action.type === TRANSFER_ANONYMOUS_CONSENT &&
+                    error.status === 409) {
+                    errors.push(new RemoveMessagesByType(exports.GlobalMessageType.MSG_TYPE_ERROR));
+                }
+                return rxjs.of.apply(void 0, __spread(errors));
+            })); }));
+            this.withdrawConsent$ = this.actions$.pipe(i3.ofType(WITHDRAW_USER_CONSENT), operators.map(function (action) { return action.payload; }), operators.concatMap(function (_a) {
                 var userId = _a.userId, consentCode = _a.consentCode;
-                return _this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(operators.map(function () { return new WithdrawUserConsentSuccess(); }), operators.catchError(function (error) {
-                    return rxjs.of(new WithdrawUserConsentFail(makeErrorSerializable(error)));
-                }));
+                return _this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(operators.map(function () { return new WithdrawUserConsentSuccess(); }), operators.catchError(function (error) { return rxjs.of(new WithdrawUserConsentFail(makeErrorSerializable(error))); }));
             }));
         }
-        UserConsentsEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserConsentConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UserConsentsEffect.prototype, "resetConsents$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserConsentsEffect.prototype, "getConsents$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserConsentsEffect.prototype, "giveConsent$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
-        UserConsentsEffect = __decorate([
-            core.Injectable()
-        ], UserConsentsEffect);
         return UserConsentsEffect;
     }());
+    UserConsentsEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserConsentsEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserConsentConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserConsentsEffect.prototype, "resetConsents$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserConsentsEffect.prototype, "getConsents$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserConsentsEffect.prototype, "giveConsent$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
 
     var UserDetailsEffects = /** @class */ (function () {
         function UserDetailsEffects(actions$, userConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userConnector = userConnector;
-            this.loadUserDetails$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
+            this.loadUserDetails$ = this.actions$.pipe(i3.ofType(LOAD_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
                 return _this.userConnector.get(userId).pipe(operators.map(function (user) {
                     return new LoadUserDetailsSuccess(user);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadUserDetailsFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserDetailsFail(makeErrorSerializable(error))); }));
             }));
-            this.updateUserDetails$ = this.actions$.pipe(effects$c.ofType(UPDATE_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.userConnector.update(payload.username, payload.userDetails).pipe(operators.map(function () { return new UpdateUserDetailsSuccess(payload.userDetails); }), operators.catchError(function (error) {
-                    return rxjs.of(new UpdateUserDetailsFail(makeErrorSerializable(error)));
-                }));
-            }));
+            this.updateUserDetails$ = this.actions$.pipe(i3.ofType(UPDATE_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.userConnector.update(payload.username, payload.userDetails).pipe(operators.map(function () { return new UpdateUserDetailsSuccess(payload.userDetails); }), operators.catchError(function (error) { return rxjs.of(new UpdateUserDetailsFail(makeErrorSerializable(error))); })); }));
         }
-        UserDetailsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UserDetailsEffects.prototype, "loadUserDetails$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
-        UserDetailsEffects = __decorate([
-            core.Injectable()
-        ], UserDetailsEffects);
         return UserDetailsEffects;
     }());
+    UserDetailsEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserDetailsEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserDetailsEffects.prototype, "loadUserDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
 
     var UserOrdersEffect = /** @class */ (function () {
         function UserOrdersEffect(actions$, orderConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
-            this.loadUserOrders$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_ORDERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.loadUserOrders$ = this.actions$.pipe(i3.ofType(LOAD_USER_ORDERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .getHistory(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
                     .pipe(operators.map(function (orders) {
                     return new LoadUserOrdersSuccess(orders);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error))); }));
             }));
-            this.resetUserOrders$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE), operators.map(function () {
+            this.resetUserOrders$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE), operators.map(function () {
                 return new ClearUserOrders();
             }));
         }
-        UserOrdersEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserOrderConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UserOrdersEffect.prototype, "loadUserOrders$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
-        UserOrdersEffect = __decorate([
-            core.Injectable()
-        ], UserOrdersEffect);
         return UserOrdersEffect;
     }());
+    UserOrdersEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserOrdersEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserOrderConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserOrdersEffect.prototype, "loadUserOrders$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
 
     var UserRegisterEffects = /** @class */ (function () {
         function UserRegisterEffects(actions$, userConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userConnector = userConnector;
-            this.registerUser$ = this.actions$.pipe(effects$c.ofType(REGISTER_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (user) {
-                return _this.userConnector.register(user).pipe(operators.map(function () { return new RegisterUserSuccess(); }), operators.catchError(function (error) {
-                    return rxjs.of(new RegisterUserFail(makeErrorSerializable(error)));
-                }));
-            }));
-            this.registerGuest$ = this.actions$.pipe(effects$c.ofType(REGISTER_GUEST), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
+            this.registerUser$ = this.actions$.pipe(i3.ofType(REGISTER_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (user) { return _this.userConnector.register(user).pipe(operators.map(function () { return new RegisterUserSuccess(); }), operators.catchError(function (error) { return rxjs.of(new RegisterUserFail(makeErrorSerializable(error))); })); }));
+            this.registerGuest$ = this.actions$.pipe(i3.ofType(REGISTER_GUEST), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
                 var guid = _a.guid, password = _a.password;
                 return _this.userConnector.registerGuest(guid, password).pipe(operators.switchMap(function (user) { return [
                     new LoadUserToken({
@@ -28274,197 +27748,165 @@
                         password: password,
                     }),
                     new RegisterGuestSuccess(),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error)));
-                }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error))); }));
             }));
-            this.removeUser$ = this.actions$.pipe(effects$c.ofType(REMOVE_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
+            this.removeUser$ = this.actions$.pipe(i3.ofType(REMOVE_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
                 return _this.userConnector.remove(userId).pipe(operators.switchMap(function () { return [
                     new RemoveUserSuccess(),
                     new Logout(),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new RemoveUserFail(makeErrorSerializable(error)));
-                }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new RemoveUserFail(makeErrorSerializable(error))); }));
             }));
         }
-        UserRegisterEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UserRegisterEffects.prototype, "registerUser$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserRegisterEffects.prototype, "registerGuest$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], UserRegisterEffects.prototype, "removeUser$", void 0);
-        UserRegisterEffects = __decorate([
-            core.Injectable()
-        ], UserRegisterEffects);
         return UserRegisterEffects;
     }());
+    UserRegisterEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserRegisterEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserRegisterEffects.prototype, "registerUser$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserRegisterEffects.prototype, "registerGuest$", void 0);
+    __decorate([
+        i3.Effect()
+    ], UserRegisterEffects.prototype, "removeUser$", void 0);
 
     var CustomerCouponEffects = /** @class */ (function () {
         function CustomerCouponEffects(actions$, customerCouponConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.customerCouponConnector = customerCouponConnector;
-            this.loadCustomerCoupons$ = this.actions$.pipe(effects$c.ofType(LOAD_CUSTOMER_COUPONS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.loadCustomerCoupons$ = this.actions$.pipe(i3.ofType(LOAD_CUSTOMER_COUPONS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.customerCouponConnector
                     .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
                     .pipe(operators.map(function (coupons) {
                     return new LoadCustomerCouponsSuccess(coupons);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadCustomerCouponsFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadCustomerCouponsFail(makeErrorSerializable(error))); }));
             }));
-            this.subscribeCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(SUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) {
-                return action.payload;
-            }), operators.mergeMap(function (payload) {
+            this.subscribeCustomerCoupon$ = this.actions$.pipe(i3.ofType(SUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.customerCouponConnector
                     .turnOnNotification(payload.userId, payload.couponCode)
                     .pipe(operators.map(function (data) {
                     return new SubscribeCustomerCouponSuccess(data);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new SubscribeCustomerCouponFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new SubscribeCustomerCouponFail(makeErrorSerializable(error))); }));
             }));
-            this.unsubscribeCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(UNSUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) {
-                return action.payload;
-            }), operators.mergeMap(function (payload) {
+            this.unsubscribeCustomerCoupon$ = this.actions$.pipe(i3.ofType(UNSUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.customerCouponConnector
                     .turnOffNotification(payload.userId, payload.couponCode)
                     .pipe(operators.map(function () {
                     return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error))); }));
             }));
-            this.claimCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(CLAIM_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+            this.claimCustomerCoupon$ = this.actions$.pipe(i3.ofType(CLAIM_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.customerCouponConnector
                     .claimCustomerCoupon(payload.userId, payload.couponCode)
                     .pipe(operators.map(function (data) {
                     return new ClaimCustomerCouponSuccess(data);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new ClaimCustomerCouponFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new ClaimCustomerCouponFail(makeErrorSerializable(error))); }));
             }));
         }
-        CustomerCouponEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CustomerCouponConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
-        CustomerCouponEffects = __decorate([
-            core.Injectable()
-        ], CustomerCouponEffects);
         return CustomerCouponEffects;
     }());
+    CustomerCouponEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CustomerCouponEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CustomerCouponConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
 
     var ProductInterestsEffect = /** @class */ (function () {
         function ProductInterestsEffect(actions$, userInterestsConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userInterestsConnector = userInterestsConnector;
-            this.loadProductInteres$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT_INTERESTS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+            this.loadProductInteres$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_INTERESTS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.userInterestsConnector
                     .getInterests(payload.userId, payload.pageSize, payload.currentPage, payload.sort, payload.productCode, payload.notificationType)
                     .pipe(operators.map(function (interests) {
                     return new LoadProductInterestsSuccess(interests);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadProductInterestsFail(makeErrorSerializable(error)));
-                }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadProductInterestsFail(makeErrorSerializable(error))); }));
             }));
-            this.removeProductInterest$ = this.actions$.pipe(effects$c.ofType(REMOVE_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.userInterestsConnector
-                    .removeInterest(payload.userId, payload.item)
-                    .pipe(operators.switchMap(function (data) { return [
-                    new LoadProductInterests(payload.singleDelete
-                        ? {
-                            userId: payload.userId,
-                            productCode: payload.item.product.code,
-                            notificationType: payload.item.productInterestEntry[0].interestType,
-                        }
-                        : { userId: payload.userId }),
-                    new RemoveProductInterestSuccess(data),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new RemoveProductInterestFail(makeErrorSerializable(error)));
-                }));
-            }));
-            this.addProductInterest$ = this.actions$.pipe(effects$c.ofType(ADD_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.userInterestsConnector
-                    .addInterest(payload.userId, payload.productCode, payload.notificationType)
-                    .pipe(operators.switchMap(function (res) { return [
-                    new LoadProductInterests({
+            this.removeProductInterest$ = this.actions$.pipe(i3.ofType(REMOVE_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userInterestsConnector
+                .removeInterest(payload.userId, payload.item)
+                .pipe(operators.switchMap(function (data) { return [
+                new LoadProductInterests(payload.singleDelete
+                    ? {
                         userId: payload.userId,
-                        productCode: payload.productCode,
-                        notificationType: payload.notificationType,
-                    }),
-                    new AddProductInterestSuccess(res),
-                ]; }), operators.catchError(function (error) {
-                    return rxjs.of(new AddProductInterestFail(makeErrorSerializable(error)));
-                }));
-            }));
+                        productCode: payload.item.product.code,
+                        notificationType: payload.item.productInterestEntry[0].interestType,
+                    }
+                    : { userId: payload.userId }),
+                new RemoveProductInterestSuccess(data),
+            ]; }), operators.catchError(function (error) { return rxjs.of(new RemoveProductInterestFail(makeErrorSerializable(error))); })); }));
+            this.addProductInterest$ = this.actions$.pipe(i3.ofType(ADD_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userInterestsConnector
+                .addInterest(payload.userId, payload.productCode, payload.notificationType)
+                .pipe(operators.switchMap(function (res) { return [
+                new LoadProductInterests({
+                    userId: payload.userId,
+                    productCode: payload.productCode,
+                    notificationType: payload.notificationType,
+                }),
+                new AddProductInterestSuccess(res),
+            ]; }), operators.catchError(function (error) { return rxjs.of(new AddProductInterestFail(makeErrorSerializable(error))); })); }));
         }
-        ProductInterestsEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserInterestsConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], ProductInterestsEffect.prototype, "loadProductInteres$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], ProductInterestsEffect.prototype, "removeProductInterest$", void 0);
-        __decorate([
-            effects$c.Effect()
-        ], ProductInterestsEffect.prototype, "addProductInterest$", void 0);
-        ProductInterestsEffect = __decorate([
-            core.Injectable()
-        ], ProductInterestsEffect);
         return ProductInterestsEffect;
     }());
+    ProductInterestsEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductInterestsEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserInterestsConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ProductInterestsEffect.prototype, "loadProductInteres$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ProductInterestsEffect.prototype, "removeProductInterest$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ProductInterestsEffect.prototype, "addProductInterest$", void 0);
 
     var UserCostCenterEffects = /** @class */ (function () {
         function UserCostCenterEffects(actions$, userCostCenterConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userCostCenterConnector = userCostCenterConnector;
-            this.loadActiveCostCenters$ = this.actions$.pipe(effects$c.ofType(LOAD_ACTIVE_COST_CENTERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.userCostCenterConnector.getActiveList(payload).pipe(
-                // TODO(#8875): Should we use here serialize utils?
-                operators.map(function (data) {
-                    return new LoadActiveCostCentersSuccess(data.values);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadActiveCostCentersFail(normalizeHttpError(error)));
-                }));
-            }));
+            this.loadActiveCostCenters$ = this.actions$.pipe(i3.ofType(LOAD_ACTIVE_COST_CENTERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userCostCenterConnector.getActiveList(payload).pipe(
+            // TODO(#8875): Should we use here serialize utils?
+            operators.map(function (data) { return new LoadActiveCostCentersSuccess(data.values); }), operators.catchError(function (error) { return rxjs.of(new LoadActiveCostCentersFail(normalizeHttpError(error))); })); }));
         }
-        UserCostCenterEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: UserCostCenterConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect()
-        ], UserCostCenterEffects.prototype, "loadActiveCostCenters$", void 0);
-        UserCostCenterEffects = __decorate([
-            core.Injectable()
-        ], UserCostCenterEffects);
         return UserCostCenterEffects;
     }());
+    UserCostCenterEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserCostCenterEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserCostCenterConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserCostCenterEffects.prototype, "loadActiveCostCenters$", void 0);
 
     var effects$b = [
         ClearMiscsDataEffect,
@@ -28494,38 +27936,45 @@
     var UserStoreModule = /** @class */ (function () {
         function UserStoreModule() {
         }
-        UserStoreModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule,
-                    StateModule,
-                    store.StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
-                    effects$c.EffectsModule.forFeature(effects$b),
-                    router.RouterModule,
-                ],
-                providers: [reducerProvider$c],
-            })
-        ], UserStoreModule);
         return UserStoreModule;
     }());
+    UserStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        StateModule,
+                        i1$1.StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
+                        i3.EffectsModule.forFeature(effects$b),
+                        i4.RouterModule,
+                    ],
+                    providers: [reducerProvider$c],
+                },] }
+    ];
 
     var UserModule = /** @class */ (function () {
         function UserModule() {
         }
-        UserModule_1 = UserModule;
         UserModule.forRoot = function () {
             return {
-                ngModule: UserModule_1,
+                ngModule: UserModule,
             };
         };
-        var UserModule_1;
-        UserModule = UserModule_1 = __decorate([
-            core.NgModule({
-                imports: [UserStoreModule],
-            })
-        ], UserModule);
         return UserModule;
     }());
+    UserModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [UserStoreModule],
+                },] }
+    ];
+
+    /*
+     * Public API Surface of core
+     */
+    /** AUGMENTABLE_TYPES_END */
+
+    /**
+     * Generated bundle index. Do not edit.
+     */
 
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;

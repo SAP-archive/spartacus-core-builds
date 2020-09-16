@@ -1,9 +1,0 @@
-export var CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
-var ClearUserMiscsData = /** @class */ (function () {
-    function ClearUserMiscsData() {
-        this.type = CLEAR_USER_MISCS_DATA;
-    }
-    return ClearUserMiscsData;
-}());
-export { ClearUserMiscsData };
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXNlci1taXNjLmFjdGlvbi5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy91c2VyL3N0b3JlL2FjdGlvbnMvdXNlci1taXNjLmFjdGlvbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFDQSxNQUFNLENBQUMsSUFBTSxxQkFBcUIsR0FBRyw2QkFBNkIsQ0FBQztBQUVuRTtJQUFBO1FBQ1csU0FBSSxHQUFHLHFCQUFxQixDQUFDO0lBQ3hDLENBQUM7SUFBRCx5QkFBQztBQUFELENBQUMsQUFGRCxJQUVDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQWN0aW9uIH0gZnJvbSAnQG5ncngvc3RvcmUnO1xuZXhwb3J0IGNvbnN0IENMRUFSX1VTRVJfTUlTQ1NfREFUQSA9ICdbVXNlcl0gQ2xlYXIgVXNlciBNaXNjIERhdGEnO1xuXG5leHBvcnQgY2xhc3MgQ2xlYXJVc2VyTWlzY3NEYXRhIGltcGxlbWVudHMgQWN0aW9uIHtcbiAgcmVhZG9ubHkgdHlwZSA9IENMRUFSX1VTRVJfTUlTQ1NfREFUQTtcbn1cbiJdfQ==

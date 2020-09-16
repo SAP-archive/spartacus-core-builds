@@ -6,11 +6,11 @@ import { ProcessesLoaderState } from '../../../state/utils/processes-loader/proc
 import { MultiCartState, StateWithMultiCart } from '../multi-cart-state';
 export declare const getMultiCartState: MemoizedSelector<StateWithMultiCart, MultiCartState>;
 export declare const getMultiCartEntities: MemoizedSelector<StateWithMultiCart, EntityProcessesLoaderState<Cart>>;
-export declare const getCartEntitySelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, ProcessesLoaderState<Cart>, import("@ngrx/store").DefaultProjectorFn<ProcessesLoaderState<Cart>>>;
-export declare const getCartSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, Cart, import("@ngrx/store").DefaultProjectorFn<Cart>>;
-export declare const getCartIsStableSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, boolean, import("@ngrx/store").DefaultProjectorFn<boolean>>;
-export declare const getCartHasPendingProcessesSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, boolean, import("@ngrx/store").DefaultProjectorFn<boolean>>;
-export declare const getCartEntriesSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, OrderEntry[], import("@ngrx/store").DefaultProjectorFn<OrderEntry[]>>;
-export declare const getCartEntrySelectorFactory: (cartId: string, productCode: string) => MemoizedSelector<StateWithMultiCart, OrderEntry, import("@ngrx/store").DefaultProjectorFn<OrderEntry>>;
+export declare const getCartEntitySelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, ProcessesLoaderState<Cart>>;
+export declare const getCartSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, Cart>;
+export declare const getCartIsStableSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, boolean>;
+export declare const getCartHasPendingProcessesSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, boolean>;
+export declare const getCartEntriesSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, OrderEntry[]>;
+export declare const getCartEntrySelectorFactory: (cartId: string, productCode: string) => MemoizedSelector<StateWithMultiCart, OrderEntry>;
 export declare const getActiveCartId: MemoizedSelector<StateWithMultiCart, string>;
 export declare const getWishListId: MemoizedSelector<StateWithMultiCart, string>;

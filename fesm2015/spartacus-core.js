@@ -1,5 +1,4 @@
-import { __decorate, __param, __rest, __awaiter } from 'tslib';
-import { isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, InjectionToken, inject, InjectFlags, Optional, PLATFORM_ID, NgModule, Injector, INJECTOR, TemplateRef, ViewContainerRef, Input, Directive, APP_INITIALIZER, Pipe, NgZone, ChangeDetectorRef } from '@angular/core';
+import { isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, InjectionToken, inject, InjectFlags, Optional, PLATFORM_ID, NgModule, INJECTOR, Injector, Directive, TemplateRef, ViewContainerRef, Input, APP_INITIALIZER, Pipe, NgZone, ChangeDetectorRef } from '@angular/core';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule, ActionsSubject } from '@ngrx/store';
 import { of, fromEvent, throwError, EMPTY, iif, combineLatest, Observable, Subject, BehaviorSubject, forkJoin, Subscription, NEVER, timer, from, queueScheduler, using, merge, defer } from 'rxjs';
 import { map, take, filter, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, share, shareReplay, concatMap, mapTo, switchMapTo, bufferCount, delay, debounce, groupBy, observeOn, distinctUntilKeyChanged, takeWhile, auditTime } from 'rxjs/operators';
@@ -8,6 +7,7 @@ import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClie
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
+import { __decorate, __rest, __awaiter } from 'tslib';
 import { ROUTER_NAVIGATED, ROUTER_CANCEL, ROUTER_ERROR, ROUTER_NAVIGATION, RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import i18next from 'i18next';
 import i18nextXhrBackend from 'i18next-xhr-backend';
@@ -812,7 +812,7 @@ var authGroup_selectors = /*#__PURE__*/Object.freeze({
     ɵ1: ɵ1
 });
 
-let AuthService = class AuthService {
+class AuthService {
     constructor(store) {
         this.store = store;
     }
@@ -925,18 +925,18 @@ let AuthService = class AuthService {
     isUserLoggedIn() {
         return this.getUserToken().pipe(map((userToken) => Boolean(userToken) && Boolean(userToken.access_token)));
     }
-};
+}
+AuthService.ɵprov = ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(ɵɵinject(Store)); }, token: AuthService, providedIn: "root" });
+AuthService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 AuthService.ctorParameters = () => [
     { type: Store }
 ];
-AuthService.ɵprov = ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(ɵɵinject(Store)); }, token: AuthService, providedIn: "root" });
-AuthService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], AuthService);
 
-let ClientErrorHandlingService = class ClientErrorHandlingService {
+class ClientErrorHandlingService {
     constructor(authService) {
         this.authService = authService;
     }
@@ -953,18 +953,18 @@ let ClientErrorHandlingService = class ClientErrorHandlingService {
         });
         return request;
     }
-};
+}
+ClientErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(ɵɵinject(AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
+ClientErrorHandlingService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ClientErrorHandlingService.ctorParameters = () => [
     { type: AuthService }
 ];
-ClientErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(ɵɵinject(AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
-ClientErrorHandlingService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ClientErrorHandlingService);
 
-let WindowRef = class WindowRef {
+class WindowRef {
     constructor(document) {
         // it's a workaround to have document property properly typed
         // see: https://github.com/angular/angular/issues/15640
@@ -993,19 +993,18 @@ let WindowRef = class WindowRef {
             return fromEvent(this.nativeWindow, 'resize').pipe(debounceTime(300), startWith({ target: this.nativeWindow }), distinctUntilChanged());
         }
     }
-};
+}
+WindowRef.ɵprov = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+WindowRef.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 WindowRef.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
 ];
-WindowRef.ɵprov = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
-WindowRef = __decorate([
-    Injectable({
-        providedIn: 'root',
-    }),
-    __param(0, Inject(DOCUMENT))
-], WindowRef);
 
-let UrlParsingService = class UrlParsingService {
+class UrlParsingService {
     constructor(router) {
         this.router = router;
     }
@@ -1020,14 +1019,14 @@ let UrlParsingService = class UrlParsingService {
             : [];
         return segments.concat(childrenSegments);
     }
-};
+}
+UrlParsingService.ɵprov = ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(ɵɵinject(Router)); }, token: UrlParsingService, providedIn: "root" });
+UrlParsingService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 UrlParsingService.ctorParameters = () => [
     { type: Router }
 ];
-UrlParsingService.ɵprov = ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(ɵɵinject(Router)); }, token: UrlParsingService, providedIn: "root" });
-UrlParsingService = __decorate([
-    Injectable({ providedIn: 'root' })
-], UrlParsingService);
 
 const isParam = (segment) => segment.startsWith(':');
 const getParamName = (segment) => segment.slice(1); // it just removes leading ':'
@@ -1068,17 +1067,17 @@ const ConfigChunk = new InjectionToken('ConfigurationChunk');
  */
 const DefaultConfigChunk = new InjectionToken('DefaultConfigurationChunk');
 
-let RoutingConfig = class RoutingConfig {
-};
+class RoutingConfig {
+}
 RoutingConfig.ɵprov = ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
-RoutingConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], RoutingConfig);
+RoutingConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
-let RoutingConfigService = class RoutingConfigService {
+class RoutingConfigService {
     constructor(config) {
         this.config = config;
     }
@@ -1145,16 +1144,16 @@ let RoutingConfigService = class RoutingConfigService {
             });
         }
     }
-};
+}
+RoutingConfigService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
+RoutingConfigService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 RoutingConfigService.ctorParameters = () => [
     { type: RoutingConfig }
 ];
-RoutingConfigService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
-RoutingConfigService = __decorate([
-    Injectable({ providedIn: 'root' })
-], RoutingConfigService);
 
-let SemanticPathService = class SemanticPathService {
+class SemanticPathService {
     constructor(routingConfigService, urlParser) {
         this.routingConfigService = routingConfigService;
         this.urlParser = urlParser;
@@ -1267,15 +1266,15 @@ let SemanticPathService = class SemanticPathService {
             console.warn(...args);
         }
     }
-};
+}
+SemanticPathService.ɵprov = ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(ɵɵinject(RoutingConfigService), ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
+SemanticPathService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 SemanticPathService.ctorParameters = () => [
     { type: RoutingConfigService },
     { type: UrlParsingService }
 ];
-SemanticPathService.ɵprov = ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(ɵɵinject(RoutingConfigService), ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
-SemanticPathService = __decorate([
-    Injectable({ providedIn: 'root' })
-], SemanticPathService);
 
 const ROUTER_GO = '[Router] Go';
 const ROUTER_GO_BY_URL = '[Router] Go By Url';
@@ -1345,7 +1344,7 @@ var routingGroup_selectors = /*#__PURE__*/Object.freeze({
     ɵ4: ɵ4
 });
 
-let RoutingService = class RoutingService {
+class RoutingService {
     constructor(store, winRef, semanticPathService) {
         this.store = store;
         this.winRef = winRef;
@@ -1423,20 +1422,20 @@ let RoutingService = class RoutingService {
             extras,
         }));
     }
-};
+}
+RoutingService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
+RoutingService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 RoutingService.ctorParameters = () => [
     { type: Store },
     { type: WindowRef },
     { type: SemanticPathService }
 ];
-RoutingService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
-RoutingService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], RoutingService);
 
-let UserErrorHandlingService = class UserErrorHandlingService {
+class UserErrorHandlingService {
     constructor(authService, routingService) {
         this.authService = authService;
         this.routingService = routingService;
@@ -1474,20 +1473,20 @@ let UserErrorHandlingService = class UserErrorHandlingService {
         });
         return request;
     }
-};
+}
+UserErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(ɵɵinject(AuthService), ɵɵinject(RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
+UserErrorHandlingService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserErrorHandlingService.ctorParameters = () => [
     { type: AuthService },
     { type: RoutingService }
 ];
-UserErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(ɵɵinject(AuthService), ɵɵinject(RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
-UserErrorHandlingService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserErrorHandlingService);
 
 const OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
-let AuthErrorInterceptor = class AuthErrorInterceptor {
+class AuthErrorInterceptor {
     constructor(userErrorHandlingService, clientErrorHandlingService, authService) {
         this.userErrorHandlingService = userErrorHandlingService;
         this.clientErrorHandlingService = clientErrorHandlingService;
@@ -1549,16 +1548,16 @@ let AuthErrorInterceptor = class AuthErrorInterceptor {
         }
         return false;
     }
-};
+}
+AuthErrorInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function AuthErrorInterceptor_Factory() { return new AuthErrorInterceptor(ɵɵinject(UserErrorHandlingService), ɵɵinject(ClientErrorHandlingService), ɵɵinject(AuthService)); }, token: AuthErrorInterceptor, providedIn: "root" });
+AuthErrorInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 AuthErrorInterceptor.ctorParameters = () => [
     { type: UserErrorHandlingService },
     { type: ClientErrorHandlingService },
     { type: AuthService }
 ];
-AuthErrorInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function AuthErrorInterceptor_Factory() { return new AuthErrorInterceptor(ɵɵinject(UserErrorHandlingService), ɵɵinject(ClientErrorHandlingService), ɵɵinject(AuthService)); }, token: AuthErrorInterceptor, providedIn: "root" });
-AuthErrorInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], AuthErrorInterceptor);
 
 class DynamicTemplate {
     static resolve(templateString, templateVariables) {
@@ -1590,15 +1589,15 @@ function getContextParameterDefault(config, parameter) {
     return param && param.length ? param[0] : undefined;
 }
 
-let SiteContextConfig = class SiteContextConfig {
-};
+class SiteContextConfig {
+}
 SiteContextConfig.ɵprov = ɵɵdefineInjectable({ factory: function SiteContextConfig_Factory() { return ɵɵinject(Config); }, token: SiteContextConfig, providedIn: "root" });
-SiteContextConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], SiteContextConfig);
+SiteContextConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 const LANGUAGE_CONTEXT_ID = 'language';
 const CURRENCY_CONTEXT_ID = 'currency';
@@ -1800,7 +1799,7 @@ var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
     getSiteContextState: getSiteContextState
 });
 
-let BaseSiteService = class BaseSiteService {
+class BaseSiteService {
     constructor(store, config) {
         this.store = store;
         this.config = config;
@@ -1850,14 +1849,14 @@ let BaseSiteService = class BaseSiteService {
             }
         }));
     }
-};
+}
+BaseSiteService.decorators = [
+    { type: Injectable }
+];
 BaseSiteService.ctorParameters = () => [
     { type: Store },
     { type: SiteContextConfig }
 ];
-BaseSiteService = __decorate([
-    Injectable()
-], BaseSiteService);
 
 class CustomEncoder {
     encodeKey(key) {
@@ -1874,19 +1873,19 @@ class CustomEncoder {
     }
 }
 
-let OccConfig = class OccConfig extends SiteContextConfig {
-};
+class OccConfig extends SiteContextConfig {
+}
 OccConfig.ɵprov = ɵɵdefineInjectable({ factory: function OccConfig_Factory() { return ɵɵinject(Config); }, token: OccConfig, providedIn: "root" });
-OccConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], OccConfig);
+OccConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 const DEFAULT_SCOPE = 'default';
 
-let OccEndpointsService = class OccEndpointsService {
+class OccEndpointsService {
     constructor(config, baseSiteService) {
         this.config = config;
         this.baseSiteService = baseSiteService;
@@ -1997,20 +1996,19 @@ let OccEndpointsService = class OccEndpointsService {
             ? endpointConfig
             : endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[DEFAULT_SCOPE]) || endpoint);
     }
-};
+}
+OccEndpointsService.ɵprov = ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(ɵɵinject(OccConfig), ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
+OccEndpointsService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 OccEndpointsService.ctorParameters = () => [
     { type: OccConfig },
     { type: BaseSiteService, decorators: [{ type: Optional }] }
 ];
-OccEndpointsService.ɵprov = ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(ɵɵinject(OccConfig), ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
-OccEndpointsService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    }),
-    __param(1, Optional())
-], OccEndpointsService);
 
-let ClientTokenInterceptor = class ClientTokenInterceptor {
+class ClientTokenInterceptor {
     constructor(authService, occEndpoints) {
         this.authService = authService;
         this.occEndpoints = occEndpoints;
@@ -2034,17 +2032,17 @@ let ClientTokenInterceptor = class ClientTokenInterceptor {
         }
         return of(null);
     }
-};
+}
+ClientTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(ɵɵinject(AuthService), ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
+ClientTokenInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 ClientTokenInterceptor.ctorParameters = () => [
     { type: AuthService },
     { type: OccEndpointsService }
 ];
-ClientTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(ɵɵinject(AuthService), ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
-ClientTokenInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], ClientTokenInterceptor);
 
-let UserTokenInterceptor = class UserTokenInterceptor {
+class UserTokenInterceptor {
     constructor(authService, occEndpoints) {
         this.authService = authService;
         this.occEndpoints = occEndpoints;
@@ -2066,17 +2064,17 @@ let UserTokenInterceptor = class UserTokenInterceptor {
     isOccUrl(url) {
         return url.includes(this.occEndpoints.getBaseEndpoint());
     }
-};
+}
+UserTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function UserTokenInterceptor_Factory() { return new UserTokenInterceptor(ɵɵinject(AuthService), ɵɵinject(OccEndpointsService)); }, token: UserTokenInterceptor, providedIn: "root" });
+UserTokenInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 UserTokenInterceptor.ctorParameters = () => [
     { type: AuthService },
     { type: OccEndpointsService }
 ];
-UserTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function UserTokenInterceptor_Factory() { return new UserTokenInterceptor(ɵɵinject(AuthService), ɵɵinject(OccEndpointsService)); }, token: UserTokenInterceptor, providedIn: "root" });
-UserTokenInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], UserTokenInterceptor);
 
-let TokenRevocationInterceptor = class TokenRevocationInterceptor {
+class TokenRevocationInterceptor {
     constructor() { }
     intercept(request, next) {
         const isTokenRevocationRequest = this.isTokenRevocationRequest(request);
@@ -2094,11 +2092,12 @@ let TokenRevocationInterceptor = class TokenRevocationInterceptor {
         const isTokenRevocationHeaderPresent = InterceptorUtil.getInterceptorParam(TOKEN_REVOCATION_HEADER, request.headers);
         return Boolean(isTokenRevocationHeaderPresent);
     }
-};
+}
 TokenRevocationInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(); }, token: TokenRevocationInterceptor, providedIn: "root" });
-TokenRevocationInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], TokenRevocationInterceptor);
+TokenRevocationInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+TokenRevocationInterceptor.ctorParameters = () => [];
 
 const interceptors = [
     {
@@ -2133,15 +2132,15 @@ var StateTransferType;
 (function (StateTransferType) {
     StateTransferType["TRANSFER_STATE"] = "SSR";
 })(StateTransferType || (StateTransferType = {}));
-let StateConfig = class StateConfig {
-};
+class StateConfig {
+}
 StateConfig.ɵprov = ɵɵdefineInjectable({ factory: function StateConfig_Factory() { return ɵɵinject(Config); }, token: StateConfig, providedIn: "root" });
-StateConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], StateConfig);
+StateConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 const DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
 const DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
@@ -2381,21 +2380,20 @@ function provideDefaultConfigFactory(configFactory, deps) {
     };
 }
 
-var StateModule_1;
-let StateModule = StateModule_1 = class StateModule {
+class StateModule {
     static forRoot() {
         return {
-            ngModule: StateModule_1,
+            ngModule: StateModule,
             providers: [
                 ...stateMetaReducers,
                 provideDefaultConfig(defaultStateConfig),
             ],
         };
     }
-};
-StateModule = StateModule_1 = __decorate([
-    NgModule({})
-], StateModule);
+}
+StateModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 
 /**
  * @deprecated since 2.1, use normalizeHttpError instead
@@ -2443,17 +2441,17 @@ function makeErrorSerializable(error) {
     return isObject(error) ? UNKNOWN_ERROR : error;
 }
 
-let AuthConfig = class AuthConfig extends OccConfig {
-};
+class AuthConfig extends OccConfig {
+}
 AuthConfig.ɵprov = ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
-AuthConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], AuthConfig);
+AuthConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
-let ClientAuthenticationTokenService = class ClientAuthenticationTokenService {
+class ClientAuthenticationTokenService {
     constructor(config, http, occEndpointsService) {
         this.config = config;
         this.http = http;
@@ -2470,20 +2468,20 @@ let ClientAuthenticationTokenService = class ClientAuthenticationTokenService {
         });
         return this.http.post(url, params, { headers });
     }
-};
+}
+ClientAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(ɵɵinject(AuthConfig), ɵɵinject(HttpClient), ɵɵinject(OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
+ClientAuthenticationTokenService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ClientAuthenticationTokenService.ctorParameters = () => [
     { type: AuthConfig },
     { type: HttpClient },
     { type: OccEndpointsService }
 ];
-ClientAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(ɵɵinject(AuthConfig), ɵɵinject(HttpClient), ɵɵinject(OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
-ClientAuthenticationTokenService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ClientAuthenticationTokenService);
 
-let ClientTokenEffect = class ClientTokenEffect {
+class ClientTokenEffect {
     constructor(actions$, clientAuthenticationTokenService) {
         this.actions$ = actions$;
         this.clientAuthenticationTokenService = clientAuthenticationTokenService;
@@ -2495,7 +2493,10 @@ let ClientTokenEffect = class ClientTokenEffect {
             }), catchError((error) => of(new LoadClientTokenFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+ClientTokenEffect.decorators = [
+    { type: Injectable }
+];
 ClientTokenEffect.ctorParameters = () => [
     { type: Actions },
     { type: ClientAuthenticationTokenService }
@@ -2503,11 +2504,8 @@ ClientTokenEffect.ctorParameters = () => [
 __decorate([
     Effect()
 ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
-ClientTokenEffect = __decorate([
-    Injectable()
-], ClientTokenEffect);
 
-let UserAuthenticationTokenService = class UserAuthenticationTokenService {
+class UserAuthenticationTokenService {
     constructor(http, config, occEndpointsService) {
         this.http = http;
         this.config = config;
@@ -2553,20 +2551,20 @@ let UserAuthenticationTokenService = class UserAuthenticationTokenService {
             .post(url, params, { headers })
             .pipe(catchError((error) => throwError(error)));
     }
-};
+}
+UserAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(ɵɵinject(HttpClient), ɵɵinject(AuthConfig), ɵɵinject(OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
+UserAuthenticationTokenService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserAuthenticationTokenService.ctorParameters = () => [
     { type: HttpClient },
     { type: AuthConfig },
     { type: OccEndpointsService }
 ];
-UserAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(ɵɵinject(HttpClient), ɵɵinject(AuthConfig), ɵɵinject(OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
-UserAuthenticationTokenService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserAuthenticationTokenService);
 
-let UserTokenEffects = class UserTokenEffects {
+class UserTokenEffects {
     constructor(actions$, userTokenService) {
         this.actions$ = actions$;
         this.userTokenService = userTokenService;
@@ -2592,7 +2590,10 @@ let UserTokenEffects = class UserTokenEffects {
             return this.userTokenService.revoke(userToken).pipe(map(() => new RevokeUserTokenSuccess(userToken)), catchError((error) => of(new RevokeUserTokenFail(error))));
         }));
     }
-};
+}
+UserTokenEffects.decorators = [
+    { type: Injectable }
+];
 UserTokenEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserAuthenticationTokenService }
@@ -2609,9 +2610,6 @@ __decorate([
 __decorate([
     Effect()
 ], UserTokenEffects.prototype, "revokeUserToken$", void 0);
-UserTokenEffects = __decorate([
-    Injectable()
-], UserTokenEffects);
 
 const effects = [UserTokenEffects, ClientTokenEffect];
 
@@ -2673,40 +2671,39 @@ function authStoreConfigFactory() {
     };
     return config;
 }
-let AuthStoreModule = class AuthStoreModule {
-};
-AuthStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            HttpClientModule,
-            StateModule,
-            StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers }),
-            EffectsModule.forFeature(effects),
-        ],
-        providers: [
-            provideDefaultConfigFactory(authStoreConfigFactory),
-            reducerProvider,
-        ],
-    })
-], AuthStoreModule);
+class AuthStoreModule {
+}
+AuthStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StateModule,
+                    StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers }),
+                    EffectsModule.forFeature(effects),
+                ],
+                providers: [
+                    provideDefaultConfigFactory(authStoreConfigFactory),
+                    reducerProvider,
+                ],
+            },] }
+];
 
-var AuthModule_1;
-let AuthModule = AuthModule_1 = class AuthModule {
+class AuthModule {
     static forRoot() {
         return {
-            ngModule: AuthModule_1,
+            ngModule: AuthModule,
             providers: [provideDefaultConfig(defaultAuthConfig), ...interceptors],
         };
     }
-};
-AuthModule = AuthModule_1 = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule, AuthStoreModule],
-    })
-], AuthModule);
+}
+AuthModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule, AuthStoreModule],
+            },] }
+];
 
-let AuthRedirectService = class AuthRedirectService {
+class AuthRedirectService {
     /**
      * This service is responsible for redirecting to the last page before authorization. "The last page" can be:
      * 1. Just the previously opened page; or
@@ -2763,19 +2760,19 @@ let AuthRedirectService = class AuthRedirectService {
             initialUrl,
         };
     }
-};
+}
+AuthRedirectService.ɵprov = ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(ɵɵinject(RoutingService), ɵɵinject(Router)); }, token: AuthRedirectService, providedIn: "root" });
+AuthRedirectService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 AuthRedirectService.ctorParameters = () => [
     { type: RoutingService },
     { type: Router }
 ];
-AuthRedirectService.ɵprov = ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(ɵɵinject(RoutingService), ɵɵinject(Router)); }, token: AuthRedirectService, providedIn: "root" });
-AuthRedirectService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], AuthRedirectService);
 
-let AuthGuard = class AuthGuard {
+class AuthGuard {
     constructor(routingService, authService, authRedirectService, router) {
         this.routingService = routingService;
         this.authService = authService;
@@ -2791,21 +2788,21 @@ let AuthGuard = class AuthGuard {
             return !!token.access_token;
         }));
     }
-};
+}
+AuthGuard.ɵprov = ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService), ɵɵinject(Router)); }, token: AuthGuard, providedIn: "root" });
+AuthGuard.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 AuthGuard.ctorParameters = () => [
     { type: RoutingService },
     { type: AuthService },
     { type: AuthRedirectService },
     { type: Router }
 ];
-AuthGuard.ɵprov = ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService), ɵɵinject(Router)); }, token: AuthGuard, providedIn: "root" });
-AuthGuard = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], AuthGuard);
 
-let NotAuthGuard = class NotAuthGuard {
+class NotAuthGuard {
     constructor(routingService, authService, authRedirectService) {
         this.routingService = routingService;
         this.authService = authService;
@@ -2821,18 +2818,18 @@ let NotAuthGuard = class NotAuthGuard {
             return !token.access_token;
         }));
     }
-};
+}
+NotAuthGuard.ɵprov = ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
+NotAuthGuard.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 NotAuthGuard.ctorParameters = () => [
     { type: RoutingService },
     { type: AuthService },
     { type: AuthRedirectService }
 ];
-NotAuthGuard.ɵprov = ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
-NotAuthGuard = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], NotAuthGuard);
 
 var CountryType;
 (function (CountryType) {
@@ -3073,7 +3070,7 @@ var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
     getAnonymousConsentState: getAnonymousConsentState
 });
 
-let AnonymousConsentsService = class AnonymousConsentsService {
+class AnonymousConsentsService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -3292,15 +3289,15 @@ let AnonymousConsentsService = class AnonymousConsentsService {
         const previousRawConsents = this.serializeAndEncode(previousConsents);
         return newRawConsents !== previousRawConsents;
     }
-};
+}
+AnonymousConsentsService.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentsService_Factory() { return new AnonymousConsentsService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: AnonymousConsentsService, providedIn: "root" });
+AnonymousConsentsService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 AnonymousConsentsService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-AnonymousConsentsService.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentsService_Factory() { return new AnonymousConsentsService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: AnonymousConsentsService, providedIn: "root" });
-AnonymousConsentsService = __decorate([
-    Injectable({ providedIn: 'root' })
-], AnonymousConsentsService);
 
 class AsmAdapter {
 }
@@ -3315,19 +3312,19 @@ const defaultOccAsmConfig = {
     },
 };
 
-let AsmConfig = class AsmConfig extends OccConfig {
-};
+class AsmConfig extends OccConfig {
+}
 AsmConfig.ɵprov = ɵɵdefineInjectable({ factory: function AsmConfig_Factory() { return ɵɵinject(Config); }, token: AsmConfig, providedIn: "root" });
-AsmConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], AsmConfig);
+AsmConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 const CUSTOMER_SEARCH_PAGE_NORMALIZER = new InjectionToken('CustomerSearchPageNormalizer');
 
-let ConverterService = class ConverterService {
+class ConverterService {
     constructor(injector) {
         this.injector = injector;
         this.converters = new Map();
@@ -3398,18 +3395,18 @@ let ConverterService = class ConverterService {
             return converter.convert(source, target);
         }, undefined);
     }
-};
+}
+ConverterService.ɵprov = ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(ɵɵinject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
+ConverterService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ConverterService.ctorParameters = () => [
     { type: Injector }
 ];
-ConverterService.ɵprov = ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(ɵɵinject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
-ConverterService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ConverterService);
 
-let OccAsmAdapter = class OccAsmAdapter {
+class OccAsmAdapter {
     constructor(http, occEndpointsService, converterService, config, baseSiteService) {
         this.http = http;
         this.occEndpointsService = occEndpointsService;
@@ -3436,7 +3433,10 @@ let OccAsmAdapter = class OccAsmAdapter {
             .get(url, { headers, params })
             .pipe(this.converterService.pipeable(CUSTOMER_SEARCH_PAGE_NORMALIZER));
     }
-};
+}
+OccAsmAdapter.decorators = [
+    { type: Injectable }
+];
 OccAsmAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
@@ -3444,24 +3444,21 @@ OccAsmAdapter.ctorParameters = () => [
     { type: AsmConfig },
     { type: BaseSiteService }
 ];
-OccAsmAdapter = __decorate([
-    Injectable()
-], OccAsmAdapter);
 
-let AsmOccModule = class AsmOccModule {
-};
-AsmOccModule = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule],
-        providers: [
-            provideDefaultConfig(defaultOccAsmConfig),
-            {
-                provide: AsmAdapter,
-                useClass: OccAsmAdapter,
-            },
-        ],
-    })
-], AsmOccModule);
+class AsmOccModule {
+}
+AsmOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule],
+                providers: [
+                    provideDefaultConfig(defaultOccAsmConfig),
+                    {
+                        provide: AsmAdapter,
+                        useClass: OccAsmAdapter,
+                    },
+                ],
+            },] }
+];
 
 class CartAdapter {
 }
@@ -3479,7 +3476,7 @@ class CartVoucherAdapter {
 
 const PRODUCT_NORMALIZER = new InjectionToken('ProductNormalizer');
 
-let OccCartNormalizer = class OccCartNormalizer {
+class OccCartNormalizer {
     constructor(converter) {
         this.converter = converter;
     }
@@ -3516,14 +3513,14 @@ let OccCartNormalizer = class OccCartNormalizer {
             return i === b.indexOf(JSON.stringify(p));
         });
     }
-};
+}
+OccCartNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccCartNormalizer_Factory() { return new OccCartNormalizer(ɵɵinject(ConverterService)); }, token: OccCartNormalizer, providedIn: "root" });
+OccCartNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccCartNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
-OccCartNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccCartNormalizer_Factory() { return new OccCartNormalizer(ɵɵinject(ConverterService)); }, token: OccCartNormalizer, providedIn: "root" });
-OccCartNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccCartNormalizer);
 
 const defaultOccCartConfig = {
     backend: {
@@ -3547,7 +3544,7 @@ const defaultOccCartConfig = {
 
 const CART_MODIFICATION_NORMALIZER = new InjectionToken('CartModificationNormalizer');
 
-let OccCartEntryAdapter = class OccCartEntryAdapter {
+class OccCartEntryAdapter {
     constructor(http, occEndpointsService, converterService) {
         this.http = http;
         this.occEndpointsService = occEndpointsService;
@@ -3590,19 +3587,19 @@ let OccCartEntryAdapter = class OccCartEntryAdapter {
         });
         return this.http.delete(url, { headers });
     }
-};
+}
+OccCartEntryAdapter.decorators = [
+    { type: Injectable }
+];
 OccCartEntryAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCartEntryAdapter = __decorate([
-    Injectable()
-], OccCartEntryAdapter);
 
 const CART_VOUCHER_NORMALIZER = new InjectionToken('CartVoucherNormalizer');
 
-let OccCartVoucherAdapter = class OccCartVoucherAdapter {
+class OccCartVoucherAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -3636,17 +3633,17 @@ let OccCartVoucherAdapter = class OccCartVoucherAdapter {
             .delete(url, { headers })
             .pipe(catchError((error) => throwError(error)));
     }
-};
+}
+OccCartVoucherAdapter.decorators = [
+    { type: Injectable }
+];
 OccCartVoucherAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCartVoucherAdapter = __decorate([
-    Injectable()
-], OccCartVoucherAdapter);
 
-let OccCartAdapter = class OccCartAdapter {
+class OccCartAdapter {
     constructor(http, occEndpointsService, converterService) {
         this.http = http;
         this.occEndpointsService = occEndpointsService;
@@ -3709,19 +3706,19 @@ let OccCartAdapter = class OccCartAdapter {
         });
         return this.http.put(url, httpParams, { headers });
     }
-};
+}
+OccCartAdapter.decorators = [
+    { type: Injectable }
+];
 OccCartAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCartAdapter = __decorate([
-    Injectable()
-], OccCartAdapter);
 
 const SAVE_CART_NORMALIZER = new InjectionToken('SaveCartNormalizer');
 
-let OccSaveCartAdapter = class OccSaveCartAdapter {
+class OccSaveCartAdapter {
     constructor(http, occEndpointsService, converterService) {
         this.http = http;
         this.occEndpointsService = occEndpointsService;
@@ -3742,47 +3739,47 @@ let OccSaveCartAdapter = class OccSaveCartAdapter {
             .patch(this.occEndpointsService.getUrl('saveCart', { userId, cartId }), httpParams, { headers })
             .pipe(this.converterService.pipeable(SAVE_CART_NORMALIZER));
     }
-};
+}
+OccSaveCartAdapter.decorators = [
+    { type: Injectable }
+];
 OccSaveCartAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccSaveCartAdapter = __decorate([
-    Injectable()
-], OccSaveCartAdapter);
 
-let CartOccModule = class CartOccModule {
-};
-CartOccModule = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule],
-        providers: [
-            provideDefaultConfig(defaultOccCartConfig),
-            {
-                provide: CartAdapter,
-                useClass: OccCartAdapter,
-            },
-            {
-                provide: CART_NORMALIZER,
-                useExisting: OccCartNormalizer,
-                multi: true,
-            },
-            {
-                provide: CartEntryAdapter,
-                useClass: OccCartEntryAdapter,
-            },
-            {
-                provide: CartVoucherAdapter,
-                useClass: OccCartVoucherAdapter,
-            },
-            {
-                provide: SaveCartAdapter,
-                useClass: OccSaveCartAdapter,
-            },
-        ],
-    })
-], CartOccModule);
+class CartOccModule {
+}
+CartOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule],
+                providers: [
+                    provideDefaultConfig(defaultOccCartConfig),
+                    {
+                        provide: CartAdapter,
+                        useClass: OccCartAdapter,
+                    },
+                    {
+                        provide: CART_NORMALIZER,
+                        useExisting: OccCartNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: CartEntryAdapter,
+                        useClass: OccCartEntryAdapter,
+                    },
+                    {
+                        provide: CartVoucherAdapter,
+                        useClass: OccCartVoucherAdapter,
+                    },
+                    {
+                        provide: SaveCartAdapter,
+                        useClass: OccSaveCartAdapter,
+                    },
+                ],
+            },] }
+];
 
 const ORDER_NORMALIZER = new InjectionToken('OrderNormalizer');
 
@@ -3790,7 +3787,7 @@ const ORDER_NORMALIZER = new InjectionToken('OrderNormalizer');
 const FULL_PARAMS = 'fields=FULL';
 const CHECKOUT_PARAMS = 'deliveryAddress(FULL),deliveryMode,paymentInfo(FULL)';
 const CARTS_ENDPOINT = '/carts/';
-let OccCheckoutAdapter = class OccCheckoutAdapter {
+class OccCheckoutAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -3829,15 +3826,15 @@ let OccCheckoutAdapter = class OccCheckoutAdapter {
         const url = `${this.getEndpoint(userId, CARTS_ENDPOINT)}${cartId}/deliverymode`;
         return this.http.delete(url);
     }
-};
+}
+OccCheckoutAdapter.decorators = [
+    { type: Injectable }
+];
 OccCheckoutAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCheckoutAdapter = __decorate([
-    Injectable()
-], OccCheckoutAdapter);
 
 const DELIVERY_MODE_NORMALIZER = new InjectionToken('DeliveryModeNormalizer');
 
@@ -3845,7 +3842,7 @@ const ADDRESS_NORMALIZER = new InjectionToken('AddressNormalizer');
 const ADDRESS_SERIALIZER = new InjectionToken('AddressSerializer');
 const ADDRESS_VALIDATION_NORMALIZER = new InjectionToken('AddressValidationNormalizer');
 
-let OccCheckoutDeliveryAdapter = class OccCheckoutDeliveryAdapter {
+class OccCheckoutDeliveryAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -3883,22 +3880,22 @@ let OccCheckoutDeliveryAdapter = class OccCheckoutDeliveryAdapter {
             .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
             .pipe(pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
     }
-};
+}
+OccCheckoutDeliveryAdapter.decorators = [
+    { type: Injectable }
+];
 OccCheckoutDeliveryAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCheckoutDeliveryAdapter = __decorate([
-    Injectable()
-], OccCheckoutDeliveryAdapter);
 
 const PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
 const PAYMENT_DETAILS_SERIALIZER = new InjectionToken('PaymentDetailsSerializer');
 const CARD_TYPE_NORMALIZER = new InjectionToken('CardTypeNormalizer');
 
 const ENDPOINT_CARD_TYPES = 'cardtypes';
-let OccCheckoutPaymentAdapter = class OccCheckoutPaymentAdapter {
+class OccCheckoutPaymentAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -4033,20 +4030,20 @@ let OccCheckoutPaymentAdapter = class OccCheckoutPaymentAdapter {
             return result;
         }, {});
     }
-};
+}
+OccCheckoutPaymentAdapter.decorators = [
+    { type: Injectable }
+];
 OccCheckoutPaymentAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCheckoutPaymentAdapter = __decorate([
-    Injectable()
-], OccCheckoutPaymentAdapter);
 
 const PAYMENT_TYPE_NORMALIZER = new InjectionToken('PaymentTypeNormalizer');
 
 const ENDPOINT_PAYMENT_TYPES = 'paymenttypes';
-let OccCheckoutPaymentTypeAdapter = class OccCheckoutPaymentTypeAdapter {
+class OccCheckoutPaymentTypeAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -4075,17 +4072,17 @@ let OccCheckoutPaymentTypeAdapter = class OccCheckoutPaymentTypeAdapter {
         const cartEndpoint = 'users/' + userId + '/carts/';
         return this.occEndpoints.getEndpoint(cartEndpoint);
     }
-};
+}
+OccCheckoutPaymentTypeAdapter.decorators = [
+    { type: Injectable }
+];
 OccCheckoutPaymentTypeAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCheckoutPaymentTypeAdapter = __decorate([
-    Injectable()
-], OccCheckoutPaymentTypeAdapter);
 
-let OccCheckoutCostCenterAdapter = class OccCheckoutCostCenterAdapter {
+class OccCheckoutCostCenterAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -4106,20 +4103,20 @@ let OccCheckoutCostCenterAdapter = class OccCheckoutCostCenterAdapter {
         const cartEndpoint = 'users/' + userId + '/carts/';
         return this.occEndpoints.getEndpoint(cartEndpoint);
     }
-};
+}
+OccCheckoutCostCenterAdapter.decorators = [
+    { type: Injectable }
+];
 OccCheckoutCostCenterAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCheckoutCostCenterAdapter = __decorate([
-    Injectable()
-], OccCheckoutCostCenterAdapter);
 
 class CheckoutAdapter {
 }
 
-let OccOrderNormalizer = class OccOrderNormalizer {
+class OccOrderNormalizer {
     constructor(converter) {
         this.converter = converter;
     }
@@ -4141,14 +4138,14 @@ let OccOrderNormalizer = class OccOrderNormalizer {
     convertOrderEntry(source) {
         return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
     }
-};
+}
+OccOrderNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
+OccOrderNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccOrderNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
-OccOrderNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
-OccOrderNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccOrderNormalizer);
 
 class CheckoutDeliveryAdapter {
 }
@@ -4173,41 +4170,41 @@ const defaultOccCheckoutConfig = {
 class CheckoutCostCenterAdapter {
 }
 
-let CheckoutOccModule = class CheckoutOccModule {
-};
-CheckoutOccModule = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule],
-        providers: [
-            provideDefaultConfig(defaultOccCheckoutConfig),
-            {
-                provide: CheckoutAdapter,
-                useClass: OccCheckoutAdapter,
-            },
-            { provide: ORDER_NORMALIZER, useExisting: OccOrderNormalizer, multi: true },
-            {
-                provide: CheckoutDeliveryAdapter,
-                useClass: OccCheckoutDeliveryAdapter,
-            },
-            {
-                provide: CheckoutPaymentAdapter,
-                useClass: OccCheckoutPaymentAdapter,
-            },
-            {
-                provide: PaymentTypeAdapter,
-                useClass: OccCheckoutPaymentTypeAdapter,
-            },
-            {
-                provide: CheckoutCostCenterAdapter,
-                useClass: OccCheckoutCostCenterAdapter,
-            },
-        ],
-    })
-], CheckoutOccModule);
+class CheckoutOccModule {
+}
+CheckoutOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule],
+                providers: [
+                    provideDefaultConfig(defaultOccCheckoutConfig),
+                    {
+                        provide: CheckoutAdapter,
+                        useClass: OccCheckoutAdapter,
+                    },
+                    { provide: ORDER_NORMALIZER, useExisting: OccOrderNormalizer, multi: true },
+                    {
+                        provide: CheckoutDeliveryAdapter,
+                        useClass: OccCheckoutDeliveryAdapter,
+                    },
+                    {
+                        provide: CheckoutPaymentAdapter,
+                        useClass: OccCheckoutPaymentAdapter,
+                    },
+                    {
+                        provide: PaymentTypeAdapter,
+                        useClass: OccCheckoutPaymentTypeAdapter,
+                    },
+                    {
+                        provide: CheckoutCostCenterAdapter,
+                        useClass: OccCheckoutCostCenterAdapter,
+                    },
+                ],
+            },] }
+];
 
 const CMS_PAGE_NORMALIZER = new InjectionToken('CmsPageNormalizer');
 
-let OccCmsPageAdapter = class OccCmsPageAdapter {
+class OccCmsPageAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -4251,19 +4248,19 @@ let OccCmsPageAdapter = class OccCmsPageAdapter {
         }
         return httpParams;
     }
-};
+}
+OccCmsPageAdapter.decorators = [
+    { type: Injectable }
+];
 OccCmsPageAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCmsPageAdapter = __decorate([
-    Injectable()
-], OccCmsPageAdapter);
 
 const CMS_COMPONENT_NORMALIZER = new InjectionToken('CmsComponentNormalizer');
 
-let OccCmsComponentAdapter = class OccCmsComponentAdapter {
+class OccCmsComponentAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -4332,15 +4329,15 @@ let OccCmsComponentAdapter = class OccCmsComponentAdapter {
         }
         return requestParams;
     }
-};
+}
+OccCmsComponentAdapter.decorators = [
+    { type: Injectable }
+];
 OccCmsComponentAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCmsComponentAdapter = __decorate([
-    Injectable()
-], OccCmsComponentAdapter);
 
 const JSP_INCLUDE_CMS_COMPONENT_TYPE = 'JspIncludeComponent';
 const CMS_FLEX_COMPONENT_TYPE = 'CMSFlexComponent';
@@ -4352,17 +4349,17 @@ var DeferLoadingStrategy;
     /** Renders the DOM instantly without being concerned with the view port */
     DeferLoadingStrategy["INSTANT"] = "INSTANT-LOADING";
 })(DeferLoadingStrategy || (DeferLoadingStrategy = {}));
-let CmsConfig = class CmsConfig extends OccConfig {
-};
+class CmsConfig extends OccConfig {
+}
 CmsConfig.ɵprov = ɵɵdefineInjectable({ factory: function CmsConfig_Factory() { return ɵɵinject(Config); }, token: CmsConfig, providedIn: "root" });
-CmsConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], CmsConfig);
+CmsConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
-let OccCmsPageNormalizer = class OccCmsPageNormalizer {
+class OccCmsPageNormalizer {
     convert(source, target = {}) {
         this.normalizePageData(source, target);
         this.normalizePageSlotData(source, target);
@@ -4433,11 +4430,11 @@ let OccCmsPageNormalizer = class OccCmsPageNormalizer {
             }
         }
     }
-};
+}
 OccCmsPageNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccCmsPageNormalizer_Factory() { return new OccCmsPageNormalizer(); }, token: OccCmsPageNormalizer, providedIn: "root" });
-OccCmsPageNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccCmsPageNormalizer);
+OccCmsPageNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 
 /**
  * Abstract class that can be used to implement custom loader logic
@@ -4449,45 +4446,45 @@ class CmsPageAdapter {
 class CmsComponentAdapter {
 }
 
-let CmsOccModule = class CmsOccModule {
-};
-CmsOccModule = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule],
-        providers: [
-            {
-                provide: CmsPageAdapter,
-                useClass: OccCmsPageAdapter,
-            },
-            {
-                provide: CMS_PAGE_NORMALIZER,
-                useExisting: OccCmsPageNormalizer,
-                multi: true,
-            },
-            {
-                provide: CmsComponentAdapter,
-                useClass: OccCmsComponentAdapter,
-            },
-        ],
-    })
-], CmsOccModule);
+class CmsOccModule {
+}
+CmsOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule],
+                providers: [
+                    {
+                        provide: CmsPageAdapter,
+                        useClass: OccCmsPageAdapter,
+                    },
+                    {
+                        provide: CMS_PAGE_NORMALIZER,
+                        useExisting: OccCmsPageNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: CmsComponentAdapter,
+                        useClass: OccCmsComponentAdapter,
+                    },
+                ],
+            },] }
+];
 
-let OccCostCenterNormalizer = class OccCostCenterNormalizer {
+class OccCostCenterNormalizer {
     convert(source, target) {
         if (target === undefined) {
             target = Object.assign({}, source);
         }
         return target;
     }
-};
-OccCostCenterNormalizer = __decorate([
-    Injectable()
-], OccCostCenterNormalizer);
+}
+OccCostCenterNormalizer.decorators = [
+    { type: Injectable }
+];
 
 const COST_CENTER_NORMALIZER = new InjectionToken('CostCenterNormalizer');
 const COST_CENTERS_NORMALIZER = new InjectionToken('CostCentersListNormalizer');
 
-let OccCostCenterListNormalizer = class OccCostCenterListNormalizer {
+class OccCostCenterListNormalizer {
     constructor(converter) {
         this.converter = converter;
     }
@@ -4497,13 +4494,13 @@ let OccCostCenterListNormalizer = class OccCostCenterListNormalizer {
         }
         return target;
     }
-};
+}
+OccCostCenterListNormalizer.decorators = [
+    { type: Injectable }
+];
 OccCostCenterListNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
-OccCostCenterListNormalizer = __decorate([
-    Injectable()
-], OccCostCenterListNormalizer);
 
 // PRIVATE API
 /**
@@ -4631,7 +4628,7 @@ class MergingSubject {
  * knowing as multiple decoupled features can attach sources to the same
  * event type.
  */
-let EventService = class EventService {
+class EventService {
     constructor() {
         /**
          * The various events meta are collected in a map, stored by the event type class
@@ -4737,13 +4734,13 @@ let EventService = class EventService {
             }
         }));
     }
-};
+}
 EventService.ɵprov = ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
-EventService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], EventService);
+EventService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
 /**
  * Will be thrown in case lazy loaded modules are loaded and instantiated.
@@ -4754,15 +4751,15 @@ EventService = __decorate([
 class ModuleInitializedEvent {
 }
 
-let FeaturesConfig = class FeaturesConfig {
-};
+class FeaturesConfig {
+}
 FeaturesConfig.ɵprov = ɵɵdefineInjectable({ factory: function FeaturesConfig_Factory() { return ɵɵinject(Config); }, token: FeaturesConfig, providedIn: "root" });
-FeaturesConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], FeaturesConfig);
+FeaturesConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 function isFeatureConfig(config) {
     return typeof config === 'object' && config.features;
@@ -4801,7 +4798,7 @@ function isFeatureEnabled(config, feature) {
     }
 }
 
-let FeatureConfigService = class FeatureConfigService {
+class FeatureConfigService {
     constructor(config) {
         this.config = config;
     }
@@ -4811,18 +4808,18 @@ let FeatureConfigService = class FeatureConfigService {
     isEnabled(feature) {
         return isFeatureEnabled(this.config, feature);
     }
-};
+}
+FeatureConfigService.ɵprov = ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+FeatureConfigService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 FeatureConfigService.ctorParameters = () => [
     { type: FeaturesConfig }
 ];
-FeatureConfigService.ɵprov = ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-FeatureConfigService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], FeatureConfigService);
 
-let FeatureLevelDirective = class FeatureLevelDirective {
+class FeatureLevelDirective {
     constructor(templateRef, viewContainer, featureConfig) {
         this.templateRef = templateRef;
         this.viewContainer = viewContainer;
@@ -4839,22 +4836,22 @@ let FeatureLevelDirective = class FeatureLevelDirective {
             this.hasView = false;
         }
     }
-};
+}
+FeatureLevelDirective.decorators = [
+    { type: Directive, args: [{
+                selector: '[cxFeatureLevel]',
+            },] }
+];
 FeatureLevelDirective.ctorParameters = () => [
     { type: TemplateRef },
     { type: ViewContainerRef },
     { type: FeatureConfigService }
 ];
-__decorate([
-    Input()
-], FeatureLevelDirective.prototype, "cxFeatureLevel", null);
-FeatureLevelDirective = __decorate([
-    Directive({
-        selector: '[cxFeatureLevel]',
-    })
-], FeatureLevelDirective);
+FeatureLevelDirective.propDecorators = {
+    cxFeatureLevel: [{ type: Input }]
+};
 
-let FeatureDirective = class FeatureDirective {
+class FeatureDirective {
     constructor(templateRef, viewContainer, featureConfig) {
         this.templateRef = templateRef;
         this.viewContainer = viewContainer;
@@ -4871,26 +4868,25 @@ let FeatureDirective = class FeatureDirective {
             this.hasView = false;
         }
     }
-};
+}
+FeatureDirective.decorators = [
+    { type: Directive, args: [{
+                selector: '[cxFeature]',
+            },] }
+];
 FeatureDirective.ctorParameters = () => [
     { type: TemplateRef },
     { type: ViewContainerRef },
     { type: FeatureConfigService }
 ];
-__decorate([
-    Input()
-], FeatureDirective.prototype, "cxFeature", null);
-FeatureDirective = __decorate([
-    Directive({
-        selector: '[cxFeature]',
-    })
-], FeatureDirective);
+FeatureDirective.propDecorators = {
+    cxFeature: [{ type: Input }]
+};
 
-var FeaturesConfigModule_1;
-let FeaturesConfigModule = FeaturesConfigModule_1 = class FeaturesConfigModule {
+class FeaturesConfigModule {
     static forRoot(defaultLevel) {
         return {
-            ngModule: FeaturesConfigModule_1,
+            ngModule: FeaturesConfigModule,
             providers: [
                 provideDefaultConfig({
                     features: {
@@ -4900,15 +4896,15 @@ let FeaturesConfigModule = FeaturesConfigModule_1 = class FeaturesConfigModule {
             ],
         };
     }
-};
-FeaturesConfigModule = FeaturesConfigModule_1 = __decorate([
-    NgModule({
-        declarations: [FeatureLevelDirective, FeatureDirective],
-        exports: [FeatureLevelDirective, FeatureDirective],
-    })
-], FeaturesConfigModule);
+}
+FeaturesConfigModule.decorators = [
+    { type: NgModule, args: [{
+                declarations: [FeatureLevelDirective, FeatureDirective],
+                exports: [FeatureLevelDirective, FeatureDirective],
+            },] }
+];
 
-let ConfigurationService = class ConfigurationService {
+class ConfigurationService {
     constructor(rootConfig, defaultConfig, events, config) {
         this.rootConfig = rootConfig;
         this.defaultConfig = defaultConfig;
@@ -4949,25 +4945,21 @@ let ConfigurationService = class ConfigurationService {
         }
         this.unifiedConfig$.complete();
     }
-};
+}
+ConfigurationService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigurationService_Factory() { return new ConfigurationService(ɵɵinject(RootConfig), ɵɵinject(DefaultConfig), ɵɵinject(EventService), ɵɵinject(Config)); }, token: ConfigurationService, providedIn: "root" });
+ConfigurationService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ConfigurationService.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [RootConfig,] }] },
     { type: undefined, decorators: [{ type: Inject, args: [DefaultConfig,] }] },
     { type: EventService },
     { type: undefined, decorators: [{ type: Inject, args: [Config,] }] }
 ];
-ConfigurationService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigurationService_Factory() { return new ConfigurationService(ɵɵinject(RootConfig), ɵɵinject(DefaultConfig), ɵɵinject(EventService), ɵɵinject(Config)); }, token: ConfigurationService, providedIn: "root" });
-ConfigurationService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    }),
-    __param(0, Inject(RootConfig)),
-    __param(1, Inject(DefaultConfig)),
-    __param(3, Inject(Config))
-], ConfigurationService);
 
-var ConfigModule_1;
-let ConfigModule = ConfigModule_1 = class ConfigModule {
+class ConfigModule {
     // To make sure ConfigurationService will be instantiated, we inject it into
     // module constructor
     constructor(_configurationService) { }
@@ -4980,7 +4972,7 @@ let ConfigModule = ConfigModule_1 = class ConfigModule {
      */
     static withConfig(config) {
         return {
-            ngModule: ConfigModule_1,
+            ngModule: ConfigModule,
             providers: [provideConfig(config)],
         };
     }
@@ -4994,7 +4986,7 @@ let ConfigModule = ConfigModule_1 = class ConfigModule {
      */
     static withConfigFactory(configFactory, deps) {
         return {
-            ngModule: ConfigModule_1,
+            ngModule: ConfigModule,
             providers: [provideConfigFactory(configFactory, deps)],
         };
     }
@@ -5005,17 +4997,17 @@ let ConfigModule = ConfigModule_1 = class ConfigModule {
      */
     static forRoot(config = {}) {
         return {
-            ngModule: ConfigModule_1,
+            ngModule: ConfigModule,
             providers: [provideConfig(config)],
         };
     }
-};
+}
+ConfigModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 ConfigModule.ctorParameters = () => [
     { type: ConfigurationService }
 ];
-ConfigModule = ConfigModule_1 = __decorate([
-    NgModule({})
-], ConfigModule);
 
 const defaultOccCostCentersConfig = {
     backend: {
@@ -5027,22 +5019,22 @@ const defaultOccCostCentersConfig = {
     },
 };
 
-let CostCenterOccModule = class CostCenterOccModule {
-};
-CostCenterOccModule = __decorate([
-    NgModule({
-        imports: [CommonModule, ConfigModule.withConfig(defaultOccCostCentersConfig)],
-        providers: [
-            {
-                provide: COST_CENTERS_NORMALIZER,
-                useClass: OccCostCenterListNormalizer,
-                multi: true,
-            },
-        ],
-    })
-], CostCenterOccModule);
+class CostCenterOccModule {
+}
+CostCenterOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, ConfigModule.withConfig(defaultOccCostCentersConfig)],
+                providers: [
+                    {
+                        provide: COST_CENTERS_NORMALIZER,
+                        useClass: OccCostCenterListNormalizer,
+                        multi: true,
+                    },
+                ],
+            },] }
+];
 
-let ProductImageNormalizer = class ProductImageNormalizer {
+class ProductImageNormalizer {
     constructor(config) {
         this.config = config;
     }
@@ -5103,16 +5095,16 @@ let ProductImageNormalizer = class ProductImageNormalizer {
             this.config.backend.occ.baseUrl ||
             '') + url);
     }
-};
+}
+ProductImageNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function ProductImageNormalizer_Factory() { return new ProductImageNormalizer(ɵɵinject(OccConfig)); }, token: ProductImageNormalizer, providedIn: "root" });
+ProductImageNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 ProductImageNormalizer.ctorParameters = () => [
     { type: OccConfig }
 ];
-ProductImageNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function ProductImageNormalizer_Factory() { return new ProductImageNormalizer(ɵɵinject(OccConfig)); }, token: ProductImageNormalizer, providedIn: "root" });
-ProductImageNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], ProductImageNormalizer);
 
-let ProductReferenceNormalizer = class ProductReferenceNormalizer {
+class ProductReferenceNormalizer {
     convert(source, target) {
         if (target === undefined) {
             target = Object.assign({}, source);
@@ -5141,12 +5133,12 @@ let ProductReferenceNormalizer = class ProductReferenceNormalizer {
         }
         return references;
     }
-};
-ProductReferenceNormalizer = __decorate([
-    Injectable()
-], ProductReferenceNormalizer);
+}
+ProductReferenceNormalizer.decorators = [
+    { type: Injectable }
+];
 
-let OccProductSearchPageNormalizer = class OccProductSearchPageNormalizer {
+class OccProductSearchPageNormalizer {
     constructor(converterService) {
         this.converterService = converterService;
         /**
@@ -5206,16 +5198,16 @@ let OccProductSearchPageNormalizer = class OccProductSearchPageNormalizer {
             });
         }
     }
-};
+}
+OccProductSearchPageNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccProductSearchPageNormalizer_Factory() { return new OccProductSearchPageNormalizer(ɵɵinject(ConverterService)); }, token: OccProductSearchPageNormalizer, providedIn: "root" });
+OccProductSearchPageNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccProductSearchPageNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
-OccProductSearchPageNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccProductSearchPageNormalizer_Factory() { return new OccProductSearchPageNormalizer(ɵɵinject(ConverterService)); }, token: OccProductSearchPageNormalizer, providedIn: "root" });
-OccProductSearchPageNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccProductSearchPageNormalizer);
 
-let OccProductReferencesListNormalizer = class OccProductReferencesListNormalizer {
+class OccProductReferencesListNormalizer {
     constructor(converter) {
         this.converter = converter;
     }
@@ -5228,16 +5220,16 @@ let OccProductReferencesListNormalizer = class OccProductReferencesListNormalize
             return target;
         }
     }
-};
+}
+OccProductReferencesListNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccProductReferencesListNormalizer_Factory() { return new OccProductReferencesListNormalizer(ɵɵinject(ConverterService)); }, token: OccProductReferencesListNormalizer, providedIn: "root" });
+OccProductReferencesListNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccProductReferencesListNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
-OccProductReferencesListNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccProductReferencesListNormalizer_Factory() { return new OccProductReferencesListNormalizer(ɵɵinject(ConverterService)); }, token: OccProductReferencesListNormalizer, providedIn: "root" });
-OccProductReferencesListNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccProductReferencesListNormalizer);
 
-let ProductNameNormalizer = class ProductNameNormalizer {
+class ProductNameNormalizer {
     constructor(config) {
         this.config = config;
     }
@@ -5254,18 +5246,18 @@ let ProductNameNormalizer = class ProductNameNormalizer {
     normalize(name) {
         return name.replace(/<[^>]*>/g, '');
     }
-};
+}
+ProductNameNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function ProductNameNormalizer_Factory() { return new ProductNameNormalizer(ɵɵinject(OccConfig)); }, token: ProductNameNormalizer, providedIn: "root" });
+ProductNameNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 ProductNameNormalizer.ctorParameters = () => [
     { type: OccConfig }
 ];
-ProductNameNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function ProductNameNormalizer_Factory() { return new ProductNameNormalizer(ɵɵinject(OccConfig)); }, token: ProductNameNormalizer, providedIn: "root" });
-ProductNameNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], ProductNameNormalizer);
 
 const PRODUCT_REFERENCES_NORMALIZER = new InjectionToken('ProductReferencesListNormalizer');
 
-let OccProductReferencesAdapter = class OccProductReferencesAdapter {
+class OccProductReferencesAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -5281,20 +5273,20 @@ let OccProductReferencesAdapter = class OccProductReferencesAdapter {
             productCode: code,
         }, { referenceType: reference, pageSize });
     }
-};
+}
+OccProductReferencesAdapter.decorators = [
+    { type: Injectable }
+];
 OccProductReferencesAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccProductReferencesAdapter = __decorate([
-    Injectable()
-], OccProductReferencesAdapter);
 
 const PRODUCT_REVIEW_NORMALIZER = new InjectionToken('ProductReviewNormalizer');
 const PRODUCT_REVIEW_SERIALIZER = new InjectionToken('ProductReviewSerializer');
 
-let OccProductReviewsAdapter = class OccProductReviewsAdapter {
+class OccProductReviewsAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -5324,15 +5316,15 @@ let OccProductReviewsAdapter = class OccProductReviewsAdapter {
             productCode: code,
         }, { maxCount });
     }
-};
+}
+OccProductReviewsAdapter.decorators = [
+    { type: Injectable }
+];
 OccProductReviewsAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccProductReviewsAdapter = __decorate([
-    Injectable()
-], OccProductReviewsAdapter);
 
 const PRODUCT_SEARCH_PAGE_NORMALIZER = new InjectionToken('ProductSearchPageNormalizer');
 const PRODUCT_SUGGESTION_NORMALIZER = new InjectionToken('ProductSuggestionNormalizer');
@@ -5340,7 +5332,7 @@ const PRODUCT_SUGGESTION_NORMALIZER = new InjectionToken('ProductSuggestionNorma
 const DEFAULT_SEARCH_CONFIG = {
     pageSize: 20,
 };
-let OccProductSearchAdapter = class OccProductSearchAdapter {
+class OccProductSearchAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -5362,15 +5354,15 @@ let OccProductSearchAdapter = class OccProductSearchAdapter {
     getSuggestionEndpoint(term, max) {
         return this.occEndpoints.getUrl('productSuggestions', {}, { term, max });
     }
-};
+}
+OccProductSearchAdapter.decorators = [
+    { type: Injectable }
+];
 OccProductSearchAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccProductSearchAdapter = __decorate([
-    Injectable()
-], OccProductSearchAdapter);
 
 /**
  * Merge occ fields parameters
@@ -5486,7 +5478,7 @@ function getObjectPart(data, fields) {
 /**
  * Helper service for optimizing endpoint calls to occ backend
  */
-let OccFieldsService = class OccFieldsService {
+class OccFieldsService {
     constructor(http) {
         this.http = http;
         this.FIELDS_PARAM = 'fields';
@@ -5559,18 +5551,18 @@ let OccFieldsService = class OccFieldsService {
         }
         return url;
     }
-};
+}
+OccFieldsService.ɵprov = ɵɵdefineInjectable({ factory: function OccFieldsService_Factory() { return new OccFieldsService(ɵɵinject(HttpClient)); }, token: OccFieldsService, providedIn: "root" });
+OccFieldsService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 OccFieldsService.ctorParameters = () => [
     { type: HttpClient }
 ];
-OccFieldsService.ɵprov = ɵɵdefineInjectable({ factory: function OccFieldsService_Factory() { return new OccFieldsService(ɵɵinject(HttpClient)); }, token: OccFieldsService, providedIn: "root" });
-OccFieldsService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], OccFieldsService);
 
-let OccRequestsOptimizerService = class OccRequestsOptimizerService {
+class OccRequestsOptimizerService {
     constructor(http, occFields) {
         this.http = http;
         this.occFields = occFields;
@@ -5604,19 +5596,19 @@ let OccRequestsOptimizerService = class OccRequestsOptimizerService {
         });
         return result;
     }
-};
+}
+OccRequestsOptimizerService.ɵprov = ɵɵdefineInjectable({ factory: function OccRequestsOptimizerService_Factory() { return new OccRequestsOptimizerService(ɵɵinject(HttpClient), ɵɵinject(OccFieldsService)); }, token: OccRequestsOptimizerService, providedIn: "root" });
+OccRequestsOptimizerService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 OccRequestsOptimizerService.ctorParameters = () => [
     { type: HttpClient },
     { type: OccFieldsService }
 ];
-OccRequestsOptimizerService.ɵprov = ɵɵdefineInjectable({ factory: function OccRequestsOptimizerService_Factory() { return new OccRequestsOptimizerService(ɵɵinject(HttpClient), ɵɵinject(OccFieldsService)); }, token: OccRequestsOptimizerService, providedIn: "root" });
-OccRequestsOptimizerService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], OccRequestsOptimizerService);
 
-let OccProductAdapter = class OccProductAdapter {
+class OccProductAdapter {
     constructor(http, occEndpoints, converter, requestsOptimizer) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -5642,16 +5634,16 @@ let OccProductAdapter = class OccProductAdapter {
             productCode: code,
         }, undefined, scope);
     }
-};
+}
+OccProductAdapter.decorators = [
+    { type: Injectable }
+];
 OccProductAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService },
     { type: OccRequestsOptimizerService }
 ];
-OccProductAdapter = __decorate([
-    Injectable()
-], OccProductAdapter);
 
 class ProductAdapter {
 }
@@ -5705,59 +5697,59 @@ const defaultOccProductConfig = {
     },
 };
 
-let ProductOccModule = class ProductOccModule {
-};
-ProductOccModule = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule],
-        providers: [
-            provideDefaultConfig(defaultOccProductConfig),
-            {
-                provide: ProductAdapter,
-                useClass: OccProductAdapter,
-            },
-            {
-                provide: PRODUCT_NORMALIZER,
-                useExisting: ProductImageNormalizer,
-                multi: true,
-            },
-            {
-                provide: PRODUCT_NORMALIZER,
-                useExisting: ProductNameNormalizer,
-                multi: true,
-            },
-            {
-                provide: ProductReferencesAdapter,
-                useClass: OccProductReferencesAdapter,
-            },
-            {
-                provide: PRODUCT_REFERENCES_NORMALIZER,
-                useExisting: OccProductReferencesListNormalizer,
-                multi: true,
-            },
-            {
-                provide: ProductSearchAdapter,
-                useClass: OccProductSearchAdapter,
-            },
-            {
-                provide: PRODUCT_SEARCH_PAGE_NORMALIZER,
-                useExisting: OccProductSearchPageNormalizer,
-                multi: true,
-            },
-            {
-                provide: ProductReviewsAdapter,
-                useClass: OccProductReviewsAdapter,
-            },
-        ],
-    })
-], ProductOccModule);
+class ProductOccModule {
+}
+ProductOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule],
+                providers: [
+                    provideDefaultConfig(defaultOccProductConfig),
+                    {
+                        provide: ProductAdapter,
+                        useClass: OccProductAdapter,
+                    },
+                    {
+                        provide: PRODUCT_NORMALIZER,
+                        useExisting: ProductImageNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: PRODUCT_NORMALIZER,
+                        useExisting: ProductNameNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: ProductReferencesAdapter,
+                        useClass: OccProductReferencesAdapter,
+                    },
+                    {
+                        provide: PRODUCT_REFERENCES_NORMALIZER,
+                        useExisting: OccProductReferencesListNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: ProductSearchAdapter,
+                        useClass: OccProductSearchAdapter,
+                    },
+                    {
+                        provide: PRODUCT_SEARCH_PAGE_NORMALIZER,
+                        useExisting: OccProductSearchPageNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: ProductReviewsAdapter,
+                        useClass: OccProductReviewsAdapter,
+                    },
+                ],
+            },] }
+];
 
 const LANGUAGE_NORMALIZER = new InjectionToken('LanguageNormalizer');
 const CURRENCY_NORMALIZER = new InjectionToken('CurrencyNormalizer');
 const COUNTRY_NORMALIZER = new InjectionToken('CountryNormalizer');
 const REGION_NORMALIZER = new InjectionToken('RegionNormalizer');
 
-let OccSiteAdapter = class OccSiteAdapter {
+class OccSiteAdapter {
     constructor(http, occEndpointsService, converterService) {
         this.http = http;
         this.occEndpointsService = occEndpointsService;
@@ -5797,15 +5789,15 @@ let OccSiteAdapter = class OccSiteAdapter {
             return siteList.baseSites.find((site) => site.uid === activeSite);
         }));
     }
-};
+}
+OccSiteAdapter.decorators = [
+    { type: Injectable }
+];
 OccSiteAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccSiteAdapter = __decorate([
-    Injectable()
-], OccSiteAdapter);
 
 class SiteAdapter {
 }
@@ -5826,7 +5818,7 @@ const defaultOccSiteContextConfig = {
 /**
  * Facade that provides easy access to curreny state, actions and selectors.
  */
-let CurrencyService = class CurrencyService {
+class CurrencyService {
     constructor(store, winRef, config) {
         this.store = store;
         this.config = config;
@@ -5883,20 +5875,20 @@ let CurrencyService = class CurrencyService {
             this.setActive(getContextParameterDefault(this.config, CURRENCY_CONTEXT_ID));
         }
     }
-};
+}
+CurrencyService.decorators = [
+    { type: Injectable }
+];
 CurrencyService.ctorParameters = () => [
     { type: Store },
     { type: WindowRef },
     { type: SiteContextConfig }
 ];
-CurrencyService = __decorate([
-    Injectable()
-], CurrencyService);
 
 /**
  * Facade that provides easy access to language state, actions and selectors.
  */
-let LanguageService = class LanguageService {
+class LanguageService {
     constructor(store, winRef, config) {
         this.store = store;
         this.config = config;
@@ -5953,17 +5945,17 @@ let LanguageService = class LanguageService {
             this.setActive(getContextParameterDefault(this.config, LANGUAGE_CONTEXT_ID));
         }
     }
-};
+}
+LanguageService.decorators = [
+    { type: Injectable }
+];
 LanguageService.ctorParameters = () => [
     { type: Store },
     { type: WindowRef },
     { type: SiteContextConfig }
 ];
-LanguageService = __decorate([
-    Injectable()
-], LanguageService);
 
-let SiteContextInterceptor = class SiteContextInterceptor {
+class SiteContextInterceptor {
     constructor(languageService, currencyService, occEndpoints, config) {
         this.languageService = languageService;
         this.currencyService = currencyService;
@@ -5989,37 +5981,37 @@ let SiteContextInterceptor = class SiteContextInterceptor {
         }
         return next.handle(request);
     }
-};
+}
+SiteContextInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function SiteContextInterceptor_Factory() { return new SiteContextInterceptor(ɵɵinject(LanguageService), ɵɵinject(CurrencyService), ɵɵinject(OccEndpointsService), ɵɵinject(SiteContextConfig)); }, token: SiteContextInterceptor, providedIn: "root" });
+SiteContextInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 SiteContextInterceptor.ctorParameters = () => [
     { type: LanguageService },
     { type: CurrencyService },
     { type: OccEndpointsService },
     { type: SiteContextConfig }
 ];
-SiteContextInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function SiteContextInterceptor_Factory() { return new SiteContextInterceptor(ɵɵinject(LanguageService), ɵɵinject(CurrencyService), ɵɵinject(OccEndpointsService), ɵɵinject(SiteContextConfig)); }, token: SiteContextInterceptor, providedIn: "root" });
-SiteContextInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], SiteContextInterceptor);
 
-let SiteContextOccModule = class SiteContextOccModule {
-};
-SiteContextOccModule = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule],
-        providers: [
-            provideDefaultConfig(defaultOccSiteContextConfig),
-            {
-                provide: SiteAdapter,
-                useClass: OccSiteAdapter,
-            },
-            {
-                provide: HTTP_INTERCEPTORS,
-                useExisting: SiteContextInterceptor,
-                multi: true,
-            },
-        ],
-    })
-], SiteContextOccModule);
+class SiteContextOccModule {
+}
+SiteContextOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule],
+                providers: [
+                    provideDefaultConfig(defaultOccSiteContextConfig),
+                    {
+                        provide: SiteAdapter,
+                        useClass: OccSiteAdapter,
+                    },
+                    {
+                        provide: HTTP_INTERCEPTORS,
+                        useExisting: SiteContextInterceptor,
+                        multi: true,
+                    },
+                ],
+            },] }
+];
 
 class StoreFinderAdapter {
 }
@@ -6036,7 +6028,7 @@ const defaultOccStoreFinderConfig = {
     },
 };
 
-let StoreFinderConnector = class StoreFinderConnector {
+class StoreFinderConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -6049,20 +6041,20 @@ let StoreFinderConnector = class StoreFinderConnector {
     get(storeId) {
         return this.adapter.load(storeId);
     }
-};
+}
+StoreFinderConnector.ɵprov = ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(ɵɵinject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
+StoreFinderConnector.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 StoreFinderConnector.ctorParameters = () => [
     { type: StoreFinderAdapter }
 ];
-StoreFinderConnector.ɵprov = ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(ɵɵinject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
-StoreFinderConnector = __decorate([
-    Injectable({ providedIn: 'root' })
-], StoreFinderConnector);
 
 const POINT_OF_SERVICE_NORMALIZER = new InjectionToken('PointOfServiceNormalizer');
 const STORE_FINDER_SEARCH_PAGE_NORMALIZER = new InjectionToken('StoreFinderSearchPageNormalizer');
 const STORE_COUNT_NORMALIZER = new InjectionToken('StoreCountNormalizer');
 
-let OccStoreFinderAdapter = class OccStoreFinderAdapter {
+class OccStoreFinderAdapter {
     constructor(http, occEndpointsService, converterService) {
         this.http = http;
         this.occEndpointsService = occEndpointsService;
@@ -6102,32 +6094,32 @@ let OccStoreFinderAdapter = class OccStoreFinderAdapter {
         }
         return this.http.get(this.occEndpointsService.getUrl('stores', undefined, params));
     }
-};
+}
+OccStoreFinderAdapter.decorators = [
+    { type: Injectable }
+];
 OccStoreFinderAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccStoreFinderAdapter = __decorate([
-    Injectable()
-], OccStoreFinderAdapter);
 
-let StoreFinderOccModule = class StoreFinderOccModule {
-};
-StoreFinderOccModule = __decorate([
-    NgModule({
-        providers: [
-            provideDefaultConfig(defaultOccStoreFinderConfig),
-            { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
-        ],
-    })
-], StoreFinderOccModule);
+class StoreFinderOccModule {
+}
+StoreFinderOccModule.decorators = [
+    { type: NgModule, args: [{
+                providers: [
+                    provideDefaultConfig(defaultOccStoreFinderConfig),
+                    { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
+                ],
+            },] }
+];
 
 const ANONYMOUS_CONSENT_NORMALIZER = new InjectionToken('AnonymousConsentNormalizer');
 
 const CONSENT_TEMPLATE_NORMALIZER = new InjectionToken('ConsentTemplateNormalizer');
 
-let OccAnonymousConsentTemplatesAdapter = class OccAnonymousConsentTemplatesAdapter {
+class OccAnonymousConsentTemplatesAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6144,17 +6136,17 @@ let OccAnonymousConsentTemplatesAdapter = class OccAnonymousConsentTemplatesAdap
             .head(url, { observe: 'response' })
             .pipe(catchError((error) => throwError(error)), map((response) => response.headers.get(ANONYMOUS_CONSENTS_HEADER)), this.converter.pipeable(ANONYMOUS_CONSENT_NORMALIZER));
     }
-};
+}
+OccAnonymousConsentTemplatesAdapter.decorators = [
+    { type: Injectable }
+];
 OccAnonymousConsentTemplatesAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccAnonymousConsentTemplatesAdapter = __decorate([
-    Injectable()
-], OccAnonymousConsentTemplatesAdapter);
 
-let OccUserAddressAdapter = class OccUserAddressAdapter {
+class OccUserAddressAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6217,17 +6209,17 @@ let OccUserAddressAdapter = class OccUserAddressAdapter {
             .delete(url, { headers })
             .pipe(catchError((error) => throwError(error)));
     }
-};
+}
+OccUserAddressAdapter.decorators = [
+    { type: Injectable }
+];
 OccUserAddressAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccUserAddressAdapter = __decorate([
-    Injectable()
-], OccUserAddressAdapter);
 
-let OccUserConsentAdapter = class OccUserConsentAdapter {
+class OccUserConsentAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6263,15 +6255,15 @@ let OccUserConsentAdapter = class OccUserConsentAdapter {
         });
         return this.http.delete(url, { headers });
     }
-};
+}
+OccUserConsentAdapter.decorators = [
+    { type: Injectable }
+];
 OccUserConsentAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccUserConsentAdapter = __decorate([
-    Injectable()
-], OccUserConsentAdapter);
 
 const ORDER_HISTORY_NORMALIZER = new InjectionToken('OrderHistoryNormalizer');
 const CONSIGNMENT_TRACKING_NORMALIZER = new InjectionToken('ConsignmentTrackingNormalizer');
@@ -6279,7 +6271,7 @@ const ORDER_RETURN_REQUEST_NORMALIZER = new InjectionToken('OrderReturnRequestNo
 const ORDER_RETURN_REQUEST_INPUT_SERIALIZER = new InjectionToken('OrderReturnRequestInputSerializer');
 const ORDER_RETURNS_NORMALIZER = new InjectionToken('OrderReturnsNormalizer');
 
-let OccUserOrderAdapter = class OccUserOrderAdapter {
+class OccUserOrderAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6383,17 +6375,17 @@ let OccUserOrderAdapter = class OccUserOrderAdapter {
             .patch(url, returnRequestModification, { headers })
             .pipe(catchError((error) => throwError(error)));
     }
-};
+}
+OccUserOrderAdapter.decorators = [
+    { type: Injectable }
+];
 OccUserOrderAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccUserOrderAdapter = __decorate([
-    Injectable()
-], OccUserOrderAdapter);
 
-let OccUserPaymentAdapter = class OccUserPaymentAdapter {
+class OccUserPaymentAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6434,22 +6426,22 @@ let OccUserPaymentAdapter = class OccUserPaymentAdapter {
         { billingAddress: { titleCode: 'mr' }, defaultPayment: true }, { headers })
             .pipe(catchError((error) => throwError(error)));
     }
-};
+}
+OccUserPaymentAdapter.decorators = [
+    { type: Injectable }
+];
 OccUserPaymentAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccUserPaymentAdapter = __decorate([
-    Injectable()
-], OccUserPaymentAdapter);
 
 const USER_NORMALIZER = new InjectionToken('UserNormalizer');
 const USER_SERIALIZER = new InjectionToken('UserSerializer');
 const USER_SIGN_UP_SERIALIZER = new InjectionToken('UserSignUpSerializer');
 const TITLE_NORMALIZER = new InjectionToken('TitleNormalizer');
 
-let OccUserAdapter = class OccUserAdapter {
+class OccUserAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6535,15 +6527,15 @@ let OccUserAdapter = class OccUserAdapter {
         const url = this.occEndpoints.getUrl('titles');
         return this.http.get(url).pipe(map((titleList) => titleList.titles), this.converter.pipeableMany(TITLE_NORMALIZER));
     }
-};
+}
+OccUserAdapter.decorators = [
+    { type: Injectable }
+];
 OccUserAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccUserAdapter = __decorate([
-    Injectable()
-], OccUserAdapter);
 
 class AnonymousConsentTemplatesAdapter {
 }
@@ -6579,7 +6571,7 @@ class UserAdapter {
 
 const CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new InjectionToken('CustomerCouponSearchResultNormalizer');
 
-let OccCustomerCouponAdapter = class OccCustomerCouponAdapter {
+class OccCustomerCouponAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6632,17 +6624,17 @@ let OccCustomerCouponAdapter = class OccCustomerCouponAdapter {
             'Content-Type': 'application/json',
         });
     }
-};
+}
+OccCustomerCouponAdapter.decorators = [
+    { type: Injectable }
+];
 OccCustomerCouponAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccCustomerCouponAdapter = __decorate([
-    Injectable()
-], OccCustomerCouponAdapter);
 
-let AnonymousConsentNormalizer = class AnonymousConsentNormalizer {
+class AnonymousConsentNormalizer {
     constructor(anonymousConsentsService) {
         this.anonymousConsentsService = anonymousConsentsService;
     }
@@ -6650,16 +6642,16 @@ let AnonymousConsentNormalizer = class AnonymousConsentNormalizer {
         target = this.anonymousConsentsService.decodeAndDeserialize(source);
         return target;
     }
-};
+}
+AnonymousConsentNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
+AnonymousConsentNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 AnonymousConsentNormalizer.ctorParameters = () => [
     { type: AnonymousConsentsService }
 ];
-AnonymousConsentNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
-AnonymousConsentNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], AnonymousConsentNormalizer);
 
-let OccReturnRequestNormalizer = class OccReturnRequestNormalizer {
+class OccReturnRequestNormalizer {
     constructor(converter) {
         this.converter = converter;
     }
@@ -6675,16 +6667,16 @@ let OccReturnRequestNormalizer = class OccReturnRequestNormalizer {
     convertOrderEntry(source) {
         return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
     }
-};
+}
+OccReturnRequestNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
+OccReturnRequestNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccReturnRequestNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
-OccReturnRequestNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
-OccReturnRequestNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccReturnRequestNormalizer);
 
-let OccUserInterestsNormalizer = class OccUserInterestsNormalizer {
+class OccUserInterestsNormalizer {
     constructor(converter) {
         this.converter = converter;
     }
@@ -6697,14 +6689,14 @@ let OccUserInterestsNormalizer = class OccUserInterestsNormalizer {
         }
         return target;
     }
-};
+}
+OccUserInterestsNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
+OccUserInterestsNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccUserInterestsNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
-OccUserInterestsNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
-OccUserInterestsNormalizer = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccUserInterestsNormalizer);
 
 const defaultOccUserConfig = {
     backend: {
@@ -6746,7 +6738,7 @@ const defaultOccUserConfig = {
     },
 };
 
-let OccUserCostCenterAdapter = class OccUserCostCenterAdapter {
+class OccUserCostCenterAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6762,20 +6754,20 @@ let OccUserCostCenterAdapter = class OccUserCostCenterAdapter {
     getCostCentersEndpoint(userId, params) {
         return this.occEndpoints.getUrl('costCenters', { userId }, params);
     }
-};
+}
+OccUserCostCenterAdapter.decorators = [
+    { type: Injectable }
+];
 OccUserCostCenterAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-OccUserCostCenterAdapter = __decorate([
-    Injectable()
-], OccUserCostCenterAdapter);
 
 const headers = new HttpHeaders({
     'Content-Type': 'application/json',
 });
-let OccUserInterestsAdapter = class OccUserInterestsAdapter {
+class OccUserInterestsAdapter {
     constructor(http, occEndpoints, config, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
@@ -6828,21 +6820,21 @@ let OccUserInterestsAdapter = class OccUserInterestsAdapter {
         })
             .pipe(catchError((error) => throwError(error)));
     }
-};
+}
+OccUserInterestsAdapter.decorators = [
+    { type: Injectable }
+];
 OccUserInterestsAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: OccConfig },
     { type: ConverterService }
 ];
-OccUserInterestsAdapter = __decorate([
-    Injectable()
-], OccUserInterestsAdapter);
 
 const NOTIFICATION_PREFERENCE_SERIALIZER = new InjectionToken('NotificationPreferenceSerializer');
 const NOTIFICATION_PREFERENCE_NORMALIZER = new InjectionToken('NotificationPreferenceNormalizer');
 
-let UserNotificationPreferenceConnector = class UserNotificationPreferenceConnector {
+class UserNotificationPreferenceConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -6852,21 +6844,21 @@ let UserNotificationPreferenceConnector = class UserNotificationPreferenceConnec
     update(userId, preferences) {
         return this.adapter.update(userId, preferences);
     }
-};
+}
+UserNotificationPreferenceConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
+UserNotificationPreferenceConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserNotificationPreferenceConnector.ctorParameters = () => [
     { type: UserNotificationPreferenceAdapter }
 ];
-UserNotificationPreferenceConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
-UserNotificationPreferenceConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserNotificationPreferenceConnector);
 
 const headers$1 = new HttpHeaders({
     'Content-Type': 'application/json',
 });
-let OccUserNotificationPreferenceAdapter = class OccUserNotificationPreferenceAdapter {
+class OccUserNotificationPreferenceAdapter {
     constructor(http, converter, occEndpoints) {
         this.http = http;
         this.converter = converter;
@@ -6885,62 +6877,62 @@ let OccUserNotificationPreferenceAdapter = class OccUserNotificationPreferenceAd
             .patch(this.occEndpoints.getUrl('notificationPreference', { userId }), { preferences: preferences }, { headers: headers$1 })
             .pipe(catchError((error) => throwError(error)));
     }
-};
+}
+OccUserNotificationPreferenceAdapter.decorators = [
+    { type: Injectable }
+];
 OccUserNotificationPreferenceAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: ConverterService },
     { type: OccEndpointsService }
 ];
-OccUserNotificationPreferenceAdapter = __decorate([
-    Injectable()
-], OccUserNotificationPreferenceAdapter);
 
-let UserOccModule = class UserOccModule {
-};
-UserOccModule = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule],
-        providers: [
-            provideDefaultConfig(defaultOccUserConfig),
-            { provide: UserAdapter, useClass: OccUserAdapter },
-            { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
-            { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
-            {
-                provide: AnonymousConsentTemplatesAdapter,
-                useClass: OccAnonymousConsentTemplatesAdapter,
-            },
-            {
-                provide: UserPaymentAdapter,
-                useClass: OccUserPaymentAdapter,
-            },
-            { provide: UserOrderAdapter, useClass: OccUserOrderAdapter },
-            { provide: CustomerCouponAdapter, useClass: OccCustomerCouponAdapter },
-            {
-                provide: UserNotificationPreferenceAdapter,
-                useClass: OccUserNotificationPreferenceAdapter,
-            },
-            { provide: UserInterestsAdapter, useClass: OccUserInterestsAdapter },
-            { provide: UserCostCenterAdapter, useClass: OccUserCostCenterAdapter },
-            {
-                provide: PRODUCT_INTERESTS_NORMALIZER,
-                useExisting: OccUserInterestsNormalizer,
-                multi: true,
-            },
-            {
-                provide: ORDER_RETURN_REQUEST_NORMALIZER,
-                useExisting: OccReturnRequestNormalizer,
-                multi: true,
-            },
-            {
-                provide: ANONYMOUS_CONSENT_NORMALIZER,
-                useExisting: AnonymousConsentNormalizer,
-                multi: true,
-            },
-        ],
-    })
-], UserOccModule);
+class UserOccModule {
+}
+UserOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule],
+                providers: [
+                    provideDefaultConfig(defaultOccUserConfig),
+                    { provide: UserAdapter, useClass: OccUserAdapter },
+                    { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
+                    { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
+                    {
+                        provide: AnonymousConsentTemplatesAdapter,
+                        useClass: OccAnonymousConsentTemplatesAdapter,
+                    },
+                    {
+                        provide: UserPaymentAdapter,
+                        useClass: OccUserPaymentAdapter,
+                    },
+                    { provide: UserOrderAdapter, useClass: OccUserOrderAdapter },
+                    { provide: CustomerCouponAdapter, useClass: OccCustomerCouponAdapter },
+                    {
+                        provide: UserNotificationPreferenceAdapter,
+                        useClass: OccUserNotificationPreferenceAdapter,
+                    },
+                    { provide: UserInterestsAdapter, useClass: OccUserInterestsAdapter },
+                    { provide: UserCostCenterAdapter, useClass: OccUserCostCenterAdapter },
+                    {
+                        provide: PRODUCT_INTERESTS_NORMALIZER,
+                        useExisting: OccUserInterestsNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: ORDER_RETURN_REQUEST_NORMALIZER,
+                        useExisting: OccReturnRequestNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: ANONYMOUS_CONSENT_NORMALIZER,
+                        useExisting: AnonymousConsentNormalizer,
+                        multi: true,
+                    },
+                ],
+            },] }
+];
 
-let JavaRegExpConverter = class JavaRegExpConverter {
+class JavaRegExpConverter {
     constructor() {
         /**
          * Pattern that extracts modifiers from the Java regexp.
@@ -6985,11 +6977,11 @@ let JavaRegExpConverter = class JavaRegExpConverter {
             return null;
         }
     }
-};
+}
 JavaRegExpConverter.ɵprov = ɵɵdefineInjectable({ factory: function JavaRegExpConverter_Factory() { return new JavaRegExpConverter(); }, token: JavaRegExpConverter, providedIn: "root" });
-JavaRegExpConverter = __decorate([
-    Injectable({ providedIn: 'root' })
-], JavaRegExpConverter);
+JavaRegExpConverter.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 
 const CONFIG_INITIALIZER = new InjectionToken('ConfigInitializer');
 const CONFIG_INITIALIZER_FORROOT_GUARD = new InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
@@ -7003,7 +6995,7 @@ const SERVER_REQUEST_URL = new InjectionToken('SERVER_REQUEST_URL');
  * */
 const SERVER_REQUEST_ORIGIN = new InjectionToken('SERVER_REQUEST_ORIGIN');
 
-let OccLoadedConfigConverter = class OccLoadedConfigConverter {
+class OccLoadedConfigConverter {
     constructor(javaRegExpConverter) {
         this.javaRegExpConverter = javaRegExpConverter;
     }
@@ -7082,16 +7074,16 @@ let OccLoadedConfigConverter = class OccLoadedConfigConverter {
     getError(message) {
         return new Error(`Error: Cannot get base site config! ${message}`);
     }
-};
+}
+OccLoadedConfigConverter.ɵprov = ɵɵdefineInjectable({ factory: function OccLoadedConfigConverter_Factory() { return new OccLoadedConfigConverter(ɵɵinject(JavaRegExpConverter)); }, token: OccLoadedConfigConverter, providedIn: "root" });
+OccLoadedConfigConverter.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccLoadedConfigConverter.ctorParameters = () => [
     { type: JavaRegExpConverter }
 ];
-OccLoadedConfigConverter.ɵprov = ɵɵdefineInjectable({ factory: function OccLoadedConfigConverter_Factory() { return new OccLoadedConfigConverter(ɵɵinject(JavaRegExpConverter)); }, token: OccLoadedConfigConverter, providedIn: "root" });
-OccLoadedConfigConverter = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccLoadedConfigConverter);
 
-let OccSitesConfigLoader = class OccSitesConfigLoader {
+class OccSitesConfigLoader {
     constructor(config, http) {
         this.config = config;
         this.http = http;
@@ -7111,18 +7103,18 @@ let OccSitesConfigLoader = class OccSitesConfigLoader {
             .get(this.url)
             .pipe(map(({ baseSites }) => baseSites));
     }
-};
+}
+OccSitesConfigLoader.ɵprov = ɵɵdefineInjectable({ factory: function OccSitesConfigLoader_Factory() { return new OccSitesConfigLoader(ɵɵinject(OccConfig), ɵɵinject(HttpClient)); }, token: OccSitesConfigLoader, providedIn: "root" });
+OccSitesConfigLoader.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccSitesConfigLoader.ctorParameters = () => [
     { type: OccConfig },
     { type: HttpClient }
 ];
-OccSitesConfigLoader.ɵprov = ɵɵdefineInjectable({ factory: function OccSitesConfigLoader_Factory() { return new OccSitesConfigLoader(ɵɵinject(OccConfig), ɵɵinject(HttpClient)); }, token: OccSitesConfigLoader, providedIn: "root" });
-OccSitesConfigLoader = __decorate([
-    Injectable({ providedIn: 'root' })
-], OccSitesConfigLoader);
 
 const EXTERNAL_CONFIG_TRANSFER_ID = makeStateKey('cx-external-config');
-let OccConfigLoaderService = class OccConfigLoaderService {
+class OccConfigLoaderService {
     constructor(platform, document, config, sitesConfigLoader, converter, transferState, serverRequestUrl) {
         this.platform = platform;
         this.document = document;
@@ -7204,7 +7196,11 @@ let OccConfigLoaderService = class OccConfigLoaderService {
         }
         return !fallbackLangExists;
     }
-};
+}
+OccConfigLoaderService.ɵprov = ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(ɵɵinject(PLATFORM_ID), ɵɵinject(DOCUMENT), ɵɵinject(Config), ɵɵinject(OccSitesConfigLoader), ɵɵinject(OccLoadedConfigConverter), ɵɵinject(TransferState, 8), ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
+OccConfigLoaderService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccConfigLoaderService.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] },
     { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] },
@@ -7214,18 +7210,7 @@ OccConfigLoaderService.ctorParameters = () => [
     { type: TransferState, decorators: [{ type: Optional }] },
     { type: String, decorators: [{ type: Optional }, { type: Inject, args: [SERVER_REQUEST_URL,] }] }
 ];
-OccConfigLoaderService.ɵprov = ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(ɵɵinject(PLATFORM_ID), ɵɵinject(DOCUMENT), ɵɵinject(Config), ɵɵinject(OccSitesConfigLoader), ɵɵinject(OccLoadedConfigConverter), ɵɵinject(TransferState, 8), ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
-OccConfigLoaderService = __decorate([
-    Injectable({ providedIn: 'root' }),
-    __param(0, Inject(PLATFORM_ID)),
-    __param(1, Inject(DOCUMENT)),
-    __param(2, Inject(Config)),
-    __param(5, Optional()),
-    __param(6, Optional()),
-    __param(6, Inject(SERVER_REQUEST_URL))
-], OccConfigLoaderService);
 
-var OccConfigLoaderModule_1;
 /**
  * Initializes the Spartacus config asynchronously basing on the external config
  */
@@ -7244,10 +7229,10 @@ function initConfig(configLoader, config) {
 /**
  * Re-provides the external config chunk given before Angular bootstrap
  */
-let OccConfigLoaderModule = OccConfigLoaderModule_1 = class OccConfigLoaderModule {
+class OccConfigLoaderModule {
     static forRoot() {
         return {
-            ngModule: OccConfigLoaderModule_1,
+            ngModule: OccConfigLoaderModule,
             providers: [
                 {
                     provide: CONFIG_INITIALIZER,
@@ -7258,10 +7243,10 @@ let OccConfigLoaderModule = OccConfigLoaderModule_1 = class OccConfigLoaderModul
             ],
         };
     }
-};
-OccConfigLoaderModule = OccConfigLoaderModule_1 = __decorate([
-    NgModule()
-], OccConfigLoaderModule);
+}
+OccConfigLoaderModule.decorators = [
+    { type: NgModule }
+];
 
 const OCC_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
 const OCC_BASE_URL_META_TAG_PLACEHOLDER = 'OCC_BACKEND_BASE_URL_VALUE';
@@ -7310,7 +7295,7 @@ function occConfigValidator(config) {
 /**
  * Http interceptor to add cookies to all cross-site requests.
  */
-let WithCredentialsInterceptor = class WithCredentialsInterceptor {
+class WithCredentialsInterceptor {
     constructor(config) {
         this.config = config;
     }
@@ -7337,14 +7322,14 @@ let WithCredentialsInterceptor = class WithCredentialsInterceptor {
     get occConfig() {
         return this.config.backend.occ;
     }
-};
+}
+WithCredentialsInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function WithCredentialsInterceptor_Factory() { return new WithCredentialsInterceptor(ɵɵinject(OccConfig)); }, token: WithCredentialsInterceptor, providedIn: "root" });
+WithCredentialsInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 WithCredentialsInterceptor.ctorParameters = () => [
     { type: OccConfig }
 ];
-WithCredentialsInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function WithCredentialsInterceptor_Factory() { return new WithCredentialsInterceptor(ɵɵinject(OccConfig)); }, token: WithCredentialsInterceptor, providedIn: "root" });
-WithCredentialsInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], WithCredentialsInterceptor);
 
 var Occ;
 (function (Occ) {
@@ -8461,11 +8446,10 @@ function validateConfig(config, configValidators) {
     }
 }
 
-var OccModule_1;
-let OccModule = OccModule_1 = class OccModule {
+class OccModule {
     static forRoot() {
         return {
-            ngModule: OccModule_1,
+            ngModule: OccModule,
             providers: [
                 {
                     provide: HTTP_INTERCEPTORS,
@@ -8477,25 +8461,25 @@ let OccModule = OccModule_1 = class OccModule {
             ],
         };
     }
-};
-OccModule = OccModule_1 = __decorate([
-    NgModule({
-        imports: [
-            AsmOccModule,
-            CmsOccModule,
-            CartOccModule,
-            CheckoutOccModule,
-            ProductOccModule,
-            SiteContextOccModule,
-            StoreFinderOccModule,
-            UserOccModule,
-            OccConfigLoaderModule.forRoot(),
-            CostCenterOccModule,
-        ],
-    })
-], OccModule);
+}
+OccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    AsmOccModule,
+                    CmsOccModule,
+                    CartOccModule,
+                    CheckoutOccModule,
+                    ProductOccModule,
+                    SiteContextOccModule,
+                    StoreFinderOccModule,
+                    UserOccModule,
+                    OccConfigLoaderModule.forRoot(),
+                    CostCenterOccModule,
+                ],
+            },] }
+];
 
-let LoadingScopesService = class LoadingScopesService {
+class LoadingScopesService {
     constructor(config) {
         this.config = config;
     }
@@ -8549,28 +8533,28 @@ let LoadingScopesService = class LoadingScopesService {
             this.config.backend.loadingScopes[model];
         return (scopesConfig[scope] && scopesConfig[scope].maxAge) * 1000 || 0;
     }
-};
+}
+LoadingScopesService.ɵprov = ɵɵdefineInjectable({ factory: function LoadingScopesService_Factory() { return new LoadingScopesService(ɵɵinject(OccConfig)); }, token: LoadingScopesService, providedIn: "root" });
+LoadingScopesService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 LoadingScopesService.ctorParameters = () => [
     { type: OccConfig }
 ];
-LoadingScopesService.ɵprov = ɵɵdefineInjectable({ factory: function LoadingScopesService_Factory() { return new LoadingScopesService(ɵɵinject(OccConfig)); }, token: LoadingScopesService, providedIn: "root" });
-LoadingScopesService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], LoadingScopesService);
 
-let AnonymousConsentsConfig = class AnonymousConsentsConfig extends OccConfig {
-};
+class AnonymousConsentsConfig extends OccConfig {
+}
 AnonymousConsentsConfig.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentsConfig_Factory() { return ɵɵinject(Config); }, token: AnonymousConsentsConfig, providedIn: "root" });
-AnonymousConsentsConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], AnonymousConsentsConfig);
+AnonymousConsentsConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
-let AnonymousConsentsInterceptor = class AnonymousConsentsInterceptor {
+class AnonymousConsentsInterceptor {
     constructor(anonymousConsentsService, authService, occEndpoints, config) {
         this.anonymousConsentsService = anonymousConsentsService;
         this.authService = authService;
@@ -8627,17 +8611,17 @@ let AnonymousConsentsInterceptor = class AnonymousConsentsInterceptor {
         }
         return givenConsents;
     }
-};
+}
+AnonymousConsentsInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentsInterceptor_Factory() { return new AnonymousConsentsInterceptor(ɵɵinject(AnonymousConsentsService), ɵɵinject(AuthService), ɵɵinject(OccEndpointsService), ɵɵinject(AnonymousConsentsConfig)); }, token: AnonymousConsentsInterceptor, providedIn: "root" });
+AnonymousConsentsInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 AnonymousConsentsInterceptor.ctorParameters = () => [
     { type: AnonymousConsentsService },
     { type: AuthService },
     { type: OccEndpointsService },
     { type: AnonymousConsentsConfig }
 ];
-AnonymousConsentsInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentsInterceptor_Factory() { return new AnonymousConsentsInterceptor(ɵɵinject(AnonymousConsentsService), ɵɵinject(AuthService), ɵɵinject(OccEndpointsService), ɵɵinject(AnonymousConsentsConfig)); }, token: AnonymousConsentsInterceptor, providedIn: "root" });
-AnonymousConsentsInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], AnonymousConsentsInterceptor);
 
 const interceptors$1 = [
     {
@@ -8660,7 +8644,7 @@ function createFrom(type, data) {
 /**
  * Registers streams of ngrx actions as events source streams
  */
-let StateEventService = class StateEventService {
+class StateEventService {
     constructor(actionsSubject, eventService) {
         this.actionsSubject = actionsSubject;
         this.eventService = eventService;
@@ -8702,19 +8686,19 @@ let StateEventService = class StateEventService {
             ? factory(action)
             : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
     }
-};
+}
+StateEventService.ɵprov = ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(ɵɵinject(ActionsSubject), ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
+StateEventService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 StateEventService.ctorParameters = () => [
     { type: ActionsSubject },
     { type: EventService }
 ];
-StateEventService.ɵprov = ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(ɵɵinject(ActionsSubject), ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
-StateEventService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], StateEventService);
 
-let StatePersistenceService = class StatePersistenceService {
+class StatePersistenceService {
     constructor(winRef) {
         this.winRef = winRef;
     }
@@ -8755,16 +8739,16 @@ let StatePersistenceService = class StatePersistenceService {
     generateKeyWithContext(context, key) {
         return `spartacus⚿${[].concat(context).join('⚿')}⚿${key}`;
     }
-};
+}
+StatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
+StatePersistenceService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 StatePersistenceService.ctorParameters = () => [
     { type: WindowRef }
 ];
-StatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
-StatePersistenceService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], StatePersistenceService);
 
 const PROCESS_FEATURE = 'process';
 
@@ -10488,7 +10472,7 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getCostCenters: getCostCenters
 });
 
-let UserConsentService = class UserConsentService {
+class UserConsentService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -10666,19 +10650,19 @@ let UserConsentService = class UserConsentService {
         }
         return updatedTemplateList;
     }
-};
+}
+UserConsentService.ɵprov = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
+UserConsentService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserConsentService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-UserConsentService.ɵprov = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
-UserConsentService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserConsentService);
 
-let AnonymousConsentTemplatesConnector = class AnonymousConsentTemplatesConnector {
+class AnonymousConsentTemplatesConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -10691,18 +10675,18 @@ let AnonymousConsentTemplatesConnector = class AnonymousConsentTemplatesConnecto
             ? this.adapter.loadAnonymousConsents()
             : null;
     }
-};
+}
+AnonymousConsentTemplatesConnector.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentTemplatesConnector_Factory() { return new AnonymousConsentTemplatesConnector(ɵɵinject(AnonymousConsentTemplatesAdapter)); }, token: AnonymousConsentTemplatesConnector, providedIn: "root" });
+AnonymousConsentTemplatesConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 AnonymousConsentTemplatesConnector.ctorParameters = () => [
     { type: AnonymousConsentTemplatesAdapter }
 ];
-AnonymousConsentTemplatesConnector.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentTemplatesConnector_Factory() { return new AnonymousConsentTemplatesConnector(ɵɵinject(AnonymousConsentTemplatesAdapter)); }, token: AnonymousConsentTemplatesConnector, providedIn: "root" });
-AnonymousConsentTemplatesConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], AnonymousConsentTemplatesConnector);
 
-let AnonymousConsentsEffects = class AnonymousConsentsEffects {
+class AnonymousConsentsEffects {
     constructor(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService) {
         this.actions$ = actions$;
         this.anonymousConsentTemplatesConnector = anonymousConsentTemplatesConnector;
@@ -10806,7 +10790,10 @@ let AnonymousConsentsEffects = class AnonymousConsentsEffects {
         }
         return false;
     }
-};
+}
+AnonymousConsentsEffects.decorators = [
+    { type: Injectable }
+];
 AnonymousConsentsEffects.ctorParameters = () => [
     { type: Actions },
     { type: AnonymousConsentTemplatesConnector },
@@ -10827,13 +10814,10 @@ __decorate([
 __decorate([
     Effect()
 ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
-AnonymousConsentsEffects = __decorate([
-    Injectable()
-], AnonymousConsentsEffects);
 
 const effects$1 = [AnonymousConsentsEffects];
 
-let SiteConnector = class SiteConnector {
+class SiteConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -10852,16 +10836,16 @@ let SiteConnector = class SiteConnector {
     getBaseSite() {
         return this.adapter.loadBaseSite();
     }
-};
+}
+SiteConnector.ɵprov = ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+SiteConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 SiteConnector.ctorParameters = () => [
     { type: SiteAdapter }
 ];
-SiteConnector.ɵprov = ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
-SiteConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], SiteConnector);
 
 class ContextServiceMap {
 }
@@ -10934,7 +10918,7 @@ function defaultSiteContextConfigFactory() {
 /**
  * Provides support for CONFIG_INITIALIZERS
  */
-let ConfigInitializerService = class ConfigInitializerService {
+class ConfigInitializerService {
     constructor(config, initializerGuard, rootConfig) {
         this.config = config;
         this.initializerGuard = initializerGuard;
@@ -11059,24 +11043,20 @@ let ConfigInitializerService = class ConfigInitializerService {
             }
         });
     }
-};
+}
+ConfigInitializerService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(ɵɵinject(Config), ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
+ConfigInitializerService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ConfigInitializerService.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [Config,] }] },
     { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] },
     { type: undefined, decorators: [{ type: Inject, args: [RootConfig,] }] }
 ];
-ConfigInitializerService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(ɵɵinject(Config), ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
-ConfigInitializerService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    }),
-    __param(0, Inject(Config)),
-    __param(1, Optional()),
-    __param(1, Inject(CONFIG_INITIALIZER_FORROOT_GUARD)),
-    __param(2, Inject(RootConfig))
-], ConfigInitializerService);
 
-let SiteContextParamsService = class SiteContextParamsService {
+class SiteContextParamsService {
     constructor(config, injector, serviceMap) {
         this.config = config;
         this.injector = injector;
@@ -11134,18 +11114,18 @@ let SiteContextParamsService = class SiteContextParamsService {
             .getActive()
             .pipe(distinctUntilChanged()))).pipe(filter((value) => value.every((param) => !!param)));
     }
-};
+}
+SiteContextParamsService.decorators = [
+    { type: Injectable }
+];
 SiteContextParamsService.ctorParameters = () => [
     { type: SiteContextConfig },
     { type: Injector },
     { type: ContextServiceMap }
 ];
-SiteContextParamsService = __decorate([
-    Injectable()
-], SiteContextParamsService);
 
 const UrlSplit = /(^[^#?]*)(.*)/; // used to split url into path and query/fragment parts
-let SiteContextUrlSerializer = class SiteContextUrlSerializer extends DefaultUrlSerializer {
+class SiteContextUrlSerializer extends DefaultUrlSerializer {
     constructor(siteContextParams) {
         super();
         this.siteContextParams = siteContextParams;
@@ -11211,15 +11191,15 @@ let SiteContextUrlSerializer = class SiteContextUrlSerializer extends DefaultUrl
             .join('/');
         return contextRoutePart + url;
     }
-};
+}
+SiteContextUrlSerializer.decorators = [
+    { type: Injectable }
+];
 SiteContextUrlSerializer.ctorParameters = () => [
     { type: SiteContextParamsService }
 ];
-SiteContextUrlSerializer = __decorate([
-    Injectable()
-], SiteContextUrlSerializer);
 
-let SiteContextRoutesHandler = class SiteContextRoutesHandler {
+class SiteContextRoutesHandler {
     constructor(siteContextParams, serializer, injector) {
         this.siteContextParams = siteContextParams;
         this.serializer = serializer;
@@ -11312,18 +11292,18 @@ let SiteContextRoutesHandler = class SiteContextRoutesHandler {
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-};
+}
+SiteContextRoutesHandler.ɵprov = ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(ɵɵinject(SiteContextParamsService), ɵɵinject(SiteContextUrlSerializer), ɵɵinject(INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
+SiteContextRoutesHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 SiteContextRoutesHandler.ctorParameters = () => [
     { type: SiteContextParamsService },
     { type: SiteContextUrlSerializer },
     { type: Injector }
 ];
-SiteContextRoutesHandler.ɵprov = ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(ɵɵinject(SiteContextParamsService), ɵɵinject(SiteContextUrlSerializer), ɵɵinject(INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
-SiteContextRoutesHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], SiteContextRoutesHandler);
 
 function initializeContext(baseSiteService, langService, currService, configInit, siteContextRoutesHandler) {
     return () => {
@@ -11361,7 +11341,7 @@ const siteContextParamsProviders = [
     { provide: UrlSerializer, useExisting: SiteContextUrlSerializer },
 ];
 
-let LanguagesEffects = class LanguagesEffects {
+class LanguagesEffects {
     constructor(actions$, siteConnector, winRef, state) {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
@@ -11379,7 +11359,10 @@ let LanguagesEffects = class LanguagesEffects {
         // avoid dispatching `change` action when we're just setting the initial value:
         filter(([previous]) => !!previous), map(([previous, current]) => new LanguageChange({ previous, current })));
     }
-};
+}
+LanguagesEffects.decorators = [
+    { type: Injectable }
+];
 LanguagesEffects.ctorParameters = () => [
     { type: Actions },
     { type: SiteConnector },
@@ -11395,11 +11378,8 @@ __decorate([
 __decorate([
     Effect()
 ], LanguagesEffects.prototype, "activateLanguage$", void 0);
-LanguagesEffects = __decorate([
-    Injectable()
-], LanguagesEffects);
 
-let CurrenciesEffects = class CurrenciesEffects {
+class CurrenciesEffects {
     constructor(actions$, siteConnector, winRef, state) {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
@@ -11417,7 +11397,10 @@ let CurrenciesEffects = class CurrenciesEffects {
         // avoid dispatching `change` action when we're just setting the initial value:
         filter(([previous]) => !!previous), map(([previous, current]) => new CurrencyChange({ previous, current })));
     }
-};
+}
+CurrenciesEffects.decorators = [
+    { type: Injectable }
+];
 CurrenciesEffects.ctorParameters = () => [
     { type: Actions },
     { type: SiteConnector },
@@ -11433,11 +11416,8 @@ __decorate([
 __decorate([
     Effect()
 ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
-CurrenciesEffects = __decorate([
-    Injectable()
-], CurrenciesEffects);
 
-let BaseSiteEffects = class BaseSiteEffects {
+class BaseSiteEffects {
     constructor(actions$, siteConnector) {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
@@ -11445,7 +11425,10 @@ let BaseSiteEffects = class BaseSiteEffects {
             return this.siteConnector.getBaseSite().pipe(map((baseSite) => new LoadBaseSiteSuccess(baseSite)), catchError((error) => of(new LoadBaseSiteFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+BaseSiteEffects.decorators = [
+    { type: Injectable }
+];
 BaseSiteEffects.ctorParameters = () => [
     { type: Actions },
     { type: SiteConnector }
@@ -11453,9 +11436,6 @@ BaseSiteEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
-BaseSiteEffects = __decorate([
-    Injectable()
-], BaseSiteEffects);
 
 const effects$2 = [
     LanguagesEffects,
@@ -11545,29 +11525,28 @@ function siteContextStoreConfigFactory() {
     };
     return config;
 }
-let SiteContextStoreModule = class SiteContextStoreModule {
-};
-SiteContextStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            HttpClientModule,
-            StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
-            EffectsModule.forFeature(effects$2),
-        ],
-        providers: [
-            provideDefaultConfigFactory(siteContextStoreConfigFactory),
-            reducerProvider$1,
-        ],
-    })
-], SiteContextStoreModule);
+class SiteContextStoreModule {
+}
+SiteContextStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
+                    EffectsModule.forFeature(effects$2),
+                ],
+                providers: [
+                    provideDefaultConfigFactory(siteContextStoreConfigFactory),
+                    reducerProvider$1,
+                ],
+            },] }
+];
 
-var SiteContextModule_1;
 // @dynamic
-let SiteContextModule = SiteContextModule_1 = class SiteContextModule {
+class SiteContextModule {
     static forRoot() {
         return {
-            ngModule: SiteContextModule_1,
+            ngModule: SiteContextModule,
             providers: [
                 provideDefaultConfigFactory(defaultSiteContextConfigFactory),
                 contextServiceMapProvider,
@@ -11577,12 +11556,12 @@ let SiteContextModule = SiteContextModule_1 = class SiteContextModule {
             ],
         };
     }
-};
-SiteContextModule = SiteContextModule_1 = __decorate([
-    NgModule({
-        imports: [StateModule, SiteContextStoreModule],
-    })
-], SiteContextModule);
+}
+SiteContextModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [StateModule, SiteContextStoreModule],
+            },] }
+];
 
 const initialState$4 = false;
 function reducer$4(state = initialState$4, action) {
@@ -11671,30 +11650,29 @@ function anonymousConsentsStoreConfigFactory() {
     };
     return config;
 }
-let AnonymousConsentsStoreModule = class AnonymousConsentsStoreModule {
-};
-AnonymousConsentsStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            StateModule,
-            StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
-                metaReducers: metaReducers$1,
-            }),
-            EffectsModule.forFeature(effects$1),
-        ],
-        providers: [
-            provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
-            reducerProvider$2,
-        ],
-    })
-], AnonymousConsentsStoreModule);
+class AnonymousConsentsStoreModule {
+}
+AnonymousConsentsStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    StateModule,
+                    StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
+                        metaReducers: metaReducers$1,
+                    }),
+                    EffectsModule.forFeature(effects$1),
+                ],
+                providers: [
+                    provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
+                    reducerProvider$2,
+                ],
+            },] }
+];
 
-var AnonymousConsentsModule_1;
-let AnonymousConsentsModule = AnonymousConsentsModule_1 = class AnonymousConsentsModule {
+class AnonymousConsentsModule {
     static forRoot() {
         return {
-            ngModule: AnonymousConsentsModule_1,
+            ngModule: AnonymousConsentsModule,
             providers: [
                 ...interceptors$1,
                 AnonymousConsentsService,
@@ -11702,12 +11680,12 @@ let AnonymousConsentsModule = AnonymousConsentsModule_1 = class AnonymousConsent
             ],
         };
     }
-};
-AnonymousConsentsModule = AnonymousConsentsModule_1 = __decorate([
-    NgModule({
-        imports: [AnonymousConsentsStoreModule],
-    })
-], AnonymousConsentsModule);
+}
+AnonymousConsentsModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [AnonymousConsentsStoreModule],
+            },] }
+];
 
 const defaultAsmConfig = {
     asm: {
@@ -11724,23 +11702,23 @@ const ASM_FEATURE = 'asm';
 const CUSTOMER_SEARCH_DATA = '[asm] Customer search data';
 const CSAGENT_TOKEN_DATA = '[Auth] Customer Support Agent Token Data';
 
-let AsmConnector = class AsmConnector {
+class AsmConnector {
     constructor(asmAdapter) {
         this.asmAdapter = asmAdapter;
     }
     customerSearch(options) {
         return this.asmAdapter.customerSearch(options);
     }
-};
+}
+AsmConnector.ɵprov = ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
+AsmConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 AsmConnector.ctorParameters = () => [
     { type: AsmAdapter }
 ];
-AsmConnector.ɵprov = ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
-AsmConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], AsmConnector);
 
 const ASM_UI_UPDATE = '[Asm] UI Update';
 class AsmUiUpdate {
@@ -11833,7 +11811,7 @@ var customerGroup_actions = /*#__PURE__*/Object.freeze({
     LogoutCustomerSupportAgent: LogoutCustomerSupportAgent
 });
 
-let CustomerEffects = class CustomerEffects {
+class CustomerEffects {
     constructor(actions$, asmConnector) {
         this.actions$ = actions$;
         this.asmConnector = asmConnector;
@@ -11841,7 +11819,10 @@ let CustomerEffects = class CustomerEffects {
             return new CustomerSearchSuccess(customerSearchResults);
         }), catchError((error) => of(new CustomerSearchFail(makeErrorSerializable(error)))))));
     }
-};
+}
+CustomerEffects.decorators = [
+    { type: Injectable }
+];
 CustomerEffects.ctorParameters = () => [
     { type: Actions },
     { type: AsmConnector }
@@ -11849,11 +11830,8 @@ CustomerEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], CustomerEffects.prototype, "customerSearch$", void 0);
-CustomerEffects = __decorate([
-    Injectable()
-], CustomerEffects);
 
-let CustomerSupportAgentTokenEffects = class CustomerSupportAgentTokenEffects {
+class CustomerSupportAgentTokenEffects {
     constructor(actions$, userTokenService) {
         this.actions$ = actions$;
         this.userTokenService = userTokenService;
@@ -11864,7 +11842,10 @@ let CustomerSupportAgentTokenEffects = class CustomerSupportAgentTokenEffects {
             return new LoadCustomerSupportAgentTokenSuccess(token);
         }), catchError((error) => of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error)))))));
     }
-};
+}
+CustomerSupportAgentTokenEffects.decorators = [
+    { type: Injectable }
+];
 CustomerSupportAgentTokenEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserAuthenticationTokenService }
@@ -11872,9 +11853,6 @@ CustomerSupportAgentTokenEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
-CustomerSupportAgentTokenEffects = __decorate([
-    Injectable()
-], CustomerSupportAgentTokenEffects);
 
 const effects$3 = [
     CustomerEffects,
@@ -11935,23 +11913,23 @@ function asmStoreConfigFactory() {
     };
     return config;
 }
-let AsmStoreModule = class AsmStoreModule {
-};
-AsmStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            HttpClientModule,
-            StateModule,
-            StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
-            EffectsModule.forFeature(effects$3),
-        ],
-        providers: [
-            provideDefaultConfigFactory(asmStoreConfigFactory),
-            reducerProvider$3,
-        ],
-    })
-], AsmStoreModule);
+class AsmStoreModule {
+}
+AsmStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StateModule,
+                    StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
+                    EffectsModule.forFeature(effects$3),
+                ],
+                providers: [
+                    provideDefaultConfigFactory(asmStoreConfigFactory),
+                    reducerProvider$3,
+                ],
+            },] }
+];
 
 var GlobalMessageType;
 (function (GlobalMessageType) {
@@ -11961,15 +11939,15 @@ var GlobalMessageType;
     GlobalMessageType["MSG_TYPE_WARNING"] = "[GlobalMessage] Warning";
 })(GlobalMessageType || (GlobalMessageType = {}));
 
-let GlobalMessageConfig = class GlobalMessageConfig {
-};
+class GlobalMessageConfig {
+}
 GlobalMessageConfig.ɵprov = ɵɵdefineInjectable({ factory: function GlobalMessageConfig_Factory() { return ɵɵinject(Config); }, token: GlobalMessageConfig, providedIn: "root" });
-GlobalMessageConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], GlobalMessageConfig);
+GlobalMessageConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 const ADD_MESSAGE = '[Global-message] Add a Message';
 const REMOVE_MESSAGE = '[Global-message] Remove a Message';
@@ -12025,7 +12003,7 @@ var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
     ɵ0: ɵ0$s
 });
 
-let GlobalMessageService = class GlobalMessageService {
+class GlobalMessageService {
     constructor(store) {
         this.store = store;
     }
@@ -12062,16 +12040,16 @@ let GlobalMessageService = class GlobalMessageService {
             })
             : new RemoveMessagesByType(type));
     }
-};
+}
+GlobalMessageService.ɵprov = ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(ɵɵinject(Store)); }, token: GlobalMessageService, providedIn: "root" });
+GlobalMessageService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 GlobalMessageService.ctorParameters = () => [
     { type: Store }
 ];
-GlobalMessageService.ɵprov = ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(ɵɵinject(Store)); }, token: GlobalMessageService, providedIn: "root" });
-GlobalMessageService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], GlobalMessageService);
 
 var HttpResponseStatus;
 (function (HttpResponseStatus) {
@@ -12086,7 +12064,7 @@ var HttpResponseStatus;
     HttpResponseStatus[HttpResponseStatus["INTERNAL_SERVER_ERROR"] = 500] = "INTERNAL_SERVER_ERROR";
 })(HttpResponseStatus || (HttpResponseStatus = {}));
 
-let HttpErrorHandler = class HttpErrorHandler {
+class HttpErrorHandler {
     constructor(globalMessageService) {
         this.globalMessageService = globalMessageService;
     }
@@ -12097,18 +12075,18 @@ let HttpErrorHandler = class HttpErrorHandler {
     hasMatch(errorResponse) {
         return errorResponse.status === this.responseStatus;
     }
-};
+}
+HttpErrorHandler.ɵprov = ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+HttpErrorHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 HttpErrorHandler.ctorParameters = () => [
     { type: GlobalMessageService }
 ];
-HttpErrorHandler.ɵprov = ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
-HttpErrorHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], HttpErrorHandler);
 
-let BadGatewayHandler = class BadGatewayHandler extends HttpErrorHandler {
+class BadGatewayHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
         this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
@@ -12119,13 +12097,13 @@ let BadGatewayHandler = class BadGatewayHandler extends HttpErrorHandler {
     getPriority() {
         return -10 /* LOW */;
     }
-};
+}
 BadGatewayHandler.ɵprov = ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
-BadGatewayHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], BadGatewayHandler);
+BadGatewayHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
 /**
  * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
@@ -12184,7 +12162,7 @@ function isTempCartId(cartId) {
 }
 
 const OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
-let BadRequestHandler = class BadRequestHandler extends HttpErrorHandler {
+class BadRequestHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
         this.responseStatus = HttpResponseStatus.BAD_REQUEST;
@@ -12248,15 +12226,15 @@ let BadRequestHandler = class BadRequestHandler extends HttpErrorHandler {
     getPriority() {
         return -10 /* LOW */;
     }
-};
+}
 BadRequestHandler.ɵprov = ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
-BadRequestHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], BadRequestHandler);
+BadRequestHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
-let ConflictHandler = class ConflictHandler extends HttpErrorHandler {
+class ConflictHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
         this.responseStatus = HttpResponseStatus.CONFLICT;
@@ -12267,15 +12245,15 @@ let ConflictHandler = class ConflictHandler extends HttpErrorHandler {
     getPriority() {
         return -10 /* LOW */;
     }
-};
+}
 ConflictHandler.ɵprov = ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
-ConflictHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ConflictHandler);
+ConflictHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
-let ForbiddenHandler = class ForbiddenHandler extends HttpErrorHandler {
+class ForbiddenHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
         this.responseStatus = HttpResponseStatus.FORBIDDEN;
@@ -12286,15 +12264,15 @@ let ForbiddenHandler = class ForbiddenHandler extends HttpErrorHandler {
     getPriority() {
         return -10 /* LOW */;
     }
-};
+}
 ForbiddenHandler.ɵprov = ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
-ForbiddenHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ForbiddenHandler);
+ForbiddenHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
-let GatewayTimeoutHandler = class GatewayTimeoutHandler extends HttpErrorHandler {
+class GatewayTimeoutHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
         this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
@@ -12305,15 +12283,15 @@ let GatewayTimeoutHandler = class GatewayTimeoutHandler extends HttpErrorHandler
     getPriority() {
         return -10 /* LOW */;
     }
-};
+}
 GatewayTimeoutHandler.ɵprov = ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
-GatewayTimeoutHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], GatewayTimeoutHandler);
+GatewayTimeoutHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
-let InternalServerErrorHandler = class InternalServerErrorHandler extends HttpErrorHandler {
+class InternalServerErrorHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
         this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -12324,15 +12302,15 @@ let InternalServerErrorHandler = class InternalServerErrorHandler extends HttpEr
     getPriority() {
         return -10 /* LOW */;
     }
-};
+}
 InternalServerErrorHandler.ɵprov = ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
-InternalServerErrorHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], InternalServerErrorHandler);
+InternalServerErrorHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
-let NotFoundHandler = class NotFoundHandler extends HttpErrorHandler {
+class NotFoundHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
         this.responseStatus = HttpResponseStatus.NOT_FOUND;
@@ -12342,19 +12320,19 @@ let NotFoundHandler = class NotFoundHandler extends HttpErrorHandler {
     getPriority() {
         return -10 /* LOW */;
     }
-};
+}
 NotFoundHandler.ɵprov = ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
-NotFoundHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], NotFoundHandler);
+NotFoundHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
 /**
  * Handles Oauth client errors when a 401 is returned. This is the case for failing
  * authenticaton requests to OCC.
  */
-let UnauthorizedErrorHandler = class UnauthorizedErrorHandler extends HttpErrorHandler {
+class UnauthorizedErrorHandler extends HttpErrorHandler {
     constructor(globalMessageService) {
         super(globalMessageService);
         this.globalMessageService = globalMessageService;
@@ -12377,22 +12355,22 @@ let UnauthorizedErrorHandler = class UnauthorizedErrorHandler extends HttpErrorH
     getPriority() {
         return -10 /* LOW */;
     }
-};
+}
+UnauthorizedErrorHandler.ɵprov = ɵɵdefineInjectable({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(ɵɵinject(GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
+UnauthorizedErrorHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UnauthorizedErrorHandler.ctorParameters = () => [
     { type: GlobalMessageService }
 ];
-UnauthorizedErrorHandler.ɵprov = ɵɵdefineInjectable({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(ɵɵinject(GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
-UnauthorizedErrorHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UnauthorizedErrorHandler);
 
 /**
  * Unknown Error Handler works as an fallback, to handle errors that were
  * not handled by any other error handlers
  */
-let UnknownErrorHandler = class UnknownErrorHandler extends HttpErrorHandler {
+class UnknownErrorHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
         this.responseStatus = HttpResponseStatus.UNKNOWN;
@@ -12414,13 +12392,13 @@ let UnknownErrorHandler = class UnknownErrorHandler extends HttpErrorHandler {
     getPriority() {
         return -50 /* FALLBACK */;
     }
-};
+}
 UnknownErrorHandler.ɵprov = ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
-UnknownErrorHandler = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UnknownErrorHandler);
+UnknownErrorHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
 /**
  * Helper logic to resolve best matching Applicable
@@ -12456,7 +12434,7 @@ function resolveApplicable(applicables, matchParams = [], priorityParams = []) {
     }, undefined);
 }
 
-let HttpErrorInterceptor = class HttpErrorInterceptor {
+class HttpErrorInterceptor {
     constructor(handlers) {
         this.handlers = handlers;
     }
@@ -12481,15 +12459,14 @@ let HttpErrorInterceptor = class HttpErrorInterceptor {
     getResponseHandler(response) {
         return resolveApplicable(this.handlers, [response]);
     }
-};
+}
+HttpErrorInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function HttpErrorInterceptor_Factory() { return new HttpErrorInterceptor(ɵɵinject(HttpErrorHandler)); }, token: HttpErrorInterceptor, providedIn: "root" });
+HttpErrorInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 HttpErrorInterceptor.ctorParameters = () => [
     { type: Array, decorators: [{ type: Inject, args: [HttpErrorHandler,] }] }
 ];
-HttpErrorInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function HttpErrorInterceptor_Factory() { return new HttpErrorInterceptor(ɵɵinject(HttpErrorHandler)); }, token: HttpErrorInterceptor, providedIn: "root" });
-HttpErrorInterceptor = __decorate([
-    Injectable({ providedIn: 'root' }),
-    __param(0, Inject(HttpErrorHandler))
-], HttpErrorInterceptor);
 
 const errorHandlers = [
     {
@@ -12589,17 +12566,17 @@ const reducerProvider$4 = {
     useFactory: getReducers$4,
 };
 
-let GlobalMessageStoreModule = class GlobalMessageStoreModule {
-};
-GlobalMessageStoreModule = __decorate([
-    NgModule({
-        imports: [
-            StateModule,
-            StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
-        ],
-        providers: [reducerProvider$4],
-    })
-], GlobalMessageStoreModule);
+class GlobalMessageStoreModule {
+}
+GlobalMessageStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    StateModule,
+                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                ],
+                providers: [reducerProvider$4],
+            },] }
+];
 
 function shallowEqualObjects(objA, objB) {
     if (objA === objB) {
@@ -12677,7 +12654,7 @@ function indexOfFirstOccurrence(obj, arr) {
     }
 }
 
-let GlobalMessageEffect = class GlobalMessageEffect {
+class GlobalMessageEffect {
     constructor(actions$, store, config, platformId) {
         this.actions$ = actions$;
         this.store = store;
@@ -12699,7 +12676,10 @@ let GlobalMessageEffect = class GlobalMessageEffect {
             }))
             : EMPTY;
     }
-};
+}
+GlobalMessageEffect.decorators = [
+    { type: Injectable }
+];
 GlobalMessageEffect.ctorParameters = () => [
     { type: Actions },
     { type: Store },
@@ -12712,10 +12692,6 @@ __decorate([
 __decorate([
     Effect()
 ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
-GlobalMessageEffect = __decorate([
-    Injectable(),
-    __param(3, Inject(PLATFORM_ID))
-], GlobalMessageEffect);
 
 function defaultGlobalMessageConfigFactory() {
     return {
@@ -12736,24 +12712,23 @@ function defaultGlobalMessageConfigFactory() {
     };
 }
 
-var GlobalMessageModule_1;
-let GlobalMessageModule = GlobalMessageModule_1 = class GlobalMessageModule {
+class GlobalMessageModule {
     static forRoot() {
         return {
-            ngModule: GlobalMessageModule_1,
+            ngModule: GlobalMessageModule,
             providers: [...errorHandlers, ...httpErrorInterceptors],
         };
     }
-};
-GlobalMessageModule = GlobalMessageModule_1 = __decorate([
-    NgModule({
-        imports: [
-            GlobalMessageStoreModule,
-            EffectsModule.forFeature([GlobalMessageEffect]),
-        ],
-        providers: [provideDefaultConfigFactory(defaultGlobalMessageConfigFactory)],
-    })
-], GlobalMessageModule);
+}
+GlobalMessageModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    GlobalMessageStoreModule,
+                    EffectsModule.forFeature([GlobalMessageEffect]),
+                ],
+                providers: [provideDefaultConfigFactory(defaultGlobalMessageConfigFactory)],
+            },] }
+];
 
 const getAsmState = createFeatureSelector(ASM_FEATURE);
 
@@ -12789,7 +12764,7 @@ var asmGroup_selectors = /*#__PURE__*/Object.freeze({
     getCustomerSupportAgentTokenLoading: getCustomerSupportAgentTokenLoading
 });
 
-let AsmAuthService = class AsmAuthService {
+class AsmAuthService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -12846,19 +12821,19 @@ let AsmAuthService = class AsmAuthService {
             this.store.dispatch(new RevokeUserToken(userToken));
         });
     }
-};
+}
+AsmAuthService.ɵprov = ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: AsmAuthService, providedIn: "root" });
+AsmAuthService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 AsmAuthService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-AsmAuthService.ɵprov = ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: AsmAuthService, providedIn: "root" });
-AsmAuthService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], AsmAuthService);
 
-let CustomerSupportAgentErrorHandlingService = class CustomerSupportAgentErrorHandlingService {
+class CustomerSupportAgentErrorHandlingService {
     constructor(asmAuthService, globalMessageService) {
         this.asmAuthService = asmAuthService;
         this.globalMessageService = globalMessageService;
@@ -12869,17 +12844,17 @@ let CustomerSupportAgentErrorHandlingService = class CustomerSupportAgentErrorHa
             key: 'asm.csagentTokenExpired',
         }, GlobalMessageType.MSG_TYPE_ERROR);
     }
-};
+}
+CustomerSupportAgentErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentErrorHandlingService_Factory() { return new CustomerSupportAgentErrorHandlingService(ɵɵinject(AsmAuthService), ɵɵinject(GlobalMessageService)); }, token: CustomerSupportAgentErrorHandlingService, providedIn: "root" });
+CustomerSupportAgentErrorHandlingService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 CustomerSupportAgentErrorHandlingService.ctorParameters = () => [
     { type: AsmAuthService },
     { type: GlobalMessageService }
 ];
-CustomerSupportAgentErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentErrorHandlingService_Factory() { return new CustomerSupportAgentErrorHandlingService(ɵɵinject(AsmAuthService), ɵɵinject(GlobalMessageService)); }, token: CustomerSupportAgentErrorHandlingService, providedIn: "root" });
-CustomerSupportAgentErrorHandlingService = __decorate([
-    Injectable({ providedIn: 'root' })
-], CustomerSupportAgentErrorHandlingService);
 
-let CustomerSupportAgentAuthErrorInterceptor = class CustomerSupportAgentAuthErrorInterceptor {
+class CustomerSupportAgentAuthErrorInterceptor {
     constructor(csagentErrorHandlingService) {
         this.csagentErrorHandlingService = csagentErrorHandlingService;
     }
@@ -12903,16 +12878,16 @@ let CustomerSupportAgentAuthErrorInterceptor = class CustomerSupportAgentAuthErr
         const isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
         return Boolean(isRequestMapping);
     }
-};
+}
+CustomerSupportAgentAuthErrorInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentAuthErrorInterceptor_Factory() { return new CustomerSupportAgentAuthErrorInterceptor(ɵɵinject(CustomerSupportAgentErrorHandlingService)); }, token: CustomerSupportAgentAuthErrorInterceptor, providedIn: "root" });
+CustomerSupportAgentAuthErrorInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 CustomerSupportAgentAuthErrorInterceptor.ctorParameters = () => [
     { type: CustomerSupportAgentErrorHandlingService }
 ];
-CustomerSupportAgentAuthErrorInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentAuthErrorInterceptor_Factory() { return new CustomerSupportAgentAuthErrorInterceptor(ɵɵinject(CustomerSupportAgentErrorHandlingService)); }, token: CustomerSupportAgentAuthErrorInterceptor, providedIn: "root" });
-CustomerSupportAgentAuthErrorInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], CustomerSupportAgentAuthErrorInterceptor);
 
-let CustomerSupportAgentTokenInterceptor = class CustomerSupportAgentTokenInterceptor {
+class CustomerSupportAgentTokenInterceptor {
     constructor(asmAuthService) {
         this.asmAuthService = asmAuthService;
     }
@@ -12934,14 +12909,14 @@ let CustomerSupportAgentTokenInterceptor = class CustomerSupportAgentTokenInterc
         }
         return of(null);
     }
-};
+}
+CustomerSupportAgentTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(ɵɵinject(AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
+CustomerSupportAgentTokenInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 CustomerSupportAgentTokenInterceptor.ctorParameters = () => [
     { type: AsmAuthService }
 ];
-CustomerSupportAgentTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(ɵɵinject(AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
-CustomerSupportAgentTokenInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], CustomerSupportAgentTokenInterceptor);
 
 const interceptors$2 = [
     {
@@ -12956,22 +12931,21 @@ const interceptors$2 = [
     },
 ];
 
-var AsmModule_1;
-let AsmModule = AsmModule_1 = class AsmModule {
+class AsmModule {
     static forRoot() {
         return {
-            ngModule: AsmModule_1,
+            ngModule: AsmModule,
             providers: [...interceptors$2, provideDefaultConfig(defaultAsmConfig)],
         };
     }
-};
-AsmModule = AsmModule_1 = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule, AsmStoreModule],
-    })
-], AsmModule);
+}
+AsmModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule, AsmStoreModule],
+            },] }
+];
 
-let AsmService = class AsmService {
+class AsmService {
     constructor(store) {
         this.store = store;
     }
@@ -13012,16 +12986,16 @@ let AsmService = class AsmService {
     getAsmUiState() {
         return this.store.pipe(select(getAsmUi));
     }
-};
+}
+AsmService.ɵprov = ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(ɵɵinject(Store)); }, token: AsmService, providedIn: "root" });
+AsmService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 AsmService.ctorParameters = () => [
     { type: Store }
 ];
-AsmService.ɵprov = ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(ɵɵinject(Store)); }, token: AsmService, providedIn: "root" });
-AsmService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], AsmService);
 
 /**
  * Abstract class that can be used to resolve meta data for specific pages.
@@ -13586,7 +13560,7 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     LoadWishListFail: LoadWishListFail
 });
 
-let MultiCartService = class MultiCartService {
+class MultiCartService {
     constructor(store) {
         this.store = store;
     }
@@ -13780,18 +13754,18 @@ let MultiCartService = class MultiCartService {
             cartId,
         }));
     }
-};
+}
+MultiCartService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(ɵɵinject(Store)); }, token: MultiCartService, providedIn: "root" });
+MultiCartService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 MultiCartService.ctorParameters = () => [
     { type: Store }
 ];
-MultiCartService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(ɵɵinject(Store)); }, token: MultiCartService, providedIn: "root" });
-MultiCartService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], MultiCartService);
 
-let ActiveCartService = class ActiveCartService {
+class ActiveCartService {
     constructor(store, authService, multiCartService) {
         this.store = store;
         this.authService = authService;
@@ -14078,18 +14052,18 @@ let ActiveCartService = class ActiveCartService {
             this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
         );
     }
-};
+}
+ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+ActiveCartService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ActiveCartService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
     { type: MultiCartService }
 ];
-ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
-ActiveCartService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ActiveCartService);
 
 /**
  *
@@ -14104,7 +14078,7 @@ function withdrawOn(notifier) {
     return (source) => notifier.pipe(startWith(undefined), switchMapTo(source));
 }
 
-let CartEntryConnector = class CartEntryConnector {
+class CartEntryConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -14117,18 +14091,18 @@ let CartEntryConnector = class CartEntryConnector {
     remove(userId, cartId, entryNumber) {
         return this.adapter.remove(userId, cartId, entryNumber);
     }
-};
+}
+CartEntryConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+CartEntryConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CartEntryConnector.ctorParameters = () => [
     { type: CartEntryAdapter }
 ];
-CartEntryConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
-CartEntryConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CartEntryConnector);
 
-let CartEntryEffects = class CartEntryEffects {
+class CartEntryEffects {
     constructor(actions$, cartEntryConnector) {
         this.actions$ = actions$;
         this.cartEntryConnector = cartEntryConnector;
@@ -14167,7 +14141,10 @@ let CartEntryEffects = class CartEntryEffects {
             }),
         ])))), withdrawOn(this.contextChange$));
     }
-};
+}
+CartEntryEffects.decorators = [
+    { type: Injectable }
+];
 CartEntryEffects.ctorParameters = () => [
     { type: Actions },
     { type: CartEntryConnector }
@@ -14181,11 +14158,8 @@ __decorate([
 __decorate([
     Effect()
 ], CartEntryEffects.prototype, "updateEntry$", void 0);
-CartEntryEffects = __decorate([
-    Injectable()
-], CartEntryEffects);
 
-let CartVoucherConnector = class CartVoucherConnector {
+class CartVoucherConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -14195,18 +14169,18 @@ let CartVoucherConnector = class CartVoucherConnector {
     remove(userId, cartId, voucherId) {
         return this.adapter.remove(userId, cartId, voucherId);
     }
-};
+}
+CartVoucherConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
+CartVoucherConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CartVoucherConnector.ctorParameters = () => [
     { type: CartVoucherAdapter }
 ];
-CartVoucherConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
-CartVoucherConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CartVoucherConnector);
 
-let CartVoucherEffects = class CartVoucherEffects {
+class CartVoucherEffects {
     constructor(actions$, cartVoucherConnector, messageService) {
         this.actions$ = actions$;
         this.cartVoucherConnector = cartVoucherConnector;
@@ -14253,7 +14227,10 @@ let CartVoucherEffects = class CartVoucherEffects {
     showGlobalMessage(text, param, messageType) {
         this.messageService.add({ key: text, params: { voucherCode: param } }, messageType);
     }
-};
+}
+CartVoucherEffects.decorators = [
+    { type: Injectable }
+];
 CartVoucherEffects.ctorParameters = () => [
     { type: Actions },
     { type: CartVoucherConnector },
@@ -14265,9 +14242,6 @@ __decorate([
 __decorate([
     Effect()
 ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
-CartVoucherEffects = __decorate([
-    Injectable()
-], CartVoucherEffects);
 
 const VERIFY_ADDRESS = '[Checkout] Verify Address';
 const VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
@@ -14824,7 +14798,7 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     SetPaymentTypeSuccess: SetPaymentTypeSuccess
 });
 
-let CartConnector = class CartConnector {
+class CartConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -14843,18 +14817,18 @@ let CartConnector = class CartConnector {
     addEmail(userId, cartId, email) {
         return this.adapter.addEmail(userId, cartId, email);
     }
-};
+}
+CartConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
+CartConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CartConnector.ctorParameters = () => [
     { type: CartAdapter }
 ];
-CartConnector.ɵprov = ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
-CartConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CartConnector);
 
-let CartEffects = class CartEffects {
+class CartEffects {
     constructor(actions$, cartConnector, store) {
         this.actions$ = actions$;
         this.cartConnector = cartConnector;
@@ -14976,7 +14950,10 @@ let CartEffects = class CartEffects {
             new LoadCart(Object.assign({}, payload)),
         ])))));
     }
-};
+}
+CartEffects.decorators = [
+    { type: Injectable }
+];
 CartEffects.ctorParameters = () => [
     { type: Actions },
     { type: CartConnector },
@@ -15006,29 +14983,26 @@ __decorate([
 __decorate([
     Effect()
 ], CartEffects.prototype, "deleteCart$", void 0);
-CartEffects = __decorate([
-    Injectable()
-], CartEffects);
 
-let SaveCartConnector = class SaveCartConnector {
+class SaveCartConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
     saveCart(userId, cartId, saveCartName, saveCartDescription) {
         return this.adapter.saveCart(userId, cartId, saveCartName, saveCartDescription);
     }
-};
+}
+SaveCartConnector.ɵprov = ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(ɵɵinject(SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
+SaveCartConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 SaveCartConnector.ctorParameters = () => [
     { type: SaveCartAdapter }
 ];
-SaveCartConnector.ɵprov = ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(ɵɵinject(SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
-SaveCartConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], SaveCartConnector);
 
-let WishListEffects = class WishListEffects {
+class WishListEffects {
     constructor(actions$, cartConnector, saveCartConnector, authService, store) {
         this.actions$ = actions$;
         this.cartConnector = cartConnector;
@@ -15106,7 +15080,10 @@ let WishListEffects = class WishListEffects {
             return EMPTY;
         }));
     }
-};
+}
+WishListEffects.decorators = [
+    { type: Injectable }
+];
 WishListEffects.ctorParameters = () => [
     { type: Actions },
     { type: CartConnector },
@@ -15123,9 +15100,6 @@ __decorate([
 __decorate([
     Effect()
 ], WishListEffects.prototype, "resetWishList$", void 0);
-WishListEffects = __decorate([
-    Injectable()
-], WishListEffects);
 
 const activeCartInitialState = '';
 const wishListInitialState = '';
@@ -15211,7 +15185,7 @@ class CartAddEntryFailEvent {
 /**
  * Registers events for the active cart
  */
-let CartEventBuilder = class CartEventBuilder {
+class CartEventBuilder {
     constructor(actionsSubject, event, activeCartService) {
         this.actionsSubject = actionsSubject;
         this.event = event;
@@ -15260,26 +15234,26 @@ let CartEventBuilder = class CartEventBuilder {
     getAction(actionType) {
         return this.actionsSubject.pipe(ofType(...[].concat(actionType)));
     }
-};
+}
+CartEventBuilder.ɵprov = ɵɵdefineInjectable({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(ɵɵinject(ActionsSubject), ɵɵinject(EventService), ɵɵinject(ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
+CartEventBuilder.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 CartEventBuilder.ctorParameters = () => [
     { type: ActionsSubject },
     { type: EventService },
     { type: ActiveCartService }
 ];
-CartEventBuilder.ɵprov = ɵɵdefineInjectable({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(ɵɵinject(ActionsSubject), ɵɵinject(EventService), ɵɵinject(ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
-CartEventBuilder = __decorate([
-    Injectable({ providedIn: 'root' })
-], CartEventBuilder);
 
-let CartEventModule = class CartEventModule {
+class CartEventModule {
     constructor(_CartEventBuilder) { }
-};
+}
+CartEventModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 CartEventModule.ctorParameters = () => [
     { type: CartEventBuilder }
 ];
-CartEventModule = __decorate([
-    NgModule({})
-], CartEventModule);
 
 const CMS_FEATURE = 'cms';
 const NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
@@ -15566,7 +15540,7 @@ function serializePageContext(pageContext, ignoreContentPageId) {
     return `${pageContext.type}-${pageContext.id}`;
 }
 
-let CmsService = class CmsService {
+class CmsService {
     constructor(store, routingService) {
         this.store = store;
         this.routingService = routingService;
@@ -15729,17 +15703,17 @@ let CmsService = class CmsService {
     setPageFailIndex(pageContext, value) {
         this.store.dispatch(new CmsSetPageFailIndex(pageContext, value));
     }
-};
+}
+CmsService.ɵprov = ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(ɵɵinject(Store), ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
+CmsService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CmsService.ctorParameters = () => [
     { type: Store },
     { type: RoutingService }
 ];
-CmsService.ɵprov = ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(ɵɵinject(Store), ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
-CmsService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CmsService);
 
 var PageRobotsMeta;
 (function (PageRobotsMeta) {
@@ -15756,7 +15730,7 @@ var PageRobotsMeta;
  *
  * The page title and robots are resolved in this implementation only.
  */
-let CartPageMetaResolver = class CartPageMetaResolver extends PageMetaResolver {
+class CartPageMetaResolver extends PageMetaResolver {
     constructor(cms) {
         super();
         this.cms = cms;
@@ -15778,18 +15752,18 @@ let CartPageMetaResolver = class CartPageMetaResolver extends PageMetaResolver {
     resolveRobots() {
         return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
     }
-};
+}
+CartPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
+CartPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CartPageMetaResolver.ctorParameters = () => [
     { type: CmsService }
 ];
-CartPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
-CartPageMetaResolver = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CartPageMetaResolver);
 
-let MultiCartStatePersistenceService = class MultiCartStatePersistenceService {
+class MultiCartStatePersistenceService {
     constructor(statePersistenceService, store, siteContextParamsService) {
         this.statePersistenceService = statePersistenceService;
         this.store = store;
@@ -15816,20 +15790,20 @@ let MultiCartStatePersistenceService = class MultiCartStatePersistenceService {
             this.store.dispatch(new SetActiveCartId(state.active));
         }
     }
-};
+}
+MultiCartStatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(ɵɵinject(StatePersistenceService), ɵɵinject(Store), ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
+MultiCartStatePersistenceService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 MultiCartStatePersistenceService.ctorParameters = () => [
     { type: StatePersistenceService },
     { type: Store },
     { type: SiteContextParamsService }
 ];
-MultiCartStatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(ɵɵinject(StatePersistenceService), ɵɵinject(Store), ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
-MultiCartStatePersistenceService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], MultiCartStatePersistenceService);
 
-let MultiCartEffects = class MultiCartEffects {
+class MultiCartEffects {
     constructor(actions$) {
         this.actions$ = actions$;
         this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map((action) => {
@@ -15838,7 +15812,10 @@ let MultiCartEffects = class MultiCartEffects {
         // TODO(#7241): Remove when we drop ADD_VOUCHER process and we sort out checkout and cart dependencies
         this.processesIncrement$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER), map((action) => action.payload), map((payload) => new CartProcessesIncrement(payload.cartId)));
     }
-};
+}
+MultiCartEffects.decorators = [
+    { type: Injectable }
+];
 MultiCartEffects.ctorParameters = () => [
     { type: Actions }
 ];
@@ -15848,9 +15825,6 @@ __decorate([
 __decorate([
     Effect()
 ], MultiCartEffects.prototype, "processesIncrement$", void 0);
-MultiCartEffects = __decorate([
-    Injectable()
-], MultiCartEffects);
 
 const effects$4 = [
     CartEffects,
@@ -15859,33 +15833,32 @@ const effects$4 = [
     WishListEffects,
     MultiCartEffects,
 ];
-let MultiCartStoreModule = class MultiCartStoreModule {
-};
-MultiCartStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            StateModule,
-            StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
-                metaReducers: multiCartMetaReducers,
-            }),
-            EffectsModule.forFeature(effects$4),
-        ],
-        providers: [multiCartReducerProvider],
-    })
-], MultiCartStoreModule);
+class MultiCartStoreModule {
+}
+MultiCartStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    StateModule,
+                    StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
+                        metaReducers: multiCartMetaReducers,
+                    }),
+                    EffectsModule.forFeature(effects$4),
+                ],
+                providers: [multiCartReducerProvider],
+            },] }
+];
 
-var CartModule_1;
 function cartStatePersistenceFactory(cartStatePersistenceService, configInit) {
     const result = () => configInit.getStableConfig('context').then(() => {
         cartStatePersistenceService.sync();
     });
     return result;
 }
-let CartModule = CartModule_1 = class CartModule {
+class CartModule {
     static forRoot() {
         return {
-            ngModule: CartModule_1,
+            ngModule: CartModule,
             providers: [
                 {
                     provide: PageMetaResolver,
@@ -15901,24 +15874,24 @@ let CartModule = CartModule_1 = class CartModule {
             ],
         };
     }
-};
-CartModule = CartModule_1 = __decorate([
-    NgModule({
-        imports: [MultiCartStoreModule, CartEventModule],
-    })
-], CartModule);
+}
+CartModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [MultiCartStoreModule, CartEventModule],
+            },] }
+];
 
-let CartConfig = class CartConfig {
-};
+class CartConfig {
+}
 CartConfig.ɵprov = ɵɵdefineInjectable({ factory: function CartConfig_Factory() { return ɵɵinject(Config); }, token: CartConfig, providedIn: "root" });
-CartConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], CartConfig);
+CartConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
-let CartVoucherService = class CartVoucherService {
+class CartVoucherService {
     constructor(store, authService, activeCartService) {
         this.store = store;
         this.authService = authService;
@@ -15981,20 +15954,20 @@ let CartVoucherService = class CartVoucherService {
             ]).pipe(take(1));
         }
     }
-};
+}
+CartVoucherService.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
+CartVoucherService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CartVoucherService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
     { type: ActiveCartService }
 ];
-CartVoucherService.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
-CartVoucherService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CartVoucherService);
 
-let UserService = class UserService {
+class UserService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -16236,17 +16209,17 @@ let UserService = class UserService {
     resetUpdatePasswordProcessState() {
         this.store.dispatch(new UpdatePasswordReset());
     }
-};
+}
+UserService.ɵprov = ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
+UserService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 UserService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-UserService.ɵprov = ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
-UserService = __decorate([
-    Injectable({ providedIn: 'root' })
-], UserService);
 
-let CartConfigService = class CartConfigService {
+class CartConfigService {
     constructor(config) {
         this.config = config;
     }
@@ -16254,18 +16227,18 @@ let CartConfigService = class CartConfigService {
         var _a, _b, _c;
         return Boolean((_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.cart) === null || _b === void 0 ? void 0 : _b.selectiveCart) === null || _c === void 0 ? void 0 : _c.enabled);
     }
-};
+}
+CartConfigService.ɵprov = ɵɵdefineInjectable({ factory: function CartConfigService_Factory() { return new CartConfigService(ɵɵinject(CartConfig)); }, token: CartConfigService, providedIn: "root" });
+CartConfigService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CartConfigService.ctorParameters = () => [
     { type: CartConfig }
 ];
-CartConfigService.ɵprov = ɵɵdefineInjectable({ factory: function CartConfigService_Factory() { return new CartConfigService(ɵɵinject(CartConfig)); }, token: CartConfigService, providedIn: "root" });
-CartConfigService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CartConfigService);
 
-let SelectiveCartService = class SelectiveCartService {
+class SelectiveCartService {
     constructor(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
         this.store = store;
         this.userService = userService;
@@ -16369,7 +16342,13 @@ let SelectiveCartService = class SelectiveCartService {
     isLoggedIn(userId) {
         return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
     }
-};
+}
+SelectiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(ɵɵinject(Store), ɵɵinject(UserService), ɵɵinject(AuthService), ɵɵinject(MultiCartService), ɵɵinject(BaseSiteService), ɵɵinject(CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
+SelectiveCartService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 SelectiveCartService.ctorParameters = () => [
     { type: Store },
     { type: UserService },
@@ -16378,14 +16357,8 @@ SelectiveCartService.ctorParameters = () => [
     { type: BaseSiteService },
     { type: CartConfigService }
 ];
-SelectiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(ɵɵinject(Store), ɵɵinject(UserService), ɵɵinject(AuthService), ɵɵinject(MultiCartService), ɵɵinject(BaseSiteService), ɵɵinject(CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
-SelectiveCartService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], SelectiveCartService);
 
-let WishListService = class WishListService {
+class WishListService {
     constructor(store, authService, userService, multiCartService) {
         this.store = store;
         this.authService = authService;
@@ -16446,19 +16419,19 @@ let WishListService = class WishListService {
     getWishListId() {
         return this.store.pipe(select(getWishListId));
     }
-};
+}
+WishListService.ɵprov = ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(UserService), ɵɵinject(MultiCartService)); }, token: WishListService, providedIn: "root" });
+WishListService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 WishListService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
     { type: UserService },
     { type: MultiCartService }
 ];
-WishListService.ɵprov = ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(UserService), ɵɵinject(MultiCartService)); }, token: WishListService, providedIn: "root" });
-WishListService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], WishListService);
 
 /**
  * Indicates that a user has successfully placed an order
@@ -16466,7 +16439,7 @@ WishListService = __decorate([
 class OrderPlacedEvent {
 }
 
-let CheckoutEventBuilder = class CheckoutEventBuilder {
+class CheckoutEventBuilder {
     constructor(stateEventService) {
         this.stateEventService = stateEventService;
         this.register();
@@ -16486,26 +16459,26 @@ let CheckoutEventBuilder = class CheckoutEventBuilder {
             event: OrderPlacedEvent,
         });
     }
-};
+}
+CheckoutEventBuilder.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
+CheckoutEventBuilder.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutEventBuilder.ctorParameters = () => [
     { type: StateEventService }
 ];
-CheckoutEventBuilder.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
-CheckoutEventBuilder = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutEventBuilder);
 
-let CheckoutEventModule = class CheckoutEventModule {
+class CheckoutEventModule {
     constructor(_checkoutEventBuilder) { }
-};
+}
+CheckoutEventModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 CheckoutEventModule.ctorParameters = () => [
     { type: CheckoutEventBuilder }
 ];
-CheckoutEventModule = __decorate([
-    NgModule({})
-], CheckoutEventModule);
 
 class TranslationService {
 }
@@ -16517,7 +16490,7 @@ class TranslationService {
  *
  * The page title and robots are resolved in this implementation only.
  */
-let CheckoutPageMetaResolver = class CheckoutPageMetaResolver extends PageMetaResolver {
+class CheckoutPageMetaResolver extends PageMetaResolver {
     constructor(translation, activeCartService) {
         super();
         this.translation = translation;
@@ -16534,17 +16507,17 @@ let CheckoutPageMetaResolver = class CheckoutPageMetaResolver extends PageMetaRe
     resolveRobots() {
         return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
     }
-};
+}
+CheckoutPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(TranslationService), ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+CheckoutPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutPageMetaResolver.ctorParameters = () => [
     { type: TranslationService },
     { type: ActiveCartService }
 ];
-CheckoutPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(TranslationService), ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
-CheckoutPageMetaResolver = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutPageMetaResolver);
 
 const initialState$9 = {
     results: {},
@@ -16716,7 +16689,7 @@ const reducerProvider$5 = {
     useFactory: getReducers$5,
 };
 
-let UserAddressConnector = class UserAddressConnector {
+class UserAddressConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -16735,24 +16708,27 @@ let UserAddressConnector = class UserAddressConnector {
     delete(userId, addressId) {
         return this.adapter.delete(userId, addressId);
     }
-};
+}
+UserAddressConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+UserAddressConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserAddressConnector.ctorParameters = () => [
     { type: UserAddressAdapter }
 ];
-UserAddressConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
-UserAddressConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserAddressConnector);
 
-let AddressVerificationEffect = class AddressVerificationEffect {
+class AddressVerificationEffect {
     constructor(actions$, userAddressConnector) {
         this.actions$ = actions$;
         this.userAddressConnector = userAddressConnector;
         this.verifyAddress$ = this.actions$.pipe(ofType(VERIFY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.userAddressConnector.verify(payload.userId, payload.address).pipe(map((data) => new VerifyAddressSuccess(data)), catchError((error) => of(new VerifyAddressFail(makeErrorSerializable(error)))))));
     }
-};
+}
+AddressVerificationEffect.decorators = [
+    { type: Injectable }
+];
 AddressVerificationEffect.ctorParameters = () => [
     { type: Actions },
     { type: UserAddressConnector }
@@ -16760,11 +16736,8 @@ AddressVerificationEffect.ctorParameters = () => [
 __decorate([
     Effect()
 ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
-AddressVerificationEffect = __decorate([
-    Injectable()
-], AddressVerificationEffect);
 
-let CheckoutPaymentConnector = class CheckoutPaymentConnector {
+class CheckoutPaymentConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -16777,18 +16750,18 @@ let CheckoutPaymentConnector = class CheckoutPaymentConnector {
     getCardTypes() {
         return this.adapter.loadCardTypes();
     }
-};
+}
+CheckoutPaymentConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+CheckoutPaymentConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutPaymentConnector.ctorParameters = () => [
     { type: CheckoutPaymentAdapter }
 ];
-CheckoutPaymentConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
-CheckoutPaymentConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutPaymentConnector);
 
-let CardTypesEffects = class CardTypesEffects {
+class CardTypesEffects {
     constructor(actions$, checkoutPaymentConnector) {
         this.actions$ = actions$;
         this.checkoutPaymentConnector = checkoutPaymentConnector;
@@ -16796,7 +16769,10 @@ let CardTypesEffects = class CardTypesEffects {
             return this.checkoutPaymentConnector.getCardTypes().pipe(map((cardTypes) => new LoadCardTypesSuccess(cardTypes)), catchError((error) => of(new LoadCardTypesFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+CardTypesEffects.decorators = [
+    { type: Injectable }
+];
 CardTypesEffects.ctorParameters = () => [
     { type: Actions },
     { type: CheckoutPaymentConnector }
@@ -16804,9 +16780,6 @@ CardTypesEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
-CardTypesEffects = __decorate([
-    Injectable()
-], CardTypesEffects);
 
 /**
  * Normalizes HttpErrorResponse to HttpErrorModel.
@@ -16844,7 +16817,7 @@ function normalizeHttpError(error) {
     return undefined;
 }
 
-let CheckoutConnector = class CheckoutConnector {
+class CheckoutConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -16860,36 +16833,36 @@ let CheckoutConnector = class CheckoutConnector {
     clearCheckoutDeliveryMode(userId, cartId) {
         return this.adapter.clearCheckoutDeliveryMode(userId, cartId);
     }
-};
+}
+CheckoutConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+CheckoutConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutConnector.ctorParameters = () => [
     { type: CheckoutAdapter }
 ];
-CheckoutConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
-CheckoutConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutConnector);
 
-let CheckoutCostCenterConnector = class CheckoutCostCenterConnector {
+class CheckoutCostCenterConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
     setCostCenter(userId, cartId, costCenterId) {
         return this.adapter.setCostCenter(userId, cartId, costCenterId);
     }
-};
+}
+CheckoutCostCenterConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterConnector_Factory() { return new CheckoutCostCenterConnector(ɵɵinject(CheckoutCostCenterAdapter)); }, token: CheckoutCostCenterConnector, providedIn: "root" });
+CheckoutCostCenterConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutCostCenterConnector.ctorParameters = () => [
     { type: CheckoutCostCenterAdapter }
 ];
-CheckoutCostCenterConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterConnector_Factory() { return new CheckoutCostCenterConnector(ɵɵinject(CheckoutCostCenterAdapter)); }, token: CheckoutCostCenterConnector, providedIn: "root" });
-CheckoutCostCenterConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutCostCenterConnector);
 
-let CheckoutDeliveryConnector = class CheckoutDeliveryConnector {
+class CheckoutDeliveryConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -16908,18 +16881,18 @@ let CheckoutDeliveryConnector = class CheckoutDeliveryConnector {
     getSupportedModes(userId, cartId) {
         return this.adapter.getSupportedModes(userId, cartId);
     }
-};
+}
+CheckoutDeliveryConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
+CheckoutDeliveryConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutDeliveryConnector.ctorParameters = () => [
     { type: CheckoutDeliveryAdapter }
 ];
-CheckoutDeliveryConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
-CheckoutDeliveryConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutDeliveryConnector);
 
-let CheckoutEffects = class CheckoutEffects {
+class CheckoutEffects {
     constructor(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutCostCenterConnector, checkoutConnector) {
         this.actions$ = actions$;
         this.checkoutDeliveryConnector = checkoutDeliveryConnector;
@@ -17079,7 +17052,10 @@ let CheckoutEffects = class CheckoutEffects {
             ]), catchError((error) => of(new SetCostCenterFail(normalizeHttpError(error)))));
         }), withdrawOn(this.contextChange$));
     }
-};
+}
+CheckoutEffects.decorators = [
+    { type: Injectable }
+];
 CheckoutEffects.ctorParameters = () => [
     { type: Actions },
     { type: CheckoutDeliveryConnector },
@@ -17135,11 +17111,8 @@ __decorate([
 __decorate([
     Effect()
 ], CheckoutEffects.prototype, "setCostCenter$", void 0);
-CheckoutEffects = __decorate([
-    Injectable()
-], CheckoutEffects);
 
-let PaymentTypeConnector = class PaymentTypeConnector {
+class PaymentTypeConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -17149,18 +17122,18 @@ let PaymentTypeConnector = class PaymentTypeConnector {
     setPaymentType(userId, cartId, typeCode, poNumber) {
         return this.adapter.setPaymentType(userId, cartId, typeCode, poNumber);
     }
-};
+}
+PaymentTypeConnector.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeConnector_Factory() { return new PaymentTypeConnector(ɵɵinject(PaymentTypeAdapter)); }, token: PaymentTypeConnector, providedIn: "root" });
+PaymentTypeConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 PaymentTypeConnector.ctorParameters = () => [
     { type: PaymentTypeAdapter }
 ];
-PaymentTypeConnector.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeConnector_Factory() { return new PaymentTypeConnector(ɵɵinject(PaymentTypeAdapter)); }, token: PaymentTypeConnector, providedIn: "root" });
-PaymentTypeConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], PaymentTypeConnector);
 
-let PaymentTypesEffects = class PaymentTypesEffects {
+class PaymentTypesEffects {
     constructor(actions$, paymentTypeConnector) {
         this.actions$ = actions$;
         this.paymentTypeConnector = paymentTypeConnector;
@@ -17183,7 +17156,10 @@ let PaymentTypesEffects = class PaymentTypesEffects {
             }), catchError((error) => of(new SetPaymentTypeFail(normalizeHttpError(error)))));
         }));
     }
-};
+}
+PaymentTypesEffects.decorators = [
+    { type: Injectable }
+];
 PaymentTypesEffects.ctorParameters = () => [
     { type: Actions },
     { type: PaymentTypeConnector }
@@ -17194,9 +17170,6 @@ __decorate([
 __decorate([
     Effect()
 ], PaymentTypesEffects.prototype, "setPaymentType$", void 0);
-PaymentTypesEffects = __decorate([
-    Injectable()
-], PaymentTypesEffects);
 
 const effects$5 = [
     CheckoutEffects,
@@ -17205,25 +17178,24 @@ const effects$5 = [
     PaymentTypesEffects,
 ];
 
-let CheckoutStoreModule = class CheckoutStoreModule {
-};
-CheckoutStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            HttpClientModule,
-            StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5),
-            EffectsModule.forFeature(effects$5),
-        ],
-        providers: [reducerProvider$5],
-    })
-], CheckoutStoreModule);
+class CheckoutStoreModule {
+}
+CheckoutStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5),
+                    EffectsModule.forFeature(effects$5),
+                ],
+                providers: [reducerProvider$5],
+            },] }
+];
 
-var CheckoutModule_1;
-let CheckoutModule = CheckoutModule_1 = class CheckoutModule {
+class CheckoutModule {
     static forRoot() {
         return {
-            ngModule: CheckoutModule_1,
+            ngModule: CheckoutModule,
             providers: [
                 {
                     provide: PageMetaResolver,
@@ -17233,12 +17205,12 @@ let CheckoutModule = CheckoutModule_1 = class CheckoutModule {
             ],
         };
     }
-};
-CheckoutModule = CheckoutModule_1 = __decorate([
-    NgModule({
-        imports: [CheckoutStoreModule, CheckoutEventModule],
-    })
-], CheckoutModule);
+}
+CheckoutModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CheckoutStoreModule, CheckoutEventModule],
+            },] }
+];
 
 const getDeliveryAddressSelector = (state) => state.address;
 const ɵ0$A = getDeliveryAddressSelector;
@@ -17342,7 +17314,7 @@ var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
     getSelectedPaymentType: getSelectedPaymentType$1
 });
 
-let CheckoutService = class CheckoutService {
+class CheckoutService {
     constructor(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
         this.authService = authService;
@@ -17422,20 +17394,20 @@ let CheckoutService = class CheckoutService {
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
     }
-};
+}
+CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+CheckoutService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
     { type: ActiveCartService }
 ];
-CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
-CheckoutService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutService);
 
-let CheckoutDeliveryService = class CheckoutDeliveryService {
+class CheckoutDeliveryService {
     constructor(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
         this.authService = authService;
@@ -17699,20 +17671,20 @@ let CheckoutDeliveryService = class CheckoutDeliveryService {
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
     }
-};
+}
+CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+CheckoutDeliveryService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutDeliveryService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
     { type: ActiveCartService }
 ];
-CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
-CheckoutDeliveryService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutDeliveryService);
 
-let CheckoutPaymentService = class CheckoutPaymentService {
+class CheckoutPaymentService {
     constructor(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
         this.authService = authService;
@@ -17813,20 +17785,20 @@ let CheckoutPaymentService = class CheckoutPaymentService {
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
     }
-};
+}
+CheckoutPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
+CheckoutPaymentService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutPaymentService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
     { type: ActiveCartService }
 ];
-CheckoutPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
-CheckoutPaymentService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutPaymentService);
 
-let PaymentTypeService = class PaymentTypeService {
+class PaymentTypeService {
     constructor(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
         this.authService = authService;
@@ -17905,20 +17877,20 @@ let PaymentTypeService = class PaymentTypeService {
             }
         }), map(([_, po]) => po));
     }
-};
+}
+PaymentTypeService.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
+PaymentTypeService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 PaymentTypeService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
     { type: ActiveCartService }
 ];
-PaymentTypeService.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
-PaymentTypeService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], PaymentTypeService);
 
-let CheckoutCostCenterService = class CheckoutCostCenterService {
+class CheckoutCostCenterService {
     constructor(checkoutStore, authService, activeCartService) {
         this.checkoutStore = checkoutStore;
         this.authService = authService;
@@ -17959,18 +17931,18 @@ let CheckoutCostCenterService = class CheckoutCostCenterService {
             return costCenterId;
         }));
     }
-};
+}
+CheckoutCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
+CheckoutCostCenterService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CheckoutCostCenterService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
     { type: ActiveCartService }
 ];
-CheckoutCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
-CheckoutCostCenterService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CheckoutCostCenterService);
 
 const defaultCmsModuleConfig = {
     backend: {
@@ -17994,7 +17966,7 @@ const defaultCmsModuleConfig = {
  *
  * The page title, and breadcrumbs are resolved in this implementation only.
  */
-let ContentPageMetaResolver = class ContentPageMetaResolver extends PageMetaResolver {
+class ContentPageMetaResolver extends PageMetaResolver {
     constructor(cms, translation) {
         super();
         this.cms = cms;
@@ -18021,31 +17993,31 @@ let ContentPageMetaResolver = class ContentPageMetaResolver extends PageMetaReso
             .translate('common.home')
             .pipe(map((label) => [{ label: label, link: '/' }]));
     }
-};
+}
+ContentPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
+ContentPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ContentPageMetaResolver.ctorParameters = () => [
     { type: CmsService },
     { type: TranslationService }
 ];
-ContentPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
-ContentPageMetaResolver = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ContentPageMetaResolver);
 
-let CmsPageTitleModule = class CmsPageTitleModule {
-};
-CmsPageTitleModule = __decorate([
-    NgModule({
-        providers: [
-            {
-                provide: PageMetaResolver,
-                useExisting: ContentPageMetaResolver,
-                multi: true,
-            },
-        ],
-    })
-], CmsPageTitleModule);
+class CmsPageTitleModule {
+}
+CmsPageTitleModule.decorators = [
+    { type: NgModule, args: [{
+                providers: [
+                    {
+                        provide: PageMetaResolver,
+                        useExisting: ContentPageMetaResolver,
+                        multi: true,
+                    },
+                ],
+            },] }
+];
 
 function bufferDebounceTime(time = 0, scheduler) {
     return (source) => {
@@ -18061,15 +18033,15 @@ function bufferDebounceTime(time = 0, scheduler) {
  * only require the necessary properties. Adapter logic is applied to serialize
  * the `CmsStructureConfig` into the required UI model.
  */
-let CmsStructureConfig = class CmsStructureConfig extends CmsConfig {
-};
+class CmsStructureConfig extends CmsConfig {
+}
 CmsStructureConfig.ɵprov = ɵɵdefineInjectable({ factory: function CmsStructureConfig_Factory() { return ɵɵinject(Config); }, token: CmsStructureConfig, providedIn: "root" });
-CmsStructureConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], CmsStructureConfig);
+CmsStructureConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 /**
  * Service that provides access to CMS structure from a static
@@ -18080,7 +18052,7 @@ CmsStructureConfig = __decorate([
  * The intent of the `CmsStructureConfigService` however is to provide
  * fast loading pages and default cms structure for commodity commerce.
  */
-let CmsStructureConfigService = class CmsStructureConfigService {
+class CmsStructureConfigService {
     constructor(cmsDataConfig) {
         this.cmsDataConfig = cmsDataConfig;
     }
@@ -18207,18 +18179,18 @@ let CmsStructureConfigService = class CmsStructureConfigService {
             ? this.cmsDataConfig.cmsStructure.components[componentId]
             : undefined;
     }
-};
+}
+CmsStructureConfigService.ɵprov = ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
+CmsStructureConfigService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CmsStructureConfigService.ctorParameters = () => [
     { type: CmsStructureConfig }
 ];
-CmsStructureConfigService.ɵprov = ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
-CmsStructureConfigService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CmsStructureConfigService);
 
-let CmsComponentConnector = class CmsComponentConnector {
+class CmsComponentConnector {
     constructor(cmsStructureConfigService, adapter, config) {
         this.cmsStructureConfigService = cmsStructureConfigService;
         this.adapter = adapter;
@@ -18253,20 +18225,20 @@ let CmsComponentConnector = class CmsComponentConnector {
             }
         }));
     }
-};
+}
+CmsComponentConnector.ɵprov = ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(ɵɵinject(CmsStructureConfigService), ɵɵinject(CmsComponentAdapter), ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
+CmsComponentConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CmsComponentConnector.ctorParameters = () => [
     { type: CmsStructureConfigService },
     { type: CmsComponentAdapter },
     { type: OccConfig }
 ];
-CmsComponentConnector.ɵprov = ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(ɵɵinject(CmsStructureConfigService), ɵɵinject(CmsComponentAdapter), ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
-CmsComponentConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CmsComponentConnector);
 
-let ComponentsEffects = class ComponentsEffects {
+class ComponentsEffects {
     constructor(actions$, cmsComponentConnector) {
         this.actions$ = actions$;
         this.cmsComponentConnector = cmsComponentConnector;
@@ -18300,14 +18272,14 @@ let ComponentsEffects = class ComponentsEffects {
             pageContext,
         })))));
     }
-};
+}
+ComponentsEffects.decorators = [
+    { type: Injectable }
+];
 ComponentsEffects.ctorParameters = () => [
     { type: Actions },
     { type: CmsComponentConnector }
 ];
-ComponentsEffects = __decorate([
-    Injectable()
-], ComponentsEffects);
 
 /**
  * @license
@@ -18399,7 +18371,7 @@ function processGlobPatterns(urls) {
     });
 }
 
-let GlobService = class GlobService {
+class GlobService {
     /**
      * For given list of glob-like patterns, returns a validator function.
      *
@@ -18415,13 +18387,13 @@ let GlobService = class GlobService {
         return (url) => includePatterns.some((pattern) => pattern.regex.test(url)) &&
             !excludePatterns.some((pattern) => pattern.regex.test(url));
     }
-};
+}
 GlobService.ɵprov = ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-GlobService = __decorate([
-    Injectable({ providedIn: 'root' })
-], GlobService);
+GlobService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 
-let UrlMatcherService = class UrlMatcherService {
+class UrlMatcherService {
     constructor(globService) {
         this.globService = globService;
     }
@@ -18546,16 +18518,16 @@ let UrlMatcherService = class UrlMatcherService {
         }
         return matcher;
     }
-};
+}
+UrlMatcherService.ɵprov = ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
+UrlMatcherService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 UrlMatcherService.ctorParameters = () => [
     { type: GlobService }
 ];
-UrlMatcherService.ɵprov = ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
-UrlMatcherService = __decorate([
-    Injectable({ providedIn: 'root' })
-], UrlMatcherService);
 
-let ConfigurableRoutesService = class ConfigurableRoutesService {
+class ConfigurableRoutesService {
     constructor(injector, routingConfigService, urlMatcherService) {
         this.injector = injector;
         this.routingConfigService = routingConfigService;
@@ -18678,72 +18650,72 @@ let ConfigurableRoutesService = class ConfigurableRoutesService {
             console.warn(...args);
         }
     }
-};
+}
+ConfigurableRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+ConfigurableRoutesService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 ConfigurableRoutesService.ctorParameters = () => [
     { type: Injector },
     { type: RoutingConfigService },
     { type: UrlMatcherService }
 ];
-ConfigurableRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
-ConfigurableRoutesService = __decorate([
-    Injectable({ providedIn: 'root' })
-], ConfigurableRoutesService);
 
-let UrlPipe = class UrlPipe {
+class UrlPipe {
     constructor(urlService) {
         this.urlService = urlService;
     }
     transform(commands) {
         return this.urlService.transform(commands);
     }
-};
+}
+UrlPipe.decorators = [
+    { type: Pipe, args: [{
+                name: 'cxUrl',
+            },] }
+];
 UrlPipe.ctorParameters = () => [
     { type: SemanticPathService }
 ];
-UrlPipe = __decorate([
-    Pipe({
-        name: 'cxUrl',
-    })
-], UrlPipe);
 
-let ProductURLPipe = class ProductURLPipe {
+class ProductURLPipe {
     constructor(semanticPath) {
         this.semanticPath = semanticPath;
     }
     transform(product) {
         return this.semanticPath.transform({ cxRoute: 'product', params: product });
     }
-};
+}
+ProductURLPipe.decorators = [
+    { type: Pipe, args: [{
+                name: 'cxProductUrl',
+            },] }
+];
 ProductURLPipe.ctorParameters = () => [
     { type: SemanticPathService }
 ];
-ProductURLPipe = __decorate([
-    Pipe({
-        name: 'cxProductUrl',
-    })
-], ProductURLPipe);
 
-let UrlModule = class UrlModule {
-};
-UrlModule = __decorate([
-    NgModule({
-        imports: [CommonModule],
-        declarations: [UrlPipe, ProductURLPipe],
-        exports: [UrlPipe, ProductURLPipe],
-    })
-], UrlModule);
+class UrlModule {
+}
+UrlModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule],
+                declarations: [UrlPipe, ProductURLPipe],
+                exports: [UrlPipe, ProductURLPipe],
+            },] }
+];
 
-let ExternalRoutesConfig = class ExternalRoutesConfig {
-};
+class ExternalRoutesConfig {
+}
 ExternalRoutesConfig.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesConfig_Factory() { return ɵɵinject(Config); }, token: ExternalRoutesConfig, providedIn: "root" });
-ExternalRoutesConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], ExternalRoutesConfig);
+ExternalRoutesConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
-let ExternalRoutesGuard = class ExternalRoutesGuard {
+class ExternalRoutesGuard {
     constructor(winRef, platformId) {
         this.winRef = winRef;
         this.platformId = platformId;
@@ -18766,16 +18738,15 @@ let ExternalRoutesGuard = class ExternalRoutesGuard {
             window.location.href = state.url;
         }
     }
-};
+}
+ExternalRoutesGuard.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
+ExternalRoutesGuard.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 ExternalRoutesGuard.ctorParameters = () => [
     { type: WindowRef },
     { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
-ExternalRoutesGuard.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
-ExternalRoutesGuard = __decorate([
-    Injectable({ providedIn: 'root' }),
-    __param(1, Inject(PLATFORM_ID))
-], ExternalRoutesGuard);
 
 function addExternalRoutesFactory(service) {
     const result = () => {
@@ -18787,7 +18758,7 @@ function addExternalRoutesFactory(service) {
 /**
  * Service that helps redirecting to different storefront systems for configured URLs
  */
-let ExternalRoutesService = class ExternalRoutesService {
+class ExternalRoutesService {
     constructor(config, urlMatcherService, injector) {
         this.config = config;
         this.urlMatcherService = urlMatcherService;
@@ -18829,27 +18800,26 @@ let ExternalRoutesService = class ExternalRoutesService {
         const matcher = this.urlMatcherService.getFromGlob(this.internalUrlPatterns);
         return this.urlMatcherService.getOpposite(matcher); // the external route should be activated only when it's NOT an internal route
     }
-};
+}
+ExternalRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(ɵɵinject(ExternalRoutesConfig), ɵɵinject(UrlMatcherService), ɵɵinject(INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
+ExternalRoutesService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ExternalRoutesService.ctorParameters = () => [
     { type: ExternalRoutesConfig },
     { type: UrlMatcherService },
     { type: Injector }
 ];
-ExternalRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(ɵɵinject(ExternalRoutesConfig), ɵɵinject(UrlMatcherService), ɵɵinject(INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
-ExternalRoutesService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ExternalRoutesService);
 
-var ExternalRoutesModule_1;
 /**
  * Prepends the external route that redirects to a different storefront system for configured URLs
  */
-let ExternalRoutesModule = ExternalRoutesModule_1 = class ExternalRoutesModule {
+class ExternalRoutesModule {
     static forRoot() {
         return {
-            ngModule: ExternalRoutesModule_1,
+            ngModule: ExternalRoutesModule,
             providers: [
                 {
                     provide: APP_INITIALIZER,
@@ -18860,10 +18830,10 @@ let ExternalRoutesModule = ExternalRoutesModule_1 = class ExternalRoutesModule {
             ],
         };
     }
-};
-ExternalRoutesModule = ExternalRoutesModule_1 = __decorate([
-    NgModule()
-], ExternalRoutesModule);
+}
+ExternalRoutesModule.decorators = [
+    { type: NgModule }
+];
 
 class PageContext {
     constructor(id, type) {
@@ -18872,7 +18842,7 @@ class PageContext {
     }
 }
 
-let ProtectedRoutesService = class ProtectedRoutesService {
+class ProtectedRoutesService {
     constructor(config) {
         this.config = config;
         this.nonProtectedPaths = []; // arrays of paths' segments list
@@ -18938,16 +18908,16 @@ let ProtectedRoutesService = class ProtectedRoutesService {
     getSegments(url) {
         return (url || '').split('/');
     }
-};
+}
+ProtectedRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
+ProtectedRoutesService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 ProtectedRoutesService.ctorParameters = () => [
     { type: RoutingConfig }
 ];
-ProtectedRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
-ProtectedRoutesService = __decorate([
-    Injectable({ providedIn: 'root' })
-], ProtectedRoutesService);
 
-let ProtectedRoutesGuard = class ProtectedRoutesGuard {
+class ProtectedRoutesGuard {
     constructor(service, authGuard) {
         this.service = service;
         this.authGuard = authGuard;
@@ -18964,17 +18934,17 @@ let ProtectedRoutesGuard = class ProtectedRoutesGuard {
         }
         return of(true);
     }
-};
+}
+ProtectedRoutesGuard.ɵprov = ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(ɵɵinject(ProtectedRoutesService), ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
+ProtectedRoutesGuard.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 ProtectedRoutesGuard.ctorParameters = () => [
     { type: ProtectedRoutesService },
     { type: AuthGuard }
 ];
-ProtectedRoutesGuard.ɵprov = ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(ɵɵinject(ProtectedRoutesService), ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
-ProtectedRoutesGuard = __decorate([
-    Injectable({ providedIn: 'root' })
-], ProtectedRoutesGuard);
 
-let RouterEffects = class RouterEffects {
+class RouterEffects {
     constructor(actions$, router, location) {
         this.actions$ = actions$;
         this.router = router;
@@ -18994,7 +18964,10 @@ let RouterEffects = class RouterEffects {
         this.navigateBack$ = this.actions$.pipe(ofType(ROUTER_BACK), tap(() => this.location.back()));
         this.navigateForward$ = this.actions$.pipe(ofType(ROUTER_FORWARD), tap(() => this.location.forward()));
     }
-};
+}
+RouterEffects.decorators = [
+    { type: Injectable }
+];
 RouterEffects.ctorParameters = () => [
     { type: Actions },
     { type: Router },
@@ -19015,9 +18988,6 @@ __decorate([
 __decorate([
     Effect({ dispatch: false })
 ], RouterEffects.prototype, "navigateForward$", void 0);
-RouterEffects = __decorate([
-    Injectable()
-], RouterEffects);
 
 const effects$6 = [RouterEffects];
 
@@ -19069,7 +19039,7 @@ const reducerProvider$6 = {
 /* The serializer is there to parse the RouterStateSnapshot,
 and to reduce the amount of properties to be passed to the reducer.
  */
-let CustomSerializer = class CustomSerializer {
+class CustomSerializer {
     constructor(routingConfig) {
         this.routingConfig = routingConfig;
     }
@@ -19168,23 +19138,22 @@ let CustomSerializer = class CustomSerializer {
         // don't start with slash. So we remove the leading slash:
         return this.routingConfig.getRouteName(path.substr(1));
     }
-};
+}
+CustomSerializer.decorators = [
+    { type: Injectable }
+];
 CustomSerializer.ctorParameters = () => [
     { type: RoutingConfigService }
 ];
-CustomSerializer = __decorate([
-    Injectable()
-], CustomSerializer);
 
-var RoutingModule_1;
 function initConfigurableRoutes(service) {
     const result = () => service.init(); // workaround for AOT compilation (see https://stackoverflow.com/a/51977115)
     return result;
 }
-let RoutingModule = RoutingModule_1 = class RoutingModule {
+class RoutingModule {
     static forRoot() {
         return {
-            ngModule: RoutingModule_1,
+            ngModule: RoutingModule,
             providers: [
                 reducerProvider$6,
                 {
@@ -19200,19 +19169,19 @@ let RoutingModule = RoutingModule_1 = class RoutingModule {
             ],
         };
     }
-};
-RoutingModule = RoutingModule_1 = __decorate([
-    NgModule({
-        imports: [
-            StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
-            EffectsModule.forFeature(effects$6),
-            StoreRouterConnectingModule.forRoot({
-                routerState: 1 /* Minimal */,
-                stateKey: ROUTING_FEATURE,
-            }),
-        ],
-    })
-], RoutingModule);
+}
+RoutingModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
+                    EffectsModule.forFeature(effects$6),
+                    StoreRouterConnectingModule.forRoot({
+                        routerState: 1 /* Minimal */,
+                        stateKey: ROUTING_FEATURE,
+                    }),
+                ],
+            },] }
+];
 
 function getDefaultUrlMatcherFactory(routingConfigService, urlMatcherService) {
     const factory = (route) => {
@@ -19237,7 +19206,7 @@ const DEFAULT_URL_MATCHER = new InjectionToken('DEFAULT_URL_MATCHER', {
     factory: () => getDefaultUrlMatcherFactory(inject(RoutingConfigService), inject(UrlMatcherService)),
 });
 
-let NavigationEntryItemEffects = class NavigationEntryItemEffects {
+class NavigationEntryItemEffects {
     constructor(actions$, cmsComponentConnector, routingService) {
         this.actions$ = actions$;
         this.cmsComponentConnector = cmsComponentConnector;
@@ -19289,7 +19258,10 @@ let NavigationEntryItemEffects = class NavigationEntryItemEffects {
         });
         return { pageIds: pageIds, componentIds: componentIds, mediaIds: mediaIds };
     }
-};
+}
+NavigationEntryItemEffects.decorators = [
+    { type: Injectable }
+];
 NavigationEntryItemEffects.ctorParameters = () => [
     { type: Actions },
     { type: CmsComponentConnector },
@@ -19298,11 +19270,8 @@ NavigationEntryItemEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
-NavigationEntryItemEffects = __decorate([
-    Injectable()
-], NavigationEntryItemEffects);
 
-let CmsPageConnector = class CmsPageConnector {
+class CmsPageConnector {
     constructor(cmsPageAdapter, cmsStructureConfigService) {
         this.cmsPageAdapter = cmsPageAdapter;
         this.cmsStructureConfigService = cmsStructureConfigService;
@@ -19341,19 +19310,19 @@ let CmsPageConnector = class CmsPageConnector {
     mergeDefaultPageStructure(pageContext, pageStructure) {
         return this.cmsStructureConfigService.mergePageStructure(pageContext.id, pageStructure);
     }
-};
+}
+CmsPageConnector.ɵprov = ɵɵdefineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(ɵɵinject(CmsPageAdapter), ɵɵinject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
+CmsPageConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CmsPageConnector.ctorParameters = () => [
     { type: CmsPageAdapter },
     { type: CmsStructureConfigService }
 ];
-CmsPageConnector.ɵprov = ɵɵdefineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(ɵɵinject(CmsPageAdapter), ɵɵinject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
-CmsPageConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CmsPageConnector);
 
-let PageEffects = class PageEffects {
+class PageEffects {
     constructor(actions$, cmsPageConnector, routingService) {
         this.actions$ = actions$;
         this.cmsPageConnector = cmsPageConnector;
@@ -19379,7 +19348,10 @@ let PageEffects = class PageEffects {
             return actions;
         }), catchError((error) => of(new LoadCmsPageDataFail(pageContext, makeErrorSerializable(error)))))))));
     }
-};
+}
+PageEffects.decorators = [
+    { type: Injectable }
+];
 PageEffects.ctorParameters = () => [
     { type: Actions },
     { type: CmsPageConnector },
@@ -19391,9 +19363,6 @@ __decorate([
 __decorate([
     Effect()
 ], PageEffects.prototype, "loadPageData$", void 0);
-PageEffects = __decorate([
-    Injectable()
-], PageEffects);
 
 const effects$7 = [
     PageEffects,
@@ -19536,40 +19505,39 @@ function cmsStoreConfigFactory() {
     };
     return config;
 }
-let CmsStoreModule = class CmsStoreModule {
-};
-CmsStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            HttpClientModule,
-            StateModule,
-            StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
-            EffectsModule.forFeature(effects$7),
-        ],
-        providers: [
-            provideDefaultConfigFactory(cmsStoreConfigFactory),
-            reducerProvider$7,
-        ],
-    })
-], CmsStoreModule);
+class CmsStoreModule {
+}
+CmsStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StateModule,
+                    StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
+                    EffectsModule.forFeature(effects$7),
+                ],
+                providers: [
+                    provideDefaultConfigFactory(cmsStoreConfigFactory),
+                    reducerProvider$7,
+                ],
+            },] }
+];
 
-var CmsModule_1;
-let CmsModule = CmsModule_1 = class CmsModule {
+class CmsModule {
     static forRoot() {
         return {
-            ngModule: CmsModule_1,
+            ngModule: CmsModule,
             providers: [CmsService, provideDefaultConfig(defaultCmsModuleConfig)],
         };
     }
-};
-CmsModule = CmsModule_1 = __decorate([
-    NgModule({
-        imports: [CmsStoreModule, CmsPageTitleModule],
-    })
-], CmsModule);
+}
+CmsModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CmsStoreModule, CmsPageTitleModule],
+            },] }
+];
 
-let PageMetaService = class PageMetaService {
+class PageMetaService {
     constructor(resolvers, cms) {
         this.resolvers = resolvers;
         this.cms = cms;
@@ -19625,21 +19593,19 @@ let PageMetaService = class PageMetaService {
     getMetaResolver(page) {
         return resolveApplicable(this.resolvers, [page], [page]);
     }
-};
+}
+PageMetaService.ɵprov = ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(ɵɵinject(PageMetaResolver, 8), ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
+PageMetaService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 PageMetaService.ctorParameters = () => [
     { type: Array, decorators: [{ type: Optional }, { type: Inject, args: [PageMetaResolver,] }] },
     { type: CmsService }
 ];
-PageMetaService.ɵprov = ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(ɵɵinject(PageMetaResolver, 8), ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
-PageMetaService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    }),
-    __param(0, Optional()),
-    __param(0, Inject(PageMetaResolver))
-], PageMetaService);
 
-let SmartEditService = class SmartEditService {
+class SmartEditService {
     constructor(cmsService, routingService, baseSiteService, zone, winRef) {
         this.cmsService = cmsService;
         this.routingService = routingService;
@@ -19761,7 +19727,13 @@ let SmartEditService = class SmartEditService {
     isLaunchedInSmartEdit() {
         return this._launchedInSmartEdit;
     }
-};
+}
+SmartEditService.ɵprov = ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(ɵɵinject(CmsService), ɵɵinject(RoutingService), ɵɵinject(BaseSiteService), ɵɵinject(NgZone), ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+SmartEditService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 SmartEditService.ctorParameters = () => [
     { type: CmsService },
     { type: RoutingService },
@@ -19769,14 +19741,8 @@ SmartEditService.ctorParameters = () => [
     { type: NgZone },
     { type: WindowRef }
 ];
-SmartEditService.ɵprov = ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(ɵɵinject(CmsService), ɵɵinject(RoutingService), ɵɵinject(BaseSiteService), ɵɵinject(NgZone), ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
-SmartEditService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], SmartEditService);
 
-let DynamicAttributeService = class DynamicAttributeService {
+class DynamicAttributeService {
     constructor(smartEditService) {
         this.smartEditService = smartEditService;
     }
@@ -19816,26 +19782,25 @@ let DynamicAttributeService = class DynamicAttributeService {
             });
         }
     }
-};
+}
+DynamicAttributeService.ɵprov = ɵɵdefineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(ɵɵinject(SmartEditService)); }, token: DynamicAttributeService, providedIn: "root" });
+DynamicAttributeService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 DynamicAttributeService.ctorParameters = () => [
     { type: SmartEditService }
 ];
-DynamicAttributeService.ɵprov = ɵɵdefineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(ɵɵinject(SmartEditService)); }, token: DynamicAttributeService, providedIn: "root" });
-DynamicAttributeService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], DynamicAttributeService);
 
-var ConfigInitializerModule_1;
 function configInitializerFactory(configInitializer, initializers) {
     const isReady = () => configInitializer.initialize(initializers);
     return isReady;
 }
-let ConfigInitializerModule = ConfigInitializerModule_1 = class ConfigInitializerModule {
+class ConfigInitializerModule {
     static forRoot() {
         return {
-            ngModule: ConfigInitializerModule_1,
+            ngModule: ConfigInitializerModule,
             providers: [
                 {
                     provide: CONFIG_INITIALIZER_FORROOT_GUARD,
@@ -19853,12 +19818,11 @@ let ConfigInitializerModule = ConfigInitializerModule_1 = class ConfigInitialize
             ],
         };
     }
-};
-ConfigInitializerModule = ConfigInitializerModule_1 = __decorate([
-    NgModule({})
-], ConfigInitializerModule);
+}
+ConfigInitializerModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 
-var ConfigValidatorModule_1;
 function configValidatorFactory(configInitializer, validators) {
     const validate = () => {
         if (isDevMode()) {
@@ -19875,10 +19839,10 @@ function configValidatorFactory(configInitializer, validators) {
  *
  * issue: #5279
  */
-let ConfigValidatorModule = ConfigValidatorModule_1 = class ConfigValidatorModule {
+class ConfigValidatorModule {
     static forRoot() {
         return {
-            ngModule: ConfigValidatorModule_1,
+            ngModule: ConfigValidatorModule,
             providers: [
                 {
                     provide: APP_INITIALIZER,
@@ -19892,10 +19856,10 @@ let ConfigValidatorModule = ConfigValidatorModule_1 = class ConfigValidatorModul
             ],
         };
     }
-};
-ConfigValidatorModule = ConfigValidatorModule_1 = __decorate([
-    NgModule()
-], ConfigValidatorModule);
+}
+ConfigValidatorModule.decorators = [
+    { type: NgModule }
+];
 
 function getCookie(cookie, name) {
     const regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
@@ -19903,7 +19867,6 @@ function getCookie(cookie, name) {
     return (result && decodeURIComponent(result[1])) || '';
 }
 
-var TestConfigModule_1;
 const TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
 function parseConfigJSON(config) {
     try {
@@ -19925,7 +19888,7 @@ function configFromCookieFactory(cookieName, platform, document) {
  *
  * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
  */
-let TestConfigModule = TestConfigModule_1 = class TestConfigModule {
+class TestConfigModule {
     /**
      * Injects JSON config from the cookie of the given name.
      *
@@ -19935,7 +19898,7 @@ let TestConfigModule = TestConfigModule_1 = class TestConfigModule {
      */
     static forRoot(options) {
         return {
-            ngModule: TestConfigModule_1,
+            ngModule: TestConfigModule,
             providers: [
                 {
                     provide: TEST_CONFIG_COOKIE_NAME,
@@ -19949,13 +19912,13 @@ let TestConfigModule = TestConfigModule_1 = class TestConfigModule {
             ],
         };
     }
-};
-TestConfigModule = TestConfigModule_1 = __decorate([
-    NgModule({})
-], TestConfigModule);
+}
+TestConfigModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 
 // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
-let CxDatePipe = class CxDatePipe extends DatePipe {
+class CxDatePipe extends DatePipe {
     constructor(language) {
         super(null);
         this.language = language;
@@ -19987,15 +19950,15 @@ let CxDatePipe = class CxDatePipe extends DatePipe {
             console.warn(`cxDate pipe: No locale data registered for '${lang}' (see https://angular.io/api/common/registerLocaleData).`);
         }
     }
-};
+}
+CxDatePipe.decorators = [
+    { type: Pipe, args: [{ name: 'cxDate' },] }
+];
 CxDatePipe.ctorParameters = () => [
     { type: LanguageService }
 ];
-CxDatePipe = __decorate([
-    Pipe({ name: 'cxDate' })
-], CxDatePipe);
 
-let TranslatePipe = class TranslatePipe {
+class TranslatePipe {
     constructor(service, cd) {
         this.service = service;
         this.cd = cd;
@@ -20039,26 +20002,26 @@ let TranslatePipe = class TranslatePipe {
             this.sub.unsubscribe();
         }
     }
-};
+}
+TranslatePipe.decorators = [
+    { type: Pipe, args: [{ name: 'cxTranslate', pure: false },] }
+];
 TranslatePipe.ctorParameters = () => [
     { type: TranslationService },
     { type: ChangeDetectorRef }
 ];
-TranslatePipe = __decorate([
-    Pipe({ name: 'cxTranslate', pure: false })
-], TranslatePipe);
 
-let I18nConfig = class I18nConfig {
-};
+class I18nConfig {
+}
 I18nConfig.ɵprov = ɵɵdefineInjectable({ factory: function I18nConfig_Factory() { return ɵɵinject(Config); }, token: I18nConfig, providedIn: "root" });
-I18nConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], I18nConfig);
+I18nConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
-let TranslationChunkService = class TranslationChunkService {
+class TranslationChunkService {
     constructor(config) {
         this.config = config;
         this.duplicates = {};
@@ -20097,16 +20060,16 @@ let TranslationChunkService = class TranslationChunkService {
         });
         console.warn(`Duplicated keys has been found in the config of i18n chunks:\n${dupes.join('\n')}`);
     }
-};
+}
+TranslationChunkService.ɵprov = ɵɵdefineInjectable({ factory: function TranslationChunkService_Factory() { return new TranslationChunkService(ɵɵinject(I18nConfig)); }, token: TranslationChunkService, providedIn: "root" });
+TranslationChunkService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 TranslationChunkService.ctorParameters = () => [
     { type: I18nConfig }
 ];
-TranslationChunkService.ɵprov = ɵɵdefineInjectable({ factory: function TranslationChunkService_Factory() { return new TranslationChunkService(ɵɵinject(I18nConfig)); }, token: TranslationChunkService, providedIn: "root" });
-TranslationChunkService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], TranslationChunkService);
 
 const defaultI18nConfig = {
     i18n: {
@@ -20203,7 +20166,7 @@ const i18nextProviders = [
     },
 ];
 
-let I18nextTranslationService = class I18nextTranslationService {
+class I18nextTranslationService {
     constructor(config, translationChunk) {
         this.config = config;
         this.translationChunk = translationChunk;
@@ -20264,21 +20227,20 @@ let I18nextTranslationService = class I18nextTranslationService {
     getNamespacedKey(key, chunk) {
         return chunk + this.NAMESPACE_SEPARATOR + key;
     }
-};
+}
+I18nextTranslationService.ɵprov = ɵɵdefineInjectable({ factory: function I18nextTranslationService_Factory() { return new I18nextTranslationService(ɵɵinject(I18nConfig), ɵɵinject(TranslationChunkService)); }, token: I18nextTranslationService, providedIn: "root" });
+I18nextTranslationService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 I18nextTranslationService.ctorParameters = () => [
     { type: I18nConfig },
     { type: TranslationChunkService }
 ];
-I18nextTranslationService.ɵprov = ɵɵdefineInjectable({ factory: function I18nextTranslationService_Factory() { return new I18nextTranslationService(ɵɵinject(I18nConfig), ɵɵinject(TranslationChunkService)); }, token: I18nextTranslationService, providedIn: "root" });
-I18nextTranslationService = __decorate([
-    Injectable({ providedIn: 'root' })
-], I18nextTranslationService);
 
-var I18nModule_1;
-let I18nModule = I18nModule_1 = class I18nModule {
+class I18nModule {
     static forRoot() {
         return {
-            ngModule: I18nModule_1,
+            ngModule: I18nModule,
             providers: [
                 provideDefaultConfig(defaultI18nConfig),
                 { provide: TranslationService, useExisting: I18nextTranslationService },
@@ -20286,13 +20248,13 @@ let I18nModule = I18nModule_1 = class I18nModule {
             ],
         };
     }
-};
-I18nModule = I18nModule_1 = __decorate([
-    NgModule({
-        declarations: [TranslatePipe, CxDatePipe],
-        exports: [TranslatePipe, CxDatePipe],
-    })
-], I18nModule);
+}
+I18nModule.decorators = [
+    { type: NgModule, args: [{
+                declarations: [TranslatePipe, CxDatePipe],
+                exports: [TranslatePipe, CxDatePipe],
+            },] }
+];
 
 function mockTranslate(key, options = {}) {
     const optionsString = Object.keys(options)
@@ -20302,7 +20264,7 @@ function mockTranslate(key, options = {}) {
     return optionsString ? `${key} ${optionsString}` : key;
 }
 
-let MockTranslatePipe = class MockTranslatePipe {
+class MockTranslatePipe {
     transform(input, options = {}) {
         if (input.raw) {
             return input.raw;
@@ -20313,12 +20275,12 @@ let MockTranslatePipe = class MockTranslatePipe {
         }
         return mockTranslate(key, options);
     }
-};
-MockTranslatePipe = __decorate([
-    Pipe({ name: 'cxTranslate' })
-], MockTranslatePipe);
+}
+MockTranslatePipe.decorators = [
+    { type: Pipe, args: [{ name: 'cxTranslate' },] }
+];
 
-let MockTranslationService = class MockTranslationService {
+class MockTranslationService {
     translate(key, options = {}, _whitespaceUntilLoaded = false) {
         return new Observable((subscriber) => {
             const value = mockTranslate(key, options);
@@ -20329,41 +20291,41 @@ let MockTranslationService = class MockTranslationService {
     loadChunks(_chunks) {
         return Promise.resolve();
     }
-};
-MockTranslationService = __decorate([
-    Injectable()
-], MockTranslationService);
+}
+MockTranslationService.decorators = [
+    { type: Injectable }
+];
 
-let MockDatePipe = class MockDatePipe extends DatePipe {
+class MockDatePipe extends DatePipe {
     transform(value, format, timezone) {
         return super.transform(value, format, timezone, 'en');
     }
-};
-MockDatePipe = __decorate([
-    Pipe({ name: 'cxDate' })
-], MockDatePipe);
+}
+MockDatePipe.decorators = [
+    { type: Pipe, args: [{ name: 'cxDate' },] }
+];
 
-let I18nTestingModule = class I18nTestingModule {
-};
-I18nTestingModule = __decorate([
-    NgModule({
-        declarations: [MockTranslatePipe, MockDatePipe],
-        exports: [MockTranslatePipe, MockDatePipe],
-        providers: [
-            { provide: TranslationService, useClass: MockTranslationService },
-        ],
-    })
-], I18nTestingModule);
+class I18nTestingModule {
+}
+I18nTestingModule.decorators = [
+    { type: NgModule, args: [{
+                declarations: [MockTranslatePipe, MockDatePipe],
+                exports: [MockTranslatePipe, MockDatePipe],
+                providers: [
+                    { provide: TranslationService, useClass: MockTranslationService },
+                ],
+            },] }
+];
 
-let KymaConfig = class KymaConfig extends OccConfig {
-};
+class KymaConfig extends OccConfig {
+}
 KymaConfig.ɵprov = ɵɵdefineInjectable({ factory: function KymaConfig_Factory() { return ɵɵinject(Config); }, token: KymaConfig, providedIn: "root" });
-KymaConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], KymaConfig);
+KymaConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 const KYMA_FEATURE = 'kyma';
 const OPEN_ID_TOKEN_DATA = '[Kyma Auth] Open ID Token Data';
@@ -20423,7 +20385,7 @@ var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
     ɵ0: ɵ0$F
 });
 
-let KymaService = class KymaService {
+class KymaService {
     constructor(store) {
         this.store = store;
     }
@@ -20442,16 +20404,16 @@ let KymaService = class KymaService {
     getOpenIdToken() {
         return this.store.pipe(select(getOpenIdTokenValue));
     }
-};
+}
+KymaService.ɵprov = ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(ɵɵinject(Store)); }, token: KymaService, providedIn: "root" });
+KymaService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 KymaService.ctorParameters = () => [
     { type: Store }
 ];
-KymaService.ɵprov = ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(ɵɵinject(Store)); }, token: KymaService, providedIn: "root" });
-KymaService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], KymaService);
 
 const defaultKymaConfig = {
     authentication: {
@@ -20461,7 +20423,7 @@ const defaultKymaConfig = {
 };
 
 const OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
-let OpenIdAuthenticationTokenService = class OpenIdAuthenticationTokenService {
+class OpenIdAuthenticationTokenService {
     constructor(config, http) {
         this.config = config;
         this.http = http;
@@ -20485,19 +20447,19 @@ let OpenIdAuthenticationTokenService = class OpenIdAuthenticationTokenService {
     getOAuthEndpoint() {
         return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
     }
-};
+}
+OpenIdAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(ɵɵinject(KymaConfig), ɵɵinject(HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
+OpenIdAuthenticationTokenService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 OpenIdAuthenticationTokenService.ctorParameters = () => [
     { type: KymaConfig },
     { type: HttpClient }
 ];
-OpenIdAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(ɵɵinject(KymaConfig), ɵɵinject(HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
-OpenIdAuthenticationTokenService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], OpenIdAuthenticationTokenService);
 
-let OpenIdTokenEffect = class OpenIdTokenEffect {
+class OpenIdTokenEffect {
     constructor(actions$, openIdTokenService) {
         this.actions$ = actions$;
         this.openIdTokenService = openIdTokenService;
@@ -20509,7 +20471,10 @@ let OpenIdTokenEffect = class OpenIdTokenEffect {
             .loadOpenIdAuthenticationToken(payload.username, payload.password)
             .pipe(map((token) => new LoadOpenIdTokenSuccess(token)), catchError((error) => of(new LoadOpenIdTokenFail(makeErrorSerializable(error)))))));
     }
-};
+}
+OpenIdTokenEffect.decorators = [
+    { type: Injectable }
+];
 OpenIdTokenEffect.ctorParameters = () => [
     { type: Actions },
     { type: OpenIdAuthenticationTokenService }
@@ -20520,9 +20485,6 @@ __decorate([
 __decorate([
     Effect()
 ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
-OpenIdTokenEffect = __decorate([
-    Injectable()
-], OpenIdTokenEffect);
 
 const effects$8 = [OpenIdTokenEffect];
 
@@ -20559,45 +20521,44 @@ function kymaStoreConfigFactory() {
     };
     return config;
 }
-let KymaStoreModule = class KymaStoreModule {
-};
-KymaStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            HttpClientModule,
-            StateModule,
-            StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
-            EffectsModule.forFeature(effects$8),
-        ],
-        providers: [
-            provideDefaultConfigFactory(kymaStoreConfigFactory),
-            reducerProvider$8,
-        ],
-    })
-], KymaStoreModule);
+class KymaStoreModule {
+}
+KymaStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StateModule,
+                    StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
+                    EffectsModule.forFeature(effects$8),
+                ],
+                providers: [
+                    provideDefaultConfigFactory(kymaStoreConfigFactory),
+                    reducerProvider$8,
+                ],
+            },] }
+];
 
-let KymaModule = class KymaModule {
-};
-KymaModule = __decorate([
-    NgModule({
-        imports: [CommonModule, HttpClientModule, KymaStoreModule],
-        providers: [provideDefaultConfig(defaultKymaConfig)],
-    })
-], KymaModule);
+class KymaModule {
+}
+KymaModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, HttpClientModule, KymaStoreModule],
+                providers: [provideDefaultConfig(defaultKymaConfig)],
+            },] }
+];
 
-var CostCenterModule_1;
-let CostCenterModule = CostCenterModule_1 = class CostCenterModule {
+class CostCenterModule {
     static forRoot() {
         return {
-            ngModule: CostCenterModule_1,
+            ngModule: CostCenterModule,
             providers: [],
         };
     }
-};
-CostCenterModule = CostCenterModule_1 = __decorate([
-    NgModule({})
-], CostCenterModule);
+}
+CostCenterModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 
 const defaultPersonalizationConfig = {
     personalization: {
@@ -20613,18 +20574,18 @@ const defaultPersonalizationConfig = {
     },
 };
 
-let PersonalizationConfig = class PersonalizationConfig {
-};
+class PersonalizationConfig {
+}
 PersonalizationConfig.ɵprov = ɵɵdefineInjectable({ factory: function PersonalizationConfig_Factory() { return ɵɵinject(Config); }, token: PersonalizationConfig, providedIn: "root" });
-PersonalizationConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], PersonalizationConfig);
+PersonalizationConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 const PERSONALIZATION_ID_KEY = 'personalization-id';
-let OccPersonalizationIdInterceptor = class OccPersonalizationIdInterceptor {
+class OccPersonalizationIdInterceptor {
     constructor(config, occEndpoints, winRef, platform) {
         this.config = config;
         this.occEndpoints = occEndpoints;
@@ -20668,21 +20629,20 @@ let OccPersonalizationIdInterceptor = class OccPersonalizationIdInterceptor {
             }
         }));
     }
-};
+}
+OccPersonalizationIdInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function OccPersonalizationIdInterceptor_Factory() { return new OccPersonalizationIdInterceptor(ɵɵinject(PersonalizationConfig), ɵɵinject(OccEndpointsService), ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: OccPersonalizationIdInterceptor, providedIn: "root" });
+OccPersonalizationIdInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccPersonalizationIdInterceptor.ctorParameters = () => [
     { type: PersonalizationConfig },
     { type: OccEndpointsService },
     { type: WindowRef },
     { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
-OccPersonalizationIdInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function OccPersonalizationIdInterceptor_Factory() { return new OccPersonalizationIdInterceptor(ɵɵinject(PersonalizationConfig), ɵɵinject(OccEndpointsService), ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: OccPersonalizationIdInterceptor, providedIn: "root" });
-OccPersonalizationIdInterceptor = __decorate([
-    Injectable({ providedIn: 'root' }),
-    __param(3, Inject(PLATFORM_ID))
-], OccPersonalizationIdInterceptor);
 
 const PERSONALIZATION_TIME_KEY = 'personalization-time';
-let OccPersonalizationTimeInterceptor = class OccPersonalizationTimeInterceptor {
+class OccPersonalizationTimeInterceptor {
     constructor(config, occEndpoints, winRef, platform) {
         this.config = config;
         this.occEndpoints = occEndpoints;
@@ -20726,18 +20686,17 @@ let OccPersonalizationTimeInterceptor = class OccPersonalizationTimeInterceptor 
             }
         }));
     }
-};
+}
+OccPersonalizationTimeInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function OccPersonalizationTimeInterceptor_Factory() { return new OccPersonalizationTimeInterceptor(ɵɵinject(PersonalizationConfig), ɵɵinject(OccEndpointsService), ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: OccPersonalizationTimeInterceptor, providedIn: "root" });
+OccPersonalizationTimeInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 OccPersonalizationTimeInterceptor.ctorParameters = () => [
     { type: PersonalizationConfig },
     { type: OccEndpointsService },
     { type: WindowRef },
     { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
-OccPersonalizationTimeInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function OccPersonalizationTimeInterceptor_Factory() { return new OccPersonalizationTimeInterceptor(ɵɵinject(PersonalizationConfig), ɵɵinject(OccEndpointsService), ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: OccPersonalizationTimeInterceptor, providedIn: "root" });
-OccPersonalizationTimeInterceptor = __decorate([
-    Injectable({ providedIn: 'root' }),
-    __param(3, Inject(PLATFORM_ID))
-], OccPersonalizationTimeInterceptor);
 
 const interceptors$3 = [
     {
@@ -20752,23 +20711,22 @@ const interceptors$3 = [
     },
 ];
 
-var PersonalizationModule_1;
-let PersonalizationModule = PersonalizationModule_1 = class PersonalizationModule {
+class PersonalizationModule {
     static forRoot() {
         return {
-            ngModule: PersonalizationModule_1,
+            ngModule: PersonalizationModule,
             providers: [
                 provideDefaultConfig(defaultPersonalizationConfig),
                 ...interceptors$3,
             ],
         };
     }
-};
-PersonalizationModule = PersonalizationModule_1 = __decorate([
-    NgModule({})
-], PersonalizationModule);
+}
+PersonalizationModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 
-let PersonalizationContextService = class PersonalizationContextService {
+class PersonalizationContextService {
     constructor(config, cmsService) {
         this.config = config;
         this.cmsService = cmsService;
@@ -20788,17 +20746,17 @@ let PersonalizationContextService = class PersonalizationContextService {
         }
         return context;
     }
-};
+}
+PersonalizationContextService.ɵprov = ɵɵdefineInjectable({ factory: function PersonalizationContextService_Factory() { return new PersonalizationContextService(ɵɵinject(PersonalizationConfig), ɵɵinject(CmsService)); }, token: PersonalizationContextService, providedIn: "root" });
+PersonalizationContextService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 PersonalizationContextService.ctorParameters = () => [
     { type: PersonalizationConfig },
     { type: CmsService }
 ];
-PersonalizationContextService.ɵprov = ɵɵdefineInjectable({ factory: function PersonalizationContextService_Factory() { return new PersonalizationContextService(ɵɵinject(PersonalizationConfig), ɵɵinject(CmsService)); }, token: PersonalizationContextService, providedIn: "root" });
-PersonalizationContextService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], PersonalizationContextService);
 
 function getReducers$9() {
     return entityLoaderReducer(PROCESS_FEATURE);
@@ -20809,31 +20767,30 @@ const reducerProvider$9 = {
     useFactory: getReducers$9,
 };
 
-let ProcessStoreModule = class ProcessStoreModule {
-};
-ProcessStoreModule = __decorate([
-    NgModule({
-        imports: [StateModule, StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
-        providers: [reducerProvider$9],
-    })
-], ProcessStoreModule);
+class ProcessStoreModule {
+}
+ProcessStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [StateModule, StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
+                providers: [reducerProvider$9],
+            },] }
+];
 
-var ProcessModule_1;
-let ProcessModule = ProcessModule_1 = class ProcessModule {
+class ProcessModule {
     static forRoot() {
         return {
-            ngModule: ProcessModule_1,
+            ngModule: ProcessModule,
             providers: [],
         };
     }
-};
-ProcessModule = ProcessModule_1 = __decorate([
-    NgModule({
-        imports: [ProcessStoreModule],
-    })
-], ProcessModule);
+}
+ProcessModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [ProcessStoreModule],
+            },] }
+];
 
-let ProductConnector = class ProductConnector {
+class ProductConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -20846,36 +20803,36 @@ let ProductConnector = class ProductConnector {
         }
         return this.adapter.loadMany(products);
     }
-};
+}
+ProductConnector.ɵprov = ɵɵdefineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(ɵɵinject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
+ProductConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductConnector.ctorParameters = () => [
     { type: ProductAdapter }
 ];
-ProductConnector.ɵprov = ɵɵdefineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(ɵɵinject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
-ProductConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductConnector);
 
-let ProductReferencesConnector = class ProductReferencesConnector {
+class ProductReferencesConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
     get(productCode, referenceType, pageSize) {
         return this.adapter.load(productCode, referenceType, pageSize);
     }
-};
+}
+ProductReferencesConnector.ɵprov = ɵɵdefineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(ɵɵinject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
+ProductReferencesConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductReferencesConnector.ctorParameters = () => [
     { type: ProductReferencesAdapter }
 ];
-ProductReferencesConnector.ɵprov = ɵɵdefineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(ɵɵinject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
-ProductReferencesConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductReferencesConnector);
 
-let ProductReviewsConnector = class ProductReviewsConnector {
+class ProductReviewsConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -20885,18 +20842,18 @@ let ProductReviewsConnector = class ProductReviewsConnector {
     add(productCode, review) {
         return this.adapter.post(productCode, review);
     }
-};
+}
+ProductReviewsConnector.ɵprov = ɵɵdefineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(ɵɵinject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+ProductReviewsConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductReviewsConnector.ctorParameters = () => [
     { type: ProductReviewsAdapter }
 ];
-ProductReviewsConnector.ɵprov = ɵɵdefineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(ɵɵinject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
-ProductReviewsConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductReviewsConnector);
 
-let ProductSearchConnector = class ProductSearchConnector {
+class ProductSearchConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -20906,16 +20863,16 @@ let ProductSearchConnector = class ProductSearchConnector {
     getSuggestions(term, pageSize) {
         return this.adapter.loadSuggestions(term, pageSize);
     }
-};
+}
+ProductSearchConnector.ɵprov = ɵɵdefineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(ɵɵinject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
+ProductSearchConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductSearchConnector.ctorParameters = () => [
     { type: ProductSearchAdapter }
 ];
-ProductSearchConnector.ɵprov = ɵɵdefineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(ɵɵinject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
-ProductSearchConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductSearchConnector);
 
 const LOAD_PRODUCT_REFERENCES = '[Product] Load Product References Data';
 const LOAD_PRODUCT_REFERENCES_FAIL = '[Product] Load Product References Data Fail';
@@ -21276,7 +21233,7 @@ var productGroup_selectors = /*#__PURE__*/Object.freeze({
     ɵ1: ɵ1$t
 });
 
-let ProductReferenceService = class ProductReferenceService {
+class ProductReferenceService {
     constructor(store) {
         this.store = store;
     }
@@ -21294,18 +21251,18 @@ let ProductReferenceService = class ProductReferenceService {
     cleanReferences() {
         this.store.dispatch(new CleanProductReferences());
     }
-};
+}
+ProductReferenceService.ɵprov = ɵɵdefineInjectable({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(ɵɵinject(Store)); }, token: ProductReferenceService, providedIn: "root" });
+ProductReferenceService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductReferenceService.ctorParameters = () => [
     { type: Store }
 ];
-ProductReferenceService.ɵprov = ɵɵdefineInjectable({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(ɵɵinject(Store)); }, token: ProductReferenceService, providedIn: "root" });
-ProductReferenceService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductReferenceService);
 
-let ProductReviewService = class ProductReviewService {
+class ProductReviewService {
     constructor(store) {
         this.store = store;
     }
@@ -21322,18 +21279,18 @@ let ProductReviewService = class ProductReviewService {
             review,
         }));
     }
-};
+}
+ProductReviewService.ɵprov = ɵɵdefineInjectable({ factory: function ProductReviewService_Factory() { return new ProductReviewService(ɵɵinject(Store)); }, token: ProductReviewService, providedIn: "root" });
+ProductReviewService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductReviewService.ctorParameters = () => [
     { type: Store }
 ];
-ProductReviewService.ɵprov = ɵɵdefineInjectable({ factory: function ProductReviewService_Factory() { return new ProductReviewService(ɵɵinject(Store)); }, token: ProductReviewService, providedIn: "root" });
-ProductReviewService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductReviewService);
 
-let ProductSearchService = class ProductSearchService {
+class ProductSearchService {
     constructor(store) {
         this.store = store;
     }
@@ -21351,18 +21308,18 @@ let ProductSearchService = class ProductSearchService {
             clearPageResults: true,
         }));
     }
-};
+}
+ProductSearchService.ɵprov = ɵɵdefineInjectable({ factory: function ProductSearchService_Factory() { return new ProductSearchService(ɵɵinject(Store)); }, token: ProductSearchService, providedIn: "root" });
+ProductSearchService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductSearchService.ctorParameters = () => [
     { type: Store }
 ];
-ProductSearchService.ɵprov = ɵɵdefineInjectable({ factory: function ProductSearchService_Factory() { return new ProductSearchService(ɵɵinject(Store)); }, token: ProductSearchService, providedIn: "root" });
-ProductSearchService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductSearchService);
 
-let ProductLoadingService = class ProductLoadingService {
+class ProductLoadingService {
     constructor(store, loadingScopes, actions$, platformId) {
         this.store = store;
         this.loadingScopes = loadingScopes;
@@ -21464,22 +21421,21 @@ let ProductLoadingService = class ProductLoadingService {
         });
         return shouldReload$;
     }
-};
+}
+ProductLoadingService.ɵprov = ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(ɵɵinject(Store), ɵɵinject(LoadingScopesService), ɵɵinject(Actions), ɵɵinject(PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
+ProductLoadingService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductLoadingService.ctorParameters = () => [
     { type: Store },
     { type: LoadingScopesService },
     { type: Actions },
     { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
-ProductLoadingService.ɵprov = ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(ɵɵinject(Store), ɵɵinject(LoadingScopesService), ɵɵinject(Actions), ɵɵinject(PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
-ProductLoadingService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    }),
-    __param(3, Inject(PLATFORM_ID))
-], ProductLoadingService);
 
-let ProductService = class ProductService {
+class ProductService {
     constructor(store, productLoading) {
         this.store = store;
         this.productLoading = productLoading;
@@ -21528,19 +21484,19 @@ let ProductService = class ProductService {
     reload(productCode, scope = '') {
         this.store.dispatch(new LoadProduct(productCode, scope));
     }
-};
+}
+ProductService.ɵprov = ɵɵdefineInjectable({ factory: function ProductService_Factory() { return new ProductService(ɵɵinject(Store), ɵɵinject(ProductLoadingService)); }, token: ProductService, providedIn: "root" });
+ProductService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductService.ctorParameters = () => [
     { type: Store },
     { type: ProductLoadingService }
 ];
-ProductService.ɵprov = ɵɵdefineInjectable({ factory: function ProductService_Factory() { return new ProductService(ɵɵinject(Store), ɵɵinject(ProductLoadingService)); }, token: ProductService, providedIn: "root" });
-ProductService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductService);
 
-let SearchboxService = class SearchboxService extends ProductSearchService {
+class SearchboxService extends ProductSearchService {
     /**
      * dispatch the search for the search box
      */
@@ -21570,20 +21526,20 @@ let SearchboxService = class SearchboxService extends ProductSearchService {
             searchConfig: searchConfig,
         }));
     }
-};
+}
 SearchboxService.ɵprov = ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(ɵɵinject(Store)); }, token: SearchboxService, providedIn: "root" });
-SearchboxService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], SearchboxService);
+SearchboxService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
 /**
  * Resolves the page data for the Product Listing Page.
  *
  * The page title, and breadcrumbs are resolved in this implementation only.
  */
-let CategoryPageMetaResolver = class CategoryPageMetaResolver extends PageMetaResolver {
+class CategoryPageMetaResolver extends PageMetaResolver {
     constructor(productSearchService, cms, translation) {
         super();
         this.productSearchService = productSearchService;
@@ -21639,18 +21595,18 @@ let CategoryPageMetaResolver = class CategoryPageMetaResolver extends PageMetaRe
         return !!Object.keys(page.slots).find((key) => !!page.slots[key].components.find((comp) => comp.typeCode === 'CMSProductListComponent' ||
             comp.typeCode === 'ProductGridComponent'));
     }
-};
+}
+CategoryPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(ɵɵinject(ProductSearchService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+CategoryPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CategoryPageMetaResolver.ctorParameters = () => [
     { type: ProductSearchService },
     { type: CmsService },
     { type: TranslationService }
 ];
-CategoryPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(ɵɵinject(ProductSearchService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
-CategoryPageMetaResolver = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CategoryPageMetaResolver);
 
 /**
  * Resolves page meta data for the search result page, in case it's used
@@ -21659,7 +21615,7 @@ CategoryPageMetaResolver = __decorate([
  *
  * The page resolves an alternative page title and breadcrumb.
  */
-let CouponSearchPageResolver = class CouponSearchPageResolver extends PageMetaResolver {
+class CouponSearchPageResolver extends PageMetaResolver {
     constructor(productSearchService, translation, authService, route, semanticPathService) {
         super();
         this.productSearchService = productSearchService;
@@ -21703,7 +21659,13 @@ let CouponSearchPageResolver = class CouponSearchPageResolver extends PageMetaRe
         var _a, _b;
         return (_b = (_a = this.route.snapshot) === null || _a === void 0 ? void 0 : _a.queryParams) === null || _b === void 0 ? void 0 : _b.couponcode;
     }
-};
+}
+CouponSearchPageResolver.ɵprov = ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(ɵɵinject(ProductSearchService), ɵɵinject(TranslationService), ɵɵinject(AuthService), ɵɵinject(ActivatedRoute), ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
+CouponSearchPageResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CouponSearchPageResolver.ctorParameters = () => [
     { type: ProductSearchService },
     { type: TranslationService },
@@ -21711,12 +21673,6 @@ CouponSearchPageResolver.ctorParameters = () => [
     { type: ActivatedRoute },
     { type: SemanticPathService }
 ];
-CouponSearchPageResolver.ɵprov = ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(ɵɵinject(ProductSearchService), ɵɵinject(TranslationService), ɵɵinject(AuthService), ɵɵinject(ActivatedRoute), ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
-CouponSearchPageResolver = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CouponSearchPageResolver);
 
 /**
  * Resolves the page data for the Product Detail Page
@@ -21725,7 +21681,7 @@ CouponSearchPageResolver = __decorate([
  * The page title, heading, description, breadcrumbs and
  * first GALLERY image are resolved if available in the data.
  */
-let ProductPageMetaResolver = class ProductPageMetaResolver extends PageMetaResolver {
+class ProductPageMetaResolver extends PageMetaResolver {
     constructor(routingService, productService, translation) {
         super();
         this.routingService = routingService;
@@ -21821,18 +21777,18 @@ let ProductPageMetaResolver = class ProductPageMetaResolver extends PageMetaReso
     resolveRobots() {
         return of([PageRobotsMeta.FOLLOW, PageRobotsMeta.INDEX]);
     }
-};
+}
+ProductPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductService), ɵɵinject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
+ProductPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ProductPageMetaResolver.ctorParameters = () => [
     { type: RoutingService },
     { type: ProductService },
     { type: TranslationService }
 ];
-ProductPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductService), ɵɵinject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
-ProductPageMetaResolver = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], ProductPageMetaResolver);
 
 /**
  * Resolves the page data for the Search Result Page based on the
@@ -21840,7 +21796,7 @@ ProductPageMetaResolver = __decorate([
  *
  * Only the page title is resolved in the standard implemenation.
  */
-let SearchPageMetaResolver = class SearchPageMetaResolver extends PageMetaResolver {
+class SearchPageMetaResolver extends PageMetaResolver {
     constructor(routingService, productSearchService, translation) {
         super();
         this.routingService = routingService;
@@ -21860,20 +21816,20 @@ let SearchPageMetaResolver = class SearchPageMetaResolver extends PageMetaResolv
             query: q,
         })));
     }
-};
+}
+SearchPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
+SearchPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 SearchPageMetaResolver.ctorParameters = () => [
     { type: RoutingService },
     { type: ProductSearchService },
     { type: TranslationService }
 ];
-SearchPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
-SearchPageMetaResolver = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], SearchPageMetaResolver);
 
-let ProductReferencesEffects = class ProductReferencesEffects {
+class ProductReferencesEffects {
     constructor(actions$, productReferencesConnector) {
         this.actions$ = actions$;
         this.productReferencesConnector = productReferencesConnector;
@@ -21890,7 +21846,10 @@ let ProductReferencesEffects = class ProductReferencesEffects {
             }))));
         }));
     }
-};
+}
+ProductReferencesEffects.decorators = [
+    { type: Injectable }
+];
 ProductReferencesEffects.ctorParameters = () => [
     { type: Actions },
     { type: ProductReferencesConnector }
@@ -21898,11 +21857,8 @@ ProductReferencesEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
-ProductReferencesEffects = __decorate([
-    Injectable()
-], ProductReferencesEffects);
 
-let ProductReviewsEffects = class ProductReviewsEffects {
+class ProductReviewsEffects {
     constructor(actions$, productReviewsConnector, globalMessageService) {
         this.actions$ = actions$;
         this.productReviewsConnector = productReviewsConnector;
@@ -21928,7 +21884,10 @@ let ProductReviewsEffects = class ProductReviewsEffects {
             this.globalMessageService.add({ key: 'productReview.thankYouForReview' }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
         }));
     }
-};
+}
+ProductReviewsEffects.decorators = [
+    { type: Injectable }
+];
 ProductReviewsEffects.ctorParameters = () => [
     { type: Actions },
     { type: ProductReviewsConnector },
@@ -21943,11 +21902,8 @@ __decorate([
 __decorate([
     Effect({ dispatch: false })
 ], ProductReviewsEffects.prototype, "showGlobalMessageOnPostProductReviewSuccess$", void 0);
-ProductReviewsEffects = __decorate([
-    Injectable()
-], ProductReviewsEffects);
 
-let ProductsSearchEffects = class ProductsSearchEffects {
+class ProductsSearchEffects {
     constructor(actions$, productSearchConnector) {
         this.actions$ = actions$;
         this.productSearchConnector = productSearchConnector;
@@ -21969,7 +21925,10 @@ let ProductsSearchEffects = class ProductsSearchEffects {
             }), catchError((error) => of(new GetProductSuggestionsFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+ProductsSearchEffects.decorators = [
+    { type: Injectable }
+];
 ProductsSearchEffects.ctorParameters = () => [
     { type: Actions },
     { type: ProductSearchConnector }
@@ -21980,11 +21939,8 @@ __decorate([
 __decorate([
     Effect()
 ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
-ProductsSearchEffects = __decorate([
-    Injectable()
-], ProductsSearchEffects);
 
-let ProductEffects = class ProductEffects {
+class ProductEffects {
     constructor(actions$, productConnector) {
         this.actions$ = actions$;
         this.productConnector = productConnector;
@@ -22005,14 +21961,14 @@ let ProductEffects = class ProductEffects {
             return of(new LoadProductFail(productLoad.code, makeErrorSerializable(error), productLoad.scope));
         }));
     }
-};
+}
+ProductEffects.decorators = [
+    { type: Injectable }
+];
 ProductEffects.ctorParameters = () => [
     { type: Actions },
     { type: ProductConnector }
 ];
-ProductEffects = __decorate([
-    Injectable()
-], ProductEffects);
 
 const effects$9 = [
     ProductsSearchEffects,
@@ -22126,24 +22082,23 @@ function productStoreConfigFactory() {
     };
     return config;
 }
-let ProductStoreModule = class ProductStoreModule {
-};
-ProductStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            HttpClientModule,
-            StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
-            EffectsModule.forFeature(effects$9),
-        ],
-        providers: [
-            provideDefaultConfigFactory(productStoreConfigFactory),
-            reducerProvider$a,
-        ],
-    })
-], ProductStoreModule);
+class ProductStoreModule {
+}
+ProductStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
+                    EffectsModule.forFeature(effects$9),
+                ],
+                providers: [
+                    provideDefaultConfigFactory(productStoreConfigFactory),
+                    reducerProvider$a,
+                ],
+            },] }
+];
 
-var ProductModule_1;
 const pageTitleResolvers = [
     {
         provide: PageMetaResolver,
@@ -22166,21 +22121,21 @@ const pageTitleResolvers = [
         multi: true,
     },
 ];
-let ProductModule = ProductModule_1 = class ProductModule {
+class ProductModule {
     static forRoot() {
         return {
-            ngModule: ProductModule_1,
+            ngModule: ProductModule,
             providers: [...pageTitleResolvers],
         };
     }
-};
-ProductModule = ProductModule_1 = __decorate([
-    NgModule({
-        imports: [ProductStoreModule],
-    })
-], ProductModule);
+}
+ProductModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [ProductStoreModule],
+            },] }
+];
 
-let CmsTicketInterceptor = class CmsTicketInterceptor {
+class CmsTicketInterceptor {
     constructor(service) {
         this.service = service;
     }
@@ -22194,14 +22149,14 @@ let CmsTicketInterceptor = class CmsTicketInterceptor {
         }
         return next.handle(request);
     }
-};
+}
+CmsTicketInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CmsTicketInterceptor_Factory() { return new CmsTicketInterceptor(ɵɵinject(SmartEditService)); }, token: CmsTicketInterceptor, providedIn: "root" });
+CmsTicketInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 CmsTicketInterceptor.ctorParameters = () => [
     { type: SmartEditService }
 ];
-CmsTicketInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CmsTicketInterceptor_Factory() { return new CmsTicketInterceptor(ɵɵinject(SmartEditService)); }, token: CmsTicketInterceptor, providedIn: "root" });
-CmsTicketInterceptor = __decorate([
-    Injectable({ providedIn: 'root' })
-], CmsTicketInterceptor);
 
 const interceptors$4 = [
     {
@@ -22211,18 +22166,17 @@ const interceptors$4 = [
     },
 ];
 
-var SmartEditModule_1;
-let SmartEditModule = SmartEditModule_1 = class SmartEditModule {
+class SmartEditModule {
     static forRoot() {
         return {
-            ngModule: SmartEditModule_1,
+            ngModule: SmartEditModule,
             providers: [...interceptors$4],
         };
     }
-};
-SmartEditModule = SmartEditModule_1 = __decorate([
-    NgModule({})
-], SmartEditModule);
+}
+SmartEditModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 
 /**
  * The wrapper over the standard ngExpressEngine, that provides tokens for Spartacus
@@ -22271,15 +22225,15 @@ function getRequestOrigin(req) {
     return req.protocol + '://' + req.get('host');
 }
 
-let StoreFinderConfig = class StoreFinderConfig {
-};
+class StoreFinderConfig {
+}
 StoreFinderConfig.ɵprov = ɵɵdefineInjectable({ factory: function StoreFinderConfig_Factory() { return ɵɵinject(Config); }, token: StoreFinderConfig, providedIn: "root" });
-StoreFinderConfig = __decorate([
-    Injectable({
-        providedIn: 'root',
-        useExisting: Config,
-    })
-], StoreFinderConfig);
+StoreFinderConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
 
 const STORE_FINDER_FEATURE = 'stores';
 const STORE_FINDER_DATA = '[StoreFinder] Store Finder Data';
@@ -22417,7 +22371,7 @@ var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
     getViewAllStoresLoading: getViewAllStoresLoading
 });
 
-let StoreFinderService = class StoreFinderService {
+class StoreFinderService {
     constructor(store, winRef, globalMessageService, routingService) {
         this.store = store;
         this.winRef = winRef;
@@ -22508,21 +22462,21 @@ let StoreFinderService = class StoreFinderService {
         }
         this.store.dispatch(callbackAction);
     }
-};
+}
+StoreFinderService.ɵprov = ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(GlobalMessageService), ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
+StoreFinderService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 StoreFinderService.ctorParameters = () => [
     { type: Store },
     { type: WindowRef },
     { type: GlobalMessageService },
     { type: RoutingService }
 ];
-StoreFinderService.ɵprov = ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(GlobalMessageService), ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
-StoreFinderService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], StoreFinderService);
 
-let StoreDataService = class StoreDataService {
+class StoreDataService {
     constructor() {
         this.weekDays = {
             0: 'Sun',
@@ -22591,15 +22545,15 @@ let StoreDataService = class StoreDataService {
         const weekday = this.weekDays[date.getDay()];
         return location.openingHours.weekDayOpeningList.find((weekDayOpeningListItem) => weekDayOpeningListItem.weekDay === weekday);
     }
-};
+}
 StoreDataService.ɵprov = ɵɵdefineInjectable({ factory: function StoreDataService_Factory() { return new StoreDataService(); }, token: StoreDataService, providedIn: "root" });
-StoreDataService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], StoreDataService);
+StoreDataService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 
-let ExternalJsFileLoader = class ExternalJsFileLoader {
+class ExternalJsFileLoader {
     constructor(document) {
         this.document = document;
     }
@@ -22645,19 +22599,19 @@ let ExternalJsFileLoader = class ExternalJsFileLoader {
         }
         return result;
     }
-};
+}
+ExternalJsFileLoader.ɵprov = ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(ɵɵinject(DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
+ExternalJsFileLoader.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 ExternalJsFileLoader.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
 ];
-ExternalJsFileLoader.ɵprov = ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(ɵɵinject(DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
-ExternalJsFileLoader = __decorate([
-    Injectable({
-        providedIn: 'root',
-    }),
-    __param(0, Inject(DOCUMENT))
-], ExternalJsFileLoader);
 
-let GoogleMapRendererService = class GoogleMapRendererService {
+/// <reference types="@types/googlemaps" />
+class GoogleMapRendererService {
     constructor(config, externalJsFileLoader, storeDataService) {
         this.config = config;
         this.externalJsFileLoader = externalJsFileLoader;
@@ -22749,18 +22703,18 @@ let GoogleMapRendererService = class GoogleMapRendererService {
         this.initMap(mapElement, this.defineMapCenter(locations));
         this.createMarkers(locations, selectMarkerHandler);
     }
-};
+}
+GoogleMapRendererService.ɵprov = ɵɵdefineInjectable({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(ɵɵinject(StoreFinderConfig), ɵɵinject(ExternalJsFileLoader), ɵɵinject(StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
+GoogleMapRendererService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 GoogleMapRendererService.ctorParameters = () => [
     { type: StoreFinderConfig },
     { type: ExternalJsFileLoader },
     { type: StoreDataService }
 ];
-GoogleMapRendererService.ɵprov = ɵɵdefineInjectable({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(ɵɵinject(StoreFinderConfig), ɵɵinject(ExternalJsFileLoader), ɵɵinject(StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
-GoogleMapRendererService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], GoogleMapRendererService);
 
 const defaultStoreFinderConfig = {
     googleMaps: {
@@ -22785,7 +22739,7 @@ const reducerProvider$b = {
 };
 const metaReducers$6 = [];
 
-let FindStoresEffect = class FindStoresEffect {
+class FindStoresEffect {
     constructor(actions$, storeFinderConnector) {
         this.actions$ = actions$;
         this.storeFinderConnector = storeFinderConnector;
@@ -22800,7 +22754,10 @@ let FindStoresEffect = class FindStoresEffect {
         }), catchError((error) => of(new FindStoresFail(makeErrorSerializable(error)))))));
         this.findStoreById$ = this.actions$.pipe(ofType(FIND_STORE_BY_ID), map((action) => action.payload), switchMap((payload) => this.storeFinderConnector.get(payload.storeId).pipe(map((data) => new FindStoreByIdSuccess(data)), catchError((error) => of(new FindStoreByIdFail(makeErrorSerializable(error)))))));
     }
-};
+}
+FindStoresEffect.decorators = [
+    { type: Injectable }
+];
 FindStoresEffect.ctorParameters = () => [
     { type: Actions },
     { type: StoreFinderConnector }
@@ -22811,11 +22768,8 @@ __decorate([
 __decorate([
     Effect()
 ], FindStoresEffect.prototype, "findStoreById$", void 0);
-FindStoresEffect = __decorate([
-    Injectable()
-], FindStoresEffect);
 
-let ViewAllStoresEffect = class ViewAllStoresEffect {
+class ViewAllStoresEffect {
     constructor(actions$, storeFinderConnector) {
         this.actions$ = actions$;
         this.storeFinderConnector = storeFinderConnector;
@@ -22826,7 +22780,10 @@ let ViewAllStoresEffect = class ViewAllStoresEffect {
             }), catchError((error) => of(new ViewAllStoresFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+ViewAllStoresEffect.decorators = [
+    { type: Injectable }
+];
 ViewAllStoresEffect.ctorParameters = () => [
     { type: Actions },
     { type: StoreFinderConnector }
@@ -22834,36 +22791,33 @@ ViewAllStoresEffect.ctorParameters = () => [
 __decorate([
     Effect()
 ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
-ViewAllStoresEffect = __decorate([
-    Injectable()
-], ViewAllStoresEffect);
 
 const effects$a = [FindStoresEffect, ViewAllStoresEffect];
 
-let StoreFinderStoreModule = class StoreFinderStoreModule {
-};
-StoreFinderStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            HttpClientModule,
-            StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
-            EffectsModule.forFeature(effects$a),
-        ],
-        providers: [reducerProvider$b],
-    })
-], StoreFinderStoreModule);
+class StoreFinderStoreModule {
+}
+StoreFinderStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
+                    EffectsModule.forFeature(effects$a),
+                ],
+                providers: [reducerProvider$b],
+            },] }
+];
 
-let StoreFinderCoreModule = class StoreFinderCoreModule {
-};
-StoreFinderCoreModule = __decorate([
-    NgModule({
-        imports: [StoreFinderStoreModule],
-        providers: [provideDefaultConfig(defaultStoreFinderConfig)],
-    })
-], StoreFinderCoreModule);
+class StoreFinderCoreModule {
+}
+StoreFinderCoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [StoreFinderStoreModule],
+                providers: [provideDefaultConfig(defaultStoreFinderConfig)],
+            },] }
+];
 
-let UserConnector = class UserConnector {
+class UserConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -22897,18 +22851,18 @@ let UserConnector = class UserConnector {
     getTitles() {
         return this.adapter.loadTitles();
     }
-};
+}
+UserConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
+UserConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserConnector.ctorParameters = () => [
     { type: UserAdapter }
 ];
-UserConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
-UserConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserConnector);
 
-let UserConsentConnector = class UserConsentConnector {
+class UserConsentConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -22921,18 +22875,18 @@ let UserConsentConnector = class UserConsentConnector {
     withdrawConsent(userId, consentCode) {
         return this.adapter.withdrawConsent(userId, consentCode);
     }
-};
+}
+UserConsentConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(ɵɵinject(UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
+UserConsentConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserConsentConnector.ctorParameters = () => [
     { type: UserConsentAdapter }
 ];
-UserConsentConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(ɵɵinject(UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
-UserConsentConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserConsentConnector);
 
-let UserPaymentConnector = class UserPaymentConnector {
+class UserPaymentConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -22945,18 +22899,18 @@ let UserPaymentConnector = class UserPaymentConnector {
     setDefault(userId, paymentMethodID) {
         return this.adapter.setDefault(userId, paymentMethodID);
     }
-};
+}
+UserPaymentConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+UserPaymentConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserPaymentConnector.ctorParameters = () => [
     { type: UserPaymentAdapter }
 ];
-UserPaymentConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
-UserPaymentConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserPaymentConnector);
 
-let UserOrderConnector = class UserOrderConnector {
+class UserOrderConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -22984,18 +22938,18 @@ let UserOrderConnector = class UserOrderConnector {
     cancelReturnRequest(userId, returnRequestCode, returnRequestModification) {
         return this.adapter.cancelReturnRequest(userId, returnRequestCode, returnRequestModification);
     }
-};
+}
+UserOrderConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
+UserOrderConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserOrderConnector.ctorParameters = () => [
     { type: UserOrderAdapter }
 ];
-UserOrderConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
-UserOrderConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserOrderConnector);
 
-let CustomerCouponConnector = class CustomerCouponConnector {
+class CustomerCouponConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -23011,18 +22965,18 @@ let CustomerCouponConnector = class CustomerCouponConnector {
     claimCustomerCoupon(userId, couponCode) {
         return this.adapter.claimCustomerCoupon(userId, couponCode);
     }
-};
+}
+CustomerCouponConnector.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponConnector_Factory() { return new CustomerCouponConnector(ɵɵinject(CustomerCouponAdapter)); }, token: CustomerCouponConnector, providedIn: "root" });
+CustomerCouponConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CustomerCouponConnector.ctorParameters = () => [
     { type: CustomerCouponAdapter }
 ];
-CustomerCouponConnector.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponConnector_Factory() { return new CustomerCouponConnector(ɵɵinject(CustomerCouponAdapter)); }, token: CustomerCouponConnector, providedIn: "root" });
-CustomerCouponConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CustomerCouponConnector);
 
-let UserInterestsConnector = class UserInterestsConnector {
+class UserInterestsConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
@@ -23035,39 +22989,39 @@ let UserInterestsConnector = class UserInterestsConnector {
     addInterest(userId, productCode, notificationType) {
         return this.adapter.addInterest(userId, productCode, notificationType);
     }
-};
+}
+UserInterestsConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsConnector_Factory() { return new UserInterestsConnector(ɵɵinject(UserInterestsAdapter)); }, token: UserInterestsConnector, providedIn: "root" });
+UserInterestsConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserInterestsConnector.ctorParameters = () => [
     { type: UserInterestsAdapter }
 ];
-UserInterestsConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsConnector_Factory() { return new UserInterestsConnector(ɵɵinject(UserInterestsAdapter)); }, token: UserInterestsConnector, providedIn: "root" });
-UserInterestsConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserInterestsConnector);
 
-let UserCostCenterConnector = class UserCostCenterConnector {
+class UserCostCenterConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
     getActiveList(userId) {
         return this.adapter.loadActiveList(userId);
     }
-};
+}
+UserCostCenterConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterConnector_Factory() { return new UserCostCenterConnector(ɵɵinject(UserCostCenterAdapter)); }, token: UserCostCenterConnector, providedIn: "root" });
+UserCostCenterConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserCostCenterConnector.ctorParameters = () => [
     { type: UserCostCenterAdapter }
 ];
-UserCostCenterConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterConnector_Factory() { return new UserCostCenterConnector(ɵɵinject(UserCostCenterAdapter)); }, token: UserCostCenterConnector, providedIn: "root" });
-UserCostCenterConnector = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserCostCenterConnector);
 
 /**
  * Unified facade for both anonymous and registered user consents.
  */
-let ConsentService = class ConsentService {
+class ConsentService {
     constructor(anonymousConsentsService, userConsentService) {
         this.anonymousConsentsService = anonymousConsentsService;
         this.userConsentService = userConsentService;
@@ -23151,17 +23105,17 @@ let ConsentService = class ConsentService {
         }
         return consent.code !== undefined;
     }
-};
+}
+ConsentService.ɵprov = ɵɵdefineInjectable({ factory: function ConsentService_Factory() { return new ConsentService(ɵɵinject(AnonymousConsentsService), ɵɵinject(UserConsentService)); }, token: ConsentService, providedIn: "root" });
+ConsentService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
 ConsentService.ctorParameters = () => [
     { type: AnonymousConsentsService },
     { type: UserConsentService }
 ];
-ConsentService.ɵprov = ɵɵdefineInjectable({ factory: function ConsentService_Factory() { return new ConsentService(ɵɵinject(AnonymousConsentsService), ɵɵinject(UserConsentService)); }, token: ConsentService, providedIn: "root" });
-ConsentService = __decorate([
-    Injectable({ providedIn: 'root' })
-], ConsentService);
 
-let UserAddressService = class UserAddressService {
+class UserAddressService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -23296,19 +23250,19 @@ let UserAddressService = class UserAddressService {
             return regions;
         }));
     }
-};
+}
+UserAddressService.ɵprov = ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
+UserAddressService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserAddressService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-UserAddressService.ɵprov = ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
-UserAddressService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserAddressService);
 
-let UserOrderService = class UserOrderService {
+class UserOrderService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -23437,19 +23391,19 @@ let UserOrderService = class UserOrderService {
     resetCancelOrderProcessState() {
         return this.store.dispatch(new ResetCancelOrderProcess());
     }
-};
+}
+UserOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
+UserOrderService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserOrderService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-UserOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
-UserOrderService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserOrderService);
 
-let CustomerCouponService = class CustomerCouponService {
+class CustomerCouponService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -23583,19 +23537,19 @@ let CustomerCouponService = class CustomerCouponService {
     getClaimCustomerCouponResultLoading() {
         return this.store.pipe(select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
     }
-};
+}
+CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
+CustomerCouponService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 CustomerCouponService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
-CustomerCouponService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], CustomerCouponService);
 
-let UserPaymentService = class UserPaymentService {
+class UserPaymentService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -23660,19 +23614,19 @@ let UserPaymentService = class UserPaymentService {
     loadBillingCountries() {
         this.store.dispatch(new LoadBillingCountries());
     }
-};
+}
+UserPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
+UserPaymentService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserPaymentService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-UserPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
-UserPaymentService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserPaymentService);
 
-let OrderReturnRequestService = class OrderReturnRequestService {
+class OrderReturnRequestService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -23793,19 +23747,19 @@ let OrderReturnRequestService = class OrderReturnRequestService {
     resetCancelReturnRequestProcessState() {
         return this.store.dispatch(new ResetCancelReturnProcess());
     }
-};
+}
+OrderReturnRequestService.ɵprov = ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
+OrderReturnRequestService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 OrderReturnRequestService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-OrderReturnRequestService.ɵprov = ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
-OrderReturnRequestService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], OrderReturnRequestService);
 
-let UserNotificationPreferenceService = class UserNotificationPreferenceService {
+class UserNotificationPreferenceService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -23867,19 +23821,19 @@ let UserNotificationPreferenceService = class UserNotificationPreferenceService 
     resetNotificationPreferences() {
         this.store.dispatch(new ResetNotificationPreferences());
     }
-};
+}
+UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+UserNotificationPreferenceService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserNotificationPreferenceService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
-UserNotificationPreferenceService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserNotificationPreferenceService);
 
-let UserInterestsService = class UserInterestsService {
+class UserInterestsService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -23999,19 +23953,19 @@ let UserInterestsService = class UserInterestsService {
     clearProductInterests() {
         this.store.dispatch(new ClearProductInterests());
     }
-};
+}
+UserInterestsService.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
+UserInterestsService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserInterestsService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-UserInterestsService.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
-UserInterestsService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserInterestsService);
 
-let UserCostCenterService = class UserCostCenterService {
+class UserCostCenterService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
@@ -24054,17 +24008,17 @@ let UserCostCenterService = class UserCostCenterService {
             }
         }));
     }
-};
+}
+UserCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
+UserCostCenterService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
 UserCostCenterService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
-UserCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
-UserCostCenterService = __decorate([
-    Injectable({
-        providedIn: 'root',
-    })
-], UserCostCenterService);
 
 const initialState$l = {
     entities: {},
@@ -24380,7 +24334,7 @@ function clearUserState(reducer) {
 }
 const metaReducers$7 = [clearUserState];
 
-let BillingCountriesEffect = class BillingCountriesEffect {
+class BillingCountriesEffect {
     constructor(actions$, siteConnector) {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
@@ -24388,7 +24342,10 @@ let BillingCountriesEffect = class BillingCountriesEffect {
             return this.siteConnector.getCountries(CountryType.BILLING).pipe(map((countries) => new LoadBillingCountriesSuccess(countries)), catchError((error) => of(new LoadBillingCountriesFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+BillingCountriesEffect.decorators = [
+    { type: Injectable }
+];
 BillingCountriesEffect.ctorParameters = () => [
     { type: Actions },
     { type: SiteConnector }
@@ -24396,29 +24353,26 @@ BillingCountriesEffect.ctorParameters = () => [
 __decorate([
     Effect()
 ], BillingCountriesEffect.prototype, "loadBillingCountries$", void 0);
-BillingCountriesEffect = __decorate([
-    Injectable()
-], BillingCountriesEffect);
 
-let ClearMiscsDataEffect = class ClearMiscsDataEffect {
+class ClearMiscsDataEffect {
     constructor(actions$) {
         this.actions$ = actions$;
         this.clearMiscsData$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), map(() => {
             return new ClearUserMiscsData();
         }));
     }
-};
+}
+ClearMiscsDataEffect.decorators = [
+    { type: Injectable }
+];
 ClearMiscsDataEffect.ctorParameters = () => [
     { type: Actions }
 ];
 __decorate([
     Effect()
 ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
-ClearMiscsDataEffect = __decorate([
-    Injectable()
-], ClearMiscsDataEffect);
 
-let ConsignmentTrackingEffects = class ConsignmentTrackingEffects {
+class ConsignmentTrackingEffects {
     constructor(actions$, userOrderConnector) {
         this.actions$ = actions$;
         this.userOrderConnector = userOrderConnector;
@@ -24428,7 +24382,10 @@ let ConsignmentTrackingEffects = class ConsignmentTrackingEffects {
                 .pipe(map((tracking) => new LoadConsignmentTrackingSuccess(tracking)), catchError((error) => of(new LoadConsignmentTrackingFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+ConsignmentTrackingEffects.decorators = [
+    { type: Injectable }
+];
 ConsignmentTrackingEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserOrderConnector }
@@ -24436,11 +24393,8 @@ ConsignmentTrackingEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
-ConsignmentTrackingEffects = __decorate([
-    Injectable()
-], ConsignmentTrackingEffects);
 
-let DeliveryCountriesEffects = class DeliveryCountriesEffects {
+class DeliveryCountriesEffects {
     constructor(actions$, siteConnector) {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
@@ -24448,7 +24402,10 @@ let DeliveryCountriesEffects = class DeliveryCountriesEffects {
             return this.siteConnector.getCountries(CountryType.SHIPPING).pipe(map((countries) => new LoadDeliveryCountriesSuccess(countries)), catchError((error) => of(new LoadDeliveryCountriesFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+DeliveryCountriesEffects.decorators = [
+    { type: Injectable }
+];
 DeliveryCountriesEffects.ctorParameters = () => [
     { type: Actions },
     { type: SiteConnector }
@@ -24456,11 +24413,8 @@ DeliveryCountriesEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], DeliveryCountriesEffects.prototype, "loadDeliveryCountries$", void 0);
-DeliveryCountriesEffects = __decorate([
-    Injectable()
-], DeliveryCountriesEffects);
 
-let ForgotPasswordEffects = class ForgotPasswordEffects {
+class ForgotPasswordEffects {
     constructor(actions$, userAccountConnector) {
         this.actions$ = actions$;
         this.userAccountConnector = userAccountConnector;
@@ -24478,7 +24432,10 @@ let ForgotPasswordEffects = class ForgotPasswordEffects {
             ]), catchError((error) => of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+ForgotPasswordEffects.decorators = [
+    { type: Injectable }
+];
 ForgotPasswordEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserConnector }
@@ -24486,18 +24443,18 @@ ForgotPasswordEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
-ForgotPasswordEffects = __decorate([
-    Injectable()
-], ForgotPasswordEffects);
 
-let NotificationPreferenceEffects = class NotificationPreferenceEffects {
+class NotificationPreferenceEffects {
     constructor(actions$, connector) {
         this.actions$ = actions$;
         this.connector = connector;
         this.loadPreferences$ = this.actions$.pipe(ofType(LOAD_NOTIFICATION_PREFERENCES), map((action) => action.payload), switchMap((payload) => this.connector.loadAll(payload).pipe(map((preferences) => new LoadNotificationPreferencesSuccess(preferences)), catchError((error) => of(new LoadNotificationPreferencesFail(makeErrorSerializable(error)))))));
         this.updatePreferences$ = this.actions$.pipe(ofType(UPDATE_NOTIFICATION_PREFERENCES), map((action) => action.payload), mergeMap((payload) => this.connector.update(payload.userId, payload.preferences).pipe(map(() => new UpdateNotificationPreferencesSuccess(payload.preferences)), catchError((error) => of(new UpdateNotificationPreferencesFail(makeErrorSerializable(error)))))));
     }
-};
+}
+NotificationPreferenceEffects.decorators = [
+    { type: Injectable }
+];
 NotificationPreferenceEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserNotificationPreferenceConnector }
@@ -24508,11 +24465,8 @@ __decorate([
 __decorate([
     Effect()
 ], NotificationPreferenceEffects.prototype, "updatePreferences$", void 0);
-NotificationPreferenceEffects = __decorate([
-    Injectable()
-], NotificationPreferenceEffects);
 
-let OrderDetailsEffect = class OrderDetailsEffect {
+class OrderDetailsEffect {
     constructor(actions$, orderConnector, globalMessageService) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
@@ -24532,7 +24486,10 @@ let OrderDetailsEffect = class OrderDetailsEffect {
             }));
         }));
     }
-};
+}
+OrderDetailsEffect.decorators = [
+    { type: Injectable }
+];
 OrderDetailsEffect.ctorParameters = () => [
     { type: Actions },
     { type: UserOrderConnector },
@@ -24544,11 +24501,8 @@ __decorate([
 __decorate([
     Effect()
 ], OrderDetailsEffect.prototype, "cancelOrder$", void 0);
-OrderDetailsEffect = __decorate([
-    Injectable()
-], OrderDetailsEffect);
 
-let OrderReturnRequestEffect = class OrderReturnRequestEffect {
+class OrderReturnRequestEffect {
     constructor(actions$, orderConnector) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
@@ -24573,7 +24527,10 @@ let OrderReturnRequestEffect = class OrderReturnRequestEffect {
                 .pipe(map((returnRequestList) => new LoadOrderReturnRequestListSuccess(returnRequestList)), catchError((error) => of(new LoadOrderReturnRequestListFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+OrderReturnRequestEffect.decorators = [
+    { type: Injectable }
+];
 OrderReturnRequestEffect.ctorParameters = () => [
     { type: Actions },
     { type: UserOrderConnector }
@@ -24590,11 +24547,8 @@ __decorate([
 __decorate([
     Effect()
 ], OrderReturnRequestEffect.prototype, "loadReturnRequestList$", void 0);
-OrderReturnRequestEffect = __decorate([
-    Injectable()
-], OrderReturnRequestEffect);
 
-let UserPaymentMethodsEffects = class UserPaymentMethodsEffects {
+class UserPaymentMethodsEffects {
     constructor(actions$, userPaymentMethodConnector) {
         this.actions$ = actions$;
         this.userPaymentMethodConnector = userPaymentMethodConnector;
@@ -24620,7 +24574,10 @@ let UserPaymentMethodsEffects = class UserPaymentMethodsEffects {
             ]), catchError((error) => of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+UserPaymentMethodsEffects.decorators = [
+    { type: Injectable }
+];
 UserPaymentMethodsEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserPaymentConnector }
@@ -24634,11 +24591,8 @@ __decorate([
 __decorate([
     Effect()
 ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
-UserPaymentMethodsEffects = __decorate([
-    Injectable()
-], UserPaymentMethodsEffects);
 
-let RegionsEffects = class RegionsEffects {
+class RegionsEffects {
     constructor(actions$, siteConnector) {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
@@ -24654,7 +24608,10 @@ let RegionsEffects = class RegionsEffects {
             return new LoaderResetAction(REGIONS);
         }));
     }
-};
+}
+RegionsEffects.decorators = [
+    { type: Injectable }
+];
 RegionsEffects.ctorParameters = () => [
     { type: Actions },
     { type: SiteConnector }
@@ -24665,11 +24622,8 @@ __decorate([
 __decorate([
     Effect()
 ], RegionsEffects.prototype, "resetRegions$", void 0);
-RegionsEffects = __decorate([
-    Injectable()
-], RegionsEffects);
 
-let ResetPasswordEffects = class ResetPasswordEffects {
+class ResetPasswordEffects {
     constructor(actions$, userAccountConnector) {
         this.actions$ = actions$;
         this.userAccountConnector = userAccountConnector;
@@ -24697,7 +24651,10 @@ let ResetPasswordEffects = class ResetPasswordEffects {
             }));
         }));
     }
-};
+}
+ResetPasswordEffects.decorators = [
+    { type: Injectable }
+];
 ResetPasswordEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserConnector }
@@ -24705,11 +24662,8 @@ ResetPasswordEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], ResetPasswordEffects.prototype, "resetPassword$", void 0);
-ResetPasswordEffects = __decorate([
-    Injectable()
-], ResetPasswordEffects);
 
-let TitlesEffects = class TitlesEffects {
+class TitlesEffects {
     constructor(actions$, userAccountConnector) {
         this.actions$ = actions$;
         this.userAccountConnector = userAccountConnector;
@@ -24719,7 +24673,10 @@ let TitlesEffects = class TitlesEffects {
             }), catchError((error) => of(new LoadTitlesFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+TitlesEffects.decorators = [
+    { type: Injectable }
+];
 TitlesEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserConnector }
@@ -24727,11 +24684,8 @@ TitlesEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], TitlesEffects.prototype, "loadTitles$", void 0);
-TitlesEffects = __decorate([
-    Injectable()
-], TitlesEffects);
 
-let UpdateEmailEffects = class UpdateEmailEffects {
+class UpdateEmailEffects {
     constructor(actions$, userAccountConnector) {
         this.actions$ = actions$;
         this.userAccountConnector = userAccountConnector;
@@ -24739,7 +24693,10 @@ let UpdateEmailEffects = class UpdateEmailEffects {
             .updateEmail(payload.uid, payload.password, payload.newUid)
             .pipe(map(() => new UpdateEmailSuccessAction(payload.newUid)), catchError((error) => of(new UpdateEmailErrorAction(makeErrorSerializable(error)))))));
     }
-};
+}
+UpdateEmailEffects.decorators = [
+    { type: Injectable }
+];
 UpdateEmailEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserConnector }
@@ -24747,11 +24704,8 @@ UpdateEmailEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
-UpdateEmailEffects = __decorate([
-    Injectable()
-], UpdateEmailEffects);
 
-let UpdatePasswordEffects = class UpdatePasswordEffects {
+class UpdatePasswordEffects {
     constructor(actions$, userAccountConnector) {
         this.actions$ = actions$;
         this.userAccountConnector = userAccountConnector;
@@ -24759,7 +24713,10 @@ let UpdatePasswordEffects = class UpdatePasswordEffects {
             .updatePassword(payload.userId, payload.oldPassword, payload.newPassword)
             .pipe(map(() => new UpdatePasswordSuccess()), catchError((error) => of(new UpdatePasswordFail(makeErrorSerializable(error)))))));
     }
-};
+}
+UpdatePasswordEffects.decorators = [
+    { type: Injectable }
+];
 UpdatePasswordEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserConnector }
@@ -24767,11 +24724,8 @@ UpdatePasswordEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], UpdatePasswordEffects.prototype, "updatePassword$", void 0);
-UpdatePasswordEffects = __decorate([
-    Injectable()
-], UpdatePasswordEffects);
 
-let UserAddressesEffects = class UserAddressesEffects {
+class UserAddressesEffects {
     constructor(actions$, userAddressConnector, userAddressService, messageService) {
         this.actions$ = actions$;
         this.userAddressConnector = userAddressConnector;
@@ -24842,7 +24796,10 @@ let UserAddressesEffects = class UserAddressesEffects {
     loadAddresses() {
         this.userAddressService.loadAddresses();
     }
-};
+}
+UserAddressesEffects.decorators = [
+    { type: Injectable }
+];
 UserAddressesEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserAddressConnector },
@@ -24870,11 +24827,8 @@ __decorate([
 __decorate([
     Effect({ dispatch: false })
 ], UserAddressesEffects.prototype, "showGlobalMessageOnDeleteSuccess$", void 0);
-UserAddressesEffects = __decorate([
-    Injectable()
-], UserAddressesEffects);
 
-let UserConsentsEffect = class UserConsentsEffect {
+class UserConsentsEffect {
     constructor(actions$, userConsentConnector) {
         this.actions$ = actions$;
         this.userConsentConnector = userConsentConnector;
@@ -24894,7 +24848,10 @@ let UserConsentsEffect = class UserConsentsEffect {
         }))));
         this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map((action) => action.payload), concatMap(({ userId, consentCode }) => this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(map(() => new WithdrawUserConsentSuccess()), catchError((error) => of(new WithdrawUserConsentFail(makeErrorSerializable(error)))))));
     }
-};
+}
+UserConsentsEffect.decorators = [
+    { type: Injectable }
+];
 UserConsentsEffect.ctorParameters = () => [
     { type: Actions },
     { type: UserConsentConnector }
@@ -24911,11 +24868,8 @@ __decorate([
 __decorate([
     Effect()
 ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
-UserConsentsEffect = __decorate([
-    Injectable()
-], UserConsentsEffect);
 
-let UserDetailsEffects = class UserDetailsEffects {
+class UserDetailsEffects {
     constructor(actions$, userConnector) {
         this.actions$ = actions$;
         this.userConnector = userConnector;
@@ -24926,7 +24880,10 @@ let UserDetailsEffects = class UserDetailsEffects {
         }));
         this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map((action) => action.payload), concatMap((payload) => this.userConnector.update(payload.username, payload.userDetails).pipe(map(() => new UpdateUserDetailsSuccess(payload.userDetails)), catchError((error) => of(new UpdateUserDetailsFail(makeErrorSerializable(error)))))));
     }
-};
+}
+UserDetailsEffects.decorators = [
+    { type: Injectable }
+];
 UserDetailsEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserConnector }
@@ -24937,11 +24894,8 @@ __decorate([
 __decorate([
     Effect()
 ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
-UserDetailsEffects = __decorate([
-    Injectable()
-], UserDetailsEffects);
 
-let UserOrdersEffect = class UserOrdersEffect {
+class UserOrdersEffect {
     constructor(actions$, orderConnector) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
@@ -24956,7 +24910,10 @@ let UserOrdersEffect = class UserOrdersEffect {
             return new ClearUserOrders();
         }));
     }
-};
+}
+UserOrdersEffect.decorators = [
+    { type: Injectable }
+];
 UserOrdersEffect.ctorParameters = () => [
     { type: Actions },
     { type: UserOrderConnector }
@@ -24967,11 +24924,8 @@ __decorate([
 __decorate([
     Effect()
 ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
-UserOrdersEffect = __decorate([
-    Injectable()
-], UserOrdersEffect);
 
-let UserRegisterEffects = class UserRegisterEffects {
+class UserRegisterEffects {
     constructor(actions$, userConnector) {
         this.actions$ = actions$;
         this.userConnector = userConnector;
@@ -24990,7 +24944,10 @@ let UserRegisterEffects = class UserRegisterEffects {
             ]), catchError((error) => of(new RemoveUserFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+UserRegisterEffects.decorators = [
+    { type: Injectable }
+];
 UserRegisterEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserConnector }
@@ -25004,11 +24961,8 @@ __decorate([
 __decorate([
     Effect()
 ], UserRegisterEffects.prototype, "removeUser$", void 0);
-UserRegisterEffects = __decorate([
-    Injectable()
-], UserRegisterEffects);
 
-let CustomerCouponEffects = class CustomerCouponEffects {
+class CustomerCouponEffects {
     constructor(actions$, customerCouponConnector) {
         this.actions$ = actions$;
         this.customerCouponConnector = customerCouponConnector;
@@ -25041,7 +24995,10 @@ let CustomerCouponEffects = class CustomerCouponEffects {
             }), catchError((error) => of(new ClaimCustomerCouponFail(makeErrorSerializable(error)))));
         }));
     }
-};
+}
+CustomerCouponEffects.decorators = [
+    { type: Injectable }
+];
 CustomerCouponEffects.ctorParameters = () => [
     { type: Actions },
     { type: CustomerCouponConnector }
@@ -25058,11 +25015,8 @@ __decorate([
 __decorate([
     Effect()
 ], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
-CustomerCouponEffects = __decorate([
-    Injectable()
-], CustomerCouponEffects);
 
-let ProductInterestsEffect = class ProductInterestsEffect {
+class ProductInterestsEffect {
     constructor(actions$, userInterestsConnector) {
         this.actions$ = actions$;
         this.userInterestsConnector = userInterestsConnector;
@@ -25096,7 +25050,10 @@ let ProductInterestsEffect = class ProductInterestsEffect {
             new AddProductInterestSuccess(res),
         ]), catchError((error) => of(new AddProductInterestFail(makeErrorSerializable(error)))))));
     }
-};
+}
+ProductInterestsEffect.decorators = [
+    { type: Injectable }
+];
 ProductInterestsEffect.ctorParameters = () => [
     { type: Actions },
     { type: UserInterestsConnector }
@@ -25110,11 +25067,8 @@ __decorate([
 __decorate([
     Effect()
 ], ProductInterestsEffect.prototype, "addProductInterest$", void 0);
-ProductInterestsEffect = __decorate([
-    Injectable()
-], ProductInterestsEffect);
 
-let UserCostCenterEffects = class UserCostCenterEffects {
+class UserCostCenterEffects {
     constructor(actions$, userCostCenterConnector) {
         this.actions$ = actions$;
         this.userCostCenterConnector = userCostCenterConnector;
@@ -25122,7 +25076,10 @@ let UserCostCenterEffects = class UserCostCenterEffects {
         // TODO(#8875): Should we use here serialize utils?
         map((data) => new LoadActiveCostCentersSuccess(data.values)), catchError((error) => of(new LoadActiveCostCentersFail(normalizeHttpError(error)))))));
     }
-};
+}
+UserCostCenterEffects.decorators = [
+    { type: Injectable }
+];
 UserCostCenterEffects.ctorParameters = () => [
     { type: Actions },
     { type: UserCostCenterConnector }
@@ -25130,9 +25087,6 @@ UserCostCenterEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], UserCostCenterEffects.prototype, "loadActiveCostCenters$", void 0);
-UserCostCenterEffects = __decorate([
-    Injectable()
-], UserCostCenterEffects);
 
 const effects$b = [
     ClearMiscsDataEffect,
@@ -25159,34 +25113,33 @@ const effects$b = [
     UserCostCenterEffects,
 ];
 
-let UserStoreModule = class UserStoreModule {
-};
-UserStoreModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule,
-            StateModule,
-            StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
-            EffectsModule.forFeature(effects$b),
-            RouterModule,
-        ],
-        providers: [reducerProvider$c],
-    })
-], UserStoreModule);
+class UserStoreModule {
+}
+UserStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    StateModule,
+                    StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
+                    EffectsModule.forFeature(effects$b),
+                    RouterModule,
+                ],
+                providers: [reducerProvider$c],
+            },] }
+];
 
-var UserModule_1;
-let UserModule = UserModule_1 = class UserModule {
+class UserModule {
     static forRoot() {
         return {
-            ngModule: UserModule_1,
+            ngModule: UserModule,
         };
     }
-};
-UserModule = UserModule_1 = __decorate([
-    NgModule({
-        imports: [UserStoreModule],
-    })
-], UserModule);
+}
+UserModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [UserStoreModule],
+            },] }
+];
 
 /*
  * Public API Surface of core

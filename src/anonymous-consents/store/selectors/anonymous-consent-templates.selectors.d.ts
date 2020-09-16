@@ -7,4 +7,4 @@ export declare const getAnonymousConsentTemplatesValue: MemoizedSelector<StateWi
 export declare const getAnonymousConsentTemplatesLoading: MemoizedSelector<StateWithAnonymousConsents, boolean>;
 export declare const getAnonymousConsentTemplatesSuccess: MemoizedSelector<StateWithAnonymousConsents, boolean>;
 export declare const getAnonymousConsentTemplatesError: MemoizedSelector<StateWithAnonymousConsents, boolean>;
-export declare const getAnonymousConsentTemplate: (templateCode: string) => MemoizedSelector<StateWithAnonymousConsents, ConsentTemplate, import("@ngrx/store").DefaultProjectorFn<ConsentTemplate>>;
+export declare const getAnonymousConsentTemplate: (templateCode: string) => MemoizedSelector<StateWithAnonymousConsents, ConsentTemplate>;
