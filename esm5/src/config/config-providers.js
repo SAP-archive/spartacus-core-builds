@@ -1,0 +1,62 @@
+import { ConfigChunk, DefaultConfigChunk } from './config-tokens';
+/**
+ * Helper function to provide configuration chunk using ConfigChunk token
+ *
+ * To provide default configuration in libraries provideDefaultConfig should be used instead.
+ *
+ * @param config Config object to merge with the global configuration
+ */
+export function provideConfig(config, defaultConfig) {
+    if (config === void 0) { config = {}; }
+    if (defaultConfig === void 0) { defaultConfig = false; }
+    return {
+        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+        useValue: config,
+        multi: true,
+    };
+}
+/**
+ * Helper function to provide configuration with factory function, using ConfigChunk token
+ *
+ * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
+ *
+ * @param configFactory Factory Function that will generate config object
+ * @param deps Optional dependencies to a factory function
+ */
+export function provideConfigFactory(configFactory, deps, defaultConfig) {
+    if (defaultConfig === void 0) { defaultConfig = false; }
+    return {
+        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+        useFactory: configFactory,
+        multi: true,
+        deps: deps,
+    };
+}
+/**
+ * Helper function to provide default configuration chunk using DefaultConfigChunk token
+ *
+ * @param config Config object to merge with the default configuration
+ */
+export function provideDefaultConfig(config) {
+    if (config === void 0) { config = {}; }
+    return {
+        provide: DefaultConfigChunk,
+        useValue: config,
+        multi: true,
+    };
+}
+/**
+ * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
+ *
+ * @param configFactory Factory Function that will generate config object
+ * @param deps Optional dependencies to a factory function
+ */
+export function provideDefaultConfigFactory(configFactory, deps) {
+    return {
+        provide: DefaultConfigChunk,
+        useFactory: configFactory,
+        multi: true,
+        deps: deps,
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uZmlnLXByb3ZpZGVycy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9jb25maWcvY29uZmlnLXByb3ZpZGVycy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFDQSxPQUFPLEVBQUUsV0FBVyxFQUFFLGtCQUFrQixFQUFFLE1BQU0saUJBQWlCLENBQUM7QUFFbEU7Ozs7OztHQU1HO0FBQ0gsTUFBTSxVQUFVLGFBQWEsQ0FDM0IsTUFBZ0IsRUFDaEIsYUFBcUI7SUFEckIsdUJBQUEsRUFBQSxXQUFnQjtJQUNoQiw4QkFBQSxFQUFBLHFCQUFxQjtJQUVyQixPQUFPO1FBQ0wsT0FBTyxFQUFFLGFBQWEsQ0FBQyxDQUFDLENBQUMsa0JBQWtCLENBQUMsQ0FBQyxDQUFDLFdBQVc7UUFDekQsUUFBUSxFQUFFLE1BQU07UUFDaEIsS0FBSyxFQUFFLElBQUk7S0FDWixDQUFDO0FBQ0osQ0FBQztBQUVEOzs7Ozs7O0dBT0c7QUFDSCxNQUFNLFVBQVUsb0JBQW9CLENBQ2xDLGFBQXVCLEVBQ3ZCLElBQVksRUFDWixhQUFxQjtJQUFyQiw4QkFBQSxFQUFBLHFCQUFxQjtJQUVyQixPQUFPO1FBQ0wsT0FBTyxFQUFFLGFBQWEsQ0FBQyxDQUFDLENBQUMsa0JBQWtCLENBQUMsQ0FBQyxDQUFDLFdBQVc7UUFDekQsVUFBVSxFQUFFLGFBQWE7UUFDekIsS0FBSyxFQUFFLElBQUk7UUFDWCxJQUFJLEVBQUUsSUFBSTtLQUNYLENBQUM7QUFDSixDQUFDO0FBRUQ7Ozs7R0FJRztBQUNILE1BQU0sVUFBVSxvQkFBb0IsQ0FBQyxNQUFnQjtJQUFoQix1QkFBQSxFQUFBLFdBQWdCO0lBQ25ELE9BQU87UUFDTCxPQUFPLEVBQUUsa0JBQWtCO1FBQzNCLFFBQVEsRUFBRSxNQUFNO1FBQ2hCLEtBQUssRUFBRSxJQUFJO0tBQ1osQ0FBQztBQUNKLENBQUM7QUFFRDs7Ozs7R0FLRztBQUNILE1BQU0sVUFBVSwyQkFBMkIsQ0FDekMsYUFBdUIsRUFDdkIsSUFBWTtJQUVaLE9BQU87UUFDTCxPQUFPLEVBQUUsa0JBQWtCO1FBQzNCLFVBQVUsRUFBRSxhQUFhO1FBQ3pCLEtBQUssRUFBRSxJQUFJO1FBQ1gsSUFBSSxFQUFFLElBQUk7S0FDWCxDQUFDO0FBQ0osQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEZhY3RvcnlQcm92aWRlciwgVmFsdWVQcm92aWRlciB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgQ29uZmlnQ2h1bmssIERlZmF1bHRDb25maWdDaHVuayB9IGZyb20gJy4vY29uZmlnLXRva2Vucyc7XG5cbi8qKlxuICogSGVscGVyIGZ1bmN0aW9uIHRvIHByb3ZpZGUgY29uZmlndXJhdGlvbiBjaHVuayB1c2luZyBDb25maWdDaHVuayB0b2tlblxuICpcbiAqIFRvIHByb3ZpZGUgZGVmYXVsdCBjb25maWd1cmF0aW9uIGluIGxpYnJhcmllcyBwcm92aWRlRGVmYXVsdENvbmZpZyBzaG91bGQgYmUgdXNlZCBpbnN0ZWFkLlxuICpcbiAqIEBwYXJhbSBjb25maWcgQ29uZmlnIG9iamVjdCB0byBtZXJnZSB3aXRoIHRoZSBnbG9iYWwgY29uZmlndXJhdGlvblxuICovXG5leHBvcnQgZnVuY3Rpb24gcHJvdmlkZUNvbmZpZyhcbiAgY29uZmlnOiBhbnkgPSB7fSxcbiAgZGVmYXVsdENvbmZpZyA9IGZhbHNlXG4pOiBWYWx1ZVByb3ZpZGVyIHtcbiAgcmV0dXJuIHtcbiAgICBwcm92aWRlOiBkZWZhdWx0Q29uZmlnID8gRGVmYXVsdENvbmZpZ0NodW5rIDogQ29uZmlnQ2h1bmssXG4gICAgdXNlVmFsdWU6IGNvbmZpZyxcbiAgICBtdWx0aTogdHJ1ZSxcbiAgfTtcbn1cblxuLyoqXG4gKiBIZWxwZXIgZnVuY3Rpb24gdG8gcHJvdmlkZSBjb25maWd1cmF0aW9uIHdpdGggZmFjdG9yeSBmdW5jdGlvbiwgdXNpbmcgQ29uZmlnQ2h1bmsgdG9rZW5cbiAqXG4gKiBUbyBwcm92aWRlIGRlZmF1bHQgY29uZmlndXJhdGlvbiBpbiBsaWJyYXJpZXMgcHJvdmlkZURlZmF1bHRDb25maWdGYWN0b3J5IHNob3VsZCBiZSB1c2VkIGluc3RlYWQuXG4gKlxuICogQHBhcmFtIGNvbmZpZ0ZhY3RvcnkgRmFjdG9yeSBGdW5jdGlvbiB0aGF0IHdpbGwgZ2VuZXJhdGUgY29uZmlnIG9iamVjdFxuICogQHBhcmFtIGRlcHMgT3B0aW9uYWwgZGVwZW5kZW5jaWVzIHRvIGEgZmFjdG9yeSBmdW5jdGlvblxuICovXG5leHBvcnQgZnVuY3Rpb24gcHJvdmlkZUNvbmZpZ0ZhY3RvcnkoXG4gIGNvbmZpZ0ZhY3Rvcnk6IEZ1bmN0aW9uLFxuICBkZXBzPzogYW55W10sXG4gIGRlZmF1bHRDb25maWcgPSBmYWxzZVxuKTogRmFjdG9yeVByb3ZpZGVyIHtcbiAgcmV0dXJuIHtcbiAgICBwcm92aWRlOiBkZWZhdWx0Q29uZmlnID8gRGVmYXVsdENvbmZpZ0NodW5rIDogQ29uZmlnQ2h1bmssXG4gICAgdXNlRmFjdG9yeTogY29uZmlnRmFjdG9yeSxcbiAgICBtdWx0aTogdHJ1ZSxcbiAgICBkZXBzOiBkZXBzLFxuICB9O1xufVxuXG4vKipcbiAqIEhlbHBlciBmdW5jdGlvbiB0byBwcm92aWRlIGRlZmF1bHQgY29uZmlndXJhdGlvbiBjaHVuayB1c2luZyBEZWZhdWx0Q29uZmlnQ2h1bmsgdG9rZW5cbiAqXG4gKiBAcGFyYW0gY29uZmlnIENvbmZpZyBvYmplY3QgdG8gbWVyZ2Ugd2l0aCB0aGUgZGVmYXVsdCBjb25maWd1cmF0aW9uXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBwcm92aWRlRGVmYXVsdENvbmZpZyhjb25maWc6IGFueSA9IHt9KTogVmFsdWVQcm92aWRlciB7XG4gIHJldHVybiB7XG4gICAgcHJvdmlkZTogRGVmYXVsdENvbmZpZ0NodW5rLFxuICAgIHVzZVZhbHVlOiBjb25maWcsXG4gICAgbXVsdGk6IHRydWUsXG4gIH07XG59XG5cbi8qKlxuICogSGVscGVyIGZ1bmN0aW9uIHRvIHByb3ZpZGUgZGVmYXVsdCBjb25maWd1cmF0aW9uIHdpdGggZmFjdG9yeSBmdW5jdGlvbiwgdXNpbmcgRGVmYXVsdENvbmZpZ0NodW5rIHRva2VuXG4gKlxuICogQHBhcmFtIGNvbmZpZ0ZhY3RvcnkgRmFjdG9yeSBGdW5jdGlvbiB0aGF0IHdpbGwgZ2VuZXJhdGUgY29uZmlnIG9iamVjdFxuICogQHBhcmFtIGRlcHMgT3B0aW9uYWwgZGVwZW5kZW5jaWVzIHRvIGEgZmFjdG9yeSBmdW5jdGlvblxuICovXG5leHBvcnQgZnVuY3Rpb24gcHJvdmlkZURlZmF1bHRDb25maWdGYWN0b3J5KFxuICBjb25maWdGYWN0b3J5OiBGdW5jdGlvbixcbiAgZGVwcz86IGFueVtdXG4pOiBGYWN0b3J5UHJvdmlkZXIge1xuICByZXR1cm4ge1xuICAgIHByb3ZpZGU6IERlZmF1bHRDb25maWdDaHVuayxcbiAgICB1c2VGYWN0b3J5OiBjb25maWdGYWN0b3J5LFxuICAgIG11bHRpOiB0cnVlLFxuICAgIGRlcHM6IGRlcHMsXG4gIH07XG59XG4iXX0=

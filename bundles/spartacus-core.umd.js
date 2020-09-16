@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.store, global.rxjs, global.rxjs.operators, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, (function (exports, core, common, store, rxjs, operators, http, router, effects$c, platformBrowser, routerStore, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, (function (exports, core, store, rxjs, operators, common, http, router, effects$c, platformBrowser, routerStore, i18next, i18nextXhrBackend) { 'use strict';
 
     i18next = i18next && Object.prototype.hasOwnProperty.call(i18next, 'default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && Object.prototype.hasOwnProperty.call(i18nextXhrBackend, 'default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -203,195 +203,6 @@
     function __importDefault(mod) {
         return (mod && mod.__esModule) ? mod : { default: mod };
     }
-
-    function isObject(item) {
-        return item && typeof item === 'object' && !Array.isArray(item);
-    }
-    function deepMerge(target) {
-        var _a, _b, _c;
-        if (target === void 0) { target = {}; }
-        var sources = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            sources[_i - 1] = arguments[_i];
-        }
-        if (!sources.length) {
-            return target;
-        }
-        var source = sources.shift() || {};
-        if (isObject(target) && isObject(source)) {
-            for (var key in source) {
-                if (source[key] instanceof Date) {
-                    Object.assign(target, (_a = {}, _a[key] = source[key], _a));
-                }
-                else if (isObject(source[key])) {
-                    if (!target[key]) {
-                        Object.assign(target, (_b = {}, _b[key] = {}, _b));
-                    }
-                    deepMerge(target[key], source[key]);
-                }
-                else {
-                    Object.assign(target, (_c = {}, _c[key] = source[key], _c));
-                }
-            }
-        }
-        return deepMerge.apply(void 0, __spread([target], sources));
-    }
-
-    // separate function needed for production build:
-    function configurationFactoryProvidedInRoot() {
-        return configurationFactory(core.inject(ConfigChunk, core.InjectFlags.Optional), core.inject(DefaultConfigChunk, core.InjectFlags.Optional));
-    }
-    /**
-     * Global Configuration injection token, can be used to inject configuration to any part of the app
-     */
-    var Config = new core.InjectionToken('Configuration', {
-        providedIn: 'root',
-        factory: configurationFactoryProvidedInRoot,
-    });
-    /**
-     * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
-     * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
-     */
-    var ConfigChunk = new core.InjectionToken('ConfigurationChunk');
-    /**
-     * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
-     * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
-     *
-     * General rule is, that all config provided in libraries should be provided as default config.
-     */
-    var DefaultConfigChunk = new core.InjectionToken('DefaultConfigurationChunk');
-    /**
-     * Helper function to provide configuration chunk using ConfigChunk token
-     *
-     * To provide default configuration in libraries provideDefaultConfig should be used instead.
-     *
-     * @param config Config object to merge with the global configuration
-     */
-    function provideConfig(config, defaultConfig) {
-        if (config === void 0) { config = {}; }
-        if (defaultConfig === void 0) { defaultConfig = false; }
-        return {
-            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
-            useValue: config,
-            multi: true,
-        };
-    }
-    /**
-     * Helper function to provide configuration with factory function, using ConfigChunk token
-     *
-     * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
-     *
-     * @param configFactory Factory Function that will generate config object
-     * @param deps Optional dependencies to a factory function
-     */
-    function provideConfigFactory(configFactory, deps, defaultConfig) {
-        if (defaultConfig === void 0) { defaultConfig = false; }
-        return {
-            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
-            useFactory: configFactory,
-            multi: true,
-            deps: deps,
-        };
-    }
-    /**
-     * Helper function to provide default configuration chunk using DefaultConfigChunk token
-     *
-     * @param config Config object to merge with the default configuration
-     */
-    function provideDefaultConfig(config) {
-        if (config === void 0) { config = {}; }
-        return {
-            provide: DefaultConfigChunk,
-            useValue: config,
-            multi: true,
-        };
-    }
-    /**
-     * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
-     *
-     * @param configFactory Factory Function that will generate config object
-     * @param deps Optional dependencies to a factory function
-     */
-    function provideDefaultConfigFactory(configFactory, deps) {
-        return {
-            provide: DefaultConfigChunk,
-            useFactory: configFactory,
-            multi: true,
-            deps: deps,
-        };
-    }
-    /**
-     * Factory function that merges all configurations chunks. Should not be used directly without explicit reason.
-     *
-     */
-    function configurationFactory(configChunks, defaultConfigChunks) {
-        if (configChunks === void 0) { configChunks = []; }
-        if (defaultConfigChunks === void 0) { defaultConfigChunks = []; }
-        var config = deepMerge.apply(void 0, __spread([{}], (defaultConfigChunks !== null && defaultConfigChunks !== void 0 ? defaultConfigChunks : []), (configChunks !== null && configChunks !== void 0 ? configChunks : [])));
-        return config;
-    }
-    var ConfigModule = /** @class */ (function () {
-        function ConfigModule() {
-        }
-        ConfigModule_1 = ConfigModule;
-        /**
-         * Import ConfigModule and contribute config to the global configuration
-         *
-         * To provide default configuration in libraries provideDefaultConfig should be used instead.
-         *
-         * @param config Config object to merge with the global configuration
-         */
-        ConfigModule.withConfig = function (config) {
-            return {
-                ngModule: ConfigModule_1,
-                providers: [provideConfig(config)],
-            };
-        };
-        /**
-         * Import ConfigModule and contribute config to the global configuration using factory function
-         *
-         * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
-         *
-         * @param configFactory Factory function that will generate configuration
-         * @param deps Optional dependencies to factory function
-         */
-        ConfigModule.withConfigFactory = function (configFactory, deps) {
-            return {
-                ngModule: ConfigModule_1,
-                providers: [provideConfigFactory(configFactory, deps)],
-            };
-        };
-        /**
-         * Module with providers, should be imported only once, if possible, at the root of the app.
-         *
-         * @param config
-         */
-        ConfigModule.forRoot = function (config) {
-            if (config === void 0) { config = {}; }
-            return {
-                ngModule: ConfigModule_1,
-                providers: [
-                    provideConfig(config),
-                    {
-                        provide: Config,
-                        useFactory: configurationFactory,
-                        deps: [
-                            [new core.Optional(), ConfigChunk],
-                            [new core.Optional(), DefaultConfigChunk],
-                        ],
-                    },
-                ],
-            };
-        };
-        var ConfigModule_1;
-        ConfigModule = ConfigModule_1 = __decorate([
-            core.NgModule({
-                imports: [common.CommonModule],
-                declarations: [],
-            })
-        ], ConfigModule);
-        return ConfigModule;
-    }());
 
     var defaultAnonymousConsentsConfig = {
         anonymousConsents: {
@@ -880,6 +691,39 @@
 
     function entitySelector(state, id) {
         return state.entities[id] || undefined;
+    }
+
+    function isObject(item) {
+        return item && typeof item === 'object' && !Array.isArray(item);
+    }
+    function deepMerge(target) {
+        var _a, _b, _c;
+        if (target === void 0) { target = {}; }
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        if (!sources.length) {
+            return target;
+        }
+        var source = sources.shift() || {};
+        if (isObject(target) && isObject(source)) {
+            for (var key in source) {
+                if (source[key] instanceof Date) {
+                    Object.assign(target, (_a = {}, _a[key] = source[key], _a));
+                }
+                else if (isObject(source[key])) {
+                    if (!target[key]) {
+                        Object.assign(target, (_b = {}, _b[key] = {}, _b));
+                    }
+                    deepMerge(target[key], source[key]);
+                }
+                else {
+                    Object.assign(target, (_c = {}, _c[key] = source[key], _c));
+                }
+            }
+        }
+        return deepMerge.apply(void 0, __spread([target], sources));
     }
 
     var OBJECT_SEPARATOR = '.';
@@ -1493,6 +1337,40 @@
     var removeLeadingSlash = function (path) {
         return path.startsWith('/') ? path.slice(1) : path;
     };
+
+    /**
+     * Global Configuration injection token, can be used to inject configuration to any part of the app
+     */
+    var Config = new core.InjectionToken('Configuration', {
+        providedIn: 'root',
+        factory: function () { return deepMerge({}, core.inject(DefaultConfig), core.inject(RootConfig)); },
+    });
+    /**
+     * Default Configuration token, used to build Global Configuration, built from DefaultConfigChunks
+     */
+    var DefaultConfig = new core.InjectionToken('DefaultConfiguration', {
+        providedIn: 'root',
+        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = core.inject(DefaultConfigChunk, core.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
+    });
+    /**
+     * Root Configuration token, used to build Global Configuration, built from ConfigChunks
+     */
+    var RootConfig = new core.InjectionToken('RootConfiguration', {
+        providedIn: 'root',
+        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = core.inject(ConfigChunk, core.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
+    });
+    /**
+     * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
+     * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
+     */
+    var ConfigChunk = new core.InjectionToken('ConfigurationChunk');
+    /**
+     * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
+     * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
+     *
+     * General rule is, that all config provided in libraries should be provided as default config.
+     */
+    var DefaultConfigChunk = new core.InjectionToken('DefaultConfigurationChunk');
 
     var RoutingConfig = /** @class */ (function () {
         function RoutingConfig() {
@@ -2869,6 +2747,67 @@
             multi: true,
         },
     ];
+
+    /**
+     * Helper function to provide configuration chunk using ConfigChunk token
+     *
+     * To provide default configuration in libraries provideDefaultConfig should be used instead.
+     *
+     * @param config Config object to merge with the global configuration
+     */
+    function provideConfig(config, defaultConfig) {
+        if (config === void 0) { config = {}; }
+        if (defaultConfig === void 0) { defaultConfig = false; }
+        return {
+            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+            useValue: config,
+            multi: true,
+        };
+    }
+    /**
+     * Helper function to provide configuration with factory function, using ConfigChunk token
+     *
+     * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
+     *
+     * @param configFactory Factory Function that will generate config object
+     * @param deps Optional dependencies to a factory function
+     */
+    function provideConfigFactory(configFactory, deps, defaultConfig) {
+        if (defaultConfig === void 0) { defaultConfig = false; }
+        return {
+            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+            useFactory: configFactory,
+            multi: true,
+            deps: deps,
+        };
+    }
+    /**
+     * Helper function to provide default configuration chunk using DefaultConfigChunk token
+     *
+     * @param config Config object to merge with the default configuration
+     */
+    function provideDefaultConfig(config) {
+        if (config === void 0) { config = {}; }
+        return {
+            provide: DefaultConfigChunk,
+            useValue: config,
+            multi: true,
+        };
+    }
+    /**
+     * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
+     *
+     * @param configFactory Factory Function that will generate config object
+     * @param deps Optional dependencies to a factory function
+     */
+    function provideDefaultConfigFactory(configFactory, deps) {
+        return {
+            provide: DefaultConfigChunk,
+            useFactory: configFactory,
+            multi: true,
+            deps: deps,
+        };
+    }
 
     var StateModule = /** @class */ (function () {
         function StateModule() {
@@ -5237,6 +5176,552 @@
             core.Injectable()
         ], OccCostCenterListNormalizer);
         return OccCostCenterListNormalizer;
+    }());
+
+    // PRIVATE API
+    /**
+     * Allows for dynamic adding and removing source observables
+     * and exposes them as one merged observable at a property `output$`.
+     *
+     * Thanks to the `share()` operator used inside, it subscribes to source observables
+     * only when someone subscribes to it. And it unsubscribes from source observables
+     * when the counter of consumers drops to 0.
+     *
+     * **To avoid memory leaks**, all manually added sources should be manually removed
+     * when not plan to emit values anymore. In particular closed event sources won't be
+     * automatically removed.
+     */
+    var MergingSubject = /** @class */ (function () {
+        function MergingSubject() {
+            var _this = this;
+            /**
+             * List of already added sources (but not removed yet)
+             */
+            this.sources = [];
+            /**
+             * For each source: it stores a subscription responsible for
+             * passing all values from source to the consumer
+             */
+            this.subscriptionsToSources = new Map();
+            /**
+             * Observable with all sources merged.
+             *
+             * Only after subscribing to it, under the hood it subscribes to the source observables.
+             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
+             * But if later on something subscribes to it again, it subscribes to the source observables again.
+             *
+             * It multicasts the emissions for each subscriber.
+             */
+            this.output$ = new rxjs.Observable(function (consumer) {
+                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
+                // that is piped right after this observable.
+                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
+                // from this observable (by the nature `refCount`-nature of the `share()` operator).
+                _this.consumer = consumer;
+                _this.bindAllSourcesToConsumer(consumer);
+                return function () {
+                    _this.consumer = null;
+                    _this.unbindAllSourcesFromConsumer();
+                };
+            }).pipe(operators.share());
+            /**
+             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
+             * For more, see docs of the `output$` observable;
+             */
+            this.consumer = null;
+        }
+        /**
+         * Registers the given source to pass its values to the `output$` observable.
+         *
+         * It does nothing, when the source has been already added (but not removed yet).
+         */
+        MergingSubject.prototype.add = function (source) {
+            if (this.has(source)) {
+                return;
+            }
+            if (this.consumer) {
+                this.bindSourceToConsumer(source, this.consumer);
+            }
+            this.sources.push(source);
+        };
+        /**
+         * Starts passing all values from already added sources to consumer
+         */
+        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
+            var _this = this;
+            this.sources.forEach(function (source) {
+                return _this.bindSourceToConsumer(source, consumer);
+            });
+        };
+        /**
+         * Stops passing all values from already added sources to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
+            var _this = this;
+            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
+        };
+        /**
+         * Starts passing all values from a single source to consumer
+         */
+        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
+            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
+            this.subscriptionsToSources.set(source, subscriptionToSource);
+        };
+        /**
+         * Stops passing all values from a single source to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
+            var subscriptionToSource = this.subscriptionsToSources.get(source);
+            if (subscriptionToSource !== undefined) {
+                subscriptionToSource.unsubscribe();
+                this.subscriptionsToSources.delete(source);
+            }
+        };
+        /**
+         * Unregisters the given source so it stops passing its values to `output$` observable.
+         *
+         * Should be used when a source is no longer maintained **to avoid memory leaks**.
+         */
+        MergingSubject.prototype.remove = function (source) {
+            // clear binding from source to consumer (if any consumer exists at the moment)
+            this.unbindSourceFromConsumer(source);
+            // remove source from array
+            var i;
+            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
+                this.sources.splice(i, 1);
+            }
+        };
+        /**
+         * Returns whether the given source has been already addded
+         */
+        MergingSubject.prototype.has = function (source) {
+            return this.sources.includes(source);
+        };
+        return MergingSubject;
+    }());
+
+    /**
+     * A service to register and observe event sources. Events are driven by event types, which are class signatures
+     * for the given event.
+     *
+     * It is possible to register multiple sources to a single event, even without
+     * knowing as multiple decoupled features can attach sources to the same
+     * event type.
+     */
+    var EventService = /** @class */ (function () {
+        function EventService() {
+            /**
+             * The various events meta are collected in a map, stored by the event type class
+             */
+            this.eventsMeta = new Map();
+        }
+        /**
+         * Register an event source for the given event type.
+         *
+         * CAUTION: To avoid memory leaks, the returned teardown function should be called
+         *  when the event source is no longer maintained by its creator
+         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
+         *
+         * @param eventType the event type
+         * @param source$ an observable that represents the source
+         *
+         * @returns a teardown function which unregisters the given event source
+         */
+        EventService.prototype.register = function (eventType, source$) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (eventMeta.mergingSubject.has(source$)) {
+                if (core.isDevMode()) {
+                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
+                }
+            }
+            else {
+                eventMeta.mergingSubject.add(source$);
+            }
+            return function () { return eventMeta.mergingSubject.remove(source$); };
+        };
+        /**
+         * Returns a stream of events for the given event type
+         * @param eventTypes event type
+         */
+        EventService.prototype.get = function (eventType) {
+            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
+            if (core.isDevMode()) {
+                output$ = this.getValidatedEventStream(output$, eventType);
+            }
+            return output$;
+        };
+        /**
+         * Dispatches an instance of an individual event.
+         */
+        EventService.prototype.dispatch = function (event) {
+            var eventType = event.constructor;
+            var inputSubject$ = this.getInputSubject(eventType);
+            inputSubject$.next(event);
+        };
+        /**
+         * Returns the input subject used to dispatch a single event.
+         * The subject is created on demand, when it's needed for the first time.
+         * @param eventType type of event
+         */
+        EventService.prototype.getInputSubject = function (eventType) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (!eventMeta.inputSubject$) {
+                eventMeta.inputSubject$ = new rxjs.Subject();
+                this.register(eventType, eventMeta.inputSubject$);
+            }
+            return eventMeta.inputSubject$;
+        };
+        /**
+         * Returns the event meta object for the given event type
+         */
+        EventService.prototype.getEventMeta = function (eventType) {
+            if (core.isDevMode()) {
+                this.validateEventType(eventType);
+            }
+            if (!this.eventsMeta.get(eventType)) {
+                this.createEventMeta(eventType);
+            }
+            return this.eventsMeta.get(eventType);
+        };
+        /**
+         * Creates the event meta object for the given event type
+         */
+        EventService.prototype.createEventMeta = function (eventType) {
+            this.eventsMeta.set(eventType, {
+                inputSubject$: null,
+                mergingSubject: new MergingSubject(),
+            });
+        };
+        /**
+         * Checks if the event type is a valid type (is a class with constructor).
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.validateEventType = function (eventType) {
+            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
+                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
+            }
+        };
+        /**
+         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
+            return source$.pipe(operators.tap(function (event) {
+                if (!(event instanceof eventType)) {
+                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
+                }
+            }));
+        };
+        EventService.ɵprov = core.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+        EventService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], EventService);
+        return EventService;
+    }());
+
+    /**
+     * Will be thrown in case lazy loaded modules are loaded and instantiated.
+     *
+     * This event is thrown for cms driven lazy loaded feature modules amd it's
+     * dependencies
+     */
+    var ModuleInitializedEvent = /** @class */ (function () {
+        function ModuleInitializedEvent() {
+        }
+        return ModuleInitializedEvent;
+    }());
+
+    var FeaturesConfig = /** @class */ (function () {
+        function FeaturesConfig() {
+        }
+        FeaturesConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function FeaturesConfig_Factory() { return core.ɵɵinject(Config); }, token: FeaturesConfig, providedIn: "root" });
+        FeaturesConfig = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+                useExisting: Config,
+            })
+        ], FeaturesConfig);
+        return FeaturesConfig;
+    }());
+
+    function isFeatureConfig(config) {
+        return typeof config === 'object' && config.features;
+    }
+    function isInLevel(level, version) {
+        if (level === '*') {
+            return true;
+        }
+        var levelParts = level.split('.');
+        var versionParts = version.split('.');
+        for (var i = 0; i < versionParts.length; i++) {
+            var versionNumberPart = Number(versionParts[i]);
+            var levelNumberPart = Number(levelParts[i]) || 0;
+            if (versionNumberPart !== levelNumberPart) {
+                return levelNumberPart > versionNumberPart;
+            }
+        }
+        return true;
+    }
+    function isFeatureLevel(config, level) {
+        if (isFeatureConfig(config)) {
+            return level[0] === '!'
+                ? !isInLevel(config.features.level, level.substr(1, level.length))
+                : isInLevel(config.features.level, level);
+        }
+    }
+    function isFeatureEnabled(config, feature) {
+        if (isFeatureConfig(config)) {
+            var featureConfig = feature[0] === '!'
+                ? config.features[feature.substr(1, feature.length)]
+                : config.features[feature];
+            var result = typeof featureConfig === 'string'
+                ? isFeatureLevel(config, featureConfig)
+                : featureConfig;
+            return feature[0] === '!' ? !result : result;
+        }
+    }
+
+    var FeatureConfigService = /** @class */ (function () {
+        function FeatureConfigService(config) {
+            this.config = config;
+        }
+        FeatureConfigService.prototype.isLevel = function (version) {
+            return isFeatureLevel(this.config, version);
+        };
+        FeatureConfigService.prototype.isEnabled = function (feature) {
+            return isFeatureEnabled(this.config, feature);
+        };
+        FeatureConfigService.ctorParameters = function () { return [
+            { type: FeaturesConfig }
+        ]; };
+        FeatureConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+        FeatureConfigService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            })
+        ], FeatureConfigService);
+        return FeatureConfigService;
+    }());
+
+    var FeatureLevelDirective = /** @class */ (function () {
+        function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
+            this.templateRef = templateRef;
+            this.viewContainer = viewContainer;
+            this.featureConfig = featureConfig;
+            this.hasView = false;
+        }
+        Object.defineProperty(FeatureLevelDirective.prototype, "cxFeatureLevel", {
+            set: function (level) {
+                if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    this.hasView = true;
+                }
+                else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
+                    this.viewContainer.clear();
+                    this.hasView = false;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FeatureLevelDirective.ctorParameters = function () { return [
+            { type: core.TemplateRef },
+            { type: core.ViewContainerRef },
+            { type: FeatureConfigService }
+        ]; };
+        __decorate([
+            core.Input()
+        ], FeatureLevelDirective.prototype, "cxFeatureLevel", null);
+        FeatureLevelDirective = __decorate([
+            core.Directive({
+                selector: '[cxFeatureLevel]',
+            })
+        ], FeatureLevelDirective);
+        return FeatureLevelDirective;
+    }());
+
+    var FeatureDirective = /** @class */ (function () {
+        function FeatureDirective(templateRef, viewContainer, featureConfig) {
+            this.templateRef = templateRef;
+            this.viewContainer = viewContainer;
+            this.featureConfig = featureConfig;
+            this.hasView = false;
+        }
+        Object.defineProperty(FeatureDirective.prototype, "cxFeature", {
+            set: function (feature) {
+                if (this.featureConfig.isEnabled(feature) && !this.hasView) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    this.hasView = true;
+                }
+                else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
+                    this.viewContainer.clear();
+                    this.hasView = false;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FeatureDirective.ctorParameters = function () { return [
+            { type: core.TemplateRef },
+            { type: core.ViewContainerRef },
+            { type: FeatureConfigService }
+        ]; };
+        __decorate([
+            core.Input()
+        ], FeatureDirective.prototype, "cxFeature", null);
+        FeatureDirective = __decorate([
+            core.Directive({
+                selector: '[cxFeature]',
+            })
+        ], FeatureDirective);
+        return FeatureDirective;
+    }());
+
+    var FeaturesConfigModule = /** @class */ (function () {
+        function FeaturesConfigModule() {
+        }
+        FeaturesConfigModule_1 = FeaturesConfigModule;
+        FeaturesConfigModule.forRoot = function (defaultLevel) {
+            return {
+                ngModule: FeaturesConfigModule_1,
+                providers: [
+                    provideDefaultConfig({
+                        features: {
+                            level: defaultLevel || '*',
+                        },
+                    }),
+                ],
+            };
+        };
+        var FeaturesConfigModule_1;
+        FeaturesConfigModule = FeaturesConfigModule_1 = __decorate([
+            core.NgModule({
+                declarations: [FeatureLevelDirective, FeatureDirective],
+                exports: [FeatureLevelDirective, FeatureDirective],
+            })
+        ], FeaturesConfigModule);
+        return FeaturesConfigModule;
+    }());
+
+    var ConfigurationService = /** @class */ (function () {
+        function ConfigurationService(rootConfig, defaultConfig, events, config) {
+            var _this = this;
+            this.rootConfig = rootConfig;
+            this.defaultConfig = defaultConfig;
+            this.events = events;
+            this.ambientDefaultConfig = {};
+            this.ambientConfig = {};
+            this.config = config;
+            this.unifiedConfig$ = new rxjs.BehaviorSubject(config);
+            this.eventsSubscription = this.events
+                .get(ModuleInitializedEvent)
+                .subscribe(function (moduleInitialized) {
+                _this.processModule(moduleInitialized);
+            });
+        }
+        // We are extracting ambient configuration from lazy loaded modules
+        ConfigurationService.prototype.processModule = function (moduleInitialized) {
+            var defaultConfigs = moduleInitialized.moduleRef.injector.get(DefaultConfigChunk, null, core.InjectFlags.Self);
+            if (defaultConfigs === null || defaultConfigs === void 0 ? void 0 : defaultConfigs.length) {
+                deepMerge.apply(void 0, __spread([this.ambientDefaultConfig], defaultConfigs));
+            }
+            var configs = moduleInitialized.moduleRef.injector.get(ConfigChunk, null, core.InjectFlags.Self);
+            if (configs === null || configs === void 0 ? void 0 : configs.length) {
+                deepMerge.apply(void 0, __spread([this.ambientConfig], configs));
+            }
+            this.emitUnifiedConfig();
+        };
+        ConfigurationService.prototype.emitUnifiedConfig = function () {
+            var newConfig = deepMerge({}, this.defaultConfig, this.ambientDefaultConfig, this.ambientConfig, this.rootConfig);
+            this.unifiedConfig$.next(newConfig);
+            // compatibility mechanism, can be disabled with feature toggle
+            if (!isFeatureEnabled(this.config, 'disableConfigUpdates')) {
+                deepMerge(this.config, newConfig);
+            }
+        };
+        ConfigurationService.prototype.ngOnDestroy = function () {
+            if (this.eventsSubscription) {
+                this.eventsSubscription.unsubscribe();
+            }
+            this.unifiedConfig$.complete();
+        };
+        ConfigurationService.ctorParameters = function () { return [
+            { type: undefined, decorators: [{ type: core.Inject, args: [RootConfig,] }] },
+            { type: undefined, decorators: [{ type: core.Inject, args: [DefaultConfig,] }] },
+            { type: EventService },
+            { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] }
+        ]; };
+        ConfigurationService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConfigurationService_Factory() { return new ConfigurationService(core.ɵɵinject(RootConfig), core.ɵɵinject(DefaultConfig), core.ɵɵinject(EventService), core.ɵɵinject(Config)); }, token: ConfigurationService, providedIn: "root" });
+        ConfigurationService = __decorate([
+            core.Injectable({
+                providedIn: 'root',
+            }),
+            __param(0, core.Inject(RootConfig)),
+            __param(1, core.Inject(DefaultConfig)),
+            __param(3, core.Inject(Config))
+        ], ConfigurationService);
+        return ConfigurationService;
+    }());
+
+    var ConfigModule = /** @class */ (function () {
+        // To make sure ConfigurationService will be instantiated, we inject it into
+        // module constructor
+        function ConfigModule(_configurationService) {
+        }
+        ConfigModule_1 = ConfigModule;
+        /**
+         * Import ConfigModule and contribute config to the global configuration
+         *
+         * To provide default configuration in libraries provideDefaultConfig should be used instead.
+         *
+         * @param config Config object to merge with the global configuration
+         */
+        ConfigModule.withConfig = function (config) {
+            return {
+                ngModule: ConfigModule_1,
+                providers: [provideConfig(config)],
+            };
+        };
+        /**
+         * Import ConfigModule and contribute config to the global configuration using factory function
+         *
+         * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
+         *
+         * @param configFactory Factory function that will generate configuration
+         * @param deps Optional dependencies to factory function
+         */
+        ConfigModule.withConfigFactory = function (configFactory, deps) {
+            return {
+                ngModule: ConfigModule_1,
+                providers: [provideConfigFactory(configFactory, deps)],
+            };
+        };
+        /**
+         * Module with providers, should be imported only once, if possible, at the root of the app.
+         *
+         * @param config
+         */
+        ConfigModule.forRoot = function (config) {
+            if (config === void 0) { config = {}; }
+            return {
+                ngModule: ConfigModule_1,
+                providers: [provideConfig(config)],
+            };
+        };
+        var ConfigModule_1;
+        ConfigModule.ctorParameters = function () { return [
+            { type: ConfigurationService }
+        ]; };
+        ConfigModule = ConfigModule_1 = __decorate([
+            core.NgModule({})
+        ], ConfigModule);
+        return ConfigModule;
     }());
 
     var defaultOccCostCentersConfig = {
@@ -9131,253 +9616,6 @@
         },
     ];
 
-    // PRIVATE API
-    /**
-     * Allows for dynamic adding and removing source observables
-     * and exposes them as one merged observable at a property `output$`.
-     *
-     * Thanks to the `share()` operator used inside, it subscribes to source observables
-     * only when someone subscribes to it. And it unsubscribes from source observables
-     * when the counter of consumers drops to 0.
-     *
-     * **To avoid memory leaks**, all manually added sources should be manually removed
-     * when not plan to emit values anymore. In particular closed event sources won't be
-     * automatically removed.
-     */
-    var MergingSubject = /** @class */ (function () {
-        function MergingSubject() {
-            var _this = this;
-            /**
-             * List of already added sources (but not removed yet)
-             */
-            this.sources = [];
-            /**
-             * For each source: it stores a subscription responsible for
-             * passing all values from source to the consumer
-             */
-            this.subscriptionsToSources = new Map();
-            /**
-             * Observable with all sources merged.
-             *
-             * Only after subscribing to it, under the hood it subscribes to the source observables.
-             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
-             * But if later on something subscribes to it again, it subscribes to the source observables again.
-             *
-             * It multicasts the emissions for each subscriber.
-             */
-            this.output$ = new rxjs.Observable(function (consumer) {
-                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
-                // that is piped right after this observable.
-                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
-                // from this observable (by the nature `refCount`-nature of the `share()` operator).
-                _this.consumer = consumer;
-                _this.bindAllSourcesToConsumer(consumer);
-                return function () {
-                    _this.consumer = null;
-                    _this.unbindAllSourcesFromConsumer();
-                };
-            }).pipe(operators.share());
-            /**
-             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
-             * For more, see docs of the `output$` observable;
-             */
-            this.consumer = null;
-        }
-        /**
-         * Registers the given source to pass its values to the `output$` observable.
-         *
-         * It does nothing, when the source has been already added (but not removed yet).
-         */
-        MergingSubject.prototype.add = function (source) {
-            if (this.has(source)) {
-                return;
-            }
-            if (this.consumer) {
-                this.bindSourceToConsumer(source, this.consumer);
-            }
-            this.sources.push(source);
-        };
-        /**
-         * Starts passing all values from already added sources to consumer
-         */
-        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
-            var _this = this;
-            this.sources.forEach(function (source) {
-                return _this.bindSourceToConsumer(source, consumer);
-            });
-        };
-        /**
-         * Stops passing all values from already added sources to consumer
-         * (if any consumer is active at the moment)
-         */
-        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
-            var _this = this;
-            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
-        };
-        /**
-         * Starts passing all values from a single source to consumer
-         */
-        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
-            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
-            this.subscriptionsToSources.set(source, subscriptionToSource);
-        };
-        /**
-         * Stops passing all values from a single source to consumer
-         * (if any consumer is active at the moment)
-         */
-        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
-            var subscriptionToSource = this.subscriptionsToSources.get(source);
-            if (subscriptionToSource !== undefined) {
-                subscriptionToSource.unsubscribe();
-                this.subscriptionsToSources.delete(source);
-            }
-        };
-        /**
-         * Unregisters the given source so it stops passing its values to `output$` observable.
-         *
-         * Should be used when a source is no longer maintained **to avoid memory leaks**.
-         */
-        MergingSubject.prototype.remove = function (source) {
-            // clear binding from source to consumer (if any consumer exists at the moment)
-            this.unbindSourceFromConsumer(source);
-            // remove source from array
-            var i;
-            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
-                this.sources.splice(i, 1);
-            }
-        };
-        /**
-         * Returns whether the given source has been already addded
-         */
-        MergingSubject.prototype.has = function (source) {
-            return this.sources.includes(source);
-        };
-        return MergingSubject;
-    }());
-
-    /**
-     * A service to register and observe event sources. Events are driven by event types, which are class signatures
-     * for the given event.
-     *
-     * It is possible to register multiple sources to a single event, even without
-     * knowing as multiple decoupled features can attach sources to the same
-     * event type.
-     */
-    var EventService = /** @class */ (function () {
-        function EventService() {
-            /**
-             * The various events meta are collected in a map, stored by the event type class
-             */
-            this.eventsMeta = new Map();
-        }
-        /**
-         * Register an event source for the given event type.
-         *
-         * CAUTION: To avoid memory leaks, the returned teardown function should be called
-         *  when the event source is no longer maintained by its creator
-         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
-         *
-         * @param eventType the event type
-         * @param source$ an observable that represents the source
-         *
-         * @returns a teardown function which unregisters the given event source
-         */
-        EventService.prototype.register = function (eventType, source$) {
-            var eventMeta = this.getEventMeta(eventType);
-            if (eventMeta.mergingSubject.has(source$)) {
-                if (core.isDevMode()) {
-                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
-                }
-            }
-            else {
-                eventMeta.mergingSubject.add(source$);
-            }
-            return function () { return eventMeta.mergingSubject.remove(source$); };
-        };
-        /**
-         * Returns a stream of events for the given event type
-         * @param eventTypes event type
-         */
-        EventService.prototype.get = function (eventType) {
-            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
-            if (core.isDevMode()) {
-                output$ = this.getValidatedEventStream(output$, eventType);
-            }
-            return output$;
-        };
-        /**
-         * Dispatches an instance of an individual event.
-         */
-        EventService.prototype.dispatch = function (event) {
-            var eventType = event.constructor;
-            var inputSubject$ = this.getInputSubject(eventType);
-            inputSubject$.next(event);
-        };
-        /**
-         * Returns the input subject used to dispatch a single event.
-         * The subject is created on demand, when it's needed for the first time.
-         * @param eventType type of event
-         */
-        EventService.prototype.getInputSubject = function (eventType) {
-            var eventMeta = this.getEventMeta(eventType);
-            if (!eventMeta.inputSubject$) {
-                eventMeta.inputSubject$ = new rxjs.Subject();
-                this.register(eventType, eventMeta.inputSubject$);
-            }
-            return eventMeta.inputSubject$;
-        };
-        /**
-         * Returns the event meta object for the given event type
-         */
-        EventService.prototype.getEventMeta = function (eventType) {
-            if (core.isDevMode()) {
-                this.validateEventType(eventType);
-            }
-            if (!this.eventsMeta.get(eventType)) {
-                this.createEventMeta(eventType);
-            }
-            return this.eventsMeta.get(eventType);
-        };
-        /**
-         * Creates the event meta object for the given event type
-         */
-        EventService.prototype.createEventMeta = function (eventType) {
-            this.eventsMeta.set(eventType, {
-                inputSubject$: null,
-                mergingSubject: new MergingSubject(),
-            });
-        };
-        /**
-         * Checks if the event type is a valid type (is a class with constructor).
-         *
-         * Should be used only in dev mode.
-         */
-        EventService.prototype.validateEventType = function (eventType) {
-            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
-                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
-            }
-        };
-        /**
-         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
-         *
-         * Should be used only in dev mode.
-         */
-        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
-            return source$.pipe(operators.tap(function (event) {
-                if (!(event instanceof eventType)) {
-                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
-                }
-            }));
-        };
-        EventService.ɵprov = core.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
-        EventService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], EventService);
-        return EventService;
-    }());
-
     /**
      * Creates an instance of the given class and fills its properties with the given data.
      *
@@ -12232,9 +12470,10 @@
      * Provides support for CONFIG_INITIALIZERS
      */
     var ConfigInitializerService = /** @class */ (function () {
-        function ConfigInitializerService(config, initializerGuard) {
+        function ConfigInitializerService(config, initializerGuard, rootConfig) {
             this.config = config;
             this.initializerGuard = initializerGuard;
+            this.rootConfig = rootConfig;
             this.ongoingScopes$ = new rxjs.BehaviorSubject(undefined);
         }
         Object.defineProperty(ConfigInitializerService.prototype, "isStable", {
@@ -12393,15 +12632,16 @@
                                 }
                                 ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
                                 asyncConfigs.push((function () { return __awaiter(_this, void 0, void 0, function () {
-                                    var _a, _b;
-                                    return __generator(this, function (_c) {
-                                        switch (_c.label) {
-                                            case 0:
-                                                _a = deepMerge;
-                                                _b = [this.config];
-                                                return [4 /*yield*/, initializer.configFactory()];
+                                    var initializerConfig;
+                                    return __generator(this, function (_a) {
+                                        switch (_a.label) {
+                                            case 0: return [4 /*yield*/, initializer.configFactory()];
                                             case 1:
-                                                _a.apply(void 0, _b.concat([_c.sent()]));
+                                                initializerConfig = _a.sent();
+                                                // contribute configuration to rootConfig
+                                                deepMerge(this.rootConfig, initializerConfig);
+                                                // contribute configuration to global config
+                                                deepMerge(this.config, initializerConfig);
                                                 this.finishScopes(initializer.scopes);
                                                 return [2 /*return*/];
                                         }
@@ -12435,16 +12675,18 @@
         };
         ConfigInitializerService.ctorParameters = function () { return [
             { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] },
-            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
+            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] },
+            { type: undefined, decorators: [{ type: core.Inject, args: [RootConfig,] }] }
         ]; };
-        ConfigInitializerService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(core.ɵɵinject(Config), core.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
+        ConfigInitializerService.ɵprov = core.ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(core.ɵɵinject(Config), core.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), core.ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
         ConfigInitializerService = __decorate([
             core.Injectable({
                 providedIn: 'root',
             }),
             __param(0, core.Inject(Config)),
             __param(1, core.Optional()),
-            __param(1, core.Inject(CONFIG_INITIALIZER_FORROOT_GUARD))
+            __param(1, core.Inject(CONFIG_INITIALIZER_FORROOT_GUARD)),
+            __param(2, core.Inject(RootConfig))
         ], ConfigInitializerService);
         return ConfigInitializerService;
     }());
@@ -22415,178 +22657,6 @@
         return TestConfigModule;
     }());
 
-    var FeaturesConfig = /** @class */ (function () {
-        function FeaturesConfig() {
-        }
-        FeaturesConfig.ɵprov = core.ɵɵdefineInjectable({ factory: function FeaturesConfig_Factory() { return core.ɵɵinject(Config); }, token: FeaturesConfig, providedIn: "root" });
-        FeaturesConfig = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-                useExisting: Config,
-            })
-        ], FeaturesConfig);
-        return FeaturesConfig;
-    }());
-
-    function isFeatureConfig(config) {
-        return typeof config === 'object' && config.features;
-    }
-    function isInLevel(level, version) {
-        if (level === '*') {
-            return true;
-        }
-        var levelParts = level.split('.');
-        var versionParts = version.split('.');
-        for (var i = 0; i < versionParts.length; i++) {
-            var versionNumberPart = Number(versionParts[i]);
-            var levelNumberPart = Number(levelParts[i]) || 0;
-            if (versionNumberPart !== levelNumberPart) {
-                return levelNumberPart > versionNumberPart;
-            }
-        }
-        return true;
-    }
-    function isFeatureLevel(config, level) {
-        if (isFeatureConfig(config)) {
-            return level[0] === '!'
-                ? !isInLevel(config.features.level, level.substr(1, level.length))
-                : isInLevel(config.features.level, level);
-        }
-    }
-    function isFeatureEnabled(config, feature) {
-        if (isFeatureConfig(config)) {
-            var featureConfig = feature[0] === '!'
-                ? config.features[feature.substr(1, feature.length)]
-                : config.features[feature];
-            var result = typeof featureConfig === 'string'
-                ? isFeatureLevel(config, featureConfig)
-                : featureConfig;
-            return feature[0] === '!' ? !result : result;
-        }
-    }
-
-    var FeatureConfigService = /** @class */ (function () {
-        function FeatureConfigService(config) {
-            this.config = config;
-        }
-        FeatureConfigService.prototype.isLevel = function (version) {
-            return isFeatureLevel(this.config, version);
-        };
-        FeatureConfigService.prototype.isEnabled = function (feature) {
-            return isFeatureEnabled(this.config, feature);
-        };
-        FeatureConfigService.ctorParameters = function () { return [
-            { type: FeaturesConfig }
-        ]; };
-        FeatureConfigService.ɵprov = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-        FeatureConfigService = __decorate([
-            core.Injectable({
-                providedIn: 'root',
-            })
-        ], FeatureConfigService);
-        return FeatureConfigService;
-    }());
-
-    var FeatureLevelDirective = /** @class */ (function () {
-        function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
-            this.templateRef = templateRef;
-            this.viewContainer = viewContainer;
-            this.featureConfig = featureConfig;
-            this.hasView = false;
-        }
-        Object.defineProperty(FeatureLevelDirective.prototype, "cxFeatureLevel", {
-            set: function (level) {
-                if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
-                    this.viewContainer.createEmbeddedView(this.templateRef);
-                    this.hasView = true;
-                }
-                else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
-                    this.viewContainer.clear();
-                    this.hasView = false;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FeatureLevelDirective.ctorParameters = function () { return [
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: FeatureConfigService }
-        ]; };
-        __decorate([
-            core.Input()
-        ], FeatureLevelDirective.prototype, "cxFeatureLevel", null);
-        FeatureLevelDirective = __decorate([
-            core.Directive({
-                selector: '[cxFeatureLevel]',
-            })
-        ], FeatureLevelDirective);
-        return FeatureLevelDirective;
-    }());
-
-    var FeatureDirective = /** @class */ (function () {
-        function FeatureDirective(templateRef, viewContainer, featureConfig) {
-            this.templateRef = templateRef;
-            this.viewContainer = viewContainer;
-            this.featureConfig = featureConfig;
-            this.hasView = false;
-        }
-        Object.defineProperty(FeatureDirective.prototype, "cxFeature", {
-            set: function (feature) {
-                if (this.featureConfig.isEnabled(feature) && !this.hasView) {
-                    this.viewContainer.createEmbeddedView(this.templateRef);
-                    this.hasView = true;
-                }
-                else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
-                    this.viewContainer.clear();
-                    this.hasView = false;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FeatureDirective.ctorParameters = function () { return [
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: FeatureConfigService }
-        ]; };
-        __decorate([
-            core.Input()
-        ], FeatureDirective.prototype, "cxFeature", null);
-        FeatureDirective = __decorate([
-            core.Directive({
-                selector: '[cxFeature]',
-            })
-        ], FeatureDirective);
-        return FeatureDirective;
-    }());
-
-    var FeaturesConfigModule = /** @class */ (function () {
-        function FeaturesConfigModule() {
-        }
-        FeaturesConfigModule_1 = FeaturesConfigModule;
-        FeaturesConfigModule.forRoot = function (defaultLevel) {
-            return {
-                ngModule: FeaturesConfigModule_1,
-                providers: [
-                    provideDefaultConfig({
-                        features: {
-                            level: defaultLevel || '*',
-                        },
-                    }),
-                ],
-            };
-        };
-        var FeaturesConfigModule_1;
-        FeaturesConfigModule = FeaturesConfigModule_1 = __decorate([
-            core.NgModule({
-                declarations: [FeatureLevelDirective, FeatureDirective],
-                exports: [FeatureLevelDirective, FeatureDirective],
-            })
-        ], FeaturesConfigModule);
-        return FeaturesConfigModule;
-    }());
-
     // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
     var CxDatePipe = /** @class */ (function (_super) {
         __extends(CxDatePipe, _super);
@@ -28583,6 +28653,7 @@
     exports.ConfigValidatorModule = ConfigValidatorModule;
     exports.ConfigValidatorToken = ConfigValidatorToken;
     exports.ConfigurableRoutesService = ConfigurableRoutesService;
+    exports.ConfigurationService = ConfigurationService;
     exports.ConflictHandler = ConflictHandler;
     exports.ConsentService = ConsentService;
     exports.ContentPageMetaResolver = ContentPageMetaResolver;
@@ -28601,6 +28672,7 @@
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
     exports.DEFAULT_URL_MATCHER = DEFAULT_URL_MATCHER;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
+    exports.DefaultConfig = DefaultConfig;
     exports.DefaultConfigChunk = DefaultConfigChunk;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.EMAIL_PATTERN = EMAIL_PATTERN;
@@ -28653,6 +28725,7 @@
     exports.MULTI_CART_FEATURE = MULTI_CART_FEATURE;
     exports.MockDatePipe = MockDatePipe;
     exports.MockTranslatePipe = MockTranslatePipe;
+    exports.ModuleInitializedEvent = ModuleInitializedEvent;
     exports.MultiCartSelectors = multiCartGroup_selectors;
     exports.MultiCartService = MultiCartService;
     exports.MultiCartStatePersistenceService = MultiCartStatePersistenceService;
@@ -28777,6 +28850,7 @@
     exports.REMOVE_PRODUCT_INTERESTS_PROCESS_ID = REMOVE_PRODUCT_INTERESTS_PROCESS_ID;
     exports.REMOVE_USER_PROCESS_ID = REMOVE_USER_PROCESS_ID;
     exports.ROUTING_FEATURE = ROUTING_FEATURE;
+    exports.RootConfig = RootConfig;
     exports.RoutingActions = routingGroup_actions;
     exports.RoutingConfig = RoutingConfig;
     exports.RoutingConfigService = RoutingConfigService;
@@ -28886,7 +28960,6 @@
     exports.WithCredentialsInterceptor = WithCredentialsInterceptor;
     exports.configInitializerFactory = configInitializerFactory;
     exports.configValidatorFactory = configValidatorFactory;
-    exports.configurationFactory = configurationFactory;
     exports.contextServiceMapProvider = contextServiceMapProvider;
     exports.createFrom = createFrom;
     exports.deepMerge = deepMerge;
@@ -28918,262 +28991,261 @@
     exports.withdrawOn = withdrawOn;
     exports.ɵa = cartStatePersistenceFactory;
     exports.ɵb = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵba = asmStoreConfigFactory;
-    exports.ɵbb = AsmStoreModule;
-    exports.ɵbc = getReducers$3;
-    exports.ɵbd = reducerToken$3;
-    exports.ɵbe = reducerProvider$3;
-    exports.ɵbf = clearCustomerSupportAgentAsmState;
-    exports.ɵbg = metaReducers$2;
-    exports.ɵbh = effects$3;
-    exports.ɵbi = CustomerEffects;
-    exports.ɵbj = CustomerSupportAgentTokenEffects;
-    exports.ɵbk = UserAuthenticationTokenService;
-    exports.ɵbl = reducer$7;
-    exports.ɵbm = interceptors$2;
-    exports.ɵbn = CustomerSupportAgentAuthErrorInterceptor;
-    exports.ɵbo = CustomerSupportAgentErrorHandlingService;
-    exports.ɵbp = defaultAsmConfig;
-    exports.ɵbq = authStoreConfigFactory;
-    exports.ɵbr = AuthStoreModule;
-    exports.ɵbs = getReducers;
-    exports.ɵbt = reducerToken;
-    exports.ɵbu = reducerProvider;
-    exports.ɵbv = clearAuthState;
-    exports.ɵbw = metaReducers;
-    exports.ɵbx = effects;
-    exports.ɵby = ClientTokenEffect;
-    exports.ɵbz = UserTokenEffects;
-    exports.ɵc = configurationFactoryProvidedInRoot;
-    exports.ɵca = ClientAuthenticationTokenService;
-    exports.ɵcb = reducer;
-    exports.ɵcc = defaultAuthConfig;
-    exports.ɵcd = interceptors;
-    exports.ɵce = ClientTokenInterceptor;
-    exports.ɵcf = UserTokenInterceptor;
-    exports.ɵcg = AuthErrorInterceptor;
-    exports.ɵch = UserErrorHandlingService;
-    exports.ɵci = UrlParsingService;
-    exports.ɵcj = ClientErrorHandlingService;
-    exports.ɵck = TokenRevocationInterceptor;
-    exports.ɵcl = MultiCartStoreModule;
-    exports.ɵcm = clearMultiCartState;
-    exports.ɵcn = multiCartMetaReducers;
-    exports.ɵco = multiCartReducerToken;
-    exports.ɵcp = getMultiCartReducers;
-    exports.ɵcq = multiCartReducerProvider;
-    exports.ɵcr = CartEffects;
-    exports.ɵcs = CartEntryEffects;
-    exports.ɵct = CartVoucherEffects;
-    exports.ɵcu = WishListEffects;
-    exports.ɵcv = SaveCartConnector;
-    exports.ɵcw = SaveCartAdapter;
-    exports.ɵcx = MultiCartEffects;
-    exports.ɵcy = entityProcessesLoaderReducer;
-    exports.ɵcz = entityReducer;
-    exports.ɵd = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵda = processesLoaderReducer;
-    exports.ɵdb = activeCartReducer;
-    exports.ɵdc = cartEntitiesReducer;
-    exports.ɵdd = wishListReducer;
-    exports.ɵde = CartPageMetaResolver;
-    exports.ɵdf = SiteContextParamsService;
-    exports.ɵdg = CheckoutStoreModule;
-    exports.ɵdh = getReducers$5;
-    exports.ɵdi = reducerToken$5;
-    exports.ɵdj = reducerProvider$5;
-    exports.ɵdk = effects$5;
-    exports.ɵdl = AddressVerificationEffect;
-    exports.ɵdm = CardTypesEffects;
-    exports.ɵdn = CheckoutEffects;
-    exports.ɵdo = PaymentTypesEffects;
-    exports.ɵdp = reducer$b;
-    exports.ɵdq = reducer$a;
-    exports.ɵdr = reducer$9;
-    exports.ɵds = reducer$c;
-    exports.ɵdt = cmsStoreConfigFactory;
-    exports.ɵdu = CmsStoreModule;
-    exports.ɵdv = getReducers$7;
-    exports.ɵdw = reducerToken$7;
-    exports.ɵdx = reducerProvider$7;
-    exports.ɵdy = clearCmsState;
-    exports.ɵdz = metaReducers$3;
-    exports.ɵe = configFromCookieFactory;
-    exports.ɵea = effects$7;
-    exports.ɵeb = ComponentsEffects;
-    exports.ɵec = NavigationEntryItemEffects;
-    exports.ɵed = PageEffects;
-    exports.ɵee = reducer$g;
-    exports.ɵef = entityLoaderReducer;
-    exports.ɵeg = reducer$h;
-    exports.ɵeh = reducer$e;
-    exports.ɵei = reducer$f;
-    exports.ɵej = GlobalMessageStoreModule;
-    exports.ɵek = getReducers$4;
-    exports.ɵel = reducerToken$4;
-    exports.ɵem = reducerProvider$4;
-    exports.ɵen = reducer$8;
-    exports.ɵeo = GlobalMessageEffect;
-    exports.ɵep = defaultGlobalMessageConfigFactory;
-    exports.ɵeq = HttpErrorInterceptor;
-    exports.ɵer = defaultI18nConfig;
-    exports.ɵes = i18nextProviders;
-    exports.ɵet = i18nextInit;
-    exports.ɵeu = MockTranslationService;
-    exports.ɵev = kymaStoreConfigFactory;
-    exports.ɵew = KymaStoreModule;
-    exports.ɵex = getReducers$8;
-    exports.ɵey = reducerToken$8;
-    exports.ɵez = reducerProvider$8;
-    exports.ɵf = initConfig;
-    exports.ɵfa = clearKymaState;
-    exports.ɵfb = metaReducers$4;
-    exports.ɵfc = effects$8;
-    exports.ɵfd = OpenIdTokenEffect;
-    exports.ɵfe = defaultKymaConfig;
-    exports.ɵff = defaultOccAsmConfig;
-    exports.ɵfg = defaultOccCartConfig;
-    exports.ɵfh = OccSaveCartAdapter;
-    exports.ɵfi = defaultOccCheckoutConfig;
-    exports.ɵfj = defaultOccCostCentersConfig;
-    exports.ɵfk = defaultOccProductConfig;
-    exports.ɵfl = defaultOccSiteContextConfig;
-    exports.ɵfm = defaultOccStoreFinderConfig;
-    exports.ɵfn = defaultOccUserConfig;
-    exports.ɵfo = UserNotificationPreferenceAdapter;
-    exports.ɵfp = OccUserCostCenterAdapter;
-    exports.ɵfq = defaultPersonalizationConfig;
-    exports.ɵfr = interceptors$3;
-    exports.ɵfs = OccPersonalizationIdInterceptor;
-    exports.ɵft = OccPersonalizationTimeInterceptor;
-    exports.ɵfu = ProcessStoreModule;
-    exports.ɵfv = getReducers$9;
-    exports.ɵfw = reducerToken$9;
-    exports.ɵfx = reducerProvider$9;
-    exports.ɵfy = productStoreConfigFactory;
-    exports.ɵfz = ProductStoreModule;
-    exports.ɵg = anonymousConsentsStoreConfigFactory;
-    exports.ɵga = getReducers$a;
-    exports.ɵgb = reducerToken$a;
-    exports.ɵgc = reducerProvider$a;
-    exports.ɵgd = clearProductsState;
-    exports.ɵge = metaReducers$5;
-    exports.ɵgf = effects$9;
-    exports.ɵgg = ProductReferencesEffects;
-    exports.ɵgh = ProductReviewsEffects;
-    exports.ɵgi = ProductsSearchEffects;
-    exports.ɵgj = ProductEffects;
-    exports.ɵgk = reducer$i;
-    exports.ɵgl = entityScopedLoaderReducer;
-    exports.ɵgm = scopedLoaderReducer;
-    exports.ɵgn = reducer$k;
-    exports.ɵgo = reducer$j;
-    exports.ɵgp = PageMetaResolver;
-    exports.ɵgq = CouponSearchPageResolver;
-    exports.ɵgr = PageMetaResolver;
-    exports.ɵgs = addExternalRoutesFactory;
-    exports.ɵgt = getReducers$6;
-    exports.ɵgu = reducer$d;
-    exports.ɵgv = reducerToken$6;
-    exports.ɵgw = reducerProvider$6;
-    exports.ɵgx = CustomSerializer;
-    exports.ɵgy = effects$6;
-    exports.ɵgz = RouterEffects;
-    exports.ɵh = AnonymousConsentsStoreModule;
-    exports.ɵha = siteContextStoreConfigFactory;
-    exports.ɵhb = SiteContextStoreModule;
-    exports.ɵhc = getReducers$1;
-    exports.ɵhd = reducerToken$1;
-    exports.ɵhe = reducerProvider$1;
-    exports.ɵhf = effects$2;
-    exports.ɵhg = LanguagesEffects;
-    exports.ɵhh = CurrenciesEffects;
-    exports.ɵhi = BaseSiteEffects;
-    exports.ɵhj = reducer$3;
-    exports.ɵhk = reducer$2;
-    exports.ɵhl = reducer$1;
-    exports.ɵhm = defaultSiteContextConfigFactory;
-    exports.ɵhn = initializeContext;
-    exports.ɵho = contextServiceProviders;
-    exports.ɵhp = SiteContextRoutesHandler;
-    exports.ɵhq = SiteContextUrlSerializer;
-    exports.ɵhr = siteContextParamsProviders;
-    exports.ɵhs = baseSiteConfigValidator;
-    exports.ɵht = interceptors$4;
-    exports.ɵhu = CmsTicketInterceptor;
-    exports.ɵhv = StoreFinderStoreModule;
-    exports.ɵhw = getReducers$b;
-    exports.ɵhx = reducerToken$b;
-    exports.ɵhy = reducerProvider$b;
-    exports.ɵhz = effects$a;
-    exports.ɵi = TRANSFER_STATE_META_REDUCER;
-    exports.ɵia = FindStoresEffect;
-    exports.ɵib = ViewAllStoresEffect;
-    exports.ɵic = defaultStoreFinderConfig;
-    exports.ɵid = UserStoreModule;
-    exports.ɵie = getReducers$c;
-    exports.ɵif = reducerToken$c;
-    exports.ɵig = reducerProvider$c;
-    exports.ɵih = clearUserState;
-    exports.ɵii = metaReducers$7;
-    exports.ɵij = effects$b;
-    exports.ɵik = BillingCountriesEffect;
-    exports.ɵil = ClearMiscsDataEffect;
-    exports.ɵim = ConsignmentTrackingEffects;
-    exports.ɵin = DeliveryCountriesEffects;
-    exports.ɵio = NotificationPreferenceEffects;
-    exports.ɵip = OrderDetailsEffect;
-    exports.ɵiq = OrderReturnRequestEffect;
-    exports.ɵir = UserPaymentMethodsEffects;
-    exports.ɵis = RegionsEffects;
-    exports.ɵit = ResetPasswordEffects;
-    exports.ɵiu = TitlesEffects;
-    exports.ɵiv = UserAddressesEffects;
-    exports.ɵiw = UserConsentsEffect;
-    exports.ɵix = UserDetailsEffects;
-    exports.ɵiy = UserOrdersEffect;
-    exports.ɵiz = UserRegisterEffects;
-    exports.ɵj = STORAGE_SYNC_META_REDUCER;
-    exports.ɵja = CustomerCouponEffects;
-    exports.ɵjb = ProductInterestsEffect;
-    exports.ɵjc = ForgotPasswordEffects;
-    exports.ɵjd = UpdateEmailEffects;
-    exports.ɵje = UpdatePasswordEffects;
-    exports.ɵjf = UserNotificationPreferenceConnector;
-    exports.ɵjg = UserCostCenterEffects;
-    exports.ɵjh = reducer$w;
-    exports.ɵji = reducer$u;
-    exports.ɵjj = reducer$l;
-    exports.ɵjk = reducer$v;
-    exports.ɵjl = reducer$q;
-    exports.ɵjm = reducer$x;
-    exports.ɵjn = reducer$p;
-    exports.ɵjo = reducer$A;
-    exports.ɵjp = reducer$n;
-    exports.ɵjq = reducer$t;
-    exports.ɵjr = reducer$r;
-    exports.ɵjs = reducer$s;
-    exports.ɵjt = reducer$m;
-    exports.ɵju = reducer$y;
-    exports.ɵjv = reducer$o;
-    exports.ɵjw = reducer$z;
-    exports.ɵjx = reducer$B;
-    exports.ɵk = stateMetaReducers;
-    exports.ɵl = getStorageSyncReducer;
-    exports.ɵm = getTransferStateReducer;
-    exports.ɵn = getReducers$2;
-    exports.ɵo = reducerToken$2;
-    exports.ɵp = reducerProvider$2;
-    exports.ɵq = clearAnonymousConsentTemplates;
-    exports.ɵr = metaReducers$1;
-    exports.ɵs = effects$1;
-    exports.ɵt = AnonymousConsentsEffects;
-    exports.ɵu = loaderReducer;
-    exports.ɵv = reducer$6;
-    exports.ɵw = reducer$4;
-    exports.ɵx = reducer$5;
-    exports.ɵy = interceptors$1;
-    exports.ɵz = AnonymousConsentsInterceptor;
+    exports.ɵba = AsmStoreModule;
+    exports.ɵbb = getReducers$3;
+    exports.ɵbc = reducerToken$3;
+    exports.ɵbd = reducerProvider$3;
+    exports.ɵbe = clearCustomerSupportAgentAsmState;
+    exports.ɵbf = metaReducers$2;
+    exports.ɵbg = effects$3;
+    exports.ɵbh = CustomerEffects;
+    exports.ɵbi = CustomerSupportAgentTokenEffects;
+    exports.ɵbj = UserAuthenticationTokenService;
+    exports.ɵbk = reducer$7;
+    exports.ɵbl = interceptors$2;
+    exports.ɵbm = CustomerSupportAgentAuthErrorInterceptor;
+    exports.ɵbn = CustomerSupportAgentErrorHandlingService;
+    exports.ɵbo = defaultAsmConfig;
+    exports.ɵbp = authStoreConfigFactory;
+    exports.ɵbq = AuthStoreModule;
+    exports.ɵbr = getReducers;
+    exports.ɵbs = reducerToken;
+    exports.ɵbt = reducerProvider;
+    exports.ɵbu = clearAuthState;
+    exports.ɵbv = metaReducers;
+    exports.ɵbw = effects;
+    exports.ɵbx = ClientTokenEffect;
+    exports.ɵby = UserTokenEffects;
+    exports.ɵbz = ClientAuthenticationTokenService;
+    exports.ɵc = TEST_CONFIG_COOKIE_NAME;
+    exports.ɵca = reducer;
+    exports.ɵcb = defaultAuthConfig;
+    exports.ɵcc = interceptors;
+    exports.ɵcd = ClientTokenInterceptor;
+    exports.ɵce = UserTokenInterceptor;
+    exports.ɵcf = AuthErrorInterceptor;
+    exports.ɵcg = UserErrorHandlingService;
+    exports.ɵch = UrlParsingService;
+    exports.ɵci = ClientErrorHandlingService;
+    exports.ɵcj = TokenRevocationInterceptor;
+    exports.ɵck = MultiCartStoreModule;
+    exports.ɵcl = clearMultiCartState;
+    exports.ɵcm = multiCartMetaReducers;
+    exports.ɵcn = multiCartReducerToken;
+    exports.ɵco = getMultiCartReducers;
+    exports.ɵcp = multiCartReducerProvider;
+    exports.ɵcq = CartEffects;
+    exports.ɵcr = CartEntryEffects;
+    exports.ɵcs = CartVoucherEffects;
+    exports.ɵct = WishListEffects;
+    exports.ɵcu = SaveCartConnector;
+    exports.ɵcv = SaveCartAdapter;
+    exports.ɵcw = MultiCartEffects;
+    exports.ɵcx = entityProcessesLoaderReducer;
+    exports.ɵcy = entityReducer;
+    exports.ɵcz = processesLoaderReducer;
+    exports.ɵd = configFromCookieFactory;
+    exports.ɵda = activeCartReducer;
+    exports.ɵdb = cartEntitiesReducer;
+    exports.ɵdc = wishListReducer;
+    exports.ɵdd = CartPageMetaResolver;
+    exports.ɵde = SiteContextParamsService;
+    exports.ɵdf = CheckoutStoreModule;
+    exports.ɵdg = getReducers$5;
+    exports.ɵdh = reducerToken$5;
+    exports.ɵdi = reducerProvider$5;
+    exports.ɵdj = effects$5;
+    exports.ɵdk = AddressVerificationEffect;
+    exports.ɵdl = CardTypesEffects;
+    exports.ɵdm = CheckoutEffects;
+    exports.ɵdn = PaymentTypesEffects;
+    exports.ɵdo = reducer$b;
+    exports.ɵdp = reducer$a;
+    exports.ɵdq = reducer$9;
+    exports.ɵdr = reducer$c;
+    exports.ɵds = cmsStoreConfigFactory;
+    exports.ɵdt = CmsStoreModule;
+    exports.ɵdu = getReducers$7;
+    exports.ɵdv = reducerToken$7;
+    exports.ɵdw = reducerProvider$7;
+    exports.ɵdx = clearCmsState;
+    exports.ɵdy = metaReducers$3;
+    exports.ɵdz = effects$7;
+    exports.ɵe = initConfig;
+    exports.ɵea = ComponentsEffects;
+    exports.ɵeb = NavigationEntryItemEffects;
+    exports.ɵec = PageEffects;
+    exports.ɵed = reducer$g;
+    exports.ɵee = entityLoaderReducer;
+    exports.ɵef = reducer$h;
+    exports.ɵeg = reducer$e;
+    exports.ɵeh = reducer$f;
+    exports.ɵei = GlobalMessageStoreModule;
+    exports.ɵej = getReducers$4;
+    exports.ɵek = reducerToken$4;
+    exports.ɵel = reducerProvider$4;
+    exports.ɵem = reducer$8;
+    exports.ɵen = GlobalMessageEffect;
+    exports.ɵeo = defaultGlobalMessageConfigFactory;
+    exports.ɵep = HttpErrorInterceptor;
+    exports.ɵeq = defaultI18nConfig;
+    exports.ɵer = i18nextProviders;
+    exports.ɵes = i18nextInit;
+    exports.ɵet = MockTranslationService;
+    exports.ɵeu = kymaStoreConfigFactory;
+    exports.ɵev = KymaStoreModule;
+    exports.ɵew = getReducers$8;
+    exports.ɵex = reducerToken$8;
+    exports.ɵey = reducerProvider$8;
+    exports.ɵez = clearKymaState;
+    exports.ɵf = anonymousConsentsStoreConfigFactory;
+    exports.ɵfa = metaReducers$4;
+    exports.ɵfb = effects$8;
+    exports.ɵfc = OpenIdTokenEffect;
+    exports.ɵfd = defaultKymaConfig;
+    exports.ɵfe = defaultOccAsmConfig;
+    exports.ɵff = defaultOccCartConfig;
+    exports.ɵfg = OccSaveCartAdapter;
+    exports.ɵfh = defaultOccCheckoutConfig;
+    exports.ɵfi = defaultOccCostCentersConfig;
+    exports.ɵfj = defaultOccProductConfig;
+    exports.ɵfk = defaultOccSiteContextConfig;
+    exports.ɵfl = defaultOccStoreFinderConfig;
+    exports.ɵfm = defaultOccUserConfig;
+    exports.ɵfn = UserNotificationPreferenceAdapter;
+    exports.ɵfo = OccUserCostCenterAdapter;
+    exports.ɵfp = defaultPersonalizationConfig;
+    exports.ɵfq = interceptors$3;
+    exports.ɵfr = OccPersonalizationIdInterceptor;
+    exports.ɵfs = OccPersonalizationTimeInterceptor;
+    exports.ɵft = ProcessStoreModule;
+    exports.ɵfu = getReducers$9;
+    exports.ɵfv = reducerToken$9;
+    exports.ɵfw = reducerProvider$9;
+    exports.ɵfx = productStoreConfigFactory;
+    exports.ɵfy = ProductStoreModule;
+    exports.ɵfz = getReducers$a;
+    exports.ɵg = AnonymousConsentsStoreModule;
+    exports.ɵga = reducerToken$a;
+    exports.ɵgb = reducerProvider$a;
+    exports.ɵgc = clearProductsState;
+    exports.ɵgd = metaReducers$5;
+    exports.ɵge = effects$9;
+    exports.ɵgf = ProductReferencesEffects;
+    exports.ɵgg = ProductReviewsEffects;
+    exports.ɵgh = ProductsSearchEffects;
+    exports.ɵgi = ProductEffects;
+    exports.ɵgj = reducer$i;
+    exports.ɵgk = entityScopedLoaderReducer;
+    exports.ɵgl = scopedLoaderReducer;
+    exports.ɵgm = reducer$k;
+    exports.ɵgn = reducer$j;
+    exports.ɵgo = PageMetaResolver;
+    exports.ɵgp = CouponSearchPageResolver;
+    exports.ɵgq = PageMetaResolver;
+    exports.ɵgr = addExternalRoutesFactory;
+    exports.ɵgs = getReducers$6;
+    exports.ɵgt = reducer$d;
+    exports.ɵgu = reducerToken$6;
+    exports.ɵgv = reducerProvider$6;
+    exports.ɵgw = CustomSerializer;
+    exports.ɵgx = effects$6;
+    exports.ɵgy = RouterEffects;
+    exports.ɵgz = siteContextStoreConfigFactory;
+    exports.ɵh = TRANSFER_STATE_META_REDUCER;
+    exports.ɵha = SiteContextStoreModule;
+    exports.ɵhb = getReducers$1;
+    exports.ɵhc = reducerToken$1;
+    exports.ɵhd = reducerProvider$1;
+    exports.ɵhe = effects$2;
+    exports.ɵhf = LanguagesEffects;
+    exports.ɵhg = CurrenciesEffects;
+    exports.ɵhh = BaseSiteEffects;
+    exports.ɵhi = reducer$3;
+    exports.ɵhj = reducer$2;
+    exports.ɵhk = reducer$1;
+    exports.ɵhl = defaultSiteContextConfigFactory;
+    exports.ɵhm = initializeContext;
+    exports.ɵhn = contextServiceProviders;
+    exports.ɵho = SiteContextRoutesHandler;
+    exports.ɵhp = SiteContextUrlSerializer;
+    exports.ɵhq = siteContextParamsProviders;
+    exports.ɵhr = baseSiteConfigValidator;
+    exports.ɵhs = interceptors$4;
+    exports.ɵht = CmsTicketInterceptor;
+    exports.ɵhu = StoreFinderStoreModule;
+    exports.ɵhv = getReducers$b;
+    exports.ɵhw = reducerToken$b;
+    exports.ɵhx = reducerProvider$b;
+    exports.ɵhy = effects$a;
+    exports.ɵhz = FindStoresEffect;
+    exports.ɵi = STORAGE_SYNC_META_REDUCER;
+    exports.ɵia = ViewAllStoresEffect;
+    exports.ɵib = defaultStoreFinderConfig;
+    exports.ɵic = UserStoreModule;
+    exports.ɵid = getReducers$c;
+    exports.ɵie = reducerToken$c;
+    exports.ɵif = reducerProvider$c;
+    exports.ɵig = clearUserState;
+    exports.ɵih = metaReducers$7;
+    exports.ɵii = effects$b;
+    exports.ɵij = BillingCountriesEffect;
+    exports.ɵik = ClearMiscsDataEffect;
+    exports.ɵil = ConsignmentTrackingEffects;
+    exports.ɵim = DeliveryCountriesEffects;
+    exports.ɵin = NotificationPreferenceEffects;
+    exports.ɵio = OrderDetailsEffect;
+    exports.ɵip = OrderReturnRequestEffect;
+    exports.ɵiq = UserPaymentMethodsEffects;
+    exports.ɵir = RegionsEffects;
+    exports.ɵis = ResetPasswordEffects;
+    exports.ɵit = TitlesEffects;
+    exports.ɵiu = UserAddressesEffects;
+    exports.ɵiv = UserConsentsEffect;
+    exports.ɵiw = UserDetailsEffects;
+    exports.ɵix = UserOrdersEffect;
+    exports.ɵiy = UserRegisterEffects;
+    exports.ɵiz = CustomerCouponEffects;
+    exports.ɵj = stateMetaReducers;
+    exports.ɵja = ProductInterestsEffect;
+    exports.ɵjb = ForgotPasswordEffects;
+    exports.ɵjc = UpdateEmailEffects;
+    exports.ɵjd = UpdatePasswordEffects;
+    exports.ɵje = UserNotificationPreferenceConnector;
+    exports.ɵjf = UserCostCenterEffects;
+    exports.ɵjg = reducer$w;
+    exports.ɵjh = reducer$u;
+    exports.ɵji = reducer$l;
+    exports.ɵjj = reducer$v;
+    exports.ɵjk = reducer$q;
+    exports.ɵjl = reducer$x;
+    exports.ɵjm = reducer$p;
+    exports.ɵjn = reducer$A;
+    exports.ɵjo = reducer$n;
+    exports.ɵjp = reducer$t;
+    exports.ɵjq = reducer$r;
+    exports.ɵjr = reducer$s;
+    exports.ɵjs = reducer$m;
+    exports.ɵjt = reducer$y;
+    exports.ɵju = reducer$o;
+    exports.ɵjv = reducer$z;
+    exports.ɵjw = reducer$B;
+    exports.ɵk = getStorageSyncReducer;
+    exports.ɵl = getTransferStateReducer;
+    exports.ɵm = getReducers$2;
+    exports.ɵn = reducerToken$2;
+    exports.ɵo = reducerProvider$2;
+    exports.ɵp = clearAnonymousConsentTemplates;
+    exports.ɵq = metaReducers$1;
+    exports.ɵr = effects$1;
+    exports.ɵs = AnonymousConsentsEffects;
+    exports.ɵt = loaderReducer;
+    exports.ɵu = reducer$6;
+    exports.ɵv = reducer$4;
+    exports.ɵw = reducer$5;
+    exports.ɵx = interceptors$1;
+    exports.ɵy = AnonymousConsentsInterceptor;
+    exports.ɵz = asmStoreConfigFactory;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

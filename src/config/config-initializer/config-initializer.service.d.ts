@@ -5,7 +5,8 @@ import { BehaviorSubject } from 'rxjs';
 export declare class ConfigInitializerService {
     protected config: any;
     protected initializerGuard: any;
-    constructor(config: any, initializerGuard: any);
+    protected rootConfig: any;
+    constructor(config: any, initializerGuard: any, rootConfig: any);
     protected ongoingScopes$: BehaviorSubject<string[]>;
     /**
      * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
