@@ -1,1 +1,0 @@
-{"version":3,"file":"kyma-config.d.ts","sources":["kyma-config.d.ts"],"names":[],"mappings":"AAAA;;AACA;AACA;AACA;AACA;AACA;;AACA","sourcesContent":["import { OccConfig } from '../../occ/config/occ-config';\nexport declare abstract class KymaConfig extends OccConfig {\n    authentication?: {\n        kyma_client_id?: string;\n        kyma_client_secret?: string;\n    };\n}\n"]}

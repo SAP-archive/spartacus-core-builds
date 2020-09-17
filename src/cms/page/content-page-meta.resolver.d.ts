@@ -11,7 +11,6 @@ import { PageBreadcrumbResolver, PageTitleResolver } from './page.resolvers';
  *
  * The page title, and breadcrumbs are resolved in this implementation only.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class ContentPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver {
     protected cms: CmsService;
     protected translation: TranslationService;
@@ -28,7 +27,4 @@ export declare class ContentPageMetaResolver extends PageMetaResolver implements
      * The home page label is resolved from the translation service.
      */
     resolveBreadcrumbs(): Observable<BreadcrumbMeta[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ContentPageMetaResolver, never>;
 }
-
-//# sourceMappingURL=content-page-meta.resolver.d.ts.map
