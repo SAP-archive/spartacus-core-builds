@@ -4,7 +4,6 @@ import { AuthService } from '../../auth/facade/auth.service';
 import { Title, User, UserSignUp } from '../../model/misc.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class UserService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -150,7 +149,4 @@ export declare class UserService {
      * concludes, regardless if it's a success or an error
      */
     resetUpdatePasswordProcessState(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserService, never>;
 }
-
-//# sourceMappingURL=user.service.d.ts.map
