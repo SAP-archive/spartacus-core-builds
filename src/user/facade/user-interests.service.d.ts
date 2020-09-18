@@ -4,6 +4,7 @@ import { AuthService } from '../../auth/facade/auth.service';
 import { NotificationType, ProductInterestEntryRelation, ProductInterestSearchResult } from '../../model/product-interest.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserInterestsService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -69,4 +70,7 @@ export declare class UserInterestsService {
      * Clears product interests
      */
     clearProductInterests(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserInterestsService, never>;
 }
+
+//# sourceMappingURL=user-interests.service.d.ts.map
