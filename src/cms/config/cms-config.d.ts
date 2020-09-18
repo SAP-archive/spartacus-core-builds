@@ -3,7 +3,6 @@ import { Routes } from '@angular/router';
 import { AuthConfig } from '../../auth/config/auth-config';
 import { KymaConfig } from '../../kyma/config/kyma-config';
 import { OccConfig } from '../../occ/config/occ-config';
-import * as ɵngcc0 from '@angular/core';
 export interface StandardCmsComponentConfig {
     CMSSiteContextComponent?: CmsComponentMapping;
     CMSLinkComponent?: CmsComponentMapping;
@@ -82,7 +81,4 @@ export declare abstract class CmsConfig extends OccConfig implements AuthConfig,
         [featureName: string]: FeatureModuleConfig;
     };
     cmsComponents?: CMSComponentConfig;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CmsConfig, never>;
 }
-
-//# sourceMappingURL=cms-config.d.ts.map
