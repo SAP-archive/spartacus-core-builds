@@ -4,7 +4,6 @@ import { StateWithProcess } from '../../process/store/process-state';
 import { AuthService } from '../../auth/facade/auth.service';
 import { CostCenter, B2BAddress } from '../../model/org-unit.model';
 import { StateWithUser } from '../store/user-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class UserCostCenterService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -23,7 +22,4 @@ export declare class UserCostCenterService {
      * @param costCenterId cost center id
      */
     getCostCenterAddresses(costCenterId: string): Observable<B2BAddress[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserCostCenterService, never>;
 }
-
-//# sourceMappingURL=user-cost-center.service.d.ts.map
