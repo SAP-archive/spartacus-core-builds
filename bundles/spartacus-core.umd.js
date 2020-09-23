@@ -12083,6 +12083,42 @@
         { type: AuthService }
     ]; };
 
+    /**
+     * Normalizes HttpErrorResponse to HttpErrorModel.
+     *
+     * Can be used as a safe and generic way for embodying http errors into
+     * NgRx Action payload, as it will strip potentially unserializable parts from
+     * it and warn in debug mode if passed error is not instance of HttpErrorModel
+     * (which usually happens when logic in NgRx Effect is not sealed correctly)
+     */
+    function normalizeHttpError(error) {
+        if (error instanceof i1.HttpErrorResponse) {
+            var normalizedError = {
+                message: error.message,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            };
+            // include backend's error details
+            if (Array.isArray(error.error.errors)) {
+                normalizedError.details = error.error.errors;
+            }
+            else if (typeof error.error.error === 'string') {
+                normalizedError.details = [
+                    {
+                        type: error.error.error,
+                        message: error.error.error_description,
+                    },
+                ];
+            }
+            return normalizedError;
+        }
+        if (i0.isDevMode()) {
+            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
+        }
+        return undefined;
+    }
+
     var AnonymousConsentTemplatesConnector = /** @class */ (function () {
         function AnonymousConsentTemplatesConnector(adapter) {
             this.adapter = adapter;
@@ -12126,12 +12162,18 @@
                 return _this.anonymousConsentTemplatesConnector
                     .loadAnonymousConsents()
                     .pipe(operators.map(function (newConsents) {
+                    if (!newConsents) {
+                        if (i0.isDevMode()) {
+                            console.warn('No consents were loaded. Please check the Spartacus documentation as this could be a back-end configuration issue.');
+                        }
+                        return false;
+                    }
                     var currentConsentVersions = currentConsents.map(function (consent) { return consent.templateVersion; });
                     var newConsentVersions = newConsents.map(function (consent) { return consent.templateVersion; });
                     return _this.detectUpdatedVersion(currentConsentVersions, newConsentVersions);
                 }), operators.switchMap(function (updated) { return updated
                     ? rxjs.of(new LoadAnonymousConsentTemplates())
-                    : rxjs.EMPTY; }), operators.catchError(function (error) { return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error))); }));
+                    : rxjs.EMPTY; }), operators.catchError(function (error) { return rxjs.of(new LoadAnonymousConsentTemplatesFail(normalizeHttpError(error))); }));
             }));
             this.loadAnonymousConsentTemplates$ = this.actions$.pipe(i3.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.withLatestFrom(this.anonymousConsentService.getTemplates()), operators.concatMap(function (_a) {
                 var _b = __read(_a, 2), _ = _b[0], currentConsentTemplates = _b[1];
@@ -12147,7 +12189,7 @@
                         new LoadAnonymousConsentTemplatesSuccess(newConsentTemplates),
                         new ToggleAnonymousConsentTemplatesUpdated(updated),
                     ];
-                }), operators.catchError(function (error) { return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadAnonymousConsentTemplatesFail(normalizeHttpError(error))); }));
             }));
             this.transferAnonymousConsentsToUser$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function () { return Boolean(_this.anonymousConsentsConfig.anonymousConsents); }), operators.withLatestFrom(this.actions$.pipe(i3.ofType(REGISTER_USER_SUCCESS))), operators.filter(function (_a) {
                 var _b = __read(_a, 2), registerAction = _b[1];
@@ -18968,42 +19010,6 @@
     __decorate([
         i3.Effect()
     ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
-
-    /**
-     * Normalizes HttpErrorResponse to HttpErrorModel.
-     *
-     * Can be used as a safe and generic way for embodying http errors into
-     * NgRx Action payload, as it will strip potentially unserializable parts from
-     * it and warn in debug mode if passed error is not instance of HttpErrorModel
-     * (which usually happens when logic in NgRx Effect is not sealed correctly)
-     */
-    function normalizeHttpError(error) {
-        if (error instanceof i1.HttpErrorResponse) {
-            var normalizedError = {
-                message: error.message,
-                status: error.status,
-                statusText: error.statusText,
-                url: error.url,
-            };
-            // include backend's error details
-            if (Array.isArray(error.error.errors)) {
-                normalizedError.details = error.error.errors;
-            }
-            else if (typeof error.error.error === 'string') {
-                normalizedError.details = [
-                    {
-                        type: error.error.error,
-                        message: error.error.error_description,
-                    },
-                ];
-            }
-            return normalizedError;
-        }
-        if (i0.isDevMode()) {
-            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
-        }
-        return undefined;
-    }
 
     var CheckoutConnector = /** @class */ (function () {
         function CheckoutConnector(adapter) {
