@@ -2348,22 +2348,22 @@
         { type: SiteContextConfig }
     ]; };
 
-    var CustomEncoder = /** @class */ (function () {
-        function CustomEncoder() {
+    var HttpParamsURIEncoder = /** @class */ (function () {
+        function HttpParamsURIEncoder() {
         }
-        CustomEncoder.prototype.encodeKey = function (key) {
+        HttpParamsURIEncoder.prototype.encodeKey = function (key) {
             return encodeURIComponent(key);
         };
-        CustomEncoder.prototype.encodeValue = function (value) {
+        HttpParamsURIEncoder.prototype.encodeValue = function (value) {
             return encodeURIComponent(value);
         };
-        CustomEncoder.prototype.decodeKey = function (key) {
+        HttpParamsURIEncoder.prototype.decodeKey = function (key) {
             return decodeURIComponent(key);
         };
-        CustomEncoder.prototype.decodeValue = function (value) {
+        HttpParamsURIEncoder.prototype.decodeValue = function (value) {
             return decodeURIComponent(value);
         };
-        return CustomEncoder;
+        return HttpParamsURIEncoder;
     }());
 
     var OccConfig = /** @class */ (function (_super) {
@@ -2456,7 +2456,7 @@
                 endpoint = DynamicTemplate.resolve(endpoint, urlParams);
             }
             if (queryParams) {
-                var httpParamsOptions = { encoder: new CustomEncoder() };
+                var httpParamsOptions = { encoder: new HttpParamsURIEncoder() };
                 if (endpoint.includes('?')) {
                     var queryParamsFromEndpoint = void 0;
                     _d = __read(endpoint.split('?'), 2), endpoint = _d[0], queryParamsFromEndpoint = _d[1];
@@ -4563,7 +4563,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
                 Accept: 'text/html',
             });
-            var httpParams = new i1.HttpParams({ encoder: new CustomEncoder() });
+            var httpParams = new i1.HttpParams({ encoder: new HttpParamsURIEncoder() });
             Object.keys(parameters).forEach(function (key) {
                 httpParams = httpParams.append(key, parameters[key]);
             });
@@ -4573,7 +4573,7 @@
             });
         };
         OccCheckoutPaymentAdapter.prototype.createDetailsWithParameters = function (userId, cartId, parameters) {
-            var httpParams = new i1.HttpParams({ encoder: new CustomEncoder() });
+            var httpParams = new i1.HttpParams({ encoder: new HttpParamsURIEncoder() });
             Object.keys(parameters).forEach(function (key) {
                 httpParams = httpParams.append(key, parameters[key]);
             });
@@ -28156,6 +28156,7 @@
     exports.GlobalMessageService = GlobalMessageService;
     exports.GoogleMapRendererService = GoogleMapRendererService;
     exports.HttpErrorHandler = HttpErrorHandler;
+    exports.HttpParamsURIEncoder = HttpParamsURIEncoder;
     exports.I18nConfig = I18nConfig;
     exports.I18nModule = I18nModule;
     exports.I18nTestingModule = I18nTestingModule;

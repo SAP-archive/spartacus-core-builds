@@ -6,7 +6,7 @@
  * uses the encodeURIComponent.
  */
 import { HttpParameterCodec } from '@angular/common/http';
-export declare class CustomEncoder implements HttpParameterCodec {
+export declare class HttpParamsURIEncoder implements HttpParameterCodec {
     encodeKey(key: string): string;
     encodeValue(value: string): string;
     decodeKey(key: string): string;
