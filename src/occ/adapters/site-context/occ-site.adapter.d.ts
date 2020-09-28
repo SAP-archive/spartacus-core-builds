@@ -5,6 +5,7 @@ import { BaseSite, Currency, Language } from '../../../model/misc.model';
 import { SiteAdapter } from '../../../site-context/connectors/site.adapter';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccSiteAdapter implements SiteAdapter {
     protected http: HttpClient;
     protected occEndpointsService: OccEndpointsService;
@@ -15,4 +16,8 @@ export declare class OccSiteAdapter implements SiteAdapter {
     loadCountries(type?: CountryType): Observable<Country[]>;
     loadRegions(countryIsoCode: string): Observable<Region[]>;
     loadBaseSite(): Observable<BaseSite>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccSiteAdapter, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccSiteAdapter>;
 }
+
+//# sourceMappingURL=occ-site.adapter.d.ts.map
