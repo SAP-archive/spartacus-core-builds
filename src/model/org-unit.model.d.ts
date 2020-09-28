@@ -1,12 +1,18 @@
 import { Currency, User } from './misc.model';
 export interface CostCenter {
-    active?: string;
+    active?: boolean;
     activeFlag?: boolean;
     code?: string;
     name?: string;
     originalCode?: string;
     unit?: B2BUnit;
     currency?: Currency;
+}
+export declare enum B2BUserGroup {
+    B2B_ADMIN_GROUP = "b2badmingroup",
+    B2B_CUSTOMER_GROUP = "b2bcustomergroup",
+    B2B_MANAGER_GROUP = "b2bmanagergroup",
+    B2B_APPROVER_GROUP = "b2bapprovergroup"
 }
 export interface B2BUnit {
     active?: boolean;
@@ -57,14 +63,10 @@ export interface B2BUser extends User {
     orgUnit?: B2BUnit;
     roles?: string[];
     selected?: boolean;
+    isAssignedToApprovers?: boolean;
+    email?: string;
 }
 export interface B2BApprovalProcess {
     code?: string;
     name?: string;
-}
-export declare enum B2BUserGroup {
-    B2B_ADMIN_GROUP = "b2badmingroup",
-    B2B_CUSTOMER_GROUP = "b2bcustomergroup",
-    B2B_MANAGER_GROUP = "b2bmanagergroup",
-    B2B_APPROVER_GROUP = "b2bapprovergroup"
 }

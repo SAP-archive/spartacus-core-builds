@@ -33,6 +33,12 @@ export interface User {
     title?: string;
     titleCode?: string;
     uid?: string;
+    roles?: string[];
+}
+export interface ListModel {
+    ids: string[];
+    pagination?: PaginationModel;
+    sorts?: SortModel[];
 }
 export interface EntitiesModel<T> {
     values: T[];

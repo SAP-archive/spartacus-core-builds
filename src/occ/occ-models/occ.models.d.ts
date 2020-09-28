@@ -2840,58 +2840,6 @@ export declare namespace Occ {
          */
         uid?: string;
     }
-    /**
-     *
-     * An interface representing UserGroupList.
-     */
-    interface UserGroupList {
-        /**
-         * @member {number} [currentPage]
-         */
-        currentPage?: number;
-        /**
-         * @member {number} [numberOfPages]
-         */
-        numberOfPages?: number;
-        /**
-         * @member {number} [pageSize]
-         */
-        pageSize?: number;
-        /**
-         * @member {number} [totalNumber]
-         */
-        totalNumber?: number;
-        /**
-         * @member {UserGroup[]} [userGroups]
-         */
-        userGroups?: UserGroup[];
-    }
-    /**
-     *
-     * An interface representing UserSignUp.
-     */
-    interface UserSignUp {
-        /**
-         * @member {string} [firstName]
-         */
-        firstName?: string;
-        /**
-         * @member {string} [lastName]
-         */
-        lastName?: string;
-        /**
-         * @member {string} [password]
-         */
-        password?: string;
-        /**
-         * @member {string} [titleCode]
-         */
-        titleCode?: string;
-        /**
-         * @member {string} [uid]
-         */
-        uid?: string;
-    }
     interface StoreCount {
         count?: number;
         isoCode?: string;
@@ -3980,6 +3928,22 @@ export declare namespace Occ {
     enum NotificationType {
         BACK_IN_STOCK = "BACK_IN_STOCK"
     }
+    interface Budget {
+        active?: boolean;
+        budget?: number;
+        code?: string;
+        currency?: Currency;
+        endDate?: string;
+        startDate?: string;
+        name?: string;
+        orgUnit?: B2BUnit;
+        costCenters?: CostCenter[];
+    }
+    interface BudgetsList {
+        budgets?: Budget[];
+        pagination?: PaginationModel;
+        sorts?: SortModel[];
+    }
     interface CostCenter {
         active?: string;
         activeFlag?: boolean;
@@ -4110,6 +4074,37 @@ export declare namespace Occ {
     }
     interface PermissionsList {
         orderApprovalPermissions?: Permission[];
+        pagination?: PaginationModel;
+        sorts?: SortModel[];
+    }
+    enum OrderApprovalDecisionValue {
+        APPROVE = "APPROVE",
+        REJECT = "REJECT"
+    }
+    interface OrderApprovalDecision {
+        decision?: OrderApprovalDecisionValue;
+        comment?: string;
+    }
+    interface OrderApprovalRecord {
+        approver?: Principal;
+        comments?: string;
+        permissionTypes?: OrderApprovalPermissionType[];
+        statusDisplay?: string;
+    }
+    interface Trigger {
+        activationTime?: string;
+        displayTimeTable?: string;
+    }
+    interface OrderApproval {
+        approvalDecisionRequired?: boolean;
+        code?: string;
+        customerOrderApprovalRecords?: OrderApprovalRecord[];
+        merchantOrderApprovalRecords?: OrderApprovalRecord[];
+        order?: Order;
+        trigger?: Trigger;
+    }
+    interface OrderApprovalsList {
+        orderApprovals?: OrderApproval[];
         pagination?: PaginationModel;
         sorts?: SortModel[];
     }

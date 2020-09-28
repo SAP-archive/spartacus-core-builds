@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
     typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, (function (exports, i0, i1$1, rxjs, operators, i1$2, i1, i4, i3, i5, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
+}(this, (function (exports, i0, i1$1, rxjs, operators, i1$2, i1, i1$3, i3, i5, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -1417,19 +1417,19 @@
         };
         UrlParsingService.prototype._getPrimarySegmentsFromUrlTree = function (tree) {
             var segments = tree.segments.map(function (s) { return s.path; });
-            var childrenSegments = tree.children[i4.PRIMARY_OUTLET]
-                ? this._getPrimarySegmentsFromUrlTree(tree.children[i4.PRIMARY_OUTLET])
+            var childrenSegments = tree.children[i1$3.PRIMARY_OUTLET]
+                ? this._getPrimarySegmentsFromUrlTree(tree.children[i1$3.PRIMARY_OUTLET])
                 : [];
             return segments.concat(childrenSegments);
         };
         return UrlParsingService;
     }());
-    UrlParsingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.ɵɵinject(i4.Router)); }, token: UrlParsingService, providedIn: "root" });
+    UrlParsingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.ɵɵinject(i1$3.Router)); }, token: UrlParsingService, providedIn: "root" });
     UrlParsingService.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
     UrlParsingService.ctorParameters = function () { return [
-        { type: i4.Router }
+        { type: i1$3.Router }
     ]; };
 
     var isParam = function (segment) { return segment.startsWith(':'); };
@@ -1793,12 +1793,60 @@
         ɵ4: ɵ4
     });
 
+    /**
+     * Service to expose all parameters for the router, including child routes.
+     * This is convenient in case the parent route (component) requires awareness
+     * of child routes parameters.
+     */
+    var RoutingParamsService = /** @class */ (function () {
+        function RoutingParamsService(router) {
+            var _this = this;
+            this.router = router;
+            this.navigationEndEvent$ = this.router.events.pipe(operators.filter(function (event) { return event instanceof i1$3.NavigationEnd; }));
+            this.params$ = this.navigationEndEvent$.pipe(
+            // tslint:disable-next-line: deprecation (https://github.com/ReactiveX/rxjs/issues/4772)
+            operators.startWith(undefined), // emit value for consumer who subscribed lately after NavigationEnd event
+            operators.map(function () { return _this.findAllParam(_this.router.routerState.snapshot.root); }), operators.shareReplay({ refCount: true, bufferSize: 1 }));
+        }
+        /**
+         * Get the list of all parameters of the full route. This includes
+         * active child routes.
+         */
+        RoutingParamsService.prototype.getParams = function () {
+            return this.params$;
+        };
+        RoutingParamsService.prototype.findAllParam = function (route) {
+            var _this = this;
+            var params = {};
+            route.children.forEach(function (c) { return c.paramMap.keys.forEach(function (key) { return (params[key] = c.paramMap.get(key)); }); });
+            route.children.forEach(function (c) { return (params = Object.assign(Object.assign({}, params), _this.findAllParam(c))); });
+            return params;
+        };
+        return RoutingParamsService;
+    }());
+    RoutingParamsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingParamsService_Factory() { return new RoutingParamsService(i0.ɵɵinject(i1$3.Router)); }, token: RoutingParamsService, providedIn: "root" });
+    RoutingParamsService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    RoutingParamsService.ctorParameters = function () { return [
+        { type: i1$3.Router }
+    ]; };
+
     var RoutingService = /** @class */ (function () {
-        function RoutingService(store, winRef, semanticPathService) {
+        function RoutingService(store, winRef, semanticPathService, routingParamsService) {
             this.store = store;
             this.winRef = winRef;
             this.semanticPathService = semanticPathService;
+            this.routingParamsService = routingParamsService;
         }
+        /**
+         * Get the list of all parameters of the full route. This includes
+         * active child routes.
+         */
+        RoutingService.prototype.getParams = function () {
+            var _a;
+            return (_a = this.routingParamsService) === null || _a === void 0 ? void 0 : _a.getParams();
+        };
         /**
          * Get the current router state
          */
@@ -1873,7 +1921,7 @@
         };
         return RoutingService;
     }());
-    RoutingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
+    RoutingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(SemanticPathService), i0.ɵɵinject(RoutingParamsService)); }, token: RoutingService, providedIn: "root" });
     RoutingService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -1882,7 +1930,8 @@
     RoutingService.ctorParameters = function () { return [
         { type: i1$1.Store },
         { type: WindowRef },
-        { type: SemanticPathService }
+        { type: SemanticPathService },
+        { type: RoutingParamsService }
     ]; };
 
     var UserErrorHandlingService = /** @class */ (function () {
@@ -3302,7 +3351,7 @@
         };
         return AuthRedirectService;
     }());
-    AuthRedirectService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(i0.ɵɵinject(RoutingService), i0.ɵɵinject(i4.Router)); }, token: AuthRedirectService, providedIn: "root" });
+    AuthRedirectService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(i0.ɵɵinject(RoutingService), i0.ɵɵinject(i1$3.Router)); }, token: AuthRedirectService, providedIn: "root" });
     AuthRedirectService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -3310,7 +3359,7 @@
     ];
     AuthRedirectService.ctorParameters = function () { return [
         { type: RoutingService },
-        { type: i4.Router }
+        { type: i1$3.Router }
     ]; };
 
     var AuthGuard = /** @class */ (function () {
@@ -3332,7 +3381,7 @@
         };
         return AuthGuard;
     }());
-    AuthGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(i0.ɵɵinject(RoutingService), i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(i4.Router)); }, token: AuthGuard, providedIn: "root" });
+    AuthGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(i0.ɵɵinject(RoutingService), i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(i1$3.Router)); }, token: AuthGuard, providedIn: "root" });
     AuthGuard.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -3342,7 +3391,7 @@
         { type: RoutingService },
         { type: AuthService },
         { type: AuthRedirectService },
-        { type: i4.Router }
+        { type: i1$3.Router }
     ]; };
 
     var NotAuthGuard = /** @class */ (function () {
@@ -3422,6 +3471,10 @@
         B2BUserGroup["B2B_APPROVER_GROUP"] = "b2bapprovergroup";
     })(exports.B2BUserGroup || (exports.B2BUserGroup = {}));
 
+    (function (NotificationType) {
+        NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
+    })(exports.NotificationType || (exports.NotificationType = {}));
+
     (function (VariantType) {
         VariantType["SIZE"] = "ApparelSizeVariantProduct";
         VariantType["STYLE"] = "ApparelStyleVariantProduct";
@@ -3439,12 +3492,6 @@
         VariantQualifier["PRODUCT"] = "product";
         VariantQualifier["ROLLUP_PROPERTY"] = "rollupProperty";
     })(exports.VariantQualifier || (exports.VariantQualifier = {}));
-
-    var testestsd = 'sare';
-
-    (function (NotificationType) {
-        NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
-    })(exports.NotificationType || (exports.NotificationType = {}));
 
     var ANONYMOUS_CONSENTS_STORE_FEATURE = 'anonymous-consents';
     var ANONYMOUS_CONSENTS = '[Anonymous Consents] Anonymous Consents';
@@ -5190,9 +5237,16 @@
         }
         OccCostCenterNormalizer.prototype.convert = function (source, target) {
             if (target === undefined) {
-                target = Object.assign({}, source);
+                target = Object.assign(Object.assign({}, source), { active: this.normalizeBoolean(source.active) });
             }
             return target;
+        };
+        /**
+         * Returns the boolean value for a string property that is supposed
+         * to be of type boolean.
+         */
+        OccCostCenterNormalizer.prototype.normalizeBoolean = function (property) {
+            return typeof property === 'string' ? property === 'true' : property;
         };
         return OccCostCenterNormalizer;
     }());
@@ -9371,6 +9425,11 @@
             Period["QUARTER"] = "QUARTER";
             Period["YEAR"] = "YEAR";
         })(Period = Occ.Period || (Occ.Period = {}));
+        var OrderApprovalDecisionValue;
+        (function (OrderApprovalDecisionValue) {
+            OrderApprovalDecisionValue["APPROVE"] = "APPROVE";
+            OrderApprovalDecisionValue["REJECT"] = "REJECT";
+        })(OrderApprovalDecisionValue = Occ.OrderApprovalDecisionValue || (Occ.OrderApprovalDecisionValue = {}));
     })(exports.Occ || (exports.Occ = {}));
 
     var ConfigValidatorToken = new i0.InjectionToken('ConfigurationValidator');
@@ -12804,7 +12863,7 @@
             return contextRoutePart + url;
         };
         return SiteContextUrlSerializer;
-    }(i4.DefaultUrlSerializer));
+    }(i1$3.DefaultUrlSerializer));
     SiteContextUrlSerializer.decorators = [
         { type: i0.Injectable }
     ];
@@ -12834,7 +12893,7 @@
         SiteContextRoutesHandler.prototype.init = function () {
             var _this = this;
             return new Promise(function (resolve) {
-                _this.router = _this.injector.get(i4.Router);
+                _this.router = _this.injector.get(i1$3.Router);
                 _this.location = _this.injector.get(i1$2.Location);
                 var routingParams = _this.siteContextParams.getUrlEncodingParameters();
                 if (routingParams.length) {
@@ -12881,12 +12940,12 @@
             var _this = this;
             var contextInitialized = false;
             this.subscription.add(this.router.events
-                .pipe(operators.filter(function (event) { return event instanceof i4.NavigationStart ||
-                event instanceof i4.NavigationEnd ||
-                event instanceof i4.NavigationError ||
-                event instanceof i4.NavigationCancel; }))
+                .pipe(operators.filter(function (event) { return event instanceof i1$3.NavigationStart ||
+                event instanceof i1$3.NavigationEnd ||
+                event instanceof i1$3.NavigationError ||
+                event instanceof i1$3.NavigationCancel; }))
                 .subscribe(function (event) {
-                _this.isNavigating = event instanceof i4.NavigationStart;
+                _this.isNavigating = event instanceof i1$3.NavigationStart;
                 if (_this.isNavigating) {
                     _this.setContextParamsFromRoute(event.url);
                     if (!contextInitialized) {
@@ -12956,7 +13015,7 @@
     var siteContextParamsProviders = [
         SiteContextParamsService,
         SiteContextUrlSerializer,
-        { provide: i4.UrlSerializer, useExisting: SiteContextUrlSerializer },
+        { provide: i1$3.UrlSerializer, useExisting: SiteContextUrlSerializer },
     ];
 
     var LanguagesEffects = /** @class */ (function () {
@@ -18229,10 +18288,15 @@
             this.store.dispatch(new RemoveUserReset());
         };
         /**
-         * Returns titles
+         * Returns titles.
          */
         UserService.prototype.getTitles = function () {
-            return this.store.pipe(i1$1.select(getAllTitles));
+            var _this = this;
+            return this.store.pipe(i1$1.select(getAllTitles), operators.tap(function (titles) {
+                if (Object.keys(titles).length === 0) {
+                    _this.loadTitles();
+                }
+            }));
         };
         /**
          * Retrieves titles
@@ -20858,7 +20922,7 @@
          */
         ConfigurableRoutesService.prototype.configure = function () {
             // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
-            var router = this.injector.get(i4.Router);
+            var router = this.injector.get(i1$3.Router);
             router.resetConfig(this.configureRoutes(router.config));
         };
         /**
@@ -20946,7 +21010,7 @@
                 // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
                 // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
                 if (routeConfig === null ||
-                    routeConfig.paths === null || (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers)) {
+                    (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers)) {
                     return;
                 }
                 // undefined value of routeConfig or routeConfig.paths is a misconfiguration
@@ -20977,24 +21041,6 @@
         { type: UrlMatcherService }
     ]; };
 
-    var UrlPipe = /** @class */ (function () {
-        function UrlPipe(urlService) {
-            this.urlService = urlService;
-        }
-        UrlPipe.prototype.transform = function (commands) {
-            return this.urlService.transform(commands);
-        };
-        return UrlPipe;
-    }());
-    UrlPipe.decorators = [
-        { type: i0.Pipe, args: [{
-                    name: 'cxUrl',
-                },] }
-    ];
-    UrlPipe.ctorParameters = function () { return [
-        { type: SemanticPathService }
-    ]; };
-
     var ProductURLPipe = /** @class */ (function () {
         function ProductURLPipe(semanticPath) {
             this.semanticPath = semanticPath;
@@ -21010,6 +21056,24 @@
                 },] }
     ];
     ProductURLPipe.ctorParameters = function () { return [
+        { type: SemanticPathService }
+    ]; };
+
+    var UrlPipe = /** @class */ (function () {
+        function UrlPipe(urlService) {
+            this.urlService = urlService;
+        }
+        UrlPipe.prototype.transform = function (commands) {
+            return this.urlService.transform(commands);
+        };
+        return UrlPipe;
+    }());
+    UrlPipe.decorators = [
+        { type: i0.Pipe, args: [{
+                    name: 'cxUrl',
+                },] }
+    ];
+    UrlPipe.ctorParameters = function () { return [
         { type: SemanticPathService }
     ]; };
 
@@ -21100,7 +21164,7 @@
          * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
          */
         ExternalRoutesService.prototype.addRoutes = function () {
-            var router = this.injector.get(i4.Router);
+            var router = this.injector.get(i1$3.Router);
             var newRoutes = this.getRoutes();
             if (newRoutes.length) {
                 router.resetConfig(__spread(newRoutes, router.config));
@@ -21319,7 +21383,7 @@
     ];
     RouterEffects.ctorParameters = function () { return [
         { type: i3.Actions },
-        { type: i4.Router },
+        { type: i1$3.Router },
         { type: i1$2.Location }
     ]; };
     __decorate([
@@ -24257,7 +24321,7 @@
         });
         return CouponSearchPageResolver;
     }(PageMetaResolver));
-    CouponSearchPageResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(i0.ɵɵinject(ProductSearchService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(AuthService), i0.ɵɵinject(i4.ActivatedRoute), i0.ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
+    CouponSearchPageResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(i0.ɵɵinject(ProductSearchService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(AuthService), i0.ɵɵinject(i1$3.ActivatedRoute), i0.ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
     CouponSearchPageResolver.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -24267,7 +24331,7 @@
         { type: ProductSearchService },
         { type: TranslationService },
         { type: AuthService },
-        { type: i4.ActivatedRoute },
+        { type: i1$3.ActivatedRoute },
         { type: SemanticPathService }
     ]; };
 
@@ -27951,7 +28015,7 @@
                         StateModule,
                         i1$1.StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
                         i3.EffectsModule.forFeature(effects$b),
-                        i4.RouterModule,
+                        i1$3.RouterModule,
                     ],
                     providers: [reducerProvider$c],
                 },] }
@@ -28442,7 +28506,6 @@
     exports.provideDefaultConfigFactory = provideDefaultConfigFactory;
     exports.resolveApplicable = resolveApplicable;
     exports.serviceMapFactory = serviceMapFactory;
-    exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;
     exports.withdrawOn = withdrawOn;
     exports.ɵa = cartStatePersistenceFactory;
@@ -28482,210 +28545,211 @@
     exports.ɵcf = AuthErrorInterceptor;
     exports.ɵcg = UserErrorHandlingService;
     exports.ɵch = UrlParsingService;
-    exports.ɵci = ClientErrorHandlingService;
-    exports.ɵcj = TokenRevocationInterceptor;
-    exports.ɵck = MultiCartStoreModule;
-    exports.ɵcl = clearMultiCartState;
-    exports.ɵcm = multiCartMetaReducers;
-    exports.ɵcn = multiCartReducerToken;
-    exports.ɵco = getMultiCartReducers;
-    exports.ɵcp = multiCartReducerProvider;
-    exports.ɵcq = CartEffects;
-    exports.ɵcr = CartEntryEffects;
-    exports.ɵcs = CartVoucherEffects;
-    exports.ɵct = WishListEffects;
-    exports.ɵcu = SaveCartConnector;
-    exports.ɵcv = SaveCartAdapter;
-    exports.ɵcw = MultiCartEffects;
-    exports.ɵcx = entityProcessesLoaderReducer;
-    exports.ɵcy = entityReducer;
-    exports.ɵcz = processesLoaderReducer;
+    exports.ɵci = RoutingParamsService;
+    exports.ɵcj = ClientErrorHandlingService;
+    exports.ɵck = TokenRevocationInterceptor;
+    exports.ɵcl = MultiCartStoreModule;
+    exports.ɵcm = clearMultiCartState;
+    exports.ɵcn = multiCartMetaReducers;
+    exports.ɵco = multiCartReducerToken;
+    exports.ɵcp = getMultiCartReducers;
+    exports.ɵcq = multiCartReducerProvider;
+    exports.ɵcr = CartEffects;
+    exports.ɵcs = CartEntryEffects;
+    exports.ɵct = CartVoucherEffects;
+    exports.ɵcu = WishListEffects;
+    exports.ɵcv = SaveCartConnector;
+    exports.ɵcw = SaveCartAdapter;
+    exports.ɵcx = MultiCartEffects;
+    exports.ɵcy = entityProcessesLoaderReducer;
+    exports.ɵcz = entityReducer;
     exports.ɵd = configFromCookieFactory;
-    exports.ɵda = activeCartReducer;
-    exports.ɵdb = cartEntitiesReducer;
-    exports.ɵdc = wishListReducer;
-    exports.ɵdd = CartPageMetaResolver;
-    exports.ɵde = SiteContextParamsService;
-    exports.ɵdf = CheckoutStoreModule;
-    exports.ɵdg = getReducers$5;
-    exports.ɵdh = reducerToken$5;
-    exports.ɵdi = reducerProvider$5;
-    exports.ɵdj = effects$5;
-    exports.ɵdk = AddressVerificationEffect;
-    exports.ɵdl = CardTypesEffects;
-    exports.ɵdm = CheckoutEffects;
-    exports.ɵdn = PaymentTypesEffects;
-    exports.ɵdo = reducer$b;
-    exports.ɵdp = reducer$a;
-    exports.ɵdq = reducer$9;
-    exports.ɵdr = reducer$c;
-    exports.ɵds = cmsStoreConfigFactory;
-    exports.ɵdt = CmsStoreModule;
-    exports.ɵdu = getReducers$7;
-    exports.ɵdv = reducerToken$7;
-    exports.ɵdw = reducerProvider$7;
-    exports.ɵdx = clearCmsState;
-    exports.ɵdy = metaReducers$3;
-    exports.ɵdz = effects$7;
+    exports.ɵda = processesLoaderReducer;
+    exports.ɵdb = activeCartReducer;
+    exports.ɵdc = cartEntitiesReducer;
+    exports.ɵdd = wishListReducer;
+    exports.ɵde = CartPageMetaResolver;
+    exports.ɵdf = SiteContextParamsService;
+    exports.ɵdg = CheckoutStoreModule;
+    exports.ɵdh = getReducers$5;
+    exports.ɵdi = reducerToken$5;
+    exports.ɵdj = reducerProvider$5;
+    exports.ɵdk = effects$5;
+    exports.ɵdl = AddressVerificationEffect;
+    exports.ɵdm = CardTypesEffects;
+    exports.ɵdn = CheckoutEffects;
+    exports.ɵdo = PaymentTypesEffects;
+    exports.ɵdp = reducer$b;
+    exports.ɵdq = reducer$a;
+    exports.ɵdr = reducer$9;
+    exports.ɵds = reducer$c;
+    exports.ɵdt = cmsStoreConfigFactory;
+    exports.ɵdu = CmsStoreModule;
+    exports.ɵdv = getReducers$7;
+    exports.ɵdw = reducerToken$7;
+    exports.ɵdx = reducerProvider$7;
+    exports.ɵdy = clearCmsState;
+    exports.ɵdz = metaReducers$3;
     exports.ɵe = initConfig;
-    exports.ɵea = ComponentsEffects;
-    exports.ɵeb = NavigationEntryItemEffects;
-    exports.ɵec = PageEffects;
-    exports.ɵed = reducer$g;
-    exports.ɵee = entityLoaderReducer;
-    exports.ɵef = reducer$h;
-    exports.ɵeg = reducer$e;
-    exports.ɵeh = reducer$f;
-    exports.ɵei = GlobalMessageStoreModule;
-    exports.ɵej = getReducers$4;
-    exports.ɵek = reducerToken$4;
-    exports.ɵel = reducerProvider$4;
-    exports.ɵem = reducer$8;
-    exports.ɵen = GlobalMessageEffect;
-    exports.ɵeo = defaultGlobalMessageConfigFactory;
-    exports.ɵep = HttpErrorInterceptor;
-    exports.ɵeq = defaultI18nConfig;
-    exports.ɵer = i18nextProviders;
-    exports.ɵes = i18nextInit;
-    exports.ɵet = MockTranslationService;
-    exports.ɵeu = kymaStoreConfigFactory;
-    exports.ɵev = KymaStoreModule;
-    exports.ɵew = getReducers$8;
-    exports.ɵex = reducerToken$8;
-    exports.ɵey = reducerProvider$8;
-    exports.ɵez = clearKymaState;
+    exports.ɵea = effects$7;
+    exports.ɵeb = ComponentsEffects;
+    exports.ɵec = NavigationEntryItemEffects;
+    exports.ɵed = PageEffects;
+    exports.ɵee = reducer$g;
+    exports.ɵef = entityLoaderReducer;
+    exports.ɵeg = reducer$h;
+    exports.ɵeh = reducer$e;
+    exports.ɵei = reducer$f;
+    exports.ɵej = GlobalMessageStoreModule;
+    exports.ɵek = getReducers$4;
+    exports.ɵel = reducerToken$4;
+    exports.ɵem = reducerProvider$4;
+    exports.ɵen = reducer$8;
+    exports.ɵeo = GlobalMessageEffect;
+    exports.ɵep = defaultGlobalMessageConfigFactory;
+    exports.ɵeq = HttpErrorInterceptor;
+    exports.ɵer = defaultI18nConfig;
+    exports.ɵes = i18nextProviders;
+    exports.ɵet = i18nextInit;
+    exports.ɵeu = MockTranslationService;
+    exports.ɵev = kymaStoreConfigFactory;
+    exports.ɵew = KymaStoreModule;
+    exports.ɵex = getReducers$8;
+    exports.ɵey = reducerToken$8;
+    exports.ɵez = reducerProvider$8;
     exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = metaReducers$4;
-    exports.ɵfb = effects$8;
-    exports.ɵfc = OpenIdTokenEffect;
-    exports.ɵfd = defaultKymaConfig;
-    exports.ɵfe = defaultOccAsmConfig;
-    exports.ɵff = defaultOccCartConfig;
-    exports.ɵfg = OccSaveCartAdapter;
-    exports.ɵfh = defaultOccCheckoutConfig;
-    exports.ɵfi = defaultOccCostCentersConfig;
-    exports.ɵfj = defaultOccProductConfig;
-    exports.ɵfk = defaultOccSiteContextConfig;
-    exports.ɵfl = defaultOccStoreFinderConfig;
-    exports.ɵfm = defaultOccUserConfig;
-    exports.ɵfn = UserNotificationPreferenceAdapter;
-    exports.ɵfo = OccUserCostCenterAdapter;
-    exports.ɵfp = defaultPersonalizationConfig;
-    exports.ɵfq = interceptors$3;
-    exports.ɵfr = OccPersonalizationIdInterceptor;
-    exports.ɵfs = OccPersonalizationTimeInterceptor;
-    exports.ɵft = ProcessStoreModule;
-    exports.ɵfu = getReducers$9;
-    exports.ɵfv = reducerToken$9;
-    exports.ɵfw = reducerProvider$9;
-    exports.ɵfx = productStoreConfigFactory;
-    exports.ɵfy = ProductStoreModule;
-    exports.ɵfz = getReducers$a;
+    exports.ɵfa = clearKymaState;
+    exports.ɵfb = metaReducers$4;
+    exports.ɵfc = effects$8;
+    exports.ɵfd = OpenIdTokenEffect;
+    exports.ɵfe = defaultKymaConfig;
+    exports.ɵff = defaultOccAsmConfig;
+    exports.ɵfg = defaultOccCartConfig;
+    exports.ɵfh = OccSaveCartAdapter;
+    exports.ɵfi = defaultOccCheckoutConfig;
+    exports.ɵfj = defaultOccCostCentersConfig;
+    exports.ɵfk = defaultOccProductConfig;
+    exports.ɵfl = defaultOccSiteContextConfig;
+    exports.ɵfm = defaultOccStoreFinderConfig;
+    exports.ɵfn = defaultOccUserConfig;
+    exports.ɵfo = UserNotificationPreferenceAdapter;
+    exports.ɵfp = OccUserCostCenterAdapter;
+    exports.ɵfq = defaultPersonalizationConfig;
+    exports.ɵfr = interceptors$3;
+    exports.ɵfs = OccPersonalizationIdInterceptor;
+    exports.ɵft = OccPersonalizationTimeInterceptor;
+    exports.ɵfu = ProcessStoreModule;
+    exports.ɵfv = getReducers$9;
+    exports.ɵfw = reducerToken$9;
+    exports.ɵfx = reducerProvider$9;
+    exports.ɵfy = productStoreConfigFactory;
+    exports.ɵfz = ProductStoreModule;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = reducerToken$a;
-    exports.ɵgb = reducerProvider$a;
-    exports.ɵgc = clearProductsState;
-    exports.ɵgd = metaReducers$5;
-    exports.ɵge = effects$9;
-    exports.ɵgf = ProductReferencesEffects;
-    exports.ɵgg = ProductReviewsEffects;
-    exports.ɵgh = ProductsSearchEffects;
-    exports.ɵgi = ProductEffects;
-    exports.ɵgj = reducer$i;
-    exports.ɵgk = entityScopedLoaderReducer;
-    exports.ɵgl = scopedLoaderReducer;
-    exports.ɵgm = reducer$k;
-    exports.ɵgn = reducer$j;
-    exports.ɵgo = PageMetaResolver;
-    exports.ɵgp = CouponSearchPageResolver;
-    exports.ɵgq = PageMetaResolver;
-    exports.ɵgr = addExternalRoutesFactory;
-    exports.ɵgs = getReducers$6;
-    exports.ɵgt = reducer$d;
-    exports.ɵgu = reducerToken$6;
-    exports.ɵgv = reducerProvider$6;
-    exports.ɵgw = CustomSerializer;
-    exports.ɵgx = effects$6;
-    exports.ɵgy = RouterEffects;
-    exports.ɵgz = siteContextStoreConfigFactory;
+    exports.ɵga = getReducers$a;
+    exports.ɵgb = reducerToken$a;
+    exports.ɵgc = reducerProvider$a;
+    exports.ɵgd = clearProductsState;
+    exports.ɵge = metaReducers$5;
+    exports.ɵgf = effects$9;
+    exports.ɵgg = ProductReferencesEffects;
+    exports.ɵgh = ProductReviewsEffects;
+    exports.ɵgi = ProductsSearchEffects;
+    exports.ɵgj = ProductEffects;
+    exports.ɵgk = reducer$i;
+    exports.ɵgl = entityScopedLoaderReducer;
+    exports.ɵgm = scopedLoaderReducer;
+    exports.ɵgn = reducer$k;
+    exports.ɵgo = reducer$j;
+    exports.ɵgp = PageMetaResolver;
+    exports.ɵgq = CouponSearchPageResolver;
+    exports.ɵgr = PageMetaResolver;
+    exports.ɵgs = addExternalRoutesFactory;
+    exports.ɵgt = getReducers$6;
+    exports.ɵgu = reducer$d;
+    exports.ɵgv = reducerToken$6;
+    exports.ɵgw = reducerProvider$6;
+    exports.ɵgx = CustomSerializer;
+    exports.ɵgy = effects$6;
+    exports.ɵgz = RouterEffects;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = SiteContextStoreModule;
-    exports.ɵhb = getReducers$1;
-    exports.ɵhc = reducerToken$1;
-    exports.ɵhd = reducerProvider$1;
-    exports.ɵhe = effects$2;
-    exports.ɵhf = LanguagesEffects;
-    exports.ɵhg = CurrenciesEffects;
-    exports.ɵhh = BaseSiteEffects;
-    exports.ɵhi = reducer$3;
-    exports.ɵhj = reducer$2;
-    exports.ɵhk = reducer$1;
-    exports.ɵhl = defaultSiteContextConfigFactory;
-    exports.ɵhm = initializeContext;
-    exports.ɵhn = contextServiceProviders;
-    exports.ɵho = SiteContextRoutesHandler;
-    exports.ɵhp = SiteContextUrlSerializer;
-    exports.ɵhq = siteContextParamsProviders;
-    exports.ɵhr = baseSiteConfigValidator;
-    exports.ɵhs = interceptors$4;
-    exports.ɵht = CmsTicketInterceptor;
-    exports.ɵhu = StoreFinderStoreModule;
-    exports.ɵhv = getReducers$b;
-    exports.ɵhw = reducerToken$b;
-    exports.ɵhx = reducerProvider$b;
-    exports.ɵhy = effects$a;
-    exports.ɵhz = FindStoresEffect;
+    exports.ɵha = siteContextStoreConfigFactory;
+    exports.ɵhb = SiteContextStoreModule;
+    exports.ɵhc = getReducers$1;
+    exports.ɵhd = reducerToken$1;
+    exports.ɵhe = reducerProvider$1;
+    exports.ɵhf = effects$2;
+    exports.ɵhg = LanguagesEffects;
+    exports.ɵhh = CurrenciesEffects;
+    exports.ɵhi = BaseSiteEffects;
+    exports.ɵhj = reducer$3;
+    exports.ɵhk = reducer$2;
+    exports.ɵhl = reducer$1;
+    exports.ɵhm = defaultSiteContextConfigFactory;
+    exports.ɵhn = initializeContext;
+    exports.ɵho = contextServiceProviders;
+    exports.ɵhp = SiteContextRoutesHandler;
+    exports.ɵhq = SiteContextUrlSerializer;
+    exports.ɵhr = siteContextParamsProviders;
+    exports.ɵhs = baseSiteConfigValidator;
+    exports.ɵht = interceptors$4;
+    exports.ɵhu = CmsTicketInterceptor;
+    exports.ɵhv = StoreFinderStoreModule;
+    exports.ɵhw = getReducers$b;
+    exports.ɵhx = reducerToken$b;
+    exports.ɵhy = reducerProvider$b;
+    exports.ɵhz = effects$a;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = ViewAllStoresEffect;
-    exports.ɵib = defaultStoreFinderConfig;
-    exports.ɵic = UserStoreModule;
-    exports.ɵid = getReducers$c;
-    exports.ɵie = reducerToken$c;
-    exports.ɵif = reducerProvider$c;
-    exports.ɵig = clearUserState;
-    exports.ɵih = metaReducers$7;
-    exports.ɵii = effects$b;
-    exports.ɵij = BillingCountriesEffect;
-    exports.ɵik = ClearMiscsDataEffect;
-    exports.ɵil = ConsignmentTrackingEffects;
-    exports.ɵim = DeliveryCountriesEffects;
-    exports.ɵin = NotificationPreferenceEffects;
-    exports.ɵio = OrderDetailsEffect;
-    exports.ɵip = OrderReturnRequestEffect;
-    exports.ɵiq = UserPaymentMethodsEffects;
-    exports.ɵir = RegionsEffects;
-    exports.ɵis = ResetPasswordEffects;
-    exports.ɵit = TitlesEffects;
-    exports.ɵiu = UserAddressesEffects;
-    exports.ɵiv = UserConsentsEffect;
-    exports.ɵiw = UserDetailsEffects;
-    exports.ɵix = UserOrdersEffect;
-    exports.ɵiy = UserRegisterEffects;
-    exports.ɵiz = CustomerCouponEffects;
+    exports.ɵia = FindStoresEffect;
+    exports.ɵib = ViewAllStoresEffect;
+    exports.ɵic = defaultStoreFinderConfig;
+    exports.ɵid = UserStoreModule;
+    exports.ɵie = getReducers$c;
+    exports.ɵif = reducerToken$c;
+    exports.ɵig = reducerProvider$c;
+    exports.ɵih = clearUserState;
+    exports.ɵii = metaReducers$7;
+    exports.ɵij = effects$b;
+    exports.ɵik = BillingCountriesEffect;
+    exports.ɵil = ClearMiscsDataEffect;
+    exports.ɵim = ConsignmentTrackingEffects;
+    exports.ɵin = DeliveryCountriesEffects;
+    exports.ɵio = NotificationPreferenceEffects;
+    exports.ɵip = OrderDetailsEffect;
+    exports.ɵiq = OrderReturnRequestEffect;
+    exports.ɵir = UserPaymentMethodsEffects;
+    exports.ɵis = RegionsEffects;
+    exports.ɵit = ResetPasswordEffects;
+    exports.ɵiu = TitlesEffects;
+    exports.ɵiv = UserAddressesEffects;
+    exports.ɵiw = UserConsentsEffect;
+    exports.ɵix = UserDetailsEffects;
+    exports.ɵiy = UserOrdersEffect;
+    exports.ɵiz = UserRegisterEffects;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = ProductInterestsEffect;
-    exports.ɵjb = ForgotPasswordEffects;
-    exports.ɵjc = UpdateEmailEffects;
-    exports.ɵjd = UpdatePasswordEffects;
-    exports.ɵje = UserNotificationPreferenceConnector;
-    exports.ɵjf = UserCostCenterEffects;
-    exports.ɵjg = reducer$w;
-    exports.ɵjh = reducer$u;
-    exports.ɵji = reducer$l;
-    exports.ɵjj = reducer$v;
-    exports.ɵjk = reducer$q;
-    exports.ɵjl = reducer$x;
-    exports.ɵjm = reducer$p;
-    exports.ɵjn = reducer$A;
-    exports.ɵjo = reducer$n;
-    exports.ɵjp = reducer$t;
-    exports.ɵjq = reducer$r;
-    exports.ɵjr = reducer$s;
-    exports.ɵjs = reducer$m;
-    exports.ɵjt = reducer$y;
-    exports.ɵju = reducer$o;
-    exports.ɵjv = reducer$z;
-    exports.ɵjw = reducer$B;
+    exports.ɵja = CustomerCouponEffects;
+    exports.ɵjb = ProductInterestsEffect;
+    exports.ɵjc = ForgotPasswordEffects;
+    exports.ɵjd = UpdateEmailEffects;
+    exports.ɵje = UpdatePasswordEffects;
+    exports.ɵjf = UserNotificationPreferenceConnector;
+    exports.ɵjg = UserCostCenterEffects;
+    exports.ɵjh = reducer$w;
+    exports.ɵji = reducer$u;
+    exports.ɵjj = reducer$l;
+    exports.ɵjk = reducer$v;
+    exports.ɵjl = reducer$q;
+    exports.ɵjm = reducer$x;
+    exports.ɵjn = reducer$p;
+    exports.ɵjo = reducer$A;
+    exports.ɵjp = reducer$n;
+    exports.ɵjq = reducer$t;
+    exports.ɵjr = reducer$r;
+    exports.ɵjs = reducer$s;
+    exports.ɵjt = reducer$m;
+    exports.ɵju = reducer$y;
+    exports.ɵjv = reducer$o;
+    exports.ɵjw = reducer$z;
+    exports.ɵjx = reducer$B;
     exports.ɵk = getStorageSyncReducer;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$2;
