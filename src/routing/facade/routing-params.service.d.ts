@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
  * This is convenient in case the parent route (component) requires awareness
  * of child routes parameters.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class RoutingParamsService {
     protected router: Router;
     protected navigationEndEvent$: Observable<import("@angular/router").Event>;
@@ -23,7 +22,4 @@ export declare class RoutingParamsService {
     protected findAllParam(route: ActivatedRouteSnapshot): {
         [key: string]: string;
     };
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<RoutingParamsService, never>;
 }
-
-//# sourceMappingURL=routing-params.service.d.ts.map
