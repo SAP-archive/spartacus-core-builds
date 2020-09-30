@@ -1,1 +1,0 @@
-{"version":3,"file":"auth-store.module.d.ts","sources":["auth-store.module.d.ts"],"names":[],"mappings":"AAAA;;;;;;;AACA;AACA;;;AACA","sourcesContent":["import { StateConfig } from '../../state/config/state-config';\nexport declare function authStoreConfigFactory(): StateConfig;\nexport declare class AuthStoreModule {\n}\n"]}

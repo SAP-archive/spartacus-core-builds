@@ -4,7 +4,6 @@ import { AuthService } from '../../auth/facade/auth.service';
 import { ActiveCartService } from '../../cart/facade/active-cart.service';
 import { Order } from '../../model/order.model';
 import { StateWithCheckout } from '../store/checkout-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutService {
     protected checkoutStore: Store<StateWithCheckout>;
     protected authService: AuthService;
@@ -37,7 +36,4 @@ export declare class CheckoutService {
      */
     getOrderDetails(): Observable<Order>;
     protected actionAllowed(): boolean;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutService, never>;
 }
-
-//# sourceMappingURL=checkout.service.d.ts.map
