@@ -5,6 +5,7 @@ import { Country } from '../../model/address.model';
 import { PaymentDetails } from '../../model/cart.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserPaymentService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -41,4 +42,7 @@ export declare class UserPaymentService {
      * Retrieves billing countries
      */
     loadBillingCountries(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserPaymentService, never>;
 }
+
+//# sourceMappingURL=user-payment.service.d.ts.map
