@@ -1,8 +1,9 @@
 import { StaticProvider } from '@angular/core';
-import { Routes } from '@angular/router';
+import { Route } from '@angular/router';
 import { AuthConfig } from '../../auth/config/auth-config';
 import { KymaConfig } from '../../kyma/config/kyma-config';
 import { OccConfig } from '../../occ/config/occ-config';
+import * as ɵngcc0 from '@angular/core';
 export interface StandardCmsComponentConfig {
     CMSSiteContextComponent?: CmsComponentMapping;
     CMSLinkComponent?: CmsComponentMapping;
@@ -32,10 +33,23 @@ export interface JspIncludeCmsComponentConfig {
 }
 export declare const JSP_INCLUDE_CMS_COMPONENT_TYPE = "JspIncludeComponent";
 export declare const CMS_FLEX_COMPONENT_TYPE = "CMSFlexComponent";
+/**
+ * Configuration of the CMS component's child routes
+ */
+export interface CmsComponentChildRoutesConfig {
+    /**
+     * Route `data` property to apply on the parent (host) route of the CMS child routes.
+     */
+    parent?: Pick<Route, 'data'>;
+    /**
+     * Child routes defined by the existence of the CMS component on the page.
+     */
+    children?: Route[];
+}
 export interface CmsComponentMapping {
     component?: any;
     providers?: StaticProvider[];
-    childRoutes?: Routes;
+    childRoutes?: Route[] | CmsComponentChildRoutesConfig;
     disableSSR?: boolean;
     i18nKeys?: string[];
     guards?: any[];
@@ -81,4 +95,7 @@ export declare abstract class CmsConfig extends OccConfig implements AuthConfig,
         [featureName: string]: FeatureModuleConfig;
     };
     cmsComponents?: CMSComponentConfig;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CmsConfig, never>;
 }
+
+//# sourceMappingURL=cms-config.d.ts.map

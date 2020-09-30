@@ -1794,19 +1794,49 @@
     });
 
     /**
+     * Helper service to expose all activated routes
+     */
+    var ActivatedRoutesService = /** @class */ (function () {
+        function ActivatedRoutesService(router) {
+            var _this = this;
+            this.router = router;
+            /**
+             * Array of currently activated routes (from the root route to the leaf route).
+             */
+            this.routes$ = this.router.events.pipe(operators.filter(function (event) { return event instanceof i1$3.NavigationEnd; }), 
+            // tslint:disable-next-line: deprecation https://github.com/ReactiveX/rxjs/issues/4772
+            operators.startWith(undefined), // emit value for consumer who subscribed lately after NavigationEnd event
+            operators.map(function () {
+                var route = _this.router.routerState.snapshot.root;
+                var routes = [route];
+                // traverse to the leaf route:
+                while ((route = route.firstChild)) {
+                    routes.push(route);
+                }
+                return routes;
+            }), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        }
+        return ActivatedRoutesService;
+    }());
+    ActivatedRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActivatedRoutesService_Factory() { return new ActivatedRoutesService(i0.ɵɵinject(i1$3.Router)); }, token: ActivatedRoutesService, providedIn: "root" });
+    ActivatedRoutesService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ActivatedRoutesService.ctorParameters = function () { return [
+        { type: i1$3.Router }
+    ]; };
+
+    /**
      * Service to expose all parameters for the router, including child routes.
      * This is convenient in case the parent route (component) requires awareness
      * of child routes parameters.
      */
     var RoutingParamsService = /** @class */ (function () {
-        function RoutingParamsService(router) {
+        function RoutingParamsService(router, activatedRoutesService) {
             var _this = this;
             this.router = router;
-            this.navigationEndEvent$ = this.router.events.pipe(operators.filter(function (event) { return event instanceof i1$3.NavigationEnd; }));
-            this.params$ = this.navigationEndEvent$.pipe(
-            // tslint:disable-next-line: deprecation (https://github.com/ReactiveX/rxjs/issues/4772)
-            operators.startWith(undefined), // emit value for consumer who subscribed lately after NavigationEnd event
-            operators.map(function () { return _this.findAllParam(_this.router.routerState.snapshot.root); }), operators.shareReplay({ refCount: true, bufferSize: 1 }));
+            this.activatedRoutesService = activatedRoutesService;
+            this.params$ = this.activatedRoutesService.routes$.pipe(operators.map(function (routes) { return _this.findAllParam(routes); }), operators.shareReplay({ refCount: true, bufferSize: 1 }));
         }
         /**
          * Get the list of all parameters of the full route. This includes
@@ -1815,21 +1845,18 @@
         RoutingParamsService.prototype.getParams = function () {
             return this.params$;
         };
-        RoutingParamsService.prototype.findAllParam = function (route) {
-            var _this = this;
-            var params = {};
-            route.children.forEach(function (c) { return c.paramMap.keys.forEach(function (key) { return (params[key] = c.paramMap.get(key)); }); });
-            route.children.forEach(function (c) { return (params = Object.assign(Object.assign({}, params), _this.findAllParam(c))); });
-            return params;
+        RoutingParamsService.prototype.findAllParam = function (routes) {
+            return Object.assign.apply(Object, __spread([{}], routes.map(function (route) { return route.params; })));
         };
         return RoutingParamsService;
     }());
-    RoutingParamsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingParamsService_Factory() { return new RoutingParamsService(i0.ɵɵinject(i1$3.Router)); }, token: RoutingParamsService, providedIn: "root" });
+    RoutingParamsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingParamsService_Factory() { return new RoutingParamsService(i0.ɵɵinject(i1$3.Router), i0.ɵɵinject(ActivatedRoutesService)); }, token: RoutingParamsService, providedIn: "root" });
     RoutingParamsService.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
     RoutingParamsService.ctorParameters = function () { return [
-        { type: i1$3.Router }
+        { type: i1$3.Router },
+        { type: ActivatedRoutesService }
     ]; };
 
     var RoutingService = /** @class */ (function () {
@@ -20258,6 +20285,195 @@
     };
 
     /**
+     * Resolves the breadcrumb for the Angular ActivatedRouteSnapshot
+     */
+    var DefaultRoutePageMetaResolver = /** @class */ (function () {
+        function DefaultRoutePageMetaResolver(translation) {
+            this.translation = translation;
+        }
+        /**
+         * Resolves breadcrumb based on the given url and the breadcrumb config.
+         *
+         * - When breadcrumb config is empty, it returns an empty breadcrumb.
+         * - When breadcrumb config is a string or object with `i18n` property,
+         *    it translates it and use as a label of the returned breadcrumb.
+         * - When breadcrumb config is an object with property `raw`, then
+         *    it's used as a label of the returned breadcrumb.
+         */
+        DefaultRoutePageMetaResolver.prototype.resolveBreadcrumbs = function (_a) {
+            var url = _a.url, pageMetaConfig = _a.pageMetaConfig;
+            var breadcrumbConfig = pageMetaConfig === null || pageMetaConfig === void 0 ? void 0 : pageMetaConfig.breadcrumb;
+            if (!breadcrumbConfig) {
+                return rxjs.of([]);
+            }
+            if (typeof breadcrumbConfig !== 'string' && breadcrumbConfig.raw) {
+                return rxjs.of([{ link: url, label: breadcrumbConfig.raw }]);
+            }
+            return this.translateBreadcrumbLabel(breadcrumbConfig).pipe(operators.map(function (label) { return [{ label: label, link: url }]; }));
+        };
+        /**
+         * Translates the configured breadcrumb label
+         */
+        DefaultRoutePageMetaResolver.prototype.translateBreadcrumbLabel = function (breadcrumbConfig) {
+            var _this = this;
+            var i18nKey = typeof breadcrumbConfig === 'string'
+                ? breadcrumbConfig
+                : breadcrumbConfig.i18n;
+            return this.getParams().pipe(operators.switchMap(function (params) { return _this.translation.translate(i18nKey, params !== null && params !== void 0 ? params : {}); }));
+        };
+        /**
+         * Resolves dynamic data for the whole resolver.
+         */
+        DefaultRoutePageMetaResolver.prototype.getParams = function () {
+            return rxjs.of({});
+        };
+        return DefaultRoutePageMetaResolver;
+    }());
+    DefaultRoutePageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function DefaultRoutePageMetaResolver_Factory() { return new DefaultRoutePageMetaResolver(i0.ɵɵinject(TranslationService)); }, token: DefaultRoutePageMetaResolver, providedIn: "root" });
+    DefaultRoutePageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    DefaultRoutePageMetaResolver.ctorParameters = function () { return [
+        { type: TranslationService }
+    ]; };
+
+    /**
+     * Resolves the page meta based on the Angular Activated Routes
+     */
+    var RoutingPageMetaResolver = /** @class */ (function () {
+        function RoutingPageMetaResolver(activatedRoutesService, injector) {
+            var _this = this;
+            this.activatedRoutesService = activatedRoutesService;
+            this.injector = injector;
+            /**
+             * Array of activated routes, excluding the special Angular `root` route.
+             */
+            this.routes$ = this.activatedRoutesService.routes$.pipe(
+            // drop the first route - the special `root` route:
+            operators.map(function (routes) { return (routes = routes.slice(1, routes.length)); }));
+            /**
+             * Array of activated routes together with precalculated extras:
+             *
+             * - route's page meta resolver
+             * - route's absolute string URL
+             *
+             * In case when there is no page meta resolver configured for a specific route,
+             * it inherits its parent's resolver.
+             *
+             * When there is no page meta resolver configured for the highest parent in the hierarchy,
+             * it uses the `DefaultRoutePageMetaResolver`.
+             */
+            this.routesWithExtras$ = this.routes$.pipe(operators.map(function (routes) { return routes.reduce(function (results, route) {
+                var _a;
+                var parent = results.length
+                    ? results[results.length - 1]
+                    : {
+                        route: null,
+                        resolver: _this.injector.get(DefaultRoutePageMetaResolver),
+                        url: '',
+                    };
+                var resolver = (_a = _this.getResolver(route)) !== null && _a !== void 0 ? _a : parent.resolver; // fallback to parent's resolver
+                var urlPart = _this.getUrlPart(route);
+                var url = parent.url + (urlPart ? "/" + urlPart : ''); // don't add slash for a route with path '', to avoid double slash ...//...
+                return results.concat({ route: route, resolver: resolver, url: url });
+            }, []); }), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        }
+        /**
+         * Array of breadcrumbs defined for all the activated routes (from the root route to the leaf route).
+         * It emits on every completed routing navigation.
+         */
+        RoutingPageMetaResolver.prototype.resolveBreadcrumbs = function (options) {
+            var _this = this;
+            return this.routesWithExtras$.pipe(operators.map(function (routesWithExtras) { return (options === null || options === void 0 ? void 0 : options.includeCurrentRoute) ? routesWithExtras
+                : _this.trimCurrentRoute(routesWithExtras); }), operators.switchMap(function (routesWithExtras) { return routesWithExtras.length
+                ? rxjs.combineLatest(routesWithExtras.map(function (routeWithExtras) { return _this.resolveRouteBreadcrumb(routeWithExtras); }))
+                : rxjs.of([]); }), operators.map(function (breadcrumbArrays) { return breadcrumbArrays.flat(); }));
+        };
+        /**
+         * Returns the instance of the RoutePageMetaResolver configured for the given activated route.
+         * Returns null in case there the resolver can't be injected or is undefined.
+         *
+         * @param route route to resolve
+         */
+        RoutingPageMetaResolver.prototype.getResolver = function (route) {
+            var pageMetaConfig = this.getPageMetaConfig(route);
+            if (typeof pageMetaConfig !== 'string' && (pageMetaConfig === null || pageMetaConfig === void 0 ? void 0 : pageMetaConfig.resolver)) {
+                return this.injector.get(pageMetaConfig.resolver, null);
+            }
+            return null;
+        };
+        /**
+         * Resolvers breadcrumb for a specific route
+         */
+        RoutingPageMetaResolver.prototype.resolveRouteBreadcrumb = function (_c) {
+            var route = _c.route, resolver = _c.resolver, url = _c.url;
+            var breadcrumbResolver = resolver;
+            if (typeof breadcrumbResolver.resolveBreadcrumbs === 'function') {
+                return breadcrumbResolver.resolveBreadcrumbs({
+                    route: route,
+                    url: url,
+                    pageMetaConfig: this.getPageMetaConfig(route),
+                });
+            }
+            return rxjs.of([]);
+        };
+        /**
+         * By default in breadcrumbs list we don't want to show a link to the current page, so this function
+         * trims the last breadcrumb (the breadcrumb of the current route).
+         *
+         * This function also handles special case when the current route has a configured empty path ('' route).
+         * The '' routes are often a _technical_ routes to organize other routes, assign common guards for its children, etc.
+         * It shouldn't happen that '' route has a defined breadcrumb config.
+         *
+         * In that case, we trim not only the last route ('' route), but also its parent route with non-empty path
+         * (which likely defines the breadcrumb config).
+         */
+        RoutingPageMetaResolver.prototype.trimCurrentRoute = function (routesWithExtras) {
+            // If the last route is '', we trim:
+            // - the '' route
+            // - all parent '' routes (until we meet route with non-empty path)
+            var _a, _b;
+            var i = routesWithExtras.length - 1;
+            while (((_b = (_a = routesWithExtras[i]) === null || _a === void 0 ? void 0 : _a.route) === null || _b === void 0 ? void 0 : _b.url.length) === 0 && i >= 0) {
+                i--;
+            }
+            // Finally we trim the last route (the one with non-empty path)
+            return routesWithExtras.slice(0, i);
+        };
+        /**
+         * Returns the URL path for the given activated route in a string format.
+         * (ActivatedRouteSnapshot#url contains an array of `UrlSegment`s, not a string)
+         */
+        RoutingPageMetaResolver.prototype.getUrlPart = function (route) {
+            return route.url.map(function (urlSegment) { return urlSegment.path; }).join('/');
+        };
+        /**
+         * Returns the breadcrumb config placed in the route's `data` configuration.
+         */
+        RoutingPageMetaResolver.prototype.getPageMetaConfig = function (route) {
+            var _a, _b;
+            // Note: we use `route.routeConfig.data` (not `route.data`) to save us from
+            // an edge case bug. In Angular, by design the `data` of ActivatedRoute is inherited
+            // from the parent route, if only the child has an empty path ''.
+            // But in any case we don't want the page meta configs to be inherited, so we
+            // read data from the original `routeConfig` which is static.
+            //
+            // Note: we may inherit the parent's page meta resolver in case we don't define it,
+            // but we don't want to inherit parent's page meta config!
+            return (_b = (_a = route === null || route === void 0 ? void 0 : route.routeConfig) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.cxPageMeta;
+        };
+        return RoutingPageMetaResolver;
+    }());
+    RoutingPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingPageMetaResolver_Factory() { return new RoutingPageMetaResolver(i0.ɵɵinject(ActivatedRoutesService), i0.ɵɵinject(i0.INJECTOR)); }, token: RoutingPageMetaResolver, providedIn: "root" });
+    RoutingPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    RoutingPageMetaResolver.ctorParameters = function () { return [
+        { type: ActivatedRoutesService },
+        { type: i0.Injector }
+    ]; };
+
+    /**
      * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`.
      * More specific resolvers for content pages can be implemented by making them more
      * specific, for example by using the page template (see `CartPageMetaResolver`).
@@ -20266,14 +20482,28 @@
      */
     var ContentPageMetaResolver = /** @class */ (function (_super) {
         __extends(ContentPageMetaResolver, _super);
-        function ContentPageMetaResolver(cms, translation) {
+        function ContentPageMetaResolver(cms, translation, routingPageMetaResolver) {
             var _this = _super.call(this) || this;
             _this.cms = cms;
             _this.translation = translation;
-            /** helper to provie access to the current CMS page */
+            _this.routingPageMetaResolver = routingPageMetaResolver;
+            /** helper to provide access to the current CMS page */
             _this.cms$ = _this.cms
                 .getCurrentPage()
                 .pipe(operators.filter(function (p) { return Boolean(p); }));
+            /**
+             * Breadcrumb for the home page.
+             */
+            _this.homeBreadcrumb$ = _this.translation
+                .translate('common.home')
+                .pipe(operators.map(function (label) { return [{ label: label, link: '/' }]; }));
+            /**
+             * All the resolved breadcrumbs (including those from Angular child routes).
+             */
+            _this.breadcrumbs$ = rxjs.combineLatest([
+                _this.homeBreadcrumb$,
+                rxjs.defer(function () { return _this.routingPageMetaResolver.resolveBreadcrumbs(); }),
+            ]).pipe(operators.map(function (breadcrumbs) { return breadcrumbs.flat(); }, operators.shareReplay({ bufferSize: 1, refCount: true })));
             _this.pageType = exports.PageType.CONTENT_PAGE;
             return _this;
         }
@@ -20285,17 +20515,15 @@
             return this.cms$.pipe(operators.map(function (p) { return p.title; }));
         };
         /**
-         * Resolves a single breacrumb item to the home page for each `ContentPage`.
+         * Resolves a single breadcrumb item to the home page for each `ContentPage`.
          * The home page label is resolved from the translation service.
          */
         ContentPageMetaResolver.prototype.resolveBreadcrumbs = function () {
-            return this.translation
-                .translate('common.home')
-                .pipe(operators.map(function (label) { return [{ label: label, link: '/' }]; }));
+            return this.breadcrumbs$;
         };
         return ContentPageMetaResolver;
     }(PageMetaResolver));
-    ContentPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(i0.ɵɵinject(CmsService), i0.ɵɵinject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
+    ContentPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(i0.ɵɵinject(CmsService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(RoutingPageMetaResolver)); }, token: ContentPageMetaResolver, providedIn: "root" });
     ContentPageMetaResolver.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -20303,7 +20531,8 @@
     ];
     ContentPageMetaResolver.ctorParameters = function () { return [
         { type: CmsService },
-        { type: TranslationService }
+        { type: TranslationService },
+        { type: RoutingPageMetaResolver }
     ]; };
 
     var CmsPageTitleModule = /** @class */ (function () {
@@ -28057,6 +28286,7 @@
     exports.ANONYMOUS_CONSENT_NORMALIZER = ANONYMOUS_CONSENT_NORMALIZER;
     exports.ASM_FEATURE = ASM_FEATURE;
     exports.AUTH_FEATURE = AUTH_FEATURE;
+    exports.ActivatedRoutesService = ActivatedRoutesService;
     exports.ActiveCartService = ActiveCartService;
     exports.AnonymousConsentNormalizer = AnonymousConsentNormalizer;
     exports.AnonymousConsentTemplatesAdapter = AnonymousConsentTemplatesAdapter;
@@ -28193,6 +28423,7 @@
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
     exports.DefaultConfig = DefaultConfig;
     exports.DefaultConfigChunk = DefaultConfigChunk;
+    exports.DefaultRoutePageMetaResolver = DefaultRoutePageMetaResolver;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.EMAIL_PATTERN = EMAIL_PATTERN;
     exports.EXTERNAL_CONFIG_TRANSFER_ID = EXTERNAL_CONFIG_TRANSFER_ID;
@@ -28375,6 +28606,7 @@
     exports.RoutingConfig = RoutingConfig;
     exports.RoutingConfigService = RoutingConfigService;
     exports.RoutingModule = RoutingModule;
+    exports.RoutingPageMetaResolver = RoutingPageMetaResolver;
     exports.RoutingSelector = routingGroup_selectors;
     exports.RoutingService = RoutingService;
     exports.SERVER_REQUEST_ORIGIN = SERVER_REQUEST_ORIGIN;
