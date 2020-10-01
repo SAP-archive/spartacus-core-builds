@@ -1,4 +1,5 @@
 import { RoutingConfig } from '../configurable-routes/config/routing-config';
+import * as ɵngcc0 from '@angular/core';
 export declare class ProtectedRoutesService {
     protected config: RoutingConfig;
     private nonProtectedPaths;
@@ -30,4 +31,7 @@ export declare class ProtectedRoutesService {
      * Splits the url by slashes
      */
     protected getSegments(url: string): string[];
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProtectedRoutesService, never>;
 }
+
+//# sourceMappingURL=protected-routes.service.d.ts.map
