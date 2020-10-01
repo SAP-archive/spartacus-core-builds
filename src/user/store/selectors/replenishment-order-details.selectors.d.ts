@@ -1,0 +1,9 @@
+import { MemoizedSelector } from '@ngrx/store';
+import { ReplenishmentOrder } from '../../../model/replenishment-order.model';
+import { LoaderState } from '../../../state/utils/loader/loader-state';
+import { StateWithUser } from '../user-state';
+export declare const getReplenishmentOrderState: MemoizedSelector<StateWithUser, LoaderState<ReplenishmentOrder>>;
+export declare const getReplenishmentOrderDetailsValue: MemoizedSelector<StateWithUser, ReplenishmentOrder>;
+export declare const getReplenishmentOrderDetailsLoading: MemoizedSelector<StateWithUser, boolean>;
+export declare const getReplenishmentOrderDetailsSuccess: MemoizedSelector<StateWithUser, boolean>;
+export declare const getReplenishmentOrderDetailsError: MemoizedSelector<StateWithUser, boolean>;

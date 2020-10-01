@@ -3,16 +3,39 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/facade/auth.service';
 import { ActiveCartService } from '../../cart/facade/active-cart.service';
 import { Order } from '../../model/order.model';
+import { ORDER_TYPE, ReplenishmentOrder, ScheduleReplenishmentForm } from '../../model/replenishment-order.model';
+import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithCheckout } from '../store/checkout-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutService {
-    protected checkoutStore: Store<StateWithCheckout>;
+    protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
     protected authService: AuthService;
     protected activeCartService: ActiveCartService;
-    constructor(checkoutStore: Store<StateWithCheckout>, authService: AuthService, activeCartService: ActiveCartService);
+    constructor(checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>, authService: AuthService, activeCartService: ActiveCartService);
     /**
      * Places an order
      */
-    placeOrder(): void;
+    placeOrder(termsChecked: boolean): void;
+    /**
+     * Schedule a replenishment order
+     */
+    scheduleReplenishmentOrder(scheduleReplenishmentForm: ScheduleReplenishmentForm, termsChecked: boolean): void;
+    /**
+     * Returns the place or schedule replenishment order's loading flag
+     */
+    getPlaceOrderLoading(): Observable<boolean>;
+    /**
+     * Returns the place or schedule replenishment order's success flag
+     */
+    getPlaceOrderSuccess(): Observable<boolean>;
+    /**
+     * Returns the place or schedule replenishment order's error flag
+     */
+    getPlaceOrderError(): Observable<boolean>;
+    /**
+     * Resets the place or schedule replenishment order's processing state
+     */
+    clearPlaceOrderState(): void;
     /**
      * Clear checkout data
      */
@@ -34,6 +57,18 @@ export declare class CheckoutService {
     /**
      * Get order details
      */
-    getOrderDetails(): Observable<Order>;
+    getOrderDetails(): Observable<Order | ReplenishmentOrder>;
+    /**
+     * Set checkout order type
+     * @param orderType : an enum of types of order we are placing
+     */
+    setOrderType(orderType: ORDER_TYPE): void;
+    /**
+     * Get current checkout order type
+     */
+    getCurrentOrderType(): Observable<ORDER_TYPE>;
     protected actionAllowed(): boolean;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutService, never>;
 }
+
+//# sourceMappingURL=checkout.service.d.ts.map

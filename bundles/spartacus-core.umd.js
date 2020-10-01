@@ -3520,6 +3520,25 @@
         VariantQualifier["ROLLUP_PROPERTY"] = "rollupProperty";
     })(exports.VariantQualifier || (exports.VariantQualifier = {}));
 
+    (function (DaysOfWeek) {
+        DaysOfWeek["MONDAY"] = "MONDAY";
+        DaysOfWeek["TUESDAY"] = "TUESDAY";
+        DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
+        DaysOfWeek["THURSDAY"] = "THURSDAY";
+        DaysOfWeek["FRIDAY"] = "FRIDAY";
+        DaysOfWeek["SATURDAY"] = "SATURDAY";
+        DaysOfWeek["SUNDAY"] = "SUNDAY";
+    })(exports.DaysOfWeek || (exports.DaysOfWeek = {}));
+    var recurrencePeriod = {
+        DAILY: 'DAILY',
+        WEEKLY: 'WEEKLY',
+        MONTHLY: 'MONTHLY',
+    };
+    (function (ORDER_TYPE) {
+        ORDER_TYPE["PLACE_ORDER"] = "PLACE_ORDER";
+        ORDER_TYPE["SCHEDULE_REPLENISHMENT_ORDER"] = "SCHEDULE_REPLENISHMENT_ORDER";
+    })(exports.ORDER_TYPE || (exports.ORDER_TYPE = {}));
+
     var ANONYMOUS_CONSENTS_STORE_FEATURE = 'anonymous-consents';
     var ANONYMOUS_CONSENTS = '[Anonymous Consents] Anonymous Consents';
 
@@ -4468,63 +4487,328 @@
                 },] }
     ];
 
+    var CheckoutAdapter = /** @class */ (function () {
+        function CheckoutAdapter() {
+        }
+        return CheckoutAdapter;
+    }());
+
     var ORDER_NORMALIZER = new i0.InjectionToken('OrderNormalizer');
 
-    // To be changed to a more optimised params after ticket: C3PO-1076
-    var FULL_PARAMS = 'fields=FULL';
-    var CHECKOUT_PARAMS = 'deliveryAddress(FULL),deliveryMode,paymentInfo(FULL)';
-    var CARTS_ENDPOINT = '/carts/';
-    var OccCheckoutAdapter = /** @class */ (function () {
-        function OccCheckoutAdapter(http, occEndpoints, converter) {
+    var CheckoutCostCenterAdapter = /** @class */ (function () {
+        function CheckoutCostCenterAdapter() {
+        }
+        return CheckoutCostCenterAdapter;
+    }());
+
+    var CheckoutDeliveryAdapter = /** @class */ (function () {
+        function CheckoutDeliveryAdapter() {
+        }
+        return CheckoutDeliveryAdapter;
+    }());
+
+    var CheckoutConnector = /** @class */ (function () {
+        function CheckoutConnector(adapter) {
+            this.adapter = adapter;
+        }
+        CheckoutConnector.prototype.placeOrder = function (userId, cartId, termsChecked) {
+            return this.adapter.placeOrder(userId, cartId, termsChecked);
+        };
+        CheckoutConnector.prototype.loadCheckoutDetails = function (userId, cartId) {
+            return this.adapter.loadCheckoutDetails(userId, cartId);
+        };
+        CheckoutConnector.prototype.clearCheckoutDeliveryAddress = function (userId, cartId) {
+            return this.adapter.clearCheckoutDeliveryAddress(userId, cartId);
+        };
+        CheckoutConnector.prototype.clearCheckoutDeliveryMode = function (userId, cartId) {
+            return this.adapter.clearCheckoutDeliveryMode(userId, cartId);
+        };
+        return CheckoutConnector;
+    }());
+    CheckoutConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(i0.ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+    CheckoutConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutConnector.ctorParameters = function () { return [
+        { type: CheckoutAdapter }
+    ]; };
+
+    var CheckoutCostCenterConnector = /** @class */ (function () {
+        function CheckoutCostCenterConnector(adapter) {
+            this.adapter = adapter;
+        }
+        CheckoutCostCenterConnector.prototype.setCostCenter = function (userId, cartId, costCenterId) {
+            return this.adapter.setCostCenter(userId, cartId, costCenterId);
+        };
+        return CheckoutCostCenterConnector;
+    }());
+    CheckoutCostCenterConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCostCenterConnector_Factory() { return new CheckoutCostCenterConnector(i0.ɵɵinject(CheckoutCostCenterAdapter)); }, token: CheckoutCostCenterConnector, providedIn: "root" });
+    CheckoutCostCenterConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutCostCenterConnector.ctorParameters = function () { return [
+        { type: CheckoutCostCenterAdapter }
+    ]; };
+
+    var CheckoutDeliveryConnector = /** @class */ (function () {
+        function CheckoutDeliveryConnector(adapter) {
+            this.adapter = adapter;
+        }
+        CheckoutDeliveryConnector.prototype.createAddress = function (userId, cartId, address) {
+            return this.adapter.createAddress(userId, cartId, address);
+        };
+        CheckoutDeliveryConnector.prototype.setAddress = function (userId, cartId, addressId) {
+            return this.adapter.setAddress(userId, cartId, addressId);
+        };
+        CheckoutDeliveryConnector.prototype.setMode = function (userId, cartId, deliveryModeId) {
+            return this.adapter.setMode(userId, cartId, deliveryModeId);
+        };
+        CheckoutDeliveryConnector.prototype.getMode = function (userId, cartId) {
+            return this.adapter.getMode(userId, cartId);
+        };
+        CheckoutDeliveryConnector.prototype.getSupportedModes = function (userId, cartId) {
+            return this.adapter.getSupportedModes(userId, cartId);
+        };
+        return CheckoutDeliveryConnector;
+    }());
+    CheckoutDeliveryConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(i0.ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
+    CheckoutDeliveryConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutDeliveryConnector.ctorParameters = function () { return [
+        { type: CheckoutDeliveryAdapter }
+    ]; };
+
+    var DELIVERY_MODE_NORMALIZER = new i0.InjectionToken('DeliveryModeNormalizer');
+
+    var PaymentTypeAdapter = /** @class */ (function () {
+        function PaymentTypeAdapter() {
+        }
+        return PaymentTypeAdapter;
+    }());
+
+    var PaymentTypeConnector = /** @class */ (function () {
+        function PaymentTypeConnector(adapter) {
+            this.adapter = adapter;
+        }
+        PaymentTypeConnector.prototype.getPaymentTypes = function () {
+            return this.adapter.loadPaymentTypes();
+        };
+        PaymentTypeConnector.prototype.setPaymentType = function (userId, cartId, typeCode, poNumber) {
+            return this.adapter.setPaymentType(userId, cartId, typeCode, poNumber);
+        };
+        return PaymentTypeConnector;
+    }());
+    PaymentTypeConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function PaymentTypeConnector_Factory() { return new PaymentTypeConnector(i0.ɵɵinject(PaymentTypeAdapter)); }, token: PaymentTypeConnector, providedIn: "root" });
+    PaymentTypeConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    PaymentTypeConnector.ctorParameters = function () { return [
+        { type: PaymentTypeAdapter }
+    ]; };
+
+    var PAYMENT_TYPE_NORMALIZER = new i0.InjectionToken('PaymentTypeNormalizer');
+
+    var CheckoutPaymentAdapter = /** @class */ (function () {
+        function CheckoutPaymentAdapter() {
+        }
+        return CheckoutPaymentAdapter;
+    }());
+
+    var CheckoutPaymentConnector = /** @class */ (function () {
+        function CheckoutPaymentConnector(adapter) {
+            this.adapter = adapter;
+        }
+        CheckoutPaymentConnector.prototype.create = function (userId, cartId, paymentDetails) {
+            return this.adapter.create(userId, cartId, paymentDetails);
+        };
+        CheckoutPaymentConnector.prototype.set = function (userId, cartId, paymentDetailsId) {
+            return this.adapter.set(userId, cartId, paymentDetailsId);
+        };
+        CheckoutPaymentConnector.prototype.getCardTypes = function () {
+            return this.adapter.loadCardTypes();
+        };
+        return CheckoutPaymentConnector;
+    }());
+    CheckoutPaymentConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(i0.ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+    CheckoutPaymentConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutPaymentConnector.ctorParameters = function () { return [
+        { type: CheckoutPaymentAdapter }
+    ]; };
+
+    var PAYMENT_DETAILS_NORMALIZER = new i0.InjectionToken('PaymentDetailsNormalizer');
+    var PAYMENT_DETAILS_SERIALIZER = new i0.InjectionToken('PaymentDetailsSerializer');
+    var CARD_TYPE_NORMALIZER = new i0.InjectionToken('CardTypeNormalizer');
+
+    var CheckoutReplenishmentOrderAdapter = /** @class */ (function () {
+        function CheckoutReplenishmentOrderAdapter() {
+        }
+        return CheckoutReplenishmentOrderAdapter;
+    }());
+
+    var CheckoutReplenishmentOrderConnector = /** @class */ (function () {
+        function CheckoutReplenishmentOrderConnector(adapter) {
+            this.adapter = adapter;
+        }
+        CheckoutReplenishmentOrderConnector.prototype.scheduleReplenishmentOrder = function (cartId, scheduleReplenishmentForm, termsChecked, userId) {
+            return this.adapter.scheduleReplenishmentOrder(cartId, scheduleReplenishmentForm, termsChecked, userId);
+        };
+        return CheckoutReplenishmentOrderConnector;
+    }());
+    CheckoutReplenishmentOrderConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutReplenishmentOrderConnector_Factory() { return new CheckoutReplenishmentOrderConnector(i0.ɵɵinject(CheckoutReplenishmentOrderAdapter)); }, token: CheckoutReplenishmentOrderConnector, providedIn: "root" });
+    CheckoutReplenishmentOrderConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutReplenishmentOrderConnector.ctorParameters = function () { return [
+        { type: CheckoutReplenishmentOrderAdapter }
+    ]; };
+
+    var REPLENISHMENT_ORDER_NORMALIZER = new i0.InjectionToken('ReplenishmentOrderNormalizer');
+    var REPLENISHMENT_ORDER_FORM_SERIALIZER = new i0.InjectionToken('ReplenishmentOrderFormSerializer');
+
+    var OccOrderNormalizer = /** @class */ (function () {
+        function OccOrderNormalizer(converter) {
+            this.converter = converter;
+        }
+        OccOrderNormalizer.prototype.convert = function (source, target) {
+            var _this = this;
+            if (target === undefined) {
+                target = Object.assign({}, source);
+            }
+            if (source.entries) {
+                target.entries = source.entries.map(function (entry) { return _this.convertOrderEntry(entry); });
+            }
+            if (source.consignments) {
+                target.consignments = source.consignments.map(function (consignment) { return (Object.assign(Object.assign({}, consignment), { entries: consignment.entries.map(function (entry) { return (Object.assign(Object.assign({}, entry), { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); }) })); });
+            }
+            if (source.unconsignedEntries) {
+                target.unconsignedEntries = source.unconsignedEntries.map(function (entry) { return _this.convertOrderEntry(entry); });
+            }
+            return target;
+        };
+        OccOrderNormalizer.prototype.convertOrderEntry = function (source) {
+            return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+        };
+        return OccOrderNormalizer;
+    }());
+    OccOrderNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
+    OccOrderNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccOrderNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
+
+    var OccReplenishmentOrderFormSerializer = /** @class */ (function () {
+        function OccReplenishmentOrderFormSerializer() {
+        }
+        OccReplenishmentOrderFormSerializer.prototype.convert = function (source, target) {
+            if (target === undefined) {
+                target = Object.assign({}, source);
+            }
+            if (source.replenishmentStartDate) {
+                target.replenishmentStartDate = this.convertDate(source.replenishmentStartDate);
+            }
+            return target;
+        };
+        /**
+         * Converts the date string to the Standard ISO 8601 format
+         */
+        OccReplenishmentOrderFormSerializer.prototype.convertDate = function (date) {
+            var dateTime = '00:00:00';
+            return new Date(date).toISOString().split('T')[0] + 'T' + dateTime + 'Z';
+        };
+        return OccReplenishmentOrderFormSerializer;
+    }());
+    OccReplenishmentOrderFormSerializer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReplenishmentOrderFormSerializer_Factory() { return new OccReplenishmentOrderFormSerializer(); }, token: OccReplenishmentOrderFormSerializer, providedIn: "root" });
+    OccReplenishmentOrderFormSerializer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccReplenishmentOrderFormSerializer.ctorParameters = function () { return []; };
+
+    var OccReplenishmentOrderNormalizer = /** @class */ (function () {
+        function OccReplenishmentOrderNormalizer(converter) {
+            this.converter = converter;
+        }
+        OccReplenishmentOrderNormalizer.prototype.convert = function (source, target) {
+            var _this = this;
+            if (target === undefined) {
+                target = Object.assign({}, source);
+            }
+            if (source.entries) {
+                target.entries = source.entries.map(function (entry) { return _this.convertOrderEntry(entry); });
+            }
+            return target;
+        };
+        OccReplenishmentOrderNormalizer.prototype.convertOrderEntry = function (source) {
+            return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+        };
+        return OccReplenishmentOrderNormalizer;
+    }());
+    OccReplenishmentOrderNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReplenishmentOrderNormalizer_Factory() { return new OccReplenishmentOrderNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccReplenishmentOrderNormalizer, providedIn: "root" });
+    OccReplenishmentOrderNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccReplenishmentOrderNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
+
+    var defaultOccCheckoutConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    setDeliveryAddress: 'users/${userId}/carts/${cartId}/addresses/delivery',
+                    placeOrder: 'users/${userId}/orders?fields=FULL',
+                },
+            },
+        },
+    };
+
+    var OccCheckoutCostCenterAdapter = /** @class */ (function () {
+        function OccCheckoutCostCenterAdapter(http, occEndpoints, converter) {
             this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
-        OccCheckoutAdapter.prototype.getEndpoint = function (userId, subEndpoint) {
-            var orderEndpoint = 'users/' + userId + subEndpoint;
-            return this.occEndpoints.getEndpoint(orderEndpoint);
-        };
-        OccCheckoutAdapter.prototype.placeOrder = function (userId, cartId) {
-            var params = new i1.HttpParams({
-                fromString: 'cartId=' + cartId + '&' + FULL_PARAMS,
-            });
-            var headers = new i1.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            if (userId === OCC_USER_ID_ANONYMOUS) {
-                headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            }
+        OccCheckoutCostCenterAdapter.prototype.setCostCenter = function (userId, cartId, costCenterId) {
+            var httpParams = new i1.HttpParams().set('costCenterId', costCenterId);
+            /* tslint:disable:max-line-length */
+            httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
+            // TODO(#8877): Should we improve configurable endpoints for this use case?
             return this.http
-                .post(this.occEndpoints.getUrl('placeOrder', { userId: userId }), {}, { headers: headers, params: params })
-                .pipe(this.converter.pipeable(ORDER_NORMALIZER));
+                .put(this.getCartEndpoint(userId) + cartId + '/costcenter', {}, {
+                params: httpParams,
+            })
+                .pipe(this.converter.pipeable(CART_NORMALIZER));
         };
-        OccCheckoutAdapter.prototype.loadCheckoutDetails = function (userId, cartId) {
-            var url = this.getEndpoint(userId, CARTS_ENDPOINT) + cartId;
-            var params = new i1.HttpParams({
-                fromString: "fields=" + CHECKOUT_PARAMS,
-            });
-            return this.http.get(url, { params: params });
+        OccCheckoutCostCenterAdapter.prototype.getCartEndpoint = function (userId) {
+            var cartEndpoint = 'users/' + userId + '/carts/';
+            return this.occEndpoints.getEndpoint(cartEndpoint);
         };
-        OccCheckoutAdapter.prototype.clearCheckoutDeliveryAddress = function (userId, cartId) {
-            var url = "" + this.getEndpoint(userId, CARTS_ENDPOINT) + cartId + "/addresses/delivery";
-            return this.http.delete(url);
-        };
-        OccCheckoutAdapter.prototype.clearCheckoutDeliveryMode = function (userId, cartId) {
-            var url = "" + this.getEndpoint(userId, CARTS_ENDPOINT) + cartId + "/deliverymode";
-            return this.http.delete(url);
-        };
-        return OccCheckoutAdapter;
+        return OccCheckoutCostCenterAdapter;
     }());
-    OccCheckoutAdapter.decorators = [
+    OccCheckoutCostCenterAdapter.decorators = [
         { type: i0.Injectable }
     ];
-    OccCheckoutAdapter.ctorParameters = function () { return [
+    OccCheckoutCostCenterAdapter.ctorParameters = function () { return [
         { type: i1.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
-
-    var DELIVERY_MODE_NORMALIZER = new i0.InjectionToken('DeliveryModeNormalizer');
 
     var ADDRESS_NORMALIZER = new i0.InjectionToken('AddressNormalizer');
     var ADDRESS_SERIALIZER = new i0.InjectionToken('AddressSerializer');
@@ -4579,9 +4863,46 @@
         { type: ConverterService }
     ]; };
 
-    var PAYMENT_DETAILS_NORMALIZER = new i0.InjectionToken('PaymentDetailsNormalizer');
-    var PAYMENT_DETAILS_SERIALIZER = new i0.InjectionToken('PaymentDetailsSerializer');
-    var CARD_TYPE_NORMALIZER = new i0.InjectionToken('CardTypeNormalizer');
+    var ENDPOINT_PAYMENT_TYPES = 'paymenttypes';
+    var OccCheckoutPaymentTypeAdapter = /** @class */ (function () {
+        function OccCheckoutPaymentTypeAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        OccCheckoutPaymentTypeAdapter.prototype.loadPaymentTypes = function () {
+            return this.http
+                .get(this.occEndpoints.getEndpoint(ENDPOINT_PAYMENT_TYPES))
+                .pipe(operators.map(function (paymentTypeList) { return paymentTypeList.paymentTypes; }), this.converter.pipeableMany(PAYMENT_TYPE_NORMALIZER));
+        };
+        OccCheckoutPaymentTypeAdapter.prototype.setPaymentType = function (userId, cartId, paymentType, purchaseOrderNumber) {
+            var httpParams = new i1.HttpParams().set('paymentType', paymentType);
+            if (purchaseOrderNumber !== undefined) {
+                httpParams = httpParams.set('purchaseOrderNumber', purchaseOrderNumber);
+            }
+            /* tslint:disable:max-line-length */
+            httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
+            // TODO(#8877): Should we improve configurable endpoints for this use case?
+            return this.http
+                .put(this.getCartEndpoint(userId) + cartId + '/paymenttype', {}, {
+                params: httpParams,
+            })
+                .pipe(this.converter.pipeable(CART_NORMALIZER));
+        };
+        OccCheckoutPaymentTypeAdapter.prototype.getCartEndpoint = function (userId) {
+            var cartEndpoint = 'users/' + userId + '/carts/';
+            return this.occEndpoints.getEndpoint(cartEndpoint);
+        };
+        return OccCheckoutPaymentTypeAdapter;
+    }());
+    OccCheckoutPaymentTypeAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCheckoutPaymentTypeAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var ENDPOINT_CARD_TYPES = 'cardtypes';
     var OccCheckoutPaymentAdapter = /** @class */ (function () {
@@ -4731,154 +5052,6089 @@
         { type: ConverterService }
     ]; };
 
-    var PAYMENT_TYPE_NORMALIZER = new i0.InjectionToken('PaymentTypeNormalizer');
-
-    var ENDPOINT_PAYMENT_TYPES = 'paymenttypes';
-    var OccCheckoutPaymentTypeAdapter = /** @class */ (function () {
-        function OccCheckoutPaymentTypeAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
+    /**
+     * Abstract class that can be used to resolve meta data for specific pages.
+     * The `getScore` method is used to select the right resolver for a specific
+     * page, based on a score. The score is calculated by the (non)matching page
+     * type and page template.
+     */
+    var PageMetaResolver = /** @class */ (function () {
+        function PageMetaResolver() {
         }
-        OccCheckoutPaymentTypeAdapter.prototype.loadPaymentTypes = function () {
-            return this.http
-                .get(this.occEndpoints.getEndpoint(ENDPOINT_PAYMENT_TYPES))
-                .pipe(operators.map(function (paymentTypeList) { return paymentTypeList.paymentTypes; }), this.converter.pipeableMany(PAYMENT_TYPE_NORMALIZER));
-        };
-        OccCheckoutPaymentTypeAdapter.prototype.setPaymentType = function (userId, cartId, paymentType, purchaseOrderNumber) {
-            var httpParams = new i1.HttpParams().set('paymentType', paymentType);
-            if (purchaseOrderNumber !== undefined) {
-                httpParams = httpParams.set('purchaseOrderNumber', purchaseOrderNumber);
+        /**
+         * Returns the matching score for a resolver class, based on
+         * the page type and page template.
+         */
+        PageMetaResolver.prototype.getScore = function (page) {
+            var score = 0;
+            if (this.pageType) {
+                score += page.type === this.pageType ? 1 : -1;
             }
-            /* tslint:disable:max-line-length */
-            httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
-            // TODO(#8877): Should we improve configurable endpoints for this use case?
-            return this.http
-                .put(this.getCartEndpoint(userId) + cartId + '/paymenttype', {}, {
-                params: httpParams,
-            })
-                .pipe(this.converter.pipeable(CART_NORMALIZER));
+            if (this.pageTemplate) {
+                score += page.template === this.pageTemplate ? 1 : -1;
+            }
+            return score;
         };
-        OccCheckoutPaymentTypeAdapter.prototype.getCartEndpoint = function (userId) {
-            var cartEndpoint = 'users/' + userId + '/carts/';
-            return this.occEndpoints.getEndpoint(cartEndpoint);
+        PageMetaResolver.prototype.hasMatch = function (page) {
+            return this.getScore(page) > 0;
         };
-        return OccCheckoutPaymentTypeAdapter;
-    }());
-    OccCheckoutPaymentTypeAdapter.decorators = [
-        { type: i0.Injectable }
-    ];
-    OccCheckoutPaymentTypeAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
-        { type: OccEndpointsService },
-        { type: ConverterService }
-    ]; };
-
-    var OccCheckoutCostCenterAdapter = /** @class */ (function () {
-        function OccCheckoutCostCenterAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        OccCheckoutCostCenterAdapter.prototype.setCostCenter = function (userId, cartId, costCenterId) {
-            var httpParams = new i1.HttpParams().set('costCenterId', costCenterId);
-            /* tslint:disable:max-line-length */
-            httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
-            // TODO(#8877): Should we improve configurable endpoints for this use case?
-            return this.http
-                .put(this.getCartEndpoint(userId) + cartId + '/costcenter', {}, {
-                params: httpParams,
-            })
-                .pipe(this.converter.pipeable(CART_NORMALIZER));
+        PageMetaResolver.prototype.getPriority = function (page) {
+            return this.getScore(page);
         };
-        OccCheckoutCostCenterAdapter.prototype.getCartEndpoint = function (userId) {
-            var cartEndpoint = 'users/' + userId + '/carts/';
-            return this.occEndpoints.getEndpoint(cartEndpoint);
-        };
-        return OccCheckoutCostCenterAdapter;
-    }());
-    OccCheckoutCostCenterAdapter.decorators = [
-        { type: i0.Injectable }
-    ];
-    OccCheckoutCostCenterAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
-        { type: OccEndpointsService },
-        { type: ConverterService }
-    ]; };
-
-    var CheckoutAdapter = /** @class */ (function () {
-        function CheckoutAdapter() {
-        }
-        return CheckoutAdapter;
+        return PageMetaResolver;
     }());
 
-    var OccOrderNormalizer = /** @class */ (function () {
-        function OccOrderNormalizer(converter) {
-            this.converter = converter;
-        }
-        OccOrderNormalizer.prototype.convert = function (source, target) {
+    // PRIVATE API
+    /**
+     * Allows for dynamic adding and removing source observables
+     * and exposes them as one merged observable at a property `output$`.
+     *
+     * Thanks to the `share()` operator used inside, it subscribes to source observables
+     * only when someone subscribes to it. And it unsubscribes from source observables
+     * when the counter of consumers drops to 0.
+     *
+     * **To avoid memory leaks**, all manually added sources should be manually removed
+     * when not plan to emit values anymore. In particular closed event sources won't be
+     * automatically removed.
+     */
+    var MergingSubject = /** @class */ (function () {
+        function MergingSubject() {
             var _this = this;
-            if (target === undefined) {
-                target = Object.assign({}, source);
+            /**
+             * List of already added sources (but not removed yet)
+             */
+            this.sources = [];
+            /**
+             * For each source: it stores a subscription responsible for
+             * passing all values from source to the consumer
+             */
+            this.subscriptionsToSources = new Map();
+            /**
+             * Observable with all sources merged.
+             *
+             * Only after subscribing to it, under the hood it subscribes to the source observables.
+             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
+             * But if later on something subscribes to it again, it subscribes to the source observables again.
+             *
+             * It multicasts the emissions for each subscriber.
+             */
+            this.output$ = new rxjs.Observable(function (consumer) {
+                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
+                // that is piped right after this observable.
+                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
+                // from this observable (by the nature `refCount`-nature of the `share()` operator).
+                _this.consumer = consumer;
+                _this.bindAllSourcesToConsumer(consumer);
+                return function () {
+                    _this.consumer = null;
+                    _this.unbindAllSourcesFromConsumer();
+                };
+            }).pipe(operators.share());
+            /**
+             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
+             * For more, see docs of the `output$` observable;
+             */
+            this.consumer = null;
+        }
+        /**
+         * Registers the given source to pass its values to the `output$` observable.
+         *
+         * It does nothing, when the source has been already added (but not removed yet).
+         */
+        MergingSubject.prototype.add = function (source) {
+            if (this.has(source)) {
+                return;
             }
-            if (source.entries) {
-                target.entries = source.entries.map(function (entry) { return _this.convertOrderEntry(entry); });
+            if (this.consumer) {
+                this.bindSourceToConsumer(source, this.consumer);
             }
-            if (source.consignments) {
-                target.consignments = source.consignments.map(function (consignment) { return (Object.assign(Object.assign({}, consignment), { entries: consignment.entries.map(function (entry) { return (Object.assign(Object.assign({}, entry), { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); }) })); });
-            }
-            if (source.unconsignedEntries) {
-                target.unconsignedEntries = source.unconsignedEntries.map(function (entry) { return _this.convertOrderEntry(entry); });
-            }
-            return target;
+            this.sources.push(source);
         };
-        OccOrderNormalizer.prototype.convertOrderEntry = function (source) {
-            return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+        /**
+         * Starts passing all values from already added sources to consumer
+         */
+        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
+            var _this = this;
+            this.sources.forEach(function (source) { return _this.bindSourceToConsumer(source, consumer); });
         };
-        return OccOrderNormalizer;
+        /**
+         * Stops passing all values from already added sources to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
+            var _this = this;
+            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
+        };
+        /**
+         * Starts passing all values from a single source to consumer
+         */
+        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
+            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
+            this.subscriptionsToSources.set(source, subscriptionToSource);
+        };
+        /**
+         * Stops passing all values from a single source to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
+            var subscriptionToSource = this.subscriptionsToSources.get(source);
+            if (subscriptionToSource !== undefined) {
+                subscriptionToSource.unsubscribe();
+                this.subscriptionsToSources.delete(source);
+            }
+        };
+        /**
+         * Unregisters the given source so it stops passing its values to `output$` observable.
+         *
+         * Should be used when a source is no longer maintained **to avoid memory leaks**.
+         */
+        MergingSubject.prototype.remove = function (source) {
+            // clear binding from source to consumer (if any consumer exists at the moment)
+            this.unbindSourceFromConsumer(source);
+            // remove source from array
+            var i;
+            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
+                this.sources.splice(i, 1);
+            }
+        };
+        /**
+         * Returns whether the given source has been already addded
+         */
+        MergingSubject.prototype.has = function (source) {
+            return this.sources.includes(source);
+        };
+        return MergingSubject;
     }());
-    OccOrderNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
-    OccOrderNormalizer.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+
+    /**
+     * A service to register and observe event sources. Events are driven by event types, which are class signatures
+     * for the given event.
+     *
+     * It is possible to register multiple sources to a single event, even without
+     * knowing as multiple decoupled features can attach sources to the same
+     * event type.
+     */
+    var EventService = /** @class */ (function () {
+        function EventService() {
+            /**
+             * The various events meta are collected in a map, stored by the event type class
+             */
+            this.eventsMeta = new Map();
+        }
+        /**
+         * Register an event source for the given event type.
+         *
+         * CAUTION: To avoid memory leaks, the returned teardown function should be called
+         *  when the event source is no longer maintained by its creator
+         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
+         *
+         * @param eventType the event type
+         * @param source$ an observable that represents the source
+         *
+         * @returns a teardown function which unregisters the given event source
+         */
+        EventService.prototype.register = function (eventType, source$) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (eventMeta.mergingSubject.has(source$)) {
+                if (i0.isDevMode()) {
+                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
+                }
+            }
+            else {
+                eventMeta.mergingSubject.add(source$);
+            }
+            return function () { return eventMeta.mergingSubject.remove(source$); };
+        };
+        /**
+         * Returns a stream of events for the given event type
+         * @param eventTypes event type
+         */
+        EventService.prototype.get = function (eventType) {
+            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
+            if (i0.isDevMode()) {
+                output$ = this.getValidatedEventStream(output$, eventType);
+            }
+            return output$;
+        };
+        /**
+         * Dispatches an instance of an individual event.
+         */
+        EventService.prototype.dispatch = function (event) {
+            var eventType = event.constructor;
+            var inputSubject$ = this.getInputSubject(eventType);
+            inputSubject$.next(event);
+        };
+        /**
+         * Returns the input subject used to dispatch a single event.
+         * The subject is created on demand, when it's needed for the first time.
+         * @param eventType type of event
+         */
+        EventService.prototype.getInputSubject = function (eventType) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (!eventMeta.inputSubject$) {
+                eventMeta.inputSubject$ = new rxjs.Subject();
+                this.register(eventType, eventMeta.inputSubject$);
+            }
+            return eventMeta.inputSubject$;
+        };
+        /**
+         * Returns the event meta object for the given event type
+         */
+        EventService.prototype.getEventMeta = function (eventType) {
+            if (i0.isDevMode()) {
+                this.validateEventType(eventType);
+            }
+            if (!this.eventsMeta.get(eventType)) {
+                this.createEventMeta(eventType);
+            }
+            return this.eventsMeta.get(eventType);
+        };
+        /**
+         * Creates the event meta object for the given event type
+         */
+        EventService.prototype.createEventMeta = function (eventType) {
+            this.eventsMeta.set(eventType, {
+                inputSubject$: null,
+                mergingSubject: new MergingSubject(),
+            });
+        };
+        /**
+         * Checks if the event type is a valid type (is a class with constructor).
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.validateEventType = function (eventType) {
+            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
+                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
+            }
+        };
+        /**
+         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
+            return source$.pipe(operators.tap(function (event) {
+                if (!(event instanceof eventType)) {
+                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
+                }
+            }));
+        };
+        return EventService;
+    }());
+    EventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+    EventService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
-    OccOrderNormalizer.ctorParameters = function () { return [
-        { type: ConverterService }
+
+    /**
+     * Creates an instance of the given class and fills its properties with the given data.
+     *
+     * @param type reference to the class
+     * @param data object with properties to be copied to the class
+     */
+    function createFrom(type, data) {
+        return Object.assign(new type(), data);
+    }
+
+    /**
+     * Registers streams of ngrx actions as events source streams
+     */
+    var StateEventService = /** @class */ (function () {
+        function StateEventService(actionsSubject, eventService) {
+            this.actionsSubject = actionsSubject;
+            this.eventService = eventService;
+        }
+        /**
+         * Registers an event source stream of specific events
+         * mapped from a given action type.
+         *
+         * @param mapping mapping from action to event
+         *
+         * @returns a teardown function that unregisters the event source
+         */
+        StateEventService.prototype.register = function (mapping) {
+            return this.eventService.register(mapping.event, this.getFromAction(mapping));
+        };
+        /**
+         * Returns a stream of specific events mapped from a specific action.
+         * @param mapping mapping from action to event
+         */
+        StateEventService.prototype.getFromAction = function (mapping) {
+            var _this = this;
+            return this.actionsSubject
+                .pipe(i3.ofType.apply(void 0, __spread([].concat(mapping.action))))
+                .pipe(operators.map(function (action) { return _this.createEvent(action, mapping.event, mapping.factory); }));
+        };
+        /**
+         * Creates an event instance for given class out from the action object.
+         * Unless the `factory` parameter is given, the action's `payload` is used
+         * as the argument for the event's constructor.
+         *
+         * @param action instance of an Action
+         * @param mapping mapping from action to event
+         * @param factory optional function getting an action instance and returning an event instance
+         *
+         * @returns instance of an Event
+         */
+        StateEventService.prototype.createEvent = function (action, eventType, factory) {
+            var _a;
+            return factory
+                ? factory(action)
+                : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
+        };
+        return StateEventService;
+    }());
+    StateEventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(i0.ɵɵinject(i1$1.ActionsSubject), i0.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
+    StateEventService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    StateEventService.ctorParameters = function () { return [
+        { type: i1$1.ActionsSubject },
+        { type: EventService }
     ]; };
 
-    var CheckoutDeliveryAdapter = /** @class */ (function () {
-        function CheckoutDeliveryAdapter() {
+    var VERIFY_ADDRESS = '[Checkout] Verify Address';
+    var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
+    var VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
+    var CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
+    var VerifyAddress = /** @class */ (function () {
+        function VerifyAddress(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS;
         }
-        return CheckoutDeliveryAdapter;
+        return VerifyAddress;
+    }());
+    var VerifyAddressFail = /** @class */ (function () {
+        function VerifyAddressFail(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS_FAIL;
+        }
+        return VerifyAddressFail;
+    }());
+    var VerifyAddressSuccess = /** @class */ (function () {
+        function VerifyAddressSuccess(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS_SUCCESS;
+        }
+        return VerifyAddressSuccess;
+    }());
+    var ClearAddressVerificationResults = /** @class */ (function () {
+        function ClearAddressVerificationResults() {
+            this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
+        }
+        return ClearAddressVerificationResults;
     }());
 
-    var CheckoutPaymentAdapter = /** @class */ (function () {
-        function CheckoutPaymentAdapter() {
+    var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
+    var LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
+    var LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
+    var LoadCardTypes = /** @class */ (function () {
+        function LoadCardTypes() {
+            this.type = LOAD_CARD_TYPES;
         }
-        return CheckoutPaymentAdapter;
+        return LoadCardTypes;
+    }());
+    var LoadCardTypesFail = /** @class */ (function () {
+        function LoadCardTypesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_CARD_TYPES_FAIL;
+        }
+        return LoadCardTypesFail;
+    }());
+    var LoadCardTypesSuccess = /** @class */ (function () {
+        function LoadCardTypesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_CARD_TYPES_SUCCESS;
+        }
+        return LoadCardTypesSuccess;
     }());
 
-    var PaymentTypeAdapter = /** @class */ (function () {
-        function PaymentTypeAdapter() {
+    var MULTI_CART_FEATURE = 'cart';
+    var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
+    // TODO(#7241): Drop after event system implementation for cart vouchers
+    /**
+     * Add voucher process const
+     * @deprecated since 2.0
+     */
+    var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
+
+    var PROCESS_FEATURE = 'process';
+
+    var CHECKOUT_FEATURE = 'checkout';
+    var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+    var SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
+    var SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
+    var SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
+    var SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
+    var GET_PAYMENT_TYPES_PROCESS_ID = 'getPaymentTypes';
+    var SET_COST_CENTER_PROCESS_ID = 'setCostCenter';
+    var PLACED_ORDER_PROCESS_ID = 'placeOrder';
+
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
+    var CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
+    var CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
+    var CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
+    var ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
+    var ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
+    var ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
+    var SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
+    var SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
+    var SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
+    var RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
+    var LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
+    var LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
+    var LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
+    var CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
+    var SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
+    var SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
+    var SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
+    var RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
+    var SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
+    var SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
+    var SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
+    var RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
+    var CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
+    var CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
+    var CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
+    var SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
+    var SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
+    var SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
+    var RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
+    var PLACE_ORDER = '[Checkout] Place Order';
+    var PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
+    var PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
+    var CLEAR_PLACE_ORDER = '[Checkout] Clear Place Order';
+    var CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
+    var CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
+    var LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
+    var LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
+    var LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
+    var CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
+    var PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
+    var SET_COST_CENTER = '[Checkout] Set Cost Center';
+    var SET_COST_CENTER_FAIL = '[Checkout] Set Cost Center Fail';
+    var SET_COST_CENTER_SUCCESS = '[Checkout] Set Cost Center Success';
+    var RESET_SET_COST_CENTER_PROCESS = '[Checkout] Reset Set Cost Center Process';
+    var AddDeliveryAddress = /** @class */ (function () {
+        function AddDeliveryAddress(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS;
         }
-        return PaymentTypeAdapter;
+        return AddDeliveryAddress;
+    }());
+    var AddDeliveryAddressFail = /** @class */ (function () {
+        function AddDeliveryAddressFail(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS_FAIL;
+        }
+        return AddDeliveryAddressFail;
+    }());
+    var AddDeliveryAddressSuccess = /** @class */ (function () {
+        function AddDeliveryAddressSuccess(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
+        }
+        return AddDeliveryAddressSuccess;
+    }());
+    var SetDeliveryAddress = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddress, _super);
+        function SetDeliveryAddress(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS;
+            return _this;
+        }
+        return SetDeliveryAddress;
+    }(EntityLoadAction));
+    var SetDeliveryAddressFail = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddressFail, _super);
+        function SetDeliveryAddressFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS_FAIL;
+            return _this;
+        }
+        return SetDeliveryAddressFail;
+    }(EntityFailAction));
+    var SetDeliveryAddressSuccess = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddressSuccess, _super);
+        function SetDeliveryAddressSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS_SUCCESS;
+            return _this;
+        }
+        return SetDeliveryAddressSuccess;
+    }(EntitySuccessAction));
+    var ResetSetDeliveryAddressProcess = /** @class */ (function (_super) {
+        __extends(ResetSetDeliveryAddressProcess, _super);
+        function ResetSetDeliveryAddressProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
+            return _this;
+        }
+        return ResetSetDeliveryAddressProcess;
+    }(EntityLoaderResetAction));
+    var LoadSupportedDeliveryModes = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModes, _super);
+        function LoadSupportedDeliveryModes(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES;
+            return _this;
+        }
+        return LoadSupportedDeliveryModes;
+    }(EntityLoadAction));
+    var LoadSupportedDeliveryModesFail = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModesFail, _super);
+        function LoadSupportedDeliveryModesFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
+            return _this;
+        }
+        return LoadSupportedDeliveryModesFail;
+    }(EntityFailAction));
+    var LoadSupportedDeliveryModesSuccess = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModesSuccess, _super);
+        function LoadSupportedDeliveryModesSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
+            return _this;
+        }
+        return LoadSupportedDeliveryModesSuccess;
+    }(EntitySuccessAction));
+    var ResetLoadSupportedDeliveryModesProcess = /** @class */ (function (_super) {
+        __extends(ResetLoadSupportedDeliveryModesProcess, _super);
+        function ResetLoadSupportedDeliveryModesProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
+            return _this;
+        }
+        return ResetLoadSupportedDeliveryModesProcess;
+    }(EntityLoaderResetAction));
+    var SetDeliveryMode = /** @class */ (function (_super) {
+        __extends(SetDeliveryMode, _super);
+        function SetDeliveryMode(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE;
+            return _this;
+        }
+        return SetDeliveryMode;
+    }(EntityLoadAction));
+    var SetDeliveryModeFail = /** @class */ (function (_super) {
+        __extends(SetDeliveryModeFail, _super);
+        function SetDeliveryModeFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE_FAIL;
+            return _this;
+        }
+        return SetDeliveryModeFail;
+    }(EntityFailAction));
+    var SetDeliveryModeSuccess = /** @class */ (function (_super) {
+        __extends(SetDeliveryModeSuccess, _super);
+        function SetDeliveryModeSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE_SUCCESS;
+            return _this;
+        }
+        return SetDeliveryModeSuccess;
+    }(EntitySuccessAction));
+    var ResetSetDeliveryModeProcess = /** @class */ (function (_super) {
+        __extends(ResetSetDeliveryModeProcess, _super);
+        function ResetSetDeliveryModeProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.type = RESET_SET_DELIVERY_MODE_PROCESS;
+            return _this;
+        }
+        return ResetSetDeliveryModeProcess;
+    }(EntityLoaderResetAction));
+    var CreatePaymentDetails = /** @class */ (function (_super) {
+        __extends(CreatePaymentDetails, _super);
+        function CreatePaymentDetails(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CREATE_PAYMENT_DETAILS;
+            return _this;
+        }
+        return CreatePaymentDetails;
+    }(EntityLoadAction));
+    var CreatePaymentDetailsFail = /** @class */ (function (_super) {
+        __extends(CreatePaymentDetailsFail, _super);
+        function CreatePaymentDetailsFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CREATE_PAYMENT_DETAILS_FAIL;
+            return _this;
+        }
+        return CreatePaymentDetailsFail;
+    }(EntityFailAction));
+    var CreatePaymentDetailsSuccess = /** @class */ (function () {
+        function CreatePaymentDetailsSuccess(payload) {
+            this.payload = payload;
+            this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
+        }
+        return CreatePaymentDetailsSuccess;
+    }());
+    var PaymentProcessSuccess = /** @class */ (function (_super) {
+        __extends(PaymentProcessSuccess, _super);
+        function PaymentProcessSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.type = PAYMENT_PROCESS_SUCCESS;
+            return _this;
+        }
+        return PaymentProcessSuccess;
+    }(EntitySuccessAction));
+    var SetPaymentDetails = /** @class */ (function (_super) {
+        __extends(SetPaymentDetails, _super);
+        function SetPaymentDetails(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS;
+            return _this;
+        }
+        return SetPaymentDetails;
+    }(EntityLoadAction));
+    var SetPaymentDetailsFail = /** @class */ (function (_super) {
+        __extends(SetPaymentDetailsFail, _super);
+        function SetPaymentDetailsFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS_FAIL;
+            return _this;
+        }
+        return SetPaymentDetailsFail;
+    }(EntityFailAction));
+    var SetPaymentDetailsSuccess = /** @class */ (function (_super) {
+        __extends(SetPaymentDetailsSuccess, _super);
+        function SetPaymentDetailsSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS_SUCCESS;
+            return _this;
+        }
+        return SetPaymentDetailsSuccess;
+    }(EntitySuccessAction));
+    var ResetSetPaymentDetailsProcess = /** @class */ (function (_super) {
+        __extends(ResetSetPaymentDetailsProcess, _super);
+        function ResetSetPaymentDetailsProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
+            return _this;
+        }
+        return ResetSetPaymentDetailsProcess;
+    }(EntityLoaderResetAction));
+    var PlaceOrder = /** @class */ (function (_super) {
+        __extends(PlaceOrder, _super);
+        function PlaceOrder(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = PLACE_ORDER;
+            return _this;
+        }
+        return PlaceOrder;
+    }(EntityLoadAction));
+    var PlaceOrderFail = /** @class */ (function (_super) {
+        __extends(PlaceOrderFail, _super);
+        function PlaceOrderFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = PLACE_ORDER_FAIL;
+            return _this;
+        }
+        return PlaceOrderFail;
+    }(EntityFailAction));
+    var PlaceOrderSuccess = /** @class */ (function (_super) {
+        __extends(PlaceOrderSuccess, _super);
+        function PlaceOrderSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = PLACE_ORDER_SUCCESS;
+            return _this;
+        }
+        return PlaceOrderSuccess;
+    }(EntitySuccessAction));
+    var ClearPlaceOrder = /** @class */ (function (_super) {
+        __extends(ClearPlaceOrder, _super);
+        function ClearPlaceOrder() {
+            var _this = _super.call(this, PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID) || this;
+            _this.type = CLEAR_PLACE_ORDER;
+            return _this;
+        }
+        return ClearPlaceOrder;
+    }(EntityLoaderResetAction));
+    var ClearSupportedDeliveryModes = /** @class */ (function () {
+        function ClearSupportedDeliveryModes() {
+            this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
+        }
+        return ClearSupportedDeliveryModes;
+    }());
+    var ClearCheckoutStep = /** @class */ (function () {
+        function ClearCheckoutStep(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_STEP;
+        }
+        return ClearCheckoutStep;
+    }());
+    var ClearCheckoutData = /** @class */ (function () {
+        function ClearCheckoutData() {
+            this.type = CLEAR_CHECKOUT_DATA;
+        }
+        return ClearCheckoutData;
+    }());
+    var LoadCheckoutDetails = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetails, _super);
+        function LoadCheckoutDetails(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS;
+            return _this;
+        }
+        return LoadCheckoutDetails;
+    }(LoaderLoadAction));
+    var LoadCheckoutDetailsFail = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetailsFail, _super);
+        function LoadCheckoutDetailsFail(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS_FAIL;
+            return _this;
+        }
+        return LoadCheckoutDetailsFail;
+    }(LoaderFailAction));
+    var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetailsSuccess, _super);
+        function LoadCheckoutDetailsSuccess(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
+            return _this;
+        }
+        return LoadCheckoutDetailsSuccess;
+    }(LoaderSuccessAction));
+    var CheckoutClearMiscsData = /** @class */ (function () {
+        function CheckoutClearMiscsData() {
+            this.type = CHECKOUT_CLEAR_MISCS_DATA;
+        }
+        return CheckoutClearMiscsData;
+    }());
+    var ClearCheckoutDeliveryAddress = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddress(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
+        }
+        return ClearCheckoutDeliveryAddress;
+    }());
+    var ClearCheckoutDeliveryAddressSuccess = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddressSuccess() {
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
+        }
+        return ClearCheckoutDeliveryAddressSuccess;
+    }());
+    var ClearCheckoutDeliveryAddressFail = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddressFail(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
+        }
+        return ClearCheckoutDeliveryAddressFail;
+    }());
+    var ClearCheckoutDeliveryMode = /** @class */ (function (_super) {
+        __extends(ClearCheckoutDeliveryMode, _super);
+        function ClearCheckoutDeliveryMode(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
+            return _this;
+        }
+        return ClearCheckoutDeliveryMode;
+    }(EntityProcessesIncrementAction));
+    var ClearCheckoutDeliveryModeSuccess = /** @class */ (function (_super) {
+        __extends(ClearCheckoutDeliveryModeSuccess, _super);
+        function ClearCheckoutDeliveryModeSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
+            return _this;
+        }
+        return ClearCheckoutDeliveryModeSuccess;
+    }(EntityProcessesDecrementAction));
+    var ClearCheckoutDeliveryModeFail = /** @class */ (function (_super) {
+        __extends(ClearCheckoutDeliveryModeFail, _super);
+        function ClearCheckoutDeliveryModeFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
+            return _this;
+        }
+        return ClearCheckoutDeliveryModeFail;
+    }(EntityProcessesDecrementAction));
+    var SetCostCenter = /** @class */ (function (_super) {
+        __extends(SetCostCenter, _super);
+        function SetCostCenter(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_COST_CENTER;
+            return _this;
+        }
+        return SetCostCenter;
+    }(EntityLoadAction));
+    var SetCostCenterFail = /** @class */ (function (_super) {
+        __extends(SetCostCenterFail, _super);
+        function SetCostCenterFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_COST_CENTER_FAIL;
+            return _this;
+        }
+        return SetCostCenterFail;
+    }(EntityFailAction));
+    var SetCostCenterSuccess = /** @class */ (function (_super) {
+        __extends(SetCostCenterSuccess, _super);
+        function SetCostCenterSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_COST_CENTER_SUCCESS;
+            return _this;
+        }
+        return SetCostCenterSuccess;
+    }(EntitySuccessAction));
+    var ResetSetCostCenterProcess = /** @class */ (function (_super) {
+        __extends(ResetSetCostCenterProcess, _super);
+        function ResetSetCostCenterProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID) || this;
+            _this.type = RESET_SET_COST_CENTER_PROCESS;
+            return _this;
+        }
+        return ResetSetCostCenterProcess;
+    }(EntityLoaderResetAction));
+
+    var SET_ORDER_TYPE = '[Checkout] Set Order Type';
+    var SetOrderType = /** @class */ (function () {
+        function SetOrderType(payload) {
+            this.payload = payload;
+            this.type = SET_ORDER_TYPE;
+        }
+        return SetOrderType;
     }());
 
-    var defaultOccCheckoutConfig = {
-        backend: {
-            occ: {
-                endpoints: {
-                    setDeliveryAddress: 'users/${userId}/carts/${cartId}/addresses/delivery',
-                    placeOrder: 'users/${userId}/orders',
-                },
-            },
+    var LOAD_PAYMENT_TYPES = '[Checkout] Load Payment Types';
+    var LOAD_PAYMENT_TYPES_FAIL = '[Checkout] Load Payment Types Fail';
+    var LOAD_PAYMENT_TYPES_SUCCESS = '[Checkout] Load Payment Types Success';
+    var RESET_LOAD_PAYMENT_TYPES_PROCESS_ID = '[Checkout] Reset Load Payment Type Process';
+    var SET_PAYMENT_TYPE = '[Checkout] Set Payment Type';
+    var SET_PAYMENT_TYPE_FAIL = '[Checkout] Set Payment Type Fail';
+    var SET_PAYMENT_TYPE_SUCCESS = '[Checkout] Set Payment Type Success';
+    var LoadPaymentTypes = /** @class */ (function (_super) {
+        __extends(LoadPaymentTypes, _super);
+        function LoadPaymentTypes() {
+            var _this = _super.call(this, PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID) || this;
+            _this.type = LOAD_PAYMENT_TYPES;
+            return _this;
+        }
+        return LoadPaymentTypes;
+    }(EntityLoadAction));
+    var LoadPaymentTypesFail = /** @class */ (function (_super) {
+        __extends(LoadPaymentTypesFail, _super);
+        function LoadPaymentTypesFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_PAYMENT_TYPES_FAIL;
+            return _this;
+        }
+        return LoadPaymentTypesFail;
+    }(EntityFailAction));
+    var LoadPaymentTypesSuccess = /** @class */ (function (_super) {
+        __extends(LoadPaymentTypesSuccess, _super);
+        function LoadPaymentTypesSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_PAYMENT_TYPES_SUCCESS;
+            return _this;
+        }
+        return LoadPaymentTypesSuccess;
+    }(EntitySuccessAction));
+    var ResetLoadPaymentTypesProcess = /** @class */ (function (_super) {
+        __extends(ResetLoadPaymentTypesProcess, _super);
+        function ResetLoadPaymentTypesProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID) || this;
+            _this.type = RESET_LOAD_PAYMENT_TYPES_PROCESS_ID;
+            return _this;
+        }
+        return ResetLoadPaymentTypesProcess;
+    }(EntityLoaderResetAction));
+    var SetPaymentType = /** @class */ (function () {
+        function SetPaymentType(payload) {
+            this.payload = payload;
+            this.type = SET_PAYMENT_TYPE;
+        }
+        return SetPaymentType;
+    }());
+    var SetPaymentTypeFail = /** @class */ (function () {
+        function SetPaymentTypeFail(payload) {
+            this.payload = payload;
+            this.type = SET_PAYMENT_TYPE_FAIL;
+        }
+        return SetPaymentTypeFail;
+    }());
+    var SetPaymentTypeSuccess = /** @class */ (function () {
+        function SetPaymentTypeSuccess(payload) {
+            this.payload = payload;
+            this.type = SET_PAYMENT_TYPE_SUCCESS;
+        }
+        return SetPaymentTypeSuccess;
+    }());
+
+    var SCHEDULE_REPLENISHMENT_ORDER = '[Checkout] Schedule Replenishment Order';
+    var SCHEDULE_REPLENISHMENT_ORDER_SUCCESS = '[Checkout] Schedule Replenishment Order Success';
+    var SCHEDULE_REPLENISHMENT_ORDER_FAIL = '[Checkout] Schedule Replenishment Order Fail';
+    var CLEAR_SCHEDULE_REPLENISHMENT_ORDER = '[Checkout] Clear Schedule Replenishment Data';
+    var ScheduleReplenishmentOrder = /** @class */ (function (_super) {
+        __extends(ScheduleReplenishmentOrder, _super);
+        function ScheduleReplenishmentOrder(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SCHEDULE_REPLENISHMENT_ORDER;
+            return _this;
+        }
+        return ScheduleReplenishmentOrder;
+    }(EntityLoadAction));
+    var ScheduleReplenishmentOrderSuccess = /** @class */ (function (_super) {
+        __extends(ScheduleReplenishmentOrderSuccess, _super);
+        function ScheduleReplenishmentOrderSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SCHEDULE_REPLENISHMENT_ORDER_SUCCESS;
+            return _this;
+        }
+        return ScheduleReplenishmentOrderSuccess;
+    }(EntitySuccessAction));
+    var ScheduleReplenishmentOrderFail = /** @class */ (function (_super) {
+        __extends(ScheduleReplenishmentOrderFail, _super);
+        function ScheduleReplenishmentOrderFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SCHEDULE_REPLENISHMENT_ORDER_FAIL;
+            return _this;
+        }
+        return ScheduleReplenishmentOrderFail;
+    }(EntityFailAction));
+    var ClearScheduleReplenishmentOrderAction = /** @class */ (function (_super) {
+        __extends(ClearScheduleReplenishmentOrderAction, _super);
+        function ClearScheduleReplenishmentOrderAction() {
+            var _this = _super.call(this, PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID) || this;
+            _this.type = CLEAR_SCHEDULE_REPLENISHMENT_ORDER;
+            return _this;
+        }
+        return ClearScheduleReplenishmentOrderAction;
+    }(EntityLoaderResetAction));
+
+    var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        VERIFY_ADDRESS: VERIFY_ADDRESS,
+        VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
+        VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
+        CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
+        VerifyAddress: VerifyAddress,
+        VerifyAddressFail: VerifyAddressFail,
+        VerifyAddressSuccess: VerifyAddressSuccess,
+        ClearAddressVerificationResults: ClearAddressVerificationResults,
+        LOAD_CARD_TYPES: LOAD_CARD_TYPES,
+        LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
+        LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
+        LoadCardTypes: LoadCardTypes,
+        LoadCardTypesFail: LoadCardTypesFail,
+        LoadCardTypesSuccess: LoadCardTypesSuccess,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
+        CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
+        CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
+        CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
+        ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
+        ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
+        ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
+        SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
+        SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
+        SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
+        RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
+        LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
+        LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
+        LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
+        CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
+        SET_DELIVERY_MODE: SET_DELIVERY_MODE,
+        SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
+        SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
+        RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
+        SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
+        SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
+        SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
+        RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
+        CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
+        CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
+        CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
+        SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
+        SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
+        SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
+        RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
+        PLACE_ORDER: PLACE_ORDER,
+        PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
+        PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
+        CLEAR_PLACE_ORDER: CLEAR_PLACE_ORDER,
+        CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
+        CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
+        LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
+        LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
+        LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
+        CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
+        PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
+        SET_COST_CENTER: SET_COST_CENTER,
+        SET_COST_CENTER_FAIL: SET_COST_CENTER_FAIL,
+        SET_COST_CENTER_SUCCESS: SET_COST_CENTER_SUCCESS,
+        RESET_SET_COST_CENTER_PROCESS: RESET_SET_COST_CENTER_PROCESS,
+        AddDeliveryAddress: AddDeliveryAddress,
+        AddDeliveryAddressFail: AddDeliveryAddressFail,
+        AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
+        SetDeliveryAddress: SetDeliveryAddress,
+        SetDeliveryAddressFail: SetDeliveryAddressFail,
+        SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
+        ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
+        LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
+        LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
+        LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
+        ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
+        SetDeliveryMode: SetDeliveryMode,
+        SetDeliveryModeFail: SetDeliveryModeFail,
+        SetDeliveryModeSuccess: SetDeliveryModeSuccess,
+        ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
+        CreatePaymentDetails: CreatePaymentDetails,
+        CreatePaymentDetailsFail: CreatePaymentDetailsFail,
+        CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
+        PaymentProcessSuccess: PaymentProcessSuccess,
+        SetPaymentDetails: SetPaymentDetails,
+        SetPaymentDetailsFail: SetPaymentDetailsFail,
+        SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
+        ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
+        PlaceOrder: PlaceOrder,
+        PlaceOrderFail: PlaceOrderFail,
+        PlaceOrderSuccess: PlaceOrderSuccess,
+        ClearPlaceOrder: ClearPlaceOrder,
+        ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
+        ClearCheckoutStep: ClearCheckoutStep,
+        ClearCheckoutData: ClearCheckoutData,
+        LoadCheckoutDetails: LoadCheckoutDetails,
+        LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
+        LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
+        CheckoutClearMiscsData: CheckoutClearMiscsData,
+        ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
+        ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
+        ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
+        ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
+        ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
+        ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail,
+        SetCostCenter: SetCostCenter,
+        SetCostCenterFail: SetCostCenterFail,
+        SetCostCenterSuccess: SetCostCenterSuccess,
+        ResetSetCostCenterProcess: ResetSetCostCenterProcess,
+        SET_ORDER_TYPE: SET_ORDER_TYPE,
+        SetOrderType: SetOrderType,
+        LOAD_PAYMENT_TYPES: LOAD_PAYMENT_TYPES,
+        LOAD_PAYMENT_TYPES_FAIL: LOAD_PAYMENT_TYPES_FAIL,
+        LOAD_PAYMENT_TYPES_SUCCESS: LOAD_PAYMENT_TYPES_SUCCESS,
+        RESET_LOAD_PAYMENT_TYPES_PROCESS_ID: RESET_LOAD_PAYMENT_TYPES_PROCESS_ID,
+        SET_PAYMENT_TYPE: SET_PAYMENT_TYPE,
+        SET_PAYMENT_TYPE_FAIL: SET_PAYMENT_TYPE_FAIL,
+        SET_PAYMENT_TYPE_SUCCESS: SET_PAYMENT_TYPE_SUCCESS,
+        LoadPaymentTypes: LoadPaymentTypes,
+        LoadPaymentTypesFail: LoadPaymentTypesFail,
+        LoadPaymentTypesSuccess: LoadPaymentTypesSuccess,
+        ResetLoadPaymentTypesProcess: ResetLoadPaymentTypesProcess,
+        SetPaymentType: SetPaymentType,
+        SetPaymentTypeFail: SetPaymentTypeFail,
+        SetPaymentTypeSuccess: SetPaymentTypeSuccess,
+        SCHEDULE_REPLENISHMENT_ORDER: SCHEDULE_REPLENISHMENT_ORDER,
+        SCHEDULE_REPLENISHMENT_ORDER_SUCCESS: SCHEDULE_REPLENISHMENT_ORDER_SUCCESS,
+        SCHEDULE_REPLENISHMENT_ORDER_FAIL: SCHEDULE_REPLENISHMENT_ORDER_FAIL,
+        CLEAR_SCHEDULE_REPLENISHMENT_ORDER: CLEAR_SCHEDULE_REPLENISHMENT_ORDER,
+        ScheduleReplenishmentOrder: ScheduleReplenishmentOrder,
+        ScheduleReplenishmentOrderSuccess: ScheduleReplenishmentOrderSuccess,
+        ScheduleReplenishmentOrderFail: ScheduleReplenishmentOrderFail,
+        ClearScheduleReplenishmentOrderAction: ClearScheduleReplenishmentOrderAction
+    });
+
+    /**
+     * Indicates that a user has successfully placed an order
+     */
+    var OrderPlacedEvent = /** @class */ (function () {
+        function OrderPlacedEvent() {
+        }
+        return OrderPlacedEvent;
+    }());
+
+    var CheckoutEventBuilder = /** @class */ (function () {
+        function CheckoutEventBuilder(stateEventService) {
+            this.stateEventService = stateEventService;
+            this.register();
+        }
+        /**
+         * Registers checkout events
+         */
+        CheckoutEventBuilder.prototype.register = function () {
+            this.orderPlacedEvent();
+        };
+        /**
+         * Register an order successfully placed event
+         */
+        CheckoutEventBuilder.prototype.orderPlacedEvent = function () {
+            this.stateEventService.register({
+                action: PLACE_ORDER_SUCCESS,
+                event: OrderPlacedEvent,
+            });
+        };
+        return CheckoutEventBuilder;
+    }());
+    CheckoutEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(i0.ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
+    CheckoutEventBuilder.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutEventBuilder.ctorParameters = function () { return [
+        { type: StateEventService }
+    ]; };
+
+    var CheckoutEventModule = /** @class */ (function () {
+        function CheckoutEventModule(_checkoutEventBuilder) {
+        }
+        return CheckoutEventModule;
+    }());
+    CheckoutEventModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
+    CheckoutEventModule.ctorParameters = function () { return [
+        { type: CheckoutEventBuilder }
+    ]; };
+
+    // Email Standard RFC 5322:
+    var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
+    var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
+
+    var getMultiCartState = i1$1.createFeatureSelector(MULTI_CART_FEATURE);
+    var ɵ0$b = function (state) { return state.carts; };
+    var getMultiCartEntities = i1$1.createSelector(getMultiCartState, ɵ0$b);
+    var getCartEntitySelectorFactory = function (cartId) {
+        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityProcessesLoaderStateSelector(state, cartId); });
+    };
+    var getCartSelectorFactory = function (cartId) {
+        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityValueSelector(state, cartId); });
+    };
+    var getCartIsStableSelectorFactory = function (cartId) {
+        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityIsStableSelector(state, cartId); });
+    };
+    var getCartHasPendingProcessesSelectorFactory = function (cartId) {
+        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityHasPendingProcessesSelector(state, cartId); });
+    };
+    var getCartEntriesSelectorFactory = function (cartId) {
+        return i1$1.createSelector(getCartSelectorFactory(cartId), function (state) {
+            return state && state.entries ? state.entries : [];
+        });
+    };
+    var getCartEntrySelectorFactory = function (cartId, productCode) {
+        return i1$1.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
+            return state
+                ? state.find(function (entry) { return entry.product.code === productCode; })
+                : undefined;
+        });
+    };
+    var ɵ1$7 = function (state) { return state.active; };
+    var getActiveCartId = i1$1.createSelector(getMultiCartState, ɵ1$7);
+    var ɵ2$3 = function (state) { return state.wishList; };
+    var getWishListId = i1$1.createSelector(getMultiCartState, ɵ2$3);
+
+    var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getMultiCartState: getMultiCartState,
+        getMultiCartEntities: getMultiCartEntities,
+        getCartEntitySelectorFactory: getCartEntitySelectorFactory,
+        getCartSelectorFactory: getCartSelectorFactory,
+        getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
+        getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
+        getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
+        getCartEntrySelectorFactory: getCartEntrySelectorFactory,
+        getActiveCartId: getActiveCartId,
+        getWishListId: getWishListId,
+        ɵ0: ɵ0$b,
+        ɵ1: ɵ1$7,
+        ɵ2: ɵ2$3
+    });
+
+    /**
+     * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
+     */
+    function getCartIdByUserId(cart, userId) {
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            return cart.guid;
+        }
+        return cart.code;
+    }
+    /**
+     * Check if cart is selective (save for later) based on id.
+     */
+    function isSelectiveCart(cartId) {
+        if (cartId === void 0) { cartId = ''; }
+        return cartId.startsWith('selectivecart');
+    }
+    /**
+     * Check if the returned error is of type notFound.
+     *
+     * We additionally check if the cart is not a selective cart.
+     * For selective cart this error can happen only when extension is disabled.
+     * It should never happen, because in that case, selective cart should also be disabled in our configuration.
+     * However if that happens we want to handle these errors silently.
+     */
+    function isCartNotFoundError(error) {
+        return (error.reason === 'notFound' &&
+            error.subjectType === 'cart' &&
+            !isSelectiveCart(error.subject));
+    }
+    /**
+     * Compute wishlist cart name for customer.
+     */
+    function getWishlistName(customerId) {
+        return "wishlist" + customerId;
+    }
+    /**
+     * What is a temporary cart?
+     * - frontend only cart entity!
+     * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
+     *
+     * Why we need temporary carts?
+     * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
+     * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
+     * - cart identifiers are created in the backend, so those are only known after cart is created
+     *
+     * Temporary cart life cycle
+     * - create cart method invoked
+     * - new `temp-${uuid}` cart is created with `loading=true` state
+     * - backend returns created cart
+     * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
+     * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
+     * - in next tick temporary cart is removed
+     */
+    function isTempCartId(cartId) {
+        return cartId.startsWith('temp-');
+    }
+
+    var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
+    var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
+    var CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
+    var CART_REMOVE_ENTRY = '[Cart-entry] Remove Entry';
+    var CART_REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
+    var CART_REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
+    var CART_UPDATE_ENTRY = '[Cart-entry] Update Entry';
+    var CART_UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
+    var CART_UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
+    var CartAddEntry = /** @class */ (function (_super) {
+        __extends(CartAddEntry, _super);
+        function CartAddEntry(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY;
+            return _this;
+        }
+        return CartAddEntry;
+    }(EntityProcessesIncrementAction));
+    var CartAddEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartAddEntrySuccess, _super);
+        function CartAddEntrySuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartAddEntrySuccess;
+    }(EntityProcessesDecrementAction));
+    var CartAddEntryFail = /** @class */ (function (_super) {
+        __extends(CartAddEntryFail, _super);
+        function CartAddEntryFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY_FAIL;
+            return _this;
+        }
+        return CartAddEntryFail;
+    }(EntityProcessesDecrementAction));
+    var CartRemoveEntry = /** @class */ (function (_super) {
+        __extends(CartRemoveEntry, _super);
+        function CartRemoveEntry(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY;
+            return _this;
+        }
+        return CartRemoveEntry;
+    }(EntityProcessesIncrementAction));
+    var CartRemoveEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartRemoveEntrySuccess, _super);
+        function CartRemoveEntrySuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartRemoveEntrySuccess;
+    }(EntityProcessesDecrementAction));
+    var CartRemoveEntryFail = /** @class */ (function (_super) {
+        __extends(CartRemoveEntryFail, _super);
+        function CartRemoveEntryFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY_FAIL;
+            return _this;
+        }
+        return CartRemoveEntryFail;
+    }(EntityProcessesDecrementAction));
+    var CartUpdateEntry = /** @class */ (function (_super) {
+        __extends(CartUpdateEntry, _super);
+        function CartUpdateEntry(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY;
+            return _this;
+        }
+        return CartUpdateEntry;
+    }(EntityProcessesIncrementAction));
+    var CartUpdateEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartUpdateEntrySuccess, _super);
+        function CartUpdateEntrySuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartUpdateEntrySuccess;
+    }(EntityProcessesDecrementAction));
+    var CartUpdateEntryFail = /** @class */ (function (_super) {
+        __extends(CartUpdateEntryFail, _super);
+        function CartUpdateEntryFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY_FAIL;
+            return _this;
+        }
+        return CartUpdateEntryFail;
+    }(EntityProcessesDecrementAction));
+
+    var CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
+    var CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
+    var CART_ADD_VOUCHER_SUCCESS = '[Cart-voucher] Add Cart Voucher Success';
+    var CART_RESET_ADD_VOUCHER = '[Cart-voucher] Reset Add Cart Voucher';
+    var CART_REMOVE_VOUCHER = '[Cart-voucher] Remove Cart Voucher';
+    var CART_REMOVE_VOUCHER_FAIL = '[Cart-voucher] Remove Cart Voucher Fail';
+    var CART_REMOVE_VOUCHER_SUCCESS = '[Cart-voucher] Remove Cart Voucher Success';
+    // Adding cart voucher actions
+    var CartAddVoucher = /** @class */ (function (_super) {
+        __extends(CartAddVoucher, _super);
+        function CartAddVoucher(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER;
+            return _this;
+        }
+        return CartAddVoucher;
+    }(EntityLoadAction));
+    var CartAddVoucherFail = /** @class */ (function (_super) {
+        __extends(CartAddVoucherFail, _super);
+        function CartAddVoucherFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload.error) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER_FAIL;
+            return _this;
+        }
+        return CartAddVoucherFail;
+    }(EntityFailAction));
+    var CartAddVoucherSuccess = /** @class */ (function (_super) {
+        __extends(CartAddVoucherSuccess, _super);
+        function CartAddVoucherSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER_SUCCESS;
+            return _this;
+        }
+        return CartAddVoucherSuccess;
+    }(EntitySuccessAction));
+    // TODO(#7241): Remove when switching to event system for vouchers
+    /**
+     * Resets add voucher process
+     *
+     * @deprecated since 2.0
+     */
+    var CartResetAddVoucher = /** @class */ (function (_super) {
+        __extends(CartResetAddVoucher, _super);
+        function CartResetAddVoucher() {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.type = CART_RESET_ADD_VOUCHER;
+            return _this;
+        }
+        return CartResetAddVoucher;
+    }(EntityLoaderResetAction));
+    // Deleting cart voucher
+    var CartRemoveVoucher = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucher, _super);
+        function CartRemoveVoucher(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER;
+            return _this;
+        }
+        return CartRemoveVoucher;
+    }(EntityProcessesIncrementAction));
+    var CartRemoveVoucherFail = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucherFail, _super);
+        function CartRemoveVoucherFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER_FAIL;
+            return _this;
+        }
+        return CartRemoveVoucherFail;
+    }(EntityProcessesDecrementAction));
+    var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucherSuccess, _super);
+        function CartRemoveVoucherSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER_SUCCESS;
+            return _this;
+        }
+        return CartRemoveVoucherSuccess;
+    }(EntityProcessesDecrementAction));
+
+    var CREATE_CART = '[Cart] Create Cart';
+    var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
+    var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
+    var LOAD_CART = '[Cart] Load Cart';
+    var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
+    var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
+    var ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+    var ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+    var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+    var MERGE_CART = '[Cart] Merge Cart';
+    var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+    var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+    var REMOVE_CART = '[Cart] Remove Cart';
+    var DELETE_CART = '[Cart] Delete Cart';
+    var DELETE_CART_SUCCESS = '[Cart] Delete Cart Success';
+    var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
+    var CreateCart = /** @class */ (function (_super) {
+        __extends(CreateCart, _super);
+        function CreateCart(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART;
+            return _this;
+        }
+        return CreateCart;
+    }(EntityLoadAction));
+    var CreateCartFail = /** @class */ (function (_super) {
+        __extends(CreateCartFail, _super);
+        function CreateCartFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART_FAIL;
+            return _this;
+        }
+        return CreateCartFail;
+    }(EntityFailAction));
+    var CreateCartSuccess = /** @class */ (function (_super) {
+        __extends(CreateCartSuccess, _super);
+        function CreateCartSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART_SUCCESS;
+            return _this;
+        }
+        return CreateCartSuccess;
+    }(EntitySuccessAction));
+    var AddEmailToCart = /** @class */ (function (_super) {
+        __extends(AddEmailToCart, _super);
+        function AddEmailToCart(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART;
+            return _this;
+        }
+        return AddEmailToCart;
+    }(EntityProcessesIncrementAction));
+    var AddEmailToCartFail = /** @class */ (function (_super) {
+        __extends(AddEmailToCartFail, _super);
+        function AddEmailToCartFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART_FAIL;
+            return _this;
+        }
+        return AddEmailToCartFail;
+    }(EntityProcessesDecrementAction));
+    var AddEmailToCartSuccess = /** @class */ (function (_super) {
+        __extends(AddEmailToCartSuccess, _super);
+        function AddEmailToCartSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART_SUCCESS;
+            return _this;
+        }
+        return AddEmailToCartSuccess;
+    }(EntityProcessesDecrementAction));
+    var LoadCart = /** @class */ (function (_super) {
+        __extends(LoadCart, _super);
+        function LoadCart(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART;
+            return _this;
+        }
+        return LoadCart;
+    }(EntityLoadAction));
+    var LoadCartFail = /** @class */ (function (_super) {
+        __extends(LoadCartFail, _super);
+        function LoadCartFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART_FAIL;
+            return _this;
+        }
+        return LoadCartFail;
+    }(EntityFailAction));
+    var LoadCartSuccess = /** @class */ (function (_super) {
+        __extends(LoadCartSuccess, _super);
+        function LoadCartSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART_SUCCESS;
+            return _this;
+        }
+        return LoadCartSuccess;
+    }(EntitySuccessAction));
+    var MergeCart = /** @class */ (function () {
+        function MergeCart(payload) {
+            this.payload = payload;
+            this.type = MERGE_CART;
+        }
+        return MergeCart;
+    }());
+    var MergeCartSuccess = /** @class */ (function (_super) {
+        __extends(MergeCartSuccess, _super);
+        function MergeCartSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
+            _this.payload = payload;
+            _this.type = MERGE_CART_SUCCESS;
+            return _this;
+        }
+        return MergeCartSuccess;
+    }(EntityRemoveAction));
+    /**
+     * On site context change we want to keep current list of entities, but we want to clear the value and flags.
+     * With ProcessesLoaderResetAction we run it on every entity of this type.
+     */
+    var ResetCartDetails = /** @class */ (function (_super) {
+        __extends(ResetCartDetails, _super);
+        function ResetCartDetails() {
+            var _this = _super.call(this, MULTI_CART_DATA) || this;
+            _this.type = RESET_CART_DETAILS;
+            return _this;
+        }
+        return ResetCartDetails;
+    }(ProcessesLoaderResetAction));
+    /**
+     * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
+     * For removing particular cart in both places use DeleteCart actions.
+     */
+    var RemoveCart = /** @class */ (function (_super) {
+        __extends(RemoveCart, _super);
+        function RemoveCart(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_CART;
+            return _this;
+        }
+        return RemoveCart;
+    }(EntityRemoveAction));
+    var DeleteCart = /** @class */ (function () {
+        function DeleteCart(payload) {
+            this.payload = payload;
+            this.type = DELETE_CART;
+        }
+        return DeleteCart;
+    }());
+    var DeleteCartSuccess = /** @class */ (function (_super) {
+        __extends(DeleteCartSuccess, _super);
+        function DeleteCartSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = DELETE_CART_SUCCESS;
+            return _this;
+        }
+        return DeleteCartSuccess;
+    }(EntityRemoveAction));
+    var DeleteCartFail = /** @class */ (function () {
+        function DeleteCartFail(payload) {
+            this.payload = payload;
+            this.type = DELETE_CART_FAIL;
+        }
+        return DeleteCartFail;
+    }());
+
+    var SET_TEMP_CART = '[Cart] Set Temp Cart';
+    var CART_PROCESSES_INCREMENT = '[Cart] Cart Processes Increment';
+    var CART_PROCESSES_DECREMENT = '[Cart] Cart Processes Decrement';
+    var SET_ACTIVE_CART_ID = '[Cart] Set Active Cart Id';
+    var CLEAR_CART_STATE = '[Cart] Clear Cart State';
+    /**
+     * To keep track of cart creation process we use cart with `temp-${uuid}` id.
+     * After creating cart we switch to entity with `code` or `guid`.
+     * We need `temp-${uuid}` cart entities for loading/error state.
+     */
+    var SetTempCart = /** @class */ (function (_super) {
+        __extends(SetTempCart, _super);
+        function SetTempCart(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId, payload.cart) || this;
+            _this.payload = payload;
+            _this.type = SET_TEMP_CART;
+            return _this;
+        }
+        return SetTempCart;
+    }(EntitySuccessAction));
+    // TODO(#7241): Remove when there won't be any usage
+    /**
+     * Increases process counter on cart entities
+     * All actions that cause computations on cart should extend EntityProcessesIncrementAction instead of dispatching this action.
+     * @deprecated since 2.0
+     */
+    var CartProcessesIncrement = /** @class */ (function (_super) {
+        __extends(CartProcessesIncrement, _super);
+        function CartProcessesIncrement(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_PROCESSES_INCREMENT;
+            return _this;
+        }
+        return CartProcessesIncrement;
+    }(EntityProcessesIncrementAction));
+    // TODO(#7241): Remove when there won't be any usage
+    /**
+     * Decrement process counter on cart entities
+     * All actions that cause computations on cart should extend EntityProcessesDecrementAction instead of dispatching this action.
+     * @deprecated since 2.0
+     */
+    var CartProcessesDecrement = /** @class */ (function (_super) {
+        __extends(CartProcessesDecrement, _super);
+        function CartProcessesDecrement(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_PROCESSES_DECREMENT;
+            return _this;
+        }
+        return CartProcessesDecrement;
+    }(EntityProcessesDecrementAction));
+    /**
+     * Only sets active cart property with id of active cart. Then services take care of loading that cart.
+     */
+    var SetActiveCartId = /** @class */ (function () {
+        function SetActiveCartId(payload) {
+            this.payload = payload;
+            this.type = SET_ACTIVE_CART_ID;
+        }
+        return SetActiveCartId;
+    }());
+    /**
+     * Clear whole cart store state: all entities + reset rest of the cart state.
+     */
+    var ClearCartState = /** @class */ (function (_super) {
+        __extends(ClearCartState, _super);
+        function ClearCartState() {
+            var _this = _super.call(this, MULTI_CART_DATA) || this;
+            _this.type = CLEAR_CART_STATE;
+            return _this;
+        }
+        return ClearCartState;
+    }(EntityRemoveAllAction));
+
+    var CREATE_WISH_LIST = '[Wish List] Create Wish List';
+    var CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
+    var CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
+    var LOAD_WISH_LIST = '[Wish List] Load Wish List';
+    var LOAD_WISH_LIST_SUCCESS = '[Wish List] Load Wish List Success';
+    var LOAD_WISH_LIST_FAIL = '[Wish List] Load Wish List Fail';
+    var RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
+    var CreateWishList = /** @class */ (function () {
+        function CreateWishList(payload) {
+            this.payload = payload;
+            this.type = CREATE_WISH_LIST;
+        }
+        return CreateWishList;
+    }());
+    var CreateWishListSuccess = /** @class */ (function (_super) {
+        __extends(CreateWishListSuccess, _super);
+        function CreateWishListSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
+            _this.payload = payload;
+            _this.type = CREATE_WISH_LIST_SUCCESS;
+            return _this;
+        }
+        return CreateWishListSuccess;
+    }(EntitySuccessAction));
+    var CreateWishListFail = /** @class */ (function (_super) {
+        __extends(CreateWishListFail, _super);
+        function CreateWishListFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
+            _this.payload = payload;
+            _this.type = CREATE_WISH_LIST_FAIL;
+            return _this;
+        }
+        return CreateWishListFail;
+    }(EntityFailAction));
+    var LoadWishList = /** @class */ (function (_super) {
+        __extends(LoadWishList, _super);
+        function LoadWishList(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_WISH_LIST;
+            return _this;
+        }
+        return LoadWishList;
+    }(EntityLoadAction));
+    var LoadWishListSuccess = /** @class */ (function (_super) {
+        __extends(LoadWishListSuccess, _super);
+        function LoadWishListSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_WISH_LIST_SUCCESS;
+            return _this;
+        }
+        return LoadWishListSuccess;
+    }(EntitySuccessAction));
+    var LoadWishListFail = /** @class */ (function (_super) {
+        __extends(LoadWishListFail, _super);
+        function LoadWishListFail(payload) {
+            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
+            _this.payload = payload;
+            _this.type = LOAD_WISH_LIST_FAIL;
+            return _this;
+        }
+        return LoadWishListFail;
+    }(EntityFailAction));
+
+    var cartGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        CART_ADD_ENTRY: CART_ADD_ENTRY,
+        CART_ADD_ENTRY_SUCCESS: CART_ADD_ENTRY_SUCCESS,
+        CART_ADD_ENTRY_FAIL: CART_ADD_ENTRY_FAIL,
+        CART_REMOVE_ENTRY: CART_REMOVE_ENTRY,
+        CART_REMOVE_ENTRY_SUCCESS: CART_REMOVE_ENTRY_SUCCESS,
+        CART_REMOVE_ENTRY_FAIL: CART_REMOVE_ENTRY_FAIL,
+        CART_UPDATE_ENTRY: CART_UPDATE_ENTRY,
+        CART_UPDATE_ENTRY_SUCCESS: CART_UPDATE_ENTRY_SUCCESS,
+        CART_UPDATE_ENTRY_FAIL: CART_UPDATE_ENTRY_FAIL,
+        CartAddEntry: CartAddEntry,
+        CartAddEntrySuccess: CartAddEntrySuccess,
+        CartAddEntryFail: CartAddEntryFail,
+        CartRemoveEntry: CartRemoveEntry,
+        CartRemoveEntrySuccess: CartRemoveEntrySuccess,
+        CartRemoveEntryFail: CartRemoveEntryFail,
+        CartUpdateEntry: CartUpdateEntry,
+        CartUpdateEntrySuccess: CartUpdateEntrySuccess,
+        CartUpdateEntryFail: CartUpdateEntryFail,
+        CART_ADD_VOUCHER: CART_ADD_VOUCHER,
+        CART_ADD_VOUCHER_FAIL: CART_ADD_VOUCHER_FAIL,
+        CART_ADD_VOUCHER_SUCCESS: CART_ADD_VOUCHER_SUCCESS,
+        CART_RESET_ADD_VOUCHER: CART_RESET_ADD_VOUCHER,
+        CART_REMOVE_VOUCHER: CART_REMOVE_VOUCHER,
+        CART_REMOVE_VOUCHER_FAIL: CART_REMOVE_VOUCHER_FAIL,
+        CART_REMOVE_VOUCHER_SUCCESS: CART_REMOVE_VOUCHER_SUCCESS,
+        CartAddVoucher: CartAddVoucher,
+        CartAddVoucherFail: CartAddVoucherFail,
+        CartAddVoucherSuccess: CartAddVoucherSuccess,
+        CartResetAddVoucher: CartResetAddVoucher,
+        CartRemoveVoucher: CartRemoveVoucher,
+        CartRemoveVoucherFail: CartRemoveVoucherFail,
+        CartRemoveVoucherSuccess: CartRemoveVoucherSuccess,
+        CREATE_CART: CREATE_CART,
+        CREATE_CART_FAIL: CREATE_CART_FAIL,
+        CREATE_CART_SUCCESS: CREATE_CART_SUCCESS,
+        LOAD_CART: LOAD_CART,
+        LOAD_CART_FAIL: LOAD_CART_FAIL,
+        LOAD_CART_SUCCESS: LOAD_CART_SUCCESS,
+        ADD_EMAIL_TO_CART: ADD_EMAIL_TO_CART,
+        ADD_EMAIL_TO_CART_FAIL: ADD_EMAIL_TO_CART_FAIL,
+        ADD_EMAIL_TO_CART_SUCCESS: ADD_EMAIL_TO_CART_SUCCESS,
+        MERGE_CART: MERGE_CART,
+        MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
+        RESET_CART_DETAILS: RESET_CART_DETAILS,
+        REMOVE_CART: REMOVE_CART,
+        DELETE_CART: DELETE_CART,
+        DELETE_CART_SUCCESS: DELETE_CART_SUCCESS,
+        DELETE_CART_FAIL: DELETE_CART_FAIL,
+        CreateCart: CreateCart,
+        CreateCartFail: CreateCartFail,
+        CreateCartSuccess: CreateCartSuccess,
+        AddEmailToCart: AddEmailToCart,
+        AddEmailToCartFail: AddEmailToCartFail,
+        AddEmailToCartSuccess: AddEmailToCartSuccess,
+        LoadCart: LoadCart,
+        LoadCartFail: LoadCartFail,
+        LoadCartSuccess: LoadCartSuccess,
+        MergeCart: MergeCart,
+        MergeCartSuccess: MergeCartSuccess,
+        ResetCartDetails: ResetCartDetails,
+        RemoveCart: RemoveCart,
+        DeleteCart: DeleteCart,
+        DeleteCartSuccess: DeleteCartSuccess,
+        DeleteCartFail: DeleteCartFail,
+        SET_TEMP_CART: SET_TEMP_CART,
+        CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
+        CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
+        SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
+        CLEAR_CART_STATE: CLEAR_CART_STATE,
+        SetTempCart: SetTempCart,
+        CartProcessesIncrement: CartProcessesIncrement,
+        CartProcessesDecrement: CartProcessesDecrement,
+        SetActiveCartId: SetActiveCartId,
+        ClearCartState: ClearCartState,
+        CREATE_WISH_LIST: CREATE_WISH_LIST,
+        CREATE_WISH_LIST_FAIL: CREATE_WISH_LIST_FAIL,
+        CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
+        LOAD_WISH_LIST: LOAD_WISH_LIST,
+        LOAD_WISH_LIST_SUCCESS: LOAD_WISH_LIST_SUCCESS,
+        LOAD_WISH_LIST_FAIL: LOAD_WISH_LIST_FAIL,
+        RESET_WISH_LIST_DETAILS: RESET_WISH_LIST_DETAILS,
+        CreateWishList: CreateWishList,
+        CreateWishListSuccess: CreateWishListSuccess,
+        CreateWishListFail: CreateWishListFail,
+        LoadWishList: LoadWishList,
+        LoadWishListSuccess: LoadWishListSuccess,
+        LoadWishListFail: LoadWishListFail
+    });
+
+    var MultiCartService = /** @class */ (function () {
+        function MultiCartService(store) {
+            this.store = store;
+        }
+        /**
+         * Returns cart from store as an observable
+         *
+         * @param cartId
+         */
+        MultiCartService.prototype.getCart = function (cartId) {
+            return this.store.pipe(i1$1.select(getCartSelectorFactory(cartId)));
+        };
+        /**
+         * Returns cart entity from store (cart with loading, error, success flags) as an observable
+         *
+         * @param cartId
+         */
+        MultiCartService.prototype.getCartEntity = function (cartId) {
+            return this.store.pipe(i1$1.select(getCartEntitySelectorFactory(cartId)));
+        };
+        /**
+         * Returns true when there are no operations on that in progress and it is not currently loading
+         *
+         * @param cartId
+         */
+        MultiCartService.prototype.isStable = function (cartId) {
+            return this.store.pipe(i1$1.select(getCartIsStableSelectorFactory(cartId)), 
+            // We dispatch a lot of actions just after finishing some process or loading, so we want this flag not to flicker.
+            // This flickering should only be avoided when switching from false to true
+            // Start of loading should be showed instantly (no debounce)
+            // Extra actions are only dispatched after some loading
+            operators.debounce(function (isStable) { return (isStable ? rxjs.timer(0) : rxjs.EMPTY); }), operators.distinctUntilChanged());
+        };
+        /**
+         * Simple random temp cart id generator
+         */
+        MultiCartService.prototype.generateTempCartId = function () {
+            var pseudoUuid = Math.random().toString(36).substr(2, 9);
+            return "temp-" + pseudoUuid;
+        };
+        /**
+         * Create or merge cart
+         *
+         * @param params Object with userId, oldCartId, toMergeCartGuid and extraData
+         */
+        MultiCartService.prototype.createCart = function (_a) {
+            var userId = _a.userId, oldCartId = _a.oldCartId, toMergeCartGuid = _a.toMergeCartGuid, extraData = _a.extraData;
+            // to support creating multiple carts at the same time we need to use different entity for every process
+            // simple random uuid generator is used here for entity names
+            var tempCartId = this.generateTempCartId();
+            this.store.dispatch(new CreateCart({
+                extraData: extraData,
+                userId: userId,
+                oldCartId: oldCartId,
+                toMergeCartGuid: toMergeCartGuid,
+                tempCartId: tempCartId,
+            }));
+            return this.getCartEntity(tempCartId);
+        };
+        /**
+         * Merge provided cart to current user cart
+         *
+         * @param params Object with userId, cartId and extraData
+         */
+        MultiCartService.prototype.mergeToCurrentCart = function (_a) {
+            var userId = _a.userId, cartId = _a.cartId, extraData = _a.extraData;
+            var tempCartId = this.generateTempCartId();
+            this.store.dispatch(new MergeCart({
+                userId: userId,
+                cartId: cartId,
+                extraData: extraData,
+                tempCartId: tempCartId,
+            }));
+        };
+        /**
+         * Load cart
+         *
+         * @param params Object with userId, cartId and extraData
+         */
+        MultiCartService.prototype.loadCart = function (_a) {
+            var cartId = _a.cartId, userId = _a.userId, extraData = _a.extraData;
+            this.store.dispatch(new LoadCart({
+                userId: userId,
+                cartId: cartId,
+                extraData: extraData,
+            }));
+        };
+        /**
+         * Get cart entries as an observable
+         * @param cartId
+         */
+        MultiCartService.prototype.getEntries = function (cartId) {
+            return this.store.pipe(i1$1.select(getCartEntriesSelectorFactory(cartId)));
+        };
+        /**
+         * Add entry to cart
+         *
+         * @param userId
+         * @param cartId
+         * @param productCode
+         * @param quantity
+         */
+        MultiCartService.prototype.addEntry = function (userId, cartId, productCode, quantity) {
+            this.store.dispatch(new CartAddEntry({
+                userId: userId,
+                cartId: cartId,
+                productCode: productCode,
+                quantity: quantity,
+            }));
+        };
+        /**
+         * Add multiple entries to cart
+         *
+         * @param userId
+         * @param cartId
+         * @param products Array with items (productCode and quantity)
+         */
+        MultiCartService.prototype.addEntries = function (userId, cartId, products) {
+            var _this = this;
+            products.forEach(function (product) {
+                _this.store.dispatch(new CartAddEntry({
+                    userId: userId,
+                    cartId: cartId,
+                    productCode: product.productCode,
+                    quantity: product.quantity,
+                }));
+            });
+        };
+        /**
+         * Remove entry from cart
+         *
+         * @param userId
+         * @param cartId
+         * @param entryNumber
+         */
+        MultiCartService.prototype.removeEntry = function (userId, cartId, entryNumber) {
+            this.store.dispatch(new CartRemoveEntry({
+                userId: userId,
+                cartId: cartId,
+                entryNumber: "" + entryNumber,
+            }));
+        };
+        /**
+         * Update entry in cart. For quantity = 0 it removes entry
+         *
+         * @param userId
+         * @param cartId
+         * @param entryNumber
+         * @param quantity
+         */
+        MultiCartService.prototype.updateEntry = function (userId, cartId, entryNumber, quantity) {
+            if (quantity > 0) {
+                this.store.dispatch(new CartUpdateEntry({
+                    userId: userId,
+                    cartId: cartId,
+                    entryNumber: "" + entryNumber,
+                    quantity: quantity,
+                }));
+            }
+            else {
+                this.removeEntry(userId, cartId, entryNumber);
+            }
+        };
+        /**
+         * Get specific entry from cart
+         *
+         * @param cartId
+         * @param productCode
+         */
+        MultiCartService.prototype.getEntry = function (cartId, productCode) {
+            return this.store.pipe(i1$1.select(getCartEntrySelectorFactory(cartId, productCode)));
+        };
+        /**
+         * Assign email to the cart
+         *
+         * @param cartId
+         * @param userId
+         * @param email
+         */
+        MultiCartService.prototype.assignEmail = function (cartId, userId, email) {
+            this.store.dispatch(new AddEmailToCart({
+                userId: userId,
+                cartId: cartId,
+                email: email,
+            }));
+        };
+        /**
+         * Delete cart
+         *
+         * @param cartId
+         * @param userId
+         */
+        MultiCartService.prototype.deleteCart = function (cartId, userId) {
+            this.store.dispatch(new DeleteCart({
+                userId: userId,
+                cartId: cartId,
+            }));
+        };
+        return MultiCartService;
+    }());
+    MultiCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(i0.ɵɵinject(i1$1.Store)); }, token: MultiCartService, providedIn: "root" });
+    MultiCartService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    MultiCartService.ctorParameters = function () { return [
+        { type: i1$1.Store }
+    ]; };
+
+    var ActiveCartService = /** @class */ (function () {
+        function ActiveCartService(store, authService, multiCartService) {
+            var _this = this;
+            this.store = store;
+            this.authService = authService;
+            this.multiCartService = multiCartService;
+            this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+            this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+            this.subscription = new rxjs.Subscription();
+            this.userId = OCC_USER_ID_ANONYMOUS;
+            this.activeCartId$ = this.store.pipe(i1$1.select(getActiveCartId), operators.map(function (cartId) {
+                if (!cartId) {
+                    return OCC_CART_ID_CURRENT;
+                }
+                return cartId;
+            }));
+            this.cartSelector$ = this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getCartEntity(cartId); }));
+            this.initActiveCart();
+        }
+        ActiveCartService.prototype.ngOnDestroy = function () {
+            this.subscription.unsubscribe();
+        };
+        ActiveCartService.prototype.initActiveCart = function () {
+            var _this = this;
+            this.subscription.add(this.authService.getOccUserId().subscribe(function (userId) {
+                _this.userId = userId;
+                if (_this.userId !== OCC_USER_ID_ANONYMOUS) {
+                    if (_this.isJustLoggedIn(userId)) {
+                        _this.loadOrMerge(_this.cartId);
+                    }
+                }
+                _this.previousUserId = userId;
+            }));
+            this.subscription.add(this.activeCartId$.subscribe(function (cartId) {
+                _this.cartId = cartId;
+            }));
+            this.activeCart$ = this.cartSelector$.pipe(operators.withLatestFrom(this.activeCartId$), operators.map(function (_a) {
+                var _b = __read(_a, 2), cartEntity = _b[0], activeCartId = _b[1];
+                return {
+                    cart: cartEntity.value,
+                    cartId: activeCartId,
+                    isStable: !cartEntity.loading && cartEntity.processesCount === 0,
+                    loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
+                };
+            }), 
+            // we want to emit empty carts even if those are not stable
+            // on merge cart action we want to switch to empty cart so no one would use old cartId which can be already obsolete
+            // so on merge action the resulting stream looks like this: old_cart -> {} -> new_cart
+            operators.filter(function (_a) {
+                var isStable = _a.isStable, cart = _a.cart;
+                return isStable || _this.isEmpty(cart);
+            }), operators.tap(function (_a) {
+                var cart = _a.cart, cartId = _a.cartId, loaded = _a.loaded, isStable = _a.isStable;
+                if (isStable &&
+                    _this.isEmpty(cart) &&
+                    !loaded &&
+                    !isTempCartId(cartId)) {
+                    _this.load(cartId);
+                }
+            }), operators.map(function (_a) {
+                var cart = _a.cart;
+                return (cart ? cart : {});
+            }), operators.tap(function (cart) {
+                if (cart) {
+                    _this.cartUser = cart.user;
+                }
+            }), operators.distinctUntilChanged(), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        };
+        /**
+         * Returns active cart
+         */
+        ActiveCartService.prototype.getActive = function () {
+            return this.activeCart$;
+        };
+        /**
+         * Returns active cart id
+         */
+        ActiveCartService.prototype.getActiveCartId = function () {
+            var _this = this;
+            return this.activeCart$.pipe(operators.map(function (cart) { return getCartIdByUserId(cart, _this.userId); }), operators.distinctUntilChanged());
+        };
+        /**
+         * Returns cart entries
+         */
+        ActiveCartService.prototype.getEntries = function () {
+            var _this = this;
+            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getEntries(cartId); }), operators.distinctUntilChanged());
+        };
+        /**
+         * Returns cart loading state
+         */
+        ActiveCartService.prototype.getLoading = function () {
+            return this.cartSelector$.pipe(operators.map(function (cartEntity) { return cartEntity.loading; }), operators.distinctUntilChanged());
+        };
+        /**
+         * Returns true when cart is stable (not loading and not pending processes on cart)
+         */
+        ActiveCartService.prototype.isStable = function () {
+            var _this = this;
+            // Debounce is used here, to avoid flickering when we switch between different cart entities.
+            // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
+            // After load fails we might create new cart so we switch to `temp-${uuid}` cart entity used when creating cart.
+            // At the end we finally switch to cart `code` for cart id. Between those switches cart `isStable` function should not flicker.
+            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.isStable(cartId); }), operators.debounce(function (state) { return (state ? rxjs.timer(0) : rxjs.EMPTY); }), operators.distinctUntilChanged());
+        };
+        ActiveCartService.prototype.loadOrMerge = function (cartId) {
+            // for login user, whenever there's an existing cart, we will load the user
+            // current cart and merge it into the existing cart
+            if (!cartId || cartId === OCC_CART_ID_CURRENT) {
+                this.multiCartService.loadCart({
+                    userId: this.userId,
+                    cartId: OCC_CART_ID_CURRENT,
+                    extraData: {
+                        active: true,
+                    },
+                });
+            }
+            else if (this.isGuestCart()) {
+                this.guestCartMerge(cartId);
+            }
+            else {
+                this.multiCartService.mergeToCurrentCart({
+                    userId: this.userId,
+                    cartId: cartId,
+                    extraData: {
+                        active: true,
+                    },
+                });
+            }
+        };
+        ActiveCartService.prototype.load = function (cartId) {
+            if (this.userId !== OCC_USER_ID_ANONYMOUS) {
+                this.multiCartService.loadCart({
+                    userId: this.userId,
+                    cartId: cartId ? cartId : OCC_CART_ID_CURRENT,
+                    extraData: {
+                        active: true,
+                    },
+                });
+            }
+            else if (cartId && cartId !== OCC_CART_ID_CURRENT) {
+                this.multiCartService.loadCart({
+                    userId: this.userId,
+                    cartId: cartId,
+                    extraData: {
+                        active: true,
+                    },
+                });
+            }
+        };
+        ActiveCartService.prototype.addEntriesGuestMerge = function (cartEntries) {
+            var _this = this;
+            var entriesToAdd = cartEntries.map(function (entry) { return ({
+                productCode: entry.product.code,
+                quantity: entry.quantity,
+            }); });
+            this.requireLoadedCartForGuestMerge().subscribe(function (cartState) {
+                _this.multiCartService.addEntries(_this.userId, getCartIdByUserId(cartState.value, _this.userId), entriesToAdd);
+            });
+        };
+        ActiveCartService.prototype.requireLoadedCartForGuestMerge = function () {
+            var _this = this;
+            return this.requireLoadedCart(this.cartSelector$.pipe(operators.filter(function () { return !_this.isGuestCart(); })));
+        };
+        ActiveCartService.prototype.isCartCreating = function (cartState) {
+            // cart creating is always represented with loading flags
+            // when all loading flags are false it means that we restored wrong cart id
+            // could happen on context change or reload right in the middle on cart create call
+            return (isTempCartId(this.cartId) &&
+                (cartState.loading || cartState.success || cartState.error));
+        };
+        ActiveCartService.prototype.requireLoadedCart = function (customCartSelector$) {
+            var _this = this;
+            // For guest cart merge we want to filter guest cart in the whole stream
+            // We have to wait with load/create/addEntry after guest cart will be deleted.
+            // That's why you can provide custom selector with this filter applied.
+            var cartSelector$ = customCartSelector$
+                ? customCartSelector$
+                : this.cartSelector$;
+            return cartSelector$.pipe(operators.filter(function (cartState) { return !cartState.loading; }), 
+            // Avoid load/create call when there are new cart creating at the moment
+            operators.filter(function (cartState) { return !_this.isCartCreating(cartState); }), operators.take(1), operators.switchMap(function (cartState) {
+                // Try to load the cart, because it might have been created on another device between our login and add entry call
+                if (_this.isEmpty(cartState.value) &&
+                    _this.userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.load(undefined);
+                }
+                return cartSelector$;
+            }), operators.filter(function (cartState) { return !cartState.loading; }), 
+            // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
+            operators.filter(function (cartState) { return _this.userId === OCC_USER_ID_ANONYMOUS ||
+                cartState.success ||
+                cartState.error; }), operators.take(1), operators.switchMap(function (cartState) {
+                if (_this.isEmpty(cartState.value)) {
+                    _this.multiCartService.createCart({
+                        userId: _this.userId,
+                        extraData: {
+                            active: true,
+                        },
+                    });
+                }
+                return cartSelector$;
+            }), operators.filter(function (cartState) { return !cartState.loading; }), operators.filter(function (cartState) { return cartState.success || cartState.error; }), 
+            // wait for active cart id to point to code/guid to avoid some work on temp cart entity
+            operators.filter(function (cartState) { return !_this.isCartCreating(cartState); }), operators.filter(function (cartState) { return !_this.isEmpty(cartState.value); }), operators.take(1));
+        };
+        /**
+         * Add entry to active cart
+         *
+         * @param productCode
+         * @param quantity
+         */
+        ActiveCartService.prototype.addEntry = function (productCode, quantity) {
+            var _this = this;
+            this.requireLoadedCart().subscribe(function (cartState) {
+                _this.multiCartService.addEntry(_this.userId, getCartIdByUserId(cartState.value, _this.userId), productCode, quantity);
+            });
+        };
+        /**
+         * Remove entry
+         *
+         * @param entry
+         */
+        ActiveCartService.prototype.removeEntry = function (entry) {
+            this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
+        };
+        /**
+         * Update entry
+         *
+         * @param entryNumber
+         * @param quantity
+         */
+        ActiveCartService.prototype.updateEntry = function (entryNumber, quantity) {
+            this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
+        };
+        /**
+         * Returns cart entry
+         *
+         * @param productCode
+         */
+        ActiveCartService.prototype.getEntry = function (productCode) {
+            var _this = this;
+            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getEntry(cartId, productCode); }), operators.distinctUntilChanged());
+        };
+        /**
+         * Assign email to cart
+         *
+         * @param email
+         */
+        ActiveCartService.prototype.addEmail = function (email) {
+            this.multiCartService.assignEmail(this.cartId, this.userId, email);
+        };
+        /**
+         * Get assigned user to cart
+         */
+        ActiveCartService.prototype.getAssignedUser = function () {
+            return this.getActive().pipe(operators.map(function (cart) { return cart.user; }));
+        };
+        /**
+         * Returns true for guest cart
+         */
+        ActiveCartService.prototype.isGuestCart = function () {
+            return (this.cartUser &&
+                (this.cartUser.name === OCC_USER_ID_GUEST ||
+                    this.isEmail(this.cartUser.uid.split('|').slice(1).join('|'))));
+        };
+        /**
+         * Add multiple entries to a cart
+         *
+         * @param cartEntries : list of entries to add (OrderEntry[])
+         */
+        ActiveCartService.prototype.addEntries = function (cartEntries) {
+            var _this = this;
+            cartEntries.forEach(function (entry) {
+                _this.addEntry(entry.product.code, entry.quantity);
+            });
+        };
+        ActiveCartService.prototype.isEmail = function (str) {
+            if (str) {
+                return str.match(EMAIL_PATTERN) ? true : false;
+            }
+            return false;
+        };
+        // TODO: Remove once backend is updated
+        /**
+         * Temporary method to merge guest cart with user cart because of backend limitation
+         * This is for an edge case
+         */
+        ActiveCartService.prototype.guestCartMerge = function (cartId) {
+            var cartEntries;
+            this.getEntries()
+                .pipe(operators.take(1))
+                .subscribe(function (entries) {
+                cartEntries = entries;
+            });
+            this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
+            this.addEntriesGuestMerge(cartEntries);
+        };
+        ActiveCartService.prototype.isEmpty = function (cart) {
+            return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
+        };
+        ActiveCartService.prototype.isJustLoggedIn = function (userId) {
+            return (this.previousUserId !== userId && // *just* logged in
+                this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+            );
+        };
+        return ActiveCartService;
+    }());
+    ActiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+    ActiveCartService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ActiveCartService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: MultiCartService }
+    ]; };
+
+    (function (PageRobotsMeta) {
+        PageRobotsMeta["INDEX"] = "INDEX";
+        PageRobotsMeta["NOINDEX"] = "NOINDEX";
+        PageRobotsMeta["FOLLOW"] = "FOLLOW";
+        PageRobotsMeta["NOFOLLOW"] = "NOFOLLOW";
+    })(exports.PageRobotsMeta || (exports.PageRobotsMeta = {}));
+
+    var TranslationService = /** @class */ (function () {
+        function TranslationService() {
+        }
+        return TranslationService;
+    }());
+
+    /**
+     * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
+     * and the `MultiStepCheckoutSummaryPageTemplate`. If the checkout page matches this template,
+     * the more generic `ContentPageMetaResolver` is overriden by this resolver.
+     *
+     * The page title and robots are resolved in this implementation only.
+     */
+    var CheckoutPageMetaResolver = /** @class */ (function (_super) {
+        __extends(CheckoutPageMetaResolver, _super);
+        function CheckoutPageMetaResolver(translation, activeCartService) {
+            var _this = _super.call(this) || this;
+            _this.translation = translation;
+            _this.activeCartService = activeCartService;
+            _this.cart$ = _this.activeCartService.getActive();
+            _this.pageType = exports.PageType.CONTENT_PAGE;
+            _this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
+            return _this;
+        }
+        CheckoutPageMetaResolver.prototype.resolveTitle = function () {
+            var _this = this;
+            return this.cart$.pipe(operators.switchMap(function (c) { return _this.translation.translate('pageMetaResolver.checkout.title', {
+                count: c.totalItems,
+            }); }));
+        };
+        CheckoutPageMetaResolver.prototype.resolveRobots = function () {
+            return rxjs.of([exports.PageRobotsMeta.NOFOLLOW, exports.PageRobotsMeta.NOINDEX]);
+        };
+        return CheckoutPageMetaResolver;
+    }(PageMetaResolver));
+    CheckoutPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(i0.ɵɵinject(TranslationService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+    CheckoutPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutPageMetaResolver.ctorParameters = function () { return [
+        { type: TranslationService },
+        { type: ActiveCartService }
+    ]; };
+
+    var UserAddressAdapter = /** @class */ (function () {
+        function UserAddressAdapter() {
+        }
+        return UserAddressAdapter;
+    }());
+
+    var UserAddressConnector = /** @class */ (function () {
+        function UserAddressConnector(adapter) {
+            this.adapter = adapter;
+        }
+        UserAddressConnector.prototype.getAll = function (userId) {
+            return this.adapter.loadAll(userId);
+        };
+        UserAddressConnector.prototype.add = function (userId, address) {
+            return this.adapter.add(userId, address);
+        };
+        UserAddressConnector.prototype.update = function (userId, addressId, address) {
+            return this.adapter.update(userId, addressId, address);
+        };
+        UserAddressConnector.prototype.verify = function (userId, address) {
+            return this.adapter.verify(userId, address);
+        };
+        UserAddressConnector.prototype.delete = function (userId, addressId) {
+            return this.adapter.delete(userId, addressId);
+        };
+        return UserAddressConnector;
+    }());
+    UserAddressConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(i0.ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+    UserAddressConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserAddressConnector.ctorParameters = function () { return [
+        { type: UserAddressAdapter }
+    ]; };
+
+    var AddressVerificationEffect = /** @class */ (function () {
+        function AddressVerificationEffect(actions$, userAddressConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userAddressConnector = userAddressConnector;
+            this.verifyAddress$ = this.actions$.pipe(i3.ofType(VERIFY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(operators.map(function (data) { return new VerifyAddressSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new VerifyAddressFail(makeErrorSerializable(error))); })); }));
+        }
+        return AddressVerificationEffect;
+    }());
+    AddressVerificationEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    AddressVerificationEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserAddressConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
+
+    var CardTypesEffects = /** @class */ (function () {
+        function CardTypesEffects(actions$, checkoutPaymentConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.checkoutPaymentConnector = checkoutPaymentConnector;
+            this.loadCardTypes$ = this.actions$.pipe(i3.ofType(LOAD_CARD_TYPES), operators.switchMap(function () {
+                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(makeErrorSerializable(error))); }));
+            }));
+        }
+        return CardTypesEffects;
+    }());
+    CardTypesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CardTypesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CheckoutPaymentConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
+
+    var LOAD_BILLING_COUNTRIES = '[User] Load Billing Countries';
+    var LOAD_BILLING_COUNTRIES_FAIL = '[User] Load Billing Countries Fail';
+    var LOAD_BILLING_COUNTRIES_SUCCESS = '[User] Load Billing Countries Success';
+    var LoadBillingCountries = /** @class */ (function () {
+        function LoadBillingCountries() {
+            this.type = LOAD_BILLING_COUNTRIES;
+        }
+        return LoadBillingCountries;
+    }());
+    var LoadBillingCountriesFail = /** @class */ (function () {
+        function LoadBillingCountriesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_BILLING_COUNTRIES_FAIL;
+        }
+        return LoadBillingCountriesFail;
+    }());
+    var LoadBillingCountriesSuccess = /** @class */ (function () {
+        function LoadBillingCountriesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_BILLING_COUNTRIES_SUCCESS;
+        }
+        return LoadBillingCountriesSuccess;
+    }());
+
+    var LOAD_CONSIGNMENT_TRACKING = '[User] Load Consignment Tracking';
+    var LOAD_CONSIGNMENT_TRACKING_FAIL = '[User] Load Consignment Tracking Fail';
+    var LOAD_CONSIGNMENT_TRACKING_SUCCESS = '[User] Load Consignment Tracking Success';
+    var CLEAR_CONSIGNMENT_TRACKING = '[User] Clear Consignment Tracking';
+    var LoadConsignmentTracking = /** @class */ (function () {
+        function LoadConsignmentTracking(payload) {
+            this.payload = payload;
+            this.type = LOAD_CONSIGNMENT_TRACKING;
+        }
+        return LoadConsignmentTracking;
+    }());
+    var LoadConsignmentTrackingFail = /** @class */ (function () {
+        function LoadConsignmentTrackingFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_CONSIGNMENT_TRACKING_FAIL;
+        }
+        return LoadConsignmentTrackingFail;
+    }());
+    var LoadConsignmentTrackingSuccess = /** @class */ (function () {
+        function LoadConsignmentTrackingSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_CONSIGNMENT_TRACKING_SUCCESS;
+        }
+        return LoadConsignmentTrackingSuccess;
+    }());
+    var ClearConsignmentTracking = /** @class */ (function () {
+        function ClearConsignmentTracking() {
+            this.type = CLEAR_CONSIGNMENT_TRACKING;
+        }
+        return ClearConsignmentTracking;
+    }());
+
+    var USER_FEATURE = 'user';
+    var UPDATE_EMAIL_PROCESS_ID = 'updateEmail';
+    var UPDATE_PASSWORD_PROCESS_ID = 'updatePassword';
+    var UPDATE_USER_DETAILS_PROCESS_ID = 'updateUserDetails';
+    var REGISTER_USER_PROCESS_ID = 'registerUser';
+    var REMOVE_USER_PROCESS_ID = 'removeUser';
+    var GIVE_CONSENT_PROCESS_ID = 'giveConsent';
+    var WITHDRAW_CONSENT_PROCESS_ID = 'withdrawConsent';
+    var UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID = 'updateNotificationPreferences';
+    var ADD_PRODUCT_INTEREST_PROCESS_ID = 'addProductInterests';
+    var REMOVE_PRODUCT_INTERESTS_PROCESS_ID = 'removeProductInterests';
+    var CANCEL_ORDER_PROCESS_ID = 'cancelOrder';
+    var CANCEL_RETURN_PROCESS_ID = 'cancelReturn';
+    var CANCEL_REPLENISHMENT_ORDER_PROCESS_ID = 'cancelReplenishmentOrder';
+    var USER_CONSENTS = '[User] User Consents';
+    var USER_PAYMENT_METHODS = '[User] User Payment Methods';
+    var USER_ORDERS = '[User] User Orders';
+    var USER_ADDRESSES = '[User] User Addresses';
+    var USER_RETURN_REQUESTS = '[User] Order Return Requests';
+    var USER_RETURN_REQUEST_DETAILS = '[User] Return Request Details';
+    var USER_ORDER_DETAILS = '[User] User Order Details';
+    var USER_COST_CENTERS = '[User] User Cost Centers';
+    var USER_REPLENISHMENT_ORDERS = '[User] User Replenishment Orders';
+    var USER_REPLENISHMENT_ORDER_DETAILS = '[User] User Replenishment Order Details';
+    var REGIONS = '[User] Regions';
+    var CUSTOMER_COUPONS = '[User] Customer Coupons';
+    var SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'subscribeCustomerCoupon';
+    var UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'unsubscribeCustomerCoupon';
+    var CLAIM_CUSTOMER_COUPON_PROCESS_ID = 'claimCustomerCoupon';
+    var NOTIFICATION_PREFERENCES = '[User] Notification Preferences';
+    var PRODUCT_INTERESTS = '[User] Product Interests';
+
+    function getProcessState() {
+        return i1$1.createFeatureSelector(PROCESS_FEATURE);
+    }
+
+    function getProcessStateFactory(processId) {
+        return i1$1.createSelector(getProcessState(), function (entityState) { return entityLoaderStateSelector(entityState, processId); });
+    }
+    function getProcessLoadingFactory(processId) {
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
+    }
+    function getProcessSuccessFactory(processId) {
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
+    }
+    function getProcessErrorFactory(processId) {
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
+    }
+
+    var process_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getProcessStateFactory: getProcessStateFactory,
+        getProcessLoadingFactory: getProcessLoadingFactory,
+        getProcessSuccessFactory: getProcessSuccessFactory,
+        getProcessErrorFactory: getProcessErrorFactory
+    });
+
+    var LOAD_CUSTOMER_COUPONS = '[User] Load Customer Coupons';
+    var LOAD_CUSTOMER_COUPONS_FAIL = '[User] Load Customer Coupons Fail';
+    var LOAD_CUSTOMER_COUPONS_SUCCESS = '[User] Load Customer Coupons Success';
+    var RESET_LOAD_CUSTOMER_COUPONS = '[User] Reset Load Customer Coupons';
+    var SUBSCRIBE_CUSTOMER_COUPON = '[User] Subscribe Customer Notification Coupon';
+    var SUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Subscribe Customer Coupon Notification Fail';
+    var SUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Subscribe Customer Coupon Notification Success';
+    var RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Subscribe Customer Coupon Process';
+    var UNSUBSCRIBE_CUSTOMER_COUPON = '[User] Unsubscribe Customer Notification Coupon';
+    var UNSUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Unsubscribe Customer Coupon Notification Fail';
+    var UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Unsubscribe Customer Coupon Notification Success';
+    var RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Unsubscribe Customer Coupon Process';
+    var CLAIM_CUSTOMER_COUPON = '[User] Claim Customer';
+    var CLAIM_CUSTOMER_COUPON_FAIL = '[User] Claim Customer Fail';
+    var CLAIM_CUSTOMER_COUPON_SUCCESS = '[User] Claim Customer Success';
+    var LoadCustomerCoupons = /** @class */ (function (_super) {
+        __extends(LoadCustomerCoupons, _super);
+        function LoadCustomerCoupons(payload) {
+            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_COUPONS;
+            return _this;
+        }
+        return LoadCustomerCoupons;
+    }(LoaderLoadAction));
+    var LoadCustomerCouponsFail = /** @class */ (function (_super) {
+        __extends(LoadCustomerCouponsFail, _super);
+        function LoadCustomerCouponsFail(payload) {
+            var _this = _super.call(this, CUSTOMER_COUPONS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_COUPONS_FAIL;
+            return _this;
+        }
+        return LoadCustomerCouponsFail;
+    }(LoaderFailAction));
+    var LoadCustomerCouponsSuccess = /** @class */ (function (_super) {
+        __extends(LoadCustomerCouponsSuccess, _super);
+        function LoadCustomerCouponsSuccess(payload) {
+            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_COUPONS_SUCCESS;
+            return _this;
+        }
+        return LoadCustomerCouponsSuccess;
+    }(LoaderSuccessAction));
+    var ResetLoadCustomerCoupons = /** @class */ (function (_super) {
+        __extends(ResetLoadCustomerCoupons, _super);
+        function ResetLoadCustomerCoupons() {
+            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
+            _this.type = RESET_LOAD_CUSTOMER_COUPONS;
+            return _this;
+        }
+        return ResetLoadCustomerCoupons;
+    }(LoaderResetAction));
+    // Subscribe coupon notification actions
+    var SubscribeCustomerCoupon = /** @class */ (function (_super) {
+        __extends(SubscribeCustomerCoupon, _super);
+        function SubscribeCustomerCoupon(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SUBSCRIBE_CUSTOMER_COUPON;
+            return _this;
+        }
+        return SubscribeCustomerCoupon;
+    }(EntityLoadAction));
+    var SubscribeCustomerCouponFail = /** @class */ (function (_super) {
+        __extends(SubscribeCustomerCouponFail, _super);
+        function SubscribeCustomerCouponFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SUBSCRIBE_CUSTOMER_COUPON_FAIL;
+            return _this;
+        }
+        return SubscribeCustomerCouponFail;
+    }(EntityFailAction));
+    var SubscribeCustomerCouponSuccess = /** @class */ (function (_super) {
+        __extends(SubscribeCustomerCouponSuccess, _super);
+        function SubscribeCustomerCouponSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
+            return _this;
+        }
+        return SubscribeCustomerCouponSuccess;
+    }(EntitySuccessAction));
+    var ResetSubscribeCustomerCouponProcess = /** @class */ (function (_super) {
+        __extends(ResetSubscribeCustomerCouponProcess, _super);
+        function ResetSubscribeCustomerCouponProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.type = RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS;
+            return _this;
+        }
+        return ResetSubscribeCustomerCouponProcess;
+    }(EntityLoaderResetAction));
+    var UnsubscribeCustomerCoupon = /** @class */ (function (_super) {
+        __extends(UnsubscribeCustomerCoupon, _super);
+        function UnsubscribeCustomerCoupon(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON;
+            return _this;
+        }
+        return UnsubscribeCustomerCoupon;
+    }(EntityLoadAction));
+    var UnsubscribeCustomerCouponFail = /** @class */ (function (_super) {
+        __extends(UnsubscribeCustomerCouponFail, _super);
+        function UnsubscribeCustomerCouponFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON_FAIL;
+            return _this;
+        }
+        return UnsubscribeCustomerCouponFail;
+    }(EntityFailAction));
+    var UnsubscribeCustomerCouponSuccess = /** @class */ (function (_super) {
+        __extends(UnsubscribeCustomerCouponSuccess, _super);
+        function UnsubscribeCustomerCouponSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
+            return _this;
+        }
+        return UnsubscribeCustomerCouponSuccess;
+    }(EntitySuccessAction));
+    var ResetUnsubscribeCustomerCouponProcess = /** @class */ (function (_super) {
+        __extends(ResetUnsubscribeCustomerCouponProcess, _super);
+        function ResetUnsubscribeCustomerCouponProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.type = RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS;
+            return _this;
+        }
+        return ResetUnsubscribeCustomerCouponProcess;
+    }(EntityLoaderResetAction));
+    var ClaimCustomerCoupon = /** @class */ (function (_super) {
+        __extends(ClaimCustomerCoupon, _super);
+        function ClaimCustomerCoupon(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CLAIM_CUSTOMER_COUPON;
+            return _this;
+        }
+        return ClaimCustomerCoupon;
+    }(EntityLoadAction));
+    var ClaimCustomerCouponFail = /** @class */ (function (_super) {
+        __extends(ClaimCustomerCouponFail, _super);
+        function ClaimCustomerCouponFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CLAIM_CUSTOMER_COUPON_FAIL;
+            return _this;
+        }
+        return ClaimCustomerCouponFail;
+    }(EntityFailAction));
+    var ClaimCustomerCouponSuccess = /** @class */ (function (_super) {
+        __extends(ClaimCustomerCouponSuccess, _super);
+        function ClaimCustomerCouponSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CLAIM_CUSTOMER_COUPON_SUCCESS;
+            return _this;
+        }
+        return ClaimCustomerCouponSuccess;
+    }(EntitySuccessAction));
+
+    var LOAD_DELIVERY_COUNTRIES = '[User] Load Delivery Countries';
+    var LOAD_DELIVERY_COUNTRIES_FAIL = '[User] Load Delivery Countries Fail';
+    var LOAD_DELIVERY_COUNTRIES_SUCCESS = '[User] Load Delivery Countries Success';
+    var LoadDeliveryCountries = /** @class */ (function () {
+        function LoadDeliveryCountries() {
+            this.type = LOAD_DELIVERY_COUNTRIES;
+        }
+        return LoadDeliveryCountries;
+    }());
+    var LoadDeliveryCountriesFail = /** @class */ (function () {
+        function LoadDeliveryCountriesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_DELIVERY_COUNTRIES_FAIL;
+        }
+        return LoadDeliveryCountriesFail;
+    }());
+    var LoadDeliveryCountriesSuccess = /** @class */ (function () {
+        function LoadDeliveryCountriesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_DELIVERY_COUNTRIES_SUCCESS;
+        }
+        return LoadDeliveryCountriesSuccess;
+    }());
+
+    var FORGOT_PASSWORD_EMAIL_REQUEST = '[User] Forgot Password Email Request';
+    var FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS = '[User] Forgot Password Email Request Success';
+    var FORGOT_PASSWORD_EMAIL_REQUEST_FAIL = '[User] Forgot Password Email Request Fail';
+    var ForgotPasswordEmailRequest = /** @class */ (function () {
+        function ForgotPasswordEmailRequest(payload) {
+            this.payload = payload;
+            this.type = FORGOT_PASSWORD_EMAIL_REQUEST;
+        }
+        return ForgotPasswordEmailRequest;
+    }());
+    var ForgotPasswordEmailRequestFail = /** @class */ (function () {
+        function ForgotPasswordEmailRequestFail(payload) {
+            this.payload = payload;
+            this.type = FORGOT_PASSWORD_EMAIL_REQUEST_FAIL;
+        }
+        return ForgotPasswordEmailRequestFail;
+    }());
+    var ForgotPasswordEmailRequestSuccess = /** @class */ (function () {
+        function ForgotPasswordEmailRequestSuccess() {
+            this.type = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
+        }
+        return ForgotPasswordEmailRequestSuccess;
+    }());
+
+    var LOAD_NOTIFICATION_PREFERENCES = '[User] Load Notification Preferences';
+    var LOAD_NOTIFICATION_PREFERENCES_FAIL = '[User] Load Notification Preferences Fail';
+    var LOAD_NOTIFICATION_PREFERENCES_SUCCESS = '[User] Load Notification Preferences Success';
+    var UPDATE_NOTIFICATION_PREFERENCES = '[User] Update Notification Preferences';
+    var UPDATE_NOTIFICATION_PREFERENCES_FAIL = '[User] Update Notification Preferences Fail';
+    var UPDATE_NOTIFICATION_PREFERENCES_SUCCESS = '[User] Update Notification Preferences Success';
+    var RESET_NOTIFICATION_PREFERENCES = '[User] Reset Notification Preferences';
+    var CLEAR_NOTIFICATION_PREFERENCES = '[User] Clear Notification Preferences';
+    var LoadNotificationPreferences = /** @class */ (function (_super) {
+        __extends(LoadNotificationPreferences, _super);
+        function LoadNotificationPreferences(payload) {
+            var _this = _super.call(this, NOTIFICATION_PREFERENCES) || this;
+            _this.payload = payload;
+            _this.type = LOAD_NOTIFICATION_PREFERENCES;
+            return _this;
+        }
+        return LoadNotificationPreferences;
+    }(LoaderLoadAction));
+    var LoadNotificationPreferencesFail = /** @class */ (function (_super) {
+        __extends(LoadNotificationPreferencesFail, _super);
+        function LoadNotificationPreferencesFail(payload) {
+            var _this = _super.call(this, NOTIFICATION_PREFERENCES, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_NOTIFICATION_PREFERENCES_FAIL;
+            return _this;
+        }
+        return LoadNotificationPreferencesFail;
+    }(LoaderFailAction));
+    var LoadNotificationPreferencesSuccess = /** @class */ (function (_super) {
+        __extends(LoadNotificationPreferencesSuccess, _super);
+        function LoadNotificationPreferencesSuccess(payload) {
+            var _this = _super.call(this, NOTIFICATION_PREFERENCES) || this;
+            _this.payload = payload;
+            _this.type = LOAD_NOTIFICATION_PREFERENCES_SUCCESS;
+            return _this;
+        }
+        return LoadNotificationPreferencesSuccess;
+    }(LoaderSuccessAction));
+    var UpdateNotificationPreferences = /** @class */ (function (_super) {
+        __extends(UpdateNotificationPreferences, _super);
+        function UpdateNotificationPreferences(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_NOTIFICATION_PREFERENCES;
+            return _this;
+        }
+        return UpdateNotificationPreferences;
+    }(EntityLoadAction));
+    var UpdateNotificationPreferencesFail = /** @class */ (function (_super) {
+        __extends(UpdateNotificationPreferencesFail, _super);
+        function UpdateNotificationPreferencesFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_NOTIFICATION_PREFERENCES_FAIL;
+            return _this;
+        }
+        return UpdateNotificationPreferencesFail;
+    }(EntityFailAction));
+    var UpdateNotificationPreferencesSuccess = /** @class */ (function (_super) {
+        __extends(UpdateNotificationPreferencesSuccess, _super);
+        function UpdateNotificationPreferencesSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_NOTIFICATION_PREFERENCES_SUCCESS;
+            return _this;
+        }
+        return UpdateNotificationPreferencesSuccess;
+    }(EntitySuccessAction));
+    var ResetNotificationPreferences = /** @class */ (function (_super) {
+        __extends(ResetNotificationPreferences, _super);
+        function ResetNotificationPreferences() {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID) || this;
+            _this.type = RESET_NOTIFICATION_PREFERENCES;
+            return _this;
+        }
+        return ResetNotificationPreferences;
+    }(EntityLoaderResetAction));
+    var ClearNotificationPreferences = /** @class */ (function (_super) {
+        __extends(ClearNotificationPreferences, _super);
+        function ClearNotificationPreferences() {
+            var _this = _super.call(this, NOTIFICATION_PREFERENCES) || this;
+            _this.type = CLEAR_NOTIFICATION_PREFERENCES;
+            return _this;
+        }
+        return ClearNotificationPreferences;
+    }(LoaderResetAction));
+
+    var LOAD_ORDER_DETAILS = '[User] Load Order Details';
+    var LOAD_ORDER_DETAILS_FAIL = '[User] Load Order Details Fail';
+    var LOAD_ORDER_DETAILS_SUCCESS = '[User] Load Order Details Success';
+    var CLEAR_ORDER_DETAILS = '[User] Clear Order Details';
+    var CANCEL_ORDER = '[User] Cancel Order';
+    var CANCEL_ORDER_FAIL = '[User] Cancel Order Fail';
+    var CANCEL_ORDER_SUCCESS = '[User] Cancel Order Success';
+    var RESET_CANCEL_ORDER_PROCESS = '[User] Reset Cancel Order Process';
+    var LoadOrderDetails = /** @class */ (function (_super) {
+        __extends(LoadOrderDetails, _super);
+        function LoadOrderDetails(payload) {
+            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_DETAILS;
+            return _this;
+        }
+        return LoadOrderDetails;
+    }(LoaderLoadAction));
+    var LoadOrderDetailsFail = /** @class */ (function (_super) {
+        __extends(LoadOrderDetailsFail, _super);
+        function LoadOrderDetailsFail(payload) {
+            var _this = _super.call(this, USER_ORDER_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_DETAILS_FAIL;
+            return _this;
+        }
+        return LoadOrderDetailsFail;
+    }(LoaderFailAction));
+    var LoadOrderDetailsSuccess = /** @class */ (function (_super) {
+        __extends(LoadOrderDetailsSuccess, _super);
+        function LoadOrderDetailsSuccess(payload) {
+            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_DETAILS_SUCCESS;
+            return _this;
+        }
+        return LoadOrderDetailsSuccess;
+    }(LoaderSuccessAction));
+    var ClearOrderDetails = /** @class */ (function (_super) {
+        __extends(ClearOrderDetails, _super);
+        function ClearOrderDetails() {
+            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
+            _this.type = CLEAR_ORDER_DETAILS;
+            return _this;
+        }
+        return ClearOrderDetails;
+    }(LoaderResetAction));
+    var CancelOrder = /** @class */ (function (_super) {
+        __extends(CancelOrder, _super);
+        function CancelOrder(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_ORDER;
+            return _this;
+        }
+        return CancelOrder;
+    }(EntityLoadAction));
+    var CancelOrderFail = /** @class */ (function (_super) {
+        __extends(CancelOrderFail, _super);
+        function CancelOrderFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_ORDER_FAIL;
+            return _this;
+        }
+        return CancelOrderFail;
+    }(EntityFailAction));
+    var CancelOrderSuccess = /** @class */ (function (_super) {
+        __extends(CancelOrderSuccess, _super);
+        function CancelOrderSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
+            _this.type = CANCEL_ORDER_SUCCESS;
+            return _this;
+        }
+        return CancelOrderSuccess;
+    }(EntitySuccessAction));
+    var ResetCancelOrderProcess = /** @class */ (function (_super) {
+        __extends(ResetCancelOrderProcess, _super);
+        function ResetCancelOrderProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
+            _this.type = RESET_CANCEL_ORDER_PROCESS;
+            return _this;
+        }
+        return ResetCancelOrderProcess;
+    }(EntityLoaderResetAction));
+
+    var CREATE_ORDER_RETURN_REQUEST = '[User] Create Order Return Request';
+    var CREATE_ORDER_RETURN_REQUEST_FAIL = '[User] Create Order Return Request Fail';
+    var CREATE_ORDER_RETURN_REQUEST_SUCCESS = '[User] Create Order Return Request Success';
+    var LOAD_ORDER_RETURN_REQUEST = '[User] Load Order Return Request details';
+    var LOAD_ORDER_RETURN_REQUEST_FAIL = '[User] Load Order Return Request details Fail';
+    var LOAD_ORDER_RETURN_REQUEST_SUCCESS = '[User] Load Order Return Request details Success';
+    var CANCEL_ORDER_RETURN_REQUEST = '[User] Cancel Order Return Request';
+    var CANCEL_ORDER_RETURN_REQUEST_FAIL = '[User] Cancel Order Return Request Fail';
+    var CANCEL_ORDER_RETURN_REQUEST_SUCCESS = '[User] Cancel Order Return Request Success';
+    var LOAD_ORDER_RETURN_REQUEST_LIST = '[User] Load User Order Return Request List';
+    var LOAD_ORDER_RETURN_REQUEST_LIST_FAIL = '[User] Load User Order Return Request List Fail';
+    var LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS = '[User] Load User Order Return Request List Success';
+    var CLEAR_ORDER_RETURN_REQUEST = '[User] Clear Order Return Request Details';
+    var CLEAR_ORDER_RETURN_REQUEST_LIST = '[User] Clear Order Return Request List';
+    var RESET_CANCEL_RETURN_PROCESS = '[User] Reset Cancel Return Request Process';
+    var CreateOrderReturnRequest = /** @class */ (function (_super) {
+        __extends(CreateOrderReturnRequest, _super);
+        function CreateOrderReturnRequest(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = CREATE_ORDER_RETURN_REQUEST;
+            return _this;
+        }
+        return CreateOrderReturnRequest;
+    }(LoaderLoadAction));
+    var CreateOrderReturnRequestFail = /** @class */ (function (_super) {
+        __extends(CreateOrderReturnRequestFail, _super);
+        function CreateOrderReturnRequestFail(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = CREATE_ORDER_RETURN_REQUEST_FAIL;
+            return _this;
+        }
+        return CreateOrderReturnRequestFail;
+    }(LoaderFailAction));
+    var CreateOrderReturnRequestSuccess = /** @class */ (function (_super) {
+        __extends(CreateOrderReturnRequestSuccess, _super);
+        function CreateOrderReturnRequestSuccess(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = CREATE_ORDER_RETURN_REQUEST_SUCCESS;
+            return _this;
+        }
+        return CreateOrderReturnRequestSuccess;
+    }(LoaderSuccessAction));
+    var LoadOrderReturnRequest = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequest, _super);
+        function LoadOrderReturnRequest(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST;
+            return _this;
+        }
+        return LoadOrderReturnRequest;
+    }(LoaderLoadAction));
+    var LoadOrderReturnRequestFail = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestFail, _super);
+        function LoadOrderReturnRequestFail(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_FAIL;
+            return _this;
+        }
+        return LoadOrderReturnRequestFail;
+    }(LoaderFailAction));
+    var LoadOrderReturnRequestSuccess = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestSuccess, _super);
+        function LoadOrderReturnRequestSuccess(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_SUCCESS;
+            return _this;
+        }
+        return LoadOrderReturnRequestSuccess;
+    }(LoaderSuccessAction));
+    var CancelOrderReturnRequest = /** @class */ (function (_super) {
+        __extends(CancelOrderReturnRequest, _super);
+        function CancelOrderReturnRequest(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_ORDER_RETURN_REQUEST;
+            return _this;
+        }
+        return CancelOrderReturnRequest;
+    }(EntityLoadAction));
+    var CancelOrderReturnRequestFail = /** @class */ (function (_super) {
+        __extends(CancelOrderReturnRequestFail, _super);
+        function CancelOrderReturnRequestFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_ORDER_RETURN_REQUEST_FAIL;
+            return _this;
+        }
+        return CancelOrderReturnRequestFail;
+    }(EntityFailAction));
+    var CancelOrderReturnRequestSuccess = /** @class */ (function (_super) {
+        __extends(CancelOrderReturnRequestSuccess, _super);
+        function CancelOrderReturnRequestSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
+            _this.type = CANCEL_ORDER_RETURN_REQUEST_SUCCESS;
+            return _this;
+        }
+        return CancelOrderReturnRequestSuccess;
+    }(EntitySuccessAction));
+    var LoadOrderReturnRequestList = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestList, _super);
+        function LoadOrderReturnRequestList(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST;
+            return _this;
+        }
+        return LoadOrderReturnRequestList;
+    }(LoaderLoadAction));
+    var LoadOrderReturnRequestListFail = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestListFail, _super);
+        function LoadOrderReturnRequestListFail(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUESTS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST_FAIL;
+            return _this;
+        }
+        return LoadOrderReturnRequestListFail;
+    }(LoaderFailAction));
+    var LoadOrderReturnRequestListSuccess = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestListSuccess, _super);
+        function LoadOrderReturnRequestListSuccess(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS;
+            return _this;
+        }
+        return LoadOrderReturnRequestListSuccess;
+    }(LoaderSuccessAction));
+    var ClearOrderReturnRequest = /** @class */ (function (_super) {
+        __extends(ClearOrderReturnRequest, _super);
+        function ClearOrderReturnRequest() {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.type = CLEAR_ORDER_RETURN_REQUEST;
+            return _this;
+        }
+        return ClearOrderReturnRequest;
+    }(LoaderResetAction));
+    var ClearOrderReturnRequestList = /** @class */ (function (_super) {
+        __extends(ClearOrderReturnRequestList, _super);
+        function ClearOrderReturnRequestList() {
+            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
+            _this.type = CLEAR_ORDER_RETURN_REQUEST_LIST;
+            return _this;
+        }
+        return ClearOrderReturnRequestList;
+    }(LoaderResetAction));
+    var ResetCancelReturnProcess = /** @class */ (function (_super) {
+        __extends(ResetCancelReturnProcess, _super);
+        function ResetCancelReturnProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
+            _this.type = RESET_CANCEL_RETURN_PROCESS;
+            return _this;
+        }
+        return ResetCancelReturnProcess;
+    }(EntityLoaderResetAction));
+
+    var LOAD_USER_PAYMENT_METHODS = '[User] Load User Payment Methods';
+    var LOAD_USER_PAYMENT_METHODS_FAIL = '[User] Load User Payment Methods Fail';
+    var LOAD_USER_PAYMENT_METHODS_SUCCESS = '[User] Load User Payment Methods Success';
+    var SET_DEFAULT_USER_PAYMENT_METHOD = '[User] Set Default User Payment Method';
+    var SET_DEFAULT_USER_PAYMENT_METHOD_FAIL = '[User] Set Default User Payment Method Fail';
+    var SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS = '[User] Set Default User Payment Method Success';
+    var DELETE_USER_PAYMENT_METHOD = '[User] Delete User Payment Method';
+    var DELETE_USER_PAYMENT_METHOD_FAIL = '[User] Delete User Payment Method Fail';
+    var DELETE_USER_PAYMENT_METHOD_SUCCESS = '[User] Delete User  Payment Method Success';
+    var LoadUserPaymentMethods = /** @class */ (function (_super) {
+        __extends(LoadUserPaymentMethods, _super);
+        function LoadUserPaymentMethods(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_PAYMENT_METHODS;
+            return _this;
+        }
+        return LoadUserPaymentMethods;
+    }(LoaderLoadAction));
+    var LoadUserPaymentMethodsFail = /** @class */ (function (_super) {
+        __extends(LoadUserPaymentMethodsFail, _super);
+        function LoadUserPaymentMethodsFail(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_PAYMENT_METHODS_FAIL;
+            return _this;
+        }
+        return LoadUserPaymentMethodsFail;
+    }(LoaderFailAction));
+    var LoadUserPaymentMethodsSuccess = /** @class */ (function (_super) {
+        __extends(LoadUserPaymentMethodsSuccess, _super);
+        function LoadUserPaymentMethodsSuccess(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_PAYMENT_METHODS_SUCCESS;
+            return _this;
+        }
+        return LoadUserPaymentMethodsSuccess;
+    }(LoaderSuccessAction));
+    var SetDefaultUserPaymentMethod = /** @class */ (function (_super) {
+        __extends(SetDefaultUserPaymentMethod, _super);
+        function SetDefaultUserPaymentMethod(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
+            _this.payload = payload;
+            _this.type = SET_DEFAULT_USER_PAYMENT_METHOD;
+            return _this;
+        }
+        return SetDefaultUserPaymentMethod;
+    }(LoaderLoadAction));
+    var SetDefaultUserPaymentMethodFail = /** @class */ (function (_super) {
+        __extends(SetDefaultUserPaymentMethodFail, _super);
+        function SetDefaultUserPaymentMethodFail(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_DEFAULT_USER_PAYMENT_METHOD_FAIL;
+            return _this;
+        }
+        return SetDefaultUserPaymentMethodFail;
+    }(LoaderFailAction));
+    var SetDefaultUserPaymentMethodSuccess = /** @class */ (function (_super) {
+        __extends(SetDefaultUserPaymentMethodSuccess, _super);
+        function SetDefaultUserPaymentMethodSuccess(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
+            _this.payload = payload;
+            _this.type = SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS;
+            return _this;
+        }
+        return SetDefaultUserPaymentMethodSuccess;
+    }(LoaderSuccessAction));
+    var DeleteUserPaymentMethod = /** @class */ (function (_super) {
+        __extends(DeleteUserPaymentMethod, _super);
+        function DeleteUserPaymentMethod(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
+            _this.payload = payload;
+            _this.type = DELETE_USER_PAYMENT_METHOD;
+            return _this;
+        }
+        return DeleteUserPaymentMethod;
+    }(LoaderLoadAction));
+    var DeleteUserPaymentMethodFail = /** @class */ (function (_super) {
+        __extends(DeleteUserPaymentMethodFail, _super);
+        function DeleteUserPaymentMethodFail(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS, payload) || this;
+            _this.payload = payload;
+            _this.type = DELETE_USER_PAYMENT_METHOD_FAIL;
+            return _this;
+        }
+        return DeleteUserPaymentMethodFail;
+    }(LoaderFailAction));
+    var DeleteUserPaymentMethodSuccess = /** @class */ (function (_super) {
+        __extends(DeleteUserPaymentMethodSuccess, _super);
+        function DeleteUserPaymentMethodSuccess(payload) {
+            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
+            _this.payload = payload;
+            _this.type = DELETE_USER_PAYMENT_METHOD_SUCCESS;
+            return _this;
+        }
+        return DeleteUserPaymentMethodSuccess;
+    }(LoaderSuccessAction));
+
+    var LOAD_PRODUCT_INTERESTS = 'Load Product Interests';
+    var LOAD_PRODUCT_INTERESTS_FAIL = 'Load Product Interests Fail';
+    var LOAD_PRODUCT_INTERESTS_SUCCESS = 'Load Product Interests Success';
+    var REMOVE_PRODUCT_INTEREST = 'Remove Product Interest';
+    var REMOVE_PRODUCT_INTEREST_SUCCESS = 'Remove Product Interest Success';
+    var REMOVE_PRODUCT_INTEREST_FAIL = 'Remove Product Interest Fail';
+    var ADD_PRODUCT_INTEREST = 'Add Product Interest';
+    var ADD_PRODUCT_INTEREST_FAIL = 'Add Product Interest Fail';
+    var ADD_PRODUCT_INTEREST_SUCCESS = 'Add Product Interest Success';
+    var ADD_PRODUCT_INTEREST_RESET = 'Add Product Interest Reset';
+    var REMOVE_PRODUCT_INTEREST_RESET = 'Remove Product Interest Reset';
+    var CLEAR_PRODUCT_INTERESTS = 'Clear Product Interests';
+    var LoadProductInterests = /** @class */ (function (_super) {
+        __extends(LoadProductInterests, _super);
+        function LoadProductInterests(payload) {
+            var _this = _super.call(this, PRODUCT_INTERESTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_PRODUCT_INTERESTS;
+            return _this;
+        }
+        return LoadProductInterests;
+    }(LoaderLoadAction));
+    var LoadProductInterestsFail = /** @class */ (function (_super) {
+        __extends(LoadProductInterestsFail, _super);
+        function LoadProductInterestsFail(payload) {
+            var _this = _super.call(this, PRODUCT_INTERESTS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_PRODUCT_INTERESTS_FAIL;
+            return _this;
+        }
+        return LoadProductInterestsFail;
+    }(LoaderFailAction));
+    var LoadProductInterestsSuccess = /** @class */ (function (_super) {
+        __extends(LoadProductInterestsSuccess, _super);
+        function LoadProductInterestsSuccess(payload) {
+            var _this = _super.call(this, PRODUCT_INTERESTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_PRODUCT_INTERESTS_SUCCESS;
+            return _this;
+        }
+        return LoadProductInterestsSuccess;
+    }(LoaderSuccessAction));
+    var RemoveProductInterest = /** @class */ (function (_super) {
+        __extends(RemoveProductInterest, _super);
+        function RemoveProductInterest(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_PRODUCT_INTEREST;
+            return _this;
+        }
+        return RemoveProductInterest;
+    }(EntityLoadAction));
+    var RemoveProductInterestSuccess = /** @class */ (function (_super) {
+        __extends(RemoveProductInterestSuccess, _super);
+        function RemoveProductInterestSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_PRODUCT_INTEREST_SUCCESS;
+            return _this;
+        }
+        return RemoveProductInterestSuccess;
+    }(EntitySuccessAction));
+    var RemoveProductInterestFail = /** @class */ (function (_super) {
+        __extends(RemoveProductInterestFail, _super);
+        function RemoveProductInterestFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_PRODUCT_INTEREST_FAIL;
+            return _this;
+        }
+        return RemoveProductInterestFail;
+    }(EntityFailAction));
+    var AddProductInterest = /** @class */ (function (_super) {
+        __extends(AddProductInterest, _super);
+        function AddProductInterest(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = ADD_PRODUCT_INTEREST;
+            return _this;
+        }
+        return AddProductInterest;
+    }(EntityLoadAction));
+    var AddProductInterestSuccess = /** @class */ (function (_super) {
+        __extends(AddProductInterestSuccess, _super);
+        function AddProductInterestSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = ADD_PRODUCT_INTEREST_SUCCESS;
+            return _this;
+        }
+        return AddProductInterestSuccess;
+    }(EntitySuccessAction));
+    var AddProductInterestFail = /** @class */ (function (_super) {
+        __extends(AddProductInterestFail, _super);
+        function AddProductInterestFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = ADD_PRODUCT_INTEREST_FAIL;
+            return _this;
+        }
+        return AddProductInterestFail;
+    }(EntityFailAction));
+    var ResetAddInterestState = /** @class */ (function (_super) {
+        __extends(ResetAddInterestState, _super);
+        function ResetAddInterestState() {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID) || this;
+            _this.type = ADD_PRODUCT_INTEREST_RESET;
+            return _this;
+        }
+        return ResetAddInterestState;
+    }(EntityLoaderResetAction));
+    var ResetRemoveInterestState = /** @class */ (function (_super) {
+        __extends(ResetRemoveInterestState, _super);
+        function ResetRemoveInterestState() {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID) || this;
+            _this.type = REMOVE_PRODUCT_INTEREST_RESET;
+            return _this;
+        }
+        return ResetRemoveInterestState;
+    }(EntityLoaderResetAction));
+    var ClearProductInterests = /** @class */ (function (_super) {
+        __extends(ClearProductInterests, _super);
+        function ClearProductInterests() {
+            var _this = _super.call(this, PRODUCT_INTERESTS) || this;
+            _this.type = CLEAR_PRODUCT_INTERESTS;
+            return _this;
+        }
+        return ClearProductInterests;
+    }(LoaderResetAction));
+
+    var LOAD_REGIONS = '[User] Load Regions';
+    var LOAD_REGIONS_SUCCESS = '[User] Load Regions Success';
+    var LOAD_REGIONS_FAIL = '[User] Load Regions Fail';
+    var CLEAR_REGIONS = '[User] Clear Regions';
+    var LoadRegions = /** @class */ (function (_super) {
+        __extends(LoadRegions, _super);
+        function LoadRegions(payload) {
+            var _this = _super.call(this, REGIONS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REGIONS;
+            return _this;
+        }
+        return LoadRegions;
+    }(LoaderLoadAction));
+    var LoadRegionsFail = /** @class */ (function (_super) {
+        __extends(LoadRegionsFail, _super);
+        function LoadRegionsFail(payload) {
+            var _this = _super.call(this, REGIONS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REGIONS_FAIL;
+            return _this;
+        }
+        return LoadRegionsFail;
+    }(LoaderFailAction));
+    var LoadRegionsSuccess = /** @class */ (function (_super) {
+        __extends(LoadRegionsSuccess, _super);
+        function LoadRegionsSuccess(payload) {
+            var _this = _super.call(this, REGIONS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REGIONS_SUCCESS;
+            return _this;
+        }
+        return LoadRegionsSuccess;
+    }(LoaderSuccessAction));
+    var ClearRegions = /** @class */ (function () {
+        function ClearRegions() {
+            this.type = CLEAR_REGIONS;
+        }
+        return ClearRegions;
+    }());
+
+    var LOAD_REPLENISHMENT_ORDER_DETAILS = '[User] Load Replenishment Order Details';
+    var LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS = '[User] Load Replenishment Order Details Success';
+    var LOAD_REPLENISHMENT_ORDER_DETAILS_FAIL = '[User] Load Replenishment Order Details Fail';
+    var ClEAR_REPLENISHMENT_ORDER_DETAILS = '[User] Clear Replenishment Order Details';
+    var CANCEL_REPLENISHMENT_ORDER = '[User] Cancel Replenishment Order';
+    var CANCEL_REPLENISHMENT_ORDER_SUCCESS = '[User] Cancel Replenishment Order Success';
+    var CANCEL_REPLENISHMENT_ORDER_FAIL = '[User] Cancel Replenishment Order Fail';
+    var CLEAR_CANCEL_REPLENISHMENT_ORDER = '[User] Clear Cancel Replenishment Order';
+    var LoadReplenishmentOrderDetails = /** @class */ (function (_super) {
+        __extends(LoadReplenishmentOrderDetails, _super);
+        function LoadReplenishmentOrderDetails(payload) {
+            var _this = _super.call(this, USER_REPLENISHMENT_ORDER_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REPLENISHMENT_ORDER_DETAILS;
+            return _this;
+        }
+        return LoadReplenishmentOrderDetails;
+    }(LoaderLoadAction));
+    var LoadReplenishmentOrderDetailsSuccess = /** @class */ (function (_super) {
+        __extends(LoadReplenishmentOrderDetailsSuccess, _super);
+        function LoadReplenishmentOrderDetailsSuccess(payload) {
+            var _this = _super.call(this, USER_REPLENISHMENT_ORDER_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS;
+            return _this;
+        }
+        return LoadReplenishmentOrderDetailsSuccess;
+    }(LoaderSuccessAction));
+    var LoadReplenishmentOrderDetailsFail = /** @class */ (function (_super) {
+        __extends(LoadReplenishmentOrderDetailsFail, _super);
+        function LoadReplenishmentOrderDetailsFail(payload) {
+            var _this = _super.call(this, USER_REPLENISHMENT_ORDER_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REPLENISHMENT_ORDER_DETAILS_FAIL;
+            return _this;
+        }
+        return LoadReplenishmentOrderDetailsFail;
+    }(LoaderFailAction));
+    var ClearReplenishmentOrderDetails = /** @class */ (function (_super) {
+        __extends(ClearReplenishmentOrderDetails, _super);
+        function ClearReplenishmentOrderDetails() {
+            var _this = _super.call(this, USER_REPLENISHMENT_ORDER_DETAILS) || this;
+            _this.type = ClEAR_REPLENISHMENT_ORDER_DETAILS;
+            return _this;
+        }
+        return ClearReplenishmentOrderDetails;
+    }(LoaderResetAction));
+    var CancelReplenishmentOrder = /** @class */ (function (_super) {
+        __extends(CancelReplenishmentOrder, _super);
+        function CancelReplenishmentOrder(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_REPLENISHMENT_ORDER;
+            return _this;
+        }
+        return CancelReplenishmentOrder;
+    }(EntityLoadAction));
+    var CancelReplenishmentOrderSuccess = /** @class */ (function (_super) {
+        __extends(CancelReplenishmentOrderSuccess, _super);
+        function CancelReplenishmentOrderSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_REPLENISHMENT_ORDER_SUCCESS;
+            return _this;
+        }
+        return CancelReplenishmentOrderSuccess;
+    }(EntitySuccessAction));
+    var CancelReplenishmentOrderFail = /** @class */ (function (_super) {
+        __extends(CancelReplenishmentOrderFail, _super);
+        function CancelReplenishmentOrderFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_REPLENISHMENT_ORDER_FAIL;
+            return _this;
+        }
+        return CancelReplenishmentOrderFail;
+    }(EntityFailAction));
+    var ClearCancelReplenishmentOrder = /** @class */ (function (_super) {
+        __extends(ClearCancelReplenishmentOrder, _super);
+        function ClearCancelReplenishmentOrder() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID) || this;
+            _this.type = CLEAR_CANCEL_REPLENISHMENT_ORDER;
+            return _this;
+        }
+        return ClearCancelReplenishmentOrder;
+    }(EntityLoaderResetAction));
+
+    var RESET_PASSWORD = '[User] Reset Password';
+    var RESET_PASSWORD_SUCCESS = '[User] Reset Password Success';
+    var RESET_PASSWORD_FAIL = '[User] Reset Password Fail';
+    var ResetPassword = /** @class */ (function () {
+        function ResetPassword(payload) {
+            this.payload = payload;
+            this.type = RESET_PASSWORD;
+        }
+        return ResetPassword;
+    }());
+    var ResetPasswordFail = /** @class */ (function () {
+        function ResetPasswordFail(payload) {
+            this.payload = payload;
+            this.type = RESET_PASSWORD_FAIL;
+        }
+        return ResetPasswordFail;
+    }());
+    var ResetPasswordSuccess = /** @class */ (function () {
+        function ResetPasswordSuccess() {
+            this.type = RESET_PASSWORD_SUCCESS;
+        }
+        return ResetPasswordSuccess;
+    }());
+
+    var LOAD_TITLES = '[User] Load Tiltes';
+    var LOAD_TITLES_FAIL = '[User] Load Titles Fail';
+    var LOAD_TITLES_SUCCESS = '[User] Load Titles Success';
+    var LoadTitles = /** @class */ (function () {
+        function LoadTitles() {
+            this.type = LOAD_TITLES;
+        }
+        return LoadTitles;
+    }());
+    var LoadTitlesFail = /** @class */ (function () {
+        function LoadTitlesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_TITLES_FAIL;
+        }
+        return LoadTitlesFail;
+    }());
+    var LoadTitlesSuccess = /** @class */ (function () {
+        function LoadTitlesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_TITLES_SUCCESS;
+        }
+        return LoadTitlesSuccess;
+    }());
+
+    var UPDATE_EMAIL = '[User] Update Email';
+    var UPDATE_EMAIL_ERROR = '[User] Update Email Error';
+    var UPDATE_EMAIL_SUCCESS = '[User] Update Email Success';
+    var RESET_EMAIL = '[User] Reset Email';
+    var UpdateEmailAction = /** @class */ (function (_super) {
+        __extends(UpdateEmailAction, _super);
+        function UpdateEmailAction(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_EMAIL;
+            return _this;
+        }
+        return UpdateEmailAction;
+    }(EntityLoadAction));
+    var UpdateEmailSuccessAction = /** @class */ (function (_super) {
+        __extends(UpdateEmailSuccessAction, _super);
+        function UpdateEmailSuccessAction(newUid) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+            _this.newUid = newUid;
+            _this.type = UPDATE_EMAIL_SUCCESS;
+            return _this;
+        }
+        return UpdateEmailSuccessAction;
+    }(EntitySuccessAction));
+    var UpdateEmailErrorAction = /** @class */ (function (_super) {
+        __extends(UpdateEmailErrorAction, _super);
+        function UpdateEmailErrorAction(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_EMAIL_ERROR;
+            return _this;
+        }
+        return UpdateEmailErrorAction;
+    }(EntityFailAction));
+    var ResetUpdateEmailAction = /** @class */ (function (_super) {
+        __extends(ResetUpdateEmailAction, _super);
+        function ResetUpdateEmailAction() {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+            _this.type = RESET_EMAIL;
+            return _this;
+        }
+        return ResetUpdateEmailAction;
+    }(EntityLoaderResetAction));
+
+    var UPDATE_PASSWORD = '[User] Update Password';
+    var UPDATE_PASSWORD_FAIL = '[User] Update Password Fail';
+    var UPDATE_PASSWORD_SUCCESS = '[User] Update Password Success';
+    var UPDATE_PASSWORD_RESET = '[User] Reset Update Password Process State';
+    var UpdatePassword = /** @class */ (function (_super) {
+        __extends(UpdatePassword, _super);
+        function UpdatePassword(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_PASSWORD;
+            return _this;
+        }
+        return UpdatePassword;
+    }(EntityLoadAction));
+    var UpdatePasswordFail = /** @class */ (function (_super) {
+        __extends(UpdatePasswordFail, _super);
+        function UpdatePasswordFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_PASSWORD_FAIL;
+            return _this;
+        }
+        return UpdatePasswordFail;
+    }(EntityFailAction));
+    var UpdatePasswordSuccess = /** @class */ (function (_super) {
+        __extends(UpdatePasswordSuccess, _super);
+        function UpdatePasswordSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID) || this;
+            _this.type = UPDATE_PASSWORD_SUCCESS;
+            return _this;
+        }
+        return UpdatePasswordSuccess;
+    }(EntitySuccessAction));
+    var UpdatePasswordReset = /** @class */ (function (_super) {
+        __extends(UpdatePasswordReset, _super);
+        function UpdatePasswordReset() {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID) || this;
+            _this.type = UPDATE_PASSWORD_RESET;
+            return _this;
+        }
+        return UpdatePasswordReset;
+    }(EntityLoaderResetAction));
+
+    var LOAD_USER_ADDRESSES = '[User] Load User Addresses';
+    var LOAD_USER_ADDRESSES_FAIL = '[User] Load User Addresses Fail';
+    var LOAD_USER_ADDRESSES_SUCCESS = '[User] Load User Addresses Success';
+    var ADD_USER_ADDRESS = '[User] Add User Address';
+    var ADD_USER_ADDRESS_FAIL = '[User] Add User Address Fail';
+    var ADD_USER_ADDRESS_SUCCESS = '[User] Add User Address Success';
+    var UPDATE_USER_ADDRESS = '[User] Update User Address';
+    var UPDATE_USER_ADDRESS_FAIL = '[User] Update User Address Fail';
+    var UPDATE_USER_ADDRESS_SUCCESS = '[User] Update User Address Success';
+    var DELETE_USER_ADDRESS = '[User] Delete User Address';
+    var DELETE_USER_ADDRESS_FAIL = '[User] Delete User Address Fail';
+    var DELETE_USER_ADDRESS_SUCCESS = '[User] Delete User Address Success';
+    var LoadUserAddresses = /** @class */ (function (_super) {
+        __extends(LoadUserAddresses, _super);
+        function LoadUserAddresses(payload) {
+            var _this = _super.call(this, USER_ADDRESSES) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_ADDRESSES;
+            return _this;
+        }
+        return LoadUserAddresses;
+    }(LoaderLoadAction));
+    var LoadUserAddressesFail = /** @class */ (function (_super) {
+        __extends(LoadUserAddressesFail, _super);
+        function LoadUserAddressesFail(payload) {
+            var _this = _super.call(this, USER_ADDRESSES, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_ADDRESSES_FAIL;
+            return _this;
+        }
+        return LoadUserAddressesFail;
+    }(LoaderFailAction));
+    var LoadUserAddressesSuccess = /** @class */ (function (_super) {
+        __extends(LoadUserAddressesSuccess, _super);
+        function LoadUserAddressesSuccess(payload) {
+            var _this = _super.call(this, USER_ADDRESSES) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_ADDRESSES_SUCCESS;
+            return _this;
+        }
+        return LoadUserAddressesSuccess;
+    }(LoaderSuccessAction));
+    // Adding address actions
+    var AddUserAddress = /** @class */ (function (_super) {
+        __extends(AddUserAddress, _super);
+        function AddUserAddress(payload) {
+            var _this = _super.call(this, USER_ADDRESSES) || this;
+            _this.payload = payload;
+            _this.type = ADD_USER_ADDRESS;
+            return _this;
+        }
+        return AddUserAddress;
+    }(LoaderLoadAction));
+    var AddUserAddressFail = /** @class */ (function (_super) {
+        __extends(AddUserAddressFail, _super);
+        function AddUserAddressFail(payload) {
+            var _this = _super.call(this, USER_ADDRESSES, payload) || this;
+            _this.payload = payload;
+            _this.type = ADD_USER_ADDRESS_FAIL;
+            return _this;
+        }
+        return AddUserAddressFail;
+    }(LoaderFailAction));
+    var AddUserAddressSuccess = /** @class */ (function (_super) {
+        __extends(AddUserAddressSuccess, _super);
+        function AddUserAddressSuccess(payload) {
+            var _this = _super.call(this, USER_ADDRESSES) || this;
+            _this.payload = payload;
+            _this.type = ADD_USER_ADDRESS_SUCCESS;
+            return _this;
+        }
+        return AddUserAddressSuccess;
+    }(LoaderSuccessAction));
+    // Updating address actions
+    var UpdateUserAddress = /** @class */ (function (_super) {
+        __extends(UpdateUserAddress, _super);
+        function UpdateUserAddress(payload) {
+            var _this = _super.call(this, USER_ADDRESSES) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_USER_ADDRESS;
+            return _this;
+        }
+        return UpdateUserAddress;
+    }(LoaderLoadAction));
+    var UpdateUserAddressFail = /** @class */ (function (_super) {
+        __extends(UpdateUserAddressFail, _super);
+        function UpdateUserAddressFail(payload) {
+            var _this = _super.call(this, USER_ADDRESSES, payload) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_USER_ADDRESS_FAIL;
+            return _this;
+        }
+        return UpdateUserAddressFail;
+    }(LoaderFailAction));
+    var UpdateUserAddressSuccess = /** @class */ (function (_super) {
+        __extends(UpdateUserAddressSuccess, _super);
+        function UpdateUserAddressSuccess(payload) {
+            var _this = _super.call(this, USER_ADDRESSES) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_USER_ADDRESS_SUCCESS;
+            return _this;
+        }
+        return UpdateUserAddressSuccess;
+    }(LoaderSuccessAction));
+    // Deleting address actions
+    var DeleteUserAddress = /** @class */ (function (_super) {
+        __extends(DeleteUserAddress, _super);
+        function DeleteUserAddress(payload) {
+            var _this = _super.call(this, USER_ADDRESSES) || this;
+            _this.payload = payload;
+            _this.type = DELETE_USER_ADDRESS;
+            return _this;
+        }
+        return DeleteUserAddress;
+    }(LoaderLoadAction));
+    var DeleteUserAddressFail = /** @class */ (function (_super) {
+        __extends(DeleteUserAddressFail, _super);
+        function DeleteUserAddressFail(payload) {
+            var _this = _super.call(this, USER_ADDRESSES, payload) || this;
+            _this.payload = payload;
+            _this.type = DELETE_USER_ADDRESS_FAIL;
+            return _this;
+        }
+        return DeleteUserAddressFail;
+    }(LoaderFailAction));
+    var DeleteUserAddressSuccess = /** @class */ (function (_super) {
+        __extends(DeleteUserAddressSuccess, _super);
+        function DeleteUserAddressSuccess(payload) {
+            var _this = _super.call(this, USER_ADDRESSES) || this;
+            _this.payload = payload;
+            _this.type = DELETE_USER_ADDRESS_SUCCESS;
+            return _this;
+        }
+        return DeleteUserAddressSuccess;
+    }(LoaderSuccessAction));
+
+    var LOAD_USER_CONSENTS = '[User] Load User Consents';
+    var LOAD_USER_CONSENTS_SUCCESS = '[User] Load User Consents Success';
+    var LOAD_USER_CONSENTS_FAIL = '[User] Load User Consents Fail';
+    var RESET_LOAD_USER_CONSENTS = '[User] Reset Load User Consents';
+    var GIVE_USER_CONSENT = '[User] Give User Consent';
+    var GIVE_USER_CONSENT_FAIL = '[User] Give User Consent Fail';
+    var GIVE_USER_CONSENT_SUCCESS = '[User] Give User Consent Success';
+    var RESET_GIVE_USER_CONSENT_PROCESS = '[User] Reset Give User Consent Process';
+    var TRANSFER_ANONYMOUS_CONSENT = '[User] Transfer Anonymous Consent';
+    var WITHDRAW_USER_CONSENT = '[User] Withdraw User Consent';
+    var WITHDRAW_USER_CONSENT_FAIL = '[User] Withdraw User Consent Fail';
+    var WITHDRAW_USER_CONSENT_SUCCESS = '[User] Withdraw User Consent Success';
+    var RESET_WITHDRAW_USER_CONSENT_PROCESS = '[User] Reset Withdraw User Consent Process';
+    var LoadUserConsents = /** @class */ (function (_super) {
+        __extends(LoadUserConsents, _super);
+        function LoadUserConsents(payload) {
+            var _this = _super.call(this, USER_CONSENTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_CONSENTS;
+            return _this;
+        }
+        return LoadUserConsents;
+    }(LoaderLoadAction));
+    var LoadUserConsentsFail = /** @class */ (function (_super) {
+        __extends(LoadUserConsentsFail, _super);
+        function LoadUserConsentsFail(payload) {
+            var _this = _super.call(this, USER_CONSENTS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_CONSENTS_FAIL;
+            return _this;
+        }
+        return LoadUserConsentsFail;
+    }(LoaderFailAction));
+    var LoadUserConsentsSuccess = /** @class */ (function (_super) {
+        __extends(LoadUserConsentsSuccess, _super);
+        function LoadUserConsentsSuccess(payload) {
+            var _this = _super.call(this, USER_CONSENTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_CONSENTS_SUCCESS;
+            return _this;
+        }
+        return LoadUserConsentsSuccess;
+    }(LoaderSuccessAction));
+    var ResetLoadUserConsents = /** @class */ (function (_super) {
+        __extends(ResetLoadUserConsents, _super);
+        function ResetLoadUserConsents() {
+            var _this = _super.call(this, USER_CONSENTS) || this;
+            _this.type = RESET_LOAD_USER_CONSENTS;
+            return _this;
+        }
+        return ResetLoadUserConsents;
+    }(LoaderResetAction));
+    var GiveUserConsent = /** @class */ (function (_super) {
+        __extends(GiveUserConsent, _super);
+        function GiveUserConsent(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = GIVE_USER_CONSENT;
+            return _this;
+        }
+        return GiveUserConsent;
+    }(EntityLoadAction));
+    var GiveUserConsentFail = /** @class */ (function (_super) {
+        __extends(GiveUserConsentFail, _super);
+        function GiveUserConsentFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID, payload) || this;
+            _this.type = GIVE_USER_CONSENT_FAIL;
+            return _this;
+        }
+        return GiveUserConsentFail;
+    }(EntityFailAction));
+    var GiveUserConsentSuccess = /** @class */ (function (_super) {
+        __extends(GiveUserConsentSuccess, _super);
+        function GiveUserConsentSuccess(consentTemplate) {
+            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+            _this.consentTemplate = consentTemplate;
+            _this.type = GIVE_USER_CONSENT_SUCCESS;
+            return _this;
+        }
+        return GiveUserConsentSuccess;
+    }(EntitySuccessAction));
+    var ResetGiveUserConsentProcess = /** @class */ (function (_super) {
+        __extends(ResetGiveUserConsentProcess, _super);
+        function ResetGiveUserConsentProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+            _this.type = RESET_GIVE_USER_CONSENT_PROCESS;
+            return _this;
+        }
+        return ResetGiveUserConsentProcess;
+    }(EntityLoaderResetAction));
+    var TransferAnonymousConsent = /** @class */ (function () {
+        function TransferAnonymousConsent(payload) {
+            this.payload = payload;
+            this.type = TRANSFER_ANONYMOUS_CONSENT;
+        }
+        return TransferAnonymousConsent;
+    }());
+    var WithdrawUserConsent = /** @class */ (function (_super) {
+        __extends(WithdrawUserConsent, _super);
+        function WithdrawUserConsent(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = WITHDRAW_USER_CONSENT;
+            return _this;
+        }
+        return WithdrawUserConsent;
+    }(EntityLoadAction));
+    var WithdrawUserConsentFail = /** @class */ (function (_super) {
+        __extends(WithdrawUserConsentFail, _super);
+        function WithdrawUserConsentFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID, payload) || this;
+            _this.type = WITHDRAW_USER_CONSENT_FAIL;
+            return _this;
+        }
+        return WithdrawUserConsentFail;
+    }(EntityFailAction));
+    var WithdrawUserConsentSuccess = /** @class */ (function (_super) {
+        __extends(WithdrawUserConsentSuccess, _super);
+        function WithdrawUserConsentSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+            _this.type = WITHDRAW_USER_CONSENT_SUCCESS;
+            return _this;
+        }
+        return WithdrawUserConsentSuccess;
+    }(EntitySuccessAction));
+    var ResetWithdrawUserConsentProcess = /** @class */ (function (_super) {
+        __extends(ResetWithdrawUserConsentProcess, _super);
+        function ResetWithdrawUserConsentProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+            _this.type = RESET_WITHDRAW_USER_CONSENT_PROCESS;
+            return _this;
+        }
+        return ResetWithdrawUserConsentProcess;
+    }(EntityLoaderResetAction));
+
+    var LOAD_ACTIVE_COST_CENTERS = '[User] Load Active CostCenters';
+    var LOAD_ACTIVE_COST_CENTERS_FAIL = '[User] Load Active CostCenters Fail';
+    var LOAD_ACTIVE_COST_CENTERS_SUCCESS = '[User] Load Active CostCenters Success';
+    var LoadActiveCostCenters = /** @class */ (function (_super) {
+        __extends(LoadActiveCostCenters, _super);
+        function LoadActiveCostCenters(payload) {
+            var _this = _super.call(this, USER_COST_CENTERS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ACTIVE_COST_CENTERS;
+            return _this;
+        }
+        return LoadActiveCostCenters;
+    }(LoaderLoadAction));
+    var LoadActiveCostCentersFail = /** @class */ (function (_super) {
+        __extends(LoadActiveCostCentersFail, _super);
+        function LoadActiveCostCentersFail(payload) {
+            var _this = _super.call(this, USER_COST_CENTERS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ACTIVE_COST_CENTERS_FAIL;
+            return _this;
+        }
+        return LoadActiveCostCentersFail;
+    }(LoaderFailAction));
+    var LoadActiveCostCentersSuccess = /** @class */ (function (_super) {
+        __extends(LoadActiveCostCentersSuccess, _super);
+        function LoadActiveCostCentersSuccess(payload) {
+            var _this = _super.call(this, USER_COST_CENTERS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ACTIVE_COST_CENTERS_SUCCESS;
+            return _this;
+        }
+        return LoadActiveCostCentersSuccess;
+    }(LoaderSuccessAction));
+
+    var LOAD_USER_DETAILS = '[User] Load User Details';
+    var LOAD_USER_DETAILS_FAIL = '[User] Load User Details Fail';
+    var LOAD_USER_DETAILS_SUCCESS = '[User] Load User Details Success';
+    var UPDATE_USER_DETAILS = '[User] Update User Details';
+    var UPDATE_USER_DETAILS_FAIL = '[User] Update User Details Fail';
+    var UPDATE_USER_DETAILS_SUCCESS = '[User] Update User Details Success';
+    var RESET_USER_DETAILS = '[User] Reset User Details';
+    var LoadUserDetails = /** @class */ (function () {
+        function LoadUserDetails(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_DETAILS;
+        }
+        return LoadUserDetails;
+    }());
+    var LoadUserDetailsFail = /** @class */ (function () {
+        function LoadUserDetailsFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_DETAILS_FAIL;
+        }
+        return LoadUserDetailsFail;
+    }());
+    var LoadUserDetailsSuccess = /** @class */ (function () {
+        function LoadUserDetailsSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_DETAILS_SUCCESS;
+        }
+        return LoadUserDetailsSuccess;
+    }());
+    var UpdateUserDetails = /** @class */ (function (_super) {
+        __extends(UpdateUserDetails, _super);
+        function UpdateUserDetails(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_USER_DETAILS;
+            return _this;
+        }
+        return UpdateUserDetails;
+    }(EntityLoadAction));
+    var UpdateUserDetailsFail = /** @class */ (function (_super) {
+        __extends(UpdateUserDetailsFail, _super);
+        function UpdateUserDetailsFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_USER_DETAILS_FAIL;
+            return _this;
+        }
+        return UpdateUserDetailsFail;
+    }(EntityFailAction));
+    var UpdateUserDetailsSuccess = /** @class */ (function (_super) {
+        __extends(UpdateUserDetailsSuccess, _super);
+        function UpdateUserDetailsSuccess(userUpdates) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID) || this;
+            _this.userUpdates = userUpdates;
+            _this.type = UPDATE_USER_DETAILS_SUCCESS;
+            return _this;
+        }
+        return UpdateUserDetailsSuccess;
+    }(EntitySuccessAction));
+    var ResetUpdateUserDetails = /** @class */ (function (_super) {
+        __extends(ResetUpdateUserDetails, _super);
+        function ResetUpdateUserDetails() {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID) || this;
+            _this.type = RESET_USER_DETAILS;
+            return _this;
+        }
+        return ResetUpdateUserDetails;
+    }(EntityLoaderResetAction));
+
+    var CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
+    var ClearUserMiscsData = /** @class */ (function () {
+        function ClearUserMiscsData() {
+            this.type = CLEAR_USER_MISCS_DATA;
+        }
+        return ClearUserMiscsData;
+    }());
+
+    var LOAD_USER_ORDERS = '[User] Load User Orders';
+    var LOAD_USER_ORDERS_FAIL = '[User] Load User Orders Fail';
+    var LOAD_USER_ORDERS_SUCCESS = '[User] Load User Orders Success';
+    var CLEAR_USER_ORDERS = '[User] Clear User Orders';
+    var LoadUserOrders = /** @class */ (function (_super) {
+        __extends(LoadUserOrders, _super);
+        function LoadUserOrders(payload) {
+            var _this = _super.call(this, USER_ORDERS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_ORDERS;
+            return _this;
+        }
+        return LoadUserOrders;
+    }(LoaderLoadAction));
+    var LoadUserOrdersFail = /** @class */ (function (_super) {
+        __extends(LoadUserOrdersFail, _super);
+        function LoadUserOrdersFail(payload) {
+            var _this = _super.call(this, USER_ORDERS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_ORDERS_FAIL;
+            return _this;
+        }
+        return LoadUserOrdersFail;
+    }(LoaderFailAction));
+    var LoadUserOrdersSuccess = /** @class */ (function (_super) {
+        __extends(LoadUserOrdersSuccess, _super);
+        function LoadUserOrdersSuccess(payload) {
+            var _this = _super.call(this, USER_ORDERS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_ORDERS_SUCCESS;
+            return _this;
+        }
+        return LoadUserOrdersSuccess;
+    }(LoaderSuccessAction));
+    var ClearUserOrders = /** @class */ (function (_super) {
+        __extends(ClearUserOrders, _super);
+        function ClearUserOrders() {
+            var _this = _super.call(this, USER_ORDERS) || this;
+            _this.type = CLEAR_USER_ORDERS;
+            return _this;
+        }
+        return ClearUserOrders;
+    }(LoaderResetAction));
+
+    var REGISTER_USER = '[User] Register User';
+    var REGISTER_USER_FAIL = '[User] Register User Fail';
+    var REGISTER_USER_SUCCESS = '[User] Register User Success';
+    var RESET_REGISTER_USER_PROCESS = '[User] Reset Register User Process';
+    var REGISTER_GUEST = '[User] Register Guest';
+    var REGISTER_GUEST_FAIL = '[User] Register Guest Fail';
+    var REGISTER_GUEST_SUCCESS = '[User] Register Guest Success';
+    var REMOVE_USER = '[User] Remove User';
+    var REMOVE_USER_FAIL = '[User] Remove User Fail';
+    var REMOVE_USER_SUCCESS = '[User] Remove User Success';
+    var REMOVE_USER_RESET = '[User] Reset Remove User Process State';
+    var RegisterUser = /** @class */ (function (_super) {
+        __extends(RegisterUser, _super);
+        function RegisterUser(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = REGISTER_USER;
+            return _this;
+        }
+        return RegisterUser;
+    }(EntityLoadAction));
+    var RegisterUserFail = /** @class */ (function (_super) {
+        __extends(RegisterUserFail, _super);
+        function RegisterUserFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = REGISTER_USER_FAIL;
+            return _this;
+        }
+        return RegisterUserFail;
+    }(EntityFailAction));
+    var RegisterUserSuccess = /** @class */ (function (_super) {
+        __extends(RegisterUserSuccess, _super);
+        function RegisterUserSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
+            _this.type = REGISTER_USER_SUCCESS;
+            return _this;
+        }
+        return RegisterUserSuccess;
+    }(EntitySuccessAction));
+    var ResetRegisterUserProcess = /** @class */ (function (_super) {
+        __extends(ResetRegisterUserProcess, _super);
+        function ResetRegisterUserProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
+            _this.type = RESET_REGISTER_USER_PROCESS;
+            return _this;
+        }
+        return ResetRegisterUserProcess;
+    }(EntityLoaderResetAction));
+    var RegisterGuest = /** @class */ (function () {
+        function RegisterGuest(payload) {
+            this.payload = payload;
+            this.type = REGISTER_GUEST;
+        }
+        return RegisterGuest;
+    }());
+    var RegisterGuestFail = /** @class */ (function () {
+        function RegisterGuestFail(payload) {
+            this.payload = payload;
+            this.type = REGISTER_GUEST_FAIL;
+        }
+        return RegisterGuestFail;
+    }());
+    var RegisterGuestSuccess = /** @class */ (function () {
+        function RegisterGuestSuccess() {
+            this.type = REGISTER_GUEST_SUCCESS;
+        }
+        return RegisterGuestSuccess;
+    }());
+    var RemoveUser = /** @class */ (function (_super) {
+        __extends(RemoveUser, _super);
+        function RemoveUser(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_USER;
+            return _this;
+        }
+        return RemoveUser;
+    }(EntityLoadAction));
+    var RemoveUserFail = /** @class */ (function (_super) {
+        __extends(RemoveUserFail, _super);
+        function RemoveUserFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_USER_FAIL;
+            return _this;
+        }
+        return RemoveUserFail;
+    }(EntityFailAction));
+    var RemoveUserSuccess = /** @class */ (function (_super) {
+        __extends(RemoveUserSuccess, _super);
+        function RemoveUserSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
+            _this.type = REMOVE_USER_SUCCESS;
+            return _this;
+        }
+        return RemoveUserSuccess;
+    }(EntitySuccessAction));
+    var RemoveUserReset = /** @class */ (function (_super) {
+        __extends(RemoveUserReset, _super);
+        function RemoveUserReset() {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
+            _this.type = REMOVE_USER_RESET;
+            return _this;
+        }
+        return RemoveUserReset;
+    }(EntityLoaderResetAction));
+
+    var LOAD_USER_REPLENISHMENT_ORDERS = '[User] Load User Replenishment Orders';
+    var LOAD_USER_REPLENISHMENT_ORDERS_FAIL = '[User] Load User Replenishment Orders Fail';
+    var LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS = '[User] Load User Replenishment Orders Success';
+    var CLEAR_USER_REPLENISHMENT_ORDERS = '[User] Clear User Replenishment Orders';
+    var LoadUserReplenishmentOrders = /** @class */ (function (_super) {
+        __extends(LoadUserReplenishmentOrders, _super);
+        function LoadUserReplenishmentOrders(payload) {
+            var _this = _super.call(this, USER_REPLENISHMENT_ORDERS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_REPLENISHMENT_ORDERS;
+            return _this;
+        }
+        return LoadUserReplenishmentOrders;
+    }(LoaderLoadAction));
+    var LoadUserReplenishmentOrdersFail = /** @class */ (function (_super) {
+        __extends(LoadUserReplenishmentOrdersFail, _super);
+        function LoadUserReplenishmentOrdersFail(payload) {
+            var _this = _super.call(this, USER_REPLENISHMENT_ORDERS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_REPLENISHMENT_ORDERS_FAIL;
+            return _this;
+        }
+        return LoadUserReplenishmentOrdersFail;
+    }(LoaderFailAction));
+    var LoadUserReplenishmentOrdersSuccess = /** @class */ (function (_super) {
+        __extends(LoadUserReplenishmentOrdersSuccess, _super);
+        function LoadUserReplenishmentOrdersSuccess(payload) {
+            var _this = _super.call(this, USER_REPLENISHMENT_ORDERS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS;
+            return _this;
+        }
+        return LoadUserReplenishmentOrdersSuccess;
+    }(LoaderSuccessAction));
+    var ClearUserReplenishmentOrders = /** @class */ (function (_super) {
+        __extends(ClearUserReplenishmentOrders, _super);
+        function ClearUserReplenishmentOrders() {
+            var _this = _super.call(this, USER_REPLENISHMENT_ORDERS) || this;
+            _this.type = CLEAR_USER_REPLENISHMENT_ORDERS;
+            return _this;
+        }
+        return ClearUserReplenishmentOrders;
+    }(LoaderResetAction));
+
+    var userGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        LOAD_BILLING_COUNTRIES: LOAD_BILLING_COUNTRIES,
+        LOAD_BILLING_COUNTRIES_FAIL: LOAD_BILLING_COUNTRIES_FAIL,
+        LOAD_BILLING_COUNTRIES_SUCCESS: LOAD_BILLING_COUNTRIES_SUCCESS,
+        LoadBillingCountries: LoadBillingCountries,
+        LoadBillingCountriesFail: LoadBillingCountriesFail,
+        LoadBillingCountriesSuccess: LoadBillingCountriesSuccess,
+        LOAD_CONSIGNMENT_TRACKING: LOAD_CONSIGNMENT_TRACKING,
+        LOAD_CONSIGNMENT_TRACKING_FAIL: LOAD_CONSIGNMENT_TRACKING_FAIL,
+        LOAD_CONSIGNMENT_TRACKING_SUCCESS: LOAD_CONSIGNMENT_TRACKING_SUCCESS,
+        CLEAR_CONSIGNMENT_TRACKING: CLEAR_CONSIGNMENT_TRACKING,
+        LoadConsignmentTracking: LoadConsignmentTracking,
+        LoadConsignmentTrackingFail: LoadConsignmentTrackingFail,
+        LoadConsignmentTrackingSuccess: LoadConsignmentTrackingSuccess,
+        ClearConsignmentTracking: ClearConsignmentTracking,
+        LOAD_CUSTOMER_COUPONS: LOAD_CUSTOMER_COUPONS,
+        LOAD_CUSTOMER_COUPONS_FAIL: LOAD_CUSTOMER_COUPONS_FAIL,
+        LOAD_CUSTOMER_COUPONS_SUCCESS: LOAD_CUSTOMER_COUPONS_SUCCESS,
+        RESET_LOAD_CUSTOMER_COUPONS: RESET_LOAD_CUSTOMER_COUPONS,
+        SUBSCRIBE_CUSTOMER_COUPON: SUBSCRIBE_CUSTOMER_COUPON,
+        SUBSCRIBE_CUSTOMER_COUPON_FAIL: SUBSCRIBE_CUSTOMER_COUPON_FAIL,
+        SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: SUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
+        RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS,
+        UNSUBSCRIBE_CUSTOMER_COUPON: UNSUBSCRIBE_CUSTOMER_COUPON,
+        UNSUBSCRIBE_CUSTOMER_COUPON_FAIL: UNSUBSCRIBE_CUSTOMER_COUPON_FAIL,
+        UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
+        RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS,
+        CLAIM_CUSTOMER_COUPON: CLAIM_CUSTOMER_COUPON,
+        CLAIM_CUSTOMER_COUPON_FAIL: CLAIM_CUSTOMER_COUPON_FAIL,
+        CLAIM_CUSTOMER_COUPON_SUCCESS: CLAIM_CUSTOMER_COUPON_SUCCESS,
+        LoadCustomerCoupons: LoadCustomerCoupons,
+        LoadCustomerCouponsFail: LoadCustomerCouponsFail,
+        LoadCustomerCouponsSuccess: LoadCustomerCouponsSuccess,
+        ResetLoadCustomerCoupons: ResetLoadCustomerCoupons,
+        SubscribeCustomerCoupon: SubscribeCustomerCoupon,
+        SubscribeCustomerCouponFail: SubscribeCustomerCouponFail,
+        SubscribeCustomerCouponSuccess: SubscribeCustomerCouponSuccess,
+        ResetSubscribeCustomerCouponProcess: ResetSubscribeCustomerCouponProcess,
+        UnsubscribeCustomerCoupon: UnsubscribeCustomerCoupon,
+        UnsubscribeCustomerCouponFail: UnsubscribeCustomerCouponFail,
+        UnsubscribeCustomerCouponSuccess: UnsubscribeCustomerCouponSuccess,
+        ResetUnsubscribeCustomerCouponProcess: ResetUnsubscribeCustomerCouponProcess,
+        ClaimCustomerCoupon: ClaimCustomerCoupon,
+        ClaimCustomerCouponFail: ClaimCustomerCouponFail,
+        ClaimCustomerCouponSuccess: ClaimCustomerCouponSuccess,
+        LOAD_DELIVERY_COUNTRIES: LOAD_DELIVERY_COUNTRIES,
+        LOAD_DELIVERY_COUNTRIES_FAIL: LOAD_DELIVERY_COUNTRIES_FAIL,
+        LOAD_DELIVERY_COUNTRIES_SUCCESS: LOAD_DELIVERY_COUNTRIES_SUCCESS,
+        LoadDeliveryCountries: LoadDeliveryCountries,
+        LoadDeliveryCountriesFail: LoadDeliveryCountriesFail,
+        LoadDeliveryCountriesSuccess: LoadDeliveryCountriesSuccess,
+        FORGOT_PASSWORD_EMAIL_REQUEST: FORGOT_PASSWORD_EMAIL_REQUEST,
+        FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS: FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS,
+        FORGOT_PASSWORD_EMAIL_REQUEST_FAIL: FORGOT_PASSWORD_EMAIL_REQUEST_FAIL,
+        ForgotPasswordEmailRequest: ForgotPasswordEmailRequest,
+        ForgotPasswordEmailRequestFail: ForgotPasswordEmailRequestFail,
+        ForgotPasswordEmailRequestSuccess: ForgotPasswordEmailRequestSuccess,
+        LOAD_NOTIFICATION_PREFERENCES: LOAD_NOTIFICATION_PREFERENCES,
+        LOAD_NOTIFICATION_PREFERENCES_FAIL: LOAD_NOTIFICATION_PREFERENCES_FAIL,
+        LOAD_NOTIFICATION_PREFERENCES_SUCCESS: LOAD_NOTIFICATION_PREFERENCES_SUCCESS,
+        UPDATE_NOTIFICATION_PREFERENCES: UPDATE_NOTIFICATION_PREFERENCES,
+        UPDATE_NOTIFICATION_PREFERENCES_FAIL: UPDATE_NOTIFICATION_PREFERENCES_FAIL,
+        UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: UPDATE_NOTIFICATION_PREFERENCES_SUCCESS,
+        RESET_NOTIFICATION_PREFERENCES: RESET_NOTIFICATION_PREFERENCES,
+        CLEAR_NOTIFICATION_PREFERENCES: CLEAR_NOTIFICATION_PREFERENCES,
+        LoadNotificationPreferences: LoadNotificationPreferences,
+        LoadNotificationPreferencesFail: LoadNotificationPreferencesFail,
+        LoadNotificationPreferencesSuccess: LoadNotificationPreferencesSuccess,
+        UpdateNotificationPreferences: UpdateNotificationPreferences,
+        UpdateNotificationPreferencesFail: UpdateNotificationPreferencesFail,
+        UpdateNotificationPreferencesSuccess: UpdateNotificationPreferencesSuccess,
+        ResetNotificationPreferences: ResetNotificationPreferences,
+        ClearNotificationPreferences: ClearNotificationPreferences,
+        LOAD_ORDER_DETAILS: LOAD_ORDER_DETAILS,
+        LOAD_ORDER_DETAILS_FAIL: LOAD_ORDER_DETAILS_FAIL,
+        LOAD_ORDER_DETAILS_SUCCESS: LOAD_ORDER_DETAILS_SUCCESS,
+        CLEAR_ORDER_DETAILS: CLEAR_ORDER_DETAILS,
+        CANCEL_ORDER: CANCEL_ORDER,
+        CANCEL_ORDER_FAIL: CANCEL_ORDER_FAIL,
+        CANCEL_ORDER_SUCCESS: CANCEL_ORDER_SUCCESS,
+        RESET_CANCEL_ORDER_PROCESS: RESET_CANCEL_ORDER_PROCESS,
+        LoadOrderDetails: LoadOrderDetails,
+        LoadOrderDetailsFail: LoadOrderDetailsFail,
+        LoadOrderDetailsSuccess: LoadOrderDetailsSuccess,
+        ClearOrderDetails: ClearOrderDetails,
+        CancelOrder: CancelOrder,
+        CancelOrderFail: CancelOrderFail,
+        CancelOrderSuccess: CancelOrderSuccess,
+        ResetCancelOrderProcess: ResetCancelOrderProcess,
+        CREATE_ORDER_RETURN_REQUEST: CREATE_ORDER_RETURN_REQUEST,
+        CREATE_ORDER_RETURN_REQUEST_FAIL: CREATE_ORDER_RETURN_REQUEST_FAIL,
+        CREATE_ORDER_RETURN_REQUEST_SUCCESS: CREATE_ORDER_RETURN_REQUEST_SUCCESS,
+        LOAD_ORDER_RETURN_REQUEST: LOAD_ORDER_RETURN_REQUEST,
+        LOAD_ORDER_RETURN_REQUEST_FAIL: LOAD_ORDER_RETURN_REQUEST_FAIL,
+        LOAD_ORDER_RETURN_REQUEST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_SUCCESS,
+        CANCEL_ORDER_RETURN_REQUEST: CANCEL_ORDER_RETURN_REQUEST,
+        CANCEL_ORDER_RETURN_REQUEST_FAIL: CANCEL_ORDER_RETURN_REQUEST_FAIL,
+        CANCEL_ORDER_RETURN_REQUEST_SUCCESS: CANCEL_ORDER_RETURN_REQUEST_SUCCESS,
+        LOAD_ORDER_RETURN_REQUEST_LIST: LOAD_ORDER_RETURN_REQUEST_LIST,
+        LOAD_ORDER_RETURN_REQUEST_LIST_FAIL: LOAD_ORDER_RETURN_REQUEST_LIST_FAIL,
+        LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS,
+        CLEAR_ORDER_RETURN_REQUEST: CLEAR_ORDER_RETURN_REQUEST,
+        CLEAR_ORDER_RETURN_REQUEST_LIST: CLEAR_ORDER_RETURN_REQUEST_LIST,
+        RESET_CANCEL_RETURN_PROCESS: RESET_CANCEL_RETURN_PROCESS,
+        CreateOrderReturnRequest: CreateOrderReturnRequest,
+        CreateOrderReturnRequestFail: CreateOrderReturnRequestFail,
+        CreateOrderReturnRequestSuccess: CreateOrderReturnRequestSuccess,
+        LoadOrderReturnRequest: LoadOrderReturnRequest,
+        LoadOrderReturnRequestFail: LoadOrderReturnRequestFail,
+        LoadOrderReturnRequestSuccess: LoadOrderReturnRequestSuccess,
+        CancelOrderReturnRequest: CancelOrderReturnRequest,
+        CancelOrderReturnRequestFail: CancelOrderReturnRequestFail,
+        CancelOrderReturnRequestSuccess: CancelOrderReturnRequestSuccess,
+        LoadOrderReturnRequestList: LoadOrderReturnRequestList,
+        LoadOrderReturnRequestListFail: LoadOrderReturnRequestListFail,
+        LoadOrderReturnRequestListSuccess: LoadOrderReturnRequestListSuccess,
+        ClearOrderReturnRequest: ClearOrderReturnRequest,
+        ClearOrderReturnRequestList: ClearOrderReturnRequestList,
+        ResetCancelReturnProcess: ResetCancelReturnProcess,
+        LOAD_USER_PAYMENT_METHODS: LOAD_USER_PAYMENT_METHODS,
+        LOAD_USER_PAYMENT_METHODS_FAIL: LOAD_USER_PAYMENT_METHODS_FAIL,
+        LOAD_USER_PAYMENT_METHODS_SUCCESS: LOAD_USER_PAYMENT_METHODS_SUCCESS,
+        SET_DEFAULT_USER_PAYMENT_METHOD: SET_DEFAULT_USER_PAYMENT_METHOD,
+        SET_DEFAULT_USER_PAYMENT_METHOD_FAIL: SET_DEFAULT_USER_PAYMENT_METHOD_FAIL,
+        SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS: SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS,
+        DELETE_USER_PAYMENT_METHOD: DELETE_USER_PAYMENT_METHOD,
+        DELETE_USER_PAYMENT_METHOD_FAIL: DELETE_USER_PAYMENT_METHOD_FAIL,
+        DELETE_USER_PAYMENT_METHOD_SUCCESS: DELETE_USER_PAYMENT_METHOD_SUCCESS,
+        LoadUserPaymentMethods: LoadUserPaymentMethods,
+        LoadUserPaymentMethodsFail: LoadUserPaymentMethodsFail,
+        LoadUserPaymentMethodsSuccess: LoadUserPaymentMethodsSuccess,
+        SetDefaultUserPaymentMethod: SetDefaultUserPaymentMethod,
+        SetDefaultUserPaymentMethodFail: SetDefaultUserPaymentMethodFail,
+        SetDefaultUserPaymentMethodSuccess: SetDefaultUserPaymentMethodSuccess,
+        DeleteUserPaymentMethod: DeleteUserPaymentMethod,
+        DeleteUserPaymentMethodFail: DeleteUserPaymentMethodFail,
+        DeleteUserPaymentMethodSuccess: DeleteUserPaymentMethodSuccess,
+        LOAD_PRODUCT_INTERESTS: LOAD_PRODUCT_INTERESTS,
+        LOAD_PRODUCT_INTERESTS_FAIL: LOAD_PRODUCT_INTERESTS_FAIL,
+        LOAD_PRODUCT_INTERESTS_SUCCESS: LOAD_PRODUCT_INTERESTS_SUCCESS,
+        REMOVE_PRODUCT_INTEREST: REMOVE_PRODUCT_INTEREST,
+        REMOVE_PRODUCT_INTEREST_SUCCESS: REMOVE_PRODUCT_INTEREST_SUCCESS,
+        REMOVE_PRODUCT_INTEREST_FAIL: REMOVE_PRODUCT_INTEREST_FAIL,
+        ADD_PRODUCT_INTEREST: ADD_PRODUCT_INTEREST,
+        ADD_PRODUCT_INTEREST_FAIL: ADD_PRODUCT_INTEREST_FAIL,
+        ADD_PRODUCT_INTEREST_SUCCESS: ADD_PRODUCT_INTEREST_SUCCESS,
+        ADD_PRODUCT_INTEREST_RESET: ADD_PRODUCT_INTEREST_RESET,
+        REMOVE_PRODUCT_INTEREST_RESET: REMOVE_PRODUCT_INTEREST_RESET,
+        CLEAR_PRODUCT_INTERESTS: CLEAR_PRODUCT_INTERESTS,
+        LoadProductInterests: LoadProductInterests,
+        LoadProductInterestsFail: LoadProductInterestsFail,
+        LoadProductInterestsSuccess: LoadProductInterestsSuccess,
+        RemoveProductInterest: RemoveProductInterest,
+        RemoveProductInterestSuccess: RemoveProductInterestSuccess,
+        RemoveProductInterestFail: RemoveProductInterestFail,
+        AddProductInterest: AddProductInterest,
+        AddProductInterestSuccess: AddProductInterestSuccess,
+        AddProductInterestFail: AddProductInterestFail,
+        ResetAddInterestState: ResetAddInterestState,
+        ResetRemoveInterestState: ResetRemoveInterestState,
+        ClearProductInterests: ClearProductInterests,
+        LOAD_REGIONS: LOAD_REGIONS,
+        LOAD_REGIONS_SUCCESS: LOAD_REGIONS_SUCCESS,
+        LOAD_REGIONS_FAIL: LOAD_REGIONS_FAIL,
+        CLEAR_REGIONS: CLEAR_REGIONS,
+        LoadRegions: LoadRegions,
+        LoadRegionsFail: LoadRegionsFail,
+        LoadRegionsSuccess: LoadRegionsSuccess,
+        ClearRegions: ClearRegions,
+        LOAD_REPLENISHMENT_ORDER_DETAILS: LOAD_REPLENISHMENT_ORDER_DETAILS,
+        LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS: LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS,
+        LOAD_REPLENISHMENT_ORDER_DETAILS_FAIL: LOAD_REPLENISHMENT_ORDER_DETAILS_FAIL,
+        ClEAR_REPLENISHMENT_ORDER_DETAILS: ClEAR_REPLENISHMENT_ORDER_DETAILS,
+        CANCEL_REPLENISHMENT_ORDER: CANCEL_REPLENISHMENT_ORDER,
+        CANCEL_REPLENISHMENT_ORDER_SUCCESS: CANCEL_REPLENISHMENT_ORDER_SUCCESS,
+        CANCEL_REPLENISHMENT_ORDER_FAIL: CANCEL_REPLENISHMENT_ORDER_FAIL,
+        CLEAR_CANCEL_REPLENISHMENT_ORDER: CLEAR_CANCEL_REPLENISHMENT_ORDER,
+        LoadReplenishmentOrderDetails: LoadReplenishmentOrderDetails,
+        LoadReplenishmentOrderDetailsSuccess: LoadReplenishmentOrderDetailsSuccess,
+        LoadReplenishmentOrderDetailsFail: LoadReplenishmentOrderDetailsFail,
+        ClearReplenishmentOrderDetails: ClearReplenishmentOrderDetails,
+        CancelReplenishmentOrder: CancelReplenishmentOrder,
+        CancelReplenishmentOrderSuccess: CancelReplenishmentOrderSuccess,
+        CancelReplenishmentOrderFail: CancelReplenishmentOrderFail,
+        ClearCancelReplenishmentOrder: ClearCancelReplenishmentOrder,
+        RESET_PASSWORD: RESET_PASSWORD,
+        RESET_PASSWORD_SUCCESS: RESET_PASSWORD_SUCCESS,
+        RESET_PASSWORD_FAIL: RESET_PASSWORD_FAIL,
+        ResetPassword: ResetPassword,
+        ResetPasswordFail: ResetPasswordFail,
+        ResetPasswordSuccess: ResetPasswordSuccess,
+        LOAD_TITLES: LOAD_TITLES,
+        LOAD_TITLES_FAIL: LOAD_TITLES_FAIL,
+        LOAD_TITLES_SUCCESS: LOAD_TITLES_SUCCESS,
+        LoadTitles: LoadTitles,
+        LoadTitlesFail: LoadTitlesFail,
+        LoadTitlesSuccess: LoadTitlesSuccess,
+        UPDATE_EMAIL: UPDATE_EMAIL,
+        UPDATE_EMAIL_ERROR: UPDATE_EMAIL_ERROR,
+        UPDATE_EMAIL_SUCCESS: UPDATE_EMAIL_SUCCESS,
+        RESET_EMAIL: RESET_EMAIL,
+        UpdateEmailAction: UpdateEmailAction,
+        UpdateEmailSuccessAction: UpdateEmailSuccessAction,
+        UpdateEmailErrorAction: UpdateEmailErrorAction,
+        ResetUpdateEmailAction: ResetUpdateEmailAction,
+        UPDATE_PASSWORD: UPDATE_PASSWORD,
+        UPDATE_PASSWORD_FAIL: UPDATE_PASSWORD_FAIL,
+        UPDATE_PASSWORD_SUCCESS: UPDATE_PASSWORD_SUCCESS,
+        UPDATE_PASSWORD_RESET: UPDATE_PASSWORD_RESET,
+        UpdatePassword: UpdatePassword,
+        UpdatePasswordFail: UpdatePasswordFail,
+        UpdatePasswordSuccess: UpdatePasswordSuccess,
+        UpdatePasswordReset: UpdatePasswordReset,
+        LOAD_USER_ADDRESSES: LOAD_USER_ADDRESSES,
+        LOAD_USER_ADDRESSES_FAIL: LOAD_USER_ADDRESSES_FAIL,
+        LOAD_USER_ADDRESSES_SUCCESS: LOAD_USER_ADDRESSES_SUCCESS,
+        ADD_USER_ADDRESS: ADD_USER_ADDRESS,
+        ADD_USER_ADDRESS_FAIL: ADD_USER_ADDRESS_FAIL,
+        ADD_USER_ADDRESS_SUCCESS: ADD_USER_ADDRESS_SUCCESS,
+        UPDATE_USER_ADDRESS: UPDATE_USER_ADDRESS,
+        UPDATE_USER_ADDRESS_FAIL: UPDATE_USER_ADDRESS_FAIL,
+        UPDATE_USER_ADDRESS_SUCCESS: UPDATE_USER_ADDRESS_SUCCESS,
+        DELETE_USER_ADDRESS: DELETE_USER_ADDRESS,
+        DELETE_USER_ADDRESS_FAIL: DELETE_USER_ADDRESS_FAIL,
+        DELETE_USER_ADDRESS_SUCCESS: DELETE_USER_ADDRESS_SUCCESS,
+        LoadUserAddresses: LoadUserAddresses,
+        LoadUserAddressesFail: LoadUserAddressesFail,
+        LoadUserAddressesSuccess: LoadUserAddressesSuccess,
+        AddUserAddress: AddUserAddress,
+        AddUserAddressFail: AddUserAddressFail,
+        AddUserAddressSuccess: AddUserAddressSuccess,
+        UpdateUserAddress: UpdateUserAddress,
+        UpdateUserAddressFail: UpdateUserAddressFail,
+        UpdateUserAddressSuccess: UpdateUserAddressSuccess,
+        DeleteUserAddress: DeleteUserAddress,
+        DeleteUserAddressFail: DeleteUserAddressFail,
+        DeleteUserAddressSuccess: DeleteUserAddressSuccess,
+        LOAD_USER_CONSENTS: LOAD_USER_CONSENTS,
+        LOAD_USER_CONSENTS_SUCCESS: LOAD_USER_CONSENTS_SUCCESS,
+        LOAD_USER_CONSENTS_FAIL: LOAD_USER_CONSENTS_FAIL,
+        RESET_LOAD_USER_CONSENTS: RESET_LOAD_USER_CONSENTS,
+        GIVE_USER_CONSENT: GIVE_USER_CONSENT,
+        GIVE_USER_CONSENT_FAIL: GIVE_USER_CONSENT_FAIL,
+        GIVE_USER_CONSENT_SUCCESS: GIVE_USER_CONSENT_SUCCESS,
+        RESET_GIVE_USER_CONSENT_PROCESS: RESET_GIVE_USER_CONSENT_PROCESS,
+        TRANSFER_ANONYMOUS_CONSENT: TRANSFER_ANONYMOUS_CONSENT,
+        WITHDRAW_USER_CONSENT: WITHDRAW_USER_CONSENT,
+        WITHDRAW_USER_CONSENT_FAIL: WITHDRAW_USER_CONSENT_FAIL,
+        WITHDRAW_USER_CONSENT_SUCCESS: WITHDRAW_USER_CONSENT_SUCCESS,
+        RESET_WITHDRAW_USER_CONSENT_PROCESS: RESET_WITHDRAW_USER_CONSENT_PROCESS,
+        LoadUserConsents: LoadUserConsents,
+        LoadUserConsentsFail: LoadUserConsentsFail,
+        LoadUserConsentsSuccess: LoadUserConsentsSuccess,
+        ResetLoadUserConsents: ResetLoadUserConsents,
+        GiveUserConsent: GiveUserConsent,
+        GiveUserConsentFail: GiveUserConsentFail,
+        GiveUserConsentSuccess: GiveUserConsentSuccess,
+        ResetGiveUserConsentProcess: ResetGiveUserConsentProcess,
+        TransferAnonymousConsent: TransferAnonymousConsent,
+        WithdrawUserConsent: WithdrawUserConsent,
+        WithdrawUserConsentFail: WithdrawUserConsentFail,
+        WithdrawUserConsentSuccess: WithdrawUserConsentSuccess,
+        ResetWithdrawUserConsentProcess: ResetWithdrawUserConsentProcess,
+        LOAD_ACTIVE_COST_CENTERS: LOAD_ACTIVE_COST_CENTERS,
+        LOAD_ACTIVE_COST_CENTERS_FAIL: LOAD_ACTIVE_COST_CENTERS_FAIL,
+        LOAD_ACTIVE_COST_CENTERS_SUCCESS: LOAD_ACTIVE_COST_CENTERS_SUCCESS,
+        LoadActiveCostCenters: LoadActiveCostCenters,
+        LoadActiveCostCentersFail: LoadActiveCostCentersFail,
+        LoadActiveCostCentersSuccess: LoadActiveCostCentersSuccess,
+        LOAD_USER_DETAILS: LOAD_USER_DETAILS,
+        LOAD_USER_DETAILS_FAIL: LOAD_USER_DETAILS_FAIL,
+        LOAD_USER_DETAILS_SUCCESS: LOAD_USER_DETAILS_SUCCESS,
+        UPDATE_USER_DETAILS: UPDATE_USER_DETAILS,
+        UPDATE_USER_DETAILS_FAIL: UPDATE_USER_DETAILS_FAIL,
+        UPDATE_USER_DETAILS_SUCCESS: UPDATE_USER_DETAILS_SUCCESS,
+        RESET_USER_DETAILS: RESET_USER_DETAILS,
+        LoadUserDetails: LoadUserDetails,
+        LoadUserDetailsFail: LoadUserDetailsFail,
+        LoadUserDetailsSuccess: LoadUserDetailsSuccess,
+        UpdateUserDetails: UpdateUserDetails,
+        UpdateUserDetailsFail: UpdateUserDetailsFail,
+        UpdateUserDetailsSuccess: UpdateUserDetailsSuccess,
+        ResetUpdateUserDetails: ResetUpdateUserDetails,
+        CLEAR_USER_MISCS_DATA: CLEAR_USER_MISCS_DATA,
+        ClearUserMiscsData: ClearUserMiscsData,
+        LOAD_USER_ORDERS: LOAD_USER_ORDERS,
+        LOAD_USER_ORDERS_FAIL: LOAD_USER_ORDERS_FAIL,
+        LOAD_USER_ORDERS_SUCCESS: LOAD_USER_ORDERS_SUCCESS,
+        CLEAR_USER_ORDERS: CLEAR_USER_ORDERS,
+        LoadUserOrders: LoadUserOrders,
+        LoadUserOrdersFail: LoadUserOrdersFail,
+        LoadUserOrdersSuccess: LoadUserOrdersSuccess,
+        ClearUserOrders: ClearUserOrders,
+        REGISTER_USER: REGISTER_USER,
+        REGISTER_USER_FAIL: REGISTER_USER_FAIL,
+        REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
+        RESET_REGISTER_USER_PROCESS: RESET_REGISTER_USER_PROCESS,
+        REGISTER_GUEST: REGISTER_GUEST,
+        REGISTER_GUEST_FAIL: REGISTER_GUEST_FAIL,
+        REGISTER_GUEST_SUCCESS: REGISTER_GUEST_SUCCESS,
+        REMOVE_USER: REMOVE_USER,
+        REMOVE_USER_FAIL: REMOVE_USER_FAIL,
+        REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
+        REMOVE_USER_RESET: REMOVE_USER_RESET,
+        RegisterUser: RegisterUser,
+        RegisterUserFail: RegisterUserFail,
+        RegisterUserSuccess: RegisterUserSuccess,
+        ResetRegisterUserProcess: ResetRegisterUserProcess,
+        RegisterGuest: RegisterGuest,
+        RegisterGuestFail: RegisterGuestFail,
+        RegisterGuestSuccess: RegisterGuestSuccess,
+        RemoveUser: RemoveUser,
+        RemoveUserFail: RemoveUserFail,
+        RemoveUserSuccess: RemoveUserSuccess,
+        RemoveUserReset: RemoveUserReset,
+        LOAD_USER_REPLENISHMENT_ORDERS: LOAD_USER_REPLENISHMENT_ORDERS,
+        LOAD_USER_REPLENISHMENT_ORDERS_FAIL: LOAD_USER_REPLENISHMENT_ORDERS_FAIL,
+        LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS: LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS,
+        CLEAR_USER_REPLENISHMENT_ORDERS: CLEAR_USER_REPLENISHMENT_ORDERS,
+        LoadUserReplenishmentOrders: LoadUserReplenishmentOrders,
+        LoadUserReplenishmentOrdersFail: LoadUserReplenishmentOrdersFail,
+        LoadUserReplenishmentOrdersSuccess: LoadUserReplenishmentOrdersSuccess,
+        ClearUserReplenishmentOrders: ClearUserReplenishmentOrders
+    });
+
+    /**
+     * Normalizes HttpErrorResponse to HttpErrorModel.
+     *
+     * Can be used as a safe and generic way for embodying http errors into
+     * NgRx Action payload, as it will strip potentially unserializable parts from
+     * it and warn in debug mode if passed error is not instance of HttpErrorModel
+     * (which usually happens when logic in NgRx Effect is not sealed correctly)
+     */
+    function normalizeHttpError(error) {
+        if (error instanceof i1.HttpErrorResponse) {
+            var normalizedError = {
+                message: error.message,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            };
+            // include backend's error details
+            if (Array.isArray(error.error.errors)) {
+                normalizedError.details = error.error.errors;
+            }
+            else if (typeof error.error.error === 'string') {
+                normalizedError.details = [
+                    {
+                        type: error.error.error,
+                        message: error.error.error_description,
+                    },
+                ];
+            }
+            return normalizedError;
+        }
+        if (i0.isDevMode()) {
+            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
+        }
+        return undefined;
+    }
+
+    /**
+     *
+     * Withdraw from the source observable when notifier emits a value
+     *
+     * Withdraw will result in resubscribing to the source observable
+     * Operator is useful to kill ongoing emission transformation on notifier emission
+     *
+     * @param notifier
+     */
+    function withdrawOn(notifier) {
+        return function (source) { return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source)); };
+    }
+
+    var CheckoutEffects = /** @class */ (function () {
+        function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutCostCenterConnector, checkoutConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.checkoutDeliveryConnector = checkoutDeliveryConnector;
+            this.checkoutPaymentConnector = checkoutPaymentConnector;
+            this.checkoutCostCenterConnector = checkoutCostCenterConnector;
+            this.checkoutConnector = checkoutConnector;
+            this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.addDeliveryAddress$ = this.actions$.pipe(i3.ofType(ADD_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.checkoutDeliveryConnector
+                .createAddress(payload.userId, payload.cartId, payload.address)
+                .pipe(operators.mergeMap(function (address) {
+                address['titleCode'] = payload.address.titleCode;
+                if (payload.address.region && payload.address.region.isocodeShort) {
+                    Object.assign(address.region, {
+                        isocodeShort: payload.address.region.isocodeShort,
+                    });
+                }
+                if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                    return [
+                        new SetDeliveryAddress({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                            address: address,
+                        }),
+                    ];
+                }
+                else {
+                    return [
+                        new LoadUserAddresses(payload.userId),
+                        new SetDeliveryAddress({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                            address: address,
+                        }),
+                    ];
+                }
+            }), operators.catchError(function (error) { return rxjs.of(new AddDeliveryAddressFail(normalizeHttpError(error))); })); }), withdrawOn(this.contextChange$));
+            this.setDeliveryAddress$ = this.actions$.pipe(i3.ofType(SET_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.checkoutDeliveryConnector
+                    .setAddress(payload.userId, payload.cartId, payload.address.id)
+                    .pipe(operators.mergeMap(function () { return [
+                    new SetDeliveryAddressSuccess(payload.address),
+                    new ClearCheckoutDeliveryMode({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                    new ClearSupportedDeliveryModes(),
+                    new ResetLoadSupportedDeliveryModesProcess(),
+                    new LoadSupportedDeliveryModes({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                ]; }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryAddressFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+            this.loadSupportedDeliveryModes$ = this.actions$.pipe(i3.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.checkoutDeliveryConnector
+                    .getSupportedModes(payload.userId, payload.cartId)
+                    .pipe(operators.map(function (data) {
+                    return new LoadSupportedDeliveryModesSuccess(data);
+                }), operators.catchError(function (error) { return rxjs.of(new LoadSupportedDeliveryModesFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE), operators.mergeMap(function () { return [
+                new ResetLoadSupportedDeliveryModesProcess(),
+                new ResetLoadPaymentTypesProcess(),
+                new CheckoutClearMiscsData(),
+            ]; }));
+            this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE), operators.map(function () { return new ClearSupportedDeliveryModes(); }));
+            this.clearCheckoutDataOnLogout$ = this.actions$.pipe(i3.ofType(LOGOUT), operators.map(function () { return new ClearCheckoutData(); }));
+            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(i3.ofType(LOGIN), operators.map(function () { return new ClearCheckoutData(); }));
+            this.setDeliveryMode$ = this.actions$.pipe(i3.ofType(SET_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.checkoutDeliveryConnector
+                    .setMode(payload.userId, payload.cartId, payload.selectedModeId)
+                    .pipe(operators.mergeMap(function () {
+                    return [
+                        new SetDeliveryModeSuccess(payload.selectedModeId),
+                        new LoadCart({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                        }),
+                    ];
+                }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryModeFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+            this.createPaymentDetails$ = this.actions$.pipe(i3.ofType(CREATE_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                // get information for creating a subscription directly with payment provider
+                return _this.checkoutPaymentConnector
+                    .create(payload.userId, payload.cartId, payload.paymentDetails)
+                    .pipe(operators.mergeMap(function (details) {
+                    if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                        return [new CreatePaymentDetailsSuccess(details)];
+                    }
+                    else {
+                        return [
+                            new LoadUserPaymentMethods(payload.userId),
+                            new CreatePaymentDetailsSuccess(details),
+                        ];
+                    }
+                }), operators.catchError(function (error) { return rxjs.of(new CreatePaymentDetailsFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+            this.setPaymentDetails$ = this.actions$.pipe(i3.ofType(SET_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.checkoutPaymentConnector
+                    .set(payload.userId, payload.cartId, payload.paymentDetails.id)
+                    .pipe(operators.map(function () { return new SetPaymentDetailsSuccess(payload.paymentDetails); }), operators.catchError(function (error) { return rxjs.of(new SetPaymentDetailsFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+            this.placeOrder$ = this.actions$.pipe(i3.ofType(PLACE_ORDER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.checkoutConnector
+                    .placeOrder(payload.userId, payload.cartId, payload.termsChecked)
+                    .pipe(operators.switchMap(function (data) { return [
+                    new RemoveCart({ cartId: payload.cartId }),
+                    new PlaceOrderSuccess(data),
+                ]; }), operators.catchError(function (error) { return rxjs.of(new PlaceOrderFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+            this.loadCheckoutDetails$ = this.actions$.pipe(i3.ofType(LOAD_CHECKOUT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.checkoutConnector
+                    .loadCheckoutDetails(payload.userId, payload.cartId)
+                    .pipe(operators.map(function (data) { return new LoadCheckoutDetailsSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new LoadCheckoutDetailsFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(i3.ofType(MERGE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
+                return new LoadCheckoutDetails({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                });
+            }));
+            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(i3.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.switchMap(function (payload) {
+                return _this.checkoutConnector
+                    .clearCheckoutDeliveryAddress(payload.userId, payload.cartId)
+                    .pipe(operators.map(function () { return new ClearCheckoutDeliveryAddressSuccess(); }), operators.catchError(function (error) { return rxjs.of(new ClearCheckoutDeliveryAddressFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(i3.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.concatMap(function (payload) {
+                return _this.checkoutConnector
+                    .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
+                    .pipe(operators.map(function () { return new ClearCheckoutDeliveryModeSuccess(Object.assign({}, payload)); }), operators.catchError(function (error) { return rxjs.from([
+                    new ClearCheckoutDeliveryModeFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
+                    new LoadCart({
+                        cartId: payload.cartId,
+                        userId: payload.userId,
+                    }),
+                ]); }));
+            }), withdrawOn(this.contextChange$));
+            this.setCostCenter$ = this.actions$.pipe(i3.ofType(SET_COST_CENTER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.checkoutCostCenterConnector
+                    .setCostCenter(payload.userId, payload.cartId, payload.costCenterId)
+                    .pipe(operators.mergeMap(function (data) { return [
+                    // TODO(#8877): We should trigger load cart not already assign the data. We might have misconfiguration between this cart model and load cart model
+                    new LoadCartSuccess({
+                        cart: data,
+                        cartId: payload.cartId,
+                        userId: payload.userId,
+                    }),
+                    new SetCostCenterSuccess(payload.costCenterId),
+                    new ClearCheckoutDeliveryMode({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                    new ClearCheckoutDeliveryAddress({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                ]; }), operators.catchError(function (error) { return rxjs.of(new SetCostCenterFail(normalizeHttpError(error))); }));
+            }), withdrawOn(this.contextChange$));
+        }
+        return CheckoutEffects;
+    }());
+    CheckoutEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CheckoutEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CheckoutDeliveryConnector },
+        { type: CheckoutPaymentConnector },
+        { type: CheckoutCostCenterConnector },
+        { type: CheckoutConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "addDeliveryAddress$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "setDeliveryAddress$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutMiscsDataOnLanguageChange$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearDeliveryModesOnCurrencyChange$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutDataOnLogout$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "createPaymentDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "setPaymentDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "placeOrder$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CheckoutEffects.prototype, "setCostCenter$", void 0);
+
+    var PaymentTypesEffects = /** @class */ (function () {
+        function PaymentTypesEffects(actions$, paymentTypeConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.paymentTypeConnector = paymentTypeConnector;
+            this.loadPaymentTypes$ = this.actions$.pipe(i3.ofType(LOAD_PAYMENT_TYPES), operators.switchMap(function () {
+                return _this.paymentTypeConnector.getPaymentTypes().pipe(operators.map(function (paymentTypes) { return new LoadPaymentTypesSuccess(paymentTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadPaymentTypesFail(normalizeHttpError(error))); }));
+            }));
+            this.setPaymentType$ = this.actions$.pipe(i3.ofType(SET_PAYMENT_TYPE), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.paymentTypeConnector
+                    .setPaymentType(payload.userId, payload.cartId, payload.typeCode, payload.poNumber)
+                    .pipe(operators.mergeMap(function (data) {
+                    return [
+                        new LoadCartSuccess({
+                            cart: data,
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                        }),
+                        new ClearCheckoutData(),
+                        new SetPaymentTypeSuccess(data),
+                    ];
+                }), operators.catchError(function (error) { return rxjs.of(new SetPaymentTypeFail(normalizeHttpError(error))); }));
+            }));
+        }
+        return PaymentTypesEffects;
+    }());
+    PaymentTypesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    PaymentTypesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: PaymentTypeConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], PaymentTypesEffects.prototype, "loadPaymentTypes$", void 0);
+    __decorate([
+        i3.Effect()
+    ], PaymentTypesEffects.prototype, "setPaymentType$", void 0);
+
+    var ReplenishmentOrderEffects = /** @class */ (function () {
+        function ReplenishmentOrderEffects(actions$, checkoutReplOrderConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.checkoutReplOrderConnector = checkoutReplOrderConnector;
+            this.scheduleReplenishmentOrder$ = this.actions$.pipe(i3.ofType(SCHEDULE_REPLENISHMENT_ORDER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.checkoutReplOrderConnector
+                    .scheduleReplenishmentOrder(payload.cartId, payload.scheduleReplenishmentForm, payload.termsChecked, payload.userId)
+                    .pipe(operators.switchMap(function (data) { return [
+                    new RemoveCart({ cartId: payload.cartId }),
+                    new ScheduleReplenishmentOrderSuccess(data),
+                ]; }), operators.catchError(function (error) { return rxjs.of(new ScheduleReplenishmentOrderFail(normalizeHttpError(error))); }));
+            }));
+        }
+        return ReplenishmentOrderEffects;
+    }());
+    ReplenishmentOrderEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ReplenishmentOrderEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CheckoutReplenishmentOrderConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ReplenishmentOrderEffects.prototype, "scheduleReplenishmentOrder$", void 0);
+
+    var effects$1 = [
+        CheckoutEffects,
+        AddressVerificationEffect,
+        CardTypesEffects,
+        PaymentTypesEffects,
+        ReplenishmentOrderEffects,
+    ];
+
+    var initialState$1 = {
+        results: {},
+    };
+    function reducer$1(state, action) {
+        if (state === void 0) { state = initialState$1; }
+        switch (action.type) {
+            case VERIFY_ADDRESS_SUCCESS: {
+                var results = action.payload;
+                return Object.assign(Object.assign({}, state), { results: results });
+            }
+            case VERIFY_ADDRESS_FAIL: {
+                return Object.assign(Object.assign({}, state), { results: 'FAIL' });
+            }
+            case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
+                return Object.assign(Object.assign({}, state), { results: {} });
+            }
+        }
+        return state;
+    }
+    var getAddressVerificationResults = function (state) { return state.results; };
+
+    var initialState$2 = {
+        entities: {},
+    };
+    function reducer$2(state, action) {
+        if (state === void 0) { state = initialState$2; }
+        switch (action.type) {
+            case LOAD_CARD_TYPES_SUCCESS: {
+                var cardTypes = action.payload;
+                var entities = cardTypes.reduce(function (cardTypesEntities, name) {
+                    var _a;
+                    return Object.assign(Object.assign({}, cardTypesEntities), (_a = {}, _a[name.code] = name, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
+            }
+            case CHECKOUT_CLEAR_MISCS_DATA: {
+                return initialState$2;
+            }
+        }
+        return state;
+    }
+    var getCardTypesEntites = function (state) { return state.entities; };
+
+    var initialState$3 = {
+        poNumber: { po: undefined, costCenter: undefined },
+        address: {},
+        deliveryMode: {
+            supported: {},
+            selected: '',
         },
+        paymentDetails: {},
+        orderDetails: {},
+    };
+    function reducer$3(state, action) {
+        if (state === void 0) { state = initialState$3; }
+        switch (action.type) {
+            case SET_PAYMENT_TYPE_SUCCESS: {
+                var cart = action.payload;
+                return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { po: cart.purchaseOrderNumber }) });
+            }
+            case SET_COST_CENTER_SUCCESS: {
+                return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { costCenter: action.payload }) });
+            }
+            case ADD_DELIVERY_ADDRESS_SUCCESS:
+            case SET_DELIVERY_ADDRESS_SUCCESS: {
+                var address = action.payload;
+                return Object.assign(Object.assign({}, state), { address: address });
+            }
+            case LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: {
+                var supportedModes = action.payload;
+                if (!supportedModes) {
+                    return state;
+                }
+                var supported = supportedModes.reduce(function (modes, mode) {
+                    var _a;
+                    return Object.assign(Object.assign({}, modes), (_a = {}, _a[mode.code] = mode, _a));
+                }, Object.assign({}, state.deliveryMode.supported));
+                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: supported }) });
+            }
+            case SET_DELIVERY_MODE_SUCCESS: {
+                var selected = action.payload;
+                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: selected }) });
+            }
+            case CREATE_PAYMENT_DETAILS_SUCCESS:
+            case SET_PAYMENT_DETAILS_SUCCESS: {
+                return Object.assign(Object.assign({}, state), { paymentDetails: action.payload });
+            }
+            case CREATE_PAYMENT_DETAILS_FAIL: {
+                var paymentDetails = action.payload;
+                if (paymentDetails['hasError']) {
+                    return Object.assign(Object.assign({}, state), { paymentDetails: paymentDetails });
+                }
+                return state;
+            }
+            case PLACE_ORDER_SUCCESS:
+            case SCHEDULE_REPLENISHMENT_ORDER_SUCCESS: {
+                var orderDetails = action.payload;
+                return Object.assign(Object.assign({}, state), { orderDetails: orderDetails });
+            }
+            case CLEAR_CHECKOUT_DATA: {
+                return initialState$3;
+            }
+            case CLEAR_CHECKOUT_STEP: {
+                var stepNumber = action.payload;
+                switch (stepNumber) {
+                    case 1: {
+                        return Object.assign(Object.assign({}, state), { address: {} });
+                    }
+                    case 2: {
+                        return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {}, selected: '' }) });
+                    }
+                    case 3: {
+                        return Object.assign(Object.assign({}, state), { paymentDetails: {} });
+                    }
+                }
+                return state;
+            }
+            case CLEAR_SUPPORTED_DELIVERY_MODES:
+            case CHECKOUT_CLEAR_MISCS_DATA: {
+                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {} }) });
+            }
+            case LOAD_CHECKOUT_DETAILS_SUCCESS: {
+                return Object.assign(Object.assign({}, state), { address: action.payload.deliveryAddress, deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: action.payload.deliveryMode && action.payload.deliveryMode.code }), paymentDetails: action.payload.paymentInfo });
+            }
+            case CLEAR_CHECKOUT_DELIVERY_ADDRESS: {
+                return Object.assign(Object.assign({}, state), { address: {} });
+            }
+            case CLEAR_CHECKOUT_DELIVERY_MODE: {
+                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: '' }) });
+            }
+        }
+        return state;
+    }
+
+    var initialState$4 = {
+        selected: exports.ORDER_TYPE.PLACE_ORDER,
+    };
+    function reducer$4(state, action) {
+        if (state === void 0) { state = initialState$4; }
+        switch (action.type) {
+            case SET_ORDER_TYPE: {
+                return Object.assign(Object.assign({}, state), { selected: action.payload });
+            }
+            case CLEAR_CHECKOUT_DATA: {
+                return initialState$4;
+            }
+            default: {
+                return state;
+            }
+        }
+    }
+
+    var initialState$5 = {
+        entities: {},
+        selected: undefined,
+    };
+    function reducer$5(state, action) {
+        if (state === void 0) { state = initialState$5; }
+        switch (action.type) {
+            case LOAD_PAYMENT_TYPES_SUCCESS: {
+                var paymentTypes = action.payload;
+                var entities = paymentTypes.reduce(function (paymentTypesEntities, name) {
+                    var _a;
+                    return Object.assign(Object.assign({}, paymentTypesEntities), (_a = {}, _a[name.code] = name, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
+            }
+            case SET_PAYMENT_TYPE_SUCCESS: {
+                return Object.assign(Object.assign({}, state), { selected: action.payload.paymentType.code });
+            }
+            case CLEAR_CHECKOUT_DATA: {
+                return Object.assign(Object.assign({}, state), { selected: undefined });
+            }
+            case CHECKOUT_CLEAR_MISCS_DATA: {
+                return initialState$5;
+            }
+        }
+        return state;
+    }
+    var getPaymentTypesEntites = function (state) { return state.entities; };
+    var getSelectedPaymentType = function (state) { return state.selected; };
+
+    function getReducers$1() {
+        return {
+            steps: loaderReducer(CHECKOUT_DETAILS, reducer$3),
+            cardTypes: reducer$2,
+            addressVerification: reducer$1,
+            paymentTypes: reducer$5,
+            orderType: reducer$4,
+        };
+    }
+    var reducerToken$1 = new i0.InjectionToken('CheckoutReducers');
+    var reducerProvider$1 = {
+        provide: reducerToken$1,
+        useFactory: getReducers$1,
     };
 
-    var CheckoutCostCenterAdapter = /** @class */ (function () {
-        function CheckoutCostCenterAdapter() {
+    var CheckoutStoreModule = /** @class */ (function () {
+        function CheckoutStoreModule() {
         }
-        return CheckoutCostCenterAdapter;
+        return CheckoutStoreModule;
     }());
+    CheckoutStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.CommonModule,
+                        i1.HttpClientModule,
+                        i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$1),
+                        i3.EffectsModule.forFeature(effects$1),
+                    ],
+                    providers: [reducerProvider$1],
+                },] }
+    ];
+
+    var CheckoutModule = /** @class */ (function () {
+        function CheckoutModule() {
+        }
+        CheckoutModule.forRoot = function () {
+            return {
+                ngModule: CheckoutModule,
+                providers: [
+                    {
+                        provide: PageMetaResolver,
+                        useExisting: CheckoutPageMetaResolver,
+                        multi: true,
+                    },
+                ],
+            };
+        };
+        return CheckoutModule;
+    }());
+    CheckoutModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [CheckoutStoreModule, CheckoutEventModule],
+                },] }
+    ];
+
+    var getDeliveryAddressSelector = function (state) { return state.address; };
+    var ɵ0$c = getDeliveryAddressSelector;
+    var getDeliveryModeSelector = function (state) { return state.deliveryMode; };
+    var ɵ1$8 = getDeliveryModeSelector;
+    var getPaymentDetailsSelector = function (state) { return state.paymentDetails; };
+    var ɵ2$4 = getPaymentDetailsSelector;
+    var getOrderDetailsSelector = function (state) { return state.orderDetails; };
+    var ɵ3$3 = getOrderDetailsSelector;
+    var getCheckoutState = i1$1.createFeatureSelector(CHECKOUT_FEATURE);
+    var ɵ4$1 = function (checkoutState) { return checkoutState.steps; };
+    var getCheckoutStepsState = i1$1.createSelector(getCheckoutState, ɵ4$1);
+    var ɵ5 = function (state) { return loaderValueSelector(state); };
+    var getCheckoutSteps = i1$1.createSelector(getCheckoutStepsState, ɵ5);
+    var getDeliveryAddress = i1$1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+    var getDeliveryMode = i1$1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
+    var ɵ6 = function (deliveryMode) {
+        return (deliveryMode &&
+            Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
+    };
+    var getSupportedDeliveryModes = i1$1.createSelector(getDeliveryMode, ɵ6);
+    var ɵ7 = function (deliveryMode) {
+        return deliveryMode && deliveryMode.selected;
+    };
+    var getSelectedDeliveryModeCode = i1$1.createSelector(getDeliveryMode, ɵ7);
+    var ɵ8 = function (deliveryMode) {
+        if (deliveryMode.selected !== '') {
+            if (Object.keys(deliveryMode.supported).length === 0) {
+                return null;
+            }
+            return deliveryMode.supported[deliveryMode.selected];
+        }
+    };
+    var getSelectedDeliveryMode = i1$1.createSelector(getDeliveryMode, ɵ8);
+    var getPaymentDetails = i1$1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+    var getCheckoutOrderDetails = i1$1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
+    var ɵ9 = function (state) { return loaderSuccessSelector(state) &&
+        !loaderLoadingSelector(state); };
+    var getCheckoutDetailsLoaded = i1$1.createSelector(getCheckoutStepsState, ɵ9);
+    var ɵ10 = function (state) { return state.poNumber.po; };
+    var getPoNumer = i1$1.createSelector(getCheckoutSteps, ɵ10);
+    var ɵ11 = function (state) { return state.poNumber.costCenter; };
+    var getCostCenter = i1$1.createSelector(getCheckoutSteps, ɵ11);
+
+    var ɵ0$d = function (state) { return state.addressVerification; };
+    var getAddressVerificationResultsState = i1$1.createSelector(getCheckoutState, ɵ0$d);
+    var getAddressVerificationResults$1 = i1$1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+
+    var ɵ0$e = function (state) { return state.cardTypes; };
+    var getCardTypesState = i1$1.createSelector(getCheckoutState, ɵ0$e);
+    var getCardTypesEntites$1 = i1$1.createSelector(getCardTypesState, getCardTypesEntites);
+    var ɵ1$9 = function (entites) {
+        return Object.keys(entites).map(function (code) { return entites[code]; });
+    };
+    var getAllCardTypes = i1$1.createSelector(getCardTypesEntites$1, ɵ1$9);
+
+    var getSelectedOrderTypeSelector = function (state) { return state.selected; };
+    var ɵ0$f = function (state) { return state.orderType; };
+    var getOrderTypesState = i1$1.createSelector(getCheckoutState, ɵ0$f);
+    var getSelectedOrderType = i1$1.createSelector(getOrderTypesState, getSelectedOrderTypeSelector);
+
+    var ɵ0$g = function (state) { return state.paymentTypes; };
+    var getPaymentTypesState = i1$1.createSelector(getCheckoutState, ɵ0$g);
+    var getPaymentTypesEntites$1 = i1$1.createSelector(getPaymentTypesState, getPaymentTypesEntites);
+    var ɵ1$a = function (entites) {
+        return Object.keys(entites).map(function (code) { return entites[code]; });
+    };
+    var getAllPaymentTypes = i1$1.createSelector(getPaymentTypesEntites$1, ɵ1$a);
+    var getSelectedPaymentType$1 = i1$1.createSelector(getPaymentTypesState, getSelectedPaymentType);
+
+    var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getAddressVerificationResultsState: getAddressVerificationResultsState,
+        getAddressVerificationResults: getAddressVerificationResults$1,
+        ɵ0: ɵ0$d,
+        getCardTypesState: getCardTypesState,
+        getCardTypesEntites: getCardTypesEntites$1,
+        getAllCardTypes: getAllCardTypes,
+        ɵ1: ɵ1$9,
+        getCheckoutState: getCheckoutState,
+        getCheckoutStepsState: getCheckoutStepsState,
+        getCheckoutSteps: getCheckoutSteps,
+        getDeliveryAddress: getDeliveryAddress,
+        getDeliveryMode: getDeliveryMode,
+        getSupportedDeliveryModes: getSupportedDeliveryModes,
+        getSelectedDeliveryModeCode: getSelectedDeliveryModeCode,
+        getSelectedDeliveryMode: getSelectedDeliveryMode,
+        getPaymentDetails: getPaymentDetails,
+        getCheckoutOrderDetails: getCheckoutOrderDetails,
+        getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
+        getPoNumer: getPoNumer,
+        getCostCenter: getCostCenter,
+        ɵ2: ɵ2$4,
+        ɵ3: ɵ3$3,
+        ɵ4: ɵ4$1,
+        ɵ5: ɵ5,
+        ɵ6: ɵ6,
+        ɵ7: ɵ7,
+        ɵ8: ɵ8,
+        ɵ9: ɵ9,
+        ɵ10: ɵ10,
+        ɵ11: ɵ11,
+        getSelectedOrderTypeSelector: getSelectedOrderTypeSelector,
+        getOrderTypesState: getOrderTypesState,
+        getSelectedOrderType: getSelectedOrderType,
+        getPaymentTypesState: getPaymentTypesState,
+        getPaymentTypesEntites: getPaymentTypesEntites$1,
+        getAllPaymentTypes: getAllPaymentTypes,
+        getSelectedPaymentType: getSelectedPaymentType$1
+    });
+
+    var CheckoutCostCenterService = /** @class */ (function () {
+        function CheckoutCostCenterService(checkoutStore, authService, activeCartService) {
+            this.checkoutStore = checkoutStore;
+            this.authService = authService;
+            this.activeCartService = activeCartService;
+        }
+        /**
+         * Set cost center to cart
+         * @param costCenterId : cost center id
+         */
+        CheckoutCostCenterService.prototype.setCostCenter = function (costCenterId) {
+            var _this = this;
+            var cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .pipe(operators.take(1))
+                .subscribe(function (activeCartId) { return (cartId = activeCartId); });
+            this.authService.invokeWithUserId(function (userId) {
+                if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
+                    _this.checkoutStore.dispatch(new SetCostCenter({
+                        userId: userId,
+                        cartId: cartId,
+                        costCenterId: costCenterId,
+                    }));
+                }
+            });
+        };
+        /**
+         * Get cost center id from cart
+         */
+        CheckoutCostCenterService.prototype.getCostCenter = function () {
+            var _this = this;
+            return rxjs.combineLatest([
+                this.activeCartService.getActive(),
+                this.checkoutStore.pipe(i1$1.select(getCostCenter)),
+            ]).pipe(operators.filter(function (_a) {
+                var _b = __read(_a, 1), cart = _b[0];
+                return Boolean(cart);
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 2), cart = _b[0], costCenterId = _b[1];
+                if (costCenterId === undefined && cart.costCenter) {
+                    costCenterId = cart.costCenter.code;
+                    _this.checkoutStore.dispatch(new SetCostCenterSuccess(cart.costCenter.code));
+                }
+                return costCenterId;
+            }));
+        };
+        return CheckoutCostCenterService;
+    }());
+    CheckoutCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
+    CheckoutCostCenterService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutCostCenterService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
+
+    var CheckoutDeliveryService = /** @class */ (function () {
+        function CheckoutDeliveryService(checkoutStore, authService, activeCartService) {
+            this.checkoutStore = checkoutStore;
+            this.authService = authService;
+            this.activeCartService = activeCartService;
+        }
+        /**
+         * Get supported delivery modes
+         */
+        CheckoutDeliveryService.prototype.getSupportedDeliveryModes = function () {
+            var _this = this;
+            return this.checkoutStore.pipe(i1$1.select(getSupportedDeliveryModes), operators.withLatestFrom(this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), operators.tap(function (_a) {
+                var _b = __read(_a, 2), loadingState = _b[1];
+                if (!(loadingState.loading || loadingState.success || loadingState.error)) {
+                    _this.loadSupportedDeliveryModes();
+                }
+            }), operators.pluck(0), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        };
+        /**
+         * Get selected delivery mode
+         */
+        CheckoutDeliveryService.prototype.getSelectedDeliveryMode = function () {
+            return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryMode));
+        };
+        /**
+         * Get selected delivery mode code
+         */
+        CheckoutDeliveryService.prototype.getSelectedDeliveryModeCode = function () {
+            return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryModeCode));
+        };
+        /**
+         * Get delivery address
+         */
+        CheckoutDeliveryService.prototype.getDeliveryAddress = function () {
+            return this.checkoutStore.pipe(i1$1.select(getDeliveryAddress));
+        };
+        /**
+         * Get status about successfully set Delivery Address
+         */
+        CheckoutDeliveryService.prototype.getSetDeliveryAddressProcess = function () {
+            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
+        };
+        /**
+         * Clear info about process of setting Delivery Address
+         */
+        CheckoutDeliveryService.prototype.resetSetDeliveryAddressProcess = function () {
+            this.checkoutStore.dispatch(new ResetSetDeliveryAddressProcess());
+        };
+        /**
+         * Get status about of set Delivery Mode process
+         */
+        CheckoutDeliveryService.prototype.getSetDeliveryModeProcess = function () {
+            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
+        };
+        /**
+         * Clear info about process of setting Delivery Mode
+         */
+        CheckoutDeliveryService.prototype.resetSetDeliveryModeProcess = function () {
+            this.checkoutStore.dispatch(new ResetSetDeliveryModeProcess());
+        };
+        /**
+         * Clear info about process of setting Supported Delivery Modes
+         */
+        CheckoutDeliveryService.prototype.resetLoadSupportedDeliveryModesProcess = function () {
+            this.checkoutStore.dispatch(new ResetLoadSupportedDeliveryModesProcess());
+        };
+        /**
+         * Get status about of set supported Delivery Modes process
+         */
+        CheckoutDeliveryService.prototype.getLoadSupportedDeliveryModeProcess = function () {
+            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
+        };
+        /**
+         * Clear supported delivery modes loaded in last checkout process
+         */
+        CheckoutDeliveryService.prototype.clearCheckoutDeliveryModes = function () {
+            this.checkoutStore.dispatch(new ClearSupportedDeliveryModes());
+        };
+        /**
+         * Get address verification results
+         */
+        CheckoutDeliveryService.prototype.getAddressVerificationResults = function () {
+            return this.checkoutStore.pipe(i1$1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
+        };
+        /**
+         * Create and set a delivery address using the address param
+         * @param address : the Address to be created and set
+         */
+        CheckoutDeliveryService.prototype.createAndSetAddress = function (address) {
+            if (this.actionAllowed()) {
+                var userId_1;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
+                    .unsubscribe();
+                var cartId_1;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
+                    .unsubscribe();
+                if (userId_1 && cartId_1) {
+                    this.checkoutStore.dispatch(new AddDeliveryAddress({
+                        userId: userId_1,
+                        cartId: cartId_1,
+                        address: address,
+                    }));
+                }
+            }
+        };
+        /**
+         * Load supported delivery modes
+         */
+        CheckoutDeliveryService.prototype.loadSupportedDeliveryModes = function () {
+            if (this.actionAllowed()) {
+                var userId_2;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_2 = occUserId); })
+                    .unsubscribe();
+                var cartId_2;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_2 = activeCartId); })
+                    .unsubscribe();
+                if (userId_2 && cartId_2) {
+                    this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
+                        userId: userId_2,
+                        cartId: cartId_2,
+                    }));
+                }
+            }
+        };
+        /**
+         * Set delivery mode
+         * @param mode : The delivery mode to be set
+         */
+        CheckoutDeliveryService.prototype.setDeliveryMode = function (mode) {
+            if (this.actionAllowed()) {
+                var userId_3;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_3 = occUserId); })
+                    .unsubscribe();
+                var cartId_3;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_3 = activeCartId); })
+                    .unsubscribe();
+                if (userId_3 && cartId_3) {
+                    this.checkoutStore.dispatch(new SetDeliveryMode({
+                        userId: userId_3,
+                        cartId: cartId_3,
+                        selectedModeId: mode,
+                    }));
+                }
+            }
+        };
+        /**
+         * Verifies the address
+         * @param address : the address to be verified
+         */
+        CheckoutDeliveryService.prototype.verifyAddress = function (address) {
+            if (this.actionAllowed()) {
+                var userId_4;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_4 = occUserId); })
+                    .unsubscribe();
+                if (userId_4) {
+                    this.checkoutStore.dispatch(new VerifyAddress({
+                        userId: userId_4,
+                        address: address,
+                    }));
+                }
+            }
+        };
+        /**
+         * Set delivery address
+         * @param address : The address to be set
+         */
+        CheckoutDeliveryService.prototype.setDeliveryAddress = function (address) {
+            if (this.actionAllowed()) {
+                var userId_5;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_5 = occUserId); })
+                    .unsubscribe();
+                var cartId_4;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_4 = activeCartId); })
+                    .unsubscribe();
+                if (cartId_4 && userId_5) {
+                    this.checkoutStore.dispatch(new SetDeliveryAddress({
+                        userId: userId_5,
+                        cartId: cartId_4,
+                        address: address,
+                    }));
+                }
+            }
+        };
+        /**
+         * Clear address verification results
+         */
+        CheckoutDeliveryService.prototype.clearAddressVerificationResults = function () {
+            this.checkoutStore.dispatch(new ClearAddressVerificationResults());
+        };
+        /**
+         * Clear address already setup in last checkout process
+         */
+        CheckoutDeliveryService.prototype.clearCheckoutDeliveryAddress = function () {
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            var cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(function (activeCartId) { return (cartId = activeCartId); })
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
+                    userId: userId,
+                    cartId: cartId,
+                }));
+            }
+        };
+        /**
+         * Clear selected delivery mode setup in last checkout process
+         */
+        CheckoutDeliveryService.prototype.clearCheckoutDeliveryMode = function () {
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            var cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe(function (activeCartId) { return (cartId = activeCartId); })
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
+                    userId: userId,
+                    cartId: cartId,
+                }));
+            }
+        };
+        /**
+         * Clear address and delivery mode already setup in last checkout process
+         */
+        CheckoutDeliveryService.prototype.clearCheckoutDeliveryDetails = function () {
+            this.clearCheckoutDeliveryAddress();
+            this.clearCheckoutDeliveryMode();
+            this.clearCheckoutDeliveryModes();
+        };
+        CheckoutDeliveryService.prototype.actionAllowed = function () {
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+                this.activeCartService.isGuestCart());
+        };
+        return CheckoutDeliveryService;
+    }());
+    CheckoutDeliveryService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+    CheckoutDeliveryService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutDeliveryService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
+
+    var CheckoutPaymentService = /** @class */ (function () {
+        function CheckoutPaymentService(checkoutStore, authService, activeCartService) {
+            this.checkoutStore = checkoutStore;
+            this.authService = authService;
+            this.activeCartService = activeCartService;
+        }
+        /**
+         * Get card types
+         */
+        CheckoutPaymentService.prototype.getCardTypes = function () {
+            return this.checkoutStore.pipe(i1$1.select(getAllCardTypes));
+        };
+        /**
+         * Get payment details
+         */
+        CheckoutPaymentService.prototype.getPaymentDetails = function () {
+            return this.checkoutStore.pipe(i1$1.select(getPaymentDetails));
+        };
+        /**
+         * Get status about set Payment Details process
+         */
+        CheckoutPaymentService.prototype.getSetPaymentDetailsResultProcess = function () {
+            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Clear info about process of setting Payment Details
+         */
+        CheckoutPaymentService.prototype.resetSetPaymentDetailsProcess = function () {
+            this.checkoutStore.dispatch(new ResetSetPaymentDetailsProcess());
+        };
+        /**
+         * Load the supported card types
+         */
+        CheckoutPaymentService.prototype.loadSupportedCardTypes = function () {
+            this.checkoutStore.dispatch(new LoadCardTypes());
+        };
+        /**
+         * Create payment details using the given paymentDetails param
+         * @param paymentDetails: the PaymentDetails to be created
+         */
+        CheckoutPaymentService.prototype.createPaymentDetails = function (paymentDetails) {
+            if (this.actionAllowed()) {
+                var userId_1;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
+                    .unsubscribe();
+                var cartId_1;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
+                    .unsubscribe();
+                if (userId_1 && cartId_1) {
+                    this.checkoutStore.dispatch(new CreatePaymentDetails({
+                        userId: userId_1,
+                        cartId: cartId_1,
+                        paymentDetails: paymentDetails,
+                    }));
+                }
+            }
+        };
+        /**
+         * Set payment details
+         * @param paymentDetails : the PaymentDetails to be set
+         */
+        CheckoutPaymentService.prototype.setPaymentDetails = function (paymentDetails) {
+            if (this.actionAllowed()) {
+                var userId_2;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_2 = occUserId); })
+                    .unsubscribe();
+                var cart_1;
+                this.activeCartService
+                    .getActive()
+                    .subscribe(function (activeCart) { return (cart_1 = activeCart); })
+                    .unsubscribe();
+                if (userId_2 && cart_1) {
+                    this.checkoutStore.dispatch(new SetPaymentDetails({
+                        userId: userId_2,
+                        cartId: cart_1.code,
+                        paymentDetails: paymentDetails,
+                    }));
+                }
+            }
+        };
+        /**
+         * Sets payment loading to true without having the flicker issue (GH-3102)
+         */
+        CheckoutPaymentService.prototype.paymentProcessSuccess = function () {
+            this.checkoutStore.dispatch(new PaymentProcessSuccess());
+        };
+        CheckoutPaymentService.prototype.actionAllowed = function () {
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+                this.activeCartService.isGuestCart());
+        };
+        return CheckoutPaymentService;
+    }());
+    CheckoutPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
+    CheckoutPaymentService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutPaymentService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
+
+    var CheckoutService = /** @class */ (function () {
+        function CheckoutService(checkoutStore, authService, activeCartService) {
+            this.checkoutStore = checkoutStore;
+            this.authService = authService;
+            this.activeCartService = activeCartService;
+        }
+        /**
+         * Places an order
+         */
+        CheckoutService.prototype.placeOrder = function (termsChecked) {
+            if (this.actionAllowed()) {
+                var userId_1;
+                this.authService
+                    .getOccUserId()
+                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
+                    .unsubscribe();
+                var cartId_1;
+                this.activeCartService
+                    .getActiveCartId()
+                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
+                    .unsubscribe();
+                if (userId_1 && cartId_1) {
+                    this.checkoutStore.dispatch(new PlaceOrder({
+                        userId: userId_1,
+                        cartId: cartId_1,
+                        termsChecked: termsChecked,
+                    }));
+                }
+            }
+        };
+        /**
+         * Schedule a replenishment order
+         */
+        CheckoutService.prototype.scheduleReplenishmentOrder = function (scheduleReplenishmentForm, termsChecked) {
+            var _this = this;
+            var cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .pipe(operators.take(1))
+                .subscribe(function (activeCartId) { return (cartId = activeCartId); });
+            this.authService.invokeWithUserId(function (userId) {
+                if (Boolean(cartId) &&
+                    Boolean(userId) &&
+                    userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.checkoutStore.dispatch(new ScheduleReplenishmentOrder({
+                        cartId: cartId,
+                        scheduleReplenishmentForm: scheduleReplenishmentForm,
+                        termsChecked: termsChecked,
+                        userId: userId,
+                    }));
+                }
+            });
+        };
+        /**
+         * Returns the place or schedule replenishment order's loading flag
+         */
+        CheckoutService.prototype.getPlaceOrderLoading = function () {
+            return this.checkoutStore.pipe(i1$1.select(getProcessLoadingFactory(PLACED_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Returns the place or schedule replenishment order's success flag
+         */
+        CheckoutService.prototype.getPlaceOrderSuccess = function () {
+            return this.checkoutStore.pipe(i1$1.select(getProcessSuccessFactory(PLACED_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Returns the place or schedule replenishment order's error flag
+         */
+        CheckoutService.prototype.getPlaceOrderError = function () {
+            return this.checkoutStore.pipe(i1$1.select(getProcessErrorFactory(PLACED_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Resets the place or schedule replenishment order's processing state
+         */
+        CheckoutService.prototype.clearPlaceOrderState = function () {
+            this.checkoutStore.dispatch(new ClearPlaceOrder());
+        };
+        /**
+         * Clear checkout data
+         */
+        CheckoutService.prototype.clearCheckoutData = function () {
+            this.checkoutStore.dispatch(new ClearCheckoutData());
+        };
+        /**
+         * Clear checkout step
+         * @param stepNumber : the step number to be cleared
+         */
+        CheckoutService.prototype.clearCheckoutStep = function (stepNumber) {
+            this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
+        };
+        /**
+         * Load checkout details data
+         * @param cartId : string Cart ID of loaded cart
+         */
+        CheckoutService.prototype.loadCheckoutDetails = function (cartId) {
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            if (userId) {
+                this.checkoutStore.dispatch(new LoadCheckoutDetails({
+                    userId: userId,
+                    cartId: cartId,
+                }));
+            }
+        };
+        /**
+         * Get status of checkout details loaded
+         */
+        CheckoutService.prototype.getCheckoutDetailsLoaded = function () {
+            return this.checkoutStore.pipe(i1$1.select(getCheckoutDetailsLoaded));
+        };
+        /**
+         * Get order details
+         */
+        CheckoutService.prototype.getOrderDetails = function () {
+            return this.checkoutStore.pipe(i1$1.select(getCheckoutOrderDetails));
+        };
+        /**
+         * Set checkout order type
+         * @param orderType : an enum of types of order we are placing
+         */
+        CheckoutService.prototype.setOrderType = function (orderType) {
+            this.checkoutStore.dispatch(new SetOrderType(orderType));
+        };
+        /**
+         * Get current checkout order type
+         */
+        CheckoutService.prototype.getCurrentOrderType = function () {
+            return this.checkoutStore.pipe(i1$1.select(getSelectedOrderType));
+        };
+        CheckoutService.prototype.actionAllowed = function () {
+            var userId;
+            this.authService
+                .getOccUserId()
+                .subscribe(function (occUserId) { return (userId = occUserId); })
+                .unsubscribe();
+            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+                this.activeCartService.isGuestCart());
+        };
+        return CheckoutService;
+    }());
+    CheckoutService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+    CheckoutService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CheckoutService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
+
+    var PaymentTypeService = /** @class */ (function () {
+        function PaymentTypeService(checkoutStore, authService, activeCartService) {
+            this.checkoutStore = checkoutStore;
+            this.authService = authService;
+            this.activeCartService = activeCartService;
+        }
+        /**
+         * Get payment types
+         */
+        PaymentTypeService.prototype.getPaymentTypes = function () {
+            var _this = this;
+            return this.checkoutStore.pipe(i1$1.select(getAllPaymentTypes), operators.withLatestFrom(this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(GET_PAYMENT_TYPES_PROCESS_ID)))), operators.tap(function (_a) {
+                var _b = __read(_a, 2), _ = _b[0], loadingState = _b[1];
+                if (!(loadingState.loading || loadingState.success || loadingState.error)) {
+                    _this.loadPaymentTypes();
+                }
+            }), operators.pluck(0), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        };
+        /**
+         * Load the supported payment types
+         */
+        PaymentTypeService.prototype.loadPaymentTypes = function () {
+            this.checkoutStore.dispatch(new LoadPaymentTypes());
+        };
+        /**
+         * Set payment type to cart
+         * @param typeCode
+         * @param poNumber : purchase order number
+         */
+        PaymentTypeService.prototype.setPaymentType = function (typeCode, poNumber) {
+            var _this = this;
+            var cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .pipe(operators.take(1))
+                .subscribe(function (activeCartId) { return (cartId = activeCartId); });
+            this.authService.invokeWithUserId(function (userId) {
+                if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
+                    _this.checkoutStore.dispatch(new SetPaymentType({
+                        userId: userId,
+                        cartId: cartId,
+                        typeCode: typeCode,
+                        poNumber: poNumber,
+                    }));
+                }
+            });
+        };
+        /**
+         * Get the selected payment type
+         */
+        PaymentTypeService.prototype.getSelectedPaymentType = function () {
+            var _this = this;
+            return rxjs.combineLatest([
+                this.activeCartService.getActive(),
+                this.checkoutStore.pipe(i1$1.select(getSelectedPaymentType$1)),
+            ]).pipe(operators.tap(function (_a) {
+                var _b = __read(_a, 2), cart = _b[0], selected = _b[1];
+                if (selected === undefined) {
+                    // in b2b, cart always has paymentType (default value 'CARD')
+                    if (cart && cart.paymentType) {
+                        _this.checkoutStore.dispatch(new SetPaymentTypeSuccess(cart));
+                    }
+                }
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 2), selected = _b[1];
+                return selected;
+            }));
+        };
+        /**
+         * Get whether the selected payment type is "ACCOUNT" payment
+         */
+        PaymentTypeService.prototype.isAccountPayment = function () {
+            return this.getSelectedPaymentType().pipe(operators.map(function (selected) { return selected === exports.B2BPaymentTypeEnum.ACCOUNT_PAYMENT; }));
+        };
+        /**
+         * Get PO Number
+         */
+        PaymentTypeService.prototype.getPoNumber = function () {
+            var _this = this;
+            return rxjs.combineLatest([
+                this.activeCartService.getActive(),
+                this.checkoutStore.pipe(i1$1.select(getPoNumer)),
+            ]).pipe(operators.tap(function (_a) {
+                var _b = __read(_a, 2), cart = _b[0], po = _b[1];
+                if (po === undefined && cart && cart.purchaseOrderNumber) {
+                    _this.checkoutStore.dispatch(new SetPaymentTypeSuccess(cart));
+                }
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 2), _ = _b[0], po = _b[1];
+                return po;
+            }));
+        };
+        return PaymentTypeService;
+    }());
+    PaymentTypeService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
+    PaymentTypeService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    PaymentTypeService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: ActiveCartService }
+    ]; };
+
+    var OccCheckoutReplenishmentOrderAdapter = /** @class */ (function () {
+        function OccCheckoutReplenishmentOrderAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        OccCheckoutReplenishmentOrderAdapter.prototype.scheduleReplenishmentOrder = function (cartId, scheduleReplenishmentForm, termsChecked, userId) {
+            scheduleReplenishmentForm = this.converter.convert(scheduleReplenishmentForm, REPLENISHMENT_ORDER_FORM_SERIALIZER);
+            var headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
+            var params = new i1.HttpParams()
+                .set('cartId', cartId)
+                .set('termsChecked', termsChecked.toString());
+            return this.http
+                .post(this.occEndpoints.getUrl('scheduleReplenishmentOrder', {
+                userId: userId,
+            }), scheduleReplenishmentForm, { headers: headers, params: params })
+                .pipe(this.converter.pipeable(REPLENISHMENT_ORDER_NORMALIZER));
+        };
+        return OccCheckoutReplenishmentOrderAdapter;
+    }());
+    OccCheckoutReplenishmentOrderAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCheckoutReplenishmentOrderAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+
+    // To be changed to a more optimised params after ticket: C3PO-1076
+    var CHECKOUT_PARAMS = 'deliveryAddress(FULL),deliveryMode,paymentInfo(FULL)';
+    var CARTS_ENDPOINT = '/carts/';
+    var OccCheckoutAdapter = /** @class */ (function () {
+        function OccCheckoutAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        OccCheckoutAdapter.prototype.getEndpoint = function (userId, subEndpoint) {
+            var orderEndpoint = 'users/' + userId + subEndpoint;
+            return this.occEndpoints.getEndpoint(orderEndpoint);
+        };
+        OccCheckoutAdapter.prototype.placeOrder = function (userId, cartId, termsChecked) {
+            var headers = new i1.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            if (userId === OCC_USER_ID_ANONYMOUS) {
+                headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            }
+            var params = new i1.HttpParams()
+                .set('cartId', cartId)
+                .set('termsChecked', termsChecked.toString());
+            return this.http
+                .post(this.occEndpoints.getUrl('placeOrder', { userId: userId }), {}, { headers: headers, params: params })
+                .pipe(this.converter.pipeable(ORDER_NORMALIZER));
+        };
+        OccCheckoutAdapter.prototype.loadCheckoutDetails = function (userId, cartId) {
+            var url = this.getEndpoint(userId, CARTS_ENDPOINT) + cartId;
+            var params = new i1.HttpParams({
+                fromString: "fields=" + CHECKOUT_PARAMS,
+            });
+            return this.http.get(url, { params: params });
+        };
+        OccCheckoutAdapter.prototype.clearCheckoutDeliveryAddress = function (userId, cartId) {
+            var url = "" + this.getEndpoint(userId, CARTS_ENDPOINT) + cartId + "/addresses/delivery";
+            return this.http.delete(url);
+        };
+        OccCheckoutAdapter.prototype.clearCheckoutDeliveryMode = function (userId, cartId) {
+            var url = "" + this.getEndpoint(userId, CARTS_ENDPOINT) + cartId + "/deliverymode";
+            return this.http.delete(url);
+        };
+        return OccCheckoutAdapter;
+    }());
+    OccCheckoutAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCheckoutAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var CheckoutOccModule = /** @class */ (function () {
         function CheckoutOccModule() {
@@ -4910,6 +11166,20 @@
                         {
                             provide: CheckoutCostCenterAdapter,
                             useClass: OccCheckoutCostCenterAdapter,
+                        },
+                        {
+                            provide: CheckoutReplenishmentOrderAdapter,
+                            useClass: OccCheckoutReplenishmentOrderAdapter,
+                        },
+                        {
+                            provide: REPLENISHMENT_ORDER_NORMALIZER,
+                            useExisting: OccReplenishmentOrderNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: REPLENISHMENT_ORDER_FORM_SERIALIZER,
+                            useExisting: OccReplenishmentOrderFormSerializer,
+                            multi: true,
                         },
                     ],
                 },] }
@@ -5303,251 +11573,6 @@
     OccCostCenterListNormalizer.ctorParameters = function () { return [
         { type: ConverterService }
     ]; };
-
-    // PRIVATE API
-    /**
-     * Allows for dynamic adding and removing source observables
-     * and exposes them as one merged observable at a property `output$`.
-     *
-     * Thanks to the `share()` operator used inside, it subscribes to source observables
-     * only when someone subscribes to it. And it unsubscribes from source observables
-     * when the counter of consumers drops to 0.
-     *
-     * **To avoid memory leaks**, all manually added sources should be manually removed
-     * when not plan to emit values anymore. In particular closed event sources won't be
-     * automatically removed.
-     */
-    var MergingSubject = /** @class */ (function () {
-        function MergingSubject() {
-            var _this = this;
-            /**
-             * List of already added sources (but not removed yet)
-             */
-            this.sources = [];
-            /**
-             * For each source: it stores a subscription responsible for
-             * passing all values from source to the consumer
-             */
-            this.subscriptionsToSources = new Map();
-            /**
-             * Observable with all sources merged.
-             *
-             * Only after subscribing to it, under the hood it subscribes to the source observables.
-             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
-             * But if later on something subscribes to it again, it subscribes to the source observables again.
-             *
-             * It multicasts the emissions for each subscriber.
-             */
-            this.output$ = new rxjs.Observable(function (consumer) {
-                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
-                // that is piped right after this observable.
-                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
-                // from this observable (by the nature `refCount`-nature of the `share()` operator).
-                _this.consumer = consumer;
-                _this.bindAllSourcesToConsumer(consumer);
-                return function () {
-                    _this.consumer = null;
-                    _this.unbindAllSourcesFromConsumer();
-                };
-            }).pipe(operators.share());
-            /**
-             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
-             * For more, see docs of the `output$` observable;
-             */
-            this.consumer = null;
-        }
-        /**
-         * Registers the given source to pass its values to the `output$` observable.
-         *
-         * It does nothing, when the source has been already added (but not removed yet).
-         */
-        MergingSubject.prototype.add = function (source) {
-            if (this.has(source)) {
-                return;
-            }
-            if (this.consumer) {
-                this.bindSourceToConsumer(source, this.consumer);
-            }
-            this.sources.push(source);
-        };
-        /**
-         * Starts passing all values from already added sources to consumer
-         */
-        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
-            var _this = this;
-            this.sources.forEach(function (source) { return _this.bindSourceToConsumer(source, consumer); });
-        };
-        /**
-         * Stops passing all values from already added sources to consumer
-         * (if any consumer is active at the moment)
-         */
-        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
-            var _this = this;
-            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
-        };
-        /**
-         * Starts passing all values from a single source to consumer
-         */
-        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
-            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
-            this.subscriptionsToSources.set(source, subscriptionToSource);
-        };
-        /**
-         * Stops passing all values from a single source to consumer
-         * (if any consumer is active at the moment)
-         */
-        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
-            var subscriptionToSource = this.subscriptionsToSources.get(source);
-            if (subscriptionToSource !== undefined) {
-                subscriptionToSource.unsubscribe();
-                this.subscriptionsToSources.delete(source);
-            }
-        };
-        /**
-         * Unregisters the given source so it stops passing its values to `output$` observable.
-         *
-         * Should be used when a source is no longer maintained **to avoid memory leaks**.
-         */
-        MergingSubject.prototype.remove = function (source) {
-            // clear binding from source to consumer (if any consumer exists at the moment)
-            this.unbindSourceFromConsumer(source);
-            // remove source from array
-            var i;
-            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
-                this.sources.splice(i, 1);
-            }
-        };
-        /**
-         * Returns whether the given source has been already addded
-         */
-        MergingSubject.prototype.has = function (source) {
-            return this.sources.includes(source);
-        };
-        return MergingSubject;
-    }());
-
-    /**
-     * A service to register and observe event sources. Events are driven by event types, which are class signatures
-     * for the given event.
-     *
-     * It is possible to register multiple sources to a single event, even without
-     * knowing as multiple decoupled features can attach sources to the same
-     * event type.
-     */
-    var EventService = /** @class */ (function () {
-        function EventService() {
-            /**
-             * The various events meta are collected in a map, stored by the event type class
-             */
-            this.eventsMeta = new Map();
-        }
-        /**
-         * Register an event source for the given event type.
-         *
-         * CAUTION: To avoid memory leaks, the returned teardown function should be called
-         *  when the event source is no longer maintained by its creator
-         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
-         *
-         * @param eventType the event type
-         * @param source$ an observable that represents the source
-         *
-         * @returns a teardown function which unregisters the given event source
-         */
-        EventService.prototype.register = function (eventType, source$) {
-            var eventMeta = this.getEventMeta(eventType);
-            if (eventMeta.mergingSubject.has(source$)) {
-                if (i0.isDevMode()) {
-                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
-                }
-            }
-            else {
-                eventMeta.mergingSubject.add(source$);
-            }
-            return function () { return eventMeta.mergingSubject.remove(source$); };
-        };
-        /**
-         * Returns a stream of events for the given event type
-         * @param eventTypes event type
-         */
-        EventService.prototype.get = function (eventType) {
-            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
-            if (i0.isDevMode()) {
-                output$ = this.getValidatedEventStream(output$, eventType);
-            }
-            return output$;
-        };
-        /**
-         * Dispatches an instance of an individual event.
-         */
-        EventService.prototype.dispatch = function (event) {
-            var eventType = event.constructor;
-            var inputSubject$ = this.getInputSubject(eventType);
-            inputSubject$.next(event);
-        };
-        /**
-         * Returns the input subject used to dispatch a single event.
-         * The subject is created on demand, when it's needed for the first time.
-         * @param eventType type of event
-         */
-        EventService.prototype.getInputSubject = function (eventType) {
-            var eventMeta = this.getEventMeta(eventType);
-            if (!eventMeta.inputSubject$) {
-                eventMeta.inputSubject$ = new rxjs.Subject();
-                this.register(eventType, eventMeta.inputSubject$);
-            }
-            return eventMeta.inputSubject$;
-        };
-        /**
-         * Returns the event meta object for the given event type
-         */
-        EventService.prototype.getEventMeta = function (eventType) {
-            if (i0.isDevMode()) {
-                this.validateEventType(eventType);
-            }
-            if (!this.eventsMeta.get(eventType)) {
-                this.createEventMeta(eventType);
-            }
-            return this.eventsMeta.get(eventType);
-        };
-        /**
-         * Creates the event meta object for the given event type
-         */
-        EventService.prototype.createEventMeta = function (eventType) {
-            this.eventsMeta.set(eventType, {
-                inputSubject$: null,
-                mergingSubject: new MergingSubject(),
-            });
-        };
-        /**
-         * Checks if the event type is a valid type (is a class with constructor).
-         *
-         * Should be used only in dev mode.
-         */
-        EventService.prototype.validateEventType = function (eventType) {
-            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
-                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
-            }
-        };
-        /**
-         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
-         *
-         * Should be used only in dev mode.
-         */
-        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
-            return source$.pipe(operators.tap(function (event) {
-                if (!(event instanceof eventType)) {
-                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
-                }
-            }));
-        };
-        return EventService;
-    }());
-    EventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
-    EventService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
 
     /**
      * Will be thrown in case lazy loaded modules are loaded and instantiated.
@@ -7059,6 +13084,76 @@
                 },] }
     ];
 
+    var AnonymousConsentNormalizer = /** @class */ (function () {
+        function AnonymousConsentNormalizer(anonymousConsentsService) {
+            this.anonymousConsentsService = anonymousConsentsService;
+        }
+        AnonymousConsentNormalizer.prototype.convert = function (source, target) {
+            if (target === void 0) { target = []; }
+            target = this.anonymousConsentsService.decodeAndDeserialize(source);
+            return target;
+        };
+        return AnonymousConsentNormalizer;
+    }());
+    AnonymousConsentNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(i0.ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
+    AnonymousConsentNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    AnonymousConsentNormalizer.ctorParameters = function () { return [
+        { type: AnonymousConsentsService }
+    ]; };
+
+    var OccReturnRequestNormalizer = /** @class */ (function () {
+        function OccReturnRequestNormalizer(converter) {
+            this.converter = converter;
+        }
+        OccReturnRequestNormalizer.prototype.convert = function (source, target) {
+            var _this = this;
+            if (target === undefined) {
+                target = Object.assign({}, source);
+            }
+            if (source.returnEntries) {
+                target.returnEntries = source.returnEntries.map(function (entry) { return (Object.assign(Object.assign({}, entry), { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); });
+            }
+            return target;
+        };
+        OccReturnRequestNormalizer.prototype.convertOrderEntry = function (source) {
+            return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+        };
+        return OccReturnRequestNormalizer;
+    }());
+    OccReturnRequestNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
+    OccReturnRequestNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccReturnRequestNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
+
+    var OccUserInterestsNormalizer = /** @class */ (function () {
+        function OccUserInterestsNormalizer(converter) {
+            this.converter = converter;
+        }
+        OccUserInterestsNormalizer.prototype.convert = function (source, target) {
+            var _this = this;
+            if (target === undefined) {
+                target = Object.assign({}, source);
+            }
+            if (source && source.results) {
+                target.results = source.results.map(function (result) { return (Object.assign(Object.assign({}, result), { product: _this.converter.convert(result.product, PRODUCT_NORMALIZER) })); });
+            }
+            return target;
+        };
+        return OccUserInterestsNormalizer;
+    }());
+    OccUserInterestsNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
+    OccUserInterestsNormalizer.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    OccUserInterestsNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
+
     var ANONYMOUS_CONSENT_NORMALIZER = new i0.InjectionToken('AnonymousConsentNormalizer');
 
     var CONSENT_TEMPLATE_NORMALIZER = new i0.InjectionToken('ConsentTemplateNormalizer');
@@ -7086,6 +13181,72 @@
         { type: i0.Injectable }
     ];
     OccAnonymousConsentTemplatesAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+
+    var CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new i0.InjectionToken('CustomerCouponSearchResultNormalizer');
+
+    var OccCustomerCouponAdapter = /** @class */ (function () {
+        function OccCustomerCouponAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        OccCustomerCouponAdapter.prototype.getCustomerCoupons = function (userId, pageSize, currentPage, sort) {
+            // Currently OCC only supports calls for customer coupons in case of logged users
+            if (userId === OCC_USER_ID_ANONYMOUS) {
+                return rxjs.of({});
+            }
+            var url = this.occEndpoints.getUrl('customerCoupons', { userId: userId });
+            var params = new i1.HttpParams().set('sort', sort ? sort : 'startDate:asc');
+            if (pageSize) {
+                params = params.set('pageSize', pageSize.toString());
+            }
+            if (currentPage) {
+                params = params.set('currentPage', currentPage.toString());
+            }
+            var headers = this.newHttpHeader();
+            return this.http
+                .get(url, { headers: headers, params: params })
+                .pipe(this.converter.pipeable(CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER));
+        };
+        OccCustomerCouponAdapter.prototype.turnOffNotification = function (userId, couponCode) {
+            var url = this.occEndpoints.getUrl('couponNotification', {
+                userId: userId,
+                couponCode: couponCode,
+            });
+            var headers = this.newHttpHeader();
+            return this.http.delete(url, { headers: headers });
+        };
+        OccCustomerCouponAdapter.prototype.turnOnNotification = function (userId, couponCode) {
+            var url = this.occEndpoints.getUrl('couponNotification', {
+                userId: userId,
+                couponCode: couponCode,
+            });
+            var headers = this.newHttpHeader();
+            return this.http.post(url, { headers: headers });
+        };
+        OccCustomerCouponAdapter.prototype.claimCustomerCoupon = function (userId, couponCode) {
+            var url = this.occEndpoints.getUrl('claimCoupon', {
+                userId: userId,
+                couponCode: couponCode,
+            });
+            var headers = this.newHttpHeader();
+            return this.http.post(url, { headers: headers });
+        };
+        OccCustomerCouponAdapter.prototype.newHttpHeader = function () {
+            return new i1.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+        };
+        return OccCustomerCouponAdapter;
+    }());
+    OccCustomerCouponAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccCustomerCouponAdapter.ctorParameters = function () { return [
         { type: i1.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
@@ -7210,6 +13371,141 @@
         { type: i1.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
+    ]; };
+
+    var PRODUCT_INTERESTS_NORMALIZER = new i0.InjectionToken('ProductInterestsNormalizer');
+
+    var headers = new i1.HttpHeaders({
+        'Content-Type': 'application/json',
+    });
+    var OccUserInterestsAdapter = /** @class */ (function () {
+        function OccUserInterestsAdapter(http, occEndpoints, config, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.config = config;
+            this.converter = converter;
+        }
+        OccUserInterestsAdapter.prototype.getInterests = function (userId, pageSize, currentPage, sort, productCode, notificationType) {
+            var params = new i1.HttpParams().set('sort', sort ? sort : 'name:asc');
+            if (pageSize) {
+                params = params.set('pageSize', pageSize.toString());
+            }
+            if (currentPage) {
+                params = params.set('currentPage', currentPage.toString());
+            }
+            if (productCode) {
+                params = params.set('productCode', productCode);
+            }
+            if (notificationType) {
+                params = params.set('notificationType', notificationType.toString());
+            }
+            return this.http
+                .get(this.occEndpoints.getUrl('getProductInterests', { userId: userId }), {
+                headers: headers,
+                params: params,
+            })
+                .pipe(this.converter.pipeable(PRODUCT_INTERESTS_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        OccUserInterestsAdapter.prototype.removeInterest = function (userId, item) {
+            var _this = this;
+            var r = [];
+            item.productInterestEntry.forEach(function (entry) {
+                var params = new i1.HttpParams()
+                    .set('productCode', item.product.code)
+                    .set('notificationType', entry.interestType);
+                r.push(_this.http
+                    .delete(_this.occEndpoints.getUrl('productInterests', { userId: userId }), {
+                    params: params,
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); })));
+            });
+            return rxjs.forkJoin(r);
+        };
+        OccUserInterestsAdapter.prototype.addInterest = function (userId, productCode, notificationType) {
+            var params = new i1.HttpParams()
+                .set('productCode', productCode)
+                .set('notificationType', notificationType.toString());
+            return this.http
+                .post(this.occEndpoints.getUrl('productInterests', { userId: userId }), {}, {
+                headers: headers,
+                params: params,
+            })
+                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        return OccUserInterestsAdapter;
+    }());
+    OccUserInterestsAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserInterestsAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: OccConfig },
+        { type: ConverterService }
+    ]; };
+
+    var NOTIFICATION_PREFERENCE_SERIALIZER = new i0.InjectionToken('NotificationPreferenceSerializer');
+    var NOTIFICATION_PREFERENCE_NORMALIZER = new i0.InjectionToken('NotificationPreferenceNormalizer');
+
+    var UserNotificationPreferenceAdapter = /** @class */ (function () {
+        function UserNotificationPreferenceAdapter() {
+        }
+        return UserNotificationPreferenceAdapter;
+    }());
+
+    var UserNotificationPreferenceConnector = /** @class */ (function () {
+        function UserNotificationPreferenceConnector(adapter) {
+            this.adapter = adapter;
+        }
+        UserNotificationPreferenceConnector.prototype.loadAll = function (userId) {
+            return this.adapter.loadAll(userId);
+        };
+        UserNotificationPreferenceConnector.prototype.update = function (userId, preferences) {
+            return this.adapter.update(userId, preferences);
+        };
+        return UserNotificationPreferenceConnector;
+    }());
+    UserNotificationPreferenceConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(i0.ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
+    UserNotificationPreferenceConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserNotificationPreferenceConnector.ctorParameters = function () { return [
+        { type: UserNotificationPreferenceAdapter }
+    ]; };
+
+    var headers$1 = new i1.HttpHeaders({
+        'Content-Type': 'application/json',
+    });
+    var OccUserNotificationPreferenceAdapter = /** @class */ (function () {
+        function OccUserNotificationPreferenceAdapter(http, converter, occEndpoints) {
+            this.http = http;
+            this.converter = converter;
+            this.occEndpoints = occEndpoints;
+        }
+        OccUserNotificationPreferenceAdapter.prototype.loadAll = function (userId) {
+            return this.http
+                .get(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), {
+                headers: headers$1,
+            })
+                .pipe(operators.map(function (list) { return list.preferences; }), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        OccUserNotificationPreferenceAdapter.prototype.update = function (userId, preferences) {
+            preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
+            return this.http
+                .patch(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), { preferences: preferences }, { headers: headers$1 })
+                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+        };
+        return OccUserNotificationPreferenceAdapter;
+    }());
+    OccUserNotificationPreferenceAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: ConverterService },
+        { type: OccEndpointsService }
     ]; };
 
     var ORDER_HISTORY_NORMALIZER = new i0.InjectionToken('OrderHistoryNormalizer');
@@ -7386,6 +13682,76 @@
         { type: ConverterService }
     ]; };
 
+    var REPLENISHMENT_ORDER_HISTORY_NORMALIZER = new i0.InjectionToken('ReplenishmentOrderHistoryNormalizer');
+
+    var OccUserReplenishmentOrderAdapter = /** @class */ (function () {
+        function OccUserReplenishmentOrderAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        OccUserReplenishmentOrderAdapter.prototype.load = function (userId, replenishmentOrderCode) {
+            return this.http
+                .get(this.occEndpoints.getUrl('replenishmentOrderDetails', {
+                userId: userId,
+                replenishmentOrderCode: replenishmentOrderCode,
+            }))
+                .pipe(this.converter.pipeable(REPLENISHMENT_ORDER_NORMALIZER));
+        };
+        OccUserReplenishmentOrderAdapter.prototype.loadReplenishmentDetailsHistory = function (userId, replenishmentOrderCode, pageSize, currentPage, sort) {
+            var params = {};
+            if (pageSize) {
+                params['pageSize'] = pageSize.toString();
+            }
+            if (currentPage) {
+                params['currentPage'] = currentPage.toString();
+            }
+            if (sort) {
+                params['sort'] = sort.toString();
+            }
+            return this.http
+                .get(this.occEndpoints.getUrl('replenishmentOrderDetailsHistory', {
+                userId: userId,
+                replenishmentOrderCode: replenishmentOrderCode,
+            }, params))
+                .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
+        };
+        OccUserReplenishmentOrderAdapter.prototype.cancelReplenishmentOrder = function (userId, replenishmentOrderCode) {
+            var headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
+            return this.http
+                .patch(this.occEndpoints.getUrl('cancelReplenishmentOrder', {
+                userId: userId,
+                replenishmentOrderCode: replenishmentOrderCode,
+            }), {}, { headers: headers })
+                .pipe(this.converter.pipeable(REPLENISHMENT_ORDER_NORMALIZER));
+        };
+        OccUserReplenishmentOrderAdapter.prototype.loadHistory = function (userId, pageSize, currentPage, sort) {
+            var params = {};
+            if (pageSize) {
+                params['pageSize'] = pageSize.toString();
+            }
+            if (currentPage) {
+                params['currentPage'] = currentPage.toString();
+            }
+            if (sort) {
+                params['sort'] = sort.toString();
+            }
+            var url = this.occEndpoints.getUrl('replenishmentOrderHistory', { userId: userId }, params);
+            return this.http
+                .get(url)
+                .pipe(this.converter.pipeable(REPLENISHMENT_ORDER_HISTORY_NORMALIZER));
+        };
+        return OccUserReplenishmentOrderAdapter;
+    }());
+    OccUserReplenishmentOrderAdapter.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccUserReplenishmentOrderAdapter.ctorParameters = function () { return [
+        { type: i1.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+
     var USER_NORMALIZER = new i0.InjectionToken('UserNormalizer');
     var USER_SERIALIZER = new i0.InjectionToken('UserSerializer');
     var USER_SIGN_UP_SERIALIZER = new i0.InjectionToken('UserSignUpSerializer');
@@ -7494,12 +13860,6 @@
         return AnonymousConsentTemplatesAdapter;
     }());
 
-    var UserAddressAdapter = /** @class */ (function () {
-        function UserAddressAdapter() {
-        }
-        return UserAddressAdapter;
-    }());
-
     var UserConsentAdapter = /** @class */ (function () {
         function UserConsentAdapter() {
         }
@@ -7518,18 +13878,10 @@
         return CustomerCouponAdapter;
     }());
 
-    var PRODUCT_INTERESTS_NORMALIZER = new i0.InjectionToken('ProductInterestsNormalizer');
-
     var UserInterestsAdapter = /** @class */ (function () {
         function UserInterestsAdapter() {
         }
         return UserInterestsAdapter;
-    }());
-
-    var UserNotificationPreferenceAdapter = /** @class */ (function () {
-        function UserNotificationPreferenceAdapter() {
-        }
-        return UserNotificationPreferenceAdapter;
     }());
 
     var UserOrderAdapter = /** @class */ (function () {
@@ -7544,147 +13896,45 @@
         return UserPaymentAdapter;
     }());
 
+    var UserReplenishmentOrderAdapter = /** @class */ (function () {
+        function UserReplenishmentOrderAdapter() {
+        }
+        return UserReplenishmentOrderAdapter;
+    }());
+
+    var UserReplenishmentOrderConnector = /** @class */ (function () {
+        function UserReplenishmentOrderConnector(adapter) {
+            this.adapter = adapter;
+        }
+        UserReplenishmentOrderConnector.prototype.load = function (userId, replenishmentOrderCode) {
+            return this.adapter.load(userId, replenishmentOrderCode);
+        };
+        UserReplenishmentOrderConnector.prototype.loadReplenishmentDetailsHistory = function (userId, replenishmentOrderCode, pageSize, currentPage, sort) {
+            return this.adapter.loadReplenishmentDetailsHistory(userId, replenishmentOrderCode, pageSize, currentPage, sort);
+        };
+        UserReplenishmentOrderConnector.prototype.cancelReplenishmentOrder = function (userId, replenishmentOrderCode) {
+            return this.adapter.cancelReplenishmentOrder(userId, replenishmentOrderCode);
+        };
+        UserReplenishmentOrderConnector.prototype.loadHistory = function (userId, pageSize, currentPage, sort) {
+            return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
+        };
+        return UserReplenishmentOrderConnector;
+    }());
+    UserReplenishmentOrderConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserReplenishmentOrderConnector_Factory() { return new UserReplenishmentOrderConnector(i0.ɵɵinject(UserReplenishmentOrderAdapter)); }, token: UserReplenishmentOrderConnector, providedIn: "root" });
+    UserReplenishmentOrderConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserReplenishmentOrderConnector.ctorParameters = function () { return [
+        { type: UserReplenishmentOrderAdapter }
+    ]; };
+
     var UserAdapter = /** @class */ (function () {
         function UserAdapter() {
         }
         return UserAdapter;
     }());
-
-    var CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new i0.InjectionToken('CustomerCouponSearchResultNormalizer');
-
-    var OccCustomerCouponAdapter = /** @class */ (function () {
-        function OccCustomerCouponAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        OccCustomerCouponAdapter.prototype.getCustomerCoupons = function (userId, pageSize, currentPage, sort) {
-            // Currently OCC only supports calls for customer coupons in case of logged users
-            if (userId === OCC_USER_ID_ANONYMOUS) {
-                return rxjs.of({});
-            }
-            var url = this.occEndpoints.getUrl('customerCoupons', { userId: userId });
-            var params = new i1.HttpParams().set('sort', sort ? sort : 'startDate:asc');
-            if (pageSize) {
-                params = params.set('pageSize', pageSize.toString());
-            }
-            if (currentPage) {
-                params = params.set('currentPage', currentPage.toString());
-            }
-            var headers = this.newHttpHeader();
-            return this.http
-                .get(url, { headers: headers, params: params })
-                .pipe(this.converter.pipeable(CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER));
-        };
-        OccCustomerCouponAdapter.prototype.turnOffNotification = function (userId, couponCode) {
-            var url = this.occEndpoints.getUrl('couponNotification', {
-                userId: userId,
-                couponCode: couponCode,
-            });
-            var headers = this.newHttpHeader();
-            return this.http.delete(url, { headers: headers });
-        };
-        OccCustomerCouponAdapter.prototype.turnOnNotification = function (userId, couponCode) {
-            var url = this.occEndpoints.getUrl('couponNotification', {
-                userId: userId,
-                couponCode: couponCode,
-            });
-            var headers = this.newHttpHeader();
-            return this.http.post(url, { headers: headers });
-        };
-        OccCustomerCouponAdapter.prototype.claimCustomerCoupon = function (userId, couponCode) {
-            var url = this.occEndpoints.getUrl('claimCoupon', {
-                userId: userId,
-                couponCode: couponCode,
-            });
-            var headers = this.newHttpHeader();
-            return this.http.post(url, { headers: headers });
-        };
-        OccCustomerCouponAdapter.prototype.newHttpHeader = function () {
-            return new i1.HttpHeaders({
-                'Content-Type': 'application/json',
-            });
-        };
-        return OccCustomerCouponAdapter;
-    }());
-    OccCustomerCouponAdapter.decorators = [
-        { type: i0.Injectable }
-    ];
-    OccCustomerCouponAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
-        { type: OccEndpointsService },
-        { type: ConverterService }
-    ]; };
-
-    var AnonymousConsentNormalizer = /** @class */ (function () {
-        function AnonymousConsentNormalizer(anonymousConsentsService) {
-            this.anonymousConsentsService = anonymousConsentsService;
-        }
-        AnonymousConsentNormalizer.prototype.convert = function (source, target) {
-            if (target === void 0) { target = []; }
-            target = this.anonymousConsentsService.decodeAndDeserialize(source);
-            return target;
-        };
-        return AnonymousConsentNormalizer;
-    }());
-    AnonymousConsentNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(i0.ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
-    AnonymousConsentNormalizer.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    AnonymousConsentNormalizer.ctorParameters = function () { return [
-        { type: AnonymousConsentsService }
-    ]; };
-
-    var OccReturnRequestNormalizer = /** @class */ (function () {
-        function OccReturnRequestNormalizer(converter) {
-            this.converter = converter;
-        }
-        OccReturnRequestNormalizer.prototype.convert = function (source, target) {
-            var _this = this;
-            if (target === undefined) {
-                target = Object.assign({}, source);
-            }
-            if (source.returnEntries) {
-                target.returnEntries = source.returnEntries.map(function (entry) { return (Object.assign(Object.assign({}, entry), { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); });
-            }
-            return target;
-        };
-        OccReturnRequestNormalizer.prototype.convertOrderEntry = function (source) {
-            return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
-        };
-        return OccReturnRequestNormalizer;
-    }());
-    OccReturnRequestNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
-    OccReturnRequestNormalizer.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    OccReturnRequestNormalizer.ctorParameters = function () { return [
-        { type: ConverterService }
-    ]; };
-
-    var OccUserInterestsNormalizer = /** @class */ (function () {
-        function OccUserInterestsNormalizer(converter) {
-            this.converter = converter;
-        }
-        OccUserInterestsNormalizer.prototype.convert = function (source, target) {
-            var _this = this;
-            if (target === undefined) {
-                target = Object.assign({}, source);
-            }
-            if (source && source.results) {
-                target.results = source.results.map(function (result) { return (Object.assign(Object.assign({}, result), { product: _this.converter.convert(result.product, PRODUCT_NORMALIZER) })); });
-            }
-            return target;
-        };
-        return OccUserInterestsNormalizer;
-    }());
-    OccUserInterestsNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
-    OccUserInterestsNormalizer.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    OccUserInterestsNormalizer.ctorParameters = function () { return [
-        { type: ConverterService }
-    ]; };
 
     var defaultOccUserConfig = {
         backend: {
@@ -7753,133 +14003,6 @@
         { type: ConverterService }
     ]; };
 
-    var headers = new i1.HttpHeaders({
-        'Content-Type': 'application/json',
-    });
-    var OccUserInterestsAdapter = /** @class */ (function () {
-        function OccUserInterestsAdapter(http, occEndpoints, config, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.config = config;
-            this.converter = converter;
-        }
-        OccUserInterestsAdapter.prototype.getInterests = function (userId, pageSize, currentPage, sort, productCode, notificationType) {
-            var params = new i1.HttpParams().set('sort', sort ? sort : 'name:asc');
-            if (pageSize) {
-                params = params.set('pageSize', pageSize.toString());
-            }
-            if (currentPage) {
-                params = params.set('currentPage', currentPage.toString());
-            }
-            if (productCode) {
-                params = params.set('productCode', productCode);
-            }
-            if (notificationType) {
-                params = params.set('notificationType', notificationType.toString());
-            }
-            return this.http
-                .get(this.occEndpoints.getUrl('getProductInterests', { userId: userId }), {
-                headers: headers,
-                params: params,
-            })
-                .pipe(this.converter.pipeable(PRODUCT_INTERESTS_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        OccUserInterestsAdapter.prototype.removeInterest = function (userId, item) {
-            var _this = this;
-            var r = [];
-            item.productInterestEntry.forEach(function (entry) {
-                var params = new i1.HttpParams()
-                    .set('productCode', item.product.code)
-                    .set('notificationType', entry.interestType);
-                r.push(_this.http
-                    .delete(_this.occEndpoints.getUrl('productInterests', { userId: userId }), {
-                    params: params,
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); })));
-            });
-            return rxjs.forkJoin(r);
-        };
-        OccUserInterestsAdapter.prototype.addInterest = function (userId, productCode, notificationType) {
-            var params = new i1.HttpParams()
-                .set('productCode', productCode)
-                .set('notificationType', notificationType.toString());
-            return this.http
-                .post(this.occEndpoints.getUrl('productInterests', { userId: userId }), {}, {
-                headers: headers,
-                params: params,
-            })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        return OccUserInterestsAdapter;
-    }());
-    OccUserInterestsAdapter.decorators = [
-        { type: i0.Injectable }
-    ];
-    OccUserInterestsAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
-        { type: OccEndpointsService },
-        { type: OccConfig },
-        { type: ConverterService }
-    ]; };
-
-    var NOTIFICATION_PREFERENCE_SERIALIZER = new i0.InjectionToken('NotificationPreferenceSerializer');
-    var NOTIFICATION_PREFERENCE_NORMALIZER = new i0.InjectionToken('NotificationPreferenceNormalizer');
-
-    var UserNotificationPreferenceConnector = /** @class */ (function () {
-        function UserNotificationPreferenceConnector(adapter) {
-            this.adapter = adapter;
-        }
-        UserNotificationPreferenceConnector.prototype.loadAll = function (userId) {
-            return this.adapter.loadAll(userId);
-        };
-        UserNotificationPreferenceConnector.prototype.update = function (userId, preferences) {
-            return this.adapter.update(userId, preferences);
-        };
-        return UserNotificationPreferenceConnector;
-    }());
-    UserNotificationPreferenceConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(i0.ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
-    UserNotificationPreferenceConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserNotificationPreferenceConnector.ctorParameters = function () { return [
-        { type: UserNotificationPreferenceAdapter }
-    ]; };
-
-    var headers$1 = new i1.HttpHeaders({
-        'Content-Type': 'application/json',
-    });
-    var OccUserNotificationPreferenceAdapter = /** @class */ (function () {
-        function OccUserNotificationPreferenceAdapter(http, converter, occEndpoints) {
-            this.http = http;
-            this.converter = converter;
-            this.occEndpoints = occEndpoints;
-        }
-        OccUserNotificationPreferenceAdapter.prototype.loadAll = function (userId) {
-            return this.http
-                .get(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), {
-                headers: headers$1,
-            })
-                .pipe(operators.map(function (list) { return list.preferences; }), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        OccUserNotificationPreferenceAdapter.prototype.update = function (userId, preferences) {
-            preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
-            return this.http
-                .patch(this.occEndpoints.getUrl('notificationPreference', { userId: userId }), { preferences: preferences }, { headers: headers$1 })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        return OccUserNotificationPreferenceAdapter;
-    }());
-    OccUserNotificationPreferenceAdapter.decorators = [
-        { type: i0.Injectable }
-    ];
-    OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
-        { type: ConverterService },
-        { type: OccEndpointsService }
-    ]; };
-
     var UserOccModule = /** @class */ (function () {
         function UserOccModule() {
         }
@@ -7923,6 +14046,10 @@
                             provide: ANONYMOUS_CONSENT_NORMALIZER,
                             useExisting: AnonymousConsentNormalizer,
                             multi: true,
+                        },
+                        {
+                            provide: UserReplenishmentOrderAdapter,
+                            useClass: OccUserReplenishmentOrderAdapter,
                         },
                     ],
                 },] }
@@ -9452,6 +15579,16 @@
             Period["QUARTER"] = "QUARTER";
             Period["YEAR"] = "YEAR";
         })(Period = Occ.Period || (Occ.Period = {}));
+        var DaysOfWeek;
+        (function (DaysOfWeek) {
+            DaysOfWeek["MONDAY"] = "MONDAY";
+            DaysOfWeek["TUESDAY"] = "TUESDAY";
+            DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
+            DaysOfWeek["THURSDAY"] = "THURSDAY";
+            DaysOfWeek["FRIDAY"] = "FRIDAY";
+            DaysOfWeek["SATURDAY"] = "SATURDAY";
+            DaysOfWeek["SUNDAY"] = "SUNDAY";
+        })(DaysOfWeek = Occ.DaysOfWeek || (Occ.DaysOfWeek = {}));
         var OrderApprovalDecisionValue;
         (function (OrderApprovalDecisionValue) {
             OrderApprovalDecisionValue["APPROVE"] = "APPROVE";
@@ -9712,75 +15849,6 @@
         },
     ];
 
-    /**
-     * Creates an instance of the given class and fills its properties with the given data.
-     *
-     * @param type reference to the class
-     * @param data object with properties to be copied to the class
-     */
-    function createFrom(type, data) {
-        return Object.assign(new type(), data);
-    }
-
-    /**
-     * Registers streams of ngrx actions as events source streams
-     */
-    var StateEventService = /** @class */ (function () {
-        function StateEventService(actionsSubject, eventService) {
-            this.actionsSubject = actionsSubject;
-            this.eventService = eventService;
-        }
-        /**
-         * Registers an event source stream of specific events
-         * mapped from a given action type.
-         *
-         * @param mapping mapping from action to event
-         *
-         * @returns a teardown function that unregisters the event source
-         */
-        StateEventService.prototype.register = function (mapping) {
-            return this.eventService.register(mapping.event, this.getFromAction(mapping));
-        };
-        /**
-         * Returns a stream of specific events mapped from a specific action.
-         * @param mapping mapping from action to event
-         */
-        StateEventService.prototype.getFromAction = function (mapping) {
-            var _this = this;
-            return this.actionsSubject
-                .pipe(i3.ofType.apply(void 0, __spread([].concat(mapping.action))))
-                .pipe(operators.map(function (action) { return _this.createEvent(action, mapping.event, mapping.factory); }));
-        };
-        /**
-         * Creates an event instance for given class out from the action object.
-         * Unless the `factory` parameter is given, the action's `payload` is used
-         * as the argument for the event's constructor.
-         *
-         * @param action instance of an Action
-         * @param mapping mapping from action to event
-         * @param factory optional function getting an action instance and returning an event instance
-         *
-         * @returns instance of an Event
-         */
-        StateEventService.prototype.createEvent = function (action, eventType, factory) {
-            var _a;
-            return factory
-                ? factory(action)
-                : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
-        };
-        return StateEventService;
-    }());
-    StateEventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(i0.ɵɵinject(i1$1.ActionsSubject), i0.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
-    StateEventService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    StateEventService.ctorParameters = function () { return [
-        { type: i1$1.ActionsSubject },
-        { type: EventService }
-    ]; };
-
     var StatePersistenceService = /** @class */ (function () {
         function StatePersistenceService(winRef) {
             this.winRef = winRef;
@@ -9837,2063 +15905,194 @@
         { type: WindowRef }
     ]; };
 
-    var PROCESS_FEATURE = 'process';
-
-    function getProcessState() {
-        return i1$1.createFeatureSelector(PROCESS_FEATURE);
-    }
-
-    function getProcessStateFactory(processId) {
-        return i1$1.createSelector(getProcessState(), function (entityState) { return entityLoaderStateSelector(entityState, processId); });
-    }
-    function getProcessLoadingFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
-    }
-    function getProcessSuccessFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
-    }
-    function getProcessErrorFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
-    }
-
-    var process_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getProcessStateFactory: getProcessStateFactory,
-        getProcessLoadingFactory: getProcessLoadingFactory,
-        getProcessSuccessFactory: getProcessSuccessFactory,
-        getProcessErrorFactory: getProcessErrorFactory
-    });
-
-    var LOAD_BILLING_COUNTRIES = '[User] Load Billing Countries';
-    var LOAD_BILLING_COUNTRIES_FAIL = '[User] Load Billing Countries Fail';
-    var LOAD_BILLING_COUNTRIES_SUCCESS = '[User] Load Billing Countries Success';
-    var LoadBillingCountries = /** @class */ (function () {
-        function LoadBillingCountries() {
-            this.type = LOAD_BILLING_COUNTRIES;
-        }
-        return LoadBillingCountries;
-    }());
-    var LoadBillingCountriesFail = /** @class */ (function () {
-        function LoadBillingCountriesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_BILLING_COUNTRIES_FAIL;
-        }
-        return LoadBillingCountriesFail;
-    }());
-    var LoadBillingCountriesSuccess = /** @class */ (function () {
-        function LoadBillingCountriesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_BILLING_COUNTRIES_SUCCESS;
-        }
-        return LoadBillingCountriesSuccess;
-    }());
-
-    var LOAD_CONSIGNMENT_TRACKING = '[User] Load Consignment Tracking';
-    var LOAD_CONSIGNMENT_TRACKING_FAIL = '[User] Load Consignment Tracking Fail';
-    var LOAD_CONSIGNMENT_TRACKING_SUCCESS = '[User] Load Consignment Tracking Success';
-    var CLEAR_CONSIGNMENT_TRACKING = '[User] Clear Consignment Tracking';
-    var LoadConsignmentTracking = /** @class */ (function () {
-        function LoadConsignmentTracking(payload) {
-            this.payload = payload;
-            this.type = LOAD_CONSIGNMENT_TRACKING;
-        }
-        return LoadConsignmentTracking;
-    }());
-    var LoadConsignmentTrackingFail = /** @class */ (function () {
-        function LoadConsignmentTrackingFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_CONSIGNMENT_TRACKING_FAIL;
-        }
-        return LoadConsignmentTrackingFail;
-    }());
-    var LoadConsignmentTrackingSuccess = /** @class */ (function () {
-        function LoadConsignmentTrackingSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_CONSIGNMENT_TRACKING_SUCCESS;
-        }
-        return LoadConsignmentTrackingSuccess;
-    }());
-    var ClearConsignmentTracking = /** @class */ (function () {
-        function ClearConsignmentTracking() {
-            this.type = CLEAR_CONSIGNMENT_TRACKING;
-        }
-        return ClearConsignmentTracking;
-    }());
-
-    var LOAD_DELIVERY_COUNTRIES = '[User] Load Delivery Countries';
-    var LOAD_DELIVERY_COUNTRIES_FAIL = '[User] Load Delivery Countries Fail';
-    var LOAD_DELIVERY_COUNTRIES_SUCCESS = '[User] Load Delivery Countries Success';
-    var LoadDeliveryCountries = /** @class */ (function () {
-        function LoadDeliveryCountries() {
-            this.type = LOAD_DELIVERY_COUNTRIES;
-        }
-        return LoadDeliveryCountries;
-    }());
-    var LoadDeliveryCountriesFail = /** @class */ (function () {
-        function LoadDeliveryCountriesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_DELIVERY_COUNTRIES_FAIL;
-        }
-        return LoadDeliveryCountriesFail;
-    }());
-    var LoadDeliveryCountriesSuccess = /** @class */ (function () {
-        function LoadDeliveryCountriesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_DELIVERY_COUNTRIES_SUCCESS;
-        }
-        return LoadDeliveryCountriesSuccess;
-    }());
-
-    var FORGOT_PASSWORD_EMAIL_REQUEST = '[User] Forgot Password Email Request';
-    var FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS = '[User] Forgot Password Email Request Success';
-    var FORGOT_PASSWORD_EMAIL_REQUEST_FAIL = '[User] Forgot Password Email Request Fail';
-    var ForgotPasswordEmailRequest = /** @class */ (function () {
-        function ForgotPasswordEmailRequest(payload) {
-            this.payload = payload;
-            this.type = FORGOT_PASSWORD_EMAIL_REQUEST;
-        }
-        return ForgotPasswordEmailRequest;
-    }());
-    var ForgotPasswordEmailRequestFail = /** @class */ (function () {
-        function ForgotPasswordEmailRequestFail(payload) {
-            this.payload = payload;
-            this.type = FORGOT_PASSWORD_EMAIL_REQUEST_FAIL;
-        }
-        return ForgotPasswordEmailRequestFail;
-    }());
-    var ForgotPasswordEmailRequestSuccess = /** @class */ (function () {
-        function ForgotPasswordEmailRequestSuccess() {
-            this.type = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
-        }
-        return ForgotPasswordEmailRequestSuccess;
-    }());
-
-    var USER_FEATURE = 'user';
-    var UPDATE_EMAIL_PROCESS_ID = 'updateEmail';
-    var UPDATE_PASSWORD_PROCESS_ID = 'updatePassword';
-    var UPDATE_USER_DETAILS_PROCESS_ID = 'updateUserDetails';
-    var REGISTER_USER_PROCESS_ID = 'registerUser';
-    var REMOVE_USER_PROCESS_ID = 'removeUser';
-    var GIVE_CONSENT_PROCESS_ID = 'giveConsent';
-    var WITHDRAW_CONSENT_PROCESS_ID = 'withdrawConsent';
-    var UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID = 'updateNotificationPreferences';
-    var ADD_PRODUCT_INTEREST_PROCESS_ID = 'addProductInterests';
-    var REMOVE_PRODUCT_INTERESTS_PROCESS_ID = 'removeProductInterests';
-    var CANCEL_ORDER_PROCESS_ID = 'cancelOrder';
-    var CANCEL_RETURN_PROCESS_ID = 'cancelReturn';
-    var USER_CONSENTS = '[User] User Consents';
-    var USER_PAYMENT_METHODS = '[User] User Payment Methods';
-    var USER_ORDERS = '[User] User Orders';
-    var USER_ADDRESSES = '[User] User Addresses';
-    var USER_RETURN_REQUESTS = '[User] Order Return Requests';
-    var USER_RETURN_REQUEST_DETAILS = '[User] Return Request Details';
-    var USER_ORDER_DETAILS = '[User] User Order Details';
-    var USER_COST_CENTERS = '[User] User Cost Centers';
-    var REGIONS = '[User] Regions';
-    var CUSTOMER_COUPONS = '[User] Customer Coupons';
-    var SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'subscribeCustomerCoupon';
-    var UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'unsubscribeCustomerCoupon';
-    var CLAIM_CUSTOMER_COUPON_PROCESS_ID = 'claimCustomerCoupon';
-    var NOTIFICATION_PREFERENCES = '[User] Notification Preferences';
-    var PRODUCT_INTERESTS = '[User] Product Interests';
-
-    var LOAD_ORDER_DETAILS = '[User] Load Order Details';
-    var LOAD_ORDER_DETAILS_FAIL = '[User] Load Order Details Fail';
-    var LOAD_ORDER_DETAILS_SUCCESS = '[User] Load Order Details Success';
-    var CLEAR_ORDER_DETAILS = '[User] Clear Order Details';
-    var CANCEL_ORDER = '[User] Cancel Order';
-    var CANCEL_ORDER_FAIL = '[User] Cancel Order Fail';
-    var CANCEL_ORDER_SUCCESS = '[User] Cancel Order Success';
-    var RESET_CANCEL_ORDER_PROCESS = '[User] Reset Cancel Order Process';
-    var LoadOrderDetails = /** @class */ (function (_super) {
-        __extends(LoadOrderDetails, _super);
-        function LoadOrderDetails(payload) {
-            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_DETAILS;
-            return _this;
-        }
-        return LoadOrderDetails;
-    }(LoaderLoadAction));
-    var LoadOrderDetailsFail = /** @class */ (function (_super) {
-        __extends(LoadOrderDetailsFail, _super);
-        function LoadOrderDetailsFail(payload) {
-            var _this = _super.call(this, USER_ORDER_DETAILS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_DETAILS_FAIL;
-            return _this;
-        }
-        return LoadOrderDetailsFail;
-    }(LoaderFailAction));
-    var LoadOrderDetailsSuccess = /** @class */ (function (_super) {
-        __extends(LoadOrderDetailsSuccess, _super);
-        function LoadOrderDetailsSuccess(payload) {
-            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_DETAILS_SUCCESS;
-            return _this;
-        }
-        return LoadOrderDetailsSuccess;
-    }(LoaderSuccessAction));
-    var ClearOrderDetails = /** @class */ (function (_super) {
-        __extends(ClearOrderDetails, _super);
-        function ClearOrderDetails() {
-            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
-            _this.type = CLEAR_ORDER_DETAILS;
-            return _this;
-        }
-        return ClearOrderDetails;
-    }(LoaderResetAction));
-    var CancelOrder = /** @class */ (function (_super) {
-        __extends(CancelOrder, _super);
-        function CancelOrder(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CANCEL_ORDER;
-            return _this;
-        }
-        return CancelOrder;
-    }(EntityLoadAction));
-    var CancelOrderFail = /** @class */ (function (_super) {
-        __extends(CancelOrderFail, _super);
-        function CancelOrderFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = CANCEL_ORDER_FAIL;
-            return _this;
-        }
-        return CancelOrderFail;
-    }(EntityFailAction));
-    var CancelOrderSuccess = /** @class */ (function (_super) {
-        __extends(CancelOrderSuccess, _super);
-        function CancelOrderSuccess() {
-            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
-            _this.type = CANCEL_ORDER_SUCCESS;
-            return _this;
-        }
-        return CancelOrderSuccess;
-    }(EntitySuccessAction));
-    var ResetCancelOrderProcess = /** @class */ (function (_super) {
-        __extends(ResetCancelOrderProcess, _super);
-        function ResetCancelOrderProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
-            _this.type = RESET_CANCEL_ORDER_PROCESS;
-            return _this;
-        }
-        return ResetCancelOrderProcess;
-    }(EntityLoaderResetAction));
-
-    var LOAD_USER_PAYMENT_METHODS = '[User] Load User Payment Methods';
-    var LOAD_USER_PAYMENT_METHODS_FAIL = '[User] Load User Payment Methods Fail';
-    var LOAD_USER_PAYMENT_METHODS_SUCCESS = '[User] Load User Payment Methods Success';
-    var SET_DEFAULT_USER_PAYMENT_METHOD = '[User] Set Default User Payment Method';
-    var SET_DEFAULT_USER_PAYMENT_METHOD_FAIL = '[User] Set Default User Payment Method Fail';
-    var SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS = '[User] Set Default User Payment Method Success';
-    var DELETE_USER_PAYMENT_METHOD = '[User] Delete User Payment Method';
-    var DELETE_USER_PAYMENT_METHOD_FAIL = '[User] Delete User Payment Method Fail';
-    var DELETE_USER_PAYMENT_METHOD_SUCCESS = '[User] Delete User  Payment Method Success';
-    var LoadUserPaymentMethods = /** @class */ (function (_super) {
-        __extends(LoadUserPaymentMethods, _super);
-        function LoadUserPaymentMethods(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_PAYMENT_METHODS;
-            return _this;
-        }
-        return LoadUserPaymentMethods;
-    }(LoaderLoadAction));
-    var LoadUserPaymentMethodsFail = /** @class */ (function (_super) {
-        __extends(LoadUserPaymentMethodsFail, _super);
-        function LoadUserPaymentMethodsFail(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_PAYMENT_METHODS_FAIL;
-            return _this;
-        }
-        return LoadUserPaymentMethodsFail;
-    }(LoaderFailAction));
-    var LoadUserPaymentMethodsSuccess = /** @class */ (function (_super) {
-        __extends(LoadUserPaymentMethodsSuccess, _super);
-        function LoadUserPaymentMethodsSuccess(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_PAYMENT_METHODS_SUCCESS;
-            return _this;
-        }
-        return LoadUserPaymentMethodsSuccess;
-    }(LoaderSuccessAction));
-    var SetDefaultUserPaymentMethod = /** @class */ (function (_super) {
-        __extends(SetDefaultUserPaymentMethod, _super);
-        function SetDefaultUserPaymentMethod(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
-            _this.payload = payload;
-            _this.type = SET_DEFAULT_USER_PAYMENT_METHOD;
-            return _this;
-        }
-        return SetDefaultUserPaymentMethod;
-    }(LoaderLoadAction));
-    var SetDefaultUserPaymentMethodFail = /** @class */ (function (_super) {
-        __extends(SetDefaultUserPaymentMethodFail, _super);
-        function SetDefaultUserPaymentMethodFail(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS, payload) || this;
-            _this.payload = payload;
-            _this.type = SET_DEFAULT_USER_PAYMENT_METHOD_FAIL;
-            return _this;
-        }
-        return SetDefaultUserPaymentMethodFail;
-    }(LoaderFailAction));
-    var SetDefaultUserPaymentMethodSuccess = /** @class */ (function (_super) {
-        __extends(SetDefaultUserPaymentMethodSuccess, _super);
-        function SetDefaultUserPaymentMethodSuccess(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
-            _this.payload = payload;
-            _this.type = SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS;
-            return _this;
-        }
-        return SetDefaultUserPaymentMethodSuccess;
-    }(LoaderSuccessAction));
-    var DeleteUserPaymentMethod = /** @class */ (function (_super) {
-        __extends(DeleteUserPaymentMethod, _super);
-        function DeleteUserPaymentMethod(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
-            _this.payload = payload;
-            _this.type = DELETE_USER_PAYMENT_METHOD;
-            return _this;
-        }
-        return DeleteUserPaymentMethod;
-    }(LoaderLoadAction));
-    var DeleteUserPaymentMethodFail = /** @class */ (function (_super) {
-        __extends(DeleteUserPaymentMethodFail, _super);
-        function DeleteUserPaymentMethodFail(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS, payload) || this;
-            _this.payload = payload;
-            _this.type = DELETE_USER_PAYMENT_METHOD_FAIL;
-            return _this;
-        }
-        return DeleteUserPaymentMethodFail;
-    }(LoaderFailAction));
-    var DeleteUserPaymentMethodSuccess = /** @class */ (function (_super) {
-        __extends(DeleteUserPaymentMethodSuccess, _super);
-        function DeleteUserPaymentMethodSuccess(payload) {
-            var _this = _super.call(this, USER_PAYMENT_METHODS) || this;
-            _this.payload = payload;
-            _this.type = DELETE_USER_PAYMENT_METHOD_SUCCESS;
-            return _this;
-        }
-        return DeleteUserPaymentMethodSuccess;
-    }(LoaderSuccessAction));
-
-    var LOAD_REGIONS = '[User] Load Regions';
-    var LOAD_REGIONS_SUCCESS = '[User] Load Regions Success';
-    var LOAD_REGIONS_FAIL = '[User] Load Regions Fail';
-    var CLEAR_REGIONS = '[User] Clear Regions';
-    var LoadRegions = /** @class */ (function (_super) {
-        __extends(LoadRegions, _super);
-        function LoadRegions(payload) {
-            var _this = _super.call(this, REGIONS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_REGIONS;
-            return _this;
-        }
-        return LoadRegions;
-    }(LoaderLoadAction));
-    var LoadRegionsFail = /** @class */ (function (_super) {
-        __extends(LoadRegionsFail, _super);
-        function LoadRegionsFail(payload) {
-            var _this = _super.call(this, REGIONS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_REGIONS_FAIL;
-            return _this;
-        }
-        return LoadRegionsFail;
-    }(LoaderFailAction));
-    var LoadRegionsSuccess = /** @class */ (function (_super) {
-        __extends(LoadRegionsSuccess, _super);
-        function LoadRegionsSuccess(payload) {
-            var _this = _super.call(this, REGIONS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_REGIONS_SUCCESS;
-            return _this;
-        }
-        return LoadRegionsSuccess;
-    }(LoaderSuccessAction));
-    var ClearRegions = /** @class */ (function () {
-        function ClearRegions() {
-            this.type = CLEAR_REGIONS;
-        }
-        return ClearRegions;
-    }());
-
-    var RESET_PASSWORD = '[User] Reset Password';
-    var RESET_PASSWORD_SUCCESS = '[User] Reset Password Success';
-    var RESET_PASSWORD_FAIL = '[User] Reset Password Fail';
-    var ResetPassword = /** @class */ (function () {
-        function ResetPassword(payload) {
-            this.payload = payload;
-            this.type = RESET_PASSWORD;
-        }
-        return ResetPassword;
-    }());
-    var ResetPasswordFail = /** @class */ (function () {
-        function ResetPasswordFail(payload) {
-            this.payload = payload;
-            this.type = RESET_PASSWORD_FAIL;
-        }
-        return ResetPasswordFail;
-    }());
-    var ResetPasswordSuccess = /** @class */ (function () {
-        function ResetPasswordSuccess() {
-            this.type = RESET_PASSWORD_SUCCESS;
-        }
-        return ResetPasswordSuccess;
-    }());
-
-    var LOAD_TITLES = '[User] Load Tiltes';
-    var LOAD_TITLES_FAIL = '[User] Load Titles Fail';
-    var LOAD_TITLES_SUCCESS = '[User] Load Titles Success';
-    var LoadTitles = /** @class */ (function () {
-        function LoadTitles() {
-            this.type = LOAD_TITLES;
-        }
-        return LoadTitles;
-    }());
-    var LoadTitlesFail = /** @class */ (function () {
-        function LoadTitlesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_TITLES_FAIL;
-        }
-        return LoadTitlesFail;
-    }());
-    var LoadTitlesSuccess = /** @class */ (function () {
-        function LoadTitlesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_TITLES_SUCCESS;
-        }
-        return LoadTitlesSuccess;
-    }());
-
-    var UPDATE_EMAIL = '[User] Update Email';
-    var UPDATE_EMAIL_ERROR = '[User] Update Email Error';
-    var UPDATE_EMAIL_SUCCESS = '[User] Update Email Success';
-    var RESET_EMAIL = '[User] Reset Email';
-    var UpdateEmailAction = /** @class */ (function (_super) {
-        __extends(UpdateEmailAction, _super);
-        function UpdateEmailAction(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_EMAIL;
-            return _this;
-        }
-        return UpdateEmailAction;
-    }(EntityLoadAction));
-    var UpdateEmailSuccessAction = /** @class */ (function (_super) {
-        __extends(UpdateEmailSuccessAction, _super);
-        function UpdateEmailSuccessAction(newUid) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
-            _this.newUid = newUid;
-            _this.type = UPDATE_EMAIL_SUCCESS;
-            return _this;
-        }
-        return UpdateEmailSuccessAction;
-    }(EntitySuccessAction));
-    var UpdateEmailErrorAction = /** @class */ (function (_super) {
-        __extends(UpdateEmailErrorAction, _super);
-        function UpdateEmailErrorAction(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_EMAIL_ERROR;
-            return _this;
-        }
-        return UpdateEmailErrorAction;
-    }(EntityFailAction));
-    var ResetUpdateEmailAction = /** @class */ (function (_super) {
-        __extends(ResetUpdateEmailAction, _super);
-        function ResetUpdateEmailAction() {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
-            _this.type = RESET_EMAIL;
-            return _this;
-        }
-        return ResetUpdateEmailAction;
-    }(EntityLoaderResetAction));
-
-    var UPDATE_PASSWORD = '[User] Update Password';
-    var UPDATE_PASSWORD_FAIL = '[User] Update Password Fail';
-    var UPDATE_PASSWORD_SUCCESS = '[User] Update Password Success';
-    var UPDATE_PASSWORD_RESET = '[User] Reset Update Password Process State';
-    var UpdatePassword = /** @class */ (function (_super) {
-        __extends(UpdatePassword, _super);
-        function UpdatePassword(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_PASSWORD;
-            return _this;
-        }
-        return UpdatePassword;
-    }(EntityLoadAction));
-    var UpdatePasswordFail = /** @class */ (function (_super) {
-        __extends(UpdatePasswordFail, _super);
-        function UpdatePasswordFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_PASSWORD_FAIL;
-            return _this;
-        }
-        return UpdatePasswordFail;
-    }(EntityFailAction));
-    var UpdatePasswordSuccess = /** @class */ (function (_super) {
-        __extends(UpdatePasswordSuccess, _super);
-        function UpdatePasswordSuccess() {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID) || this;
-            _this.type = UPDATE_PASSWORD_SUCCESS;
-            return _this;
-        }
-        return UpdatePasswordSuccess;
-    }(EntitySuccessAction));
-    var UpdatePasswordReset = /** @class */ (function (_super) {
-        __extends(UpdatePasswordReset, _super);
-        function UpdatePasswordReset() {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID) || this;
-            _this.type = UPDATE_PASSWORD_RESET;
-            return _this;
-        }
-        return UpdatePasswordReset;
-    }(EntityLoaderResetAction));
-
-    var LOAD_USER_ADDRESSES = '[User] Load User Addresses';
-    var LOAD_USER_ADDRESSES_FAIL = '[User] Load User Addresses Fail';
-    var LOAD_USER_ADDRESSES_SUCCESS = '[User] Load User Addresses Success';
-    var ADD_USER_ADDRESS = '[User] Add User Address';
-    var ADD_USER_ADDRESS_FAIL = '[User] Add User Address Fail';
-    var ADD_USER_ADDRESS_SUCCESS = '[User] Add User Address Success';
-    var UPDATE_USER_ADDRESS = '[User] Update User Address';
-    var UPDATE_USER_ADDRESS_FAIL = '[User] Update User Address Fail';
-    var UPDATE_USER_ADDRESS_SUCCESS = '[User] Update User Address Success';
-    var DELETE_USER_ADDRESS = '[User] Delete User Address';
-    var DELETE_USER_ADDRESS_FAIL = '[User] Delete User Address Fail';
-    var DELETE_USER_ADDRESS_SUCCESS = '[User] Delete User Address Success';
-    var LoadUserAddresses = /** @class */ (function (_super) {
-        __extends(LoadUserAddresses, _super);
-        function LoadUserAddresses(payload) {
-            var _this = _super.call(this, USER_ADDRESSES) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_ADDRESSES;
-            return _this;
-        }
-        return LoadUserAddresses;
-    }(LoaderLoadAction));
-    var LoadUserAddressesFail = /** @class */ (function (_super) {
-        __extends(LoadUserAddressesFail, _super);
-        function LoadUserAddressesFail(payload) {
-            var _this = _super.call(this, USER_ADDRESSES, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_ADDRESSES_FAIL;
-            return _this;
-        }
-        return LoadUserAddressesFail;
-    }(LoaderFailAction));
-    var LoadUserAddressesSuccess = /** @class */ (function (_super) {
-        __extends(LoadUserAddressesSuccess, _super);
-        function LoadUserAddressesSuccess(payload) {
-            var _this = _super.call(this, USER_ADDRESSES) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_ADDRESSES_SUCCESS;
-            return _this;
-        }
-        return LoadUserAddressesSuccess;
-    }(LoaderSuccessAction));
-    // Adding address actions
-    var AddUserAddress = /** @class */ (function (_super) {
-        __extends(AddUserAddress, _super);
-        function AddUserAddress(payload) {
-            var _this = _super.call(this, USER_ADDRESSES) || this;
-            _this.payload = payload;
-            _this.type = ADD_USER_ADDRESS;
-            return _this;
-        }
-        return AddUserAddress;
-    }(LoaderLoadAction));
-    var AddUserAddressFail = /** @class */ (function (_super) {
-        __extends(AddUserAddressFail, _super);
-        function AddUserAddressFail(payload) {
-            var _this = _super.call(this, USER_ADDRESSES, payload) || this;
-            _this.payload = payload;
-            _this.type = ADD_USER_ADDRESS_FAIL;
-            return _this;
-        }
-        return AddUserAddressFail;
-    }(LoaderFailAction));
-    var AddUserAddressSuccess = /** @class */ (function (_super) {
-        __extends(AddUserAddressSuccess, _super);
-        function AddUserAddressSuccess(payload) {
-            var _this = _super.call(this, USER_ADDRESSES) || this;
-            _this.payload = payload;
-            _this.type = ADD_USER_ADDRESS_SUCCESS;
-            return _this;
-        }
-        return AddUserAddressSuccess;
-    }(LoaderSuccessAction));
-    // Updating address actions
-    var UpdateUserAddress = /** @class */ (function (_super) {
-        __extends(UpdateUserAddress, _super);
-        function UpdateUserAddress(payload) {
-            var _this = _super.call(this, USER_ADDRESSES) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_USER_ADDRESS;
-            return _this;
-        }
-        return UpdateUserAddress;
-    }(LoaderLoadAction));
-    var UpdateUserAddressFail = /** @class */ (function (_super) {
-        __extends(UpdateUserAddressFail, _super);
-        function UpdateUserAddressFail(payload) {
-            var _this = _super.call(this, USER_ADDRESSES, payload) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_USER_ADDRESS_FAIL;
-            return _this;
-        }
-        return UpdateUserAddressFail;
-    }(LoaderFailAction));
-    var UpdateUserAddressSuccess = /** @class */ (function (_super) {
-        __extends(UpdateUserAddressSuccess, _super);
-        function UpdateUserAddressSuccess(payload) {
-            var _this = _super.call(this, USER_ADDRESSES) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_USER_ADDRESS_SUCCESS;
-            return _this;
-        }
-        return UpdateUserAddressSuccess;
-    }(LoaderSuccessAction));
-    // Deleting address actions
-    var DeleteUserAddress = /** @class */ (function (_super) {
-        __extends(DeleteUserAddress, _super);
-        function DeleteUserAddress(payload) {
-            var _this = _super.call(this, USER_ADDRESSES) || this;
-            _this.payload = payload;
-            _this.type = DELETE_USER_ADDRESS;
-            return _this;
-        }
-        return DeleteUserAddress;
-    }(LoaderLoadAction));
-    var DeleteUserAddressFail = /** @class */ (function (_super) {
-        __extends(DeleteUserAddressFail, _super);
-        function DeleteUserAddressFail(payload) {
-            var _this = _super.call(this, USER_ADDRESSES, payload) || this;
-            _this.payload = payload;
-            _this.type = DELETE_USER_ADDRESS_FAIL;
-            return _this;
-        }
-        return DeleteUserAddressFail;
-    }(LoaderFailAction));
-    var DeleteUserAddressSuccess = /** @class */ (function (_super) {
-        __extends(DeleteUserAddressSuccess, _super);
-        function DeleteUserAddressSuccess(payload) {
-            var _this = _super.call(this, USER_ADDRESSES) || this;
-            _this.payload = payload;
-            _this.type = DELETE_USER_ADDRESS_SUCCESS;
-            return _this;
-        }
-        return DeleteUserAddressSuccess;
-    }(LoaderSuccessAction));
-
-    var LOAD_USER_CONSENTS = '[User] Load User Consents';
-    var LOAD_USER_CONSENTS_SUCCESS = '[User] Load User Consents Success';
-    var LOAD_USER_CONSENTS_FAIL = '[User] Load User Consents Fail';
-    var RESET_LOAD_USER_CONSENTS = '[User] Reset Load User Consents';
-    var GIVE_USER_CONSENT = '[User] Give User Consent';
-    var GIVE_USER_CONSENT_FAIL = '[User] Give User Consent Fail';
-    var GIVE_USER_CONSENT_SUCCESS = '[User] Give User Consent Success';
-    var RESET_GIVE_USER_CONSENT_PROCESS = '[User] Reset Give User Consent Process';
-    var TRANSFER_ANONYMOUS_CONSENT = '[User] Transfer Anonymous Consent';
-    var WITHDRAW_USER_CONSENT = '[User] Withdraw User Consent';
-    var WITHDRAW_USER_CONSENT_FAIL = '[User] Withdraw User Consent Fail';
-    var WITHDRAW_USER_CONSENT_SUCCESS = '[User] Withdraw User Consent Success';
-    var RESET_WITHDRAW_USER_CONSENT_PROCESS = '[User] Reset Withdraw User Consent Process';
-    var LoadUserConsents = /** @class */ (function (_super) {
-        __extends(LoadUserConsents, _super);
-        function LoadUserConsents(payload) {
-            var _this = _super.call(this, USER_CONSENTS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_CONSENTS;
-            return _this;
-        }
-        return LoadUserConsents;
-    }(LoaderLoadAction));
-    var LoadUserConsentsFail = /** @class */ (function (_super) {
-        __extends(LoadUserConsentsFail, _super);
-        function LoadUserConsentsFail(payload) {
-            var _this = _super.call(this, USER_CONSENTS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_CONSENTS_FAIL;
-            return _this;
-        }
-        return LoadUserConsentsFail;
-    }(LoaderFailAction));
-    var LoadUserConsentsSuccess = /** @class */ (function (_super) {
-        __extends(LoadUserConsentsSuccess, _super);
-        function LoadUserConsentsSuccess(payload) {
-            var _this = _super.call(this, USER_CONSENTS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_CONSENTS_SUCCESS;
-            return _this;
-        }
-        return LoadUserConsentsSuccess;
-    }(LoaderSuccessAction));
-    var ResetLoadUserConsents = /** @class */ (function (_super) {
-        __extends(ResetLoadUserConsents, _super);
-        function ResetLoadUserConsents() {
-            var _this = _super.call(this, USER_CONSENTS) || this;
-            _this.type = RESET_LOAD_USER_CONSENTS;
-            return _this;
-        }
-        return ResetLoadUserConsents;
-    }(LoaderResetAction));
-    var GiveUserConsent = /** @class */ (function (_super) {
-        __extends(GiveUserConsent, _super);
-        function GiveUserConsent(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = GIVE_USER_CONSENT;
-            return _this;
-        }
-        return GiveUserConsent;
-    }(EntityLoadAction));
-    var GiveUserConsentFail = /** @class */ (function (_super) {
-        __extends(GiveUserConsentFail, _super);
-        function GiveUserConsentFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID, payload) || this;
-            _this.type = GIVE_USER_CONSENT_FAIL;
-            return _this;
-        }
-        return GiveUserConsentFail;
-    }(EntityFailAction));
-    var GiveUserConsentSuccess = /** @class */ (function (_super) {
-        __extends(GiveUserConsentSuccess, _super);
-        function GiveUserConsentSuccess(consentTemplate) {
-            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
-            _this.consentTemplate = consentTemplate;
-            _this.type = GIVE_USER_CONSENT_SUCCESS;
-            return _this;
-        }
-        return GiveUserConsentSuccess;
-    }(EntitySuccessAction));
-    var ResetGiveUserConsentProcess = /** @class */ (function (_super) {
-        __extends(ResetGiveUserConsentProcess, _super);
-        function ResetGiveUserConsentProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
-            _this.type = RESET_GIVE_USER_CONSENT_PROCESS;
-            return _this;
-        }
-        return ResetGiveUserConsentProcess;
-    }(EntityLoaderResetAction));
-    var TransferAnonymousConsent = /** @class */ (function () {
-        function TransferAnonymousConsent(payload) {
-            this.payload = payload;
-            this.type = TRANSFER_ANONYMOUS_CONSENT;
-        }
-        return TransferAnonymousConsent;
-    }());
-    var WithdrawUserConsent = /** @class */ (function (_super) {
-        __extends(WithdrawUserConsent, _super);
-        function WithdrawUserConsent(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = WITHDRAW_USER_CONSENT;
-            return _this;
-        }
-        return WithdrawUserConsent;
-    }(EntityLoadAction));
-    var WithdrawUserConsentFail = /** @class */ (function (_super) {
-        __extends(WithdrawUserConsentFail, _super);
-        function WithdrawUserConsentFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID, payload) || this;
-            _this.type = WITHDRAW_USER_CONSENT_FAIL;
-            return _this;
-        }
-        return WithdrawUserConsentFail;
-    }(EntityFailAction));
-    var WithdrawUserConsentSuccess = /** @class */ (function (_super) {
-        __extends(WithdrawUserConsentSuccess, _super);
-        function WithdrawUserConsentSuccess() {
-            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
-            _this.type = WITHDRAW_USER_CONSENT_SUCCESS;
-            return _this;
-        }
-        return WithdrawUserConsentSuccess;
-    }(EntitySuccessAction));
-    var ResetWithdrawUserConsentProcess = /** @class */ (function (_super) {
-        __extends(ResetWithdrawUserConsentProcess, _super);
-        function ResetWithdrawUserConsentProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
-            _this.type = RESET_WITHDRAW_USER_CONSENT_PROCESS;
-            return _this;
-        }
-        return ResetWithdrawUserConsentProcess;
-    }(EntityLoaderResetAction));
-
-    var LOAD_USER_DETAILS = '[User] Load User Details';
-    var LOAD_USER_DETAILS_FAIL = '[User] Load User Details Fail';
-    var LOAD_USER_DETAILS_SUCCESS = '[User] Load User Details Success';
-    var UPDATE_USER_DETAILS = '[User] Update User Details';
-    var UPDATE_USER_DETAILS_FAIL = '[User] Update User Details Fail';
-    var UPDATE_USER_DETAILS_SUCCESS = '[User] Update User Details Success';
-    var RESET_USER_DETAILS = '[User] Reset User Details';
-    var LoadUserDetails = /** @class */ (function () {
-        function LoadUserDetails(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_DETAILS;
-        }
-        return LoadUserDetails;
-    }());
-    var LoadUserDetailsFail = /** @class */ (function () {
-        function LoadUserDetailsFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_DETAILS_FAIL;
-        }
-        return LoadUserDetailsFail;
-    }());
-    var LoadUserDetailsSuccess = /** @class */ (function () {
-        function LoadUserDetailsSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_DETAILS_SUCCESS;
-        }
-        return LoadUserDetailsSuccess;
-    }());
-    var UpdateUserDetails = /** @class */ (function (_super) {
-        __extends(UpdateUserDetails, _super);
-        function UpdateUserDetails(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_USER_DETAILS;
-            return _this;
-        }
-        return UpdateUserDetails;
-    }(EntityLoadAction));
-    var UpdateUserDetailsFail = /** @class */ (function (_super) {
-        __extends(UpdateUserDetailsFail, _super);
-        function UpdateUserDetailsFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_USER_DETAILS_FAIL;
-            return _this;
-        }
-        return UpdateUserDetailsFail;
-    }(EntityFailAction));
-    var UpdateUserDetailsSuccess = /** @class */ (function (_super) {
-        __extends(UpdateUserDetailsSuccess, _super);
-        function UpdateUserDetailsSuccess(userUpdates) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID) || this;
-            _this.userUpdates = userUpdates;
-            _this.type = UPDATE_USER_DETAILS_SUCCESS;
-            return _this;
-        }
-        return UpdateUserDetailsSuccess;
-    }(EntitySuccessAction));
-    var ResetUpdateUserDetails = /** @class */ (function (_super) {
-        __extends(ResetUpdateUserDetails, _super);
-        function ResetUpdateUserDetails() {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID) || this;
-            _this.type = RESET_USER_DETAILS;
-            return _this;
-        }
-        return ResetUpdateUserDetails;
-    }(EntityLoaderResetAction));
-
-    var CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
-    var ClearUserMiscsData = /** @class */ (function () {
-        function ClearUserMiscsData() {
-            this.type = CLEAR_USER_MISCS_DATA;
-        }
-        return ClearUserMiscsData;
-    }());
-
-    var LOAD_USER_ORDERS = '[User] Load User Orders';
-    var LOAD_USER_ORDERS_FAIL = '[User] Load User Orders Fail';
-    var LOAD_USER_ORDERS_SUCCESS = '[User] Load User Orders Success';
-    var CLEAR_USER_ORDERS = '[User] Clear User Orders';
-    var LoadUserOrders = /** @class */ (function (_super) {
-        __extends(LoadUserOrders, _super);
-        function LoadUserOrders(payload) {
-            var _this = _super.call(this, USER_ORDERS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_ORDERS;
-            return _this;
-        }
-        return LoadUserOrders;
-    }(LoaderLoadAction));
-    var LoadUserOrdersFail = /** @class */ (function (_super) {
-        __extends(LoadUserOrdersFail, _super);
-        function LoadUserOrdersFail(payload) {
-            var _this = _super.call(this, USER_ORDERS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_ORDERS_FAIL;
-            return _this;
-        }
-        return LoadUserOrdersFail;
-    }(LoaderFailAction));
-    var LoadUserOrdersSuccess = /** @class */ (function (_super) {
-        __extends(LoadUserOrdersSuccess, _super);
-        function LoadUserOrdersSuccess(payload) {
-            var _this = _super.call(this, USER_ORDERS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_USER_ORDERS_SUCCESS;
-            return _this;
-        }
-        return LoadUserOrdersSuccess;
-    }(LoaderSuccessAction));
-    var ClearUserOrders = /** @class */ (function (_super) {
-        __extends(ClearUserOrders, _super);
-        function ClearUserOrders() {
-            var _this = _super.call(this, USER_ORDERS) || this;
-            _this.type = CLEAR_USER_ORDERS;
-            return _this;
-        }
-        return ClearUserOrders;
-    }(LoaderResetAction));
-
-    var REGISTER_USER = '[User] Register User';
-    var REGISTER_USER_FAIL = '[User] Register User Fail';
-    var REGISTER_USER_SUCCESS = '[User] Register User Success';
-    var RESET_REGISTER_USER_PROCESS = '[User] Reset Register User Process';
-    var REGISTER_GUEST = '[User] Register Guest';
-    var REGISTER_GUEST_FAIL = '[User] Register Guest Fail';
-    var REGISTER_GUEST_SUCCESS = '[User] Register Guest Success';
-    var REMOVE_USER = '[User] Remove User';
-    var REMOVE_USER_FAIL = '[User] Remove User Fail';
-    var REMOVE_USER_SUCCESS = '[User] Remove User Success';
-    var REMOVE_USER_RESET = '[User] Reset Remove User Process State';
-    var RegisterUser = /** @class */ (function (_super) {
-        __extends(RegisterUser, _super);
-        function RegisterUser(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = REGISTER_USER;
-            return _this;
-        }
-        return RegisterUser;
-    }(EntityLoadAction));
-    var RegisterUserFail = /** @class */ (function (_super) {
-        __extends(RegisterUserFail, _super);
-        function RegisterUserFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = REGISTER_USER_FAIL;
-            return _this;
-        }
-        return RegisterUserFail;
-    }(EntityFailAction));
-    var RegisterUserSuccess = /** @class */ (function (_super) {
-        __extends(RegisterUserSuccess, _super);
-        function RegisterUserSuccess() {
-            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
-            _this.type = REGISTER_USER_SUCCESS;
-            return _this;
-        }
-        return RegisterUserSuccess;
-    }(EntitySuccessAction));
-    var ResetRegisterUserProcess = /** @class */ (function (_super) {
-        __extends(ResetRegisterUserProcess, _super);
-        function ResetRegisterUserProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
-            _this.type = RESET_REGISTER_USER_PROCESS;
-            return _this;
-        }
-        return ResetRegisterUserProcess;
-    }(EntityLoaderResetAction));
-    var RegisterGuest = /** @class */ (function () {
-        function RegisterGuest(payload) {
-            this.payload = payload;
-            this.type = REGISTER_GUEST;
-        }
-        return RegisterGuest;
-    }());
-    var RegisterGuestFail = /** @class */ (function () {
-        function RegisterGuestFail(payload) {
-            this.payload = payload;
-            this.type = REGISTER_GUEST_FAIL;
-        }
-        return RegisterGuestFail;
-    }());
-    var RegisterGuestSuccess = /** @class */ (function () {
-        function RegisterGuestSuccess() {
-            this.type = REGISTER_GUEST_SUCCESS;
-        }
-        return RegisterGuestSuccess;
-    }());
-    var RemoveUser = /** @class */ (function (_super) {
-        __extends(RemoveUser, _super);
-        function RemoveUser(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_USER;
-            return _this;
-        }
-        return RemoveUser;
-    }(EntityLoadAction));
-    var RemoveUserFail = /** @class */ (function (_super) {
-        __extends(RemoveUserFail, _super);
-        function RemoveUserFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_USER_FAIL;
-            return _this;
-        }
-        return RemoveUserFail;
-    }(EntityFailAction));
-    var RemoveUserSuccess = /** @class */ (function (_super) {
-        __extends(RemoveUserSuccess, _super);
-        function RemoveUserSuccess() {
-            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
-            _this.type = REMOVE_USER_SUCCESS;
-            return _this;
-        }
-        return RemoveUserSuccess;
-    }(EntitySuccessAction));
-    var RemoveUserReset = /** @class */ (function (_super) {
-        __extends(RemoveUserReset, _super);
-        function RemoveUserReset() {
-            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
-            _this.type = REMOVE_USER_RESET;
-            return _this;
-        }
-        return RemoveUserReset;
-    }(EntityLoaderResetAction));
-
-    var LOAD_CUSTOMER_COUPONS = '[User] Load Customer Coupons';
-    var LOAD_CUSTOMER_COUPONS_FAIL = '[User] Load Customer Coupons Fail';
-    var LOAD_CUSTOMER_COUPONS_SUCCESS = '[User] Load Customer Coupons Success';
-    var RESET_LOAD_CUSTOMER_COUPONS = '[User] Reset Load Customer Coupons';
-    var SUBSCRIBE_CUSTOMER_COUPON = '[User] Subscribe Customer Notification Coupon';
-    var SUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Subscribe Customer Coupon Notification Fail';
-    var SUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Subscribe Customer Coupon Notification Success';
-    var RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Subscribe Customer Coupon Process';
-    var UNSUBSCRIBE_CUSTOMER_COUPON = '[User] Unsubscribe Customer Notification Coupon';
-    var UNSUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Unsubscribe Customer Coupon Notification Fail';
-    var UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Unsubscribe Customer Coupon Notification Success';
-    var RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Unsubscribe Customer Coupon Process';
-    var CLAIM_CUSTOMER_COUPON = '[User] Claim Customer';
-    var CLAIM_CUSTOMER_COUPON_FAIL = '[User] Claim Customer Fail';
-    var CLAIM_CUSTOMER_COUPON_SUCCESS = '[User] Claim Customer Success';
-    var LoadCustomerCoupons = /** @class */ (function (_super) {
-        __extends(LoadCustomerCoupons, _super);
-        function LoadCustomerCoupons(payload) {
-            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CUSTOMER_COUPONS;
-            return _this;
-        }
-        return LoadCustomerCoupons;
-    }(LoaderLoadAction));
-    var LoadCustomerCouponsFail = /** @class */ (function (_super) {
-        __extends(LoadCustomerCouponsFail, _super);
-        function LoadCustomerCouponsFail(payload) {
-            var _this = _super.call(this, CUSTOMER_COUPONS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CUSTOMER_COUPONS_FAIL;
-            return _this;
-        }
-        return LoadCustomerCouponsFail;
-    }(LoaderFailAction));
-    var LoadCustomerCouponsSuccess = /** @class */ (function (_super) {
-        __extends(LoadCustomerCouponsSuccess, _super);
-        function LoadCustomerCouponsSuccess(payload) {
-            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CUSTOMER_COUPONS_SUCCESS;
-            return _this;
-        }
-        return LoadCustomerCouponsSuccess;
-    }(LoaderSuccessAction));
-    var ResetLoadCustomerCoupons = /** @class */ (function (_super) {
-        __extends(ResetLoadCustomerCoupons, _super);
-        function ResetLoadCustomerCoupons() {
-            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
-            _this.type = RESET_LOAD_CUSTOMER_COUPONS;
-            return _this;
-        }
-        return ResetLoadCustomerCoupons;
-    }(LoaderResetAction));
-    // Subscribe coupon notification actions
-    var SubscribeCustomerCoupon = /** @class */ (function (_super) {
-        __extends(SubscribeCustomerCoupon, _super);
-        function SubscribeCustomerCoupon(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SUBSCRIBE_CUSTOMER_COUPON;
-            return _this;
-        }
-        return SubscribeCustomerCoupon;
-    }(EntityLoadAction));
-    var SubscribeCustomerCouponFail = /** @class */ (function (_super) {
-        __extends(SubscribeCustomerCouponFail, _super);
-        function SubscribeCustomerCouponFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SUBSCRIBE_CUSTOMER_COUPON_FAIL;
-            return _this;
-        }
-        return SubscribeCustomerCouponFail;
-    }(EntityFailAction));
-    var SubscribeCustomerCouponSuccess = /** @class */ (function (_super) {
-        __extends(SubscribeCustomerCouponSuccess, _super);
-        function SubscribeCustomerCouponSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
-            return _this;
-        }
-        return SubscribeCustomerCouponSuccess;
-    }(EntitySuccessAction));
-    var ResetSubscribeCustomerCouponProcess = /** @class */ (function (_super) {
-        __extends(ResetSubscribeCustomerCouponProcess, _super);
-        function ResetSubscribeCustomerCouponProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
-            _this.type = RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS;
-            return _this;
-        }
-        return ResetSubscribeCustomerCouponProcess;
-    }(EntityLoaderResetAction));
-    var UnsubscribeCustomerCoupon = /** @class */ (function (_super) {
-        __extends(UnsubscribeCustomerCoupon, _super);
-        function UnsubscribeCustomerCoupon(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON;
-            return _this;
-        }
-        return UnsubscribeCustomerCoupon;
-    }(EntityLoadAction));
-    var UnsubscribeCustomerCouponFail = /** @class */ (function (_super) {
-        __extends(UnsubscribeCustomerCouponFail, _super);
-        function UnsubscribeCustomerCouponFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON_FAIL;
-            return _this;
-        }
-        return UnsubscribeCustomerCouponFail;
-    }(EntityFailAction));
-    var UnsubscribeCustomerCouponSuccess = /** @class */ (function (_super) {
-        __extends(UnsubscribeCustomerCouponSuccess, _super);
-        function UnsubscribeCustomerCouponSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
-            return _this;
-        }
-        return UnsubscribeCustomerCouponSuccess;
-    }(EntitySuccessAction));
-    var ResetUnsubscribeCustomerCouponProcess = /** @class */ (function (_super) {
-        __extends(ResetUnsubscribeCustomerCouponProcess, _super);
-        function ResetUnsubscribeCustomerCouponProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
-            _this.type = RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS;
-            return _this;
-        }
-        return ResetUnsubscribeCustomerCouponProcess;
-    }(EntityLoaderResetAction));
-    var ClaimCustomerCoupon = /** @class */ (function (_super) {
-        __extends(ClaimCustomerCoupon, _super);
-        function ClaimCustomerCoupon(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CLAIM_CUSTOMER_COUPON;
-            return _this;
-        }
-        return ClaimCustomerCoupon;
-    }(EntityLoadAction));
-    var ClaimCustomerCouponFail = /** @class */ (function (_super) {
-        __extends(ClaimCustomerCouponFail, _super);
-        function ClaimCustomerCouponFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = CLAIM_CUSTOMER_COUPON_FAIL;
-            return _this;
-        }
-        return ClaimCustomerCouponFail;
-    }(EntityFailAction));
-    var ClaimCustomerCouponSuccess = /** @class */ (function (_super) {
-        __extends(ClaimCustomerCouponSuccess, _super);
-        function ClaimCustomerCouponSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = CLAIM_CUSTOMER_COUPON_SUCCESS;
-            return _this;
-        }
-        return ClaimCustomerCouponSuccess;
-    }(EntitySuccessAction));
-
-    var LOAD_NOTIFICATION_PREFERENCES = '[User] Load Notification Preferences';
-    var LOAD_NOTIFICATION_PREFERENCES_FAIL = '[User] Load Notification Preferences Fail';
-    var LOAD_NOTIFICATION_PREFERENCES_SUCCESS = '[User] Load Notification Preferences Success';
-    var UPDATE_NOTIFICATION_PREFERENCES = '[User] Update Notification Preferences';
-    var UPDATE_NOTIFICATION_PREFERENCES_FAIL = '[User] Update Notification Preferences Fail';
-    var UPDATE_NOTIFICATION_PREFERENCES_SUCCESS = '[User] Update Notification Preferences Success';
-    var RESET_NOTIFICATION_PREFERENCES = '[User] Reset Notification Preferences';
-    var CLEAR_NOTIFICATION_PREFERENCES = '[User] Clear Notification Preferences';
-    var LoadNotificationPreferences = /** @class */ (function (_super) {
-        __extends(LoadNotificationPreferences, _super);
-        function LoadNotificationPreferences(payload) {
-            var _this = _super.call(this, NOTIFICATION_PREFERENCES) || this;
-            _this.payload = payload;
-            _this.type = LOAD_NOTIFICATION_PREFERENCES;
-            return _this;
-        }
-        return LoadNotificationPreferences;
-    }(LoaderLoadAction));
-    var LoadNotificationPreferencesFail = /** @class */ (function (_super) {
-        __extends(LoadNotificationPreferencesFail, _super);
-        function LoadNotificationPreferencesFail(payload) {
-            var _this = _super.call(this, NOTIFICATION_PREFERENCES, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_NOTIFICATION_PREFERENCES_FAIL;
-            return _this;
-        }
-        return LoadNotificationPreferencesFail;
-    }(LoaderFailAction));
-    var LoadNotificationPreferencesSuccess = /** @class */ (function (_super) {
-        __extends(LoadNotificationPreferencesSuccess, _super);
-        function LoadNotificationPreferencesSuccess(payload) {
-            var _this = _super.call(this, NOTIFICATION_PREFERENCES) || this;
-            _this.payload = payload;
-            _this.type = LOAD_NOTIFICATION_PREFERENCES_SUCCESS;
-            return _this;
-        }
-        return LoadNotificationPreferencesSuccess;
-    }(LoaderSuccessAction));
-    var UpdateNotificationPreferences = /** @class */ (function (_super) {
-        __extends(UpdateNotificationPreferences, _super);
-        function UpdateNotificationPreferences(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_NOTIFICATION_PREFERENCES;
-            return _this;
-        }
-        return UpdateNotificationPreferences;
-    }(EntityLoadAction));
-    var UpdateNotificationPreferencesFail = /** @class */ (function (_super) {
-        __extends(UpdateNotificationPreferencesFail, _super);
-        function UpdateNotificationPreferencesFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_NOTIFICATION_PREFERENCES_FAIL;
-            return _this;
-        }
-        return UpdateNotificationPreferencesFail;
-    }(EntityFailAction));
-    var UpdateNotificationPreferencesSuccess = /** @class */ (function (_super) {
-        __extends(UpdateNotificationPreferencesSuccess, _super);
-        function UpdateNotificationPreferencesSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_NOTIFICATION_PREFERENCES_SUCCESS;
-            return _this;
-        }
-        return UpdateNotificationPreferencesSuccess;
-    }(EntitySuccessAction));
-    var ResetNotificationPreferences = /** @class */ (function (_super) {
-        __extends(ResetNotificationPreferences, _super);
-        function ResetNotificationPreferences() {
-            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID) || this;
-            _this.type = RESET_NOTIFICATION_PREFERENCES;
-            return _this;
-        }
-        return ResetNotificationPreferences;
-    }(EntityLoaderResetAction));
-    var ClearNotificationPreferences = /** @class */ (function (_super) {
-        __extends(ClearNotificationPreferences, _super);
-        function ClearNotificationPreferences() {
-            var _this = _super.call(this, NOTIFICATION_PREFERENCES) || this;
-            _this.type = CLEAR_NOTIFICATION_PREFERENCES;
-            return _this;
-        }
-        return ClearNotificationPreferences;
-    }(LoaderResetAction));
-
-    var LOAD_PRODUCT_INTERESTS = 'Load Product Interests';
-    var LOAD_PRODUCT_INTERESTS_FAIL = 'Load Product Interests Fail';
-    var LOAD_PRODUCT_INTERESTS_SUCCESS = 'Load Product Interests Success';
-    var REMOVE_PRODUCT_INTEREST = 'Remove Product Interest';
-    var REMOVE_PRODUCT_INTEREST_SUCCESS = 'Remove Product Interest Success';
-    var REMOVE_PRODUCT_INTEREST_FAIL = 'Remove Product Interest Fail';
-    var ADD_PRODUCT_INTEREST = 'Add Product Interest';
-    var ADD_PRODUCT_INTEREST_FAIL = 'Add Product Interest Fail';
-    var ADD_PRODUCT_INTEREST_SUCCESS = 'Add Product Interest Success';
-    var ADD_PRODUCT_INTEREST_RESET = 'Add Product Interest Reset';
-    var REMOVE_PRODUCT_INTEREST_RESET = 'Remove Product Interest Reset';
-    var CLEAR_PRODUCT_INTERESTS = 'Clear Product Interests';
-    var LoadProductInterests = /** @class */ (function (_super) {
-        __extends(LoadProductInterests, _super);
-        function LoadProductInterests(payload) {
-            var _this = _super.call(this, PRODUCT_INTERESTS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_PRODUCT_INTERESTS;
-            return _this;
-        }
-        return LoadProductInterests;
-    }(LoaderLoadAction));
-    var LoadProductInterestsFail = /** @class */ (function (_super) {
-        __extends(LoadProductInterestsFail, _super);
-        function LoadProductInterestsFail(payload) {
-            var _this = _super.call(this, PRODUCT_INTERESTS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_PRODUCT_INTERESTS_FAIL;
-            return _this;
-        }
-        return LoadProductInterestsFail;
-    }(LoaderFailAction));
-    var LoadProductInterestsSuccess = /** @class */ (function (_super) {
-        __extends(LoadProductInterestsSuccess, _super);
-        function LoadProductInterestsSuccess(payload) {
-            var _this = _super.call(this, PRODUCT_INTERESTS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_PRODUCT_INTERESTS_SUCCESS;
-            return _this;
-        }
-        return LoadProductInterestsSuccess;
-    }(LoaderSuccessAction));
-    var RemoveProductInterest = /** @class */ (function (_super) {
-        __extends(RemoveProductInterest, _super);
-        function RemoveProductInterest(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_PRODUCT_INTEREST;
-            return _this;
-        }
-        return RemoveProductInterest;
-    }(EntityLoadAction));
-    var RemoveProductInterestSuccess = /** @class */ (function (_super) {
-        __extends(RemoveProductInterestSuccess, _super);
-        function RemoveProductInterestSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_PRODUCT_INTEREST_SUCCESS;
-            return _this;
-        }
-        return RemoveProductInterestSuccess;
-    }(EntitySuccessAction));
-    var RemoveProductInterestFail = /** @class */ (function (_super) {
-        __extends(RemoveProductInterestFail, _super);
-        function RemoveProductInterestFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_PRODUCT_INTEREST_FAIL;
-            return _this;
-        }
-        return RemoveProductInterestFail;
-    }(EntityFailAction));
-    var AddProductInterest = /** @class */ (function (_super) {
-        __extends(AddProductInterest, _super);
-        function AddProductInterest(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = ADD_PRODUCT_INTEREST;
-            return _this;
-        }
-        return AddProductInterest;
-    }(EntityLoadAction));
-    var AddProductInterestSuccess = /** @class */ (function (_super) {
-        __extends(AddProductInterestSuccess, _super);
-        function AddProductInterestSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = ADD_PRODUCT_INTEREST_SUCCESS;
-            return _this;
-        }
-        return AddProductInterestSuccess;
-    }(EntitySuccessAction));
-    var AddProductInterestFail = /** @class */ (function (_super) {
-        __extends(AddProductInterestFail, _super);
-        function AddProductInterestFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = ADD_PRODUCT_INTEREST_FAIL;
-            return _this;
-        }
-        return AddProductInterestFail;
-    }(EntityFailAction));
-    var ResetAddInterestState = /** @class */ (function (_super) {
-        __extends(ResetAddInterestState, _super);
-        function ResetAddInterestState() {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID) || this;
-            _this.type = ADD_PRODUCT_INTEREST_RESET;
-            return _this;
-        }
-        return ResetAddInterestState;
-    }(EntityLoaderResetAction));
-    var ResetRemoveInterestState = /** @class */ (function (_super) {
-        __extends(ResetRemoveInterestState, _super);
-        function ResetRemoveInterestState() {
-            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID) || this;
-            _this.type = REMOVE_PRODUCT_INTEREST_RESET;
-            return _this;
-        }
-        return ResetRemoveInterestState;
-    }(EntityLoaderResetAction));
-    var ClearProductInterests = /** @class */ (function (_super) {
-        __extends(ClearProductInterests, _super);
-        function ClearProductInterests() {
-            var _this = _super.call(this, PRODUCT_INTERESTS) || this;
-            _this.type = CLEAR_PRODUCT_INTERESTS;
-            return _this;
-        }
-        return ClearProductInterests;
-    }(LoaderResetAction));
-
-    var CREATE_ORDER_RETURN_REQUEST = '[User] Create Order Return Request';
-    var CREATE_ORDER_RETURN_REQUEST_FAIL = '[User] Create Order Return Request Fail';
-    var CREATE_ORDER_RETURN_REQUEST_SUCCESS = '[User] Create Order Return Request Success';
-    var LOAD_ORDER_RETURN_REQUEST = '[User] Load Order Return Request details';
-    var LOAD_ORDER_RETURN_REQUEST_FAIL = '[User] Load Order Return Request details Fail';
-    var LOAD_ORDER_RETURN_REQUEST_SUCCESS = '[User] Load Order Return Request details Success';
-    var CANCEL_ORDER_RETURN_REQUEST = '[User] Cancel Order Return Request';
-    var CANCEL_ORDER_RETURN_REQUEST_FAIL = '[User] Cancel Order Return Request Fail';
-    var CANCEL_ORDER_RETURN_REQUEST_SUCCESS = '[User] Cancel Order Return Request Success';
-    var LOAD_ORDER_RETURN_REQUEST_LIST = '[User] Load User Order Return Request List';
-    var LOAD_ORDER_RETURN_REQUEST_LIST_FAIL = '[User] Load User Order Return Request List Fail';
-    var LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS = '[User] Load User Order Return Request List Success';
-    var CLEAR_ORDER_RETURN_REQUEST = '[User] Clear Order Return Request Details';
-    var CLEAR_ORDER_RETURN_REQUEST_LIST = '[User] Clear Order Return Request List';
-    var RESET_CANCEL_RETURN_PROCESS = '[User] Reset Cancel Return Request Process';
-    var CreateOrderReturnRequest = /** @class */ (function (_super) {
-        __extends(CreateOrderReturnRequest, _super);
-        function CreateOrderReturnRequest(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = CREATE_ORDER_RETURN_REQUEST;
-            return _this;
-        }
-        return CreateOrderReturnRequest;
-    }(LoaderLoadAction));
-    var CreateOrderReturnRequestFail = /** @class */ (function (_super) {
-        __extends(CreateOrderReturnRequestFail, _super);
-        function CreateOrderReturnRequestFail(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS, payload) || this;
-            _this.payload = payload;
-            _this.type = CREATE_ORDER_RETURN_REQUEST_FAIL;
-            return _this;
-        }
-        return CreateOrderReturnRequestFail;
-    }(LoaderFailAction));
-    var CreateOrderReturnRequestSuccess = /** @class */ (function (_super) {
-        __extends(CreateOrderReturnRequestSuccess, _super);
-        function CreateOrderReturnRequestSuccess(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = CREATE_ORDER_RETURN_REQUEST_SUCCESS;
-            return _this;
-        }
-        return CreateOrderReturnRequestSuccess;
-    }(LoaderSuccessAction));
-    var LoadOrderReturnRequest = /** @class */ (function (_super) {
-        __extends(LoadOrderReturnRequest, _super);
-        function LoadOrderReturnRequest(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_RETURN_REQUEST;
-            return _this;
-        }
-        return LoadOrderReturnRequest;
-    }(LoaderLoadAction));
-    var LoadOrderReturnRequestFail = /** @class */ (function (_super) {
-        __extends(LoadOrderReturnRequestFail, _super);
-        function LoadOrderReturnRequestFail(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_RETURN_REQUEST_FAIL;
-            return _this;
-        }
-        return LoadOrderReturnRequestFail;
-    }(LoaderFailAction));
-    var LoadOrderReturnRequestSuccess = /** @class */ (function (_super) {
-        __extends(LoadOrderReturnRequestSuccess, _super);
-        function LoadOrderReturnRequestSuccess(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_RETURN_REQUEST_SUCCESS;
-            return _this;
-        }
-        return LoadOrderReturnRequestSuccess;
-    }(LoaderSuccessAction));
-    var CancelOrderReturnRequest = /** @class */ (function (_super) {
-        __extends(CancelOrderReturnRequest, _super);
-        function CancelOrderReturnRequest(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CANCEL_ORDER_RETURN_REQUEST;
-            return _this;
-        }
-        return CancelOrderReturnRequest;
-    }(EntityLoadAction));
-    var CancelOrderReturnRequestFail = /** @class */ (function (_super) {
-        __extends(CancelOrderReturnRequestFail, _super);
-        function CancelOrderReturnRequestFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = CANCEL_ORDER_RETURN_REQUEST_FAIL;
-            return _this;
-        }
-        return CancelOrderReturnRequestFail;
-    }(EntityFailAction));
-    var CancelOrderReturnRequestSuccess = /** @class */ (function (_super) {
-        __extends(CancelOrderReturnRequestSuccess, _super);
-        function CancelOrderReturnRequestSuccess() {
-            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
-            _this.type = CANCEL_ORDER_RETURN_REQUEST_SUCCESS;
-            return _this;
-        }
-        return CancelOrderReturnRequestSuccess;
-    }(EntitySuccessAction));
-    var LoadOrderReturnRequestList = /** @class */ (function (_super) {
-        __extends(LoadOrderReturnRequestList, _super);
-        function LoadOrderReturnRequestList(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST;
-            return _this;
-        }
-        return LoadOrderReturnRequestList;
-    }(LoaderLoadAction));
-    var LoadOrderReturnRequestListFail = /** @class */ (function (_super) {
-        __extends(LoadOrderReturnRequestListFail, _super);
-        function LoadOrderReturnRequestListFail(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUESTS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST_FAIL;
-            return _this;
-        }
-        return LoadOrderReturnRequestListFail;
-    }(LoaderFailAction));
-    var LoadOrderReturnRequestListSuccess = /** @class */ (function (_super) {
-        __extends(LoadOrderReturnRequestListSuccess, _super);
-        function LoadOrderReturnRequestListSuccess(payload) {
-            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS;
-            return _this;
-        }
-        return LoadOrderReturnRequestListSuccess;
-    }(LoaderSuccessAction));
-    var ClearOrderReturnRequest = /** @class */ (function (_super) {
-        __extends(ClearOrderReturnRequest, _super);
-        function ClearOrderReturnRequest() {
-            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
-            _this.type = CLEAR_ORDER_RETURN_REQUEST;
-            return _this;
-        }
-        return ClearOrderReturnRequest;
-    }(LoaderResetAction));
-    var ClearOrderReturnRequestList = /** @class */ (function (_super) {
-        __extends(ClearOrderReturnRequestList, _super);
-        function ClearOrderReturnRequestList() {
-            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
-            _this.type = CLEAR_ORDER_RETURN_REQUEST_LIST;
-            return _this;
-        }
-        return ClearOrderReturnRequestList;
-    }(LoaderResetAction));
-    var ResetCancelReturnProcess = /** @class */ (function (_super) {
-        __extends(ResetCancelReturnProcess, _super);
-        function ResetCancelReturnProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
-            _this.type = RESET_CANCEL_RETURN_PROCESS;
-            return _this;
-        }
-        return ResetCancelReturnProcess;
-    }(EntityLoaderResetAction));
-
-    var LOAD_ACTIVE_COST_CENTERS = '[User] Load Active CostCenters';
-    var LOAD_ACTIVE_COST_CENTERS_FAIL = '[User] Load Active CostCenters Fail';
-    var LOAD_ACTIVE_COST_CENTERS_SUCCESS = '[User] Load Active CostCenters Success';
-    var LoadActiveCostCenters = /** @class */ (function (_super) {
-        __extends(LoadActiveCostCenters, _super);
-        function LoadActiveCostCenters(payload) {
-            var _this = _super.call(this, USER_COST_CENTERS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ACTIVE_COST_CENTERS;
-            return _this;
-        }
-        return LoadActiveCostCenters;
-    }(LoaderLoadAction));
-    var LoadActiveCostCentersFail = /** @class */ (function (_super) {
-        __extends(LoadActiveCostCentersFail, _super);
-        function LoadActiveCostCentersFail(payload) {
-            var _this = _super.call(this, USER_COST_CENTERS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ACTIVE_COST_CENTERS_FAIL;
-            return _this;
-        }
-        return LoadActiveCostCentersFail;
-    }(LoaderFailAction));
-    var LoadActiveCostCentersSuccess = /** @class */ (function (_super) {
-        __extends(LoadActiveCostCentersSuccess, _super);
-        function LoadActiveCostCentersSuccess(payload) {
-            var _this = _super.call(this, USER_COST_CENTERS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ACTIVE_COST_CENTERS_SUCCESS;
-            return _this;
-        }
-        return LoadActiveCostCentersSuccess;
-    }(LoaderSuccessAction));
-
-    var userGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        LOAD_BILLING_COUNTRIES: LOAD_BILLING_COUNTRIES,
-        LOAD_BILLING_COUNTRIES_FAIL: LOAD_BILLING_COUNTRIES_FAIL,
-        LOAD_BILLING_COUNTRIES_SUCCESS: LOAD_BILLING_COUNTRIES_SUCCESS,
-        LoadBillingCountries: LoadBillingCountries,
-        LoadBillingCountriesFail: LoadBillingCountriesFail,
-        LoadBillingCountriesSuccess: LoadBillingCountriesSuccess,
-        LOAD_CONSIGNMENT_TRACKING: LOAD_CONSIGNMENT_TRACKING,
-        LOAD_CONSIGNMENT_TRACKING_FAIL: LOAD_CONSIGNMENT_TRACKING_FAIL,
-        LOAD_CONSIGNMENT_TRACKING_SUCCESS: LOAD_CONSIGNMENT_TRACKING_SUCCESS,
-        CLEAR_CONSIGNMENT_TRACKING: CLEAR_CONSIGNMENT_TRACKING,
-        LoadConsignmentTracking: LoadConsignmentTracking,
-        LoadConsignmentTrackingFail: LoadConsignmentTrackingFail,
-        LoadConsignmentTrackingSuccess: LoadConsignmentTrackingSuccess,
-        ClearConsignmentTracking: ClearConsignmentTracking,
-        LOAD_DELIVERY_COUNTRIES: LOAD_DELIVERY_COUNTRIES,
-        LOAD_DELIVERY_COUNTRIES_FAIL: LOAD_DELIVERY_COUNTRIES_FAIL,
-        LOAD_DELIVERY_COUNTRIES_SUCCESS: LOAD_DELIVERY_COUNTRIES_SUCCESS,
-        LoadDeliveryCountries: LoadDeliveryCountries,
-        LoadDeliveryCountriesFail: LoadDeliveryCountriesFail,
-        LoadDeliveryCountriesSuccess: LoadDeliveryCountriesSuccess,
-        FORGOT_PASSWORD_EMAIL_REQUEST: FORGOT_PASSWORD_EMAIL_REQUEST,
-        FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS: FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS,
-        FORGOT_PASSWORD_EMAIL_REQUEST_FAIL: FORGOT_PASSWORD_EMAIL_REQUEST_FAIL,
-        ForgotPasswordEmailRequest: ForgotPasswordEmailRequest,
-        ForgotPasswordEmailRequestFail: ForgotPasswordEmailRequestFail,
-        ForgotPasswordEmailRequestSuccess: ForgotPasswordEmailRequestSuccess,
-        LOAD_ORDER_DETAILS: LOAD_ORDER_DETAILS,
-        LOAD_ORDER_DETAILS_FAIL: LOAD_ORDER_DETAILS_FAIL,
-        LOAD_ORDER_DETAILS_SUCCESS: LOAD_ORDER_DETAILS_SUCCESS,
-        CLEAR_ORDER_DETAILS: CLEAR_ORDER_DETAILS,
-        CANCEL_ORDER: CANCEL_ORDER,
-        CANCEL_ORDER_FAIL: CANCEL_ORDER_FAIL,
-        CANCEL_ORDER_SUCCESS: CANCEL_ORDER_SUCCESS,
-        RESET_CANCEL_ORDER_PROCESS: RESET_CANCEL_ORDER_PROCESS,
-        LoadOrderDetails: LoadOrderDetails,
-        LoadOrderDetailsFail: LoadOrderDetailsFail,
-        LoadOrderDetailsSuccess: LoadOrderDetailsSuccess,
-        ClearOrderDetails: ClearOrderDetails,
-        CancelOrder: CancelOrder,
-        CancelOrderFail: CancelOrderFail,
-        CancelOrderSuccess: CancelOrderSuccess,
-        ResetCancelOrderProcess: ResetCancelOrderProcess,
-        LOAD_USER_PAYMENT_METHODS: LOAD_USER_PAYMENT_METHODS,
-        LOAD_USER_PAYMENT_METHODS_FAIL: LOAD_USER_PAYMENT_METHODS_FAIL,
-        LOAD_USER_PAYMENT_METHODS_SUCCESS: LOAD_USER_PAYMENT_METHODS_SUCCESS,
-        SET_DEFAULT_USER_PAYMENT_METHOD: SET_DEFAULT_USER_PAYMENT_METHOD,
-        SET_DEFAULT_USER_PAYMENT_METHOD_FAIL: SET_DEFAULT_USER_PAYMENT_METHOD_FAIL,
-        SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS: SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS,
-        DELETE_USER_PAYMENT_METHOD: DELETE_USER_PAYMENT_METHOD,
-        DELETE_USER_PAYMENT_METHOD_FAIL: DELETE_USER_PAYMENT_METHOD_FAIL,
-        DELETE_USER_PAYMENT_METHOD_SUCCESS: DELETE_USER_PAYMENT_METHOD_SUCCESS,
-        LoadUserPaymentMethods: LoadUserPaymentMethods,
-        LoadUserPaymentMethodsFail: LoadUserPaymentMethodsFail,
-        LoadUserPaymentMethodsSuccess: LoadUserPaymentMethodsSuccess,
-        SetDefaultUserPaymentMethod: SetDefaultUserPaymentMethod,
-        SetDefaultUserPaymentMethodFail: SetDefaultUserPaymentMethodFail,
-        SetDefaultUserPaymentMethodSuccess: SetDefaultUserPaymentMethodSuccess,
-        DeleteUserPaymentMethod: DeleteUserPaymentMethod,
-        DeleteUserPaymentMethodFail: DeleteUserPaymentMethodFail,
-        DeleteUserPaymentMethodSuccess: DeleteUserPaymentMethodSuccess,
-        LOAD_REGIONS: LOAD_REGIONS,
-        LOAD_REGIONS_SUCCESS: LOAD_REGIONS_SUCCESS,
-        LOAD_REGIONS_FAIL: LOAD_REGIONS_FAIL,
-        CLEAR_REGIONS: CLEAR_REGIONS,
-        LoadRegions: LoadRegions,
-        LoadRegionsFail: LoadRegionsFail,
-        LoadRegionsSuccess: LoadRegionsSuccess,
-        ClearRegions: ClearRegions,
-        RESET_PASSWORD: RESET_PASSWORD,
-        RESET_PASSWORD_SUCCESS: RESET_PASSWORD_SUCCESS,
-        RESET_PASSWORD_FAIL: RESET_PASSWORD_FAIL,
-        ResetPassword: ResetPassword,
-        ResetPasswordFail: ResetPasswordFail,
-        ResetPasswordSuccess: ResetPasswordSuccess,
-        LOAD_TITLES: LOAD_TITLES,
-        LOAD_TITLES_FAIL: LOAD_TITLES_FAIL,
-        LOAD_TITLES_SUCCESS: LOAD_TITLES_SUCCESS,
-        LoadTitles: LoadTitles,
-        LoadTitlesFail: LoadTitlesFail,
-        LoadTitlesSuccess: LoadTitlesSuccess,
-        UPDATE_EMAIL: UPDATE_EMAIL,
-        UPDATE_EMAIL_ERROR: UPDATE_EMAIL_ERROR,
-        UPDATE_EMAIL_SUCCESS: UPDATE_EMAIL_SUCCESS,
-        RESET_EMAIL: RESET_EMAIL,
-        UpdateEmailAction: UpdateEmailAction,
-        UpdateEmailSuccessAction: UpdateEmailSuccessAction,
-        UpdateEmailErrorAction: UpdateEmailErrorAction,
-        ResetUpdateEmailAction: ResetUpdateEmailAction,
-        UPDATE_PASSWORD: UPDATE_PASSWORD,
-        UPDATE_PASSWORD_FAIL: UPDATE_PASSWORD_FAIL,
-        UPDATE_PASSWORD_SUCCESS: UPDATE_PASSWORD_SUCCESS,
-        UPDATE_PASSWORD_RESET: UPDATE_PASSWORD_RESET,
-        UpdatePassword: UpdatePassword,
-        UpdatePasswordFail: UpdatePasswordFail,
-        UpdatePasswordSuccess: UpdatePasswordSuccess,
-        UpdatePasswordReset: UpdatePasswordReset,
-        LOAD_USER_ADDRESSES: LOAD_USER_ADDRESSES,
-        LOAD_USER_ADDRESSES_FAIL: LOAD_USER_ADDRESSES_FAIL,
-        LOAD_USER_ADDRESSES_SUCCESS: LOAD_USER_ADDRESSES_SUCCESS,
-        ADD_USER_ADDRESS: ADD_USER_ADDRESS,
-        ADD_USER_ADDRESS_FAIL: ADD_USER_ADDRESS_FAIL,
-        ADD_USER_ADDRESS_SUCCESS: ADD_USER_ADDRESS_SUCCESS,
-        UPDATE_USER_ADDRESS: UPDATE_USER_ADDRESS,
-        UPDATE_USER_ADDRESS_FAIL: UPDATE_USER_ADDRESS_FAIL,
-        UPDATE_USER_ADDRESS_SUCCESS: UPDATE_USER_ADDRESS_SUCCESS,
-        DELETE_USER_ADDRESS: DELETE_USER_ADDRESS,
-        DELETE_USER_ADDRESS_FAIL: DELETE_USER_ADDRESS_FAIL,
-        DELETE_USER_ADDRESS_SUCCESS: DELETE_USER_ADDRESS_SUCCESS,
-        LoadUserAddresses: LoadUserAddresses,
-        LoadUserAddressesFail: LoadUserAddressesFail,
-        LoadUserAddressesSuccess: LoadUserAddressesSuccess,
-        AddUserAddress: AddUserAddress,
-        AddUserAddressFail: AddUserAddressFail,
-        AddUserAddressSuccess: AddUserAddressSuccess,
-        UpdateUserAddress: UpdateUserAddress,
-        UpdateUserAddressFail: UpdateUserAddressFail,
-        UpdateUserAddressSuccess: UpdateUserAddressSuccess,
-        DeleteUserAddress: DeleteUserAddress,
-        DeleteUserAddressFail: DeleteUserAddressFail,
-        DeleteUserAddressSuccess: DeleteUserAddressSuccess,
-        LOAD_USER_CONSENTS: LOAD_USER_CONSENTS,
-        LOAD_USER_CONSENTS_SUCCESS: LOAD_USER_CONSENTS_SUCCESS,
-        LOAD_USER_CONSENTS_FAIL: LOAD_USER_CONSENTS_FAIL,
-        RESET_LOAD_USER_CONSENTS: RESET_LOAD_USER_CONSENTS,
-        GIVE_USER_CONSENT: GIVE_USER_CONSENT,
-        GIVE_USER_CONSENT_FAIL: GIVE_USER_CONSENT_FAIL,
-        GIVE_USER_CONSENT_SUCCESS: GIVE_USER_CONSENT_SUCCESS,
-        RESET_GIVE_USER_CONSENT_PROCESS: RESET_GIVE_USER_CONSENT_PROCESS,
-        TRANSFER_ANONYMOUS_CONSENT: TRANSFER_ANONYMOUS_CONSENT,
-        WITHDRAW_USER_CONSENT: WITHDRAW_USER_CONSENT,
-        WITHDRAW_USER_CONSENT_FAIL: WITHDRAW_USER_CONSENT_FAIL,
-        WITHDRAW_USER_CONSENT_SUCCESS: WITHDRAW_USER_CONSENT_SUCCESS,
-        RESET_WITHDRAW_USER_CONSENT_PROCESS: RESET_WITHDRAW_USER_CONSENT_PROCESS,
-        LoadUserConsents: LoadUserConsents,
-        LoadUserConsentsFail: LoadUserConsentsFail,
-        LoadUserConsentsSuccess: LoadUserConsentsSuccess,
-        ResetLoadUserConsents: ResetLoadUserConsents,
-        GiveUserConsent: GiveUserConsent,
-        GiveUserConsentFail: GiveUserConsentFail,
-        GiveUserConsentSuccess: GiveUserConsentSuccess,
-        ResetGiveUserConsentProcess: ResetGiveUserConsentProcess,
-        TransferAnonymousConsent: TransferAnonymousConsent,
-        WithdrawUserConsent: WithdrawUserConsent,
-        WithdrawUserConsentFail: WithdrawUserConsentFail,
-        WithdrawUserConsentSuccess: WithdrawUserConsentSuccess,
-        ResetWithdrawUserConsentProcess: ResetWithdrawUserConsentProcess,
-        LOAD_USER_DETAILS: LOAD_USER_DETAILS,
-        LOAD_USER_DETAILS_FAIL: LOAD_USER_DETAILS_FAIL,
-        LOAD_USER_DETAILS_SUCCESS: LOAD_USER_DETAILS_SUCCESS,
-        UPDATE_USER_DETAILS: UPDATE_USER_DETAILS,
-        UPDATE_USER_DETAILS_FAIL: UPDATE_USER_DETAILS_FAIL,
-        UPDATE_USER_DETAILS_SUCCESS: UPDATE_USER_DETAILS_SUCCESS,
-        RESET_USER_DETAILS: RESET_USER_DETAILS,
-        LoadUserDetails: LoadUserDetails,
-        LoadUserDetailsFail: LoadUserDetailsFail,
-        LoadUserDetailsSuccess: LoadUserDetailsSuccess,
-        UpdateUserDetails: UpdateUserDetails,
-        UpdateUserDetailsFail: UpdateUserDetailsFail,
-        UpdateUserDetailsSuccess: UpdateUserDetailsSuccess,
-        ResetUpdateUserDetails: ResetUpdateUserDetails,
-        CLEAR_USER_MISCS_DATA: CLEAR_USER_MISCS_DATA,
-        ClearUserMiscsData: ClearUserMiscsData,
-        LOAD_USER_ORDERS: LOAD_USER_ORDERS,
-        LOAD_USER_ORDERS_FAIL: LOAD_USER_ORDERS_FAIL,
-        LOAD_USER_ORDERS_SUCCESS: LOAD_USER_ORDERS_SUCCESS,
-        CLEAR_USER_ORDERS: CLEAR_USER_ORDERS,
-        LoadUserOrders: LoadUserOrders,
-        LoadUserOrdersFail: LoadUserOrdersFail,
-        LoadUserOrdersSuccess: LoadUserOrdersSuccess,
-        ClearUserOrders: ClearUserOrders,
-        REGISTER_USER: REGISTER_USER,
-        REGISTER_USER_FAIL: REGISTER_USER_FAIL,
-        REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
-        RESET_REGISTER_USER_PROCESS: RESET_REGISTER_USER_PROCESS,
-        REGISTER_GUEST: REGISTER_GUEST,
-        REGISTER_GUEST_FAIL: REGISTER_GUEST_FAIL,
-        REGISTER_GUEST_SUCCESS: REGISTER_GUEST_SUCCESS,
-        REMOVE_USER: REMOVE_USER,
-        REMOVE_USER_FAIL: REMOVE_USER_FAIL,
-        REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
-        REMOVE_USER_RESET: REMOVE_USER_RESET,
-        RegisterUser: RegisterUser,
-        RegisterUserFail: RegisterUserFail,
-        RegisterUserSuccess: RegisterUserSuccess,
-        ResetRegisterUserProcess: ResetRegisterUserProcess,
-        RegisterGuest: RegisterGuest,
-        RegisterGuestFail: RegisterGuestFail,
-        RegisterGuestSuccess: RegisterGuestSuccess,
-        RemoveUser: RemoveUser,
-        RemoveUserFail: RemoveUserFail,
-        RemoveUserSuccess: RemoveUserSuccess,
-        RemoveUserReset: RemoveUserReset,
-        LOAD_CUSTOMER_COUPONS: LOAD_CUSTOMER_COUPONS,
-        LOAD_CUSTOMER_COUPONS_FAIL: LOAD_CUSTOMER_COUPONS_FAIL,
-        LOAD_CUSTOMER_COUPONS_SUCCESS: LOAD_CUSTOMER_COUPONS_SUCCESS,
-        RESET_LOAD_CUSTOMER_COUPONS: RESET_LOAD_CUSTOMER_COUPONS,
-        SUBSCRIBE_CUSTOMER_COUPON: SUBSCRIBE_CUSTOMER_COUPON,
-        SUBSCRIBE_CUSTOMER_COUPON_FAIL: SUBSCRIBE_CUSTOMER_COUPON_FAIL,
-        SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: SUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
-        RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS,
-        UNSUBSCRIBE_CUSTOMER_COUPON: UNSUBSCRIBE_CUSTOMER_COUPON,
-        UNSUBSCRIBE_CUSTOMER_COUPON_FAIL: UNSUBSCRIBE_CUSTOMER_COUPON_FAIL,
-        UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
-        RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS,
-        CLAIM_CUSTOMER_COUPON: CLAIM_CUSTOMER_COUPON,
-        CLAIM_CUSTOMER_COUPON_FAIL: CLAIM_CUSTOMER_COUPON_FAIL,
-        CLAIM_CUSTOMER_COUPON_SUCCESS: CLAIM_CUSTOMER_COUPON_SUCCESS,
-        LoadCustomerCoupons: LoadCustomerCoupons,
-        LoadCustomerCouponsFail: LoadCustomerCouponsFail,
-        LoadCustomerCouponsSuccess: LoadCustomerCouponsSuccess,
-        ResetLoadCustomerCoupons: ResetLoadCustomerCoupons,
-        SubscribeCustomerCoupon: SubscribeCustomerCoupon,
-        SubscribeCustomerCouponFail: SubscribeCustomerCouponFail,
-        SubscribeCustomerCouponSuccess: SubscribeCustomerCouponSuccess,
-        ResetSubscribeCustomerCouponProcess: ResetSubscribeCustomerCouponProcess,
-        UnsubscribeCustomerCoupon: UnsubscribeCustomerCoupon,
-        UnsubscribeCustomerCouponFail: UnsubscribeCustomerCouponFail,
-        UnsubscribeCustomerCouponSuccess: UnsubscribeCustomerCouponSuccess,
-        ResetUnsubscribeCustomerCouponProcess: ResetUnsubscribeCustomerCouponProcess,
-        ClaimCustomerCoupon: ClaimCustomerCoupon,
-        ClaimCustomerCouponFail: ClaimCustomerCouponFail,
-        ClaimCustomerCouponSuccess: ClaimCustomerCouponSuccess,
-        LOAD_NOTIFICATION_PREFERENCES: LOAD_NOTIFICATION_PREFERENCES,
-        LOAD_NOTIFICATION_PREFERENCES_FAIL: LOAD_NOTIFICATION_PREFERENCES_FAIL,
-        LOAD_NOTIFICATION_PREFERENCES_SUCCESS: LOAD_NOTIFICATION_PREFERENCES_SUCCESS,
-        UPDATE_NOTIFICATION_PREFERENCES: UPDATE_NOTIFICATION_PREFERENCES,
-        UPDATE_NOTIFICATION_PREFERENCES_FAIL: UPDATE_NOTIFICATION_PREFERENCES_FAIL,
-        UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: UPDATE_NOTIFICATION_PREFERENCES_SUCCESS,
-        RESET_NOTIFICATION_PREFERENCES: RESET_NOTIFICATION_PREFERENCES,
-        CLEAR_NOTIFICATION_PREFERENCES: CLEAR_NOTIFICATION_PREFERENCES,
-        LoadNotificationPreferences: LoadNotificationPreferences,
-        LoadNotificationPreferencesFail: LoadNotificationPreferencesFail,
-        LoadNotificationPreferencesSuccess: LoadNotificationPreferencesSuccess,
-        UpdateNotificationPreferences: UpdateNotificationPreferences,
-        UpdateNotificationPreferencesFail: UpdateNotificationPreferencesFail,
-        UpdateNotificationPreferencesSuccess: UpdateNotificationPreferencesSuccess,
-        ResetNotificationPreferences: ResetNotificationPreferences,
-        ClearNotificationPreferences: ClearNotificationPreferences,
-        LOAD_PRODUCT_INTERESTS: LOAD_PRODUCT_INTERESTS,
-        LOAD_PRODUCT_INTERESTS_FAIL: LOAD_PRODUCT_INTERESTS_FAIL,
-        LOAD_PRODUCT_INTERESTS_SUCCESS: LOAD_PRODUCT_INTERESTS_SUCCESS,
-        REMOVE_PRODUCT_INTEREST: REMOVE_PRODUCT_INTEREST,
-        REMOVE_PRODUCT_INTEREST_SUCCESS: REMOVE_PRODUCT_INTEREST_SUCCESS,
-        REMOVE_PRODUCT_INTEREST_FAIL: REMOVE_PRODUCT_INTEREST_FAIL,
-        ADD_PRODUCT_INTEREST: ADD_PRODUCT_INTEREST,
-        ADD_PRODUCT_INTEREST_FAIL: ADD_PRODUCT_INTEREST_FAIL,
-        ADD_PRODUCT_INTEREST_SUCCESS: ADD_PRODUCT_INTEREST_SUCCESS,
-        ADD_PRODUCT_INTEREST_RESET: ADD_PRODUCT_INTEREST_RESET,
-        REMOVE_PRODUCT_INTEREST_RESET: REMOVE_PRODUCT_INTEREST_RESET,
-        CLEAR_PRODUCT_INTERESTS: CLEAR_PRODUCT_INTERESTS,
-        LoadProductInterests: LoadProductInterests,
-        LoadProductInterestsFail: LoadProductInterestsFail,
-        LoadProductInterestsSuccess: LoadProductInterestsSuccess,
-        RemoveProductInterest: RemoveProductInterest,
-        RemoveProductInterestSuccess: RemoveProductInterestSuccess,
-        RemoveProductInterestFail: RemoveProductInterestFail,
-        AddProductInterest: AddProductInterest,
-        AddProductInterestSuccess: AddProductInterestSuccess,
-        AddProductInterestFail: AddProductInterestFail,
-        ResetAddInterestState: ResetAddInterestState,
-        ResetRemoveInterestState: ResetRemoveInterestState,
-        ClearProductInterests: ClearProductInterests,
-        CREATE_ORDER_RETURN_REQUEST: CREATE_ORDER_RETURN_REQUEST,
-        CREATE_ORDER_RETURN_REQUEST_FAIL: CREATE_ORDER_RETURN_REQUEST_FAIL,
-        CREATE_ORDER_RETURN_REQUEST_SUCCESS: CREATE_ORDER_RETURN_REQUEST_SUCCESS,
-        LOAD_ORDER_RETURN_REQUEST: LOAD_ORDER_RETURN_REQUEST,
-        LOAD_ORDER_RETURN_REQUEST_FAIL: LOAD_ORDER_RETURN_REQUEST_FAIL,
-        LOAD_ORDER_RETURN_REQUEST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_SUCCESS,
-        CANCEL_ORDER_RETURN_REQUEST: CANCEL_ORDER_RETURN_REQUEST,
-        CANCEL_ORDER_RETURN_REQUEST_FAIL: CANCEL_ORDER_RETURN_REQUEST_FAIL,
-        CANCEL_ORDER_RETURN_REQUEST_SUCCESS: CANCEL_ORDER_RETURN_REQUEST_SUCCESS,
-        LOAD_ORDER_RETURN_REQUEST_LIST: LOAD_ORDER_RETURN_REQUEST_LIST,
-        LOAD_ORDER_RETURN_REQUEST_LIST_FAIL: LOAD_ORDER_RETURN_REQUEST_LIST_FAIL,
-        LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS,
-        CLEAR_ORDER_RETURN_REQUEST: CLEAR_ORDER_RETURN_REQUEST,
-        CLEAR_ORDER_RETURN_REQUEST_LIST: CLEAR_ORDER_RETURN_REQUEST_LIST,
-        RESET_CANCEL_RETURN_PROCESS: RESET_CANCEL_RETURN_PROCESS,
-        CreateOrderReturnRequest: CreateOrderReturnRequest,
-        CreateOrderReturnRequestFail: CreateOrderReturnRequestFail,
-        CreateOrderReturnRequestSuccess: CreateOrderReturnRequestSuccess,
-        LoadOrderReturnRequest: LoadOrderReturnRequest,
-        LoadOrderReturnRequestFail: LoadOrderReturnRequestFail,
-        LoadOrderReturnRequestSuccess: LoadOrderReturnRequestSuccess,
-        CancelOrderReturnRequest: CancelOrderReturnRequest,
-        CancelOrderReturnRequestFail: CancelOrderReturnRequestFail,
-        CancelOrderReturnRequestSuccess: CancelOrderReturnRequestSuccess,
-        LoadOrderReturnRequestList: LoadOrderReturnRequestList,
-        LoadOrderReturnRequestListFail: LoadOrderReturnRequestListFail,
-        LoadOrderReturnRequestListSuccess: LoadOrderReturnRequestListSuccess,
-        ClearOrderReturnRequest: ClearOrderReturnRequest,
-        ClearOrderReturnRequestList: ClearOrderReturnRequestList,
-        ResetCancelReturnProcess: ResetCancelReturnProcess,
-        LOAD_ACTIVE_COST_CENTERS: LOAD_ACTIVE_COST_CENTERS,
-        LOAD_ACTIVE_COST_CENTERS_FAIL: LOAD_ACTIVE_COST_CENTERS_FAIL,
-        LOAD_ACTIVE_COST_CENTERS_SUCCESS: LOAD_ACTIVE_COST_CENTERS_SUCCESS,
-        LoadActiveCostCenters: LoadActiveCostCenters,
-        LoadActiveCostCentersFail: LoadActiveCostCentersFail,
-        LoadActiveCostCentersSuccess: LoadActiveCostCentersSuccess
-    });
-
     var getUserState = i1$1.createFeatureSelector(USER_FEATURE);
 
-    var ɵ0$b = function (state) { return state.billingCountries; };
-    var getBillingCountriesState = i1$1.createSelector(getUserState, ɵ0$b);
-    var ɵ1$7 = function (state) { return state.entities; };
-    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, ɵ1$7);
-    var ɵ2$3 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
-    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, ɵ2$3);
+    var ɵ0$h = function (state) { return state.billingCountries; };
+    var getBillingCountriesState = i1$1.createSelector(getUserState, ɵ0$h);
+    var ɵ1$b = function (state) { return state.entities; };
+    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, ɵ1$b);
+    var ɵ2$5 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, ɵ2$5);
 
-    var ɵ0$c = function (state) { return state.consignmentTracking; };
-    var getConsignmentTrackingState = i1$1.createSelector(getUserState, ɵ0$c);
-    var ɵ1$8 = function (state) { return state.tracking; };
-    var getConsignmentTracking = i1$1.createSelector(getConsignmentTrackingState, ɵ1$8);
+    var ɵ0$i = function (state) { return state.consignmentTracking; };
+    var getConsignmentTrackingState = i1$1.createSelector(getUserState, ɵ0$i);
+    var ɵ1$c = function (state) { return state.tracking; };
+    var getConsignmentTracking = i1$1.createSelector(getConsignmentTrackingState, ɵ1$c);
 
-    var ɵ0$d = function (state) { return state.countries; };
-    var getDeliveryCountriesState = i1$1.createSelector(getUserState, ɵ0$d);
-    var ɵ1$9 = function (state) { return state.entities; };
-    var getDeliveryCountriesEntites = i1$1.createSelector(getDeliveryCountriesState, ɵ1$9);
-    var ɵ2$4 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
-    var getAllDeliveryCountries = i1$1.createSelector(getDeliveryCountriesEntites, ɵ2$4);
+    var ɵ0$j = function (state) { return state.customerCoupons; };
+    var getCustomerCouponsState = i1$1.createSelector(getUserState, ɵ0$j);
+    var ɵ1$d = function (state) { return loaderSuccessSelector(state); };
+    var getCustomerCouponsLoaded = i1$1.createSelector(getCustomerCouponsState, ɵ1$d);
+    var ɵ2$6 = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerCouponsLoading = i1$1.createSelector(getCustomerCouponsState, ɵ2$6);
+    var ɵ3$4 = function (state) { return loaderValueSelector(state); };
+    var getCustomerCoupons = i1$1.createSelector(getCustomerCouponsState, ɵ3$4);
+
+    var ɵ0$k = function (state) { return state.countries; };
+    var getDeliveryCountriesState = i1$1.createSelector(getUserState, ɵ0$k);
+    var ɵ1$e = function (state) { return state.entities; };
+    var getDeliveryCountriesEntites = i1$1.createSelector(getDeliveryCountriesState, ɵ1$e);
+    var ɵ2$7 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+    var getAllDeliveryCountries = i1$1.createSelector(getDeliveryCountriesEntites, ɵ2$7);
     var countrySelectorFactory = function (isocode) { return i1$1.createSelector(getDeliveryCountriesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[isocode] : null; }); };
 
-    var ɵ0$e = function (state) { return state.order; };
-    var getOrderState = i1$1.createSelector(getUserState, ɵ0$e);
-    var ɵ1$a = function (state) { return loaderValueSelector(state); };
-    var getOrderDetails = i1$1.createSelector(getOrderState, ɵ1$a);
+    var ɵ0$l = function (state) { return state.notificationPreferences; };
+    var getPreferencesLoaderState = i1$1.createSelector(getUserState, ɵ0$l);
+    var ɵ1$f = function (state) { return loaderValueSelector(state); };
+    var getPreferences = i1$1.createSelector(getPreferencesLoaderState, ɵ1$f);
+    var ɵ2$8 = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
+    var getEnabledPreferences = i1$1.createSelector(getPreferencesLoaderState, ɵ2$8);
+    var ɵ3$5 = function (state) { return loaderLoadingSelector(state); };
+    var getPreferencesLoading = i1$1.createSelector(getPreferencesLoaderState, ɵ3$5);
 
-    var ɵ0$f = function (state) { return state.orderReturn; };
-    var getOrderReturnRequestState = i1$1.createSelector(getUserState, ɵ0$f);
-    var ɵ1$b = function (state) { return loaderValueSelector(state); };
-    var getOrderReturnRequest = i1$1.createSelector(getOrderReturnRequestState, ɵ1$b);
-    var ɵ2$5 = function (state) { return loaderLoadingSelector(state); };
-    var getOrderReturnRequestLoading = i1$1.createSelector(getOrderReturnRequestState, ɵ2$5);
-    var ɵ3$3 = function (state) { return loaderSuccessSelector(state) &&
+    var ɵ0$m = function (state) { return state.order; };
+    var getOrderState = i1$1.createSelector(getUserState, ɵ0$m);
+    var ɵ1$g = function (state) { return loaderValueSelector(state); };
+    var getOrderDetails = i1$1.createSelector(getOrderState, ɵ1$g);
+
+    var ɵ0$n = function (state) { return state.orderReturn; };
+    var getOrderReturnRequestState = i1$1.createSelector(getUserState, ɵ0$n);
+    var ɵ1$h = function (state) { return loaderValueSelector(state); };
+    var getOrderReturnRequest = i1$1.createSelector(getOrderReturnRequestState, ɵ1$h);
+    var ɵ2$9 = function (state) { return loaderLoadingSelector(state); };
+    var getOrderReturnRequestLoading = i1$1.createSelector(getOrderReturnRequestState, ɵ2$9);
+    var ɵ3$6 = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getOrderReturnRequestSuccess = i1$1.createSelector(getOrderReturnRequestState, ɵ3$3);
-    var ɵ4$1 = function (state) { return state.orderReturnList; };
-    var getOrderReturnRequestListState = i1$1.createSelector(getUserState, ɵ4$1);
-    var ɵ5 = function (state) { return loaderValueSelector(state); };
-    var getOrderReturnRequestList = i1$1.createSelector(getOrderReturnRequestListState, ɵ5);
+    var getOrderReturnRequestSuccess = i1$1.createSelector(getOrderReturnRequestState, ɵ3$6);
+    var ɵ4$2 = function (state) { return state.orderReturnList; };
+    var getOrderReturnRequestListState = i1$1.createSelector(getUserState, ɵ4$2);
+    var ɵ5$1 = function (state) { return loaderValueSelector(state); };
+    var getOrderReturnRequestList = i1$1.createSelector(getOrderReturnRequestListState, ɵ5$1);
 
-    var ɵ0$g = function (state) { return state.payments; };
-    var getPaymentMethodsState = i1$1.createSelector(getUserState, ɵ0$g);
-    var ɵ1$c = function (state) { return loaderValueSelector(state); };
-    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, ɵ1$c);
-    var ɵ2$6 = function (state) { return loaderLoadingSelector(state); };
-    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, ɵ2$6);
-    var ɵ3$4 = function (state) { return loaderSuccessSelector(state) &&
+    var ɵ0$o = function (state) { return state.payments; };
+    var getPaymentMethodsState = i1$1.createSelector(getUserState, ɵ0$o);
+    var ɵ1$i = function (state) { return loaderValueSelector(state); };
+    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, ɵ1$i);
+    var ɵ2$a = function (state) { return loaderLoadingSelector(state); };
+    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, ɵ2$a);
+    var ɵ3$7 = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getPaymentMethodsLoadedSuccess = i1$1.createSelector(getPaymentMethodsState, ɵ3$4);
+    var getPaymentMethodsLoadedSuccess = i1$1.createSelector(getPaymentMethodsState, ɵ3$7);
 
-    var ɵ0$h = function (state) { return state.regions; };
-    var getRegionsLoaderState = i1$1.createSelector(getUserState, ɵ0$h);
-    var ɵ1$d = function (state) {
+    var ɵ0$p = function (state) { return state.productInterests; };
+    var getInterestsState = i1$1.createSelector(getUserState, ɵ0$p);
+    var ɵ1$j = function (state) { return loaderValueSelector(state); };
+    var getInterests = i1$1.createSelector(getInterestsState, ɵ1$j);
+    var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
+    var getInterestsLoading = i1$1.createSelector(getInterestsState, ɵ2$b);
+
+    var ɵ0$q = function (state) { return state.regions; };
+    var getRegionsLoaderState = i1$1.createSelector(getUserState, ɵ0$q);
+    var ɵ1$k = function (state) {
         return loaderValueSelector(state).entities;
     };
-    var getAllRegions = i1$1.createSelector(getRegionsLoaderState, ɵ1$d);
-    var ɵ2$7 = function (state) { return ({
+    var getAllRegions = i1$1.createSelector(getRegionsLoaderState, ɵ1$k);
+    var ɵ2$c = function (state) { return ({
         loaded: loaderSuccessSelector(state),
         loading: loaderLoadingSelector(state),
         regions: loaderValueSelector(state).entities,
         country: loaderValueSelector(state).country,
     }); };
-    var getRegionsDataAndLoading = i1$1.createSelector(getRegionsLoaderState, ɵ2$7);
-    var ɵ3$5 = function (state) { return loaderValueSelector(state).country; };
-    var getRegionsCountry = i1$1.createSelector(getRegionsLoaderState, ɵ3$5);
-    var ɵ4$2 = function (state) { return loaderLoadingSelector(state); };
-    var getRegionsLoading = i1$1.createSelector(getRegionsLoaderState, ɵ4$2);
-    var ɵ5$1 = function (state) { return loaderSuccessSelector(state); };
-    var getRegionsLoaded = i1$1.createSelector(getRegionsLoaderState, ɵ5$1);
+    var getRegionsDataAndLoading = i1$1.createSelector(getRegionsLoaderState, ɵ2$c);
+    var ɵ3$8 = function (state) { return loaderValueSelector(state).country; };
+    var getRegionsCountry = i1$1.createSelector(getRegionsLoaderState, ɵ3$8);
+    var ɵ4$3 = function (state) { return loaderLoadingSelector(state); };
+    var getRegionsLoading = i1$1.createSelector(getRegionsLoaderState, ɵ4$3);
+    var ɵ5$2 = function (state) { return loaderSuccessSelector(state); };
+    var getRegionsLoaded = i1$1.createSelector(getRegionsLoaderState, ɵ5$2);
 
-    var ɵ0$i = function (state) { return state.resetPassword; };
-    var getResetPassword = i1$1.createSelector(getUserState, ɵ0$i);
+    var ɵ0$r = function (state) { return state.replenishmentOrder; };
+    var getReplenishmentOrderState = i1$1.createSelector(getUserState, ɵ0$r);
+    var ɵ1$l = function (state) { return loaderValueSelector(state); };
+    var getReplenishmentOrderDetailsValue = i1$1.createSelector(getReplenishmentOrderState, ɵ1$l);
+    var ɵ2$d = function (state) { return loaderLoadingSelector(state); };
+    var getReplenishmentOrderDetailsLoading = i1$1.createSelector(getReplenishmentOrderState, ɵ2$d);
+    var ɵ3$9 = function (state) { return loaderSuccessSelector(state); };
+    var getReplenishmentOrderDetailsSuccess = i1$1.createSelector(getReplenishmentOrderState, ɵ3$9);
+    var ɵ4$4 = function (state) { return loaderErrorSelector(state); };
+    var getReplenishmentOrderDetailsError = i1$1.createSelector(getReplenishmentOrderState, ɵ4$4);
 
-    var ɵ0$j = function (state) { return state.titles; };
-    var getTitlesState = i1$1.createSelector(getUserState, ɵ0$j);
-    var ɵ1$e = function (state) { return state.entities; };
-    var getTitlesEntites = i1$1.createSelector(getTitlesState, ɵ1$e);
-    var ɵ2$8 = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
-    var getAllTitles = i1$1.createSelector(getTitlesEntites, ɵ2$8);
+    var ɵ0$s = function (state) { return state.resetPassword; };
+    var getResetPassword = i1$1.createSelector(getUserState, ɵ0$s);
+
+    var ɵ0$t = function (state) { return state.titles; };
+    var getTitlesState = i1$1.createSelector(getUserState, ɵ0$t);
+    var ɵ1$m = function (state) { return state.entities; };
+    var getTitlesEntites = i1$1.createSelector(getTitlesState, ɵ1$m);
+    var ɵ2$e = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
+    var getAllTitles = i1$1.createSelector(getTitlesEntites, ɵ2$e);
     var titleSelectorFactory = function (code) { return i1$1.createSelector(getTitlesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[code] : null; }); };
 
-    var ɵ0$k = function (state) { return state.addresses; };
-    var getAddressesLoaderState = i1$1.createSelector(getUserState, ɵ0$k);
-    var ɵ1$f = function (state) { return loaderValueSelector(state); };
-    var getAddresses = i1$1.createSelector(getAddressesLoaderState, ɵ1$f);
-    var ɵ2$9 = function (state) { return loaderLoadingSelector(state); };
-    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, ɵ2$9);
-    var ɵ3$6 = function (state) { return loaderSuccessSelector(state) &&
+    var ɵ0$u = function (state) { return state.addresses; };
+    var getAddressesLoaderState = i1$1.createSelector(getUserState, ɵ0$u);
+    var ɵ1$n = function (state) { return loaderValueSelector(state); };
+    var getAddresses = i1$1.createSelector(getAddressesLoaderState, ɵ1$n);
+    var ɵ2$f = function (state) { return loaderLoadingSelector(state); };
+    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, ɵ2$f);
+    var ɵ3$a = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getAddressesLoadedSuccess = i1$1.createSelector(getAddressesLoaderState, ɵ3$6);
+    var getAddressesLoadedSuccess = i1$1.createSelector(getAddressesLoaderState, ɵ3$a);
 
-    var ɵ0$l = function (state) { return state.consents; };
-    var getConsentsState = i1$1.createSelector(getUserState, ɵ0$l);
+    var ɵ0$v = function (state) { return state.consents; };
+    var getConsentsState = i1$1.createSelector(getUserState, ɵ0$v);
     var getConsentsValue = i1$1.createSelector(getConsentsState, loaderValueSelector);
     var getConsentByTemplateId = function (templateId) { return i1$1.createSelector(getConsentsValue, function (templates) { return templates.find(function (template) { return template.id === templateId; }); }); };
     var getConsentsLoading = i1$1.createSelector(getConsentsState, loaderLoadingSelector);
     var getConsentsSuccess = i1$1.createSelector(getConsentsState, loaderSuccessSelector);
     var getConsentsError = i1$1.createSelector(getConsentsState, loaderErrorSelector);
 
-    var ɵ0$m = function (state) { return state.account; };
-    var getDetailsState = i1$1.createSelector(getUserState, ɵ0$m);
-    var ɵ1$g = function (state) { return state.details; };
-    var getDetails = i1$1.createSelector(getDetailsState, ɵ1$g);
+    var ɵ0$w = function (state) { return state.costCenters; };
+    var getCostCentersState = i1$1.createSelector(getUserState, ɵ0$w);
+    var ɵ1$o = function (state) { return loaderValueSelector(state); };
+    var getCostCenters = i1$1.createSelector(getCostCentersState, ɵ1$o);
 
-    var ɵ0$n = function (state) { return state.orders; };
-    var getOrdersState = i1$1.createSelector(getUserState, ɵ0$n);
-    var ɵ1$h = function (state) { return loaderSuccessSelector(state); };
-    var getOrdersLoaded = i1$1.createSelector(getOrdersState, ɵ1$h);
-    var ɵ2$a = function (state) { return loaderValueSelector(state); };
-    var getOrders = i1$1.createSelector(getOrdersState, ɵ2$a);
+    var ɵ0$x = function (state) { return state.account; };
+    var getDetailsState = i1$1.createSelector(getUserState, ɵ0$x);
+    var ɵ1$p = function (state) { return state.details; };
+    var getDetails = i1$1.createSelector(getDetailsState, ɵ1$p);
 
-    var ɵ0$o = function (state) { return state.customerCoupons; };
-    var getCustomerCouponsState = i1$1.createSelector(getUserState, ɵ0$o);
-    var ɵ1$i = function (state) { return loaderSuccessSelector(state); };
-    var getCustomerCouponsLoaded = i1$1.createSelector(getCustomerCouponsState, ɵ1$i);
-    var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerCouponsLoading = i1$1.createSelector(getCustomerCouponsState, ɵ2$b);
-    var ɵ3$7 = function (state) { return loaderValueSelector(state); };
-    var getCustomerCoupons = i1$1.createSelector(getCustomerCouponsState, ɵ3$7);
+    var ɵ0$y = function (state) { return state.orders; };
+    var getOrdersState = i1$1.createSelector(getUserState, ɵ0$y);
+    var ɵ1$q = function (state) { return loaderSuccessSelector(state); };
+    var getOrdersLoaded = i1$1.createSelector(getOrdersState, ɵ1$q);
+    var ɵ2$g = function (state) { return loaderValueSelector(state); };
+    var getOrders = i1$1.createSelector(getOrdersState, ɵ2$g);
 
-    var ɵ0$p = function (state) { return state.notificationPreferences; };
-    var getPreferencesLoaderState = i1$1.createSelector(getUserState, ɵ0$p);
-    var ɵ1$j = function (state) { return loaderValueSelector(state); };
-    var getPreferences = i1$1.createSelector(getPreferencesLoaderState, ɵ1$j);
-    var ɵ2$c = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
-    var getEnabledPreferences = i1$1.createSelector(getPreferencesLoaderState, ɵ2$c);
-    var ɵ3$8 = function (state) { return loaderLoadingSelector(state); };
-    var getPreferencesLoading = i1$1.createSelector(getPreferencesLoaderState, ɵ3$8);
-
-    var ɵ0$q = function (state) { return state.productInterests; };
-    var getInterestsState = i1$1.createSelector(getUserState, ɵ0$q);
-    var ɵ1$k = function (state) { return loaderValueSelector(state); };
-    var getInterests = i1$1.createSelector(getInterestsState, ɵ1$k);
-    var ɵ2$d = function (state) { return loaderLoadingSelector(state); };
-    var getInterestsLoading = i1$1.createSelector(getInterestsState, ɵ2$d);
-
-    var ɵ0$r = function (state) { return state.costCenters; };
-    var getCostCentersState = i1$1.createSelector(getUserState, ɵ0$r);
-    var ɵ1$l = function (state) { return loaderValueSelector(state); };
-    var getCostCenters = i1$1.createSelector(getCostCentersState, ɵ1$l);
+    var ɵ0$z = function (state) { return state.replenishmentOrders; };
+    var getReplenishmentOrdersState = i1$1.createSelector(getUserState, ɵ0$z);
+    var ɵ1$r = function (state) { return loaderValueSelector(state); };
+    var getReplenishmentOrders = i1$1.createSelector(getReplenishmentOrdersState, ɵ1$r);
+    var ɵ2$h = function (state) { return loaderLoadingSelector(state); };
+    var getReplenishmentOrdersLoading = i1$1.createSelector(getReplenishmentOrdersState, ɵ2$h);
+    var ɵ3$b = function (state) { return loaderErrorSelector(state); };
+    var getReplenishmentOrdersError = i1$1.createSelector(getReplenishmentOrdersState, ɵ3$b);
+    var ɵ4$5 = function (state) { return loaderSuccessSelector(state); };
+    var getReplenishmentOrdersSuccess = i1$1.createSelector(getReplenishmentOrdersState, ɵ4$5);
 
     var usersGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getBillingCountriesState: getBillingCountriesState,
         getBillingCountriesEntites: getBillingCountriesEntites,
         getAllBillingCountries: getAllBillingCountries,
-        ɵ0: ɵ0$b,
-        ɵ1: ɵ1$7,
-        ɵ2: ɵ2$3,
+        ɵ0: ɵ0$h,
+        ɵ1: ɵ1$b,
+        ɵ2: ɵ2$5,
         getConsignmentTrackingState: getConsignmentTrackingState,
         getConsignmentTracking: getConsignmentTracking,
+        getCustomerCouponsState: getCustomerCouponsState,
+        getCustomerCouponsLoaded: getCustomerCouponsLoaded,
+        getCustomerCouponsLoading: getCustomerCouponsLoading,
+        getCustomerCoupons: getCustomerCoupons,
+        ɵ3: ɵ3$4,
         getDeliveryCountriesState: getDeliveryCountriesState,
         getDeliveryCountriesEntites: getDeliveryCountriesEntites,
         getAllDeliveryCountries: getAllDeliveryCountries,
         countrySelectorFactory: countrySelectorFactory,
         getUserState: getUserState,
+        getPreferencesLoaderState: getPreferencesLoaderState,
+        getPreferences: getPreferences,
+        getEnabledPreferences: getEnabledPreferences,
+        getPreferencesLoading: getPreferencesLoading,
         getOrderState: getOrderState,
         getOrderDetails: getOrderDetails,
         getOrderReturnRequestState: getOrderReturnRequestState,
@@ -11902,19 +16101,26 @@
         getOrderReturnRequestSuccess: getOrderReturnRequestSuccess,
         getOrderReturnRequestListState: getOrderReturnRequestListState,
         getOrderReturnRequestList: getOrderReturnRequestList,
-        ɵ3: ɵ3$3,
-        ɵ4: ɵ4$1,
-        ɵ5: ɵ5,
+        ɵ4: ɵ4$2,
+        ɵ5: ɵ5$1,
         getPaymentMethodsState: getPaymentMethodsState,
         getPaymentMethods: getPaymentMethods,
         getPaymentMethodsLoading: getPaymentMethodsLoading,
         getPaymentMethodsLoadedSuccess: getPaymentMethodsLoadedSuccess,
+        getInterestsState: getInterestsState,
+        getInterests: getInterests,
+        getInterestsLoading: getInterestsLoading,
         getRegionsLoaderState: getRegionsLoaderState,
         getAllRegions: getAllRegions,
         getRegionsDataAndLoading: getRegionsDataAndLoading,
         getRegionsCountry: getRegionsCountry,
         getRegionsLoading: getRegionsLoading,
         getRegionsLoaded: getRegionsLoaded,
+        getReplenishmentOrderState: getReplenishmentOrderState,
+        getReplenishmentOrderDetailsValue: getReplenishmentOrderDetailsValue,
+        getReplenishmentOrderDetailsLoading: getReplenishmentOrderDetailsLoading,
+        getReplenishmentOrderDetailsSuccess: getReplenishmentOrderDetailsSuccess,
+        getReplenishmentOrderDetailsError: getReplenishmentOrderDetailsError,
         getResetPassword: getResetPassword,
         getTitlesState: getTitlesState,
         getTitlesEntites: getTitlesEntites,
@@ -11930,24 +16136,18 @@
         getConsentsLoading: getConsentsLoading,
         getConsentsSuccess: getConsentsSuccess,
         getConsentsError: getConsentsError,
+        getCostCentersState: getCostCentersState,
+        getCostCenters: getCostCenters,
         getDetailsState: getDetailsState,
         getDetails: getDetails,
         getOrdersState: getOrdersState,
         getOrdersLoaded: getOrdersLoaded,
         getOrders: getOrders,
-        getCustomerCouponsState: getCustomerCouponsState,
-        getCustomerCouponsLoaded: getCustomerCouponsLoaded,
-        getCustomerCouponsLoading: getCustomerCouponsLoading,
-        getCustomerCoupons: getCustomerCoupons,
-        getPreferencesLoaderState: getPreferencesLoaderState,
-        getPreferences: getPreferences,
-        getEnabledPreferences: getEnabledPreferences,
-        getPreferencesLoading: getPreferencesLoading,
-        getInterestsState: getInterestsState,
-        getInterests: getInterests,
-        getInterestsLoading: getInterestsLoading,
-        getCostCentersState: getCostCentersState,
-        getCostCenters: getCostCenters
+        getReplenishmentOrdersState: getReplenishmentOrdersState,
+        getReplenishmentOrders: getReplenishmentOrders,
+        getReplenishmentOrdersLoading: getReplenishmentOrdersLoading,
+        getReplenishmentOrdersError: getReplenishmentOrdersError,
+        getReplenishmentOrdersSuccess: getReplenishmentOrdersSuccess
     });
 
     var UserConsentService = /** @class */ (function () {
@@ -12169,42 +16369,6 @@
         { type: AuthService }
     ]; };
 
-    /**
-     * Normalizes HttpErrorResponse to HttpErrorModel.
-     *
-     * Can be used as a safe and generic way for embodying http errors into
-     * NgRx Action payload, as it will strip potentially unserializable parts from
-     * it and warn in debug mode if passed error is not instance of HttpErrorModel
-     * (which usually happens when logic in NgRx Effect is not sealed correctly)
-     */
-    function normalizeHttpError(error) {
-        if (error instanceof i1.HttpErrorResponse) {
-            var normalizedError = {
-                message: error.message,
-                status: error.status,
-                statusText: error.statusText,
-                url: error.url,
-            };
-            // include backend's error details
-            if (Array.isArray(error.error.errors)) {
-                normalizedError.details = error.error.errors;
-            }
-            else if (typeof error.error.error === 'string') {
-                normalizedError.details = [
-                    {
-                        type: error.error.error,
-                        message: error.error.error_description,
-                    },
-                ];
-            }
-            return normalizedError;
-        }
-        if (i0.isDevMode()) {
-            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
-        }
-        return undefined;
-    }
-
     var AnonymousConsentTemplatesConnector = /** @class */ (function () {
         function AnonymousConsentTemplatesConnector(adapter) {
             this.adapter = adapter;
@@ -12416,7 +16580,7 @@
         i3.Effect()
     ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
 
-    var effects$1 = [AnonymousConsentsEffects];
+    var effects$2 = [AnonymousConsentsEffects];
 
     var SiteConnector = /** @class */ (function () {
         function SiteConnector(adapter) {
@@ -13159,18 +17323,18 @@
         i3.Effect()
     ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
 
-    var effects$2 = [
+    var effects$3 = [
         LanguagesEffects,
         CurrenciesEffects,
         BaseSiteEffects,
     ];
 
-    var initialState$1 = {
+    var initialState$6 = {
         details: {},
         activeSite: '',
     };
-    function reducer$1(state, action) {
-        if (state === void 0) { state = initialState$1; }
+    function reducer$6(state, action) {
+        if (state === void 0) { state = initialState$6; }
         switch (action.type) {
             case LOAD_BASE_SITE_SUCCESS: {
                 return Object.assign(Object.assign({}, state), { details: action.payload });
@@ -13182,12 +17346,12 @@
         return state;
     }
 
-    var initialState$2 = {
+    var initialState$7 = {
         entities: null,
         activeCurrency: null,
     };
-    function reducer$2(state, action) {
-        if (state === void 0) { state = initialState$2; }
+    function reducer$7(state, action) {
+        if (state === void 0) { state = initialState$7; }
         switch (action.type) {
             case LOAD_CURRENCIES_SUCCESS: {
                 var currencies = action.payload;
@@ -13205,12 +17369,12 @@
         return state;
     }
 
-    var initialState$3 = {
+    var initialState$8 = {
         entities: null,
         activeLanguage: null,
     };
-    function reducer$3(state, action) {
-        if (state === void 0) { state = initialState$3; }
+    function reducer$8(state, action) {
+        if (state === void 0) { state = initialState$8; }
         switch (action.type) {
             case LOAD_LANGUAGES_SUCCESS: {
                 var languages = action.payload;
@@ -13228,17 +17392,17 @@
         return state;
     }
 
-    function getReducers$1() {
+    function getReducers$2() {
         return {
-            languages: reducer$3,
-            currencies: reducer$2,
-            baseSite: reducer$1,
+            languages: reducer$8,
+            currencies: reducer$7,
+            baseSite: reducer$6,
         };
     }
-    var reducerToken$1 = new i0.InjectionToken('SiteContextReducers');
-    var reducerProvider$1 = {
-        provide: reducerToken$1,
-        useFactory: getReducers$1,
+    var reducerToken$2 = new i0.InjectionToken('SiteContextReducers');
+    var reducerProvider$2 = {
+        provide: reducerToken$2,
+        useFactory: getReducers$2,
     };
 
     function siteContextStoreConfigFactory() {
@@ -13263,12 +17427,12 @@
                     imports: [
                         i1$2.CommonModule,
                         i1.HttpClientModule,
-                        i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
-                        i3.EffectsModule.forFeature(effects$2),
+                        i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
+                        i3.EffectsModule.forFeature(effects$3),
                     ],
                     providers: [
                         provideDefaultConfigFactory(siteContextStoreConfigFactory),
-                        reducerProvider$1,
+                        reducerProvider$2,
                     ],
                 },] }
     ];
@@ -13296,9 +17460,9 @@
                 },] }
     ];
 
-    var initialState$4 = false;
-    function reducer$4(state, action) {
-        if (state === void 0) { state = initialState$4; }
+    var initialState$9 = false;
+    function reducer$9(state, action) {
+        if (state === void 0) { state = initialState$9; }
         switch (action.type) {
             case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
                 return action.dismissed;
@@ -13307,9 +17471,9 @@
         return state;
     }
 
-    var initialState$5 = false;
-    function reducer$5(state, action) {
-        if (state === void 0) { state = initialState$5; }
+    var initialState$a = false;
+    function reducer$a(state, action) {
+        if (state === void 0) { state = initialState$a; }
         switch (action.type) {
             case TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: {
                 return action.updated;
@@ -13318,7 +17482,7 @@
         return state;
     }
 
-    var initialState$6 = [];
+    var initialState$b = [];
     function toggleConsentStatus(consents, templateCode, status) {
         if (!consents) {
             return [];
@@ -13330,8 +17494,8 @@
             return consent;
         });
     }
-    function reducer$6(state, action) {
-        if (state === void 0) { state = initialState$6; }
+    function reducer$b(state, action) {
+        if (state === void 0) { state = initialState$b; }
         switch (action.type) {
             case GIVE_ANONYMOUS_CONSENT: {
                 return toggleConsentStatus(state, action.templateCode, exports.ANONYMOUS_CONSENT_STATUS.GIVEN);
@@ -13346,20 +17510,20 @@
         return state;
     }
 
-    function getReducers$2() {
+    function getReducers$3() {
         return {
             templates: loaderReducer(ANONYMOUS_CONSENTS),
-            consents: reducer$6,
+            consents: reducer$b,
             ui: i1$1.combineReducers({
-                bannerDismissed: reducer$4,
-                updated: reducer$5,
+                bannerDismissed: reducer$9,
+                updated: reducer$a,
             }),
         };
     }
-    var reducerToken$2 = new i0.InjectionToken('AnonymousConsentsReducers');
-    var reducerProvider$2 = {
-        provide: reducerToken$2,
-        useFactory: getReducers$2,
+    var reducerToken$3 = new i0.InjectionToken('AnonymousConsentsReducers');
+    var reducerProvider$3 = {
+        provide: reducerToken$3,
+        useFactory: getReducers$3,
     };
     function clearAnonymousConsentTemplates(reducer) {
         return function (state, action) {
@@ -13397,14 +17561,14 @@
                     imports: [
                         i1$2.CommonModule,
                         StateModule,
-                        i1$1.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
+                        i1$1.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$3, {
                             metaReducers: metaReducers$1,
                         }),
-                        i3.EffectsModule.forFeature(effects$1),
+                        i3.EffectsModule.forFeature(effects$2),
                     ],
                     providers: [
                         provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
-                        reducerProvider$2,
+                        reducerProvider$3,
                     ],
                 },] }
     ];
@@ -13627,14 +17791,14 @@
         i3.Effect()
     ], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
 
-    var effects$3 = [
+    var effects$4 = [
         CustomerEffects,
         CustomerSupportAgentTokenEffects,
     ];
 
-    var initialState$7 = { collapsed: false };
-    function reducer$7(state, action) {
-        if (state === void 0) { state = initialState$7; }
+    var initialState$c = { collapsed: false };
+    function reducer$c(state, action) {
+        if (state === void 0) { state = initialState$c; }
         switch (action.type) {
             case ASM_UI_UPDATE: {
                 return Object.assign(Object.assign({}, state), action.payload);
@@ -13645,17 +17809,17 @@
         }
     }
 
-    function getReducers$3() {
+    function getReducers$4() {
         return {
             customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
-            asmUi: reducer$7,
+            asmUi: reducer$c,
             csagentToken: loaderReducer(CSAGENT_TOKEN_DATA),
         };
     }
-    var reducerToken$3 = new i0.InjectionToken('AsmReducers');
-    var reducerProvider$3 = {
-        provide: reducerToken$3,
-        useFactory: getReducers$3,
+    var reducerToken$4 = new i0.InjectionToken('AsmReducers');
+    var reducerProvider$4 = {
+        provide: reducerToken$4,
+        useFactory: getReducers$4,
     };
     function clearCustomerSupportAgentAsmState(reducer) {
         return function (state, action) {
@@ -13698,12 +17862,12 @@
                         i1$2.CommonModule,
                         i1.HttpClientModule,
                         StateModule,
-                        i1$1.StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
-                        i3.EffectsModule.forFeature(effects$3),
+                        i1$1.StoreModule.forFeature(ASM_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
+                        i3.EffectsModule.forFeature(effects$4),
                     ],
                     providers: [
                         provideDefaultConfigFactory(asmStoreConfigFactory),
-                        reducerProvider$3,
+                        reducerProvider$4,
                     ],
                 },] }
     ];
@@ -13760,8 +17924,8 @@
 
     var getGlobalMessageState = i1$1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
-    var ɵ0$s = function (state) { return state.entities; };
-    var getGlobalMessageEntities = i1$1.createSelector(getGlobalMessageState, ɵ0$s);
+    var ɵ0$A = function (state) { return state.entities; };
+    var getGlobalMessageEntities = i1$1.createSelector(getGlobalMessageState, ɵ0$A);
     var getGlobalMessageEntitiesByType = function (type) {
         return i1$1.createSelector(getGlobalMessageEntities, function (entities) { return entities && entities[type]; });
     };
@@ -13775,7 +17939,7 @@
         getGlobalMessageEntities: getGlobalMessageEntities,
         getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
         getGlobalMessageCountByType: getGlobalMessageCountByType,
-        ɵ0: ɵ0$s
+        ɵ0: ɵ0$A
     });
 
     var GlobalMessageService = /** @class */ (function () {
@@ -13891,63 +18055,6 @@
                     providedIn: 'root',
                 },] }
     ];
-
-    /**
-     * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
-     */
-    function getCartIdByUserId(cart, userId) {
-        if (userId === OCC_USER_ID_ANONYMOUS) {
-            return cart.guid;
-        }
-        return cart.code;
-    }
-    /**
-     * Check if cart is selective (save for later) based on id.
-     */
-    function isSelectiveCart(cartId) {
-        if (cartId === void 0) { cartId = ''; }
-        return cartId.startsWith('selectivecart');
-    }
-    /**
-     * Check if the returned error is of type notFound.
-     *
-     * We additionally check if the cart is not a selective cart.
-     * For selective cart this error can happen only when extension is disabled.
-     * It should never happen, because in that case, selective cart should also be disabled in our configuration.
-     * However if that happens we want to handle these errors silently.
-     */
-    function isCartNotFoundError(error) {
-        return (error.reason === 'notFound' &&
-            error.subjectType === 'cart' &&
-            !isSelectiveCart(error.subject));
-    }
-    /**
-     * Compute wishlist cart name for customer.
-     */
-    function getWishlistName(customerId) {
-        return "wishlist" + customerId;
-    }
-    /**
-     * What is a temporary cart?
-     * - frontend only cart entity!
-     * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
-     *
-     * Why we need temporary carts?
-     * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
-     * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
-     * - cart identifiers are created in the backend, so those are only known after cart is created
-     *
-     * Temporary cart life cycle
-     * - create cart method invoked
-     * - new `temp-${uuid}` cart is created with `loading=true` state
-     * - backend returns created cart
-     * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
-     * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
-     * - in next tick temporary cart is removed
-     */
-    function isTempCartId(cartId) {
-        return cartId.startsWith('temp-');
-    }
 
     var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
     var BadRequestHandler = /** @class */ (function (_super) {
@@ -14342,12 +18449,12 @@
         },
     ];
 
-    var initialState$8 = {
+    var initialState$d = {
         entities: {},
     };
-    function reducer$8(state, action) {
+    function reducer$d(state, action) {
         var _a, _b, _c, _d;
-        if (state === void 0) { state = initialState$8; }
+        if (state === void 0) { state = initialState$d; }
         switch (action.type) {
             case ADD_MESSAGE: {
                 var message = action.payload;
@@ -14378,13 +18485,13 @@
         return state;
     }
 
-    function getReducers$4() {
-        return reducer$8;
+    function getReducers$5() {
+        return reducer$d;
     }
-    var reducerToken$4 = new i0.InjectionToken('GlobalMessageReducers');
-    var reducerProvider$4 = {
-        provide: reducerToken$4,
-        useFactory: getReducers$4,
+    var reducerToken$5 = new i0.InjectionToken('GlobalMessageReducers');
+    var reducerProvider$5 = {
+        provide: reducerToken$5,
+        useFactory: getReducers$5,
     };
 
     var GlobalMessageStoreModule = /** @class */ (function () {
@@ -14396,9 +18503,9 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         StateModule,
-                        i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                        i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
                     ],
-                    providers: [reducerProvider$4],
+                    providers: [reducerProvider$5],
                 },] }
     ];
 
@@ -14568,32 +18675,32 @@
 
     var getAsmState = i1$1.createFeatureSelector(ASM_FEATURE);
 
-    var ɵ0$t = function (state) { return state.asmUi; };
-    var getAsmUi = i1$1.createSelector(getAsmState, ɵ0$t);
+    var ɵ0$B = function (state) { return state.asmUi; };
+    var getAsmUi = i1$1.createSelector(getAsmState, ɵ0$B);
 
-    var ɵ0$u = function (state) { return state.customerSearchResult; };
-    var getCustomerSearchResultsLoaderState = i1$1.createSelector(getAsmState, ɵ0$u);
-    var ɵ1$m = function (state) { return loaderValueSelector(state); };
-    var getCustomerSearchResults = i1$1.createSelector(getCustomerSearchResultsLoaderState, ɵ1$m);
-    var ɵ2$e = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerSearchResultsLoading = i1$1.createSelector(getCustomerSearchResultsLoaderState, ɵ2$e);
+    var ɵ0$C = function (state) { return state.customerSearchResult; };
+    var getCustomerSearchResultsLoaderState = i1$1.createSelector(getAsmState, ɵ0$C);
+    var ɵ1$s = function (state) { return loaderValueSelector(state); };
+    var getCustomerSearchResults = i1$1.createSelector(getCustomerSearchResultsLoaderState, ɵ1$s);
+    var ɵ2$i = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerSearchResultsLoading = i1$1.createSelector(getCustomerSearchResultsLoaderState, ɵ2$i);
 
-    var ɵ0$v = function (state) { return state.csagentToken; };
-    var getCustomerSupportAgentTokenState = i1$1.createSelector(getAsmState, ɵ0$v);
-    var ɵ1$n = function (state) { return loaderValueSelector(state); };
-    var getCustomerSupportAgentToken = i1$1.createSelector(getCustomerSupportAgentTokenState, ɵ1$n);
-    var ɵ2$f = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerSupportAgentTokenLoading = i1$1.createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
+    var ɵ0$D = function (state) { return state.csagentToken; };
+    var getCustomerSupportAgentTokenState = i1$1.createSelector(getAsmState, ɵ0$D);
+    var ɵ1$t = function (state) { return loaderValueSelector(state); };
+    var getCustomerSupportAgentToken = i1$1.createSelector(getCustomerSupportAgentTokenState, ɵ1$t);
+    var ɵ2$j = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerSupportAgentTokenLoading = i1$1.createSelector(getCustomerSupportAgentTokenState, ɵ2$j);
 
     var asmGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getAsmUi: getAsmUi,
-        ɵ0: ɵ0$t,
+        ɵ0: ɵ0$B,
         getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
         getCustomerSearchResults: getCustomerSearchResults,
         getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
-        ɵ1: ɵ1$m,
-        ɵ2: ɵ2$e,
+        ɵ1: ɵ1$s,
+        ɵ2: ɵ2$i,
         getAsmState: getAsmState,
         getCustomerSupportAgentTokenState: getCustomerSupportAgentTokenState,
         getCustomerSupportAgentToken: getCustomerSupportAgentToken,
@@ -14843,1234 +18950,6 @@
         { type: i1$1.Store }
     ]; };
 
-    /**
-     * Abstract class that can be used to resolve meta data for specific pages.
-     * The `getScore` method is used to select the right resolver for a specific
-     * page, based on a score. The score is calculated by the (non)matching page
-     * type and page template.
-     */
-    var PageMetaResolver = /** @class */ (function () {
-        function PageMetaResolver() {
-        }
-        /**
-         * Returns the matching score for a resolver class, based on
-         * the page type and page template.
-         */
-        PageMetaResolver.prototype.getScore = function (page) {
-            var score = 0;
-            if (this.pageType) {
-                score += page.type === this.pageType ? 1 : -1;
-            }
-            if (this.pageTemplate) {
-                score += page.template === this.pageTemplate ? 1 : -1;
-            }
-            return score;
-        };
-        PageMetaResolver.prototype.hasMatch = function (page) {
-            return this.getScore(page) > 0;
-        };
-        PageMetaResolver.prototype.getPriority = function (page) {
-            return this.getScore(page);
-        };
-        return PageMetaResolver;
-    }());
-
-    // Email Standard RFC 5322:
-    var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
-    var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
-
-    var MULTI_CART_FEATURE = 'cart';
-    var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
-    // TODO(#7241): Drop after event system implementation for cart vouchers
-    /**
-     * Add voucher process const
-     * @deprecated since 2.0
-     */
-    var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
-
-    var getMultiCartState = i1$1.createFeatureSelector(MULTI_CART_FEATURE);
-    var ɵ0$w = function (state) { return state.carts; };
-    var getMultiCartEntities = i1$1.createSelector(getMultiCartState, ɵ0$w);
-    var getCartEntitySelectorFactory = function (cartId) {
-        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityProcessesLoaderStateSelector(state, cartId); });
-    };
-    var getCartSelectorFactory = function (cartId) {
-        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityValueSelector(state, cartId); });
-    };
-    var getCartIsStableSelectorFactory = function (cartId) {
-        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityIsStableSelector(state, cartId); });
-    };
-    var getCartHasPendingProcessesSelectorFactory = function (cartId) {
-        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityHasPendingProcessesSelector(state, cartId); });
-    };
-    var getCartEntriesSelectorFactory = function (cartId) {
-        return i1$1.createSelector(getCartSelectorFactory(cartId), function (state) {
-            return state && state.entries ? state.entries : [];
-        });
-    };
-    var getCartEntrySelectorFactory = function (cartId, productCode) {
-        return i1$1.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
-            return state
-                ? state.find(function (entry) { return entry.product.code === productCode; })
-                : undefined;
-        });
-    };
-    var ɵ1$o = function (state) { return state.active; };
-    var getActiveCartId = i1$1.createSelector(getMultiCartState, ɵ1$o);
-    var ɵ2$g = function (state) { return state.wishList; };
-    var getWishListId = i1$1.createSelector(getMultiCartState, ɵ2$g);
-
-    var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getMultiCartState: getMultiCartState,
-        getMultiCartEntities: getMultiCartEntities,
-        getCartEntitySelectorFactory: getCartEntitySelectorFactory,
-        getCartSelectorFactory: getCartSelectorFactory,
-        getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
-        getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
-        getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
-        getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-        getActiveCartId: getActiveCartId,
-        getWishListId: getWishListId,
-        ɵ0: ɵ0$w,
-        ɵ1: ɵ1$o,
-        ɵ2: ɵ2$g
-    });
-
-    var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
-    var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
-    var CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
-    var CART_REMOVE_ENTRY = '[Cart-entry] Remove Entry';
-    var CART_REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
-    var CART_REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
-    var CART_UPDATE_ENTRY = '[Cart-entry] Update Entry';
-    var CART_UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
-    var CART_UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
-    var CartAddEntry = /** @class */ (function (_super) {
-        __extends(CartAddEntry, _super);
-        function CartAddEntry(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_ENTRY;
-            return _this;
-        }
-        return CartAddEntry;
-    }(EntityProcessesIncrementAction));
-    var CartAddEntrySuccess = /** @class */ (function (_super) {
-        __extends(CartAddEntrySuccess, _super);
-        function CartAddEntrySuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_ENTRY_SUCCESS;
-            return _this;
-        }
-        return CartAddEntrySuccess;
-    }(EntityProcessesDecrementAction));
-    var CartAddEntryFail = /** @class */ (function (_super) {
-        __extends(CartAddEntryFail, _super);
-        function CartAddEntryFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_ENTRY_FAIL;
-            return _this;
-        }
-        return CartAddEntryFail;
-    }(EntityProcessesDecrementAction));
-    var CartRemoveEntry = /** @class */ (function (_super) {
-        __extends(CartRemoveEntry, _super);
-        function CartRemoveEntry(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_ENTRY;
-            return _this;
-        }
-        return CartRemoveEntry;
-    }(EntityProcessesIncrementAction));
-    var CartRemoveEntrySuccess = /** @class */ (function (_super) {
-        __extends(CartRemoveEntrySuccess, _super);
-        function CartRemoveEntrySuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_ENTRY_SUCCESS;
-            return _this;
-        }
-        return CartRemoveEntrySuccess;
-    }(EntityProcessesDecrementAction));
-    var CartRemoveEntryFail = /** @class */ (function (_super) {
-        __extends(CartRemoveEntryFail, _super);
-        function CartRemoveEntryFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_ENTRY_FAIL;
-            return _this;
-        }
-        return CartRemoveEntryFail;
-    }(EntityProcessesDecrementAction));
-    var CartUpdateEntry = /** @class */ (function (_super) {
-        __extends(CartUpdateEntry, _super);
-        function CartUpdateEntry(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_UPDATE_ENTRY;
-            return _this;
-        }
-        return CartUpdateEntry;
-    }(EntityProcessesIncrementAction));
-    var CartUpdateEntrySuccess = /** @class */ (function (_super) {
-        __extends(CartUpdateEntrySuccess, _super);
-        function CartUpdateEntrySuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_UPDATE_ENTRY_SUCCESS;
-            return _this;
-        }
-        return CartUpdateEntrySuccess;
-    }(EntityProcessesDecrementAction));
-    var CartUpdateEntryFail = /** @class */ (function (_super) {
-        __extends(CartUpdateEntryFail, _super);
-        function CartUpdateEntryFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_UPDATE_ENTRY_FAIL;
-            return _this;
-        }
-        return CartUpdateEntryFail;
-    }(EntityProcessesDecrementAction));
-
-    var CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
-    var CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
-    var CART_ADD_VOUCHER_SUCCESS = '[Cart-voucher] Add Cart Voucher Success';
-    var CART_RESET_ADD_VOUCHER = '[Cart-voucher] Reset Add Cart Voucher';
-    var CART_REMOVE_VOUCHER = '[Cart-voucher] Remove Cart Voucher';
-    var CART_REMOVE_VOUCHER_FAIL = '[Cart-voucher] Remove Cart Voucher Fail';
-    var CART_REMOVE_VOUCHER_SUCCESS = '[Cart-voucher] Remove Cart Voucher Success';
-    // Adding cart voucher actions
-    var CartAddVoucher = /** @class */ (function (_super) {
-        __extends(CartAddVoucher, _super);
-        function CartAddVoucher(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_VOUCHER;
-            return _this;
-        }
-        return CartAddVoucher;
-    }(EntityLoadAction));
-    var CartAddVoucherFail = /** @class */ (function (_super) {
-        __extends(CartAddVoucherFail, _super);
-        function CartAddVoucherFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload.error) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_VOUCHER_FAIL;
-            return _this;
-        }
-        return CartAddVoucherFail;
-    }(EntityFailAction));
-    var CartAddVoucherSuccess = /** @class */ (function (_super) {
-        __extends(CartAddVoucherSuccess, _super);
-        function CartAddVoucherSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_VOUCHER_SUCCESS;
-            return _this;
-        }
-        return CartAddVoucherSuccess;
-    }(EntitySuccessAction));
-    // TODO(#7241): Remove when switching to event system for vouchers
-    /**
-     * Resets add voucher process
-     *
-     * @deprecated since 2.0
-     */
-    var CartResetAddVoucher = /** @class */ (function (_super) {
-        __extends(CartResetAddVoucher, _super);
-        function CartResetAddVoucher() {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
-            _this.type = CART_RESET_ADD_VOUCHER;
-            return _this;
-        }
-        return CartResetAddVoucher;
-    }(EntityLoaderResetAction));
-    // Deleting cart voucher
-    var CartRemoveVoucher = /** @class */ (function (_super) {
-        __extends(CartRemoveVoucher, _super);
-        function CartRemoveVoucher(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_VOUCHER;
-            return _this;
-        }
-        return CartRemoveVoucher;
-    }(EntityProcessesIncrementAction));
-    var CartRemoveVoucherFail = /** @class */ (function (_super) {
-        __extends(CartRemoveVoucherFail, _super);
-        function CartRemoveVoucherFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_VOUCHER_FAIL;
-            return _this;
-        }
-        return CartRemoveVoucherFail;
-    }(EntityProcessesDecrementAction));
-    var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
-        __extends(CartRemoveVoucherSuccess, _super);
-        function CartRemoveVoucherSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_VOUCHER_SUCCESS;
-            return _this;
-        }
-        return CartRemoveVoucherSuccess;
-    }(EntityProcessesDecrementAction));
-
-    var CREATE_CART = '[Cart] Create Cart';
-    var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
-    var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
-    var LOAD_CART = '[Cart] Load Cart';
-    var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
-    var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
-    var ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
-    var ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
-    var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
-    var MERGE_CART = '[Cart] Merge Cart';
-    var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
-    var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
-    var REMOVE_CART = '[Cart] Remove Cart';
-    var DELETE_CART = '[Cart] Delete Cart';
-    var DELETE_CART_SUCCESS = '[Cart] Delete Cart Success';
-    var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
-    var CreateCart = /** @class */ (function (_super) {
-        __extends(CreateCart, _super);
-        function CreateCart(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART;
-            return _this;
-        }
-        return CreateCart;
-    }(EntityLoadAction));
-    var CreateCartFail = /** @class */ (function (_super) {
-        __extends(CreateCartFail, _super);
-        function CreateCartFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART_FAIL;
-            return _this;
-        }
-        return CreateCartFail;
-    }(EntityFailAction));
-    var CreateCartSuccess = /** @class */ (function (_super) {
-        __extends(CreateCartSuccess, _super);
-        function CreateCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART_SUCCESS;
-            return _this;
-        }
-        return CreateCartSuccess;
-    }(EntitySuccessAction));
-    var AddEmailToCart = /** @class */ (function (_super) {
-        __extends(AddEmailToCart, _super);
-        function AddEmailToCart(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART;
-            return _this;
-        }
-        return AddEmailToCart;
-    }(EntityProcessesIncrementAction));
-    var AddEmailToCartFail = /** @class */ (function (_super) {
-        __extends(AddEmailToCartFail, _super);
-        function AddEmailToCartFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART_FAIL;
-            return _this;
-        }
-        return AddEmailToCartFail;
-    }(EntityProcessesDecrementAction));
-    var AddEmailToCartSuccess = /** @class */ (function (_super) {
-        __extends(AddEmailToCartSuccess, _super);
-        function AddEmailToCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART_SUCCESS;
-            return _this;
-        }
-        return AddEmailToCartSuccess;
-    }(EntityProcessesDecrementAction));
-    var LoadCart = /** @class */ (function (_super) {
-        __extends(LoadCart, _super);
-        function LoadCart(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART;
-            return _this;
-        }
-        return LoadCart;
-    }(EntityLoadAction));
-    var LoadCartFail = /** @class */ (function (_super) {
-        __extends(LoadCartFail, _super);
-        function LoadCartFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART_FAIL;
-            return _this;
-        }
-        return LoadCartFail;
-    }(EntityFailAction));
-    var LoadCartSuccess = /** @class */ (function (_super) {
-        __extends(LoadCartSuccess, _super);
-        function LoadCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART_SUCCESS;
-            return _this;
-        }
-        return LoadCartSuccess;
-    }(EntitySuccessAction));
-    var MergeCart = /** @class */ (function () {
-        function MergeCart(payload) {
-            this.payload = payload;
-            this.type = MERGE_CART;
-        }
-        return MergeCart;
-    }());
-    var MergeCartSuccess = /** @class */ (function (_super) {
-        __extends(MergeCartSuccess, _super);
-        function MergeCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.oldCartId) || this;
-            _this.payload = payload;
-            _this.type = MERGE_CART_SUCCESS;
-            return _this;
-        }
-        return MergeCartSuccess;
-    }(EntityRemoveAction));
-    /**
-     * On site context change we want to keep current list of entities, but we want to clear the value and flags.
-     * With ProcessesLoaderResetAction we run it on every entity of this type.
-     */
-    var ResetCartDetails = /** @class */ (function (_super) {
-        __extends(ResetCartDetails, _super);
-        function ResetCartDetails() {
-            var _this = _super.call(this, MULTI_CART_DATA) || this;
-            _this.type = RESET_CART_DETAILS;
-            return _this;
-        }
-        return ResetCartDetails;
-    }(ProcessesLoaderResetAction));
-    /**
-     * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
-     * For removing particular cart in both places use DeleteCart actions.
-     */
-    var RemoveCart = /** @class */ (function (_super) {
-        __extends(RemoveCart, _super);
-        function RemoveCart(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_CART;
-            return _this;
-        }
-        return RemoveCart;
-    }(EntityRemoveAction));
-    var DeleteCart = /** @class */ (function () {
-        function DeleteCart(payload) {
-            this.payload = payload;
-            this.type = DELETE_CART;
-        }
-        return DeleteCart;
-    }());
-    var DeleteCartSuccess = /** @class */ (function (_super) {
-        __extends(DeleteCartSuccess, _super);
-        function DeleteCartSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = DELETE_CART_SUCCESS;
-            return _this;
-        }
-        return DeleteCartSuccess;
-    }(EntityRemoveAction));
-    var DeleteCartFail = /** @class */ (function () {
-        function DeleteCartFail(payload) {
-            this.payload = payload;
-            this.type = DELETE_CART_FAIL;
-        }
-        return DeleteCartFail;
-    }());
-
-    var SET_TEMP_CART = '[Cart] Set Temp Cart';
-    var CART_PROCESSES_INCREMENT = '[Cart] Cart Processes Increment';
-    var CART_PROCESSES_DECREMENT = '[Cart] Cart Processes Decrement';
-    var SET_ACTIVE_CART_ID = '[Cart] Set Active Cart Id';
-    var CLEAR_CART_STATE = '[Cart] Clear Cart State';
-    /**
-     * To keep track of cart creation process we use cart with `temp-${uuid}` id.
-     * After creating cart we switch to entity with `code` or `guid`.
-     * We need `temp-${uuid}` cart entities for loading/error state.
-     */
-    var SetTempCart = /** @class */ (function (_super) {
-        __extends(SetTempCart, _super);
-        function SetTempCart(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId, payload.cart) || this;
-            _this.payload = payload;
-            _this.type = SET_TEMP_CART;
-            return _this;
-        }
-        return SetTempCart;
-    }(EntitySuccessAction));
-    // TODO(#7241): Remove when there won't be any usage
-    /**
-     * Increases process counter on cart entities
-     * All actions that cause computations on cart should extend EntityProcessesIncrementAction instead of dispatching this action.
-     * @deprecated since 2.0
-     */
-    var CartProcessesIncrement = /** @class */ (function (_super) {
-        __extends(CartProcessesIncrement, _super);
-        function CartProcessesIncrement(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CART_PROCESSES_INCREMENT;
-            return _this;
-        }
-        return CartProcessesIncrement;
-    }(EntityProcessesIncrementAction));
-    // TODO(#7241): Remove when there won't be any usage
-    /**
-     * Decrement process counter on cart entities
-     * All actions that cause computations on cart should extend EntityProcessesDecrementAction instead of dispatching this action.
-     * @deprecated since 2.0
-     */
-    var CartProcessesDecrement = /** @class */ (function (_super) {
-        __extends(CartProcessesDecrement, _super);
-        function CartProcessesDecrement(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CART_PROCESSES_DECREMENT;
-            return _this;
-        }
-        return CartProcessesDecrement;
-    }(EntityProcessesDecrementAction));
-    /**
-     * Only sets active cart property with id of active cart. Then services take care of loading that cart.
-     */
-    var SetActiveCartId = /** @class */ (function () {
-        function SetActiveCartId(payload) {
-            this.payload = payload;
-            this.type = SET_ACTIVE_CART_ID;
-        }
-        return SetActiveCartId;
-    }());
-    /**
-     * Clear whole cart store state: all entities + reset rest of the cart state.
-     */
-    var ClearCartState = /** @class */ (function (_super) {
-        __extends(ClearCartState, _super);
-        function ClearCartState() {
-            var _this = _super.call(this, MULTI_CART_DATA) || this;
-            _this.type = CLEAR_CART_STATE;
-            return _this;
-        }
-        return ClearCartState;
-    }(EntityRemoveAllAction));
-
-    var CREATE_WISH_LIST = '[Wish List] Create Wish List';
-    var CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
-    var CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
-    var LOAD_WISH_LIST = '[Wish List] Load Wish List';
-    var LOAD_WISH_LIST_SUCCESS = '[Wish List] Load Wish List Success';
-    var LOAD_WISH_LIST_FAIL = '[Wish List] Load Wish List Fail';
-    var RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
-    var CreateWishList = /** @class */ (function () {
-        function CreateWishList(payload) {
-            this.payload = payload;
-            this.type = CREATE_WISH_LIST;
-        }
-        return CreateWishList;
-    }());
-    var CreateWishListSuccess = /** @class */ (function (_super) {
-        __extends(CreateWishListSuccess, _super);
-        function CreateWishListSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId)) || this;
-            _this.payload = payload;
-            _this.type = CREATE_WISH_LIST_SUCCESS;
-            return _this;
-        }
-        return CreateWishListSuccess;
-    }(EntitySuccessAction));
-    var CreateWishListFail = /** @class */ (function (_super) {
-        __extends(CreateWishListFail, _super);
-        function CreateWishListFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
-            _this.payload = payload;
-            _this.type = CREATE_WISH_LIST_FAIL;
-            return _this;
-        }
-        return CreateWishListFail;
-    }(EntityFailAction));
-    var LoadWishList = /** @class */ (function (_super) {
-        __extends(LoadWishList, _super);
-        function LoadWishList(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.tempCartId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_WISH_LIST;
-            return _this;
-        }
-        return LoadWishList;
-    }(EntityLoadAction));
-    var LoadWishListSuccess = /** @class */ (function (_super) {
-        __extends(LoadWishListSuccess, _super);
-        function LoadWishListSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_WISH_LIST_SUCCESS;
-            return _this;
-        }
-        return LoadWishListSuccess;
-    }(EntitySuccessAction));
-    var LoadWishListFail = /** @class */ (function (_super) {
-        __extends(LoadWishListFail, _super);
-        function LoadWishListFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId, payload.error) || this;
-            _this.payload = payload;
-            _this.type = LOAD_WISH_LIST_FAIL;
-            return _this;
-        }
-        return LoadWishListFail;
-    }(EntityFailAction));
-
-    var cartGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        CART_ADD_ENTRY: CART_ADD_ENTRY,
-        CART_ADD_ENTRY_SUCCESS: CART_ADD_ENTRY_SUCCESS,
-        CART_ADD_ENTRY_FAIL: CART_ADD_ENTRY_FAIL,
-        CART_REMOVE_ENTRY: CART_REMOVE_ENTRY,
-        CART_REMOVE_ENTRY_SUCCESS: CART_REMOVE_ENTRY_SUCCESS,
-        CART_REMOVE_ENTRY_FAIL: CART_REMOVE_ENTRY_FAIL,
-        CART_UPDATE_ENTRY: CART_UPDATE_ENTRY,
-        CART_UPDATE_ENTRY_SUCCESS: CART_UPDATE_ENTRY_SUCCESS,
-        CART_UPDATE_ENTRY_FAIL: CART_UPDATE_ENTRY_FAIL,
-        CartAddEntry: CartAddEntry,
-        CartAddEntrySuccess: CartAddEntrySuccess,
-        CartAddEntryFail: CartAddEntryFail,
-        CartRemoveEntry: CartRemoveEntry,
-        CartRemoveEntrySuccess: CartRemoveEntrySuccess,
-        CartRemoveEntryFail: CartRemoveEntryFail,
-        CartUpdateEntry: CartUpdateEntry,
-        CartUpdateEntrySuccess: CartUpdateEntrySuccess,
-        CartUpdateEntryFail: CartUpdateEntryFail,
-        CART_ADD_VOUCHER: CART_ADD_VOUCHER,
-        CART_ADD_VOUCHER_FAIL: CART_ADD_VOUCHER_FAIL,
-        CART_ADD_VOUCHER_SUCCESS: CART_ADD_VOUCHER_SUCCESS,
-        CART_RESET_ADD_VOUCHER: CART_RESET_ADD_VOUCHER,
-        CART_REMOVE_VOUCHER: CART_REMOVE_VOUCHER,
-        CART_REMOVE_VOUCHER_FAIL: CART_REMOVE_VOUCHER_FAIL,
-        CART_REMOVE_VOUCHER_SUCCESS: CART_REMOVE_VOUCHER_SUCCESS,
-        CartAddVoucher: CartAddVoucher,
-        CartAddVoucherFail: CartAddVoucherFail,
-        CartAddVoucherSuccess: CartAddVoucherSuccess,
-        CartResetAddVoucher: CartResetAddVoucher,
-        CartRemoveVoucher: CartRemoveVoucher,
-        CartRemoveVoucherFail: CartRemoveVoucherFail,
-        CartRemoveVoucherSuccess: CartRemoveVoucherSuccess,
-        CREATE_CART: CREATE_CART,
-        CREATE_CART_FAIL: CREATE_CART_FAIL,
-        CREATE_CART_SUCCESS: CREATE_CART_SUCCESS,
-        LOAD_CART: LOAD_CART,
-        LOAD_CART_FAIL: LOAD_CART_FAIL,
-        LOAD_CART_SUCCESS: LOAD_CART_SUCCESS,
-        ADD_EMAIL_TO_CART: ADD_EMAIL_TO_CART,
-        ADD_EMAIL_TO_CART_FAIL: ADD_EMAIL_TO_CART_FAIL,
-        ADD_EMAIL_TO_CART_SUCCESS: ADD_EMAIL_TO_CART_SUCCESS,
-        MERGE_CART: MERGE_CART,
-        MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
-        RESET_CART_DETAILS: RESET_CART_DETAILS,
-        REMOVE_CART: REMOVE_CART,
-        DELETE_CART: DELETE_CART,
-        DELETE_CART_SUCCESS: DELETE_CART_SUCCESS,
-        DELETE_CART_FAIL: DELETE_CART_FAIL,
-        CreateCart: CreateCart,
-        CreateCartFail: CreateCartFail,
-        CreateCartSuccess: CreateCartSuccess,
-        AddEmailToCart: AddEmailToCart,
-        AddEmailToCartFail: AddEmailToCartFail,
-        AddEmailToCartSuccess: AddEmailToCartSuccess,
-        LoadCart: LoadCart,
-        LoadCartFail: LoadCartFail,
-        LoadCartSuccess: LoadCartSuccess,
-        MergeCart: MergeCart,
-        MergeCartSuccess: MergeCartSuccess,
-        ResetCartDetails: ResetCartDetails,
-        RemoveCart: RemoveCart,
-        DeleteCart: DeleteCart,
-        DeleteCartSuccess: DeleteCartSuccess,
-        DeleteCartFail: DeleteCartFail,
-        SET_TEMP_CART: SET_TEMP_CART,
-        CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
-        CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
-        SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
-        CLEAR_CART_STATE: CLEAR_CART_STATE,
-        SetTempCart: SetTempCart,
-        CartProcessesIncrement: CartProcessesIncrement,
-        CartProcessesDecrement: CartProcessesDecrement,
-        SetActiveCartId: SetActiveCartId,
-        ClearCartState: ClearCartState,
-        CREATE_WISH_LIST: CREATE_WISH_LIST,
-        CREATE_WISH_LIST_FAIL: CREATE_WISH_LIST_FAIL,
-        CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
-        LOAD_WISH_LIST: LOAD_WISH_LIST,
-        LOAD_WISH_LIST_SUCCESS: LOAD_WISH_LIST_SUCCESS,
-        LOAD_WISH_LIST_FAIL: LOAD_WISH_LIST_FAIL,
-        RESET_WISH_LIST_DETAILS: RESET_WISH_LIST_DETAILS,
-        CreateWishList: CreateWishList,
-        CreateWishListSuccess: CreateWishListSuccess,
-        CreateWishListFail: CreateWishListFail,
-        LoadWishList: LoadWishList,
-        LoadWishListSuccess: LoadWishListSuccess,
-        LoadWishListFail: LoadWishListFail
-    });
-
-    var MultiCartService = /** @class */ (function () {
-        function MultiCartService(store) {
-            this.store = store;
-        }
-        /**
-         * Returns cart from store as an observable
-         *
-         * @param cartId
-         */
-        MultiCartService.prototype.getCart = function (cartId) {
-            return this.store.pipe(i1$1.select(getCartSelectorFactory(cartId)));
-        };
-        /**
-         * Returns cart entity from store (cart with loading, error, success flags) as an observable
-         *
-         * @param cartId
-         */
-        MultiCartService.prototype.getCartEntity = function (cartId) {
-            return this.store.pipe(i1$1.select(getCartEntitySelectorFactory(cartId)));
-        };
-        /**
-         * Returns true when there are no operations on that in progress and it is not currently loading
-         *
-         * @param cartId
-         */
-        MultiCartService.prototype.isStable = function (cartId) {
-            return this.store.pipe(i1$1.select(getCartIsStableSelectorFactory(cartId)), 
-            // We dispatch a lot of actions just after finishing some process or loading, so we want this flag not to flicker.
-            // This flickering should only be avoided when switching from false to true
-            // Start of loading should be showed instantly (no debounce)
-            // Extra actions are only dispatched after some loading
-            operators.debounce(function (isStable) { return (isStable ? rxjs.timer(0) : rxjs.EMPTY); }), operators.distinctUntilChanged());
-        };
-        /**
-         * Simple random temp cart id generator
-         */
-        MultiCartService.prototype.generateTempCartId = function () {
-            var pseudoUuid = Math.random().toString(36).substr(2, 9);
-            return "temp-" + pseudoUuid;
-        };
-        /**
-         * Create or merge cart
-         *
-         * @param params Object with userId, oldCartId, toMergeCartGuid and extraData
-         */
-        MultiCartService.prototype.createCart = function (_a) {
-            var userId = _a.userId, oldCartId = _a.oldCartId, toMergeCartGuid = _a.toMergeCartGuid, extraData = _a.extraData;
-            // to support creating multiple carts at the same time we need to use different entity for every process
-            // simple random uuid generator is used here for entity names
-            var tempCartId = this.generateTempCartId();
-            this.store.dispatch(new CreateCart({
-                extraData: extraData,
-                userId: userId,
-                oldCartId: oldCartId,
-                toMergeCartGuid: toMergeCartGuid,
-                tempCartId: tempCartId,
-            }));
-            return this.getCartEntity(tempCartId);
-        };
-        /**
-         * Merge provided cart to current user cart
-         *
-         * @param params Object with userId, cartId and extraData
-         */
-        MultiCartService.prototype.mergeToCurrentCart = function (_a) {
-            var userId = _a.userId, cartId = _a.cartId, extraData = _a.extraData;
-            var tempCartId = this.generateTempCartId();
-            this.store.dispatch(new MergeCart({
-                userId: userId,
-                cartId: cartId,
-                extraData: extraData,
-                tempCartId: tempCartId,
-            }));
-        };
-        /**
-         * Load cart
-         *
-         * @param params Object with userId, cartId and extraData
-         */
-        MultiCartService.prototype.loadCart = function (_a) {
-            var cartId = _a.cartId, userId = _a.userId, extraData = _a.extraData;
-            this.store.dispatch(new LoadCart({
-                userId: userId,
-                cartId: cartId,
-                extraData: extraData,
-            }));
-        };
-        /**
-         * Get cart entries as an observable
-         * @param cartId
-         */
-        MultiCartService.prototype.getEntries = function (cartId) {
-            return this.store.pipe(i1$1.select(getCartEntriesSelectorFactory(cartId)));
-        };
-        /**
-         * Add entry to cart
-         *
-         * @param userId
-         * @param cartId
-         * @param productCode
-         * @param quantity
-         */
-        MultiCartService.prototype.addEntry = function (userId, cartId, productCode, quantity) {
-            this.store.dispatch(new CartAddEntry({
-                userId: userId,
-                cartId: cartId,
-                productCode: productCode,
-                quantity: quantity,
-            }));
-        };
-        /**
-         * Add multiple entries to cart
-         *
-         * @param userId
-         * @param cartId
-         * @param products Array with items (productCode and quantity)
-         */
-        MultiCartService.prototype.addEntries = function (userId, cartId, products) {
-            var _this = this;
-            products.forEach(function (product) {
-                _this.store.dispatch(new CartAddEntry({
-                    userId: userId,
-                    cartId: cartId,
-                    productCode: product.productCode,
-                    quantity: product.quantity,
-                }));
-            });
-        };
-        /**
-         * Remove entry from cart
-         *
-         * @param userId
-         * @param cartId
-         * @param entryNumber
-         */
-        MultiCartService.prototype.removeEntry = function (userId, cartId, entryNumber) {
-            this.store.dispatch(new CartRemoveEntry({
-                userId: userId,
-                cartId: cartId,
-                entryNumber: "" + entryNumber,
-            }));
-        };
-        /**
-         * Update entry in cart. For quantity = 0 it removes entry
-         *
-         * @param userId
-         * @param cartId
-         * @param entryNumber
-         * @param quantity
-         */
-        MultiCartService.prototype.updateEntry = function (userId, cartId, entryNumber, quantity) {
-            if (quantity > 0) {
-                this.store.dispatch(new CartUpdateEntry({
-                    userId: userId,
-                    cartId: cartId,
-                    entryNumber: "" + entryNumber,
-                    quantity: quantity,
-                }));
-            }
-            else {
-                this.removeEntry(userId, cartId, entryNumber);
-            }
-        };
-        /**
-         * Get specific entry from cart
-         *
-         * @param cartId
-         * @param productCode
-         */
-        MultiCartService.prototype.getEntry = function (cartId, productCode) {
-            return this.store.pipe(i1$1.select(getCartEntrySelectorFactory(cartId, productCode)));
-        };
-        /**
-         * Assign email to the cart
-         *
-         * @param cartId
-         * @param userId
-         * @param email
-         */
-        MultiCartService.prototype.assignEmail = function (cartId, userId, email) {
-            this.store.dispatch(new AddEmailToCart({
-                userId: userId,
-                cartId: cartId,
-                email: email,
-            }));
-        };
-        /**
-         * Delete cart
-         *
-         * @param cartId
-         * @param userId
-         */
-        MultiCartService.prototype.deleteCart = function (cartId, userId) {
-            this.store.dispatch(new DeleteCart({
-                userId: userId,
-                cartId: cartId,
-            }));
-        };
-        return MultiCartService;
-    }());
-    MultiCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(i0.ɵɵinject(i1$1.Store)); }, token: MultiCartService, providedIn: "root" });
-    MultiCartService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    MultiCartService.ctorParameters = function () { return [
-        { type: i1$1.Store }
-    ]; };
-
-    var ActiveCartService = /** @class */ (function () {
-        function ActiveCartService(store, authService, multiCartService) {
-            var _this = this;
-            this.store = store;
-            this.authService = authService;
-            this.multiCartService = multiCartService;
-            this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
-            this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
-            this.subscription = new rxjs.Subscription();
-            this.userId = OCC_USER_ID_ANONYMOUS;
-            this.activeCartId$ = this.store.pipe(i1$1.select(getActiveCartId), operators.map(function (cartId) {
-                if (!cartId) {
-                    return OCC_CART_ID_CURRENT;
-                }
-                return cartId;
-            }));
-            this.cartSelector$ = this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getCartEntity(cartId); }));
-            this.initActiveCart();
-        }
-        ActiveCartService.prototype.ngOnDestroy = function () {
-            this.subscription.unsubscribe();
-        };
-        ActiveCartService.prototype.initActiveCart = function () {
-            var _this = this;
-            this.subscription.add(this.authService.getOccUserId().subscribe(function (userId) {
-                _this.userId = userId;
-                if (_this.userId !== OCC_USER_ID_ANONYMOUS) {
-                    if (_this.isJustLoggedIn(userId)) {
-                        _this.loadOrMerge(_this.cartId);
-                    }
-                }
-                _this.previousUserId = userId;
-            }));
-            this.subscription.add(this.activeCartId$.subscribe(function (cartId) {
-                _this.cartId = cartId;
-            }));
-            this.activeCart$ = this.cartSelector$.pipe(operators.withLatestFrom(this.activeCartId$), operators.map(function (_a) {
-                var _b = __read(_a, 2), cartEntity = _b[0], activeCartId = _b[1];
-                return {
-                    cart: cartEntity.value,
-                    cartId: activeCartId,
-                    isStable: !cartEntity.loading && cartEntity.processesCount === 0,
-                    loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
-                };
-            }), 
-            // we want to emit empty carts even if those are not stable
-            // on merge cart action we want to switch to empty cart so no one would use old cartId which can be already obsolete
-            // so on merge action the resulting stream looks like this: old_cart -> {} -> new_cart
-            operators.filter(function (_a) {
-                var isStable = _a.isStable, cart = _a.cart;
-                return isStable || _this.isEmpty(cart);
-            }), operators.tap(function (_a) {
-                var cart = _a.cart, cartId = _a.cartId, loaded = _a.loaded, isStable = _a.isStable;
-                if (isStable &&
-                    _this.isEmpty(cart) &&
-                    !loaded &&
-                    !isTempCartId(cartId)) {
-                    _this.load(cartId);
-                }
-            }), operators.map(function (_a) {
-                var cart = _a.cart;
-                return (cart ? cart : {});
-            }), operators.tap(function (cart) {
-                if (cart) {
-                    _this.cartUser = cart.user;
-                }
-            }), operators.distinctUntilChanged(), operators.shareReplay({ bufferSize: 1, refCount: true }));
-        };
-        /**
-         * Returns active cart
-         */
-        ActiveCartService.prototype.getActive = function () {
-            return this.activeCart$;
-        };
-        /**
-         * Returns active cart id
-         */
-        ActiveCartService.prototype.getActiveCartId = function () {
-            var _this = this;
-            return this.activeCart$.pipe(operators.map(function (cart) { return getCartIdByUserId(cart, _this.userId); }), operators.distinctUntilChanged());
-        };
-        /**
-         * Returns cart entries
-         */
-        ActiveCartService.prototype.getEntries = function () {
-            var _this = this;
-            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getEntries(cartId); }), operators.distinctUntilChanged());
-        };
-        /**
-         * Returns cart loading state
-         */
-        ActiveCartService.prototype.getLoading = function () {
-            return this.cartSelector$.pipe(operators.map(function (cartEntity) { return cartEntity.loading; }), operators.distinctUntilChanged());
-        };
-        /**
-         * Returns true when cart is stable (not loading and not pending processes on cart)
-         */
-        ActiveCartService.prototype.isStable = function () {
-            var _this = this;
-            // Debounce is used here, to avoid flickering when we switch between different cart entities.
-            // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
-            // After load fails we might create new cart so we switch to `temp-${uuid}` cart entity used when creating cart.
-            // At the end we finally switch to cart `code` for cart id. Between those switches cart `isStable` function should not flicker.
-            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.isStable(cartId); }), operators.debounce(function (state) { return (state ? rxjs.timer(0) : rxjs.EMPTY); }), operators.distinctUntilChanged());
-        };
-        ActiveCartService.prototype.loadOrMerge = function (cartId) {
-            // for login user, whenever there's an existing cart, we will load the user
-            // current cart and merge it into the existing cart
-            if (!cartId || cartId === OCC_CART_ID_CURRENT) {
-                this.multiCartService.loadCart({
-                    userId: this.userId,
-                    cartId: OCC_CART_ID_CURRENT,
-                    extraData: {
-                        active: true,
-                    },
-                });
-            }
-            else if (this.isGuestCart()) {
-                this.guestCartMerge(cartId);
-            }
-            else {
-                this.multiCartService.mergeToCurrentCart({
-                    userId: this.userId,
-                    cartId: cartId,
-                    extraData: {
-                        active: true,
-                    },
-                });
-            }
-        };
-        ActiveCartService.prototype.load = function (cartId) {
-            if (this.userId !== OCC_USER_ID_ANONYMOUS) {
-                this.multiCartService.loadCart({
-                    userId: this.userId,
-                    cartId: cartId ? cartId : OCC_CART_ID_CURRENT,
-                    extraData: {
-                        active: true,
-                    },
-                });
-            }
-            else if (cartId && cartId !== OCC_CART_ID_CURRENT) {
-                this.multiCartService.loadCart({
-                    userId: this.userId,
-                    cartId: cartId,
-                    extraData: {
-                        active: true,
-                    },
-                });
-            }
-        };
-        ActiveCartService.prototype.addEntriesGuestMerge = function (cartEntries) {
-            var _this = this;
-            var entriesToAdd = cartEntries.map(function (entry) { return ({
-                productCode: entry.product.code,
-                quantity: entry.quantity,
-            }); });
-            this.requireLoadedCartForGuestMerge().subscribe(function (cartState) {
-                _this.multiCartService.addEntries(_this.userId, getCartIdByUserId(cartState.value, _this.userId), entriesToAdd);
-            });
-        };
-        ActiveCartService.prototype.requireLoadedCartForGuestMerge = function () {
-            var _this = this;
-            return this.requireLoadedCart(this.cartSelector$.pipe(operators.filter(function () { return !_this.isGuestCart(); })));
-        };
-        ActiveCartService.prototype.isCartCreating = function (cartState) {
-            // cart creating is always represented with loading flags
-            // when all loading flags are false it means that we restored wrong cart id
-            // could happen on context change or reload right in the middle on cart create call
-            return (isTempCartId(this.cartId) &&
-                (cartState.loading || cartState.success || cartState.error));
-        };
-        ActiveCartService.prototype.requireLoadedCart = function (customCartSelector$) {
-            var _this = this;
-            // For guest cart merge we want to filter guest cart in the whole stream
-            // We have to wait with load/create/addEntry after guest cart will be deleted.
-            // That's why you can provide custom selector with this filter applied.
-            var cartSelector$ = customCartSelector$
-                ? customCartSelector$
-                : this.cartSelector$;
-            return cartSelector$.pipe(operators.filter(function (cartState) { return !cartState.loading; }), 
-            // Avoid load/create call when there are new cart creating at the moment
-            operators.filter(function (cartState) { return !_this.isCartCreating(cartState); }), operators.take(1), operators.switchMap(function (cartState) {
-                // Try to load the cart, because it might have been created on another device between our login and add entry call
-                if (_this.isEmpty(cartState.value) &&
-                    _this.userId !== OCC_USER_ID_ANONYMOUS) {
-                    _this.load(undefined);
-                }
-                return cartSelector$;
-            }), operators.filter(function (cartState) { return !cartState.loading; }), 
-            // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
-            operators.filter(function (cartState) { return _this.userId === OCC_USER_ID_ANONYMOUS ||
-                cartState.success ||
-                cartState.error; }), operators.take(1), operators.switchMap(function (cartState) {
-                if (_this.isEmpty(cartState.value)) {
-                    _this.multiCartService.createCart({
-                        userId: _this.userId,
-                        extraData: {
-                            active: true,
-                        },
-                    });
-                }
-                return cartSelector$;
-            }), operators.filter(function (cartState) { return !cartState.loading; }), operators.filter(function (cartState) { return cartState.success || cartState.error; }), 
-            // wait for active cart id to point to code/guid to avoid some work on temp cart entity
-            operators.filter(function (cartState) { return !_this.isCartCreating(cartState); }), operators.filter(function (cartState) { return !_this.isEmpty(cartState.value); }), operators.take(1));
-        };
-        /**
-         * Add entry to active cart
-         *
-         * @param productCode
-         * @param quantity
-         */
-        ActiveCartService.prototype.addEntry = function (productCode, quantity) {
-            var _this = this;
-            this.requireLoadedCart().subscribe(function (cartState) {
-                _this.multiCartService.addEntry(_this.userId, getCartIdByUserId(cartState.value, _this.userId), productCode, quantity);
-            });
-        };
-        /**
-         * Remove entry
-         *
-         * @param entry
-         */
-        ActiveCartService.prototype.removeEntry = function (entry) {
-            this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
-        };
-        /**
-         * Update entry
-         *
-         * @param entryNumber
-         * @param quantity
-         */
-        ActiveCartService.prototype.updateEntry = function (entryNumber, quantity) {
-            this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
-        };
-        /**
-         * Returns cart entry
-         *
-         * @param productCode
-         */
-        ActiveCartService.prototype.getEntry = function (productCode) {
-            var _this = this;
-            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getEntry(cartId, productCode); }), operators.distinctUntilChanged());
-        };
-        /**
-         * Assign email to cart
-         *
-         * @param email
-         */
-        ActiveCartService.prototype.addEmail = function (email) {
-            this.multiCartService.assignEmail(this.cartId, this.userId, email);
-        };
-        /**
-         * Get assigned user to cart
-         */
-        ActiveCartService.prototype.getAssignedUser = function () {
-            return this.getActive().pipe(operators.map(function (cart) { return cart.user; }));
-        };
-        /**
-         * Returns true for guest cart
-         */
-        ActiveCartService.prototype.isGuestCart = function () {
-            return (this.cartUser &&
-                (this.cartUser.name === OCC_USER_ID_GUEST ||
-                    this.isEmail(this.cartUser.uid.split('|').slice(1).join('|'))));
-        };
-        /**
-         * Add multiple entries to a cart
-         *
-         * @param cartEntries : list of entries to add (OrderEntry[])
-         */
-        ActiveCartService.prototype.addEntries = function (cartEntries) {
-            var _this = this;
-            cartEntries.forEach(function (entry) {
-                _this.addEntry(entry.product.code, entry.quantity);
-            });
-        };
-        ActiveCartService.prototype.isEmail = function (str) {
-            if (str) {
-                return str.match(EMAIL_PATTERN) ? true : false;
-            }
-            return false;
-        };
-        // TODO: Remove once backend is updated
-        /**
-         * Temporary method to merge guest cart with user cart because of backend limitation
-         * This is for an edge case
-         */
-        ActiveCartService.prototype.guestCartMerge = function (cartId) {
-            var cartEntries;
-            this.getEntries()
-                .pipe(operators.take(1))
-                .subscribe(function (entries) {
-                cartEntries = entries;
-            });
-            this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
-            this.addEntriesGuestMerge(cartEntries);
-        };
-        ActiveCartService.prototype.isEmpty = function (cart) {
-            return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
-        };
-        ActiveCartService.prototype.isJustLoggedIn = function (userId) {
-            return (this.previousUserId !== userId && // *just* logged in
-                this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
-            );
-        };
-        return ActiveCartService;
-    }());
-    ActiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
-    ActiveCartService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    ActiveCartService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: MultiCartService }
-    ]; };
-
-    /**
-     *
-     * Withdraw from the source observable when notifier emits a value
-     *
-     * Withdraw will result in resubscribing to the source observable
-     * Operator is useful to kill ongoing emission transformation on notifier emission
-     *
-     * @param notifier
-     */
-    function withdrawOn(notifier) {
-        return function (source) { return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source)); };
-    }
-
     var CartEntryConnector = /** @class */ (function () {
         function CartEntryConnector(adapter) {
             this.adapter = adapter;
@@ -16241,684 +19120,6 @@
     __decorate([
         i3.Effect()
     ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
-
-    var VERIFY_ADDRESS = '[Checkout] Verify Address';
-    var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
-    var VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
-    var CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
-    var VerifyAddress = /** @class */ (function () {
-        function VerifyAddress(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS;
-        }
-        return VerifyAddress;
-    }());
-    var VerifyAddressFail = /** @class */ (function () {
-        function VerifyAddressFail(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS_FAIL;
-        }
-        return VerifyAddressFail;
-    }());
-    var VerifyAddressSuccess = /** @class */ (function () {
-        function VerifyAddressSuccess(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS_SUCCESS;
-        }
-        return VerifyAddressSuccess;
-    }());
-    var ClearAddressVerificationResults = /** @class */ (function () {
-        function ClearAddressVerificationResults() {
-            this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
-        }
-        return ClearAddressVerificationResults;
-    }());
-
-    var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
-    var LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
-    var LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
-    var LoadCardTypes = /** @class */ (function () {
-        function LoadCardTypes() {
-            this.type = LOAD_CARD_TYPES;
-        }
-        return LoadCardTypes;
-    }());
-    var LoadCardTypesFail = /** @class */ (function () {
-        function LoadCardTypesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_CARD_TYPES_FAIL;
-        }
-        return LoadCardTypesFail;
-    }());
-    var LoadCardTypesSuccess = /** @class */ (function () {
-        function LoadCardTypesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_CARD_TYPES_SUCCESS;
-        }
-        return LoadCardTypesSuccess;
-    }());
-
-    var CHECKOUT_FEATURE = 'checkout';
-    var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
-    var SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
-    var SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
-    var SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
-    var SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
-    var GET_PAYMENT_TYPES_PROCESS_ID = 'getPaymentTypes';
-    var SET_COST_CENTER_PROCESS_ID = 'setCostCenter';
-
-    var CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
-    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
-    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
-    var CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
-    var CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
-    var CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
-    var ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
-    var ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
-    var ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
-    var SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
-    var SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
-    var SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
-    var RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
-    var LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
-    var LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
-    var LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
-    var CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
-    var SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
-    var SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
-    var SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
-    var RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
-    var SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
-    var SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
-    var SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
-    var RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
-    var CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
-    var CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
-    var CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
-    var SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
-    var SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
-    var SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
-    var RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
-    var PLACE_ORDER = '[Checkout] Place Order';
-    var PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
-    var PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
-    var CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
-    var CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
-    var LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
-    var LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
-    var LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
-    var CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
-    var PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
-    var SET_COST_CENTER = '[Checkout] Set Cost Center';
-    var SET_COST_CENTER_FAIL = '[Checkout] Set Cost Center Fail';
-    var SET_COST_CENTER_SUCCESS = '[Checkout] Set Cost Center Success';
-    var RESET_SET_COST_CENTER_PROCESS = '[Checkout] Reset Set Cost Center Process';
-    var AddDeliveryAddress = /** @class */ (function () {
-        function AddDeliveryAddress(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS;
-        }
-        return AddDeliveryAddress;
-    }());
-    var AddDeliveryAddressFail = /** @class */ (function () {
-        function AddDeliveryAddressFail(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS_FAIL;
-        }
-        return AddDeliveryAddressFail;
-    }());
-    var AddDeliveryAddressSuccess = /** @class */ (function () {
-        function AddDeliveryAddressSuccess(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
-        }
-        return AddDeliveryAddressSuccess;
-    }());
-    var SetDeliveryAddress = /** @class */ (function (_super) {
-        __extends(SetDeliveryAddress, _super);
-        function SetDeliveryAddress(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_ADDRESS;
-            return _this;
-        }
-        return SetDeliveryAddress;
-    }(EntityLoadAction));
-    var SetDeliveryAddressFail = /** @class */ (function (_super) {
-        __extends(SetDeliveryAddressFail, _super);
-        function SetDeliveryAddressFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_ADDRESS_FAIL;
-            return _this;
-        }
-        return SetDeliveryAddressFail;
-    }(EntityFailAction));
-    var SetDeliveryAddressSuccess = /** @class */ (function (_super) {
-        __extends(SetDeliveryAddressSuccess, _super);
-        function SetDeliveryAddressSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_ADDRESS_SUCCESS;
-            return _this;
-        }
-        return SetDeliveryAddressSuccess;
-    }(EntitySuccessAction));
-    var ResetSetDeliveryAddressProcess = /** @class */ (function (_super) {
-        __extends(ResetSetDeliveryAddressProcess, _super);
-        function ResetSetDeliveryAddressProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
-            _this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
-            return _this;
-        }
-        return ResetSetDeliveryAddressProcess;
-    }(EntityLoaderResetAction));
-    var LoadSupportedDeliveryModes = /** @class */ (function (_super) {
-        __extends(LoadSupportedDeliveryModes, _super);
-        function LoadSupportedDeliveryModes(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = LOAD_SUPPORTED_DELIVERY_MODES;
-            return _this;
-        }
-        return LoadSupportedDeliveryModes;
-    }(EntityLoadAction));
-    var LoadSupportedDeliveryModesFail = /** @class */ (function (_super) {
-        __extends(LoadSupportedDeliveryModesFail, _super);
-        function LoadSupportedDeliveryModesFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
-            return _this;
-        }
-        return LoadSupportedDeliveryModesFail;
-    }(EntityFailAction));
-    var LoadSupportedDeliveryModesSuccess = /** @class */ (function (_super) {
-        __extends(LoadSupportedDeliveryModesSuccess, _super);
-        function LoadSupportedDeliveryModesSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
-            return _this;
-        }
-        return LoadSupportedDeliveryModesSuccess;
-    }(EntitySuccessAction));
-    var ResetLoadSupportedDeliveryModesProcess = /** @class */ (function (_super) {
-        __extends(ResetLoadSupportedDeliveryModesProcess, _super);
-        function ResetLoadSupportedDeliveryModesProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
-            return _this;
-        }
-        return ResetLoadSupportedDeliveryModesProcess;
-    }(EntityLoaderResetAction));
-    var SetDeliveryMode = /** @class */ (function (_super) {
-        __extends(SetDeliveryMode, _super);
-        function SetDeliveryMode(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_MODE;
-            return _this;
-        }
-        return SetDeliveryMode;
-    }(EntityLoadAction));
-    var SetDeliveryModeFail = /** @class */ (function (_super) {
-        __extends(SetDeliveryModeFail, _super);
-        function SetDeliveryModeFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_MODE_FAIL;
-            return _this;
-        }
-        return SetDeliveryModeFail;
-    }(EntityFailAction));
-    var SetDeliveryModeSuccess = /** @class */ (function (_super) {
-        __extends(SetDeliveryModeSuccess, _super);
-        function SetDeliveryModeSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_DELIVERY_MODE_SUCCESS;
-            return _this;
-        }
-        return SetDeliveryModeSuccess;
-    }(EntitySuccessAction));
-    var ResetSetDeliveryModeProcess = /** @class */ (function (_super) {
-        __extends(ResetSetDeliveryModeProcess, _super);
-        function ResetSetDeliveryModeProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
-            _this.type = RESET_SET_DELIVERY_MODE_PROCESS;
-            return _this;
-        }
-        return ResetSetDeliveryModeProcess;
-    }(EntityLoaderResetAction));
-    var CreatePaymentDetails = /** @class */ (function (_super) {
-        __extends(CreatePaymentDetails, _super);
-        function CreatePaymentDetails(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CREATE_PAYMENT_DETAILS;
-            return _this;
-        }
-        return CreatePaymentDetails;
-    }(EntityLoadAction));
-    var CreatePaymentDetailsFail = /** @class */ (function (_super) {
-        __extends(CreatePaymentDetailsFail, _super);
-        function CreatePaymentDetailsFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CREATE_PAYMENT_DETAILS_FAIL;
-            return _this;
-        }
-        return CreatePaymentDetailsFail;
-    }(EntityFailAction));
-    var CreatePaymentDetailsSuccess = /** @class */ (function () {
-        function CreatePaymentDetailsSuccess(payload) {
-            this.payload = payload;
-            this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
-        }
-        return CreatePaymentDetailsSuccess;
-    }());
-    var PaymentProcessSuccess = /** @class */ (function (_super) {
-        __extends(PaymentProcessSuccess, _super);
-        function PaymentProcessSuccess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.type = PAYMENT_PROCESS_SUCCESS;
-            return _this;
-        }
-        return PaymentProcessSuccess;
-    }(EntitySuccessAction));
-    var SetPaymentDetails = /** @class */ (function (_super) {
-        __extends(SetPaymentDetails, _super);
-        function SetPaymentDetails(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_PAYMENT_DETAILS;
-            return _this;
-        }
-        return SetPaymentDetails;
-    }(EntityLoadAction));
-    var SetPaymentDetailsFail = /** @class */ (function (_super) {
-        __extends(SetPaymentDetailsFail, _super);
-        function SetPaymentDetailsFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SET_PAYMENT_DETAILS_FAIL;
-            return _this;
-        }
-        return SetPaymentDetailsFail;
-    }(EntityFailAction));
-    var SetPaymentDetailsSuccess = /** @class */ (function (_super) {
-        __extends(SetPaymentDetailsSuccess, _super);
-        function SetPaymentDetailsSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_PAYMENT_DETAILS_SUCCESS;
-            return _this;
-        }
-        return SetPaymentDetailsSuccess;
-    }(EntitySuccessAction));
-    var ResetSetPaymentDetailsProcess = /** @class */ (function (_super) {
-        __extends(ResetSetPaymentDetailsProcess, _super);
-        function ResetSetPaymentDetailsProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
-            _this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
-            return _this;
-        }
-        return ResetSetPaymentDetailsProcess;
-    }(EntityLoaderResetAction));
-    var PlaceOrder = /** @class */ (function () {
-        function PlaceOrder(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER;
-        }
-        return PlaceOrder;
-    }());
-    var PlaceOrderFail = /** @class */ (function () {
-        function PlaceOrderFail(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER_FAIL;
-        }
-        return PlaceOrderFail;
-    }());
-    var PlaceOrderSuccess = /** @class */ (function () {
-        function PlaceOrderSuccess(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER_SUCCESS;
-        }
-        return PlaceOrderSuccess;
-    }());
-    var ClearSupportedDeliveryModes = /** @class */ (function () {
-        function ClearSupportedDeliveryModes() {
-            this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
-        }
-        return ClearSupportedDeliveryModes;
-    }());
-    var ClearCheckoutStep = /** @class */ (function () {
-        function ClearCheckoutStep(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_STEP;
-        }
-        return ClearCheckoutStep;
-    }());
-    var ClearCheckoutData = /** @class */ (function () {
-        function ClearCheckoutData() {
-            this.type = CLEAR_CHECKOUT_DATA;
-        }
-        return ClearCheckoutData;
-    }());
-    var LoadCheckoutDetails = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetails, _super);
-        function LoadCheckoutDetails(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS;
-            return _this;
-        }
-        return LoadCheckoutDetails;
-    }(LoaderLoadAction));
-    var LoadCheckoutDetailsFail = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetailsFail, _super);
-        function LoadCheckoutDetailsFail(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS_FAIL;
-            return _this;
-        }
-        return LoadCheckoutDetailsFail;
-    }(LoaderFailAction));
-    var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetailsSuccess, _super);
-        function LoadCheckoutDetailsSuccess(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
-            return _this;
-        }
-        return LoadCheckoutDetailsSuccess;
-    }(LoaderSuccessAction));
-    var CheckoutClearMiscsData = /** @class */ (function () {
-        function CheckoutClearMiscsData() {
-            this.type = CHECKOUT_CLEAR_MISCS_DATA;
-        }
-        return CheckoutClearMiscsData;
-    }());
-    var ClearCheckoutDeliveryAddress = /** @class */ (function () {
-        function ClearCheckoutDeliveryAddress(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
-        }
-        return ClearCheckoutDeliveryAddress;
-    }());
-    var ClearCheckoutDeliveryAddressSuccess = /** @class */ (function () {
-        function ClearCheckoutDeliveryAddressSuccess() {
-            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
-        }
-        return ClearCheckoutDeliveryAddressSuccess;
-    }());
-    var ClearCheckoutDeliveryAddressFail = /** @class */ (function () {
-        function ClearCheckoutDeliveryAddressFail(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
-        }
-        return ClearCheckoutDeliveryAddressFail;
-    }());
-    var ClearCheckoutDeliveryMode = /** @class */ (function (_super) {
-        __extends(ClearCheckoutDeliveryMode, _super);
-        function ClearCheckoutDeliveryMode(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
-            return _this;
-        }
-        return ClearCheckoutDeliveryMode;
-    }(EntityProcessesIncrementAction));
-    var ClearCheckoutDeliveryModeSuccess = /** @class */ (function (_super) {
-        __extends(ClearCheckoutDeliveryModeSuccess, _super);
-        function ClearCheckoutDeliveryModeSuccess(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
-            return _this;
-        }
-        return ClearCheckoutDeliveryModeSuccess;
-    }(EntityProcessesDecrementAction));
-    var ClearCheckoutDeliveryModeFail = /** @class */ (function (_super) {
-        __extends(ClearCheckoutDeliveryModeFail, _super);
-        function ClearCheckoutDeliveryModeFail(payload) {
-            var _this = _super.call(this, MULTI_CART_DATA, payload.cartId) || this;
-            _this.payload = payload;
-            _this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
-            return _this;
-        }
-        return ClearCheckoutDeliveryModeFail;
-    }(EntityProcessesDecrementAction));
-    var SetCostCenter = /** @class */ (function (_super) {
-        __extends(SetCostCenter, _super);
-        function SetCostCenter(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_COST_CENTER;
-            return _this;
-        }
-        return SetCostCenter;
-    }(EntityLoadAction));
-    var SetCostCenterFail = /** @class */ (function (_super) {
-        __extends(SetCostCenterFail, _super);
-        function SetCostCenterFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = SET_COST_CENTER_FAIL;
-            return _this;
-        }
-        return SetCostCenterFail;
-    }(EntityFailAction));
-    var SetCostCenterSuccess = /** @class */ (function (_super) {
-        __extends(SetCostCenterSuccess, _super);
-        function SetCostCenterSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = SET_COST_CENTER_SUCCESS;
-            return _this;
-        }
-        return SetCostCenterSuccess;
-    }(EntitySuccessAction));
-    var ResetSetCostCenterProcess = /** @class */ (function (_super) {
-        __extends(ResetSetCostCenterProcess, _super);
-        function ResetSetCostCenterProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID) || this;
-            _this.type = RESET_SET_COST_CENTER_PROCESS;
-            return _this;
-        }
-        return ResetSetCostCenterProcess;
-    }(EntityLoaderResetAction));
-
-    var LOAD_PAYMENT_TYPES = '[Checkout] Load Payment Types';
-    var LOAD_PAYMENT_TYPES_FAIL = '[Checkout] Load Payment Types Fail';
-    var LOAD_PAYMENT_TYPES_SUCCESS = '[Checkout] Load Payment Types Success';
-    var RESET_LOAD_PAYMENT_TYPES_PROCESS_ID = '[Checkout] Reset Load Payment Type Process';
-    var SET_PAYMENT_TYPE = '[Checkout] Set Payment Type';
-    var SET_PAYMENT_TYPE_FAIL = '[Checkout] Set Payment Type Fail';
-    var SET_PAYMENT_TYPE_SUCCESS = '[Checkout] Set Payment Type Success';
-    var LoadPaymentTypes = /** @class */ (function (_super) {
-        __extends(LoadPaymentTypes, _super);
-        function LoadPaymentTypes() {
-            var _this = _super.call(this, PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID) || this;
-            _this.type = LOAD_PAYMENT_TYPES;
-            return _this;
-        }
-        return LoadPaymentTypes;
-    }(EntityLoadAction));
-    var LoadPaymentTypesFail = /** @class */ (function (_super) {
-        __extends(LoadPaymentTypesFail, _super);
-        function LoadPaymentTypesFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = LOAD_PAYMENT_TYPES_FAIL;
-            return _this;
-        }
-        return LoadPaymentTypesFail;
-    }(EntityFailAction));
-    var LoadPaymentTypesSuccess = /** @class */ (function (_super) {
-        __extends(LoadPaymentTypesSuccess, _super);
-        function LoadPaymentTypesSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = LOAD_PAYMENT_TYPES_SUCCESS;
-            return _this;
-        }
-        return LoadPaymentTypesSuccess;
-    }(EntitySuccessAction));
-    var ResetLoadPaymentTypesProcess = /** @class */ (function (_super) {
-        __extends(ResetLoadPaymentTypesProcess, _super);
-        function ResetLoadPaymentTypesProcess() {
-            var _this = _super.call(this, PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID) || this;
-            _this.type = RESET_LOAD_PAYMENT_TYPES_PROCESS_ID;
-            return _this;
-        }
-        return ResetLoadPaymentTypesProcess;
-    }(EntityLoaderResetAction));
-    var SetPaymentType = /** @class */ (function () {
-        function SetPaymentType(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_TYPE;
-        }
-        return SetPaymentType;
-    }());
-    var SetPaymentTypeFail = /** @class */ (function () {
-        function SetPaymentTypeFail(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_TYPE_FAIL;
-        }
-        return SetPaymentTypeFail;
-    }());
-    var SetPaymentTypeSuccess = /** @class */ (function () {
-        function SetPaymentTypeSuccess(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_TYPE_SUCCESS;
-        }
-        return SetPaymentTypeSuccess;
-    }());
-
-    var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        VERIFY_ADDRESS: VERIFY_ADDRESS,
-        VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
-        VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
-        CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
-        VerifyAddress: VerifyAddress,
-        VerifyAddressFail: VerifyAddressFail,
-        VerifyAddressSuccess: VerifyAddressSuccess,
-        ClearAddressVerificationResults: ClearAddressVerificationResults,
-        LOAD_CARD_TYPES: LOAD_CARD_TYPES,
-        LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
-        LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
-        LoadCardTypes: LoadCardTypes,
-        LoadCardTypesFail: LoadCardTypesFail,
-        LoadCardTypesSuccess: LoadCardTypesSuccess,
-        CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
-        CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
-        CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
-        CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
-        CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
-        CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
-        ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
-        ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
-        ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
-        SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
-        SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
-        SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
-        RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
-        LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
-        LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
-        LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
-        CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
-        SET_DELIVERY_MODE: SET_DELIVERY_MODE,
-        SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
-        SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
-        RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
-        SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
-        SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
-        SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
-        RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
-        CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
-        CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
-        CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
-        SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
-        SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
-        SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
-        RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
-        PLACE_ORDER: PLACE_ORDER,
-        PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
-        PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
-        CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
-        CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
-        LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
-        LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
-        LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
-        CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
-        PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
-        SET_COST_CENTER: SET_COST_CENTER,
-        SET_COST_CENTER_FAIL: SET_COST_CENTER_FAIL,
-        SET_COST_CENTER_SUCCESS: SET_COST_CENTER_SUCCESS,
-        RESET_SET_COST_CENTER_PROCESS: RESET_SET_COST_CENTER_PROCESS,
-        AddDeliveryAddress: AddDeliveryAddress,
-        AddDeliveryAddressFail: AddDeliveryAddressFail,
-        AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
-        SetDeliveryAddress: SetDeliveryAddress,
-        SetDeliveryAddressFail: SetDeliveryAddressFail,
-        SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
-        ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
-        LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
-        LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
-        LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
-        ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
-        SetDeliveryMode: SetDeliveryMode,
-        SetDeliveryModeFail: SetDeliveryModeFail,
-        SetDeliveryModeSuccess: SetDeliveryModeSuccess,
-        ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
-        CreatePaymentDetails: CreatePaymentDetails,
-        CreatePaymentDetailsFail: CreatePaymentDetailsFail,
-        CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
-        PaymentProcessSuccess: PaymentProcessSuccess,
-        SetPaymentDetails: SetPaymentDetails,
-        SetPaymentDetailsFail: SetPaymentDetailsFail,
-        SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
-        ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
-        PlaceOrder: PlaceOrder,
-        PlaceOrderFail: PlaceOrderFail,
-        PlaceOrderSuccess: PlaceOrderSuccess,
-        ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
-        ClearCheckoutStep: ClearCheckoutStep,
-        ClearCheckoutData: ClearCheckoutData,
-        LoadCheckoutDetails: LoadCheckoutDetails,
-        LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
-        LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
-        CheckoutClearMiscsData: CheckoutClearMiscsData,
-        ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
-        ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
-        ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
-        ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
-        ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
-        ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail,
-        SetCostCenter: SetCostCenter,
-        SetCostCenterFail: SetCostCenterFail,
-        SetCostCenterSuccess: SetCostCenterSuccess,
-        ResetSetCostCenterProcess: ResetSetCostCenterProcess,
-        LOAD_PAYMENT_TYPES: LOAD_PAYMENT_TYPES,
-        LOAD_PAYMENT_TYPES_FAIL: LOAD_PAYMENT_TYPES_FAIL,
-        LOAD_PAYMENT_TYPES_SUCCESS: LOAD_PAYMENT_TYPES_SUCCESS,
-        RESET_LOAD_PAYMENT_TYPES_PROCESS_ID: RESET_LOAD_PAYMENT_TYPES_PROCESS_ID,
-        SET_PAYMENT_TYPE: SET_PAYMENT_TYPE,
-        SET_PAYMENT_TYPE_FAIL: SET_PAYMENT_TYPE_FAIL,
-        SET_PAYMENT_TYPE_SUCCESS: SET_PAYMENT_TYPE_SUCCESS,
-        LoadPaymentTypes: LoadPaymentTypes,
-        LoadPaymentTypesFail: LoadPaymentTypesFail,
-        LoadPaymentTypesSuccess: LoadPaymentTypesSuccess,
-        ResetLoadPaymentTypesProcess: ResetLoadPaymentTypesProcess,
-        SetPaymentType: SetPaymentType,
-        SetPaymentTypeFail: SetPaymentTypeFail,
-        SetPaymentTypeSuccess: SetPaymentTypeSuccess
-    });
 
     var CartConnector = /** @class */ (function () {
         function CartConnector(adapter) {
@@ -17576,8 +19777,8 @@
 
     var getCmsState = i1$1.createFeatureSelector(CMS_FEATURE);
 
-    var ɵ0$x = function (state) { return state.components; };
-    var getComponentsState = i1$1.createSelector(getCmsState, ɵ0$x);
+    var ɵ0$E = function (state) { return state.components; };
+    var getComponentsState = i1$1.createSelector(getCmsState, ɵ0$E);
     var componentsContextSelectorFactory = function (uid) {
         return i1$1.createSelector(getComponentsState, function (componentsState) { return entitySelector(componentsState, uid); });
     };
@@ -17624,8 +19825,8 @@
         });
     };
 
-    var ɵ0$y = function (state) { return state.navigation; };
-    var getNavigationEntryItemState = i1$1.createSelector(getCmsState, ɵ0$y);
+    var ɵ0$F = function (state) { return state.navigation; };
+    var getNavigationEntryItemState = i1$1.createSelector(getCmsState, ɵ0$F);
     var getSelectedNavigationEntryItemState = function (nodeId) {
         return i1$1.createSelector(getNavigationEntryItemState, function (nodes) { return entityLoaderStateSelector(nodes, nodeId); });
     };
@@ -17634,7 +19835,7 @@
     };
 
     var getPageEntitiesSelector = function (state) { return state.pageData.entities; };
-    var ɵ0$z = getPageEntitiesSelector;
+    var ɵ0$G = getPageEntitiesSelector;
     var getIndexByType = function (index, type) {
         switch (type) {
             case exports.PageType.CONTENT_PAGE: {
@@ -17652,7 +19853,7 @@
         }
         return { entities: {} };
     };
-    var ɵ1$p = getIndexByType;
+    var ɵ1$u = getIndexByType;
     var getPageComponentTypesSelector = function (page) {
         var e_1, _a, e_2, _b;
         var componentTypes = new Set();
@@ -17685,11 +19886,11 @@
         }
         return Array.from(componentTypes);
     };
-    var ɵ2$h = getPageComponentTypesSelector;
-    var ɵ3$9 = function (state) { return state.page; };
-    var getPageState = i1$1.createSelector(getCmsState, ɵ3$9);
-    var ɵ4$3 = function (page) { return page.index; };
-    var getPageStateIndex = i1$1.createSelector(getPageState, ɵ4$3);
+    var ɵ2$k = getPageComponentTypesSelector;
+    var ɵ3$c = function (state) { return state.page; };
+    var getPageState = i1$1.createSelector(getCmsState, ɵ3$c);
+    var ɵ4$6 = function (page) { return page.index; };
+    var getPageStateIndex = i1$1.createSelector(getPageState, ɵ4$6);
     var getPageStateIndexEntityLoaderState = function (pageContext) { return i1$1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); }); };
     var getPageStateIndexLoaderState = function (pageContext) { return i1$1.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) { return entityLoaderStateSelector(indexState, pageContext.id); }); };
     var getPageStateIndexValue = function (pageContext) { return i1$1.createSelector(getPageStateIndexLoaderState(pageContext), function (entity) { return loaderValueSelector(entity); }); };
@@ -17712,7 +19913,7 @@
         componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
         componentsDataSelectorFactory: componentsDataSelectorFactory,
         componentsSelectorFactory: componentsSelectorFactory,
-        ɵ0: ɵ0$x,
+        ɵ0: ɵ0$E,
         getCmsState: getCmsState,
         getNavigationEntryItemState: getNavigationEntryItemState,
         getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
@@ -17726,10 +19927,10 @@
         getPageData: getPageData,
         getPageComponentTypes: getPageComponentTypes,
         getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory,
-        ɵ1: ɵ1$p,
-        ɵ2: ɵ2$h,
-        ɵ3: ɵ3$9,
-        ɵ4: ɵ4$3
+        ɵ1: ɵ1$u,
+        ɵ2: ɵ2$k,
+        ɵ3: ɵ3$c,
+        ɵ4: ɵ4$6
     });
 
     var CURRENT_CONTEXT_KEY = 'current';
@@ -17937,13 +20138,6 @@
         { type: RoutingService }
     ]; };
 
-    (function (PageRobotsMeta) {
-        PageRobotsMeta["INDEX"] = "INDEX";
-        PageRobotsMeta["NOINDEX"] = "NOINDEX";
-        PageRobotsMeta["FOLLOW"] = "FOLLOW";
-        PageRobotsMeta["NOFOLLOW"] = "NOFOLLOW";
-    })(exports.PageRobotsMeta || (exports.PageRobotsMeta = {}));
-
     /**
      * Resolves the page metadata for the Cart page (Using the `PageType.CONTENT_PAGE`
      * and the `CartPageTemplate`). If the cart page matches this template, the more
@@ -18053,7 +20247,7 @@
         i3.Effect()
     ], MultiCartEffects.prototype, "processesIncrement$", void 0);
 
-    var effects$4 = [
+    var effects$5 = [
         CartEffects,
         CartEntryEffects,
         CartVoucherEffects,
@@ -18073,7 +20267,7 @@
                         i1$1.StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
                             metaReducers: multiCartMetaReducers,
                         }),
-                        i3.EffectsModule.forFeature(effects$4),
+                        i3.EffectsModule.forFeature(effects$5),
                     ],
                     providers: [multiCartReducerProvider],
                 },] }
@@ -18726,1547 +20920,6 @@
         { type: AuthService },
         { type: UserService },
         { type: MultiCartService }
-    ]; };
-
-    /**
-     * Indicates that a user has successfully placed an order
-     */
-    var OrderPlacedEvent = /** @class */ (function () {
-        function OrderPlacedEvent() {
-        }
-        return OrderPlacedEvent;
-    }());
-
-    var CheckoutEventBuilder = /** @class */ (function () {
-        function CheckoutEventBuilder(stateEventService) {
-            this.stateEventService = stateEventService;
-            this.register();
-        }
-        /**
-         * Registers checkout events
-         */
-        CheckoutEventBuilder.prototype.register = function () {
-            this.orderPlacedEvent();
-        };
-        /**
-         * Register an order successfully placed event
-         */
-        CheckoutEventBuilder.prototype.orderPlacedEvent = function () {
-            this.stateEventService.register({
-                action: PLACE_ORDER_SUCCESS,
-                event: OrderPlacedEvent,
-            });
-        };
-        return CheckoutEventBuilder;
-    }());
-    CheckoutEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(i0.ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
-    CheckoutEventBuilder.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutEventBuilder.ctorParameters = function () { return [
-        { type: StateEventService }
-    ]; };
-
-    var CheckoutEventModule = /** @class */ (function () {
-        function CheckoutEventModule(_checkoutEventBuilder) {
-        }
-        return CheckoutEventModule;
-    }());
-    CheckoutEventModule.decorators = [
-        { type: i0.NgModule, args: [{},] }
-    ];
-    CheckoutEventModule.ctorParameters = function () { return [
-        { type: CheckoutEventBuilder }
-    ]; };
-
-    var TranslationService = /** @class */ (function () {
-        function TranslationService() {
-        }
-        return TranslationService;
-    }());
-
-    /**
-     * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
-     * and the `MultiStepCheckoutSummaryPageTemplate`. If the checkout page matches this template,
-     * the more generic `ContentPageMetaResolver` is overriden by this resolver.
-     *
-     * The page title and robots are resolved in this implementation only.
-     */
-    var CheckoutPageMetaResolver = /** @class */ (function (_super) {
-        __extends(CheckoutPageMetaResolver, _super);
-        function CheckoutPageMetaResolver(translation, activeCartService) {
-            var _this = _super.call(this) || this;
-            _this.translation = translation;
-            _this.activeCartService = activeCartService;
-            _this.cart$ = _this.activeCartService.getActive();
-            _this.pageType = exports.PageType.CONTENT_PAGE;
-            _this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
-            return _this;
-        }
-        CheckoutPageMetaResolver.prototype.resolveTitle = function () {
-            var _this = this;
-            return this.cart$.pipe(operators.switchMap(function (c) { return _this.translation.translate('pageMetaResolver.checkout.title', {
-                count: c.totalItems,
-            }); }));
-        };
-        CheckoutPageMetaResolver.prototype.resolveRobots = function () {
-            return rxjs.of([exports.PageRobotsMeta.NOFOLLOW, exports.PageRobotsMeta.NOINDEX]);
-        };
-        return CheckoutPageMetaResolver;
-    }(PageMetaResolver));
-    CheckoutPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(i0.ɵɵinject(TranslationService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
-    CheckoutPageMetaResolver.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutPageMetaResolver.ctorParameters = function () { return [
-        { type: TranslationService },
-        { type: ActiveCartService }
-    ]; };
-
-    var initialState$9 = {
-        results: {},
-    };
-    function reducer$9(state, action) {
-        if (state === void 0) { state = initialState$9; }
-        switch (action.type) {
-            case VERIFY_ADDRESS_SUCCESS: {
-                var results = action.payload;
-                return Object.assign(Object.assign({}, state), { results: results });
-            }
-            case VERIFY_ADDRESS_FAIL: {
-                return Object.assign(Object.assign({}, state), { results: 'FAIL' });
-            }
-            case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
-                return Object.assign(Object.assign({}, state), { results: {} });
-            }
-        }
-        return state;
-    }
-    var getAddressVerificationResults = function (state) { return state.results; };
-
-    var initialState$a = {
-        entities: {},
-    };
-    function reducer$a(state, action) {
-        if (state === void 0) { state = initialState$a; }
-        switch (action.type) {
-            case LOAD_CARD_TYPES_SUCCESS: {
-                var cardTypes = action.payload;
-                var entities = cardTypes.reduce(function (cardTypesEntities, name) {
-                    var _a;
-                    return Object.assign(Object.assign({}, cardTypesEntities), (_a = {}, _a[name.code] = name, _a));
-                }, Object.assign({}, state.entities));
-                return Object.assign(Object.assign({}, state), { entities: entities });
-            }
-            case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$a;
-            }
-        }
-        return state;
-    }
-    var getCardTypesEntites = function (state) { return state.entities; };
-
-    var initialState$b = {
-        poNumber: { po: undefined, costCenter: undefined },
-        address: {},
-        deliveryMode: {
-            supported: {},
-            selected: '',
-        },
-        paymentDetails: {},
-        orderDetails: {},
-    };
-    function reducer$b(state, action) {
-        if (state === void 0) { state = initialState$b; }
-        switch (action.type) {
-            case SET_PAYMENT_TYPE_SUCCESS: {
-                var cart = action.payload;
-                return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { po: cart.purchaseOrderNumber }) });
-            }
-            case SET_COST_CENTER_SUCCESS: {
-                return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { costCenter: action.payload }) });
-            }
-            case ADD_DELIVERY_ADDRESS_SUCCESS:
-            case SET_DELIVERY_ADDRESS_SUCCESS: {
-                var address = action.payload;
-                return Object.assign(Object.assign({}, state), { address: address });
-            }
-            case LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: {
-                var supportedModes = action.payload;
-                if (!supportedModes) {
-                    return state;
-                }
-                var supported = supportedModes.reduce(function (modes, mode) {
-                    var _a;
-                    return Object.assign(Object.assign({}, modes), (_a = {}, _a[mode.code] = mode, _a));
-                }, Object.assign({}, state.deliveryMode.supported));
-                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: supported }) });
-            }
-            case SET_DELIVERY_MODE_SUCCESS: {
-                var selected = action.payload;
-                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: selected }) });
-            }
-            case CREATE_PAYMENT_DETAILS_SUCCESS:
-            case SET_PAYMENT_DETAILS_SUCCESS: {
-                return Object.assign(Object.assign({}, state), { paymentDetails: action.payload });
-            }
-            case CREATE_PAYMENT_DETAILS_FAIL: {
-                var paymentDetails = action.payload;
-                if (paymentDetails['hasError']) {
-                    return Object.assign(Object.assign({}, state), { paymentDetails: paymentDetails });
-                }
-                return state;
-            }
-            case PLACE_ORDER_SUCCESS: {
-                var orderDetails = action.payload;
-                return Object.assign(Object.assign({}, state), { orderDetails: orderDetails });
-            }
-            case CLEAR_CHECKOUT_DATA: {
-                return initialState$b;
-            }
-            case CLEAR_CHECKOUT_STEP: {
-                var stepNumber = action.payload;
-                switch (stepNumber) {
-                    case 1: {
-                        return Object.assign(Object.assign({}, state), { address: {} });
-                    }
-                    case 2: {
-                        return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {}, selected: '' }) });
-                    }
-                    case 3: {
-                        return Object.assign(Object.assign({}, state), { paymentDetails: {} });
-                    }
-                }
-                return state;
-            }
-            case CLEAR_SUPPORTED_DELIVERY_MODES:
-            case CHECKOUT_CLEAR_MISCS_DATA: {
-                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {} }) });
-            }
-            case LOAD_CHECKOUT_DETAILS_SUCCESS: {
-                return Object.assign(Object.assign({}, state), { address: action.payload.deliveryAddress, deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: action.payload.deliveryMode && action.payload.deliveryMode.code }), paymentDetails: action.payload.paymentInfo });
-            }
-            case CLEAR_CHECKOUT_DELIVERY_ADDRESS: {
-                return Object.assign(Object.assign({}, state), { address: {} });
-            }
-            case CLEAR_CHECKOUT_DELIVERY_MODE: {
-                return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: '' }) });
-            }
-        }
-        return state;
-    }
-
-    var initialState$c = {
-        entities: {},
-        selected: undefined,
-    };
-    function reducer$c(state, action) {
-        if (state === void 0) { state = initialState$c; }
-        switch (action.type) {
-            case LOAD_PAYMENT_TYPES_SUCCESS: {
-                var paymentTypes = action.payload;
-                var entities = paymentTypes.reduce(function (paymentTypesEntities, name) {
-                    var _a;
-                    return Object.assign(Object.assign({}, paymentTypesEntities), (_a = {}, _a[name.code] = name, _a));
-                }, Object.assign({}, state.entities));
-                return Object.assign(Object.assign({}, state), { entities: entities });
-            }
-            case SET_PAYMENT_TYPE_SUCCESS: {
-                return Object.assign(Object.assign({}, state), { selected: action.payload.paymentType.code });
-            }
-            case CLEAR_CHECKOUT_DATA: {
-                return Object.assign(Object.assign({}, state), { selected: undefined });
-            }
-            case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$c;
-            }
-        }
-        return state;
-    }
-    var getPaymentTypesEntites = function (state) { return state.entities; };
-    var getSelectedPaymentType = function (state) { return state.selected; };
-
-    function getReducers$5() {
-        return {
-            steps: loaderReducer(CHECKOUT_DETAILS, reducer$b),
-            cardTypes: reducer$a,
-            addressVerification: reducer$9,
-            paymentTypes: reducer$c,
-        };
-    }
-    var reducerToken$5 = new i0.InjectionToken('CheckoutReducers');
-    var reducerProvider$5 = {
-        provide: reducerToken$5,
-        useFactory: getReducers$5,
-    };
-
-    var UserAddressConnector = /** @class */ (function () {
-        function UserAddressConnector(adapter) {
-            this.adapter = adapter;
-        }
-        UserAddressConnector.prototype.getAll = function (userId) {
-            return this.adapter.loadAll(userId);
-        };
-        UserAddressConnector.prototype.add = function (userId, address) {
-            return this.adapter.add(userId, address);
-        };
-        UserAddressConnector.prototype.update = function (userId, addressId, address) {
-            return this.adapter.update(userId, addressId, address);
-        };
-        UserAddressConnector.prototype.verify = function (userId, address) {
-            return this.adapter.verify(userId, address);
-        };
-        UserAddressConnector.prototype.delete = function (userId, addressId) {
-            return this.adapter.delete(userId, addressId);
-        };
-        return UserAddressConnector;
-    }());
-    UserAddressConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(i0.ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
-    UserAddressConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserAddressConnector.ctorParameters = function () { return [
-        { type: UserAddressAdapter }
-    ]; };
-
-    var AddressVerificationEffect = /** @class */ (function () {
-        function AddressVerificationEffect(actions$, userAddressConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userAddressConnector = userAddressConnector;
-            this.verifyAddress$ = this.actions$.pipe(i3.ofType(VERIFY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(operators.map(function (data) { return new VerifyAddressSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new VerifyAddressFail(makeErrorSerializable(error))); })); }));
-        }
-        return AddressVerificationEffect;
-    }());
-    AddressVerificationEffect.decorators = [
-        { type: i0.Injectable }
-    ];
-    AddressVerificationEffect.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: UserAddressConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
-
-    var CheckoutPaymentConnector = /** @class */ (function () {
-        function CheckoutPaymentConnector(adapter) {
-            this.adapter = adapter;
-        }
-        CheckoutPaymentConnector.prototype.create = function (userId, cartId, paymentDetails) {
-            return this.adapter.create(userId, cartId, paymentDetails);
-        };
-        CheckoutPaymentConnector.prototype.set = function (userId, cartId, paymentDetailsId) {
-            return this.adapter.set(userId, cartId, paymentDetailsId);
-        };
-        CheckoutPaymentConnector.prototype.getCardTypes = function () {
-            return this.adapter.loadCardTypes();
-        };
-        return CheckoutPaymentConnector;
-    }());
-    CheckoutPaymentConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(i0.ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
-    CheckoutPaymentConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutPaymentConnector.ctorParameters = function () { return [
-        { type: CheckoutPaymentAdapter }
-    ]; };
-
-    var CardTypesEffects = /** @class */ (function () {
-        function CardTypesEffects(actions$, checkoutPaymentConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.checkoutPaymentConnector = checkoutPaymentConnector;
-            this.loadCardTypes$ = this.actions$.pipe(i3.ofType(LOAD_CARD_TYPES), operators.switchMap(function () {
-                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(makeErrorSerializable(error))); }));
-            }));
-        }
-        return CardTypesEffects;
-    }());
-    CardTypesEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    CardTypesEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: CheckoutPaymentConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
-
-    var CheckoutConnector = /** @class */ (function () {
-        function CheckoutConnector(adapter) {
-            this.adapter = adapter;
-        }
-        CheckoutConnector.prototype.placeOrder = function (userId, cartId) {
-            return this.adapter.placeOrder(userId, cartId);
-        };
-        CheckoutConnector.prototype.loadCheckoutDetails = function (userId, cartId) {
-            return this.adapter.loadCheckoutDetails(userId, cartId);
-        };
-        CheckoutConnector.prototype.clearCheckoutDeliveryAddress = function (userId, cartId) {
-            return this.adapter.clearCheckoutDeliveryAddress(userId, cartId);
-        };
-        CheckoutConnector.prototype.clearCheckoutDeliveryMode = function (userId, cartId) {
-            return this.adapter.clearCheckoutDeliveryMode(userId, cartId);
-        };
-        return CheckoutConnector;
-    }());
-    CheckoutConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(i0.ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
-    CheckoutConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutConnector.ctorParameters = function () { return [
-        { type: CheckoutAdapter }
-    ]; };
-
-    var CheckoutCostCenterConnector = /** @class */ (function () {
-        function CheckoutCostCenterConnector(adapter) {
-            this.adapter = adapter;
-        }
-        CheckoutCostCenterConnector.prototype.setCostCenter = function (userId, cartId, costCenterId) {
-            return this.adapter.setCostCenter(userId, cartId, costCenterId);
-        };
-        return CheckoutCostCenterConnector;
-    }());
-    CheckoutCostCenterConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCostCenterConnector_Factory() { return new CheckoutCostCenterConnector(i0.ɵɵinject(CheckoutCostCenterAdapter)); }, token: CheckoutCostCenterConnector, providedIn: "root" });
-    CheckoutCostCenterConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutCostCenterConnector.ctorParameters = function () { return [
-        { type: CheckoutCostCenterAdapter }
-    ]; };
-
-    var CheckoutDeliveryConnector = /** @class */ (function () {
-        function CheckoutDeliveryConnector(adapter) {
-            this.adapter = adapter;
-        }
-        CheckoutDeliveryConnector.prototype.createAddress = function (userId, cartId, address) {
-            return this.adapter.createAddress(userId, cartId, address);
-        };
-        CheckoutDeliveryConnector.prototype.setAddress = function (userId, cartId, addressId) {
-            return this.adapter.setAddress(userId, cartId, addressId);
-        };
-        CheckoutDeliveryConnector.prototype.setMode = function (userId, cartId, deliveryModeId) {
-            return this.adapter.setMode(userId, cartId, deliveryModeId);
-        };
-        CheckoutDeliveryConnector.prototype.getMode = function (userId, cartId) {
-            return this.adapter.getMode(userId, cartId);
-        };
-        CheckoutDeliveryConnector.prototype.getSupportedModes = function (userId, cartId) {
-            return this.adapter.getSupportedModes(userId, cartId);
-        };
-        return CheckoutDeliveryConnector;
-    }());
-    CheckoutDeliveryConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(i0.ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
-    CheckoutDeliveryConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutDeliveryConnector.ctorParameters = function () { return [
-        { type: CheckoutDeliveryAdapter }
-    ]; };
-
-    var CheckoutEffects = /** @class */ (function () {
-        function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutCostCenterConnector, checkoutConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.checkoutDeliveryConnector = checkoutDeliveryConnector;
-            this.checkoutPaymentConnector = checkoutPaymentConnector;
-            this.checkoutCostCenterConnector = checkoutCostCenterConnector;
-            this.checkoutConnector = checkoutConnector;
-            this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.addDeliveryAddress$ = this.actions$.pipe(i3.ofType(ADD_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.checkoutDeliveryConnector
-                .createAddress(payload.userId, payload.cartId, payload.address)
-                .pipe(operators.mergeMap(function (address) {
-                address['titleCode'] = payload.address.titleCode;
-                if (payload.address.region && payload.address.region.isocodeShort) {
-                    Object.assign(address.region, {
-                        isocodeShort: payload.address.region.isocodeShort,
-                    });
-                }
-                if (payload.userId === OCC_USER_ID_ANONYMOUS) {
-                    return [
-                        new SetDeliveryAddress({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                            address: address,
-                        }),
-                    ];
-                }
-                else {
-                    return [
-                        new LoadUserAddresses(payload.userId),
-                        new SetDeliveryAddress({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                            address: address,
-                        }),
-                    ];
-                }
-            }), operators.catchError(function (error) { return rxjs.of(new AddDeliveryAddressFail(makeErrorSerializable(error))); })); }), withdrawOn(this.contextChange$));
-            this.setDeliveryAddress$ = this.actions$.pipe(i3.ofType(SET_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.checkoutDeliveryConnector
-                    .setAddress(payload.userId, payload.cartId, payload.address.id)
-                    .pipe(operators.mergeMap(function () { return [
-                    new SetDeliveryAddressSuccess(payload.address),
-                    new ClearCheckoutDeliveryMode({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                    new ClearSupportedDeliveryModes(),
-                    new ResetLoadSupportedDeliveryModesProcess(),
-                    new LoadSupportedDeliveryModes({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                ]; }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryAddressFail(makeErrorSerializable(error))); }));
-            }), withdrawOn(this.contextChange$));
-            this.loadSupportedDeliveryModes$ = this.actions$.pipe(i3.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.checkoutDeliveryConnector
-                    .getSupportedModes(payload.userId, payload.cartId)
-                    .pipe(operators.map(function (data) {
-                    return new LoadSupportedDeliveryModesSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error))); }));
-            }), withdrawOn(this.contextChange$));
-            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE), operators.mergeMap(function () { return [
-                new ResetLoadSupportedDeliveryModesProcess(),
-                new ResetLoadPaymentTypesProcess(),
-                new CheckoutClearMiscsData(),
-            ]; }));
-            this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE), operators.map(function () { return new ClearSupportedDeliveryModes(); }));
-            this.clearCheckoutDataOnLogout$ = this.actions$.pipe(i3.ofType(LOGOUT), operators.map(function () { return new ClearCheckoutData(); }));
-            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(i3.ofType(LOGIN), operators.map(function () { return new ClearCheckoutData(); }));
-            this.setDeliveryMode$ = this.actions$.pipe(i3.ofType(SET_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.checkoutDeliveryConnector
-                    .setMode(payload.userId, payload.cartId, payload.selectedModeId)
-                    .pipe(operators.mergeMap(function () {
-                    return [
-                        new SetDeliveryModeSuccess(payload.selectedModeId),
-                        new LoadCart({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                    ];
-                }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryModeFail(makeErrorSerializable(error))); }));
-            }), withdrawOn(this.contextChange$));
-            this.createPaymentDetails$ = this.actions$.pipe(i3.ofType(CREATE_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                // get information for creating a subscription directly with payment provider
-                return _this.checkoutPaymentConnector
-                    .create(payload.userId, payload.cartId, payload.paymentDetails)
-                    .pipe(operators.mergeMap(function (details) {
-                    if (payload.userId === OCC_USER_ID_ANONYMOUS) {
-                        return [new CreatePaymentDetailsSuccess(details)];
-                    }
-                    else {
-                        return [
-                            new LoadUserPaymentMethods(payload.userId),
-                            new CreatePaymentDetailsSuccess(details),
-                        ];
-                    }
-                }), operators.catchError(function (error) { return rxjs.of(new CreatePaymentDetailsFail(makeErrorSerializable(error))); }));
-            }), withdrawOn(this.contextChange$));
-            this.setPaymentDetails$ = this.actions$.pipe(i3.ofType(SET_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.checkoutPaymentConnector
-                    .set(payload.userId, payload.cartId, payload.paymentDetails.id)
-                    .pipe(operators.map(function () { return new SetPaymentDetailsSuccess(payload.paymentDetails); }), operators.catchError(function (error) { return rxjs.of(new SetPaymentDetailsFail(makeErrorSerializable(error))); }));
-            }), withdrawOn(this.contextChange$));
-            this.placeOrder$ = this.actions$.pipe(i3.ofType(PLACE_ORDER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.checkoutConnector
-                    .placeOrder(payload.userId, payload.cartId)
-                    .pipe(operators.switchMap(function (data) { return [
-                    new RemoveCart({ cartId: payload.cartId }),
-                    new PlaceOrderSuccess(data),
-                ]; }), operators.catchError(function (error) { return rxjs.of(new PlaceOrderFail(makeErrorSerializable(error))); }));
-            }), withdrawOn(this.contextChange$));
-            this.loadCheckoutDetails$ = this.actions$.pipe(i3.ofType(LOAD_CHECKOUT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.checkoutConnector
-                    .loadCheckoutDetails(payload.userId, payload.cartId)
-                    .pipe(operators.map(function (data) { return new LoadCheckoutDetailsSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new LoadCheckoutDetailsFail(makeErrorSerializable(error))); }));
-            }), withdrawOn(this.contextChange$));
-            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(i3.ofType(MERGE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
-                return new LoadCheckoutDetails({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                });
-            }));
-            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(i3.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.switchMap(function (payload) {
-                return _this.checkoutConnector
-                    .clearCheckoutDeliveryAddress(payload.userId, payload.cartId)
-                    .pipe(operators.map(function () { return new ClearCheckoutDeliveryAddressSuccess(); }), operators.catchError(function (error) { return rxjs.of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error))); }));
-            }), withdrawOn(this.contextChange$));
-            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(i3.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.filter(function (payload) { return Boolean(payload.cartId); }), operators.concatMap(function (payload) {
-                return _this.checkoutConnector
-                    .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
-                    .pipe(operators.map(function () { return new ClearCheckoutDeliveryModeSuccess(Object.assign({}, payload)); }), operators.catchError(function (error) { return rxjs.from([
-                    new ClearCheckoutDeliveryModeFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
-                    new LoadCart({
-                        cartId: payload.cartId,
-                        userId: payload.userId,
-                    }),
-                ]); }));
-            }), withdrawOn(this.contextChange$));
-            this.setCostCenter$ = this.actions$.pipe(i3.ofType(SET_COST_CENTER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.checkoutCostCenterConnector
-                    .setCostCenter(payload.userId, payload.cartId, payload.costCenterId)
-                    .pipe(operators.mergeMap(function (data) { return [
-                    // TODO(#8877): We should trigger load cart not already assign the data. We might have misconfiguration between this cart model and load cart model
-                    new LoadCartSuccess({
-                        cart: data,
-                        cartId: payload.cartId,
-                        userId: payload.userId,
-                    }),
-                    new SetCostCenterSuccess(payload.costCenterId),
-                    new ClearCheckoutDeliveryMode({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                    new ClearCheckoutDeliveryAddress({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                ]; }), operators.catchError(function (error) { return rxjs.of(new SetCostCenterFail(normalizeHttpError(error))); }));
-            }), withdrawOn(this.contextChange$));
-        }
-        return CheckoutEffects;
-    }());
-    CheckoutEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    CheckoutEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: CheckoutDeliveryConnector },
-        { type: CheckoutPaymentConnector },
-        { type: CheckoutCostCenterConnector },
-        { type: CheckoutConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "addDeliveryAddress$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "setDeliveryAddress$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "clearCheckoutMiscsDataOnLanguageChange$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "clearDeliveryModesOnCurrencyChange$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "clearCheckoutDataOnLogout$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "createPaymentDetails$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "setPaymentDetails$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "placeOrder$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CheckoutEffects.prototype, "setCostCenter$", void 0);
-
-    var PaymentTypeConnector = /** @class */ (function () {
-        function PaymentTypeConnector(adapter) {
-            this.adapter = adapter;
-        }
-        PaymentTypeConnector.prototype.getPaymentTypes = function () {
-            return this.adapter.loadPaymentTypes();
-        };
-        PaymentTypeConnector.prototype.setPaymentType = function (userId, cartId, typeCode, poNumber) {
-            return this.adapter.setPaymentType(userId, cartId, typeCode, poNumber);
-        };
-        return PaymentTypeConnector;
-    }());
-    PaymentTypeConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function PaymentTypeConnector_Factory() { return new PaymentTypeConnector(i0.ɵɵinject(PaymentTypeAdapter)); }, token: PaymentTypeConnector, providedIn: "root" });
-    PaymentTypeConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    PaymentTypeConnector.ctorParameters = function () { return [
-        { type: PaymentTypeAdapter }
-    ]; };
-
-    var PaymentTypesEffects = /** @class */ (function () {
-        function PaymentTypesEffects(actions$, paymentTypeConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.paymentTypeConnector = paymentTypeConnector;
-            this.loadPaymentTypes$ = this.actions$.pipe(i3.ofType(LOAD_PAYMENT_TYPES), operators.switchMap(function () {
-                return _this.paymentTypeConnector.getPaymentTypes().pipe(operators.map(function (paymentTypes) { return new LoadPaymentTypesSuccess(paymentTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadPaymentTypesFail(normalizeHttpError(error))); }));
-            }));
-            this.setPaymentType$ = this.actions$.pipe(i3.ofType(SET_PAYMENT_TYPE), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.paymentTypeConnector
-                    .setPaymentType(payload.userId, payload.cartId, payload.typeCode, payload.poNumber)
-                    .pipe(operators.mergeMap(function (data) {
-                    return [
-                        new LoadCartSuccess({
-                            cart: data,
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                        }),
-                        new ClearCheckoutData(),
-                        new SetPaymentTypeSuccess(data),
-                    ];
-                }), operators.catchError(function (error) { return rxjs.of(new SetPaymentTypeFail(normalizeHttpError(error))); }));
-            }));
-        }
-        return PaymentTypesEffects;
-    }());
-    PaymentTypesEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    PaymentTypesEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: PaymentTypeConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], PaymentTypesEffects.prototype, "loadPaymentTypes$", void 0);
-    __decorate([
-        i3.Effect()
-    ], PaymentTypesEffects.prototype, "setPaymentType$", void 0);
-
-    var effects$5 = [
-        CheckoutEffects,
-        AddressVerificationEffect,
-        CardTypesEffects,
-        PaymentTypesEffects,
-    ];
-
-    var CheckoutStoreModule = /** @class */ (function () {
-        function CheckoutStoreModule() {
-        }
-        return CheckoutStoreModule;
-    }());
-    CheckoutStoreModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [
-                        i1$2.CommonModule,
-                        i1.HttpClientModule,
-                        i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5),
-                        i3.EffectsModule.forFeature(effects$5),
-                    ],
-                    providers: [reducerProvider$5],
-                },] }
-    ];
-
-    var CheckoutModule = /** @class */ (function () {
-        function CheckoutModule() {
-        }
-        CheckoutModule.forRoot = function () {
-            return {
-                ngModule: CheckoutModule,
-                providers: [
-                    {
-                        provide: PageMetaResolver,
-                        useExisting: CheckoutPageMetaResolver,
-                        multi: true,
-                    },
-                ],
-            };
-        };
-        return CheckoutModule;
-    }());
-    CheckoutModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [CheckoutStoreModule, CheckoutEventModule],
-                },] }
-    ];
-
-    var getDeliveryAddressSelector = function (state) { return state.address; };
-    var ɵ0$A = getDeliveryAddressSelector;
-    var getDeliveryModeSelector = function (state) { return state.deliveryMode; };
-    var ɵ1$q = getDeliveryModeSelector;
-    var getPaymentDetailsSelector = function (state) { return state.paymentDetails; };
-    var ɵ2$i = getPaymentDetailsSelector;
-    var getOrderDetailsSelector = function (state) { return state.orderDetails; };
-    var ɵ3$a = getOrderDetailsSelector;
-    var getCheckoutState = i1$1.createFeatureSelector(CHECKOUT_FEATURE);
-    var ɵ4$4 = function (checkoutState) { return checkoutState.steps; };
-    var getCheckoutStepsState = i1$1.createSelector(getCheckoutState, ɵ4$4);
-    var ɵ5$2 = function (state) { return loaderValueSelector(state); };
-    var getCheckoutSteps = i1$1.createSelector(getCheckoutStepsState, ɵ5$2);
-    var getDeliveryAddress = i1$1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
-    var getDeliveryMode = i1$1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
-    var ɵ6 = function (deliveryMode) {
-        return (deliveryMode &&
-            Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
-    };
-    var getSupportedDeliveryModes = i1$1.createSelector(getDeliveryMode, ɵ6);
-    var ɵ7 = function (deliveryMode) {
-        return deliveryMode && deliveryMode.selected;
-    };
-    var getSelectedDeliveryModeCode = i1$1.createSelector(getDeliveryMode, ɵ7);
-    var ɵ8 = function (deliveryMode) {
-        if (deliveryMode.selected !== '') {
-            if (Object.keys(deliveryMode.supported).length === 0) {
-                return null;
-            }
-            return deliveryMode.supported[deliveryMode.selected];
-        }
-    };
-    var getSelectedDeliveryMode = i1$1.createSelector(getDeliveryMode, ɵ8);
-    var getPaymentDetails = i1$1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
-    var getCheckoutOrderDetails = i1$1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
-    var ɵ9 = function (state) { return loaderSuccessSelector(state) &&
-        !loaderLoadingSelector(state); };
-    var getCheckoutDetailsLoaded = i1$1.createSelector(getCheckoutStepsState, ɵ9);
-    var ɵ10 = function (state) { return state.poNumber.po; };
-    var getPoNumer = i1$1.createSelector(getCheckoutSteps, ɵ10);
-    var ɵ11 = function (state) { return state.poNumber.costCenter; };
-    var getCostCenter = i1$1.createSelector(getCheckoutSteps, ɵ11);
-
-    var ɵ0$B = function (state) { return state.addressVerification; };
-    var getAddressVerificationResultsState = i1$1.createSelector(getCheckoutState, ɵ0$B);
-    var getAddressVerificationResults$1 = i1$1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
-
-    var ɵ0$C = function (state) { return state.cardTypes; };
-    var getCardTypesState = i1$1.createSelector(getCheckoutState, ɵ0$C);
-    var getCardTypesEntites$1 = i1$1.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$r = function (entites) {
-        return Object.keys(entites).map(function (code) { return entites[code]; });
-    };
-    var getAllCardTypes = i1$1.createSelector(getCardTypesEntites$1, ɵ1$r);
-
-    var ɵ0$D = function (state) { return state.paymentTypes; };
-    var getPaymentTypesState = i1$1.createSelector(getCheckoutState, ɵ0$D);
-    var getPaymentTypesEntites$1 = i1$1.createSelector(getPaymentTypesState, getPaymentTypesEntites);
-    var ɵ1$s = function (entites) {
-        return Object.keys(entites).map(function (code) { return entites[code]; });
-    };
-    var getAllPaymentTypes = i1$1.createSelector(getPaymentTypesEntites$1, ɵ1$s);
-    var getSelectedPaymentType$1 = i1$1.createSelector(getPaymentTypesState, getSelectedPaymentType);
-
-    var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getAddressVerificationResultsState: getAddressVerificationResultsState,
-        getAddressVerificationResults: getAddressVerificationResults$1,
-        ɵ0: ɵ0$B,
-        getCardTypesState: getCardTypesState,
-        getCardTypesEntites: getCardTypesEntites$1,
-        getAllCardTypes: getAllCardTypes,
-        ɵ1: ɵ1$r,
-        getCheckoutState: getCheckoutState,
-        getCheckoutStepsState: getCheckoutStepsState,
-        getCheckoutSteps: getCheckoutSteps,
-        getDeliveryAddress: getDeliveryAddress,
-        getDeliveryMode: getDeliveryMode,
-        getSupportedDeliveryModes: getSupportedDeliveryModes,
-        getSelectedDeliveryModeCode: getSelectedDeliveryModeCode,
-        getSelectedDeliveryMode: getSelectedDeliveryMode,
-        getPaymentDetails: getPaymentDetails,
-        getCheckoutOrderDetails: getCheckoutOrderDetails,
-        getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
-        getPoNumer: getPoNumer,
-        getCostCenter: getCostCenter,
-        ɵ2: ɵ2$i,
-        ɵ3: ɵ3$a,
-        ɵ4: ɵ4$4,
-        ɵ5: ɵ5$2,
-        ɵ6: ɵ6,
-        ɵ7: ɵ7,
-        ɵ8: ɵ8,
-        ɵ9: ɵ9,
-        ɵ10: ɵ10,
-        ɵ11: ɵ11,
-        getPaymentTypesState: getPaymentTypesState,
-        getPaymentTypesEntites: getPaymentTypesEntites$1,
-        getAllPaymentTypes: getAllPaymentTypes,
-        getSelectedPaymentType: getSelectedPaymentType$1
-    });
-
-    var CheckoutService = /** @class */ (function () {
-        function CheckoutService(checkoutStore, authService, activeCartService) {
-            this.checkoutStore = checkoutStore;
-            this.authService = authService;
-            this.activeCartService = activeCartService;
-        }
-        /**
-         * Places an order
-         */
-        CheckoutService.prototype.placeOrder = function () {
-            if (this.actionAllowed()) {
-                var userId_1;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
-                    .unsubscribe();
-                var cartId_1;
-                this.activeCartService
-                    .getActiveCartId()
-                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
-                    .unsubscribe();
-                if (userId_1 && cartId_1) {
-                    this.checkoutStore.dispatch(new PlaceOrder({
-                        userId: userId_1,
-                        cartId: cartId_1,
-                    }));
-                }
-            }
-        };
-        /**
-         * Clear checkout data
-         */
-        CheckoutService.prototype.clearCheckoutData = function () {
-            this.checkoutStore.dispatch(new ClearCheckoutData());
-        };
-        /**
-         * Clear checkout step
-         * @param stepNumber : the step number to be cleared
-         */
-        CheckoutService.prototype.clearCheckoutStep = function (stepNumber) {
-            this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
-        };
-        /**
-         * Load checkout details data
-         * @param cartId : string Cart ID of loaded cart
-         */
-        CheckoutService.prototype.loadCheckoutDetails = function (cartId) {
-            var userId;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId = occUserId); })
-                .unsubscribe();
-            if (userId) {
-                this.checkoutStore.dispatch(new LoadCheckoutDetails({
-                    userId: userId,
-                    cartId: cartId,
-                }));
-            }
-        };
-        /**
-         * Get status of checkout details loaded
-         */
-        CheckoutService.prototype.getCheckoutDetailsLoaded = function () {
-            return this.checkoutStore.pipe(i1$1.select(getCheckoutDetailsLoaded));
-        };
-        /**
-         * Get order details
-         */
-        CheckoutService.prototype.getOrderDetails = function () {
-            return this.checkoutStore.pipe(i1$1.select(getCheckoutOrderDetails));
-        };
-        CheckoutService.prototype.actionAllowed = function () {
-            var userId;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId = occUserId); })
-                .unsubscribe();
-            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
-                this.activeCartService.isGuestCart());
-        };
-        return CheckoutService;
-    }());
-    CheckoutService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
-    CheckoutService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
-    ]; };
-
-    var CheckoutDeliveryService = /** @class */ (function () {
-        function CheckoutDeliveryService(checkoutStore, authService, activeCartService) {
-            this.checkoutStore = checkoutStore;
-            this.authService = authService;
-            this.activeCartService = activeCartService;
-        }
-        /**
-         * Get supported delivery modes
-         */
-        CheckoutDeliveryService.prototype.getSupportedDeliveryModes = function () {
-            var _this = this;
-            return this.checkoutStore.pipe(i1$1.select(getSupportedDeliveryModes), operators.withLatestFrom(this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), operators.tap(function (_a) {
-                var _b = __read(_a, 2), loadingState = _b[1];
-                if (!(loadingState.loading || loadingState.success || loadingState.error)) {
-                    _this.loadSupportedDeliveryModes();
-                }
-            }), operators.pluck(0), operators.shareReplay({ bufferSize: 1, refCount: true }));
-        };
-        /**
-         * Get selected delivery mode
-         */
-        CheckoutDeliveryService.prototype.getSelectedDeliveryMode = function () {
-            return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryMode));
-        };
-        /**
-         * Get selected delivery mode code
-         */
-        CheckoutDeliveryService.prototype.getSelectedDeliveryModeCode = function () {
-            return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryModeCode));
-        };
-        /**
-         * Get delivery address
-         */
-        CheckoutDeliveryService.prototype.getDeliveryAddress = function () {
-            return this.checkoutStore.pipe(i1$1.select(getDeliveryAddress));
-        };
-        /**
-         * Get status about successfully set Delivery Address
-         */
-        CheckoutDeliveryService.prototype.getSetDeliveryAddressProcess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
-        };
-        /**
-         * Clear info about process of setting Delivery Address
-         */
-        CheckoutDeliveryService.prototype.resetSetDeliveryAddressProcess = function () {
-            this.checkoutStore.dispatch(new ResetSetDeliveryAddressProcess());
-        };
-        /**
-         * Get status about of set Delivery Mode process
-         */
-        CheckoutDeliveryService.prototype.getSetDeliveryModeProcess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
-        };
-        /**
-         * Clear info about process of setting Delivery Mode
-         */
-        CheckoutDeliveryService.prototype.resetSetDeliveryModeProcess = function () {
-            this.checkoutStore.dispatch(new ResetSetDeliveryModeProcess());
-        };
-        /**
-         * Clear info about process of setting Supported Delivery Modes
-         */
-        CheckoutDeliveryService.prototype.resetLoadSupportedDeliveryModesProcess = function () {
-            this.checkoutStore.dispatch(new ResetLoadSupportedDeliveryModesProcess());
-        };
-        /**
-         * Get status about of set supported Delivery Modes process
-         */
-        CheckoutDeliveryService.prototype.getLoadSupportedDeliveryModeProcess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
-        };
-        /**
-         * Clear supported delivery modes loaded in last checkout process
-         */
-        CheckoutDeliveryService.prototype.clearCheckoutDeliveryModes = function () {
-            this.checkoutStore.dispatch(new ClearSupportedDeliveryModes());
-        };
-        /**
-         * Get address verification results
-         */
-        CheckoutDeliveryService.prototype.getAddressVerificationResults = function () {
-            return this.checkoutStore.pipe(i1$1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
-        };
-        /**
-         * Create and set a delivery address using the address param
-         * @param address : the Address to be created and set
-         */
-        CheckoutDeliveryService.prototype.createAndSetAddress = function (address) {
-            if (this.actionAllowed()) {
-                var userId_1;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
-                    .unsubscribe();
-                var cartId_1;
-                this.activeCartService
-                    .getActiveCartId()
-                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
-                    .unsubscribe();
-                if (userId_1 && cartId_1) {
-                    this.checkoutStore.dispatch(new AddDeliveryAddress({
-                        userId: userId_1,
-                        cartId: cartId_1,
-                        address: address,
-                    }));
-                }
-            }
-        };
-        /**
-         * Load supported delivery modes
-         */
-        CheckoutDeliveryService.prototype.loadSupportedDeliveryModes = function () {
-            if (this.actionAllowed()) {
-                var userId_2;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_2 = occUserId); })
-                    .unsubscribe();
-                var cartId_2;
-                this.activeCartService
-                    .getActiveCartId()
-                    .subscribe(function (activeCartId) { return (cartId_2 = activeCartId); })
-                    .unsubscribe();
-                if (userId_2 && cartId_2) {
-                    this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
-                        userId: userId_2,
-                        cartId: cartId_2,
-                    }));
-                }
-            }
-        };
-        /**
-         * Set delivery mode
-         * @param mode : The delivery mode to be set
-         */
-        CheckoutDeliveryService.prototype.setDeliveryMode = function (mode) {
-            if (this.actionAllowed()) {
-                var userId_3;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_3 = occUserId); })
-                    .unsubscribe();
-                var cartId_3;
-                this.activeCartService
-                    .getActiveCartId()
-                    .subscribe(function (activeCartId) { return (cartId_3 = activeCartId); })
-                    .unsubscribe();
-                if (userId_3 && cartId_3) {
-                    this.checkoutStore.dispatch(new SetDeliveryMode({
-                        userId: userId_3,
-                        cartId: cartId_3,
-                        selectedModeId: mode,
-                    }));
-                }
-            }
-        };
-        /**
-         * Verifies the address
-         * @param address : the address to be verified
-         */
-        CheckoutDeliveryService.prototype.verifyAddress = function (address) {
-            if (this.actionAllowed()) {
-                var userId_4;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_4 = occUserId); })
-                    .unsubscribe();
-                if (userId_4) {
-                    this.checkoutStore.dispatch(new VerifyAddress({
-                        userId: userId_4,
-                        address: address,
-                    }));
-                }
-            }
-        };
-        /**
-         * Set delivery address
-         * @param address : The address to be set
-         */
-        CheckoutDeliveryService.prototype.setDeliveryAddress = function (address) {
-            if (this.actionAllowed()) {
-                var userId_5;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_5 = occUserId); })
-                    .unsubscribe();
-                var cartId_4;
-                this.activeCartService
-                    .getActiveCartId()
-                    .subscribe(function (activeCartId) { return (cartId_4 = activeCartId); })
-                    .unsubscribe();
-                if (cartId_4 && userId_5) {
-                    this.checkoutStore.dispatch(new SetDeliveryAddress({
-                        userId: userId_5,
-                        cartId: cartId_4,
-                        address: address,
-                    }));
-                }
-            }
-        };
-        /**
-         * Clear address verification results
-         */
-        CheckoutDeliveryService.prototype.clearAddressVerificationResults = function () {
-            this.checkoutStore.dispatch(new ClearAddressVerificationResults());
-        };
-        /**
-         * Clear address already setup in last checkout process
-         */
-        CheckoutDeliveryService.prototype.clearCheckoutDeliveryAddress = function () {
-            var userId;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId = occUserId); })
-                .unsubscribe();
-            var cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe(function (activeCartId) { return (cartId = activeCartId); })
-                .unsubscribe();
-            if (userId && cartId) {
-                this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
-                    userId: userId,
-                    cartId: cartId,
-                }));
-            }
-        };
-        /**
-         * Clear selected delivery mode setup in last checkout process
-         */
-        CheckoutDeliveryService.prototype.clearCheckoutDeliveryMode = function () {
-            var userId;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId = occUserId); })
-                .unsubscribe();
-            var cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe(function (activeCartId) { return (cartId = activeCartId); })
-                .unsubscribe();
-            if (userId && cartId) {
-                this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
-                    userId: userId,
-                    cartId: cartId,
-                }));
-            }
-        };
-        /**
-         * Clear address and delivery mode already setup in last checkout process
-         */
-        CheckoutDeliveryService.prototype.clearCheckoutDeliveryDetails = function () {
-            this.clearCheckoutDeliveryAddress();
-            this.clearCheckoutDeliveryMode();
-            this.clearCheckoutDeliveryModes();
-        };
-        CheckoutDeliveryService.prototype.actionAllowed = function () {
-            var userId;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId = occUserId); })
-                .unsubscribe();
-            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
-                this.activeCartService.isGuestCart());
-        };
-        return CheckoutDeliveryService;
-    }());
-    CheckoutDeliveryService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
-    CheckoutDeliveryService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutDeliveryService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
-    ]; };
-
-    var CheckoutPaymentService = /** @class */ (function () {
-        function CheckoutPaymentService(checkoutStore, authService, activeCartService) {
-            this.checkoutStore = checkoutStore;
-            this.authService = authService;
-            this.activeCartService = activeCartService;
-        }
-        /**
-         * Get card types
-         */
-        CheckoutPaymentService.prototype.getCardTypes = function () {
-            return this.checkoutStore.pipe(i1$1.select(getAllCardTypes));
-        };
-        /**
-         * Get payment details
-         */
-        CheckoutPaymentService.prototype.getPaymentDetails = function () {
-            return this.checkoutStore.pipe(i1$1.select(getPaymentDetails));
-        };
-        /**
-         * Get status about set Payment Details process
-         */
-        CheckoutPaymentService.prototype.getSetPaymentDetailsResultProcess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Clear info about process of setting Payment Details
-         */
-        CheckoutPaymentService.prototype.resetSetPaymentDetailsProcess = function () {
-            this.checkoutStore.dispatch(new ResetSetPaymentDetailsProcess());
-        };
-        /**
-         * Load the supported card types
-         */
-        CheckoutPaymentService.prototype.loadSupportedCardTypes = function () {
-            this.checkoutStore.dispatch(new LoadCardTypes());
-        };
-        /**
-         * Create payment details using the given paymentDetails param
-         * @param paymentDetails: the PaymentDetails to be created
-         */
-        CheckoutPaymentService.prototype.createPaymentDetails = function (paymentDetails) {
-            if (this.actionAllowed()) {
-                var userId_1;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_1 = occUserId); })
-                    .unsubscribe();
-                var cartId_1;
-                this.activeCartService
-                    .getActiveCartId()
-                    .subscribe(function (activeCartId) { return (cartId_1 = activeCartId); })
-                    .unsubscribe();
-                if (userId_1 && cartId_1) {
-                    this.checkoutStore.dispatch(new CreatePaymentDetails({
-                        userId: userId_1,
-                        cartId: cartId_1,
-                        paymentDetails: paymentDetails,
-                    }));
-                }
-            }
-        };
-        /**
-         * Set payment details
-         * @param paymentDetails : the PaymentDetails to be set
-         */
-        CheckoutPaymentService.prototype.setPaymentDetails = function (paymentDetails) {
-            if (this.actionAllowed()) {
-                var userId_2;
-                this.authService
-                    .getOccUserId()
-                    .subscribe(function (occUserId) { return (userId_2 = occUserId); })
-                    .unsubscribe();
-                var cart_1;
-                this.activeCartService
-                    .getActive()
-                    .subscribe(function (activeCart) { return (cart_1 = activeCart); })
-                    .unsubscribe();
-                if (userId_2 && cart_1) {
-                    this.checkoutStore.dispatch(new SetPaymentDetails({
-                        userId: userId_2,
-                        cartId: cart_1.code,
-                        paymentDetails: paymentDetails,
-                    }));
-                }
-            }
-        };
-        /**
-         * Sets payment loading to true without having the flicker issue (GH-3102)
-         */
-        CheckoutPaymentService.prototype.paymentProcessSuccess = function () {
-            this.checkoutStore.dispatch(new PaymentProcessSuccess());
-        };
-        CheckoutPaymentService.prototype.actionAllowed = function () {
-            var userId;
-            this.authService
-                .getOccUserId()
-                .subscribe(function (occUserId) { return (userId = occUserId); })
-                .unsubscribe();
-            return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
-                this.activeCartService.isGuestCart());
-        };
-        return CheckoutPaymentService;
-    }());
-    CheckoutPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
-    CheckoutPaymentService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutPaymentService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
-    ]; };
-
-    var PaymentTypeService = /** @class */ (function () {
-        function PaymentTypeService(checkoutStore, authService, activeCartService) {
-            this.checkoutStore = checkoutStore;
-            this.authService = authService;
-            this.activeCartService = activeCartService;
-        }
-        /**
-         * Get payment types
-         */
-        PaymentTypeService.prototype.getPaymentTypes = function () {
-            var _this = this;
-            return this.checkoutStore.pipe(i1$1.select(getAllPaymentTypes), operators.withLatestFrom(this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(GET_PAYMENT_TYPES_PROCESS_ID)))), operators.tap(function (_a) {
-                var _b = __read(_a, 2), _ = _b[0], loadingState = _b[1];
-                if (!(loadingState.loading || loadingState.success || loadingState.error)) {
-                    _this.loadPaymentTypes();
-                }
-            }), operators.pluck(0), operators.shareReplay({ bufferSize: 1, refCount: true }));
-        };
-        /**
-         * Load the supported payment types
-         */
-        PaymentTypeService.prototype.loadPaymentTypes = function () {
-            this.checkoutStore.dispatch(new LoadPaymentTypes());
-        };
-        /**
-         * Set payment type to cart
-         * @param typeCode
-         * @param poNumber : purchase order number
-         */
-        PaymentTypeService.prototype.setPaymentType = function (typeCode, poNumber) {
-            var _this = this;
-            var cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .pipe(operators.take(1))
-                .subscribe(function (activeCartId) { return (cartId = activeCartId); });
-            this.authService.invokeWithUserId(function (userId) {
-                if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
-                    _this.checkoutStore.dispatch(new SetPaymentType({
-                        userId: userId,
-                        cartId: cartId,
-                        typeCode: typeCode,
-                        poNumber: poNumber,
-                    }));
-                }
-            });
-        };
-        /**
-         * Get the selected payment type
-         */
-        PaymentTypeService.prototype.getSelectedPaymentType = function () {
-            var _this = this;
-            return rxjs.combineLatest([
-                this.activeCartService.getActive(),
-                this.checkoutStore.pipe(i1$1.select(getSelectedPaymentType$1)),
-            ]).pipe(operators.tap(function (_a) {
-                var _b = __read(_a, 2), cart = _b[0], selected = _b[1];
-                if (selected === undefined) {
-                    // in b2b, cart always has paymentType (default value 'CARD')
-                    if (cart && cart.paymentType) {
-                        _this.checkoutStore.dispatch(new SetPaymentTypeSuccess(cart));
-                    }
-                }
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 2), selected = _b[1];
-                return selected;
-            }));
-        };
-        /**
-         * Get whether the selected payment type is "ACCOUNT" payment
-         */
-        PaymentTypeService.prototype.isAccountPayment = function () {
-            return this.getSelectedPaymentType().pipe(operators.map(function (selected) { return selected === exports.B2BPaymentTypeEnum.ACCOUNT_PAYMENT; }));
-        };
-        /**
-         * Get PO Number
-         */
-        PaymentTypeService.prototype.getPoNumber = function () {
-            var _this = this;
-            return rxjs.combineLatest([
-                this.activeCartService.getActive(),
-                this.checkoutStore.pipe(i1$1.select(getPoNumer)),
-            ]).pipe(operators.tap(function (_a) {
-                var _b = __read(_a, 2), cart = _b[0], po = _b[1];
-                if (po === undefined && cart && cart.purchaseOrderNumber) {
-                    _this.checkoutStore.dispatch(new SetPaymentTypeSuccess(cart));
-                }
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 2), _ = _b[0], po = _b[1];
-                return po;
-            }));
-        };
-        return PaymentTypeService;
-    }());
-    PaymentTypeService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
-    PaymentTypeService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    PaymentTypeService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
-    ]; };
-
-    var CheckoutCostCenterService = /** @class */ (function () {
-        function CheckoutCostCenterService(checkoutStore, authService, activeCartService) {
-            this.checkoutStore = checkoutStore;
-            this.authService = authService;
-            this.activeCartService = activeCartService;
-        }
-        /**
-         * Set cost center to cart
-         * @param costCenterId : cost center id
-         */
-        CheckoutCostCenterService.prototype.setCostCenter = function (costCenterId) {
-            var _this = this;
-            var cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .pipe(operators.take(1))
-                .subscribe(function (activeCartId) { return (cartId = activeCartId); });
-            this.authService.invokeWithUserId(function (userId) {
-                if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
-                    _this.checkoutStore.dispatch(new SetCostCenter({
-                        userId: userId,
-                        cartId: cartId,
-                        costCenterId: costCenterId,
-                    }));
-                }
-            });
-        };
-        /**
-         * Get cost center id from cart
-         */
-        CheckoutCostCenterService.prototype.getCostCenter = function () {
-            var _this = this;
-            return rxjs.combineLatest([
-                this.activeCartService.getActive(),
-                this.checkoutStore.pipe(i1$1.select(getCostCenter)),
-            ]).pipe(operators.filter(function (_a) {
-                var _b = __read(_a, 1), cart = _b[0];
-                return Boolean(cart);
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 2), cart = _b[0], costCenterId = _b[1];
-                if (costCenterId === undefined && cart.costCenter) {
-                    costCenterId = cart.costCenter.code;
-                    _this.checkoutStore.dispatch(new SetCostCenterSuccess(cart.costCenter.code));
-                }
-                return costCenterId;
-            }));
-        };
-        return CheckoutCostCenterService;
-    }());
-    CheckoutCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
-    CheckoutCostCenterService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CheckoutCostCenterService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
     ]; };
 
     var defaultCmsModuleConfig = {
@@ -21633,7 +22286,7 @@
 
     var effects$6 = [RouterEffects];
 
-    var initialState$d = {
+    var initialState$e = {
         navigationId: 0,
         state: {
             url: '',
@@ -21649,11 +22302,11 @@
     };
     function getReducers$6() {
         return {
-            router: reducer$d,
+            router: reducer$e,
         };
     }
-    function reducer$d(state, action) {
-        if (state === void 0) { state = initialState$d; }
+    function reducer$e(state, action) {
+        if (state === void 0) { state = initialState$e; }
         switch (action.type) {
             case fromNgrxRouter.ROUTER_NAVIGATION: {
                 return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -22024,7 +22677,7 @@
         NavigationEntryItemEffects,
     ];
 
-    var initialState$e = {
+    var initialState$f = {
         component: undefined,
         pageContext: {},
     };
@@ -22038,9 +22691,9 @@
         }
         return state;
     }
-    function reducer$e(state, action) {
+    function reducer$f(state, action) {
         var _a, _b, _c, _d;
-        if (state === void 0) { state = initialState$e; }
+        if (state === void 0) { state = initialState$f; }
         switch (action.type) {
             case LOAD_CMS_COMPONENT: {
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
@@ -22068,9 +22721,9 @@
         return state;
     }
 
-    var initialState$f = undefined;
-    function reducer$f(state, action) {
-        if (state === void 0) { state = initialState$f; }
+    var initialState$g = undefined;
+    function reducer$g(state, action) {
+        if (state === void 0) { state = initialState$g; }
         switch (action.type) {
             case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
                 if (action.payload.components) {
@@ -22086,10 +22739,10 @@
         return state;
     }
 
-    var initialState$g = { entities: {} };
-    function reducer$g(state, action) {
+    var initialState$h = { entities: {} };
+    function reducer$h(state, action) {
         var _a;
-        if (state === void 0) { state = initialState$g; }
+        if (state === void 0) { state = initialState$h; }
         switch (action.type) {
             case LOAD_CMS_PAGE_DATA_SUCCESS: {
                 var page = action.payload;
@@ -22099,17 +22752,17 @@
         return state;
     }
 
-    var initialState$h = undefined;
-    function reducer$h(entityType) {
+    var initialState$i = undefined;
+    function reducer$i(entityType) {
         return function (state, action) {
-            if (state === void 0) { state = initialState$h; }
+            if (state === void 0) { state = initialState$i; }
             if (action.meta && action.meta.entityType === entityType) {
                 switch (action.type) {
                     case LOAD_CMS_PAGE_DATA_SUCCESS: {
                         return action.payload.pageId;
                     }
                     case LOAD_CMS_PAGE_DATA_FAIL: {
-                        return initialState$h;
+                        return initialState$i;
                     }
                     case CMS_SET_PAGE_FAIL_INDEX: {
                         return action.payload;
@@ -22126,16 +22779,16 @@
     function getReducers$7() {
         return {
             page: i1$1.combineReducers({
-                pageData: reducer$g,
+                pageData: reducer$h,
                 index: i1$1.combineReducers({
-                    content: entityLoaderReducer(exports.PageType.CONTENT_PAGE, reducer$h(exports.PageType.CONTENT_PAGE)),
-                    product: entityLoaderReducer(exports.PageType.PRODUCT_PAGE, reducer$h(exports.PageType.PRODUCT_PAGE)),
-                    category: entityLoaderReducer(exports.PageType.CATEGORY_PAGE, reducer$h(exports.PageType.CATEGORY_PAGE)),
-                    catalog: entityLoaderReducer(exports.PageType.CATALOG_PAGE, reducer$h(exports.PageType.CATALOG_PAGE)),
+                    content: entityLoaderReducer(exports.PageType.CONTENT_PAGE, reducer$i(exports.PageType.CONTENT_PAGE)),
+                    product: entityLoaderReducer(exports.PageType.PRODUCT_PAGE, reducer$i(exports.PageType.PRODUCT_PAGE)),
+                    category: entityLoaderReducer(exports.PageType.CATEGORY_PAGE, reducer$i(exports.PageType.CATEGORY_PAGE)),
+                    catalog: entityLoaderReducer(exports.PageType.CATALOG_PAGE, reducer$i(exports.PageType.CATALOG_PAGE)),
                 }),
             }),
-            components: entityReducer(COMPONENT_ENTITY, reducer$e),
-            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
+            components: entityReducer(COMPONENT_ENTITY, reducer$f),
+            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$g),
         };
     }
     var reducerToken$7 = new i0.InjectionToken('CmsReducers');
@@ -22862,11 +23515,11 @@
         return path;
     }
 
-    var ɵ0$E = i18nextInit;
+    var ɵ0$H = i18nextInit;
     var i18nextProviders = [
         {
             provide: i0.APP_INITIALIZER,
-            useFactory: ɵ0$E,
+            useFactory: ɵ0$H,
             deps: [
                 ConfigInitializerService,
                 LanguageService,
@@ -23116,8 +23769,8 @@
 
     var getKymaState = i1$1.createFeatureSelector(KYMA_FEATURE);
 
-    var ɵ0$F = function (state) { return state.openIdToken; };
-    var getOpenIdTokenState = i1$1.createSelector(getKymaState, ɵ0$F);
+    var ɵ0$I = function (state) { return state.openIdToken; };
+    var getOpenIdTokenState = i1$1.createSelector(getKymaState, ɵ0$I);
     var getOpenIdTokenValue = i1$1.createSelector(getOpenIdTokenState, loaderValueSelector);
     var getOpenIdTokenLoading = i1$1.createSelector(getOpenIdTokenState, loaderLoadingSelector);
     var getOpenIdTokenSuccess = i1$1.createSelector(getOpenIdTokenState, loaderSuccessSelector);
@@ -23131,7 +23784,7 @@
         getOpenIdTokenLoading: getOpenIdTokenLoading,
         getOpenIdTokenSuccess: getOpenIdTokenSuccess,
         getOpenIdTokenError: getOpenIdTokenError,
-        ɵ0: ɵ0$F
+        ɵ0: ɵ0$I
     });
 
     var KymaService = /** @class */ (function () {
@@ -23948,8 +24601,8 @@
 
     var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
 
-    var ɵ0$G = function (state) { return state.references; };
-    var getProductReferencesState = i1$1.createSelector(getProductsState, ɵ0$G);
+    var ɵ0$J = function (state) { return state.references; };
+    var getProductReferencesState = i1$1.createSelector(getProductsState, ɵ0$J);
     var getSelectedProductReferencesFactory = function (productCode, referenceType) {
         return i1$1.createSelector(getProductReferencesState, function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
@@ -23966,8 +24619,8 @@
         });
     };
 
-    var ɵ0$H = function (state) { return state.reviews; };
-    var getProductReviewsState = i1$1.createSelector(getProductsState, ɵ0$H);
+    var ɵ0$K = function (state) { return state.reviews; };
+    var getProductReviewsState = i1$1.createSelector(getProductsState, ɵ0$K);
     var getSelectedProductReviewsFactory = function (productCode) {
         return i1$1.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
@@ -23976,13 +24629,13 @@
         });
     };
 
-    var initialState$i = {
+    var initialState$j = {
         results: {},
         suggestions: [],
         auxResults: {},
     };
-    function reducer$i(state, action) {
-        if (state === void 0) { state = initialState$i; }
+    function reducer$j(state, action) {
+        if (state === void 0) { state = initialState$j; }
         switch (action.type) {
             case SEARCH_PRODUCTS_SUCCESS: {
                 var results = action.payload;
@@ -24007,14 +24660,14 @@
     var getAuxSearchResults = function (state) { return state.auxResults; };
     var getProductSuggestions = function (state) { return state.suggestions; };
 
-    var ɵ0$I = function (state) { return state.search; };
-    var getProductsSearchState = i1$1.createSelector(getProductsState, ɵ0$I);
+    var ɵ0$L = function (state) { return state.search; };
+    var getProductsSearchState = i1$1.createSelector(getProductsState, ɵ0$L);
     var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
     var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
     var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
 
-    var ɵ0$J = function (state) { return state.details; };
-    var getProductState = i1$1.createSelector(getProductsState, ɵ0$J);
+    var ɵ0$M = function (state) { return state.details; };
+    var getProductState = i1$1.createSelector(getProductsState, ɵ0$M);
     var getSelectedProductStateFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
         return i1$1.createSelector(getProductState, function (details) { return entityLoaderStateSelector(details, code)[scope] ||
@@ -24036,17 +24689,17 @@
         if (scope === void 0) { scope = ''; }
         return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderErrorSelector(productState); });
     };
-    var ɵ1$t = function (details) {
+    var ɵ1$v = function (details) {
         return Object.keys(details.entities);
     };
-    var getAllProductCodes = i1$1.createSelector(getProductState, ɵ1$t);
+    var getAllProductCodes = i1$1.createSelector(getProductState, ɵ1$v);
 
     var productGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getProductsState: getProductsState,
         getProductReferencesState: getProductReferencesState,
         getSelectedProductReferencesFactory: getSelectedProductReferencesFactory,
-        ɵ0: ɵ0$G,
+        ɵ0: ɵ0$J,
         getProductReviewsState: getProductReviewsState,
         getSelectedProductReviewsFactory: getSelectedProductReviewsFactory,
         getProductsSearchState: getProductsSearchState,
@@ -24060,7 +24713,7 @@
         getSelectedProductSuccessFactory: getSelectedProductSuccessFactory,
         getSelectedProductErrorFactory: getSelectedProductErrorFactory,
         getAllProductCodes: getAllProductCodes,
-        ɵ1: ɵ1$t
+        ɵ1: ɵ1$v
     });
 
     var ProductReferenceService = /** @class */ (function () {
@@ -24903,12 +25556,12 @@
         ProductReferencesEffects,
     ];
 
-    var initialState$j = {
+    var initialState$k = {
         productCode: '',
         list: [],
     };
-    function reducer$j(state, action) {
-        if (state === void 0) { state = initialState$j; }
+    function reducer$k(state, action) {
+        if (state === void 0) { state = initialState$k; }
         switch (action.type) {
             case LOAD_PRODUCT_REFERENCES_SUCCESS: {
                 var productCode = action.payload.productCode;
@@ -24922,7 +25575,7 @@
                     }, []), productCode: productCode });
             }
             case CLEAN_PRODUCT_REFERENCES: {
-                return initialState$j;
+                return initialState$k;
             }
         }
         return state;
@@ -24930,12 +25583,12 @@
     var getProductReferenceList = function (state) { return state.list; };
     var getProductReferenceProductCode = function (state) { return state.productCode; };
 
-    var initialState$k = {
+    var initialState$l = {
         productCode: '',
         list: [],
     };
-    function reducer$k(state, action) {
-        if (state === void 0) { state = initialState$k; }
+    function reducer$l(state, action) {
+        if (state === void 0) { state = initialState$l; }
         switch (action.type) {
             case LOAD_PRODUCT_REVIEWS_SUCCESS: {
                 var productCode = action.payload.productCode;
@@ -24979,10 +25632,10 @@
 
     function getReducers$a() {
         return {
-            search: reducer$i,
+            search: reducer$j,
             details: entityScopedLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$k,
-            references: reducer$j,
+            reviews: reducer$l,
+            references: reducer$k,
         };
     }
     var reducerToken$a = new i0.InjectionToken('ProductReducers');
@@ -25318,28 +25971,28 @@
 
     var getStoreFinderState = i1$1.createFeatureSelector(STORE_FINDER_FEATURE);
 
-    var ɵ0$K = function (storesState) { return storesState.findStores; };
-    var getFindStoresState = i1$1.createSelector(getStoreFinderState, ɵ0$K);
-    var ɵ1$u = function (state) { return loaderValueSelector(state); };
-    var getFindStoresEntities = i1$1.createSelector(getFindStoresState, ɵ1$u);
-    var ɵ2$j = function (state) { return loaderLoadingSelector(state); };
-    var getStoresLoading = i1$1.createSelector(getFindStoresState, ɵ2$j);
+    var ɵ0$N = function (storesState) { return storesState.findStores; };
+    var getFindStoresState = i1$1.createSelector(getStoreFinderState, ɵ0$N);
+    var ɵ1$w = function (state) { return loaderValueSelector(state); };
+    var getFindStoresEntities = i1$1.createSelector(getFindStoresState, ɵ1$w);
+    var ɵ2$l = function (state) { return loaderLoadingSelector(state); };
+    var getStoresLoading = i1$1.createSelector(getFindStoresState, ɵ2$l);
 
-    var ɵ0$L = function (storesState) { return storesState.viewAllStores; };
-    var getViewAllStoresState = i1$1.createSelector(getStoreFinderState, ɵ0$L);
-    var ɵ1$v = function (state) { return loaderValueSelector(state); };
-    var getViewAllStoresEntities = i1$1.createSelector(getViewAllStoresState, ɵ1$v);
-    var ɵ2$k = function (state) { return loaderLoadingSelector(state); };
-    var getViewAllStoresLoading = i1$1.createSelector(getViewAllStoresState, ɵ2$k);
+    var ɵ0$O = function (storesState) { return storesState.viewAllStores; };
+    var getViewAllStoresState = i1$1.createSelector(getStoreFinderState, ɵ0$O);
+    var ɵ1$x = function (state) { return loaderValueSelector(state); };
+    var getViewAllStoresEntities = i1$1.createSelector(getViewAllStoresState, ɵ1$x);
+    var ɵ2$m = function (state) { return loaderLoadingSelector(state); };
+    var getViewAllStoresLoading = i1$1.createSelector(getViewAllStoresState, ɵ2$m);
 
     var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getFindStoresState: getFindStoresState,
         getFindStoresEntities: getFindStoresEntities,
         getStoresLoading: getStoresLoading,
-        ɵ0: ɵ0$K,
-        ɵ1: ɵ1$u,
-        ɵ2: ɵ2$j,
+        ɵ0: ɵ0$N,
+        ɵ1: ɵ1$w,
+        ɵ2: ɵ2$l,
         getViewAllStoresState: getViewAllStoresState,
         getViewAllStoresEntities: getViewAllStoresEntities,
         getViewAllStoresLoading: getViewAllStoresLoading
@@ -25808,52 +26461,6 @@
                 },] }
     ];
 
-    var UserConnector = /** @class */ (function () {
-        function UserConnector(adapter) {
-            this.adapter = adapter;
-        }
-        UserConnector.prototype.get = function (userId) {
-            return this.adapter.load(userId);
-        };
-        UserConnector.prototype.update = function (username, user) {
-            return this.adapter.update(username, user);
-        };
-        UserConnector.prototype.register = function (user) {
-            return this.adapter.register(user);
-        };
-        UserConnector.prototype.registerGuest = function (guid, password) {
-            return this.adapter.registerGuest(guid, password);
-        };
-        UserConnector.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
-            return this.adapter.requestForgotPasswordEmail(userEmailAddress);
-        };
-        UserConnector.prototype.resetPassword = function (token, newPassword) {
-            return this.adapter.resetPassword(token, newPassword);
-        };
-        UserConnector.prototype.updateEmail = function (userId, currentPassword, newUserId) {
-            return this.adapter.updateEmail(userId, currentPassword, newUserId);
-        };
-        UserConnector.prototype.updatePassword = function (userId, oldPassword, newPassword) {
-            return this.adapter.updatePassword(userId, oldPassword, newPassword);
-        };
-        UserConnector.prototype.remove = function (userId) {
-            return this.adapter.remove(userId);
-        };
-        UserConnector.prototype.getTitles = function () {
-            return this.adapter.loadTitles();
-        };
-        return UserConnector;
-    }());
-    UserConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(i0.ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
-    UserConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserConnector.ctorParameters = function () { return [
-        { type: UserAdapter }
-    ]; };
-
     var UserConsentConnector = /** @class */ (function () {
         function UserConsentConnector(adapter) {
             this.adapter = adapter;
@@ -25879,69 +26486,23 @@
         { type: UserConsentAdapter }
     ]; };
 
-    var UserPaymentConnector = /** @class */ (function () {
-        function UserPaymentConnector(adapter) {
+    var UserCostCenterConnector = /** @class */ (function () {
+        function UserCostCenterConnector(adapter) {
             this.adapter = adapter;
         }
-        UserPaymentConnector.prototype.getAll = function (userId) {
-            return this.adapter.loadAll(userId);
+        UserCostCenterConnector.prototype.getActiveList = function (userId) {
+            return this.adapter.loadActiveList(userId);
         };
-        UserPaymentConnector.prototype.delete = function (userId, paymentMethodID) {
-            return this.adapter.delete(userId, paymentMethodID);
-        };
-        UserPaymentConnector.prototype.setDefault = function (userId, paymentMethodID) {
-            return this.adapter.setDefault(userId, paymentMethodID);
-        };
-        return UserPaymentConnector;
+        return UserCostCenterConnector;
     }());
-    UserPaymentConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(i0.ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
-    UserPaymentConnector.decorators = [
+    UserCostCenterConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserCostCenterConnector_Factory() { return new UserCostCenterConnector(i0.ɵɵinject(UserCostCenterAdapter)); }, token: UserCostCenterConnector, providedIn: "root" });
+    UserCostCenterConnector.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    UserPaymentConnector.ctorParameters = function () { return [
-        { type: UserPaymentAdapter }
-    ]; };
-
-    var UserOrderConnector = /** @class */ (function () {
-        function UserOrderConnector(adapter) {
-            this.adapter = adapter;
-        }
-        UserOrderConnector.prototype.get = function (userId, orderCode) {
-            return this.adapter.load(userId, orderCode);
-        };
-        UserOrderConnector.prototype.getHistory = function (userId, pageSize, currentPage, sort) {
-            return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
-        };
-        UserOrderConnector.prototype.getConsignmentTracking = function (orderCode, consignmentCode, userId) {
-            return this.adapter.getConsignmentTracking(orderCode, consignmentCode, userId);
-        };
-        UserOrderConnector.prototype.cancel = function (userId, orderCode, cancelRequestInput) {
-            return this.adapter.cancel(userId, orderCode, cancelRequestInput);
-        };
-        UserOrderConnector.prototype.return = function (userId, returnRequestInput) {
-            return this.adapter.createReturnRequest(userId, returnRequestInput);
-        };
-        UserOrderConnector.prototype.getReturnRequestDetail = function (userId, returnRequestCode) {
-            return this.adapter.loadReturnRequestDetail(userId, returnRequestCode);
-        };
-        UserOrderConnector.prototype.getReturnRequestList = function (userId, pageSize, currentPage, sort) {
-            return this.adapter.loadReturnRequestList(userId, pageSize, currentPage, sort);
-        };
-        UserOrderConnector.prototype.cancelReturnRequest = function (userId, returnRequestCode, returnRequestModification) {
-            return this.adapter.cancelReturnRequest(userId, returnRequestCode, returnRequestModification);
-        };
-        return UserOrderConnector;
-    }());
-    UserOrderConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(i0.ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
-    UserOrderConnector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserOrderConnector.ctorParameters = function () { return [
-        { type: UserOrderAdapter }
+    UserCostCenterConnector.ctorParameters = function () { return [
+        { type: UserCostCenterAdapter }
     ]; };
 
     var CustomerCouponConnector = /** @class */ (function () {
@@ -25997,23 +26558,115 @@
         { type: UserInterestsAdapter }
     ]; };
 
-    var UserCostCenterConnector = /** @class */ (function () {
-        function UserCostCenterConnector(adapter) {
+    var UserOrderConnector = /** @class */ (function () {
+        function UserOrderConnector(adapter) {
             this.adapter = adapter;
         }
-        UserCostCenterConnector.prototype.getActiveList = function (userId) {
-            return this.adapter.loadActiveList(userId);
+        UserOrderConnector.prototype.get = function (userId, orderCode) {
+            return this.adapter.load(userId, orderCode);
         };
-        return UserCostCenterConnector;
+        UserOrderConnector.prototype.getHistory = function (userId, pageSize, currentPage, sort) {
+            return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
+        };
+        UserOrderConnector.prototype.getConsignmentTracking = function (orderCode, consignmentCode, userId) {
+            return this.adapter.getConsignmentTracking(orderCode, consignmentCode, userId);
+        };
+        UserOrderConnector.prototype.cancel = function (userId, orderCode, cancelRequestInput) {
+            return this.adapter.cancel(userId, orderCode, cancelRequestInput);
+        };
+        UserOrderConnector.prototype.return = function (userId, returnRequestInput) {
+            return this.adapter.createReturnRequest(userId, returnRequestInput);
+        };
+        UserOrderConnector.prototype.getReturnRequestDetail = function (userId, returnRequestCode) {
+            return this.adapter.loadReturnRequestDetail(userId, returnRequestCode);
+        };
+        UserOrderConnector.prototype.getReturnRequestList = function (userId, pageSize, currentPage, sort) {
+            return this.adapter.loadReturnRequestList(userId, pageSize, currentPage, sort);
+        };
+        UserOrderConnector.prototype.cancelReturnRequest = function (userId, returnRequestCode, returnRequestModification) {
+            return this.adapter.cancelReturnRequest(userId, returnRequestCode, returnRequestModification);
+        };
+        return UserOrderConnector;
     }());
-    UserCostCenterConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserCostCenterConnector_Factory() { return new UserCostCenterConnector(i0.ɵɵinject(UserCostCenterAdapter)); }, token: UserCostCenterConnector, providedIn: "root" });
-    UserCostCenterConnector.decorators = [
+    UserOrderConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(i0.ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
+    UserOrderConnector.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    UserCostCenterConnector.ctorParameters = function () { return [
-        { type: UserCostCenterAdapter }
+    UserOrderConnector.ctorParameters = function () { return [
+        { type: UserOrderAdapter }
+    ]; };
+
+    var UserPaymentConnector = /** @class */ (function () {
+        function UserPaymentConnector(adapter) {
+            this.adapter = adapter;
+        }
+        UserPaymentConnector.prototype.getAll = function (userId) {
+            return this.adapter.loadAll(userId);
+        };
+        UserPaymentConnector.prototype.delete = function (userId, paymentMethodID) {
+            return this.adapter.delete(userId, paymentMethodID);
+        };
+        UserPaymentConnector.prototype.setDefault = function (userId, paymentMethodID) {
+            return this.adapter.setDefault(userId, paymentMethodID);
+        };
+        return UserPaymentConnector;
+    }());
+    UserPaymentConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(i0.ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+    UserPaymentConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserPaymentConnector.ctorParameters = function () { return [
+        { type: UserPaymentAdapter }
+    ]; };
+
+    var UserConnector = /** @class */ (function () {
+        function UserConnector(adapter) {
+            this.adapter = adapter;
+        }
+        UserConnector.prototype.get = function (userId) {
+            return this.adapter.load(userId);
+        };
+        UserConnector.prototype.update = function (username, user) {
+            return this.adapter.update(username, user);
+        };
+        UserConnector.prototype.register = function (user) {
+            return this.adapter.register(user);
+        };
+        UserConnector.prototype.registerGuest = function (guid, password) {
+            return this.adapter.registerGuest(guid, password);
+        };
+        UserConnector.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
+            return this.adapter.requestForgotPasswordEmail(userEmailAddress);
+        };
+        UserConnector.prototype.resetPassword = function (token, newPassword) {
+            return this.adapter.resetPassword(token, newPassword);
+        };
+        UserConnector.prototype.updateEmail = function (userId, currentPassword, newUserId) {
+            return this.adapter.updateEmail(userId, currentPassword, newUserId);
+        };
+        UserConnector.prototype.updatePassword = function (userId, oldPassword, newPassword) {
+            return this.adapter.updatePassword(userId, oldPassword, newPassword);
+        };
+        UserConnector.prototype.remove = function (userId) {
+            return this.adapter.remove(userId);
+        };
+        UserConnector.prototype.getTitles = function () {
+            return this.adapter.loadTitles();
+        };
+        return UserConnector;
+    }());
+    UserConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(i0.ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
+    UserConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserConnector.ctorParameters = function () { return [
+        { type: UserAdapter }
     ]; };
 
     /**
@@ -26114,308 +26767,6 @@
     ConsentService.ctorParameters = function () { return [
         { type: AnonymousConsentsService },
         { type: UserConsentService }
-    ]; };
-
-    var UserAddressService = /** @class */ (function () {
-        function UserAddressService(store, authService) {
-            this.store = store;
-            this.authService = authService;
-        }
-        /**
-         * Retrieves user's addresses
-         */
-        UserAddressService.prototype.loadAddresses = function () {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new LoadUserAddresses(userId));
-            });
-        };
-        /**
-         * Adds user address
-         * @param address a user address
-         */
-        UserAddressService.prototype.addUserAddress = function (address) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new AddUserAddress({
-                    userId: userId,
-                    address: address,
-                }));
-            });
-        };
-        /**
-         * Sets user address as default
-         * @param addressId a user address ID
-         */
-        UserAddressService.prototype.setAddressAsDefault = function (addressId) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdateUserAddress({
-                    userId: userId,
-                    addressId: addressId,
-                    address: { defaultAddress: true },
-                }));
-            });
-        };
-        /**
-         * Updates existing user address
-         * @param addressId a user address ID
-         * @param address a user address
-         */
-        UserAddressService.prototype.updateUserAddress = function (addressId, address) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdateUserAddress({
-                    userId: userId,
-                    addressId: addressId,
-                    address: address,
-                }));
-            });
-        };
-        /**
-         * Deletes existing user address
-         * @param addressId a user address ID
-         */
-        UserAddressService.prototype.deleteUserAddress = function (addressId) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new DeleteUserAddress({
-                    userId: userId,
-                    addressId: addressId,
-                }));
-            });
-        };
-        /**
-         * Returns addresses
-         */
-        UserAddressService.prototype.getAddresses = function () {
-            return this.store.pipe(i1$1.select(getAddresses));
-        };
-        /**
-         * Returns a loading flag for addresses
-         */
-        UserAddressService.prototype.getAddressesLoading = function () {
-            return this.store.pipe(i1$1.select(getAddressesLoading));
-        };
-        UserAddressService.prototype.getAddressesLoadedSuccess = function () {
-            return this.store.pipe(i1$1.select(getAddressesLoadedSuccess));
-        };
-        /**
-         * Retrieves delivery countries
-         */
-        UserAddressService.prototype.loadDeliveryCountries = function () {
-            this.store.dispatch(new LoadDeliveryCountries());
-        };
-        /**
-         * Returns all delivery countries
-         */
-        UserAddressService.prototype.getDeliveryCountries = function () {
-            return this.store.pipe(i1$1.select(getAllDeliveryCountries));
-        };
-        /**
-         * Returns a country based on the provided `isocode`
-         * @param isocode an isocode for a country
-         */
-        UserAddressService.prototype.getCountry = function (isocode) {
-            return this.store.pipe(i1$1.select(countrySelectorFactory(isocode)));
-        };
-        /**
-         * Retrieves regions for specified country by `countryIsoCode`
-         * @param countryIsoCode
-         */
-        UserAddressService.prototype.loadRegions = function (countryIsoCode) {
-            this.store.dispatch(new LoadRegions(countryIsoCode));
-        };
-        /**
-         * Clear regions in store - useful when changing country
-         */
-        UserAddressService.prototype.clearRegions = function () {
-            this.store.dispatch(new ClearRegions());
-        };
-        /**
-         * Returns all regions
-         */
-        UserAddressService.prototype.getRegions = function (countryIsoCode) {
-            var _this = this;
-            return this.store.pipe(i1$1.select(getRegionsDataAndLoading), operators.map(function (_a) {
-                var regions = _a.regions, country = _a.country, loading = _a.loading, loaded = _a.loaded;
-                if (!countryIsoCode && (loading || loaded)) {
-                    _this.clearRegions();
-                    return [];
-                }
-                else if (loading && !loaded) {
-                    // don't interrupt loading
-                    return [];
-                }
-                else if (!loading && countryIsoCode !== country && countryIsoCode) {
-                    // country changed - clear store and load new regions
-                    if (country) {
-                        _this.clearRegions();
-                    }
-                    _this.loadRegions(countryIsoCode);
-                    return [];
-                }
-                return regions;
-            }));
-        };
-        return UserAddressService;
-    }());
-    UserAddressService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
-    UserAddressService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserAddressService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
-    ]; };
-
-    var UserOrderService = /** @class */ (function () {
-        function UserOrderService(store, authService) {
-            this.store = store;
-            this.authService = authService;
-        }
-        /**
-         * Returns an order's detail
-         */
-        UserOrderService.prototype.getOrderDetails = function () {
-            return this.store.pipe(i1$1.select(getOrderDetails));
-        };
-        /**
-         * Retrieves order's details
-         *
-         * @param orderCode an order code
-         */
-        UserOrderService.prototype.loadOrderDetails = function (orderCode) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new LoadOrderDetails({
-                    userId: userId,
-                    orderCode: orderCode,
-                }));
-            });
-        };
-        /**
-         * Clears order's details
-         */
-        UserOrderService.prototype.clearOrderDetails = function () {
-            this.store.dispatch(new ClearOrderDetails());
-        };
-        /**
-         * Returns order history list
-         */
-        UserOrderService.prototype.getOrderHistoryList = function (pageSize) {
-            var _this = this;
-            return this.store.pipe(i1$1.select(getOrdersState), operators.tap(function (orderListState) {
-                var attemptedLoad = orderListState.loading ||
-                    orderListState.success ||
-                    orderListState.error;
-                if (!attemptedLoad) {
-                    _this.loadOrderList(pageSize);
-                }
-            }), operators.map(function (orderListState) { return orderListState.value; }));
-        };
-        /**
-         * Returns a loaded flag for order history list
-         */
-        UserOrderService.prototype.getOrderHistoryListLoaded = function () {
-            return this.store.pipe(i1$1.select(getOrdersLoaded));
-        };
-        /**
-         * Retrieves an order list
-         * @param pageSize page size
-         * @param currentPage current page
-         * @param sort sort
-         */
-        UserOrderService.prototype.loadOrderList = function (pageSize, currentPage, sort) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                if (userId !== OCC_USER_ID_ANONYMOUS) {
-                    _this.store.dispatch(new LoadUserOrders({
-                        userId: userId,
-                        pageSize: pageSize,
-                        currentPage: currentPage,
-                        sort: sort,
-                    }));
-                }
-            });
-        };
-        /**
-         * Cleaning order list
-         */
-        UserOrderService.prototype.clearOrderList = function () {
-            this.store.dispatch(new ClearUserOrders());
-        };
-        /**
-         *  Returns a consignment tracking detail
-         */
-        UserOrderService.prototype.getConsignmentTracking = function () {
-            return this.store.pipe(i1$1.select(getConsignmentTracking));
-        };
-        /**
-         * Retrieves consignment tracking details
-         * @param orderCode an order code
-         * @param consignmentCode a consignment code
-         */
-        UserOrderService.prototype.loadConsignmentTracking = function (orderCode, consignmentCode) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new LoadConsignmentTracking({
-                    userId: userId,
-                    orderCode: orderCode,
-                    consignmentCode: consignmentCode,
-                }));
-            });
-        };
-        /**
-         * Cleaning consignment tracking
-         */
-        UserOrderService.prototype.clearConsignmentTracking = function () {
-            this.store.dispatch(new ClearConsignmentTracking());
-        };
-        /*
-         * Cancel an order
-         */
-        UserOrderService.prototype.cancelOrder = function (orderCode, cancelRequestInput) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new CancelOrder({
-                    userId: userId,
-                    orderCode: orderCode,
-                    cancelRequestInput: cancelRequestInput,
-                }));
-            });
-        };
-        /**
-         * Returns the cancel order loading flag
-         */
-        UserOrderService.prototype.getCancelOrderLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
-        };
-        /**
-         * Returns the cancel order success flag
-         */
-        UserOrderService.prototype.getCancelOrderSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
-        };
-        /**
-         * Resets the cancel order process flags
-         */
-        UserOrderService.prototype.resetCancelOrderProcessState = function () {
-            return this.store.dispatch(new ResetCancelOrderProcess());
-        };
-        return UserOrderService;
-    }());
-    UserOrderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
-    UserOrderService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserOrderService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
     ]; };
 
     var CustomerCouponService = /** @class */ (function () {
@@ -26577,87 +26928,6 @@
         { type: AuthService }
     ]; };
 
-    var UserPaymentService = /** @class */ (function () {
-        function UserPaymentService(store, authService) {
-            this.store = store;
-            this.authService = authService;
-        }
-        /**
-         * Loads all user's payment methods.
-         */
-        UserPaymentService.prototype.loadPaymentMethods = function () {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new LoadUserPaymentMethods(userId));
-            });
-        };
-        /**
-         * Returns all user's payment methods
-         */
-        UserPaymentService.prototype.getPaymentMethods = function () {
-            return this.store.pipe(i1$1.select(getPaymentMethods));
-        };
-        /**
-         * Returns a loading flag for payment methods
-         */
-        UserPaymentService.prototype.getPaymentMethodsLoading = function () {
-            return this.store.pipe(i1$1.select(getPaymentMethodsLoading));
-        };
-        UserPaymentService.prototype.getPaymentMethodsLoadedSuccess = function () {
-            return this.store.pipe(i1$1.select(getPaymentMethodsLoadedSuccess));
-        };
-        /**
-         * Sets the payment as a default one
-         * @param paymentMethodId a payment method ID
-         */
-        UserPaymentService.prototype.setPaymentMethodAsDefault = function (paymentMethodId) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new SetDefaultUserPaymentMethod({
-                    userId: userId,
-                    paymentMethodId: paymentMethodId,
-                }));
-            });
-        };
-        /**
-         * Deletes the payment method
-         *
-         * @param paymentMethodId a payment method ID
-         */
-        UserPaymentService.prototype.deletePaymentMethod = function (paymentMethodId) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new DeleteUserPaymentMethod({
-                    userId: userId,
-                    paymentMethodId: paymentMethodId,
-                }));
-            });
-        };
-        /**
-         * Returns all billing countries
-         */
-        UserPaymentService.prototype.getAllBillingCountries = function () {
-            return this.store.pipe(i1$1.select(getAllBillingCountries));
-        };
-        /**
-         * Retrieves billing countries
-         */
-        UserPaymentService.prototype.loadBillingCountries = function () {
-            this.store.dispatch(new LoadBillingCountries());
-        };
-        return UserPaymentService;
-    }());
-    UserPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
-    UserPaymentService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserPaymentService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
-    ]; };
-
     var OrderReturnRequestService = /** @class */ (function () {
         function OrderReturnRequestService(store, authService) {
             this.store = store;
@@ -26797,79 +27067,215 @@
         { type: AuthService }
     ]; };
 
-    var UserNotificationPreferenceService = /** @class */ (function () {
-        function UserNotificationPreferenceService(store, authService) {
+    var UserAddressService = /** @class */ (function () {
+        function UserAddressService(store, authService) {
             this.store = store;
             this.authService = authService;
         }
         /**
-         * Returns all notification preferences.
+         * Retrieves user's addresses
          */
-        UserNotificationPreferenceService.prototype.getPreferences = function () {
-            return this.store.pipe(i1$1.select(getPreferences));
-        };
-        /**
-         * Returns all enabled notification preferences.
-         */
-        UserNotificationPreferenceService.prototype.getEnabledPreferences = function () {
-            return this.store.pipe(i1$1.select(getEnabledPreferences));
-        };
-        /**
-         * Loads all notification preferences.
-         */
-        UserNotificationPreferenceService.prototype.loadPreferences = function () {
+        UserAddressService.prototype.loadAddresses = function () {
             var _this = this;
             this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new LoadNotificationPreferences(userId));
+                _this.store.dispatch(new LoadUserAddresses(userId));
             });
         };
         /**
-         * Clear all notification preferences.
+         * Adds user address
+         * @param address a user address
          */
-        UserNotificationPreferenceService.prototype.clearPreferences = function () {
-            this.store.dispatch(new ClearNotificationPreferences());
-        };
-        /**
-         * Returns a loading flag for notification preferences.
-         */
-        UserNotificationPreferenceService.prototype.getPreferencesLoading = function () {
-            return this.store.pipe(i1$1.select(getPreferencesLoading));
-        };
-        /**
-         * Updating notification preferences.
-         * @param preferences a preference list
-         */
-        UserNotificationPreferenceService.prototype.updatePreferences = function (preferences) {
+        UserAddressService.prototype.addUserAddress = function (address) {
             var _this = this;
             this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdateNotificationPreferences({
+                _this.store.dispatch(new AddUserAddress({
                     userId: userId,
-                    preferences: preferences,
+                    address: address,
                 }));
             });
         };
         /**
-         * Returns a loading flag for updating preferences.
+         * Sets user address as default
+         * @param addressId a user address ID
          */
-        UserNotificationPreferenceService.prototype.getUpdatePreferencesResultLoading = function () {
-            return this.store.select(getProcessLoadingFactory(UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID));
+        UserAddressService.prototype.setAddressAsDefault = function (addressId) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdateUserAddress({
+                    userId: userId,
+                    addressId: addressId,
+                    address: { defaultAddress: true },
+                }));
+            });
         };
         /**
-         * Resets the update notification preferences process state. The state needs to be
-         * reset after the process concludes, regardless if it's a success or an error.
+         * Updates existing user address
+         * @param addressId a user address ID
+         * @param address a user address
          */
-        UserNotificationPreferenceService.prototype.resetNotificationPreferences = function () {
-            this.store.dispatch(new ResetNotificationPreferences());
+        UserAddressService.prototype.updateUserAddress = function (addressId, address) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdateUserAddress({
+                    userId: userId,
+                    addressId: addressId,
+                    address: address,
+                }));
+            });
         };
-        return UserNotificationPreferenceService;
+        /**
+         * Deletes existing user address
+         * @param addressId a user address ID
+         */
+        UserAddressService.prototype.deleteUserAddress = function (addressId) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new DeleteUserAddress({
+                    userId: userId,
+                    addressId: addressId,
+                }));
+            });
+        };
+        /**
+         * Returns addresses
+         */
+        UserAddressService.prototype.getAddresses = function () {
+            return this.store.pipe(i1$1.select(getAddresses));
+        };
+        /**
+         * Returns a loading flag for addresses
+         */
+        UserAddressService.prototype.getAddressesLoading = function () {
+            return this.store.pipe(i1$1.select(getAddressesLoading));
+        };
+        UserAddressService.prototype.getAddressesLoadedSuccess = function () {
+            return this.store.pipe(i1$1.select(getAddressesLoadedSuccess));
+        };
+        /**
+         * Retrieves delivery countries
+         */
+        UserAddressService.prototype.loadDeliveryCountries = function () {
+            this.store.dispatch(new LoadDeliveryCountries());
+        };
+        /**
+         * Returns all delivery countries
+         */
+        UserAddressService.prototype.getDeliveryCountries = function () {
+            return this.store.pipe(i1$1.select(getAllDeliveryCountries));
+        };
+        /**
+         * Returns a country based on the provided `isocode`
+         * @param isocode an isocode for a country
+         */
+        UserAddressService.prototype.getCountry = function (isocode) {
+            return this.store.pipe(i1$1.select(countrySelectorFactory(isocode)));
+        };
+        /**
+         * Retrieves regions for specified country by `countryIsoCode`
+         * @param countryIsoCode
+         */
+        UserAddressService.prototype.loadRegions = function (countryIsoCode) {
+            this.store.dispatch(new LoadRegions(countryIsoCode));
+        };
+        /**
+         * Clear regions in store - useful when changing country
+         */
+        UserAddressService.prototype.clearRegions = function () {
+            this.store.dispatch(new ClearRegions());
+        };
+        /**
+         * Returns all regions
+         */
+        UserAddressService.prototype.getRegions = function (countryIsoCode) {
+            var _this = this;
+            return this.store.pipe(i1$1.select(getRegionsDataAndLoading), operators.map(function (_a) {
+                var regions = _a.regions, country = _a.country, loading = _a.loading, loaded = _a.loaded;
+                if (!countryIsoCode && (loading || loaded)) {
+                    _this.clearRegions();
+                    return [];
+                }
+                else if (loading && !loaded) {
+                    // don't interrupt loading
+                    return [];
+                }
+                else if (!loading && countryIsoCode !== country && countryIsoCode) {
+                    // country changed - clear store and load new regions
+                    if (country) {
+                        _this.clearRegions();
+                    }
+                    _this.loadRegions(countryIsoCode);
+                    return [];
+                }
+                return regions;
+            }));
+        };
+        return UserAddressService;
     }());
-    UserNotificationPreferenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
-    UserNotificationPreferenceService.decorators = [
+    UserAddressService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
+    UserAddressService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    UserNotificationPreferenceService.ctorParameters = function () { return [
+    UserAddressService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
+
+    var UserCostCenterService = /** @class */ (function () {
+        function UserCostCenterService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * Load all visible active cost centers for the currently login user
+         */
+        UserCostCenterService.prototype.loadActiveCostCenters = function () {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                if (userId && userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new LoadActiveCostCenters(userId));
+                }
+            });
+        };
+        UserCostCenterService.prototype.getCostCentersState = function () {
+            return this.store.select(getCostCentersState);
+        };
+        /**
+         * Get all visible active cost centers
+         */
+        UserCostCenterService.prototype.getActiveCostCenters = function () {
+            var _this = this;
+            return this.getCostCentersState().pipe(operators.observeOn(rxjs.queueScheduler), operators.tap(function (process) {
+                if (!(process.loading || process.success || process.error)) {
+                    _this.loadActiveCostCenters();
+                }
+            }), operators.filter(function (process) { return process.success || process.error; }), operators.map(function (result) { return result.value; }));
+        };
+        /**
+         * Get the addresses of the cost center's unit based on cost center id
+         * @param costCenterId cost center id
+         */
+        UserCostCenterService.prototype.getCostCenterAddresses = function (costCenterId) {
+            return this.getActiveCostCenters().pipe(operators.map(function (costCenters) {
+                var costCenter = costCenters.find(function (cc) { return cc.code === costCenterId; });
+                if (costCenter && costCenter.unit) {
+                    return costCenter.unit.addresses;
+                }
+                else {
+                    return [];
+                }
+            }));
+        };
+        return UserCostCenterService;
+    }());
+    UserCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
+    UserCostCenterService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserCostCenterService.ctorParameters = function () { return [
         { type: i1$1.Store },
         { type: AuthService }
     ]; };
@@ -27011,69 +27417,489 @@
         { type: AuthService }
     ]; };
 
-    var UserCostCenterService = /** @class */ (function () {
-        function UserCostCenterService(store, authService) {
+    var UserNotificationPreferenceService = /** @class */ (function () {
+        function UserNotificationPreferenceService(store, authService) {
             this.store = store;
             this.authService = authService;
         }
         /**
-         * Load all visible active cost centers for the currently login user
+         * Returns all notification preferences.
          */
-        UserCostCenterService.prototype.loadActiveCostCenters = function () {
+        UserNotificationPreferenceService.prototype.getPreferences = function () {
+            return this.store.pipe(i1$1.select(getPreferences));
+        };
+        /**
+         * Returns all enabled notification preferences.
+         */
+        UserNotificationPreferenceService.prototype.getEnabledPreferences = function () {
+            return this.store.pipe(i1$1.select(getEnabledPreferences));
+        };
+        /**
+         * Loads all notification preferences.
+         */
+        UserNotificationPreferenceService.prototype.loadPreferences = function () {
             var _this = this;
             this.authService.invokeWithUserId(function (userId) {
-                if (userId && userId !== OCC_USER_ID_ANONYMOUS) {
-                    _this.store.dispatch(new LoadActiveCostCenters(userId));
-                }
+                _this.store.dispatch(new LoadNotificationPreferences(userId));
             });
         };
-        UserCostCenterService.prototype.getCostCentersState = function () {
-            return this.store.select(getCostCentersState);
+        /**
+         * Clear all notification preferences.
+         */
+        UserNotificationPreferenceService.prototype.clearPreferences = function () {
+            this.store.dispatch(new ClearNotificationPreferences());
         };
         /**
-         * Get all visible active cost centers
+         * Returns a loading flag for notification preferences.
          */
-        UserCostCenterService.prototype.getActiveCostCenters = function () {
+        UserNotificationPreferenceService.prototype.getPreferencesLoading = function () {
+            return this.store.pipe(i1$1.select(getPreferencesLoading));
+        };
+        /**
+         * Updating notification preferences.
+         * @param preferences a preference list
+         */
+        UserNotificationPreferenceService.prototype.updatePreferences = function (preferences) {
             var _this = this;
-            return this.getCostCentersState().pipe(operators.observeOn(rxjs.queueScheduler), operators.tap(function (process) {
-                if (!(process.loading || process.success || process.error)) {
-                    _this.loadActiveCostCenters();
-                }
-            }), operators.filter(function (process) { return process.success || process.error; }), operators.map(function (result) { return result.value; }));
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdateNotificationPreferences({
+                    userId: userId,
+                    preferences: preferences,
+                }));
+            });
         };
         /**
-         * Get the addresses of the cost center's unit based on cost center id
-         * @param costCenterId cost center id
+         * Returns a loading flag for updating preferences.
          */
-        UserCostCenterService.prototype.getCostCenterAddresses = function (costCenterId) {
-            return this.getActiveCostCenters().pipe(operators.map(function (costCenters) {
-                var costCenter = costCenters.find(function (cc) { return cc.code === costCenterId; });
-                if (costCenter && costCenter.unit) {
-                    return costCenter.unit.addresses;
-                }
-                else {
-                    return [];
-                }
-            }));
+        UserNotificationPreferenceService.prototype.getUpdatePreferencesResultLoading = function () {
+            return this.store.select(getProcessLoadingFactory(UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID));
         };
-        return UserCostCenterService;
+        /**
+         * Resets the update notification preferences process state. The state needs to be
+         * reset after the process concludes, regardless if it's a success or an error.
+         */
+        UserNotificationPreferenceService.prototype.resetNotificationPreferences = function () {
+            this.store.dispatch(new ResetNotificationPreferences());
+        };
+        return UserNotificationPreferenceService;
     }());
-    UserCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
-    UserCostCenterService.decorators = [
+    UserNotificationPreferenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+    UserNotificationPreferenceService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    UserCostCenterService.ctorParameters = function () { return [
+    UserNotificationPreferenceService.ctorParameters = function () { return [
         { type: i1$1.Store },
         { type: AuthService }
     ]; };
 
-    var initialState$l = {
+    var UserOrderService = /** @class */ (function () {
+        function UserOrderService(store, authService, routingService) {
+            this.store = store;
+            this.authService = authService;
+            this.routingService = routingService;
+        }
+        /**
+         * Returns an order's detail
+         */
+        UserOrderService.prototype.getOrderDetails = function () {
+            return this.store.pipe(i1$1.select(getOrderDetails));
+        };
+        /**
+         * Retrieves order's details
+         *
+         * @param orderCode an order code
+         */
+        UserOrderService.prototype.loadOrderDetails = function (orderCode) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new LoadOrderDetails({
+                    userId: userId,
+                    orderCode: orderCode,
+                }));
+            });
+        };
+        /**
+         * Clears order's details
+         */
+        UserOrderService.prototype.clearOrderDetails = function () {
+            this.store.dispatch(new ClearOrderDetails());
+        };
+        /**
+         * Returns order history list
+         */
+        UserOrderService.prototype.getOrderHistoryList = function (pageSize) {
+            var _this = this;
+            return this.store.pipe(i1$1.select(getOrdersState), operators.tap(function (orderListState) {
+                var attemptedLoad = orderListState.loading ||
+                    orderListState.success ||
+                    orderListState.error;
+                if (!attemptedLoad) {
+                    _this.loadOrderList(pageSize);
+                }
+            }), operators.map(function (orderListState) { return orderListState.value; }));
+        };
+        /**
+         * Returns a loaded flag for order history list
+         */
+        UserOrderService.prototype.getOrderHistoryListLoaded = function () {
+            return this.store.pipe(i1$1.select(getOrdersLoaded));
+        };
+        /**
+         * Retrieves an order list
+         * @param pageSize page size
+         * @param currentPage current page
+         * @param sort sort
+         */
+        UserOrderService.prototype.loadOrderList = function (pageSize, currentPage, sort) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    var replenishmentOrderCode_1;
+                    _this.routingService
+                        .getRouterState()
+                        .pipe(operators.take(1))
+                        .subscribe(function (data) {
+                        var _a, _b;
+                        replenishmentOrderCode_1 = (_b = (_a = data === null || data === void 0 ? void 0 : data.state) === null || _a === void 0 ? void 0 : _a.params) === null || _b === void 0 ? void 0 : _b.replenishmentOrderCode;
+                    })
+                        .unsubscribe();
+                    _this.store.dispatch(new LoadUserOrders({
+                        userId: userId,
+                        pageSize: pageSize,
+                        currentPage: currentPage,
+                        sort: sort,
+                        replenishmentOrderCode: replenishmentOrderCode_1,
+                    }));
+                }
+            });
+        };
+        /**
+         * Cleaning order list
+         */
+        UserOrderService.prototype.clearOrderList = function () {
+            this.store.dispatch(new ClearUserOrders());
+        };
+        /**
+         *  Returns a consignment tracking detail
+         */
+        UserOrderService.prototype.getConsignmentTracking = function () {
+            return this.store.pipe(i1$1.select(getConsignmentTracking));
+        };
+        /**
+         * Retrieves consignment tracking details
+         * @param orderCode an order code
+         * @param consignmentCode a consignment code
+         */
+        UserOrderService.prototype.loadConsignmentTracking = function (orderCode, consignmentCode) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new LoadConsignmentTracking({
+                    userId: userId,
+                    orderCode: orderCode,
+                    consignmentCode: consignmentCode,
+                }));
+            });
+        };
+        /**
+         * Cleaning consignment tracking
+         */
+        UserOrderService.prototype.clearConsignmentTracking = function () {
+            this.store.dispatch(new ClearConsignmentTracking());
+        };
+        /*
+         * Cancel an order
+         */
+        UserOrderService.prototype.cancelOrder = function (orderCode, cancelRequestInput) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new CancelOrder({
+                    userId: userId,
+                    orderCode: orderCode,
+                    cancelRequestInput: cancelRequestInput,
+                }));
+            });
+        };
+        /**
+         * Returns the cancel order loading flag
+         */
+        UserOrderService.prototype.getCancelOrderLoading = function () {
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Returns the cancel order success flag
+         */
+        UserOrderService.prototype.getCancelOrderSuccess = function () {
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Resets the cancel order process flags
+         */
+        UserOrderService.prototype.resetCancelOrderProcessState = function () {
+            return this.store.dispatch(new ResetCancelOrderProcess());
+        };
+        return UserOrderService;
+    }());
+    UserOrderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(RoutingService)); }, token: UserOrderService, providedIn: "root" });
+    UserOrderService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserOrderService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService },
+        { type: RoutingService }
+    ]; };
+
+    var UserPaymentService = /** @class */ (function () {
+        function UserPaymentService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * Loads all user's payment methods.
+         */
+        UserPaymentService.prototype.loadPaymentMethods = function () {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new LoadUserPaymentMethods(userId));
+            });
+        };
+        /**
+         * Returns all user's payment methods
+         */
+        UserPaymentService.prototype.getPaymentMethods = function () {
+            return this.store.pipe(i1$1.select(getPaymentMethods));
+        };
+        /**
+         * Returns a loading flag for payment methods
+         */
+        UserPaymentService.prototype.getPaymentMethodsLoading = function () {
+            return this.store.pipe(i1$1.select(getPaymentMethodsLoading));
+        };
+        UserPaymentService.prototype.getPaymentMethodsLoadedSuccess = function () {
+            return this.store.pipe(i1$1.select(getPaymentMethodsLoadedSuccess));
+        };
+        /**
+         * Sets the payment as a default one
+         * @param paymentMethodId a payment method ID
+         */
+        UserPaymentService.prototype.setPaymentMethodAsDefault = function (paymentMethodId) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new SetDefaultUserPaymentMethod({
+                    userId: userId,
+                    paymentMethodId: paymentMethodId,
+                }));
+            });
+        };
+        /**
+         * Deletes the payment method
+         *
+         * @param paymentMethodId a payment method ID
+         */
+        UserPaymentService.prototype.deletePaymentMethod = function (paymentMethodId) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new DeleteUserPaymentMethod({
+                    userId: userId,
+                    paymentMethodId: paymentMethodId,
+                }));
+            });
+        };
+        /**
+         * Returns all billing countries
+         */
+        UserPaymentService.prototype.getAllBillingCountries = function () {
+            return this.store.pipe(i1$1.select(getAllBillingCountries));
+        };
+        /**
+         * Retrieves billing countries
+         */
+        UserPaymentService.prototype.loadBillingCountries = function () {
+            this.store.dispatch(new LoadBillingCountries());
+        };
+        return UserPaymentService;
+    }());
+    UserPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
+    UserPaymentService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserPaymentService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
+
+    var UserReplenishmentOrderService = /** @class */ (function () {
+        function UserReplenishmentOrderService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * Returns replenishment order details for a given 'current' user
+         *
+         * @param replenishmentOrderCode a replenishment order code
+         */
+        UserReplenishmentOrderService.prototype.loadReplenishmentOrderDetails = function (replenishmentOrderCode) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new LoadReplenishmentOrderDetails({
+                        userId: userId,
+                        replenishmentOrderCode: replenishmentOrderCode,
+                    }));
+                }
+            });
+        };
+        /**
+         * Returns a replenishment order details
+         */
+        UserReplenishmentOrderService.prototype.getReplenishmentOrderDetails = function () {
+            return this.store.pipe(i1$1.select(getReplenishmentOrderDetailsValue));
+        };
+        /**
+         * Returns a replenishment order details loading flag
+         */
+        UserReplenishmentOrderService.prototype.getReplenishmentOrderDetailsLoading = function () {
+            return this.store.pipe(i1$1.select(getReplenishmentOrderDetailsLoading));
+        };
+        /**
+         * Returns a replenishment order details success flag
+         */
+        UserReplenishmentOrderService.prototype.getReplenishmentOrderDetailsSuccess = function () {
+            return this.store.pipe(i1$1.select(getReplenishmentOrderDetailsSuccess));
+        };
+        /**
+         * Returns a replenishment order details error flag
+         */
+        UserReplenishmentOrderService.prototype.getReplenishmentOrderDetailsError = function () {
+            return this.store.pipe(i1$1.select(getReplenishmentOrderDetailsError));
+        };
+        /**
+         * Clears the replenishment orders details state
+         */
+        UserReplenishmentOrderService.prototype.clearReplenishmentOrderDetails = function () {
+            this.store.dispatch(new ClearReplenishmentOrderDetails());
+        };
+        /**
+         * Cancels a specific replenishment order for a given 'current' user
+         *
+         * @param replenishmentOrderCode a replenishment order code
+         */
+        UserReplenishmentOrderService.prototype.cancelReplenishmentOrder = function (replenishmentOrderCode) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new CancelReplenishmentOrder({
+                        userId: userId,
+                        replenishmentOrderCode: replenishmentOrderCode,
+                    }));
+                }
+            });
+        };
+        /**
+         * Returns the cancel replenishment order loading flag
+         */
+        UserReplenishmentOrderService.prototype.getCancelReplenishmentOrderLoading = function () {
+            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Returns the cancel replenishment order success flag
+         */
+        UserReplenishmentOrderService.prototype.getCancelReplenishmentOrderSuccess = function () {
+            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Returns the cancel replenishment order error flag
+         */
+        UserReplenishmentOrderService.prototype.getCancelReplenishmentOrderError = function () {
+            return this.store.pipe(i1$1.select(getProcessErrorFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Clears the cancel replenishment order processing state
+         */
+        UserReplenishmentOrderService.prototype.clearCancelReplenishmentOrderProcessState = function () {
+            this.store.dispatch(new ClearCancelReplenishmentOrder());
+        };
+        /**
+         * Returns replenishment order history list
+         */
+        UserReplenishmentOrderService.prototype.getReplenishmentOrderHistoryList = function (pageSize) {
+            var _this = this;
+            return this.store.pipe(i1$1.select(getReplenishmentOrdersState), operators.tap(function (replenishmentOrderListState) {
+                var attemptedLoad = replenishmentOrderListState.loading ||
+                    replenishmentOrderListState.success ||
+                    replenishmentOrderListState.error;
+                if (!attemptedLoad) {
+                    _this.loadReplenishmentOrderList(pageSize);
+                }
+            }), operators.map(function (replenishmentOrderListState) { return replenishmentOrderListState.value; }));
+        };
+        /**
+         * Returns a loading flag for replenishment order history list
+         */
+        UserReplenishmentOrderService.prototype.getReplenishmentOrderHistoryListLoading = function () {
+            return this.store.pipe(i1$1.select(getReplenishmentOrdersLoading));
+        };
+        /**
+         * Returns a error flag for replenishment order history list
+         */
+        UserReplenishmentOrderService.prototype.getReplenishmentOrderHistoryListError = function () {
+            return this.store.pipe(i1$1.select(getReplenishmentOrdersError));
+        };
+        /**
+         * Returns a success flag for replenishment order history list
+         */
+        UserReplenishmentOrderService.prototype.getReplenishmentOrderHistoryListSuccess = function () {
+            return this.store.pipe(i1$1.select(getReplenishmentOrdersSuccess));
+        };
+        /**
+         * Retrieves a replenishment order list
+         * @param pageSize page size
+         * @param currentPage current page
+         * @param sort sort
+         */
+        UserReplenishmentOrderService.prototype.loadReplenishmentOrderList = function (pageSize, currentPage, sort) {
+            var _this = this;
+            this.authService.invokeWithUserId(function (userId) {
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new LoadUserReplenishmentOrders({
+                        userId: userId,
+                        pageSize: pageSize,
+                        currentPage: currentPage,
+                        sort: sort,
+                    }));
+                }
+            });
+        };
+        /**
+         * Cleaning replenishment order list
+         */
+        UserReplenishmentOrderService.prototype.clearReplenishmentOrderList = function () {
+            this.store.dispatch(new ClearUserReplenishmentOrders());
+        };
+        return UserReplenishmentOrderService;
+    }());
+    UserReplenishmentOrderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserReplenishmentOrderService_Factory() { return new UserReplenishmentOrderService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserReplenishmentOrderService, providedIn: "root" });
+    UserReplenishmentOrderService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UserReplenishmentOrderService.ctorParameters = function () { return [
+        { type: i1$1.Store },
+        { type: AuthService }
+    ]; };
+
+    var initialState$m = {
         entities: {},
     };
-    function reducer$l(state, action) {
-        if (state === void 0) { state = initialState$l; }
+    function reducer$m(state, action) {
+        if (state === void 0) { state = initialState$m; }
         switch (action.type) {
             case LOAD_BILLING_COUNTRIES_SUCCESS: {
                 var billingCountries = action.payload;
@@ -27084,15 +27910,15 @@
                 return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$l;
+                return initialState$m;
             }
         }
         return state;
     }
 
-    var initialState$m = {};
-    function reducer$m(state, action) {
-        if (state === void 0) { state = initialState$m; }
+    var initialState$n = {};
+    function reducer$n(state, action) {
+        if (state === void 0) { state = initialState$n; }
         switch (action.type) {
             case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
                 var tracking = action.payload;
@@ -27101,198 +27927,19 @@
                 };
             }
             case CLEAR_CONSIGNMENT_TRACKING: {
-                return initialState$m;
-            }
-        }
-        return state;
-    }
-
-    var initialState$n = {
-        entities: {},
-    };
-    function reducer$n(state, action) {
-        if (state === void 0) { state = initialState$n; }
-        switch (action.type) {
-            case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
-                var deliveryCountries = action.payload;
-                var entities = deliveryCountries.reduce(function (countryEntities, country) {
-                    var _a;
-                    return Object.assign(Object.assign({}, countryEntities), (_a = {}, _a[country.isocode] = country, _a));
-                }, Object.assign({}, state.entities));
-                return Object.assign(Object.assign({}, state), { entities: entities });
-            }
-            case CLEAR_USER_MISCS_DATA: {
                 return initialState$n;
             }
         }
         return state;
     }
 
-    var initialState$o = [];
-    function reducer$o(state, action) {
-        if (state === void 0) { state = initialState$o; }
-        switch (action.type) {
-            case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
-                return initialState$o;
-            }
-            case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
-            case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
-                return action.payload ? action.payload : initialState$o;
-            }
-        }
-        return state;
-    }
-
-    var initialState$p = {};
-    function reducer$p(state, action) {
-        if (state === void 0) { state = initialState$p; }
-        switch (action.type) {
-            case LOAD_ORDER_DETAILS_SUCCESS: {
-                var order = action.payload;
-                return order;
-            }
-        }
-        return state;
-    }
-
-    var initialState$q = [];
-    function reducer$q(state, action) {
-        if (state === void 0) { state = initialState$q; }
-        switch (action.type) {
-            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-                return action.payload ? action.payload : initialState$q;
-            }
-            case LOAD_USER_PAYMENT_METHODS_FAIL: {
-                return initialState$q;
-            }
-        }
-        return state;
-    }
-
-    var initialState$r = {
-        entities: [],
-        country: null,
-    };
-    function reducer$r(state, action) {
-        if (state === void 0) { state = initialState$r; }
-        switch (action.type) {
-            case LOAD_REGIONS_SUCCESS: {
-                var entities = action.payload.entities;
-                var country = action.payload.country;
-                if (entities || country) {
-                    return Object.assign(Object.assign({}, state), { entities: entities,
-                        country: country });
-                }
-                return initialState$r;
-            }
-        }
-        return state;
-    }
-
-    var initialState$s = false;
-    function reducer$s(state, action) {
-        if (state === void 0) { state = initialState$s; }
-        switch (action.type) {
-            case RESET_PASSWORD_SUCCESS: {
-                return true;
-            }
-        }
-        return state;
-    }
-
-    var initialState$t = {
-        entities: {},
-    };
-    function reducer$t(state, action) {
-        if (state === void 0) { state = initialState$t; }
-        switch (action.type) {
-            case LOAD_TITLES_SUCCESS: {
-                var titles = action.payload;
-                var entities = titles.reduce(function (titleEntities, name) {
-                    var _a;
-                    return Object.assign(Object.assign({}, titleEntities), (_a = {}, _a[name.code] = name, _a));
-                }, Object.assign({}, state.entities));
-                return Object.assign(Object.assign({}, state), { entities: entities });
-            }
-            case CLEAR_USER_MISCS_DATA: {
-                return initialState$t;
-            }
-        }
-        return state;
-    }
-
-    var initialState$u = [];
-    function reducer$u(state, action) {
-        if (state === void 0) { state = initialState$u; }
-        switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
-                return initialState$u;
-            }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$u;
-            }
-        }
-        return state;
-    }
-
-    var initialState$v = [];
-    function reducer$v(state, action) {
-        if (state === void 0) { state = initialState$v; }
-        switch (action.type) {
-            case LOAD_USER_CONSENTS_SUCCESS: {
-                var consents = action.payload;
-                return consents ? consents : initialState$v;
-            }
-            case GIVE_USER_CONSENT_SUCCESS: {
-                var updatedConsentTemplate_1 = action.consentTemplate;
-                return state.map(function (consentTemplate) { return consentTemplate.id === updatedConsentTemplate_1.id
-                    ? updatedConsentTemplate_1
-                    : consentTemplate; });
-            }
-        }
-        return state;
-    }
-
-    var initialState$w = {};
-    function reducer$w(state, action) {
-        if (state === void 0) { state = initialState$w; }
-        switch (action.type) {
-            case LOAD_USER_DETAILS_SUCCESS: {
-                return action.payload;
-            }
-            case UPDATE_USER_DETAILS_SUCCESS: {
-                var updatedDetails = Object.assign(Object.assign({}, state), action.userUpdates);
-                return Object.assign(Object.assign({}, updatedDetails), { name: updatedDetails.firstName + " " + updatedDetails.lastName });
-            }
-        }
-        return state;
-    }
-
-    var initialState$x = {
-        orders: [],
-        pagination: {},
-        sorts: [],
-    };
-    function reducer$x(state, action) {
-        if (state === void 0) { state = initialState$x; }
-        switch (action.type) {
-            case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$x;
-            }
-            case LOAD_USER_ORDERS_FAIL: {
-                return initialState$x;
-            }
-        }
-        return state;
-    }
-
-    var initialState$y = {
+    var initialState$o = {
         coupons: [],
         sorts: [],
         pagination: {},
     };
-    function reducer$y(state, action) {
-        if (state === void 0) { state = initialState$y; }
+    function reducer$o(state, action) {
+        if (state === void 0) { state = initialState$o; }
         switch (action.type) {
             case LOAD_CUSTOMER_COUPONS_SUCCESS: {
                 return action.payload;
@@ -27317,34 +27964,194 @@
         return state;
     }
 
-    var initialState$z = {
-        results: [],
-        pagination: {},
-        sorts: [],
+    var initialState$p = {
+        entities: {},
     };
-    function reducer$z(state, action) {
-        if (state === void 0) { state = initialState$z; }
+    function reducer$p(state, action) {
+        if (state === void 0) { state = initialState$p; }
         switch (action.type) {
-            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
-                return action.payload ? action.payload : initialState$z;
+            case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
+                var deliveryCountries = action.payload;
+                var entities = deliveryCountries.reduce(function (countryEntities, country) {
+                    var _a;
+                    return Object.assign(Object.assign({}, countryEntities), (_a = {}, _a[country.isocode] = country, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
             }
-            case LOAD_PRODUCT_INTERESTS_FAIL: {
-                return initialState$z;
+            case CLEAR_USER_MISCS_DATA: {
+                return initialState$p;
             }
         }
         return state;
     }
 
-    var initialState$A = {
+    var initialState$q = [];
+    function reducer$q(state, action) {
+        if (state === void 0) { state = initialState$q; }
+        switch (action.type) {
+            case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
+                return initialState$q;
+            }
+            case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
+            case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
+                return action.payload ? action.payload : initialState$q;
+            }
+        }
+        return state;
+    }
+
+    var initialState$r = {};
+    function reducer$r(state, action) {
+        if (state === void 0) { state = initialState$r; }
+        switch (action.type) {
+            case LOAD_ORDER_DETAILS_SUCCESS: {
+                var order = action.payload;
+                return order;
+            }
+        }
+        return state;
+    }
+
+    var initialState$s = {
         returnRequests: [],
         pagination: {},
         sorts: [],
     };
+    function reducer$s(state, action) {
+        if (state === void 0) { state = initialState$s; }
+        switch (action.type) {
+            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
+                return action.payload ? action.payload : initialState$s;
+            }
+        }
+        return state;
+    }
+
+    var initialState$t = [];
+    function reducer$t(state, action) {
+        if (state === void 0) { state = initialState$t; }
+        switch (action.type) {
+            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+                return action.payload ? action.payload : initialState$t;
+            }
+            case LOAD_USER_PAYMENT_METHODS_FAIL: {
+                return initialState$t;
+            }
+        }
+        return state;
+    }
+
+    var initialState$u = {
+        results: [],
+        pagination: {},
+        sorts: [],
+    };
+    function reducer$u(state, action) {
+        if (state === void 0) { state = initialState$u; }
+        switch (action.type) {
+            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
+                return action.payload ? action.payload : initialState$u;
+            }
+            case LOAD_PRODUCT_INTERESTS_FAIL: {
+                return initialState$u;
+            }
+        }
+        return state;
+    }
+
+    var initialState$v = {
+        entities: [],
+        country: null,
+    };
+    function reducer$v(state, action) {
+        if (state === void 0) { state = initialState$v; }
+        switch (action.type) {
+            case LOAD_REGIONS_SUCCESS: {
+                var entities = action.payload.entities;
+                var country = action.payload.country;
+                if (entities || country) {
+                    return Object.assign(Object.assign({}, state), { entities: entities,
+                        country: country });
+                }
+                return initialState$v;
+            }
+        }
+        return state;
+    }
+
+    var initialState$w = {};
+    function reducer$w(state, action) {
+        if (state === void 0) { state = initialState$w; }
+        switch (action.type) {
+            case LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS:
+            case CANCEL_REPLENISHMENT_ORDER_SUCCESS: {
+                return action.payload ? action.payload : initialState$w;
+            }
+            default: {
+                return state;
+            }
+        }
+    }
+
+    var initialState$x = false;
+    function reducer$x(state, action) {
+        if (state === void 0) { state = initialState$x; }
+        switch (action.type) {
+            case RESET_PASSWORD_SUCCESS: {
+                return true;
+            }
+        }
+        return state;
+    }
+
+    var initialState$y = {
+        entities: {},
+    };
+    function reducer$y(state, action) {
+        if (state === void 0) { state = initialState$y; }
+        switch (action.type) {
+            case LOAD_TITLES_SUCCESS: {
+                var titles = action.payload;
+                var entities = titles.reduce(function (titleEntities, name) {
+                    var _a;
+                    return Object.assign(Object.assign({}, titleEntities), (_a = {}, _a[name.code] = name, _a));
+                }, Object.assign({}, state.entities));
+                return Object.assign(Object.assign({}, state), { entities: entities });
+            }
+            case CLEAR_USER_MISCS_DATA: {
+                return initialState$y;
+            }
+        }
+        return state;
+    }
+
+    var initialState$z = [];
+    function reducer$z(state, action) {
+        if (state === void 0) { state = initialState$z; }
+        switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
+                return initialState$z;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$z;
+            }
+        }
+        return state;
+    }
+
+    var initialState$A = [];
     function reducer$A(state, action) {
         if (state === void 0) { state = initialState$A; }
         switch (action.type) {
-            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
-                return action.payload ? action.payload : initialState$A;
+            case LOAD_USER_CONSENTS_SUCCESS: {
+                var consents = action.payload;
+                return consents ? consents : initialState$A;
+            }
+            case GIVE_USER_CONSENT_SUCCESS: {
+                var updatedConsentTemplate_1 = action.consentTemplate;
+                return state.map(function (consentTemplate) { return consentTemplate.id === updatedConsentTemplate_1.id
+                    ? updatedConsentTemplate_1
+                    : consentTemplate; });
             }
         }
         return state;
@@ -27364,28 +28171,91 @@
         return state;
     }
 
+    var initialState$C = {};
+    function reducer$C(state, action) {
+        if (state === void 0) { state = initialState$C; }
+        switch (action.type) {
+            case LOAD_USER_DETAILS_SUCCESS: {
+                return action.payload;
+            }
+            case UPDATE_USER_DETAILS_SUCCESS: {
+                var updatedDetails = Object.assign(Object.assign({}, state), action.userUpdates);
+                return Object.assign(Object.assign({}, updatedDetails), { name: updatedDetails.firstName + " " + updatedDetails.lastName });
+            }
+        }
+        return state;
+    }
+
+    var initialState$D = {
+        orders: [],
+        pagination: {},
+        sorts: [],
+    };
+    function reducer$D(state, action) {
+        if (state === void 0) { state = initialState$D; }
+        switch (action.type) {
+            case LOAD_USER_ORDERS_SUCCESS: {
+                return action.payload ? action.payload : initialState$D;
+            }
+            case LOAD_USER_ORDERS_FAIL: {
+                return initialState$D;
+            }
+        }
+        return state;
+    }
+
+    var initialState$E = {
+        replenishmentOrders: [],
+        pagination: {},
+        sorts: [],
+    };
+    function reducer$E(state, action) {
+        if (state === void 0) { state = initialState$E; }
+        switch (action.type) {
+            case LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS: {
+                return action.payload ? action.payload : initialState$E;
+            }
+            case CANCEL_REPLENISHMENT_ORDER_SUCCESS: {
+                var cancelledReplenishmentOrder_1 = action.payload;
+                var userReplenishmentOrders = __spread(state.replenishmentOrders);
+                var index = userReplenishmentOrders.findIndex(function (replenishmentOrder) { return replenishmentOrder.replenishmentOrderCode ===
+                    cancelledReplenishmentOrder_1.replenishmentOrderCode; });
+                if (index === -1) {
+                    return initialState$E;
+                }
+                else {
+                    userReplenishmentOrders[index] = Object.assign({}, cancelledReplenishmentOrder_1);
+                }
+                return Object.assign(Object.assign({}, state), { replenishmentOrders: userReplenishmentOrders });
+            }
+        }
+        return state;
+    }
+
     function getReducers$c() {
         return {
             account: i1$1.combineReducers({
-                details: reducer$w,
+                details: reducer$C,
             }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$u),
-            billingCountries: reducer$l,
-            consents: loaderReducer(USER_CONSENTS, reducer$v),
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$q),
-            orders: loaderReducer(USER_ORDERS, reducer$x),
-            order: loaderReducer(USER_ORDER_DETAILS, reducer$p),
+            addresses: loaderReducer(USER_ADDRESSES, reducer$z),
+            billingCountries: reducer$m,
+            consents: loaderReducer(USER_CONSENTS, reducer$A),
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$t),
+            orders: loaderReducer(USER_ORDERS, reducer$D),
+            order: loaderReducer(USER_ORDER_DETAILS, reducer$r),
+            replenishmentOrders: loaderReducer(USER_REPLENISHMENT_ORDERS, reducer$E),
             orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
-            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$A),
-            countries: reducer$n,
-            titles: reducer$t,
-            regions: loaderReducer(REGIONS, reducer$r),
-            resetPassword: reducer$s,
-            consignmentTracking: reducer$m,
-            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$y),
-            notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$o),
-            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$z),
+            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$s),
+            countries: reducer$p,
+            titles: reducer$y,
+            regions: loaderReducer(REGIONS, reducer$v),
+            resetPassword: reducer$x,
+            consignmentTracking: reducer$n,
+            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$o),
+            notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$q),
+            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$u),
             costCenters: loaderReducer(USER_COST_CENTERS, reducer$B),
+            replenishmentOrder: loaderReducer(USER_REPLENISHMENT_ORDER_DETAILS, reducer$w),
         };
     }
     var reducerToken$c = new i0.InjectionToken('UserReducers');
@@ -27467,6 +28337,62 @@
     __decorate([
         i3.Effect()
     ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
+
+    var CustomerCouponEffects = /** @class */ (function () {
+        function CustomerCouponEffects(actions$, customerCouponConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.customerCouponConnector = customerCouponConnector;
+            this.loadCustomerCoupons$ = this.actions$.pipe(i3.ofType(LOAD_CUSTOMER_COUPONS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.customerCouponConnector
+                    .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
+                    .pipe(operators.map(function (coupons) {
+                    return new LoadCustomerCouponsSuccess(coupons);
+                }), operators.catchError(function (error) { return rxjs.of(new LoadCustomerCouponsFail(makeErrorSerializable(error))); }));
+            }));
+            this.subscribeCustomerCoupon$ = this.actions$.pipe(i3.ofType(SUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.customerCouponConnector
+                    .turnOnNotification(payload.userId, payload.couponCode)
+                    .pipe(operators.map(function (data) {
+                    return new SubscribeCustomerCouponSuccess(data);
+                }), operators.catchError(function (error) { return rxjs.of(new SubscribeCustomerCouponFail(makeErrorSerializable(error))); }));
+            }));
+            this.unsubscribeCustomerCoupon$ = this.actions$.pipe(i3.ofType(UNSUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.customerCouponConnector
+                    .turnOffNotification(payload.userId, payload.couponCode)
+                    .pipe(operators.map(function () {
+                    return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
+                }), operators.catchError(function (error) { return rxjs.of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error))); }));
+            }));
+            this.claimCustomerCoupon$ = this.actions$.pipe(i3.ofType(CLAIM_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.customerCouponConnector
+                    .claimCustomerCoupon(payload.userId, payload.couponCode)
+                    .pipe(operators.map(function (data) {
+                    return new ClaimCustomerCouponSuccess(data);
+                }), operators.catchError(function (error) { return rxjs.of(new ClaimCustomerCouponFail(makeErrorSerializable(error))); }));
+            }));
+        }
+        return CustomerCouponEffects;
+    }());
+    CustomerCouponEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CustomerCouponEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: CustomerCouponConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
+    __decorate([
+        i3.Effect()
+    ], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
 
     var DeliveryCountriesEffects = /** @class */ (function () {
         function DeliveryCountriesEffects(actions$, siteConnector) {
@@ -27678,6 +28604,60 @@
         i3.Effect()
     ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
 
+    var ProductInterestsEffect = /** @class */ (function () {
+        function ProductInterestsEffect(actions$, userInterestsConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userInterestsConnector = userInterestsConnector;
+            this.loadProductInteres$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_INTERESTS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.userInterestsConnector
+                    .getInterests(payload.userId, payload.pageSize, payload.currentPage, payload.sort, payload.productCode, payload.notificationType)
+                    .pipe(operators.map(function (interests) {
+                    return new LoadProductInterestsSuccess(interests);
+                }), operators.catchError(function (error) { return rxjs.of(new LoadProductInterestsFail(makeErrorSerializable(error))); }));
+            }));
+            this.removeProductInterest$ = this.actions$.pipe(i3.ofType(REMOVE_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userInterestsConnector
+                .removeInterest(payload.userId, payload.item)
+                .pipe(operators.switchMap(function (data) { return [
+                new LoadProductInterests(payload.singleDelete
+                    ? {
+                        userId: payload.userId,
+                        productCode: payload.item.product.code,
+                        notificationType: payload.item.productInterestEntry[0].interestType,
+                    }
+                    : { userId: payload.userId }),
+                new RemoveProductInterestSuccess(data),
+            ]; }), operators.catchError(function (error) { return rxjs.of(new RemoveProductInterestFail(makeErrorSerializable(error))); })); }));
+            this.addProductInterest$ = this.actions$.pipe(i3.ofType(ADD_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userInterestsConnector
+                .addInterest(payload.userId, payload.productCode, payload.notificationType)
+                .pipe(operators.switchMap(function (res) { return [
+                new LoadProductInterests({
+                    userId: payload.userId,
+                    productCode: payload.productCode,
+                    notificationType: payload.notificationType,
+                }),
+                new AddProductInterestSuccess(res),
+            ]; }), operators.catchError(function (error) { return rxjs.of(new AddProductInterestFail(makeErrorSerializable(error))); })); }));
+        }
+        return ProductInterestsEffect;
+    }());
+    ProductInterestsEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductInterestsEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserInterestsConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ProductInterestsEffect.prototype, "loadProductInteres$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ProductInterestsEffect.prototype, "removeProductInterest$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ProductInterestsEffect.prototype, "addProductInterest$", void 0);
+
     var RegionsEffects = /** @class */ (function () {
         function RegionsEffects(actions$, siteConnector) {
             var _this = this;
@@ -27710,6 +28690,46 @@
     __decorate([
         i3.Effect()
     ], RegionsEffects.prototype, "resetRegions$", void 0);
+
+    var ReplenishmentOrderDetailsEffect = /** @class */ (function () {
+        function ReplenishmentOrderDetailsEffect(actions$, replenishmentOrderConnector, globalMessageService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.replenishmentOrderConnector = replenishmentOrderConnector;
+            this.globalMessageService = globalMessageService;
+            this.loadReplenishmentOrderDetails$ = this.actions$.pipe(i3.ofType(LOAD_REPLENISHMENT_ORDER_DETAILS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.replenishmentOrderConnector
+                    .load(payload.userId, payload.replenishmentOrderCode)
+                    .pipe(operators.map(function (replenishmentOrder) {
+                    return new LoadReplenishmentOrderDetailsSuccess(replenishmentOrder);
+                }), operators.catchError(function (error) { return rxjs.of(new LoadReplenishmentOrderDetailsFail(normalizeHttpError(error))); }));
+            }));
+            this.cancelReplenishmentOrder$ = this.actions$.pipe(i3.ofType(CANCEL_REPLENISHMENT_ORDER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.replenishmentOrderConnector
+                    .cancelReplenishmentOrder(payload.userId, payload.replenishmentOrderCode)
+                    .pipe(operators.map(function (replenishmentOrder) { return new CancelReplenishmentOrderSuccess(replenishmentOrder); }), operators.catchError(function (error) {
+                    var _a;
+                    (_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach(function (err) { return _this.globalMessageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR); });
+                    return rxjs.of(new CancelReplenishmentOrderFail(normalizeHttpError(error)));
+                }));
+            }));
+        }
+        return ReplenishmentOrderDetailsEffect;
+    }());
+    ReplenishmentOrderDetailsEffect.decorators = [
+        { type: i0.Injectable }
+    ];
+    ReplenishmentOrderDetailsEffect.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserReplenishmentOrderConnector },
+        { type: GlobalMessageService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ReplenishmentOrderDetailsEffect.prototype, "loadReplenishmentOrderDetails$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ReplenishmentOrderDetailsEffect.prototype, "cancelReplenishmentOrder$", void 0);
 
     var ResetPasswordEffects = /** @class */ (function () {
         function ResetPasswordEffects(actions$, userAccountConnector) {
@@ -27973,6 +28993,28 @@
         i3.Effect()
     ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
 
+    var UserCostCenterEffects = /** @class */ (function () {
+        function UserCostCenterEffects(actions$, userCostCenterConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userCostCenterConnector = userCostCenterConnector;
+            this.loadActiveCostCenters$ = this.actions$.pipe(i3.ofType(LOAD_ACTIVE_COST_CENTERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userCostCenterConnector.getActiveList(payload).pipe(
+            // TODO(#8875): Should we use here serialize utils?
+            operators.map(function (data) { return new LoadActiveCostCentersSuccess(data.values); }), operators.catchError(function (error) { return rxjs.of(new LoadActiveCostCentersFail(normalizeHttpError(error))); })); }));
+        }
+        return UserCostCenterEffects;
+    }());
+    UserCostCenterEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    UserCostCenterEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: UserCostCenterConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], UserCostCenterEffects.prototype, "loadActiveCostCenters$", void 0);
+
     var UserDetailsEffects = /** @class */ (function () {
         function UserDetailsEffects(actions$, userConnector) {
             var _this = this;
@@ -28002,16 +29044,17 @@
     ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
 
     var UserOrdersEffect = /** @class */ (function () {
-        function UserOrdersEffect(actions$, orderConnector) {
+        function UserOrdersEffect(actions$, orderConnector, replenishmentOrderConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
+            this.replenishmentOrderConnector = replenishmentOrderConnector;
             this.loadUserOrders$ = this.actions$.pipe(i3.ofType(LOAD_USER_ORDERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.orderConnector
-                    .getHistory(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
-                    .pipe(operators.map(function (orders) {
+                return (Boolean(payload.replenishmentOrderCode)
+                    ? _this.replenishmentOrderConnector.loadReplenishmentDetailsHistory(payload.userId, payload.replenishmentOrderCode, payload.pageSize, payload.currentPage, payload.sort)
+                    : _this.orderConnector.getHistory(payload.userId, payload.pageSize, payload.currentPage, payload.sort)).pipe(operators.map(function (orders) {
                     return new LoadUserOrdersSuccess(orders);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserOrdersFail(normalizeHttpError(error))); }));
             }));
             this.resetUserOrders$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE), operators.map(function () {
                 return new ClearUserOrders();
@@ -28024,7 +29067,8 @@
     ];
     UserOrdersEffect.ctorParameters = function () { return [
         { type: i3.Actions },
-        { type: UserOrderConnector }
+        { type: UserOrderConnector },
+        { type: UserReplenishmentOrderConnector }
     ]; };
     __decorate([
         i3.Effect()
@@ -28075,137 +29119,31 @@
         i3.Effect()
     ], UserRegisterEffects.prototype, "removeUser$", void 0);
 
-    var CustomerCouponEffects = /** @class */ (function () {
-        function CustomerCouponEffects(actions$, customerCouponConnector) {
+    var UserReplenishmentOrdersEffect = /** @class */ (function () {
+        function UserReplenishmentOrdersEffect(actions$, replenishmentOrderConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.customerCouponConnector = customerCouponConnector;
-            this.loadCustomerCoupons$ = this.actions$.pipe(i3.ofType(LOAD_CUSTOMER_COUPONS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.customerCouponConnector
-                    .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
-                    .pipe(operators.map(function (coupons) {
-                    return new LoadCustomerCouponsSuccess(coupons);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadCustomerCouponsFail(makeErrorSerializable(error))); }));
-            }));
-            this.subscribeCustomerCoupon$ = this.actions$.pipe(i3.ofType(SUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.customerCouponConnector
-                    .turnOnNotification(payload.userId, payload.couponCode)
-                    .pipe(operators.map(function (data) {
-                    return new SubscribeCustomerCouponSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new SubscribeCustomerCouponFail(makeErrorSerializable(error))); }));
-            }));
-            this.unsubscribeCustomerCoupon$ = this.actions$.pipe(i3.ofType(UNSUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.customerCouponConnector
-                    .turnOffNotification(payload.userId, payload.couponCode)
-                    .pipe(operators.map(function () {
-                    return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
-                }), operators.catchError(function (error) { return rxjs.of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error))); }));
-            }));
-            this.claimCustomerCoupon$ = this.actions$.pipe(i3.ofType(CLAIM_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.customerCouponConnector
-                    .claimCustomerCoupon(payload.userId, payload.couponCode)
-                    .pipe(operators.map(function (data) {
-                    return new ClaimCustomerCouponSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new ClaimCustomerCouponFail(makeErrorSerializable(error))); }));
+            this.replenishmentOrderConnector = replenishmentOrderConnector;
+            this.loadUserReplenishmentOrders$ = this.actions$.pipe(i3.ofType(LOAD_USER_REPLENISHMENT_ORDERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.replenishmentOrderConnector
+                    .loadHistory(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
+                    .pipe(operators.map(function (orders) {
+                    return new LoadUserReplenishmentOrdersSuccess(orders);
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserReplenishmentOrdersFail(normalizeHttpError(error))); }));
             }));
         }
-        return CustomerCouponEffects;
+        return UserReplenishmentOrdersEffect;
     }());
-    CustomerCouponEffects.decorators = [
+    UserReplenishmentOrdersEffect.decorators = [
         { type: i0.Injectable }
     ];
-    CustomerCouponEffects.ctorParameters = function () { return [
+    UserReplenishmentOrdersEffect.ctorParameters = function () { return [
         { type: i3.Actions },
-        { type: CustomerCouponConnector }
+        { type: UserReplenishmentOrderConnector }
     ]; };
     __decorate([
         i3.Effect()
-    ], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
-    __decorate([
-        i3.Effect()
-    ], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
-
-    var ProductInterestsEffect = /** @class */ (function () {
-        function ProductInterestsEffect(actions$, userInterestsConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userInterestsConnector = userInterestsConnector;
-            this.loadProductInteres$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_INTERESTS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.userInterestsConnector
-                    .getInterests(payload.userId, payload.pageSize, payload.currentPage, payload.sort, payload.productCode, payload.notificationType)
-                    .pipe(operators.map(function (interests) {
-                    return new LoadProductInterestsSuccess(interests);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadProductInterestsFail(makeErrorSerializable(error))); }));
-            }));
-            this.removeProductInterest$ = this.actions$.pipe(i3.ofType(REMOVE_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userInterestsConnector
-                .removeInterest(payload.userId, payload.item)
-                .pipe(operators.switchMap(function (data) { return [
-                new LoadProductInterests(payload.singleDelete
-                    ? {
-                        userId: payload.userId,
-                        productCode: payload.item.product.code,
-                        notificationType: payload.item.productInterestEntry[0].interestType,
-                    }
-                    : { userId: payload.userId }),
-                new RemoveProductInterestSuccess(data),
-            ]; }), operators.catchError(function (error) { return rxjs.of(new RemoveProductInterestFail(makeErrorSerializable(error))); })); }));
-            this.addProductInterest$ = this.actions$.pipe(i3.ofType(ADD_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userInterestsConnector
-                .addInterest(payload.userId, payload.productCode, payload.notificationType)
-                .pipe(operators.switchMap(function (res) { return [
-                new LoadProductInterests({
-                    userId: payload.userId,
-                    productCode: payload.productCode,
-                    notificationType: payload.notificationType,
-                }),
-                new AddProductInterestSuccess(res),
-            ]; }), operators.catchError(function (error) { return rxjs.of(new AddProductInterestFail(makeErrorSerializable(error))); })); }));
-        }
-        return ProductInterestsEffect;
-    }());
-    ProductInterestsEffect.decorators = [
-        { type: i0.Injectable }
-    ];
-    ProductInterestsEffect.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: UserInterestsConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], ProductInterestsEffect.prototype, "loadProductInteres$", void 0);
-    __decorate([
-        i3.Effect()
-    ], ProductInterestsEffect.prototype, "removeProductInterest$", void 0);
-    __decorate([
-        i3.Effect()
-    ], ProductInterestsEffect.prototype, "addProductInterest$", void 0);
-
-    var UserCostCenterEffects = /** @class */ (function () {
-        function UserCostCenterEffects(actions$, userCostCenterConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userCostCenterConnector = userCostCenterConnector;
-            this.loadActiveCostCenters$ = this.actions$.pipe(i3.ofType(LOAD_ACTIVE_COST_CENTERS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userCostCenterConnector.getActiveList(payload).pipe(
-            // TODO(#8875): Should we use here serialize utils?
-            operators.map(function (data) { return new LoadActiveCostCentersSuccess(data.values); }), operators.catchError(function (error) { return rxjs.of(new LoadActiveCostCentersFail(normalizeHttpError(error))); })); }));
-        }
-        return UserCostCenterEffects;
-    }());
-    UserCostCenterEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    UserCostCenterEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: UserCostCenterConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], UserCostCenterEffects.prototype, "loadActiveCostCenters$", void 0);
+    ], UserReplenishmentOrdersEffect.prototype, "loadUserReplenishmentOrders$", void 0);
 
     var effects$b = [
         ClearMiscsDataEffect,
@@ -28230,6 +29168,8 @@
         ProductInterestsEffect,
         OrderReturnRequestEffect,
         UserCostCenterEffects,
+        ReplenishmentOrderDetailsEffect,
+        UserReplenishmentOrdersEffect,
     ];
 
     var UserStoreModule = /** @class */ (function () {
@@ -28317,6 +29257,7 @@
     exports.BadRequestHandler = BadRequestHandler;
     exports.BaseSiteService = BaseSiteService;
     exports.CANCEL_ORDER_PROCESS_ID = CANCEL_ORDER_PROCESS_ID;
+    exports.CANCEL_REPLENISHMENT_ORDER_PROCESS_ID = CANCEL_REPLENISHMENT_ORDER_PROCESS_ID;
     exports.CANCEL_RETURN_PROCESS_ID = CANCEL_RETURN_PROCESS_ID;
     exports.CARD_TYPE_NORMALIZER = CARD_TYPE_NORMALIZER;
     exports.CART_MODIFICATION_NORMALIZER = CART_MODIFICATION_NORMALIZER;
@@ -28379,6 +29320,8 @@
     exports.CheckoutPaymentAdapter = CheckoutPaymentAdapter;
     exports.CheckoutPaymentConnector = CheckoutPaymentConnector;
     exports.CheckoutPaymentService = CheckoutPaymentService;
+    exports.CheckoutReplenishmentOrderAdapter = CheckoutReplenishmentOrderAdapter;
+    exports.CheckoutReplenishmentOrderConnector = CheckoutReplenishmentOrderConnector;
     exports.CheckoutSelectors = checkoutGroup_selectors;
     exports.CheckoutService = CheckoutService;
     exports.CmsActions = cmsGroup_actions;
@@ -28508,6 +29451,7 @@
     exports.OccCheckoutDeliveryAdapter = OccCheckoutDeliveryAdapter;
     exports.OccCheckoutPaymentAdapter = OccCheckoutPaymentAdapter;
     exports.OccCheckoutPaymentTypeAdapter = OccCheckoutPaymentTypeAdapter;
+    exports.OccCheckoutReplenishmentOrderAdapter = OccCheckoutReplenishmentOrderAdapter;
     exports.OccCmsComponentAdapter = OccCmsComponentAdapter;
     exports.OccCmsPageAdapter = OccCmsPageAdapter;
     exports.OccCmsPageNormalizer = OccCmsPageNormalizer;
@@ -28528,6 +29472,8 @@
     exports.OccProductReviewsAdapter = OccProductReviewsAdapter;
     exports.OccProductSearchAdapter = OccProductSearchAdapter;
     exports.OccProductSearchPageNormalizer = OccProductSearchPageNormalizer;
+    exports.OccReplenishmentOrderFormSerializer = OccReplenishmentOrderFormSerializer;
+    exports.OccReplenishmentOrderNormalizer = OccReplenishmentOrderNormalizer;
     exports.OccRequestsOptimizerService = OccRequestsOptimizerService;
     exports.OccReturnRequestNormalizer = OccReturnRequestNormalizer;
     exports.OccSiteAdapter = OccSiteAdapter;
@@ -28541,6 +29487,7 @@
     exports.OccUserNotificationPreferenceAdapter = OccUserNotificationPreferenceAdapter;
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
+    exports.OccUserReplenishmentOrderAdapter = OccUserReplenishmentOrderAdapter;
     exports.OpenIdAuthenticationTokenService = OpenIdAuthenticationTokenService;
     exports.OrderPlacedEvent = OrderPlacedEvent;
     exports.OrderReturnRequestService = OrderReturnRequestService;
@@ -28548,6 +29495,7 @@
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
     exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
     exports.PAYMENT_TYPE_NORMALIZER = PAYMENT_TYPE_NORMALIZER;
+    exports.PLACED_ORDER_PROCESS_ID = PLACED_ORDER_PROCESS_ID;
     exports.POINT_OF_SERVICE_NORMALIZER = POINT_OF_SERVICE_NORMALIZER;
     exports.PROCESS_FEATURE = PROCESS_FEATURE;
     exports.PRODUCT_DETAIL_ENTITY = PRODUCT_DETAIL_ENTITY;
@@ -28600,6 +29548,9 @@
     exports.REGISTER_USER_PROCESS_ID = REGISTER_USER_PROCESS_ID;
     exports.REMOVE_PRODUCT_INTERESTS_PROCESS_ID = REMOVE_PRODUCT_INTERESTS_PROCESS_ID;
     exports.REMOVE_USER_PROCESS_ID = REMOVE_USER_PROCESS_ID;
+    exports.REPLENISHMENT_ORDER_FORM_SERIALIZER = REPLENISHMENT_ORDER_FORM_SERIALIZER;
+    exports.REPLENISHMENT_ORDER_HISTORY_NORMALIZER = REPLENISHMENT_ORDER_HISTORY_NORMALIZER;
+    exports.REPLENISHMENT_ORDER_NORMALIZER = REPLENISHMENT_ORDER_NORMALIZER;
     exports.ROUTING_FEATURE = ROUTING_FEATURE;
     exports.RootConfig = RootConfig;
     exports.RoutingActions = routingGroup_actions;
@@ -28669,6 +29620,8 @@
     exports.USER_ORDERS = USER_ORDERS;
     exports.USER_ORDER_DETAILS = USER_ORDER_DETAILS;
     exports.USER_PAYMENT_METHODS = USER_PAYMENT_METHODS;
+    exports.USER_REPLENISHMENT_ORDERS = USER_REPLENISHMENT_ORDERS;
+    exports.USER_REPLENISHMENT_ORDER_DETAILS = USER_REPLENISHMENT_ORDER_DETAILS;
     exports.USER_RETURN_REQUESTS = USER_RETURN_REQUESTS;
     exports.USER_RETURN_REQUEST_DETAILS = USER_RETURN_REQUEST_DETAILS;
     exports.USER_SERIALIZER = USER_SERIALIZER;
@@ -28704,6 +29657,9 @@
     exports.UserPaymentAdapter = UserPaymentAdapter;
     exports.UserPaymentConnector = UserPaymentConnector;
     exports.UserPaymentService = UserPaymentService;
+    exports.UserReplenishmentOrderAdapter = UserReplenishmentOrderAdapter;
+    exports.UserReplenishmentOrderConnector = UserReplenishmentOrderConnector;
+    exports.UserReplenishmentOrderService = UserReplenishmentOrderService;
     exports.UserService = UserService;
     exports.UsersSelectors = usersGroup_selectors;
     exports.WITHDRAW_CONSENT_PROCESS_ID = WITHDRAW_CONSENT_PROCESS_ID;
@@ -28736,6 +29692,7 @@
     exports.provideConfigValidator = provideConfigValidator;
     exports.provideDefaultConfig = provideDefaultConfig;
     exports.provideDefaultConfigFactory = provideDefaultConfigFactory;
+    exports.recurrencePeriod = recurrencePeriod;
     exports.resolveApplicable = resolveApplicable;
     exports.serviceMapFactory = serviceMapFactory;
     exports.validateConfig = validateConfig;
@@ -28743,16 +29700,16 @@
     exports.ɵa = cartStatePersistenceFactory;
     exports.ɵb = CONFIG_INITIALIZER_FORROOT_GUARD;
     exports.ɵba = AsmStoreModule;
-    exports.ɵbb = getReducers$3;
-    exports.ɵbc = reducerToken$3;
-    exports.ɵbd = reducerProvider$3;
+    exports.ɵbb = getReducers$4;
+    exports.ɵbc = reducerToken$4;
+    exports.ɵbd = reducerProvider$4;
     exports.ɵbe = clearCustomerSupportAgentAsmState;
     exports.ɵbf = metaReducers$2;
-    exports.ɵbg = effects$3;
+    exports.ɵbg = effects$4;
     exports.ɵbh = CustomerEffects;
     exports.ɵbi = CustomerSupportAgentTokenEffects;
     exports.ɵbj = UserAuthenticationTokenService;
-    exports.ɵbk = reducer$7;
+    exports.ɵbk = reducer$c;
     exports.ɵbl = interceptors$2;
     exports.ɵbm = CustomerSupportAgentAuthErrorInterceptor;
     exports.ɵbn = CustomerSupportAgentErrorHandlingService;
@@ -28803,198 +29760,205 @@
     exports.ɵde = CartPageMetaResolver;
     exports.ɵdf = SiteContextParamsService;
     exports.ɵdg = CheckoutStoreModule;
-    exports.ɵdh = getReducers$5;
-    exports.ɵdi = reducerToken$5;
-    exports.ɵdj = reducerProvider$5;
-    exports.ɵdk = effects$5;
+    exports.ɵdh = getReducers$1;
+    exports.ɵdi = reducerToken$1;
+    exports.ɵdj = reducerProvider$1;
+    exports.ɵdk = effects$1;
     exports.ɵdl = AddressVerificationEffect;
     exports.ɵdm = CardTypesEffects;
     exports.ɵdn = CheckoutEffects;
     exports.ɵdo = PaymentTypesEffects;
-    exports.ɵdp = reducer$b;
-    exports.ɵdq = reducer$a;
-    exports.ɵdr = reducer$9;
-    exports.ɵds = reducer$c;
-    exports.ɵdt = cmsStoreConfigFactory;
-    exports.ɵdu = CmsStoreModule;
-    exports.ɵdv = getReducers$7;
-    exports.ɵdw = reducerToken$7;
-    exports.ɵdx = reducerProvider$7;
-    exports.ɵdy = clearCmsState;
-    exports.ɵdz = metaReducers$3;
+    exports.ɵdp = ReplenishmentOrderEffects;
+    exports.ɵdq = reducer$3;
+    exports.ɵdr = reducer$2;
+    exports.ɵds = reducer$1;
+    exports.ɵdt = reducer$5;
+    exports.ɵdu = reducer$4;
+    exports.ɵdv = cmsStoreConfigFactory;
+    exports.ɵdw = CmsStoreModule;
+    exports.ɵdx = getReducers$7;
+    exports.ɵdy = reducerToken$7;
+    exports.ɵdz = reducerProvider$7;
     exports.ɵe = initConfig;
-    exports.ɵea = effects$7;
-    exports.ɵeb = ComponentsEffects;
-    exports.ɵec = NavigationEntryItemEffects;
-    exports.ɵed = PageEffects;
-    exports.ɵee = reducer$g;
-    exports.ɵef = entityLoaderReducer;
+    exports.ɵea = clearCmsState;
+    exports.ɵeb = metaReducers$3;
+    exports.ɵec = effects$7;
+    exports.ɵed = ComponentsEffects;
+    exports.ɵee = NavigationEntryItemEffects;
+    exports.ɵef = PageEffects;
     exports.ɵeg = reducer$h;
-    exports.ɵeh = reducer$e;
-    exports.ɵei = reducer$f;
-    exports.ɵej = GlobalMessageStoreModule;
-    exports.ɵek = getReducers$4;
-    exports.ɵel = reducerToken$4;
-    exports.ɵem = reducerProvider$4;
-    exports.ɵen = reducer$8;
-    exports.ɵeo = GlobalMessageEffect;
-    exports.ɵep = defaultGlobalMessageConfigFactory;
-    exports.ɵeq = HttpErrorInterceptor;
-    exports.ɵer = defaultI18nConfig;
-    exports.ɵes = i18nextProviders;
-    exports.ɵet = i18nextInit;
-    exports.ɵeu = MockTranslationService;
-    exports.ɵev = kymaStoreConfigFactory;
-    exports.ɵew = KymaStoreModule;
-    exports.ɵex = getReducers$8;
-    exports.ɵey = reducerToken$8;
-    exports.ɵez = reducerProvider$8;
+    exports.ɵeh = entityLoaderReducer;
+    exports.ɵei = reducer$i;
+    exports.ɵej = reducer$f;
+    exports.ɵek = reducer$g;
+    exports.ɵel = GlobalMessageStoreModule;
+    exports.ɵem = getReducers$5;
+    exports.ɵen = reducerToken$5;
+    exports.ɵeo = reducerProvider$5;
+    exports.ɵep = reducer$d;
+    exports.ɵeq = GlobalMessageEffect;
+    exports.ɵer = defaultGlobalMessageConfigFactory;
+    exports.ɵes = HttpErrorInterceptor;
+    exports.ɵet = defaultI18nConfig;
+    exports.ɵeu = i18nextProviders;
+    exports.ɵev = i18nextInit;
+    exports.ɵew = MockTranslationService;
+    exports.ɵex = kymaStoreConfigFactory;
+    exports.ɵey = KymaStoreModule;
+    exports.ɵez = getReducers$8;
     exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = clearKymaState;
-    exports.ɵfb = metaReducers$4;
-    exports.ɵfc = effects$8;
-    exports.ɵfd = OpenIdTokenEffect;
-    exports.ɵfe = defaultKymaConfig;
-    exports.ɵff = defaultOccAsmConfig;
-    exports.ɵfg = defaultOccCartConfig;
-    exports.ɵfh = OccSaveCartAdapter;
-    exports.ɵfi = defaultOccCheckoutConfig;
-    exports.ɵfj = defaultOccCostCentersConfig;
-    exports.ɵfk = defaultOccProductConfig;
-    exports.ɵfl = defaultOccSiteContextConfig;
-    exports.ɵfm = defaultOccStoreFinderConfig;
-    exports.ɵfn = defaultOccUserConfig;
-    exports.ɵfo = UserNotificationPreferenceAdapter;
-    exports.ɵfp = OccUserCostCenterAdapter;
-    exports.ɵfq = defaultPersonalizationConfig;
-    exports.ɵfr = interceptors$3;
-    exports.ɵfs = OccPersonalizationIdInterceptor;
-    exports.ɵft = OccPersonalizationTimeInterceptor;
-    exports.ɵfu = ProcessStoreModule;
-    exports.ɵfv = getReducers$9;
-    exports.ɵfw = reducerToken$9;
-    exports.ɵfx = reducerProvider$9;
-    exports.ɵfy = productStoreConfigFactory;
-    exports.ɵfz = ProductStoreModule;
+    exports.ɵfa = reducerToken$8;
+    exports.ɵfb = reducerProvider$8;
+    exports.ɵfc = clearKymaState;
+    exports.ɵfd = metaReducers$4;
+    exports.ɵfe = effects$8;
+    exports.ɵff = OpenIdTokenEffect;
+    exports.ɵfg = defaultKymaConfig;
+    exports.ɵfh = defaultOccAsmConfig;
+    exports.ɵfi = defaultOccCartConfig;
+    exports.ɵfj = OccSaveCartAdapter;
+    exports.ɵfk = defaultOccCheckoutConfig;
+    exports.ɵfl = defaultOccCostCentersConfig;
+    exports.ɵfm = defaultOccProductConfig;
+    exports.ɵfn = defaultOccSiteContextConfig;
+    exports.ɵfo = defaultOccStoreFinderConfig;
+    exports.ɵfp = defaultOccUserConfig;
+    exports.ɵfq = UserNotificationPreferenceAdapter;
+    exports.ɵfr = OccUserCostCenterAdapter;
+    exports.ɵfs = UserReplenishmentOrderAdapter;
+    exports.ɵft = defaultPersonalizationConfig;
+    exports.ɵfu = interceptors$3;
+    exports.ɵfv = OccPersonalizationIdInterceptor;
+    exports.ɵfw = OccPersonalizationTimeInterceptor;
+    exports.ɵfx = ProcessStoreModule;
+    exports.ɵfy = getReducers$9;
+    exports.ɵfz = reducerToken$9;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = getReducers$a;
-    exports.ɵgb = reducerToken$a;
-    exports.ɵgc = reducerProvider$a;
-    exports.ɵgd = clearProductsState;
-    exports.ɵge = metaReducers$5;
-    exports.ɵgf = effects$9;
-    exports.ɵgg = ProductReferencesEffects;
-    exports.ɵgh = ProductReviewsEffects;
-    exports.ɵgi = ProductsSearchEffects;
-    exports.ɵgj = ProductEffects;
-    exports.ɵgk = reducer$i;
-    exports.ɵgl = entityScopedLoaderReducer;
-    exports.ɵgm = scopedLoaderReducer;
-    exports.ɵgn = reducer$k;
-    exports.ɵgo = reducer$j;
-    exports.ɵgp = PageMetaResolver;
-    exports.ɵgq = CouponSearchPageResolver;
-    exports.ɵgr = PageMetaResolver;
-    exports.ɵgs = addExternalRoutesFactory;
-    exports.ɵgt = getReducers$6;
-    exports.ɵgu = reducer$d;
-    exports.ɵgv = reducerToken$6;
-    exports.ɵgw = reducerProvider$6;
-    exports.ɵgx = CustomSerializer;
-    exports.ɵgy = effects$6;
-    exports.ɵgz = RouterEffects;
+    exports.ɵga = reducerProvider$9;
+    exports.ɵgb = productStoreConfigFactory;
+    exports.ɵgc = ProductStoreModule;
+    exports.ɵgd = getReducers$a;
+    exports.ɵge = reducerToken$a;
+    exports.ɵgf = reducerProvider$a;
+    exports.ɵgg = clearProductsState;
+    exports.ɵgh = metaReducers$5;
+    exports.ɵgi = effects$9;
+    exports.ɵgj = ProductReferencesEffects;
+    exports.ɵgk = ProductReviewsEffects;
+    exports.ɵgl = ProductsSearchEffects;
+    exports.ɵgm = ProductEffects;
+    exports.ɵgn = reducer$j;
+    exports.ɵgo = entityScopedLoaderReducer;
+    exports.ɵgp = scopedLoaderReducer;
+    exports.ɵgq = reducer$l;
+    exports.ɵgr = reducer$k;
+    exports.ɵgs = PageMetaResolver;
+    exports.ɵgt = CouponSearchPageResolver;
+    exports.ɵgu = PageMetaResolver;
+    exports.ɵgv = addExternalRoutesFactory;
+    exports.ɵgw = getReducers$6;
+    exports.ɵgx = reducer$e;
+    exports.ɵgy = reducerToken$6;
+    exports.ɵgz = reducerProvider$6;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = siteContextStoreConfigFactory;
-    exports.ɵhb = SiteContextStoreModule;
-    exports.ɵhc = getReducers$1;
-    exports.ɵhd = reducerToken$1;
-    exports.ɵhe = reducerProvider$1;
-    exports.ɵhf = effects$2;
-    exports.ɵhg = LanguagesEffects;
-    exports.ɵhh = CurrenciesEffects;
-    exports.ɵhi = BaseSiteEffects;
-    exports.ɵhj = reducer$3;
-    exports.ɵhk = reducer$2;
-    exports.ɵhl = reducer$1;
-    exports.ɵhm = defaultSiteContextConfigFactory;
-    exports.ɵhn = initializeContext;
-    exports.ɵho = contextServiceProviders;
-    exports.ɵhp = SiteContextRoutesHandler;
-    exports.ɵhq = SiteContextUrlSerializer;
-    exports.ɵhr = siteContextParamsProviders;
-    exports.ɵhs = baseSiteConfigValidator;
-    exports.ɵht = interceptors$4;
-    exports.ɵhu = CmsTicketInterceptor;
-    exports.ɵhv = StoreFinderStoreModule;
-    exports.ɵhw = getReducers$b;
-    exports.ɵhx = reducerToken$b;
-    exports.ɵhy = reducerProvider$b;
-    exports.ɵhz = effects$a;
+    exports.ɵha = CustomSerializer;
+    exports.ɵhb = effects$6;
+    exports.ɵhc = RouterEffects;
+    exports.ɵhd = siteContextStoreConfigFactory;
+    exports.ɵhe = SiteContextStoreModule;
+    exports.ɵhf = getReducers$2;
+    exports.ɵhg = reducerToken$2;
+    exports.ɵhh = reducerProvider$2;
+    exports.ɵhi = effects$3;
+    exports.ɵhj = LanguagesEffects;
+    exports.ɵhk = CurrenciesEffects;
+    exports.ɵhl = BaseSiteEffects;
+    exports.ɵhm = reducer$8;
+    exports.ɵhn = reducer$7;
+    exports.ɵho = reducer$6;
+    exports.ɵhp = defaultSiteContextConfigFactory;
+    exports.ɵhq = initializeContext;
+    exports.ɵhr = contextServiceProviders;
+    exports.ɵhs = SiteContextRoutesHandler;
+    exports.ɵht = SiteContextUrlSerializer;
+    exports.ɵhu = siteContextParamsProviders;
+    exports.ɵhv = baseSiteConfigValidator;
+    exports.ɵhw = interceptors$4;
+    exports.ɵhx = CmsTicketInterceptor;
+    exports.ɵhy = StoreFinderStoreModule;
+    exports.ɵhz = getReducers$b;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = FindStoresEffect;
-    exports.ɵib = ViewAllStoresEffect;
-    exports.ɵic = defaultStoreFinderConfig;
-    exports.ɵid = UserStoreModule;
-    exports.ɵie = getReducers$c;
-    exports.ɵif = reducerToken$c;
-    exports.ɵig = reducerProvider$c;
-    exports.ɵih = clearUserState;
-    exports.ɵii = metaReducers$7;
-    exports.ɵij = effects$b;
-    exports.ɵik = BillingCountriesEffect;
-    exports.ɵil = ClearMiscsDataEffect;
-    exports.ɵim = ConsignmentTrackingEffects;
-    exports.ɵin = DeliveryCountriesEffects;
-    exports.ɵio = NotificationPreferenceEffects;
-    exports.ɵip = OrderDetailsEffect;
-    exports.ɵiq = OrderReturnRequestEffect;
-    exports.ɵir = UserPaymentMethodsEffects;
-    exports.ɵis = RegionsEffects;
-    exports.ɵit = ResetPasswordEffects;
-    exports.ɵiu = TitlesEffects;
-    exports.ɵiv = UserAddressesEffects;
-    exports.ɵiw = UserConsentsEffect;
-    exports.ɵix = UserDetailsEffects;
-    exports.ɵiy = UserOrdersEffect;
-    exports.ɵiz = UserRegisterEffects;
+    exports.ɵia = reducerToken$b;
+    exports.ɵib = reducerProvider$b;
+    exports.ɵic = effects$a;
+    exports.ɵid = FindStoresEffect;
+    exports.ɵie = ViewAllStoresEffect;
+    exports.ɵif = defaultStoreFinderConfig;
+    exports.ɵig = UserStoreModule;
+    exports.ɵih = getReducers$c;
+    exports.ɵii = reducerToken$c;
+    exports.ɵij = reducerProvider$c;
+    exports.ɵik = clearUserState;
+    exports.ɵil = metaReducers$7;
+    exports.ɵim = effects$b;
+    exports.ɵin = BillingCountriesEffect;
+    exports.ɵio = ClearMiscsDataEffect;
+    exports.ɵip = ConsignmentTrackingEffects;
+    exports.ɵiq = CustomerCouponEffects;
+    exports.ɵir = DeliveryCountriesEffects;
+    exports.ɵis = NotificationPreferenceEffects;
+    exports.ɵit = OrderDetailsEffect;
+    exports.ɵiu = OrderReturnRequestEffect;
+    exports.ɵiv = UserPaymentMethodsEffects;
+    exports.ɵiw = ProductInterestsEffect;
+    exports.ɵix = RegionsEffects;
+    exports.ɵiy = ReplenishmentOrderDetailsEffect;
+    exports.ɵiz = ResetPasswordEffects;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = CustomerCouponEffects;
-    exports.ɵjb = ProductInterestsEffect;
-    exports.ɵjc = ForgotPasswordEffects;
-    exports.ɵjd = UpdateEmailEffects;
-    exports.ɵje = UpdatePasswordEffects;
-    exports.ɵjf = UserNotificationPreferenceConnector;
-    exports.ɵjg = UserCostCenterEffects;
-    exports.ɵjh = reducer$w;
-    exports.ɵji = reducer$u;
-    exports.ɵjj = reducer$l;
-    exports.ɵjk = reducer$v;
-    exports.ɵjl = reducer$q;
-    exports.ɵjm = reducer$x;
-    exports.ɵjn = reducer$p;
-    exports.ɵjo = reducer$A;
-    exports.ɵjp = reducer$n;
+    exports.ɵja = TitlesEffects;
+    exports.ɵjb = UserAddressesEffects;
+    exports.ɵjc = UserConsentsEffect;
+    exports.ɵjd = UserDetailsEffects;
+    exports.ɵje = UserOrdersEffect;
+    exports.ɵjf = UserRegisterEffects;
+    exports.ɵjg = UserReplenishmentOrdersEffect;
+    exports.ɵjh = ForgotPasswordEffects;
+    exports.ɵji = UpdateEmailEffects;
+    exports.ɵjj = UpdatePasswordEffects;
+    exports.ɵjk = UserNotificationPreferenceConnector;
+    exports.ɵjl = UserCostCenterEffects;
+    exports.ɵjm = reducer$C;
+    exports.ɵjn = reducer$z;
+    exports.ɵjo = reducer$m;
+    exports.ɵjp = reducer$A;
     exports.ɵjq = reducer$t;
-    exports.ɵjr = reducer$r;
-    exports.ɵjs = reducer$s;
-    exports.ɵjt = reducer$m;
-    exports.ɵju = reducer$y;
-    exports.ɵjv = reducer$o;
-    exports.ɵjw = reducer$z;
-    exports.ɵjx = reducer$B;
+    exports.ɵjr = reducer$D;
+    exports.ɵjs = reducer$r;
+    exports.ɵjt = reducer$E;
+    exports.ɵju = reducer$s;
+    exports.ɵjv = reducer$p;
+    exports.ɵjw = reducer$y;
+    exports.ɵjx = reducer$v;
+    exports.ɵjy = reducer$x;
+    exports.ɵjz = reducer$n;
     exports.ɵk = getStorageSyncReducer;
+    exports.ɵka = reducer$o;
+    exports.ɵkb = reducer$q;
+    exports.ɵkc = reducer$u;
+    exports.ɵkd = reducer$B;
+    exports.ɵke = reducer$w;
     exports.ɵl = getTransferStateReducer;
-    exports.ɵm = getReducers$2;
-    exports.ɵn = reducerToken$2;
-    exports.ɵo = reducerProvider$2;
+    exports.ɵm = getReducers$3;
+    exports.ɵn = reducerToken$3;
+    exports.ɵo = reducerProvider$3;
     exports.ɵp = clearAnonymousConsentTemplates;
     exports.ɵq = metaReducers$1;
-    exports.ɵr = effects$1;
+    exports.ɵr = effects$2;
     exports.ɵs = AnonymousConsentsEffects;
     exports.ɵt = loaderReducer;
-    exports.ɵu = reducer$6;
-    exports.ɵv = reducer$4;
-    exports.ɵw = reducer$5;
+    exports.ɵu = reducer$b;
+    exports.ɵv = reducer$9;
+    exports.ɵw = reducer$a;
     exports.ɵx = interceptors$1;
     exports.ɵy = AnonymousConsentsInterceptor;
     exports.ɵz = asmStoreConfigFactory;

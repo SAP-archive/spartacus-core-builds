@@ -7,16 +7,18 @@ export declare const CLEAR_USER_ORDERS = "[User] Clear User Orders";
 export declare class LoadUserOrders extends StateUtils.LoaderLoadAction {
     payload: {
         userId: string;
-        pageSize: number;
+        pageSize?: number;
         currentPage?: number;
         sort?: string;
+        replenishmentOrderCode?: string;
     };
     readonly type = "[User] Load User Orders";
     constructor(payload: {
         userId: string;
-        pageSize: number;
+        pageSize?: number;
         currentPage?: number;
         sort?: string;
+        replenishmentOrderCode?: string;
     });
 }
 export declare class LoadUserOrdersFail extends StateUtils.LoaderFailAction {

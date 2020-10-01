@@ -40,6 +40,7 @@ export declare const RESET_SET_PAYMENT_DETAILS_PROCESS = "[Checkout] Reset Set P
 export declare const PLACE_ORDER = "[Checkout] Place Order";
 export declare const PLACE_ORDER_FAIL = "[Checkout] Place Order Fail";
 export declare const PLACE_ORDER_SUCCESS = "[Checkout] Place Order Success";
+export declare const CLEAR_PLACE_ORDER = "[Checkout] Clear Place Order";
 export declare const CLEAR_CHECKOUT_STEP = "[Checkout] Clear One Checkout Step";
 export declare const CLEAR_CHECKOUT_DATA = "[Checkout] Clear Checkout Data";
 export declare const LOAD_CHECKOUT_DETAILS = "[Checkout] Load Checkout Details";
@@ -207,26 +208,32 @@ export declare class ResetSetPaymentDetailsProcess extends StateUtils.EntityLoad
     readonly type = "[Checkout] Reset Set Payment Details Process";
     constructor();
 }
-export declare class PlaceOrder implements Action {
+export declare class PlaceOrder extends StateUtils.EntityLoadAction {
     payload: {
         userId: string;
         cartId: string;
+        termsChecked: boolean;
     };
     readonly type = "[Checkout] Place Order";
     constructor(payload: {
         userId: string;
         cartId: string;
+        termsChecked: boolean;
     });
 }
-export declare class PlaceOrderFail implements Action {
+export declare class PlaceOrderFail extends StateUtils.EntityFailAction {
     payload: any;
     readonly type = "[Checkout] Place Order Fail";
     constructor(payload: any);
 }
-export declare class PlaceOrderSuccess implements Action {
+export declare class PlaceOrderSuccess extends StateUtils.EntitySuccessAction {
     payload: Order;
     readonly type = "[Checkout] Place Order Success";
     constructor(payload: Order);
+}
+export declare class ClearPlaceOrder extends StateUtils.EntityLoaderResetAction {
+    readonly type = "[Checkout] Clear Place Order";
+    constructor();
 }
 export declare class ClearSupportedDeliveryModes implements Action {
     readonly type = "[Checkout] Clear Supported Delivery Modes";

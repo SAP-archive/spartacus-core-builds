@@ -1,7 +1,7 @@
 import { isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, InjectionToken, inject, InjectFlags, Optional, PLATFORM_ID, NgModule, INJECTOR, Injector, Directive, TemplateRef, ViewContainerRef, Input, APP_INITIALIZER, Pipe, NgZone, ChangeDetectorRef } from '@angular/core';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule, ActionsSubject } from '@ngrx/store';
-import { of, fromEvent, throwError, EMPTY, iif, combineLatest, Observable, Subject, BehaviorSubject, forkJoin, Subscription, NEVER, timer, from, queueScheduler, using, defer, merge } from 'rxjs';
-import { map, take, filter, switchMap, debounceTime, startWith, distinctUntilChanged, shareReplay, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, share, concatMap, mapTo, switchMapTo, bufferCount, delay, debounce, groupBy, observeOn, distinctUntilKeyChanged, takeWhile, auditTime } from 'rxjs/operators';
+import { of, fromEvent, throwError, EMPTY, iif, combineLatest, Observable, Subject, timer, Subscription, from, BehaviorSubject, forkJoin, NEVER, queueScheduler, using, defer, merge } from 'rxjs';
+import { map, take, filter, switchMap, debounceTime, startWith, distinctUntilChanged, shareReplay, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, share, debounce, switchMapTo, concatMap, mapTo, bufferCount, delay, groupBy, observeOn, distinctUntilKeyChanged, takeWhile, auditTime } from 'rxjs/operators';
 import { DOCUMENT, isPlatformBrowser, isPlatformServer, CommonModule, Location, DatePipe, getLocaleId } from '@angular/common';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, NavigationEnd, DefaultUrlSerializer, NavigationStart, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
@@ -2983,6 +2983,27 @@ var VariantQualifier;
     VariantQualifier["ROLLUP_PROPERTY"] = "rollupProperty";
 })(VariantQualifier || (VariantQualifier = {}));
 
+var DaysOfWeek;
+(function (DaysOfWeek) {
+    DaysOfWeek["MONDAY"] = "MONDAY";
+    DaysOfWeek["TUESDAY"] = "TUESDAY";
+    DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
+    DaysOfWeek["THURSDAY"] = "THURSDAY";
+    DaysOfWeek["FRIDAY"] = "FRIDAY";
+    DaysOfWeek["SATURDAY"] = "SATURDAY";
+    DaysOfWeek["SUNDAY"] = "SUNDAY";
+})(DaysOfWeek || (DaysOfWeek = {}));
+const recurrencePeriod = {
+    DAILY: 'DAILY',
+    WEEKLY: 'WEEKLY',
+    MONTHLY: 'MONTHLY',
+};
+var ORDER_TYPE;
+(function (ORDER_TYPE) {
+    ORDER_TYPE["PLACE_ORDER"] = "PLACE_ORDER";
+    ORDER_TYPE["SCHEDULE_REPLENISHMENT_ORDER"] = "SCHEDULE_REPLENISHMENT_ORDER";
+})(ORDER_TYPE || (ORDER_TYPE = {}));
+
 const ANONYMOUS_CONSENTS_STORE_FEATURE = 'anonymous-consents';
 const ANONYMOUS_CONSENTS = '[Anonymous Consents] Anonymous Consents';
 
@@ -3851,62 +3872,297 @@ CartOccModule.decorators = [
             },] }
 ];
 
+class CheckoutAdapter {
+}
+
 const ORDER_NORMALIZER = new InjectionToken('OrderNormalizer');
 
-// To be changed to a more optimised params after ticket: C3PO-1076
-const FULL_PARAMS = 'fields=FULL';
-const CHECKOUT_PARAMS = 'deliveryAddress(FULL),deliveryMode,paymentInfo(FULL)';
-const CARTS_ENDPOINT = '/carts/';
-class OccCheckoutAdapter {
+class CheckoutCostCenterAdapter {
+}
+
+class CheckoutDeliveryAdapter {
+}
+
+class CheckoutConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    placeOrder(userId, cartId, termsChecked) {
+        return this.adapter.placeOrder(userId, cartId, termsChecked);
+    }
+    loadCheckoutDetails(userId, cartId) {
+        return this.adapter.loadCheckoutDetails(userId, cartId);
+    }
+    clearCheckoutDeliveryAddress(userId, cartId) {
+        return this.adapter.clearCheckoutDeliveryAddress(userId, cartId);
+    }
+    clearCheckoutDeliveryMode(userId, cartId) {
+        return this.adapter.clearCheckoutDeliveryMode(userId, cartId);
+    }
+}
+CheckoutConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+CheckoutConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutConnector.ctorParameters = () => [
+    { type: CheckoutAdapter }
+];
+
+class CheckoutCostCenterConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    setCostCenter(userId, cartId, costCenterId) {
+        return this.adapter.setCostCenter(userId, cartId, costCenterId);
+    }
+}
+CheckoutCostCenterConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterConnector_Factory() { return new CheckoutCostCenterConnector(ɵɵinject(CheckoutCostCenterAdapter)); }, token: CheckoutCostCenterConnector, providedIn: "root" });
+CheckoutCostCenterConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutCostCenterConnector.ctorParameters = () => [
+    { type: CheckoutCostCenterAdapter }
+];
+
+class CheckoutDeliveryConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    createAddress(userId, cartId, address) {
+        return this.adapter.createAddress(userId, cartId, address);
+    }
+    setAddress(userId, cartId, addressId) {
+        return this.adapter.setAddress(userId, cartId, addressId);
+    }
+    setMode(userId, cartId, deliveryModeId) {
+        return this.adapter.setMode(userId, cartId, deliveryModeId);
+    }
+    getMode(userId, cartId) {
+        return this.adapter.getMode(userId, cartId);
+    }
+    getSupportedModes(userId, cartId) {
+        return this.adapter.getSupportedModes(userId, cartId);
+    }
+}
+CheckoutDeliveryConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
+CheckoutDeliveryConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutDeliveryConnector.ctorParameters = () => [
+    { type: CheckoutDeliveryAdapter }
+];
+
+const DELIVERY_MODE_NORMALIZER = new InjectionToken('DeliveryModeNormalizer');
+
+class PaymentTypeAdapter {
+}
+
+class PaymentTypeConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    getPaymentTypes() {
+        return this.adapter.loadPaymentTypes();
+    }
+    setPaymentType(userId, cartId, typeCode, poNumber) {
+        return this.adapter.setPaymentType(userId, cartId, typeCode, poNumber);
+    }
+}
+PaymentTypeConnector.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeConnector_Factory() { return new PaymentTypeConnector(ɵɵinject(PaymentTypeAdapter)); }, token: PaymentTypeConnector, providedIn: "root" });
+PaymentTypeConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+PaymentTypeConnector.ctorParameters = () => [
+    { type: PaymentTypeAdapter }
+];
+
+const PAYMENT_TYPE_NORMALIZER = new InjectionToken('PaymentTypeNormalizer');
+
+class CheckoutPaymentAdapter {
+}
+
+class CheckoutPaymentConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    create(userId, cartId, paymentDetails) {
+        return this.adapter.create(userId, cartId, paymentDetails);
+    }
+    set(userId, cartId, paymentDetailsId) {
+        return this.adapter.set(userId, cartId, paymentDetailsId);
+    }
+    getCardTypes() {
+        return this.adapter.loadCardTypes();
+    }
+}
+CheckoutPaymentConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+CheckoutPaymentConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutPaymentConnector.ctorParameters = () => [
+    { type: CheckoutPaymentAdapter }
+];
+
+const PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
+const PAYMENT_DETAILS_SERIALIZER = new InjectionToken('PaymentDetailsSerializer');
+const CARD_TYPE_NORMALIZER = new InjectionToken('CardTypeNormalizer');
+
+class CheckoutReplenishmentOrderAdapter {
+}
+
+class CheckoutReplenishmentOrderConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    scheduleReplenishmentOrder(cartId, scheduleReplenishmentForm, termsChecked, userId) {
+        return this.adapter.scheduleReplenishmentOrder(cartId, scheduleReplenishmentForm, termsChecked, userId);
+    }
+}
+CheckoutReplenishmentOrderConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutReplenishmentOrderConnector_Factory() { return new CheckoutReplenishmentOrderConnector(ɵɵinject(CheckoutReplenishmentOrderAdapter)); }, token: CheckoutReplenishmentOrderConnector, providedIn: "root" });
+CheckoutReplenishmentOrderConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutReplenishmentOrderConnector.ctorParameters = () => [
+    { type: CheckoutReplenishmentOrderAdapter }
+];
+
+const REPLENISHMENT_ORDER_NORMALIZER = new InjectionToken('ReplenishmentOrderNormalizer');
+const REPLENISHMENT_ORDER_FORM_SERIALIZER = new InjectionToken('ReplenishmentOrderFormSerializer');
+
+class OccOrderNormalizer {
+    constructor(converter) {
+        this.converter = converter;
+    }
+    convert(source, target) {
+        if (target === undefined) {
+            target = Object.assign({}, source);
+        }
+        if (source.entries) {
+            target.entries = source.entries.map((entry) => this.convertOrderEntry(entry));
+        }
+        if (source.consignments) {
+            target.consignments = source.consignments.map((consignment) => (Object.assign(Object.assign({}, consignment), { entries: consignment.entries.map((entry) => (Object.assign(Object.assign({}, entry), { orderEntry: this.convertOrderEntry(entry.orderEntry) }))) })));
+        }
+        if (source.unconsignedEntries) {
+            target.unconsignedEntries = source.unconsignedEntries.map((entry) => this.convertOrderEntry(entry));
+        }
+        return target;
+    }
+    convertOrderEntry(source) {
+        return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+    }
+}
+OccOrderNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
+OccOrderNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+OccOrderNormalizer.ctorParameters = () => [
+    { type: ConverterService }
+];
+
+class OccReplenishmentOrderFormSerializer {
+    constructor() { }
+    convert(source, target) {
+        if (target === undefined) {
+            target = Object.assign({}, source);
+        }
+        if (source.replenishmentStartDate) {
+            target.replenishmentStartDate = this.convertDate(source.replenishmentStartDate);
+        }
+        return target;
+    }
+    /**
+     * Converts the date string to the Standard ISO 8601 format
+     */
+    convertDate(date) {
+        const dateTime = '00:00:00';
+        return new Date(date).toISOString().split('T')[0] + 'T' + dateTime + 'Z';
+    }
+}
+OccReplenishmentOrderFormSerializer.ɵprov = ɵɵdefineInjectable({ factory: function OccReplenishmentOrderFormSerializer_Factory() { return new OccReplenishmentOrderFormSerializer(); }, token: OccReplenishmentOrderFormSerializer, providedIn: "root" });
+OccReplenishmentOrderFormSerializer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+OccReplenishmentOrderFormSerializer.ctorParameters = () => [];
+
+class OccReplenishmentOrderNormalizer {
+    constructor(converter) {
+        this.converter = converter;
+    }
+    convert(source, target) {
+        if (target === undefined) {
+            target = Object.assign({}, source);
+        }
+        if (source.entries) {
+            target.entries = source.entries.map((entry) => this.convertOrderEntry(entry));
+        }
+        return target;
+    }
+    convertOrderEntry(source) {
+        return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+    }
+}
+OccReplenishmentOrderNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccReplenishmentOrderNormalizer_Factory() { return new OccReplenishmentOrderNormalizer(ɵɵinject(ConverterService)); }, token: OccReplenishmentOrderNormalizer, providedIn: "root" });
+OccReplenishmentOrderNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+OccReplenishmentOrderNormalizer.ctorParameters = () => [
+    { type: ConverterService }
+];
+
+const defaultOccCheckoutConfig = {
+    backend: {
+        occ: {
+            endpoints: {
+                setDeliveryAddress: 'users/${userId}/carts/${cartId}/addresses/delivery',
+                placeOrder: 'users/${userId}/orders?fields=FULL',
+            },
+        },
+    },
+};
+
+class OccCheckoutCostCenterAdapter {
     constructor(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
         this.converter = converter;
     }
-    getEndpoint(userId, subEndpoint) {
-        const orderEndpoint = 'users/' + userId + subEndpoint;
-        return this.occEndpoints.getEndpoint(orderEndpoint);
-    }
-    placeOrder(userId, cartId) {
-        const params = new HttpParams({
-            fromString: 'cartId=' + cartId + '&' + FULL_PARAMS,
-        });
-        let headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        if (userId === OCC_USER_ID_ANONYMOUS) {
-            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-        }
+    setCostCenter(userId, cartId, costCenterId) {
+        let httpParams = new HttpParams().set('costCenterId', costCenterId);
+        /* tslint:disable:max-line-length */
+        httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
+        // TODO(#8877): Should we improve configurable endpoints for this use case?
         return this.http
-            .post(this.occEndpoints.getUrl('placeOrder', { userId }), {}, { headers, params })
-            .pipe(this.converter.pipeable(ORDER_NORMALIZER));
+            .put(this.getCartEndpoint(userId) + cartId + '/costcenter', {}, {
+            params: httpParams,
+        })
+            .pipe(this.converter.pipeable(CART_NORMALIZER));
     }
-    loadCheckoutDetails(userId, cartId) {
-        const url = this.getEndpoint(userId, CARTS_ENDPOINT) + cartId;
-        const params = new HttpParams({
-            fromString: `fields=${CHECKOUT_PARAMS}`,
-        });
-        return this.http.get(url, { params });
-    }
-    clearCheckoutDeliveryAddress(userId, cartId) {
-        const url = `${this.getEndpoint(userId, CARTS_ENDPOINT)}${cartId}/addresses/delivery`;
-        return this.http.delete(url);
-    }
-    clearCheckoutDeliveryMode(userId, cartId) {
-        const url = `${this.getEndpoint(userId, CARTS_ENDPOINT)}${cartId}/deliverymode`;
-        return this.http.delete(url);
+    getCartEndpoint(userId) {
+        const cartEndpoint = 'users/' + userId + '/carts/';
+        return this.occEndpoints.getEndpoint(cartEndpoint);
     }
 }
-OccCheckoutAdapter.decorators = [
+OccCheckoutCostCenterAdapter.decorators = [
     { type: Injectable }
 ];
-OccCheckoutAdapter.ctorParameters = () => [
+OccCheckoutCostCenterAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
-
-const DELIVERY_MODE_NORMALIZER = new InjectionToken('DeliveryModeNormalizer');
 
 const ADDRESS_NORMALIZER = new InjectionToken('AddressNormalizer');
 const ADDRESS_SERIALIZER = new InjectionToken('AddressSerializer');
@@ -3960,9 +4216,45 @@ OccCheckoutDeliveryAdapter.ctorParameters = () => [
     { type: ConverterService }
 ];
 
-const PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
-const PAYMENT_DETAILS_SERIALIZER = new InjectionToken('PaymentDetailsSerializer');
-const CARD_TYPE_NORMALIZER = new InjectionToken('CardTypeNormalizer');
+const ENDPOINT_PAYMENT_TYPES = 'paymenttypes';
+class OccCheckoutPaymentTypeAdapter {
+    constructor(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    loadPaymentTypes() {
+        return this.http
+            .get(this.occEndpoints.getEndpoint(ENDPOINT_PAYMENT_TYPES))
+            .pipe(map((paymentTypeList) => paymentTypeList.paymentTypes), this.converter.pipeableMany(PAYMENT_TYPE_NORMALIZER));
+    }
+    setPaymentType(userId, cartId, paymentType, purchaseOrderNumber) {
+        let httpParams = new HttpParams().set('paymentType', paymentType);
+        if (purchaseOrderNumber !== undefined) {
+            httpParams = httpParams.set('purchaseOrderNumber', purchaseOrderNumber);
+        }
+        /* tslint:disable:max-line-length */
+        httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
+        // TODO(#8877): Should we improve configurable endpoints for this use case?
+        return this.http
+            .put(this.getCartEndpoint(userId) + cartId + '/paymenttype', {}, {
+            params: httpParams,
+        })
+            .pipe(this.converter.pipeable(CART_NORMALIZER));
+    }
+    getCartEndpoint(userId) {
+        const cartEndpoint = 'users/' + userId + '/carts/';
+        return this.occEndpoints.getEndpoint(cartEndpoint);
+    }
+}
+OccCheckoutPaymentTypeAdapter.decorators = [
+    { type: Injectable }
+];
+OccCheckoutPaymentTypeAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: ConverterService }
+];
 
 const ENDPOINT_CARD_TYPES = 'cardtypes';
 class OccCheckoutPaymentAdapter {
@@ -4110,135 +4402,5293 @@ OccCheckoutPaymentAdapter.ctorParameters = () => [
     { type: ConverterService }
 ];
 
-const PAYMENT_TYPE_NORMALIZER = new InjectionToken('PaymentTypeNormalizer');
-
-const ENDPOINT_PAYMENT_TYPES = 'paymenttypes';
-class OccCheckoutPaymentTypeAdapter {
-    constructor(http, occEndpoints, converter) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
-        this.converter = converter;
-    }
-    loadPaymentTypes() {
-        return this.http
-            .get(this.occEndpoints.getEndpoint(ENDPOINT_PAYMENT_TYPES))
-            .pipe(map((paymentTypeList) => paymentTypeList.paymentTypes), this.converter.pipeableMany(PAYMENT_TYPE_NORMALIZER));
-    }
-    setPaymentType(userId, cartId, paymentType, purchaseOrderNumber) {
-        let httpParams = new HttpParams().set('paymentType', paymentType);
-        if (purchaseOrderNumber !== undefined) {
-            httpParams = httpParams.set('purchaseOrderNumber', purchaseOrderNumber);
+/**
+ * Abstract class that can be used to resolve meta data for specific pages.
+ * The `getScore` method is used to select the right resolver for a specific
+ * page, based on a score. The score is calculated by the (non)matching page
+ * type and page template.
+ */
+class PageMetaResolver {
+    /**
+     * Returns the matching score for a resolver class, based on
+     * the page type and page template.
+     */
+    getScore(page) {
+        let score = 0;
+        if (this.pageType) {
+            score += page.type === this.pageType ? 1 : -1;
         }
-        /* tslint:disable:max-line-length */
-        httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
-        // TODO(#8877): Should we improve configurable endpoints for this use case?
-        return this.http
-            .put(this.getCartEndpoint(userId) + cartId + '/paymenttype', {}, {
-            params: httpParams,
-        })
-            .pipe(this.converter.pipeable(CART_NORMALIZER));
+        if (this.pageTemplate) {
+            score += page.template === this.pageTemplate ? 1 : -1;
+        }
+        return score;
     }
-    getCartEndpoint(userId) {
-        const cartEndpoint = 'users/' + userId + '/carts/';
-        return this.occEndpoints.getEndpoint(cartEndpoint);
+    hasMatch(page) {
+        return this.getScore(page) > 0;
+    }
+    getPriority(page) {
+        return this.getScore(page);
     }
 }
-OccCheckoutPaymentTypeAdapter.decorators = [
+
+// PRIVATE API
+/**
+ * Allows for dynamic adding and removing source observables
+ * and exposes them as one merged observable at a property `output$`.
+ *
+ * Thanks to the `share()` operator used inside, it subscribes to source observables
+ * only when someone subscribes to it. And it unsubscribes from source observables
+ * when the counter of consumers drops to 0.
+ *
+ * **To avoid memory leaks**, all manually added sources should be manually removed
+ * when not plan to emit values anymore. In particular closed event sources won't be
+ * automatically removed.
+ */
+class MergingSubject {
+    constructor() {
+        /**
+         * List of already added sources (but not removed yet)
+         */
+        this.sources = [];
+        /**
+         * For each source: it stores a subscription responsible for
+         * passing all values from source to the consumer
+         */
+        this.subscriptionsToSources = new Map();
+        /**
+         * Observable with all sources merged.
+         *
+         * Only after subscribing to it, under the hood it subscribes to the source observables.
+         * When the number of subscribers drops to 0, it unsubscribes from all source observables.
+         * But if later on something subscribes to it again, it subscribes to the source observables again.
+         *
+         * It multicasts the emissions for each subscriber.
+         */
+        this.output$ = new Observable((consumer) => {
+            // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
+            // that is piped right after this observable.
+            // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
+            // from this observable (by the nature `refCount`-nature of the `share()` operator).
+            this.consumer = consumer;
+            this.bindAllSourcesToConsumer(consumer);
+            return () => {
+                this.consumer = null;
+                this.unbindAllSourcesFromConsumer();
+            };
+        }).pipe(share());
+        /**
+         * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
+         * For more, see docs of the `output$` observable;
+         */
+        this.consumer = null;
+    }
+    /**
+     * Registers the given source to pass its values to the `output$` observable.
+     *
+     * It does nothing, when the source has been already added (but not removed yet).
+     */
+    add(source) {
+        if (this.has(source)) {
+            return;
+        }
+        if (this.consumer) {
+            this.bindSourceToConsumer(source, this.consumer);
+        }
+        this.sources.push(source);
+    }
+    /**
+     * Starts passing all values from already added sources to consumer
+     */
+    bindAllSourcesToConsumer(consumer) {
+        this.sources.forEach((source) => this.bindSourceToConsumer(source, consumer));
+    }
+    /**
+     * Stops passing all values from already added sources to consumer
+     * (if any consumer is active at the moment)
+     */
+    unbindAllSourcesFromConsumer() {
+        this.sources.forEach((source) => this.unbindSourceFromConsumer(source));
+    }
+    /**
+     * Starts passing all values from a single source to consumer
+     */
+    bindSourceToConsumer(source, consumer) {
+        const subscriptionToSource = source.subscribe((val) => consumer.next(val)); // passes all emissions from source to consumer
+        this.subscriptionsToSources.set(source, subscriptionToSource);
+    }
+    /**
+     * Stops passing all values from a single source to consumer
+     * (if any consumer is active at the moment)
+     */
+    unbindSourceFromConsumer(source) {
+        const subscriptionToSource = this.subscriptionsToSources.get(source);
+        if (subscriptionToSource !== undefined) {
+            subscriptionToSource.unsubscribe();
+            this.subscriptionsToSources.delete(source);
+        }
+    }
+    /**
+     * Unregisters the given source so it stops passing its values to `output$` observable.
+     *
+     * Should be used when a source is no longer maintained **to avoid memory leaks**.
+     */
+    remove(source) {
+        // clear binding from source to consumer (if any consumer exists at the moment)
+        this.unbindSourceFromConsumer(source);
+        // remove source from array
+        let i;
+        if ((i = this.sources.findIndex((s) => s === source)) !== -1) {
+            this.sources.splice(i, 1);
+        }
+    }
+    /**
+     * Returns whether the given source has been already addded
+     */
+    has(source) {
+        return this.sources.includes(source);
+    }
+}
+
+/**
+ * A service to register and observe event sources. Events are driven by event types, which are class signatures
+ * for the given event.
+ *
+ * It is possible to register multiple sources to a single event, even without
+ * knowing as multiple decoupled features can attach sources to the same
+ * event type.
+ */
+class EventService {
+    constructor() {
+        /**
+         * The various events meta are collected in a map, stored by the event type class
+         */
+        this.eventsMeta = new Map();
+    }
+    /**
+     * Register an event source for the given event type.
+     *
+     * CAUTION: To avoid memory leaks, the returned teardown function should be called
+     *  when the event source is no longer maintained by its creator
+     * (i.e. in `ngOnDestroy` if the event source was registered in the component).
+     *
+     * @param eventType the event type
+     * @param source$ an observable that represents the source
+     *
+     * @returns a teardown function which unregisters the given event source
+     */
+    register(eventType, source$) {
+        const eventMeta = this.getEventMeta(eventType);
+        if (eventMeta.mergingSubject.has(source$)) {
+            if (isDevMode()) {
+                console.warn(`EventService: the event source`, source$, `has been already registered for the type`, eventType);
+            }
+        }
+        else {
+            eventMeta.mergingSubject.add(source$);
+        }
+        return () => eventMeta.mergingSubject.remove(source$);
+    }
+    /**
+     * Returns a stream of events for the given event type
+     * @param eventTypes event type
+     */
+    get(eventType) {
+        let output$ = this.getEventMeta(eventType).mergingSubject.output$;
+        if (isDevMode()) {
+            output$ = this.getValidatedEventStream(output$, eventType);
+        }
+        return output$;
+    }
+    /**
+     * Dispatches an instance of an individual event.
+     */
+    dispatch(event) {
+        const eventType = event.constructor;
+        const inputSubject$ = this.getInputSubject(eventType);
+        inputSubject$.next(event);
+    }
+    /**
+     * Returns the input subject used to dispatch a single event.
+     * The subject is created on demand, when it's needed for the first time.
+     * @param eventType type of event
+     */
+    getInputSubject(eventType) {
+        const eventMeta = this.getEventMeta(eventType);
+        if (!eventMeta.inputSubject$) {
+            eventMeta.inputSubject$ = new Subject();
+            this.register(eventType, eventMeta.inputSubject$);
+        }
+        return eventMeta.inputSubject$;
+    }
+    /**
+     * Returns the event meta object for the given event type
+     */
+    getEventMeta(eventType) {
+        if (isDevMode()) {
+            this.validateEventType(eventType);
+        }
+        if (!this.eventsMeta.get(eventType)) {
+            this.createEventMeta(eventType);
+        }
+        return this.eventsMeta.get(eventType);
+    }
+    /**
+     * Creates the event meta object for the given event type
+     */
+    createEventMeta(eventType) {
+        this.eventsMeta.set(eventType, {
+            inputSubject$: null,
+            mergingSubject: new MergingSubject(),
+        });
+    }
+    /**
+     * Checks if the event type is a valid type (is a class with constructor).
+     *
+     * Should be used only in dev mode.
+     */
+    validateEventType(eventType) {
+        if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
+            throw new Error(`EventService:  ${eventType} is not a valid event type. Please provide a class reference.`);
+        }
+    }
+    /**
+     * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
+     *
+     * Should be used only in dev mode.
+     */
+    getValidatedEventStream(source$, eventType) {
+        return source$.pipe(tap((event) => {
+            if (!(event instanceof eventType)) {
+                console.warn(`EventService: The stream`, source$, `emitted the event`, event, `that is not an instance of the declared type`, eventType.name);
+            }
+        }));
+    }
+}
+EventService.ɵprov = ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+EventService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+
+/**
+ * Creates an instance of the given class and fills its properties with the given data.
+ *
+ * @param type reference to the class
+ * @param data object with properties to be copied to the class
+ */
+function createFrom(type, data) {
+    return Object.assign(new type(), data);
+}
+
+/**
+ * Registers streams of ngrx actions as events source streams
+ */
+class StateEventService {
+    constructor(actionsSubject, eventService) {
+        this.actionsSubject = actionsSubject;
+        this.eventService = eventService;
+    }
+    /**
+     * Registers an event source stream of specific events
+     * mapped from a given action type.
+     *
+     * @param mapping mapping from action to event
+     *
+     * @returns a teardown function that unregisters the event source
+     */
+    register(mapping) {
+        return this.eventService.register(mapping.event, this.getFromAction(mapping));
+    }
+    /**
+     * Returns a stream of specific events mapped from a specific action.
+     * @param mapping mapping from action to event
+     */
+    getFromAction(mapping) {
+        return this.actionsSubject
+            .pipe(ofType(...[].concat(mapping.action)))
+            .pipe(map((action) => this.createEvent(action, mapping.event, mapping.factory)));
+    }
+    /**
+     * Creates an event instance for given class out from the action object.
+     * Unless the `factory` parameter is given, the action's `payload` is used
+     * as the argument for the event's constructor.
+     *
+     * @param action instance of an Action
+     * @param mapping mapping from action to event
+     * @param factory optional function getting an action instance and returning an event instance
+     *
+     * @returns instance of an Event
+     */
+    createEvent(action, eventType, factory) {
+        var _a;
+        return factory
+            ? factory(action)
+            : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
+    }
+}
+StateEventService.ɵprov = ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(ɵɵinject(ActionsSubject), ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
+StateEventService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+StateEventService.ctorParameters = () => [
+    { type: ActionsSubject },
+    { type: EventService }
+];
+
+const VERIFY_ADDRESS = '[Checkout] Verify Address';
+const VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
+const VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
+const CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
+class VerifyAddress {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = VERIFY_ADDRESS;
+    }
+}
+class VerifyAddressFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = VERIFY_ADDRESS_FAIL;
+    }
+}
+class VerifyAddressSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = VERIFY_ADDRESS_SUCCESS;
+    }
+}
+class ClearAddressVerificationResults {
+    constructor() {
+        this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
+    }
+}
+
+const LOAD_CARD_TYPES = '[Checkout] Load Card Types';
+const LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
+const LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
+class LoadCardTypes {
+    constructor() {
+        this.type = LOAD_CARD_TYPES;
+    }
+}
+class LoadCardTypesFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CARD_TYPES_FAIL;
+    }
+}
+class LoadCardTypesSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CARD_TYPES_SUCCESS;
+    }
+}
+
+const MULTI_CART_FEATURE = 'cart';
+const MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
+// TODO(#7241): Drop after event system implementation for cart vouchers
+/**
+ * Add voucher process const
+ * @deprecated since 2.0
+ */
+const ADD_VOUCHER_PROCESS_ID = 'addVoucher';
+
+const PROCESS_FEATURE = 'process';
+
+const CHECKOUT_FEATURE = 'checkout';
+const CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+const SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
+const SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
+const SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
+const SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
+const GET_PAYMENT_TYPES_PROCESS_ID = 'getPaymentTypes';
+const SET_COST_CENTER_PROCESS_ID = 'setCostCenter';
+const PLACED_ORDER_PROCESS_ID = 'placeOrder';
+
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
+const CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
+const CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
+const CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
+const ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
+const ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
+const ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
+const SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
+const SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
+const SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
+const RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
+const LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
+const LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
+const LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
+const CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
+const SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
+const SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
+const SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
+const RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
+const SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
+const SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
+const SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
+const RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
+const CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
+const CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
+const CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
+const SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
+const SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
+const SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
+const RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
+const PLACE_ORDER = '[Checkout] Place Order';
+const PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
+const PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
+const CLEAR_PLACE_ORDER = '[Checkout] Clear Place Order';
+const CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
+const CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
+const LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
+const LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
+const LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
+const CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
+const PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
+const SET_COST_CENTER = '[Checkout] Set Cost Center';
+const SET_COST_CENTER_FAIL = '[Checkout] Set Cost Center Fail';
+const SET_COST_CENTER_SUCCESS = '[Checkout] Set Cost Center Success';
+const RESET_SET_COST_CENTER_PROCESS = '[Checkout] Reset Set Cost Center Process';
+class AddDeliveryAddress {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_DELIVERY_ADDRESS;
+    }
+}
+class AddDeliveryAddressFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_DELIVERY_ADDRESS_FAIL;
+    }
+}
+class AddDeliveryAddressSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
+    }
+}
+class SetDeliveryAddress extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_DELIVERY_ADDRESS;
+    }
+}
+class SetDeliveryAddressFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SET_DELIVERY_ADDRESS_FAIL;
+    }
+}
+class SetDeliveryAddressSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_DELIVERY_ADDRESS_SUCCESS;
+    }
+}
+class ResetSetDeliveryAddressProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
+        this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
+    }
+}
+class LoadSupportedDeliveryModes extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = LOAD_SUPPORTED_DELIVERY_MODES;
+    }
+}
+class LoadSupportedDeliveryModesFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
+    }
+}
+class LoadSupportedDeliveryModesSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
+    }
+}
+class ResetLoadSupportedDeliveryModesProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
+    }
+}
+class SetDeliveryMode extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_DELIVERY_MODE;
+    }
+}
+class SetDeliveryModeFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SET_DELIVERY_MODE_FAIL;
+    }
+}
+class SetDeliveryModeSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_DELIVERY_MODE_SUCCESS;
+    }
+}
+class ResetSetDeliveryModeProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
+        this.type = RESET_SET_DELIVERY_MODE_PROCESS;
+    }
+}
+class CreatePaymentDetails extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = CREATE_PAYMENT_DETAILS;
+    }
+}
+class CreatePaymentDetailsFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = CREATE_PAYMENT_DETAILS_FAIL;
+    }
+}
+class CreatePaymentDetailsSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
+    }
+}
+class PaymentProcessSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.type = PAYMENT_PROCESS_SUCCESS;
+    }
+}
+class SetPaymentDetails extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_PAYMENT_DETAILS;
+    }
+}
+class SetPaymentDetailsFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SET_PAYMENT_DETAILS_FAIL;
+    }
+}
+class SetPaymentDetailsSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_PAYMENT_DETAILS_SUCCESS;
+    }
+}
+class ResetSetPaymentDetailsProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
+    }
+}
+class PlaceOrder extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID);
+        this.payload = payload;
+        this.type = PLACE_ORDER;
+    }
+}
+class PlaceOrderFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = PLACE_ORDER_FAIL;
+    }
+}
+class PlaceOrderSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID);
+        this.payload = payload;
+        this.type = PLACE_ORDER_SUCCESS;
+    }
+}
+class ClearPlaceOrder extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID);
+        this.type = CLEAR_PLACE_ORDER;
+    }
+}
+class ClearSupportedDeliveryModes {
+    constructor() {
+        this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
+    }
+}
+class ClearCheckoutStep {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_STEP;
+    }
+}
+class ClearCheckoutData {
+    constructor() {
+        this.type = CLEAR_CHECKOUT_DATA;
+    }
+}
+class LoadCheckoutDetails extends LoaderLoadAction {
+    constructor(payload) {
+        super(CHECKOUT_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_CHECKOUT_DETAILS;
+    }
+}
+class LoadCheckoutDetailsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(CHECKOUT_DETAILS, payload);
+        this.payload = payload;
+        this.type = LOAD_CHECKOUT_DETAILS_FAIL;
+    }
+}
+class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(CHECKOUT_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
+    }
+}
+class CheckoutClearMiscsData {
+    constructor() {
+        this.type = CHECKOUT_CLEAR_MISCS_DATA;
+    }
+}
+class ClearCheckoutDeliveryAddress {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
+    }
+}
+class ClearCheckoutDeliveryAddressSuccess {
+    constructor() {
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
+    }
+}
+class ClearCheckoutDeliveryAddressFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
+    }
+}
+class ClearCheckoutDeliveryMode extends EntityProcessesIncrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
+    }
+}
+class ClearCheckoutDeliveryModeSuccess extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
+    }
+}
+class ClearCheckoutDeliveryModeFail extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
+    }
+}
+class SetCostCenter extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_COST_CENTER;
+    }
+}
+class SetCostCenterFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SET_COST_CENTER_FAIL;
+    }
+}
+class SetCostCenterSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID);
+        this.payload = payload;
+        this.type = SET_COST_CENTER_SUCCESS;
+    }
+}
+class ResetSetCostCenterProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID);
+        this.type = RESET_SET_COST_CENTER_PROCESS;
+    }
+}
+
+const SET_ORDER_TYPE = '[Checkout] Set Order Type';
+class SetOrderType {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_ORDER_TYPE;
+    }
+}
+
+const LOAD_PAYMENT_TYPES = '[Checkout] Load Payment Types';
+const LOAD_PAYMENT_TYPES_FAIL = '[Checkout] Load Payment Types Fail';
+const LOAD_PAYMENT_TYPES_SUCCESS = '[Checkout] Load Payment Types Success';
+const RESET_LOAD_PAYMENT_TYPES_PROCESS_ID = '[Checkout] Reset Load Payment Type Process';
+const SET_PAYMENT_TYPE = '[Checkout] Set Payment Type';
+const SET_PAYMENT_TYPE_FAIL = '[Checkout] Set Payment Type Fail';
+const SET_PAYMENT_TYPE_SUCCESS = '[Checkout] Set Payment Type Success';
+class LoadPaymentTypes extends EntityLoadAction {
+    constructor() {
+        super(PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID);
+        this.type = LOAD_PAYMENT_TYPES;
+    }
+}
+class LoadPaymentTypesFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID);
+        this.payload = payload;
+        this.type = LOAD_PAYMENT_TYPES_FAIL;
+    }
+}
+class LoadPaymentTypesSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID);
+        this.payload = payload;
+        this.type = LOAD_PAYMENT_TYPES_SUCCESS;
+    }
+}
+class ResetLoadPaymentTypesProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID);
+        this.type = RESET_LOAD_PAYMENT_TYPES_PROCESS_ID;
+    }
+}
+class SetPaymentType {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_PAYMENT_TYPE;
+    }
+}
+class SetPaymentTypeFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_PAYMENT_TYPE_FAIL;
+    }
+}
+class SetPaymentTypeSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_PAYMENT_TYPE_SUCCESS;
+    }
+}
+
+const SCHEDULE_REPLENISHMENT_ORDER = '[Checkout] Schedule Replenishment Order';
+const SCHEDULE_REPLENISHMENT_ORDER_SUCCESS = '[Checkout] Schedule Replenishment Order Success';
+const SCHEDULE_REPLENISHMENT_ORDER_FAIL = '[Checkout] Schedule Replenishment Order Fail';
+const CLEAR_SCHEDULE_REPLENISHMENT_ORDER = '[Checkout] Clear Schedule Replenishment Data';
+class ScheduleReplenishmentOrder extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID);
+        this.payload = payload;
+        this.type = SCHEDULE_REPLENISHMENT_ORDER;
+    }
+}
+class ScheduleReplenishmentOrderSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID);
+        this.payload = payload;
+        this.type = SCHEDULE_REPLENISHMENT_ORDER_SUCCESS;
+    }
+}
+class ScheduleReplenishmentOrderFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SCHEDULE_REPLENISHMENT_ORDER_FAIL;
+    }
+}
+class ClearScheduleReplenishmentOrderAction extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, PLACED_ORDER_PROCESS_ID);
+        this.type = CLEAR_SCHEDULE_REPLENISHMENT_ORDER;
+    }
+}
+
+var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    VERIFY_ADDRESS: VERIFY_ADDRESS,
+    VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
+    VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
+    CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
+    VerifyAddress: VerifyAddress,
+    VerifyAddressFail: VerifyAddressFail,
+    VerifyAddressSuccess: VerifyAddressSuccess,
+    ClearAddressVerificationResults: ClearAddressVerificationResults,
+    LOAD_CARD_TYPES: LOAD_CARD_TYPES,
+    LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
+    LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
+    LoadCardTypes: LoadCardTypes,
+    LoadCardTypesFail: LoadCardTypesFail,
+    LoadCardTypesSuccess: LoadCardTypesSuccess,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
+    CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
+    CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
+    CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
+    ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
+    ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
+    ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
+    SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
+    SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
+    SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
+    RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
+    LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
+    LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
+    LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
+    CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
+    SET_DELIVERY_MODE: SET_DELIVERY_MODE,
+    SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
+    SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
+    RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
+    SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
+    SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
+    SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
+    RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
+    CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
+    CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
+    CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
+    SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
+    SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
+    SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
+    RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
+    PLACE_ORDER: PLACE_ORDER,
+    PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
+    PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
+    CLEAR_PLACE_ORDER: CLEAR_PLACE_ORDER,
+    CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
+    CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
+    LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
+    LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
+    LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
+    CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
+    PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
+    SET_COST_CENTER: SET_COST_CENTER,
+    SET_COST_CENTER_FAIL: SET_COST_CENTER_FAIL,
+    SET_COST_CENTER_SUCCESS: SET_COST_CENTER_SUCCESS,
+    RESET_SET_COST_CENTER_PROCESS: RESET_SET_COST_CENTER_PROCESS,
+    AddDeliveryAddress: AddDeliveryAddress,
+    AddDeliveryAddressFail: AddDeliveryAddressFail,
+    AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
+    SetDeliveryAddress: SetDeliveryAddress,
+    SetDeliveryAddressFail: SetDeliveryAddressFail,
+    SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
+    ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
+    LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
+    LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
+    LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
+    ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
+    SetDeliveryMode: SetDeliveryMode,
+    SetDeliveryModeFail: SetDeliveryModeFail,
+    SetDeliveryModeSuccess: SetDeliveryModeSuccess,
+    ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
+    CreatePaymentDetails: CreatePaymentDetails,
+    CreatePaymentDetailsFail: CreatePaymentDetailsFail,
+    CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
+    PaymentProcessSuccess: PaymentProcessSuccess,
+    SetPaymentDetails: SetPaymentDetails,
+    SetPaymentDetailsFail: SetPaymentDetailsFail,
+    SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
+    ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
+    PlaceOrder: PlaceOrder,
+    PlaceOrderFail: PlaceOrderFail,
+    PlaceOrderSuccess: PlaceOrderSuccess,
+    ClearPlaceOrder: ClearPlaceOrder,
+    ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
+    ClearCheckoutStep: ClearCheckoutStep,
+    ClearCheckoutData: ClearCheckoutData,
+    LoadCheckoutDetails: LoadCheckoutDetails,
+    LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
+    LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
+    CheckoutClearMiscsData: CheckoutClearMiscsData,
+    ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
+    ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
+    ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
+    ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
+    ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
+    ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail,
+    SetCostCenter: SetCostCenter,
+    SetCostCenterFail: SetCostCenterFail,
+    SetCostCenterSuccess: SetCostCenterSuccess,
+    ResetSetCostCenterProcess: ResetSetCostCenterProcess,
+    SET_ORDER_TYPE: SET_ORDER_TYPE,
+    SetOrderType: SetOrderType,
+    LOAD_PAYMENT_TYPES: LOAD_PAYMENT_TYPES,
+    LOAD_PAYMENT_TYPES_FAIL: LOAD_PAYMENT_TYPES_FAIL,
+    LOAD_PAYMENT_TYPES_SUCCESS: LOAD_PAYMENT_TYPES_SUCCESS,
+    RESET_LOAD_PAYMENT_TYPES_PROCESS_ID: RESET_LOAD_PAYMENT_TYPES_PROCESS_ID,
+    SET_PAYMENT_TYPE: SET_PAYMENT_TYPE,
+    SET_PAYMENT_TYPE_FAIL: SET_PAYMENT_TYPE_FAIL,
+    SET_PAYMENT_TYPE_SUCCESS: SET_PAYMENT_TYPE_SUCCESS,
+    LoadPaymentTypes: LoadPaymentTypes,
+    LoadPaymentTypesFail: LoadPaymentTypesFail,
+    LoadPaymentTypesSuccess: LoadPaymentTypesSuccess,
+    ResetLoadPaymentTypesProcess: ResetLoadPaymentTypesProcess,
+    SetPaymentType: SetPaymentType,
+    SetPaymentTypeFail: SetPaymentTypeFail,
+    SetPaymentTypeSuccess: SetPaymentTypeSuccess,
+    SCHEDULE_REPLENISHMENT_ORDER: SCHEDULE_REPLENISHMENT_ORDER,
+    SCHEDULE_REPLENISHMENT_ORDER_SUCCESS: SCHEDULE_REPLENISHMENT_ORDER_SUCCESS,
+    SCHEDULE_REPLENISHMENT_ORDER_FAIL: SCHEDULE_REPLENISHMENT_ORDER_FAIL,
+    CLEAR_SCHEDULE_REPLENISHMENT_ORDER: CLEAR_SCHEDULE_REPLENISHMENT_ORDER,
+    ScheduleReplenishmentOrder: ScheduleReplenishmentOrder,
+    ScheduleReplenishmentOrderSuccess: ScheduleReplenishmentOrderSuccess,
+    ScheduleReplenishmentOrderFail: ScheduleReplenishmentOrderFail,
+    ClearScheduleReplenishmentOrderAction: ClearScheduleReplenishmentOrderAction
+});
+
+/**
+ * Indicates that a user has successfully placed an order
+ */
+class OrderPlacedEvent {
+}
+
+class CheckoutEventBuilder {
+    constructor(stateEventService) {
+        this.stateEventService = stateEventService;
+        this.register();
+    }
+    /**
+     * Registers checkout events
+     */
+    register() {
+        this.orderPlacedEvent();
+    }
+    /**
+     * Register an order successfully placed event
+     */
+    orderPlacedEvent() {
+        this.stateEventService.register({
+            action: PLACE_ORDER_SUCCESS,
+            event: OrderPlacedEvent,
+        });
+    }
+}
+CheckoutEventBuilder.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
+CheckoutEventBuilder.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutEventBuilder.ctorParameters = () => [
+    { type: StateEventService }
+];
+
+class CheckoutEventModule {
+    constructor(_checkoutEventBuilder) { }
+}
+CheckoutEventModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
+CheckoutEventModule.ctorParameters = () => [
+    { type: CheckoutEventBuilder }
+];
+
+// Email Standard RFC 5322:
+const EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
+const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
+
+const getMultiCartState = createFeatureSelector(MULTI_CART_FEATURE);
+const ɵ0$b = (state) => state.carts;
+const getMultiCartEntities = createSelector(getMultiCartState, ɵ0$b);
+const getCartEntitySelectorFactory = (cartId) => {
+    return createSelector(getMultiCartEntities, (state) => entityProcessesLoaderStateSelector(state, cartId));
+};
+const getCartSelectorFactory = (cartId) => {
+    return createSelector(getMultiCartEntities, (state) => entityValueSelector(state, cartId));
+};
+const getCartIsStableSelectorFactory = (cartId) => {
+    return createSelector(getMultiCartEntities, (state) => entityIsStableSelector(state, cartId));
+};
+const getCartHasPendingProcessesSelectorFactory = (cartId) => {
+    return createSelector(getMultiCartEntities, (state) => entityHasPendingProcessesSelector(state, cartId));
+};
+const getCartEntriesSelectorFactory = (cartId) => {
+    return createSelector(getCartSelectorFactory(cartId), (state) => {
+        return state && state.entries ? state.entries : [];
+    });
+};
+const getCartEntrySelectorFactory = (cartId, productCode) => {
+    return createSelector(getCartEntriesSelectorFactory(cartId), (state) => {
+        return state
+            ? state.find((entry) => entry.product.code === productCode)
+            : undefined;
+    });
+};
+const ɵ1$7 = (state) => state.active;
+const getActiveCartId = createSelector(getMultiCartState, ɵ1$7);
+const ɵ2$3 = (state) => state.wishList;
+const getWishListId = createSelector(getMultiCartState, ɵ2$3);
+
+var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getMultiCartState: getMultiCartState,
+    getMultiCartEntities: getMultiCartEntities,
+    getCartEntitySelectorFactory: getCartEntitySelectorFactory,
+    getCartSelectorFactory: getCartSelectorFactory,
+    getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
+    getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
+    getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
+    getCartEntrySelectorFactory: getCartEntrySelectorFactory,
+    getActiveCartId: getActiveCartId,
+    getWishListId: getWishListId,
+    ɵ0: ɵ0$b,
+    ɵ1: ɵ1$7,
+    ɵ2: ɵ2$3
+});
+
+/**
+ * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
+ */
+function getCartIdByUserId(cart, userId) {
+    if (userId === OCC_USER_ID_ANONYMOUS) {
+        return cart.guid;
+    }
+    return cart.code;
+}
+/**
+ * Check if cart is selective (save for later) based on id.
+ */
+function isSelectiveCart(cartId = '') {
+    return cartId.startsWith('selectivecart');
+}
+/**
+ * Check if the returned error is of type notFound.
+ *
+ * We additionally check if the cart is not a selective cart.
+ * For selective cart this error can happen only when extension is disabled.
+ * It should never happen, because in that case, selective cart should also be disabled in our configuration.
+ * However if that happens we want to handle these errors silently.
+ */
+function isCartNotFoundError(error) {
+    return (error.reason === 'notFound' &&
+        error.subjectType === 'cart' &&
+        !isSelectiveCart(error.subject));
+}
+/**
+ * Compute wishlist cart name for customer.
+ */
+function getWishlistName(customerId) {
+    return `wishlist${customerId}`;
+}
+/**
+ * What is a temporary cart?
+ * - frontend only cart entity!
+ * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
+ *
+ * Why we need temporary carts?
+ * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
+ * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
+ * - cart identifiers are created in the backend, so those are only known after cart is created
+ *
+ * Temporary cart life cycle
+ * - create cart method invoked
+ * - new `temp-${uuid}` cart is created with `loading=true` state
+ * - backend returns created cart
+ * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
+ * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
+ * - in next tick temporary cart is removed
+ */
+function isTempCartId(cartId) {
+    return cartId.startsWith('temp-');
+}
+
+const CART_ADD_ENTRY = '[Cart-entry] Add Entry';
+const CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
+const CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
+const CART_REMOVE_ENTRY = '[Cart-entry] Remove Entry';
+const CART_REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
+const CART_REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
+const CART_UPDATE_ENTRY = '[Cart-entry] Update Entry';
+const CART_UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
+const CART_UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
+class CartAddEntry extends EntityProcessesIncrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_ADD_ENTRY;
+    }
+}
+class CartAddEntrySuccess extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_ADD_ENTRY_SUCCESS;
+    }
+}
+class CartAddEntryFail extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_ADD_ENTRY_FAIL;
+    }
+}
+class CartRemoveEntry extends EntityProcessesIncrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_REMOVE_ENTRY;
+    }
+}
+class CartRemoveEntrySuccess extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_REMOVE_ENTRY_SUCCESS;
+    }
+}
+class CartRemoveEntryFail extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_REMOVE_ENTRY_FAIL;
+    }
+}
+class CartUpdateEntry extends EntityProcessesIncrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_UPDATE_ENTRY;
+    }
+}
+class CartUpdateEntrySuccess extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_UPDATE_ENTRY_SUCCESS;
+    }
+}
+class CartUpdateEntryFail extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_UPDATE_ENTRY_FAIL;
+    }
+}
+
+const CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
+const CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
+const CART_ADD_VOUCHER_SUCCESS = '[Cart-voucher] Add Cart Voucher Success';
+const CART_RESET_ADD_VOUCHER = '[Cart-voucher] Reset Add Cart Voucher';
+const CART_REMOVE_VOUCHER = '[Cart-voucher] Remove Cart Voucher';
+const CART_REMOVE_VOUCHER_FAIL = '[Cart-voucher] Remove Cart Voucher Fail';
+const CART_REMOVE_VOUCHER_SUCCESS = '[Cart-voucher] Remove Cart Voucher Success';
+// Adding cart voucher actions
+class CartAddVoucher extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
+        this.payload = payload;
+        this.type = CART_ADD_VOUCHER;
+    }
+}
+class CartAddVoucherFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload.error);
+        this.payload = payload;
+        this.type = CART_ADD_VOUCHER_FAIL;
+    }
+}
+class CartAddVoucherSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
+        this.payload = payload;
+        this.type = CART_ADD_VOUCHER_SUCCESS;
+    }
+}
+// TODO(#7241): Remove when switching to event system for vouchers
+/**
+ * Resets add voucher process
+ *
+ * @deprecated since 2.0
+ */
+class CartResetAddVoucher extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
+        this.type = CART_RESET_ADD_VOUCHER;
+    }
+}
+// Deleting cart voucher
+class CartRemoveVoucher extends EntityProcessesIncrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_REMOVE_VOUCHER;
+    }
+}
+class CartRemoveVoucherFail extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_REMOVE_VOUCHER_FAIL;
+    }
+}
+class CartRemoveVoucherSuccess extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CART_REMOVE_VOUCHER_SUCCESS;
+    }
+}
+
+const CREATE_CART = '[Cart] Create Cart';
+const CREATE_CART_FAIL = '[Cart] Create Cart Fail';
+const CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
+const LOAD_CART = '[Cart] Load Cart';
+const LOAD_CART_FAIL = '[Cart] Load Cart Fail';
+const LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
+const ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+const ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+const ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+const MERGE_CART = '[Cart] Merge Cart';
+const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+const REMOVE_CART = '[Cart] Remove Cart';
+const DELETE_CART = '[Cart] Delete Cart';
+const DELETE_CART_SUCCESS = '[Cart] Delete Cart Success';
+const DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
+class CreateCart extends EntityLoadAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.tempCartId);
+        this.payload = payload;
+        this.type = CREATE_CART;
+    }
+}
+class CreateCartFail extends EntityFailAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.tempCartId);
+        this.payload = payload;
+        this.type = CREATE_CART_FAIL;
+    }
+}
+class CreateCartSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = CREATE_CART_SUCCESS;
+    }
+}
+class AddEmailToCart extends EntityProcessesIncrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART;
+    }
+}
+class AddEmailToCartFail extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART_FAIL;
+    }
+}
+class AddEmailToCartSuccess extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART_SUCCESS;
+    }
+}
+class LoadCart extends EntityLoadAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = LOAD_CART;
+    }
+}
+class LoadCartFail extends EntityFailAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId, payload.error);
+        this.payload = payload;
+        this.type = LOAD_CART_FAIL;
+    }
+}
+class LoadCartSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = LOAD_CART_SUCCESS;
+    }
+}
+class MergeCart {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = MERGE_CART;
+    }
+}
+class MergeCartSuccess extends EntityRemoveAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.oldCartId);
+        this.payload = payload;
+        this.type = MERGE_CART_SUCCESS;
+    }
+}
+/**
+ * On site context change we want to keep current list of entities, but we want to clear the value and flags.
+ * With ProcessesLoaderResetAction we run it on every entity of this type.
+ */
+class ResetCartDetails extends ProcessesLoaderResetAction {
+    constructor() {
+        super(MULTI_CART_DATA);
+        this.type = RESET_CART_DETAILS;
+    }
+}
+/**
+ * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
+ * For removing particular cart in both places use DeleteCart actions.
+ */
+class RemoveCart extends EntityRemoveAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = REMOVE_CART;
+    }
+}
+class DeleteCart {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = DELETE_CART;
+    }
+}
+class DeleteCartSuccess extends EntityRemoveAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = DELETE_CART_SUCCESS;
+    }
+}
+class DeleteCartFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = DELETE_CART_FAIL;
+    }
+}
+
+const SET_TEMP_CART = '[Cart] Set Temp Cart';
+const CART_PROCESSES_INCREMENT = '[Cart] Cart Processes Increment';
+const CART_PROCESSES_DECREMENT = '[Cart] Cart Processes Decrement';
+const SET_ACTIVE_CART_ID = '[Cart] Set Active Cart Id';
+const CLEAR_CART_STATE = '[Cart] Clear Cart State';
+/**
+ * To keep track of cart creation process we use cart with `temp-${uuid}` id.
+ * After creating cart we switch to entity with `code` or `guid`.
+ * We need `temp-${uuid}` cart entities for loading/error state.
+ */
+class SetTempCart extends EntitySuccessAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.tempCartId, payload.cart);
+        this.payload = payload;
+        this.type = SET_TEMP_CART;
+    }
+}
+// TODO(#7241): Remove when there won't be any usage
+/**
+ * Increases process counter on cart entities
+ * All actions that cause computations on cart should extend EntityProcessesIncrementAction instead of dispatching this action.
+ * @deprecated since 2.0
+ */
+class CartProcessesIncrement extends EntityProcessesIncrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload);
+        this.payload = payload;
+        this.type = CART_PROCESSES_INCREMENT;
+    }
+}
+// TODO(#7241): Remove when there won't be any usage
+/**
+ * Decrement process counter on cart entities
+ * All actions that cause computations on cart should extend EntityProcessesDecrementAction instead of dispatching this action.
+ * @deprecated since 2.0
+ */
+class CartProcessesDecrement extends EntityProcessesDecrementAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload);
+        this.payload = payload;
+        this.type = CART_PROCESSES_DECREMENT;
+    }
+}
+/**
+ * Only sets active cart property with id of active cart. Then services take care of loading that cart.
+ */
+class SetActiveCartId {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_ACTIVE_CART_ID;
+    }
+}
+/**
+ * Clear whole cart store state: all entities + reset rest of the cart state.
+ */
+class ClearCartState extends EntityRemoveAllAction {
+    constructor() {
+        super(MULTI_CART_DATA);
+        this.type = CLEAR_CART_STATE;
+    }
+}
+
+const CREATE_WISH_LIST = '[Wish List] Create Wish List';
+const CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
+const CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
+const LOAD_WISH_LIST = '[Wish List] Load Wish List';
+const LOAD_WISH_LIST_SUCCESS = '[Wish List] Load Wish List Success';
+const LOAD_WISH_LIST_FAIL = '[Wish List] Load Wish List Fail';
+const RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
+class CreateWishList {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CREATE_WISH_LIST;
+    }
+}
+class CreateWishListSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId));
+        this.payload = payload;
+        this.type = CREATE_WISH_LIST_SUCCESS;
+    }
+}
+class CreateWishListFail extends EntityFailAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId, payload.error);
+        this.payload = payload;
+        this.type = CREATE_WISH_LIST_FAIL;
+    }
+}
+class LoadWishList extends EntityLoadAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.tempCartId);
+        this.payload = payload;
+        this.type = LOAD_WISH_LIST;
+    }
+}
+class LoadWishListSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId);
+        this.payload = payload;
+        this.type = LOAD_WISH_LIST_SUCCESS;
+    }
+}
+class LoadWishListFail extends EntityFailAction {
+    constructor(payload) {
+        super(MULTI_CART_DATA, payload.cartId, payload.error);
+        this.payload = payload;
+        this.type = LOAD_WISH_LIST_FAIL;
+    }
+}
+
+var cartGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    CART_ADD_ENTRY: CART_ADD_ENTRY,
+    CART_ADD_ENTRY_SUCCESS: CART_ADD_ENTRY_SUCCESS,
+    CART_ADD_ENTRY_FAIL: CART_ADD_ENTRY_FAIL,
+    CART_REMOVE_ENTRY: CART_REMOVE_ENTRY,
+    CART_REMOVE_ENTRY_SUCCESS: CART_REMOVE_ENTRY_SUCCESS,
+    CART_REMOVE_ENTRY_FAIL: CART_REMOVE_ENTRY_FAIL,
+    CART_UPDATE_ENTRY: CART_UPDATE_ENTRY,
+    CART_UPDATE_ENTRY_SUCCESS: CART_UPDATE_ENTRY_SUCCESS,
+    CART_UPDATE_ENTRY_FAIL: CART_UPDATE_ENTRY_FAIL,
+    CartAddEntry: CartAddEntry,
+    CartAddEntrySuccess: CartAddEntrySuccess,
+    CartAddEntryFail: CartAddEntryFail,
+    CartRemoveEntry: CartRemoveEntry,
+    CartRemoveEntrySuccess: CartRemoveEntrySuccess,
+    CartRemoveEntryFail: CartRemoveEntryFail,
+    CartUpdateEntry: CartUpdateEntry,
+    CartUpdateEntrySuccess: CartUpdateEntrySuccess,
+    CartUpdateEntryFail: CartUpdateEntryFail,
+    CART_ADD_VOUCHER: CART_ADD_VOUCHER,
+    CART_ADD_VOUCHER_FAIL: CART_ADD_VOUCHER_FAIL,
+    CART_ADD_VOUCHER_SUCCESS: CART_ADD_VOUCHER_SUCCESS,
+    CART_RESET_ADD_VOUCHER: CART_RESET_ADD_VOUCHER,
+    CART_REMOVE_VOUCHER: CART_REMOVE_VOUCHER,
+    CART_REMOVE_VOUCHER_FAIL: CART_REMOVE_VOUCHER_FAIL,
+    CART_REMOVE_VOUCHER_SUCCESS: CART_REMOVE_VOUCHER_SUCCESS,
+    CartAddVoucher: CartAddVoucher,
+    CartAddVoucherFail: CartAddVoucherFail,
+    CartAddVoucherSuccess: CartAddVoucherSuccess,
+    CartResetAddVoucher: CartResetAddVoucher,
+    CartRemoveVoucher: CartRemoveVoucher,
+    CartRemoveVoucherFail: CartRemoveVoucherFail,
+    CartRemoveVoucherSuccess: CartRemoveVoucherSuccess,
+    CREATE_CART: CREATE_CART,
+    CREATE_CART_FAIL: CREATE_CART_FAIL,
+    CREATE_CART_SUCCESS: CREATE_CART_SUCCESS,
+    LOAD_CART: LOAD_CART,
+    LOAD_CART_FAIL: LOAD_CART_FAIL,
+    LOAD_CART_SUCCESS: LOAD_CART_SUCCESS,
+    ADD_EMAIL_TO_CART: ADD_EMAIL_TO_CART,
+    ADD_EMAIL_TO_CART_FAIL: ADD_EMAIL_TO_CART_FAIL,
+    ADD_EMAIL_TO_CART_SUCCESS: ADD_EMAIL_TO_CART_SUCCESS,
+    MERGE_CART: MERGE_CART,
+    MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
+    RESET_CART_DETAILS: RESET_CART_DETAILS,
+    REMOVE_CART: REMOVE_CART,
+    DELETE_CART: DELETE_CART,
+    DELETE_CART_SUCCESS: DELETE_CART_SUCCESS,
+    DELETE_CART_FAIL: DELETE_CART_FAIL,
+    CreateCart: CreateCart,
+    CreateCartFail: CreateCartFail,
+    CreateCartSuccess: CreateCartSuccess,
+    AddEmailToCart: AddEmailToCart,
+    AddEmailToCartFail: AddEmailToCartFail,
+    AddEmailToCartSuccess: AddEmailToCartSuccess,
+    LoadCart: LoadCart,
+    LoadCartFail: LoadCartFail,
+    LoadCartSuccess: LoadCartSuccess,
+    MergeCart: MergeCart,
+    MergeCartSuccess: MergeCartSuccess,
+    ResetCartDetails: ResetCartDetails,
+    RemoveCart: RemoveCart,
+    DeleteCart: DeleteCart,
+    DeleteCartSuccess: DeleteCartSuccess,
+    DeleteCartFail: DeleteCartFail,
+    SET_TEMP_CART: SET_TEMP_CART,
+    CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
+    CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
+    SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
+    CLEAR_CART_STATE: CLEAR_CART_STATE,
+    SetTempCart: SetTempCart,
+    CartProcessesIncrement: CartProcessesIncrement,
+    CartProcessesDecrement: CartProcessesDecrement,
+    SetActiveCartId: SetActiveCartId,
+    ClearCartState: ClearCartState,
+    CREATE_WISH_LIST: CREATE_WISH_LIST,
+    CREATE_WISH_LIST_FAIL: CREATE_WISH_LIST_FAIL,
+    CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
+    LOAD_WISH_LIST: LOAD_WISH_LIST,
+    LOAD_WISH_LIST_SUCCESS: LOAD_WISH_LIST_SUCCESS,
+    LOAD_WISH_LIST_FAIL: LOAD_WISH_LIST_FAIL,
+    RESET_WISH_LIST_DETAILS: RESET_WISH_LIST_DETAILS,
+    CreateWishList: CreateWishList,
+    CreateWishListSuccess: CreateWishListSuccess,
+    CreateWishListFail: CreateWishListFail,
+    LoadWishList: LoadWishList,
+    LoadWishListSuccess: LoadWishListSuccess,
+    LoadWishListFail: LoadWishListFail
+});
+
+class MultiCartService {
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Returns cart from store as an observable
+     *
+     * @param cartId
+     */
+    getCart(cartId) {
+        return this.store.pipe(select(getCartSelectorFactory(cartId)));
+    }
+    /**
+     * Returns cart entity from store (cart with loading, error, success flags) as an observable
+     *
+     * @param cartId
+     */
+    getCartEntity(cartId) {
+        return this.store.pipe(select(getCartEntitySelectorFactory(cartId)));
+    }
+    /**
+     * Returns true when there are no operations on that in progress and it is not currently loading
+     *
+     * @param cartId
+     */
+    isStable(cartId) {
+        return this.store.pipe(select(getCartIsStableSelectorFactory(cartId)), 
+        // We dispatch a lot of actions just after finishing some process or loading, so we want this flag not to flicker.
+        // This flickering should only be avoided when switching from false to true
+        // Start of loading should be showed instantly (no debounce)
+        // Extra actions are only dispatched after some loading
+        debounce((isStable) => (isStable ? timer(0) : EMPTY)), distinctUntilChanged());
+    }
+    /**
+     * Simple random temp cart id generator
+     */
+    generateTempCartId() {
+        const pseudoUuid = Math.random().toString(36).substr(2, 9);
+        return `temp-${pseudoUuid}`;
+    }
+    /**
+     * Create or merge cart
+     *
+     * @param params Object with userId, oldCartId, toMergeCartGuid and extraData
+     */
+    createCart({ userId, oldCartId, toMergeCartGuid, extraData, }) {
+        // to support creating multiple carts at the same time we need to use different entity for every process
+        // simple random uuid generator is used here for entity names
+        const tempCartId = this.generateTempCartId();
+        this.store.dispatch(new CreateCart({
+            extraData,
+            userId,
+            oldCartId,
+            toMergeCartGuid,
+            tempCartId,
+        }));
+        return this.getCartEntity(tempCartId);
+    }
+    /**
+     * Merge provided cart to current user cart
+     *
+     * @param params Object with userId, cartId and extraData
+     */
+    mergeToCurrentCart({ userId, cartId, extraData, }) {
+        const tempCartId = this.generateTempCartId();
+        this.store.dispatch(new MergeCart({
+            userId,
+            cartId,
+            extraData,
+            tempCartId,
+        }));
+    }
+    /**
+     * Load cart
+     *
+     * @param params Object with userId, cartId and extraData
+     */
+    loadCart({ cartId, userId, extraData, }) {
+        this.store.dispatch(new LoadCart({
+            userId,
+            cartId,
+            extraData,
+        }));
+    }
+    /**
+     * Get cart entries as an observable
+     * @param cartId
+     */
+    getEntries(cartId) {
+        return this.store.pipe(select(getCartEntriesSelectorFactory(cartId)));
+    }
+    /**
+     * Add entry to cart
+     *
+     * @param userId
+     * @param cartId
+     * @param productCode
+     * @param quantity
+     */
+    addEntry(userId, cartId, productCode, quantity) {
+        this.store.dispatch(new CartAddEntry({
+            userId,
+            cartId,
+            productCode,
+            quantity,
+        }));
+    }
+    /**
+     * Add multiple entries to cart
+     *
+     * @param userId
+     * @param cartId
+     * @param products Array with items (productCode and quantity)
+     */
+    addEntries(userId, cartId, products) {
+        products.forEach((product) => {
+            this.store.dispatch(new CartAddEntry({
+                userId,
+                cartId,
+                productCode: product.productCode,
+                quantity: product.quantity,
+            }));
+        });
+    }
+    /**
+     * Remove entry from cart
+     *
+     * @param userId
+     * @param cartId
+     * @param entryNumber
+     */
+    removeEntry(userId, cartId, entryNumber) {
+        this.store.dispatch(new CartRemoveEntry({
+            userId,
+            cartId,
+            entryNumber: `${entryNumber}`,
+        }));
+    }
+    /**
+     * Update entry in cart. For quantity = 0 it removes entry
+     *
+     * @param userId
+     * @param cartId
+     * @param entryNumber
+     * @param quantity
+     */
+    updateEntry(userId, cartId, entryNumber, quantity) {
+        if (quantity > 0) {
+            this.store.dispatch(new CartUpdateEntry({
+                userId,
+                cartId,
+                entryNumber: `${entryNumber}`,
+                quantity: quantity,
+            }));
+        }
+        else {
+            this.removeEntry(userId, cartId, entryNumber);
+        }
+    }
+    /**
+     * Get specific entry from cart
+     *
+     * @param cartId
+     * @param productCode
+     */
+    getEntry(cartId, productCode) {
+        return this.store.pipe(select(getCartEntrySelectorFactory(cartId, productCode)));
+    }
+    /**
+     * Assign email to the cart
+     *
+     * @param cartId
+     * @param userId
+     * @param email
+     */
+    assignEmail(cartId, userId, email) {
+        this.store.dispatch(new AddEmailToCart({
+            userId,
+            cartId,
+            email,
+        }));
+    }
+    /**
+     * Delete cart
+     *
+     * @param cartId
+     * @param userId
+     */
+    deleteCart(cartId, userId) {
+        this.store.dispatch(new DeleteCart({
+            userId,
+            cartId,
+        }));
+    }
+}
+MultiCartService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(ɵɵinject(Store)); }, token: MultiCartService, providedIn: "root" });
+MultiCartService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+MultiCartService.ctorParameters = () => [
+    { type: Store }
+];
+
+class ActiveCartService {
+    constructor(store, authService, multiCartService) {
+        this.store = store;
+        this.authService = authService;
+        this.multiCartService = multiCartService;
+        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+        this.subscription = new Subscription();
+        this.userId = OCC_USER_ID_ANONYMOUS;
+        this.activeCartId$ = this.store.pipe(select(getActiveCartId), map((cartId) => {
+            if (!cartId) {
+                return OCC_CART_ID_CURRENT;
+            }
+            return cartId;
+        }));
+        this.cartSelector$ = this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getCartEntity(cartId)));
+        this.initActiveCart();
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+    initActiveCart() {
+        this.subscription.add(this.authService.getOccUserId().subscribe((userId) => {
+            this.userId = userId;
+            if (this.userId !== OCC_USER_ID_ANONYMOUS) {
+                if (this.isJustLoggedIn(userId)) {
+                    this.loadOrMerge(this.cartId);
+                }
+            }
+            this.previousUserId = userId;
+        }));
+        this.subscription.add(this.activeCartId$.subscribe((cartId) => {
+            this.cartId = cartId;
+        }));
+        this.activeCart$ = this.cartSelector$.pipe(withLatestFrom(this.activeCartId$), map(([cartEntity, activeCartId]) => {
+            return {
+                cart: cartEntity.value,
+                cartId: activeCartId,
+                isStable: !cartEntity.loading && cartEntity.processesCount === 0,
+                loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
+            };
+        }), 
+        // we want to emit empty carts even if those are not stable
+        // on merge cart action we want to switch to empty cart so no one would use old cartId which can be already obsolete
+        // so on merge action the resulting stream looks like this: old_cart -> {} -> new_cart
+        filter(({ isStable, cart }) => isStable || this.isEmpty(cart)), tap(({ cart, cartId, loaded, isStable }) => {
+            if (isStable &&
+                this.isEmpty(cart) &&
+                !loaded &&
+                !isTempCartId(cartId)) {
+                this.load(cartId);
+            }
+        }), map(({ cart }) => (cart ? cart : {})), tap((cart) => {
+            if (cart) {
+                this.cartUser = cart.user;
+            }
+        }), distinctUntilChanged(), shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    /**
+     * Returns active cart
+     */
+    getActive() {
+        return this.activeCart$;
+    }
+    /**
+     * Returns active cart id
+     */
+    getActiveCartId() {
+        return this.activeCart$.pipe(map((cart) => getCartIdByUserId(cart, this.userId)), distinctUntilChanged());
+    }
+    /**
+     * Returns cart entries
+     */
+    getEntries() {
+        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getEntries(cartId)), distinctUntilChanged());
+    }
+    /**
+     * Returns cart loading state
+     */
+    getLoading() {
+        return this.cartSelector$.pipe(map((cartEntity) => cartEntity.loading), distinctUntilChanged());
+    }
+    /**
+     * Returns true when cart is stable (not loading and not pending processes on cart)
+     */
+    isStable() {
+        // Debounce is used here, to avoid flickering when we switch between different cart entities.
+        // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
+        // After load fails we might create new cart so we switch to `temp-${uuid}` cart entity used when creating cart.
+        // At the end we finally switch to cart `code` for cart id. Between those switches cart `isStable` function should not flicker.
+        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.isStable(cartId)), debounce((state) => (state ? timer(0) : EMPTY)), distinctUntilChanged());
+    }
+    loadOrMerge(cartId) {
+        // for login user, whenever there's an existing cart, we will load the user
+        // current cart and merge it into the existing cart
+        if (!cartId || cartId === OCC_CART_ID_CURRENT) {
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId: OCC_CART_ID_CURRENT,
+                extraData: {
+                    active: true,
+                },
+            });
+        }
+        else if (this.isGuestCart()) {
+            this.guestCartMerge(cartId);
+        }
+        else {
+            this.multiCartService.mergeToCurrentCart({
+                userId: this.userId,
+                cartId,
+                extraData: {
+                    active: true,
+                },
+            });
+        }
+    }
+    load(cartId) {
+        if (this.userId !== OCC_USER_ID_ANONYMOUS) {
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId: cartId ? cartId : OCC_CART_ID_CURRENT,
+                extraData: {
+                    active: true,
+                },
+            });
+        }
+        else if (cartId && cartId !== OCC_CART_ID_CURRENT) {
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId: cartId,
+                extraData: {
+                    active: true,
+                },
+            });
+        }
+    }
+    addEntriesGuestMerge(cartEntries) {
+        const entriesToAdd = cartEntries.map((entry) => ({
+            productCode: entry.product.code,
+            quantity: entry.quantity,
+        }));
+        this.requireLoadedCartForGuestMerge().subscribe((cartState) => {
+            this.multiCartService.addEntries(this.userId, getCartIdByUserId(cartState.value, this.userId), entriesToAdd);
+        });
+    }
+    requireLoadedCartForGuestMerge() {
+        return this.requireLoadedCart(this.cartSelector$.pipe(filter(() => !this.isGuestCart())));
+    }
+    isCartCreating(cartState) {
+        // cart creating is always represented with loading flags
+        // when all loading flags are false it means that we restored wrong cart id
+        // could happen on context change or reload right in the middle on cart create call
+        return (isTempCartId(this.cartId) &&
+            (cartState.loading || cartState.success || cartState.error));
+    }
+    requireLoadedCart(customCartSelector$) {
+        // For guest cart merge we want to filter guest cart in the whole stream
+        // We have to wait with load/create/addEntry after guest cart will be deleted.
+        // That's why you can provide custom selector with this filter applied.
+        const cartSelector$ = customCartSelector$
+            ? customCartSelector$
+            : this.cartSelector$;
+        return cartSelector$.pipe(filter((cartState) => !cartState.loading), 
+        // Avoid load/create call when there are new cart creating at the moment
+        filter((cartState) => !this.isCartCreating(cartState)), take(1), switchMap((cartState) => {
+            // Try to load the cart, because it might have been created on another device between our login and add entry call
+            if (this.isEmpty(cartState.value) &&
+                this.userId !== OCC_USER_ID_ANONYMOUS) {
+                this.load(undefined);
+            }
+            return cartSelector$;
+        }), filter((cartState) => !cartState.loading), 
+        // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
+        filter((cartState) => this.userId === OCC_USER_ID_ANONYMOUS ||
+            cartState.success ||
+            cartState.error), take(1), switchMap((cartState) => {
+            if (this.isEmpty(cartState.value)) {
+                this.multiCartService.createCart({
+                    userId: this.userId,
+                    extraData: {
+                        active: true,
+                    },
+                });
+            }
+            return cartSelector$;
+        }), filter((cartState) => !cartState.loading), filter((cartState) => cartState.success || cartState.error), 
+        // wait for active cart id to point to code/guid to avoid some work on temp cart entity
+        filter((cartState) => !this.isCartCreating(cartState)), filter((cartState) => !this.isEmpty(cartState.value)), take(1));
+    }
+    /**
+     * Add entry to active cart
+     *
+     * @param productCode
+     * @param quantity
+     */
+    addEntry(productCode, quantity) {
+        this.requireLoadedCart().subscribe((cartState) => {
+            this.multiCartService.addEntry(this.userId, getCartIdByUserId(cartState.value, this.userId), productCode, quantity);
+        });
+    }
+    /**
+     * Remove entry
+     *
+     * @param entry
+     */
+    removeEntry(entry) {
+        this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
+    }
+    /**
+     * Update entry
+     *
+     * @param entryNumber
+     * @param quantity
+     */
+    updateEntry(entryNumber, quantity) {
+        this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
+    }
+    /**
+     * Returns cart entry
+     *
+     * @param productCode
+     */
+    getEntry(productCode) {
+        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getEntry(cartId, productCode)), distinctUntilChanged());
+    }
+    /**
+     * Assign email to cart
+     *
+     * @param email
+     */
+    addEmail(email) {
+        this.multiCartService.assignEmail(this.cartId, this.userId, email);
+    }
+    /**
+     * Get assigned user to cart
+     */
+    getAssignedUser() {
+        return this.getActive().pipe(map((cart) => cart.user));
+    }
+    /**
+     * Returns true for guest cart
+     */
+    isGuestCart() {
+        return (this.cartUser &&
+            (this.cartUser.name === OCC_USER_ID_GUEST ||
+                this.isEmail(this.cartUser.uid.split('|').slice(1).join('|'))));
+    }
+    /**
+     * Add multiple entries to a cart
+     *
+     * @param cartEntries : list of entries to add (OrderEntry[])
+     */
+    addEntries(cartEntries) {
+        cartEntries.forEach((entry) => {
+            this.addEntry(entry.product.code, entry.quantity);
+        });
+    }
+    isEmail(str) {
+        if (str) {
+            return str.match(EMAIL_PATTERN) ? true : false;
+        }
+        return false;
+    }
+    // TODO: Remove once backend is updated
+    /**
+     * Temporary method to merge guest cart with user cart because of backend limitation
+     * This is for an edge case
+     */
+    guestCartMerge(cartId) {
+        let cartEntries;
+        this.getEntries()
+            .pipe(take(1))
+            .subscribe((entries) => {
+            cartEntries = entries;
+        });
+        this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
+        this.addEntriesGuestMerge(cartEntries);
+    }
+    isEmpty(cart) {
+        return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
+    }
+    isJustLoggedIn(userId) {
+        return (this.previousUserId !== userId && // *just* logged in
+            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+        );
+    }
+}
+ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+ActiveCartService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+ActiveCartService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService },
+    { type: MultiCartService }
+];
+
+var PageRobotsMeta;
+(function (PageRobotsMeta) {
+    PageRobotsMeta["INDEX"] = "INDEX";
+    PageRobotsMeta["NOINDEX"] = "NOINDEX";
+    PageRobotsMeta["FOLLOW"] = "FOLLOW";
+    PageRobotsMeta["NOFOLLOW"] = "NOFOLLOW";
+})(PageRobotsMeta || (PageRobotsMeta = {}));
+
+class TranslationService {
+}
+
+/**
+ * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
+ * and the `MultiStepCheckoutSummaryPageTemplate`. If the checkout page matches this template,
+ * the more generic `ContentPageMetaResolver` is overriden by this resolver.
+ *
+ * The page title and robots are resolved in this implementation only.
+ */
+class CheckoutPageMetaResolver extends PageMetaResolver {
+    constructor(translation, activeCartService) {
+        super();
+        this.translation = translation;
+        this.activeCartService = activeCartService;
+        this.cart$ = this.activeCartService.getActive();
+        this.pageType = PageType.CONTENT_PAGE;
+        this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
+    }
+    resolveTitle() {
+        return this.cart$.pipe(switchMap((c) => this.translation.translate('pageMetaResolver.checkout.title', {
+            count: c.totalItems,
+        })));
+    }
+    resolveRobots() {
+        return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
+    }
+}
+CheckoutPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(TranslationService), ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+CheckoutPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutPageMetaResolver.ctorParameters = () => [
+    { type: TranslationService },
+    { type: ActiveCartService }
+];
+
+class UserAddressAdapter {
+}
+
+class UserAddressConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    getAll(userId) {
+        return this.adapter.loadAll(userId);
+    }
+    add(userId, address) {
+        return this.adapter.add(userId, address);
+    }
+    update(userId, addressId, address) {
+        return this.adapter.update(userId, addressId, address);
+    }
+    verify(userId, address) {
+        return this.adapter.verify(userId, address);
+    }
+    delete(userId, addressId) {
+        return this.adapter.delete(userId, addressId);
+    }
+}
+UserAddressConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+UserAddressConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+UserAddressConnector.ctorParameters = () => [
+    { type: UserAddressAdapter }
+];
+
+class AddressVerificationEffect {
+    constructor(actions$, userAddressConnector) {
+        this.actions$ = actions$;
+        this.userAddressConnector = userAddressConnector;
+        this.verifyAddress$ = this.actions$.pipe(ofType(VERIFY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.userAddressConnector.verify(payload.userId, payload.address).pipe(map((data) => new VerifyAddressSuccess(data)), catchError((error) => of(new VerifyAddressFail(makeErrorSerializable(error)))))));
+    }
+}
+AddressVerificationEffect.decorators = [
     { type: Injectable }
 ];
-OccCheckoutPaymentTypeAdapter.ctorParameters = () => [
-    { type: HttpClient },
-    { type: OccEndpointsService },
-    { type: ConverterService }
+AddressVerificationEffect.ctorParameters = () => [
+    { type: Actions },
+    { type: UserAddressConnector }
 ];
+__decorate([
+    Effect()
+], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
 
-class OccCheckoutCostCenterAdapter {
-    constructor(http, occEndpoints, converter) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
-        this.converter = converter;
-    }
-    setCostCenter(userId, cartId, costCenterId) {
-        let httpParams = new HttpParams().set('costCenterId', costCenterId);
-        /* tslint:disable:max-line-length */
-        httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
-        // TODO(#8877): Should we improve configurable endpoints for this use case?
-        return this.http
-            .put(this.getCartEndpoint(userId) + cartId + '/costcenter', {}, {
-            params: httpParams,
-        })
-            .pipe(this.converter.pipeable(CART_NORMALIZER));
-    }
-    getCartEndpoint(userId) {
-        const cartEndpoint = 'users/' + userId + '/carts/';
-        return this.occEndpoints.getEndpoint(cartEndpoint);
+class CardTypesEffects {
+    constructor(actions$, checkoutPaymentConnector) {
+        this.actions$ = actions$;
+        this.checkoutPaymentConnector = checkoutPaymentConnector;
+        this.loadCardTypes$ = this.actions$.pipe(ofType(LOAD_CARD_TYPES), switchMap(() => {
+            return this.checkoutPaymentConnector.getCardTypes().pipe(map((cardTypes) => new LoadCardTypesSuccess(cardTypes)), catchError((error) => of(new LoadCardTypesFail(makeErrorSerializable(error)))));
+        }));
     }
 }
-OccCheckoutCostCenterAdapter.decorators = [
+CardTypesEffects.decorators = [
     { type: Injectable }
 ];
-OccCheckoutCostCenterAdapter.ctorParameters = () => [
-    { type: HttpClient },
-    { type: OccEndpointsService },
-    { type: ConverterService }
+CardTypesEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CheckoutPaymentConnector }
 ];
+__decorate([
+    Effect()
+], CardTypesEffects.prototype, "loadCardTypes$", void 0);
 
-class CheckoutAdapter {
-}
-
-class OccOrderNormalizer {
-    constructor(converter) {
-        this.converter = converter;
-    }
-    convert(source, target) {
-        if (target === undefined) {
-            target = Object.assign({}, source);
-        }
-        if (source.entries) {
-            target.entries = source.entries.map((entry) => this.convertOrderEntry(entry));
-        }
-        if (source.consignments) {
-            target.consignments = source.consignments.map((consignment) => (Object.assign(Object.assign({}, consignment), { entries: consignment.entries.map((entry) => (Object.assign(Object.assign({}, entry), { orderEntry: this.convertOrderEntry(entry.orderEntry) }))) })));
-        }
-        if (source.unconsignedEntries) {
-            target.unconsignedEntries = source.unconsignedEntries.map((entry) => this.convertOrderEntry(entry));
-        }
-        return target;
-    }
-    convertOrderEntry(source) {
-        return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+const LOAD_BILLING_COUNTRIES = '[User] Load Billing Countries';
+const LOAD_BILLING_COUNTRIES_FAIL = '[User] Load Billing Countries Fail';
+const LOAD_BILLING_COUNTRIES_SUCCESS = '[User] Load Billing Countries Success';
+class LoadBillingCountries {
+    constructor() {
+        this.type = LOAD_BILLING_COUNTRIES;
     }
 }
-OccOrderNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccOrderNormalizer_Factory() { return new OccOrderNormalizer(ɵɵinject(ConverterService)); }, token: OccOrderNormalizer, providedIn: "root" });
-OccOrderNormalizer.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
+class LoadBillingCountriesFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_BILLING_COUNTRIES_FAIL;
+    }
+}
+class LoadBillingCountriesSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_BILLING_COUNTRIES_SUCCESS;
+    }
+}
+
+const LOAD_CONSIGNMENT_TRACKING = '[User] Load Consignment Tracking';
+const LOAD_CONSIGNMENT_TRACKING_FAIL = '[User] Load Consignment Tracking Fail';
+const LOAD_CONSIGNMENT_TRACKING_SUCCESS = '[User] Load Consignment Tracking Success';
+const CLEAR_CONSIGNMENT_TRACKING = '[User] Clear Consignment Tracking';
+class LoadConsignmentTracking {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CONSIGNMENT_TRACKING;
+    }
+}
+class LoadConsignmentTrackingFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CONSIGNMENT_TRACKING_FAIL;
+    }
+}
+class LoadConsignmentTrackingSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CONSIGNMENT_TRACKING_SUCCESS;
+    }
+}
+class ClearConsignmentTracking {
+    constructor() {
+        this.type = CLEAR_CONSIGNMENT_TRACKING;
+    }
+}
+
+const USER_FEATURE = 'user';
+const UPDATE_EMAIL_PROCESS_ID = 'updateEmail';
+const UPDATE_PASSWORD_PROCESS_ID = 'updatePassword';
+const UPDATE_USER_DETAILS_PROCESS_ID = 'updateUserDetails';
+const REGISTER_USER_PROCESS_ID = 'registerUser';
+const REMOVE_USER_PROCESS_ID = 'removeUser';
+const GIVE_CONSENT_PROCESS_ID = 'giveConsent';
+const WITHDRAW_CONSENT_PROCESS_ID = 'withdrawConsent';
+const UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID = 'updateNotificationPreferences';
+const ADD_PRODUCT_INTEREST_PROCESS_ID = 'addProductInterests';
+const REMOVE_PRODUCT_INTERESTS_PROCESS_ID = 'removeProductInterests';
+const CANCEL_ORDER_PROCESS_ID = 'cancelOrder';
+const CANCEL_RETURN_PROCESS_ID = 'cancelReturn';
+const CANCEL_REPLENISHMENT_ORDER_PROCESS_ID = 'cancelReplenishmentOrder';
+const USER_CONSENTS = '[User] User Consents';
+const USER_PAYMENT_METHODS = '[User] User Payment Methods';
+const USER_ORDERS = '[User] User Orders';
+const USER_ADDRESSES = '[User] User Addresses';
+const USER_RETURN_REQUESTS = '[User] Order Return Requests';
+const USER_RETURN_REQUEST_DETAILS = '[User] Return Request Details';
+const USER_ORDER_DETAILS = '[User] User Order Details';
+const USER_COST_CENTERS = '[User] User Cost Centers';
+const USER_REPLENISHMENT_ORDERS = '[User] User Replenishment Orders';
+const USER_REPLENISHMENT_ORDER_DETAILS = '[User] User Replenishment Order Details';
+const REGIONS = '[User] Regions';
+const CUSTOMER_COUPONS = '[User] Customer Coupons';
+const SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'subscribeCustomerCoupon';
+const UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'unsubscribeCustomerCoupon';
+const CLAIM_CUSTOMER_COUPON_PROCESS_ID = 'claimCustomerCoupon';
+const NOTIFICATION_PREFERENCES = '[User] Notification Preferences';
+const PRODUCT_INTERESTS = '[User] Product Interests';
+
+function getProcessState() {
+    return createFeatureSelector(PROCESS_FEATURE);
+}
+
+function getProcessStateFactory(processId) {
+    return createSelector(getProcessState(), (entityState) => entityLoaderStateSelector(entityState, processId));
+}
+function getProcessLoadingFactory(processId) {
+    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderLoadingSelector(loaderState));
+}
+function getProcessSuccessFactory(processId) {
+    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderSuccessSelector(loaderState));
+}
+function getProcessErrorFactory(processId) {
+    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderErrorSelector(loaderState));
+}
+
+var process_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getProcessStateFactory: getProcessStateFactory,
+    getProcessLoadingFactory: getProcessLoadingFactory,
+    getProcessSuccessFactory: getProcessSuccessFactory,
+    getProcessErrorFactory: getProcessErrorFactory
+});
+
+const LOAD_CUSTOMER_COUPONS = '[User] Load Customer Coupons';
+const LOAD_CUSTOMER_COUPONS_FAIL = '[User] Load Customer Coupons Fail';
+const LOAD_CUSTOMER_COUPONS_SUCCESS = '[User] Load Customer Coupons Success';
+const RESET_LOAD_CUSTOMER_COUPONS = '[User] Reset Load Customer Coupons';
+const SUBSCRIBE_CUSTOMER_COUPON = '[User] Subscribe Customer Notification Coupon';
+const SUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Subscribe Customer Coupon Notification Fail';
+const SUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Subscribe Customer Coupon Notification Success';
+const RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Subscribe Customer Coupon Process';
+const UNSUBSCRIBE_CUSTOMER_COUPON = '[User] Unsubscribe Customer Notification Coupon';
+const UNSUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Unsubscribe Customer Coupon Notification Fail';
+const UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Unsubscribe Customer Coupon Notification Success';
+const RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Unsubscribe Customer Coupon Process';
+const CLAIM_CUSTOMER_COUPON = '[User] Claim Customer';
+const CLAIM_CUSTOMER_COUPON_FAIL = '[User] Claim Customer Fail';
+const CLAIM_CUSTOMER_COUPON_SUCCESS = '[User] Claim Customer Success';
+class LoadCustomerCoupons extends LoaderLoadAction {
+    constructor(payload) {
+        super(CUSTOMER_COUPONS);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_COUPONS;
+    }
+}
+class LoadCustomerCouponsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(CUSTOMER_COUPONS, payload);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_COUPONS_FAIL;
+    }
+}
+class LoadCustomerCouponsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(CUSTOMER_COUPONS);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_COUPONS_SUCCESS;
+    }
+}
+class ResetLoadCustomerCoupons extends LoaderResetAction {
+    constructor() {
+        super(CUSTOMER_COUPONS);
+        this.type = RESET_LOAD_CUSTOMER_COUPONS;
+    }
+}
+// Subscribe coupon notification actions
+class SubscribeCustomerCoupon extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
+        this.payload = payload;
+        this.type = SUBSCRIBE_CUSTOMER_COUPON;
+    }
+}
+class SubscribeCustomerCouponFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SUBSCRIBE_CUSTOMER_COUPON_FAIL;
+    }
+}
+class SubscribeCustomerCouponSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
+    }
+}
+class ResetSubscribeCustomerCouponProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
+        this.type = RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS;
+    }
+}
+class UnsubscribeCustomerCoupon extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
+        this.payload = payload;
+        this.type = UNSUBSCRIBE_CUSTOMER_COUPON;
+    }
+}
+class UnsubscribeCustomerCouponFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = UNSUBSCRIBE_CUSTOMER_COUPON_FAIL;
+    }
+}
+class UnsubscribeCustomerCouponSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
+    }
+}
+class ResetUnsubscribeCustomerCouponProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
+        this.type = RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS;
+    }
+}
+class ClaimCustomerCoupon extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID);
+        this.payload = payload;
+        this.type = CLAIM_CUSTOMER_COUPON;
+    }
+}
+class ClaimCustomerCouponFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = CLAIM_CUSTOMER_COUPON_FAIL;
+    }
+}
+class ClaimCustomerCouponSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = CLAIM_CUSTOMER_COUPON_SUCCESS;
+    }
+}
+
+const LOAD_DELIVERY_COUNTRIES = '[User] Load Delivery Countries';
+const LOAD_DELIVERY_COUNTRIES_FAIL = '[User] Load Delivery Countries Fail';
+const LOAD_DELIVERY_COUNTRIES_SUCCESS = '[User] Load Delivery Countries Success';
+class LoadDeliveryCountries {
+    constructor() {
+        this.type = LOAD_DELIVERY_COUNTRIES;
+    }
+}
+class LoadDeliveryCountriesFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_DELIVERY_COUNTRIES_FAIL;
+    }
+}
+class LoadDeliveryCountriesSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_DELIVERY_COUNTRIES_SUCCESS;
+    }
+}
+
+const FORGOT_PASSWORD_EMAIL_REQUEST = '[User] Forgot Password Email Request';
+const FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS = '[User] Forgot Password Email Request Success';
+const FORGOT_PASSWORD_EMAIL_REQUEST_FAIL = '[User] Forgot Password Email Request Fail';
+class ForgotPasswordEmailRequest {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = FORGOT_PASSWORD_EMAIL_REQUEST;
+    }
+}
+class ForgotPasswordEmailRequestFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = FORGOT_PASSWORD_EMAIL_REQUEST_FAIL;
+    }
+}
+class ForgotPasswordEmailRequestSuccess {
+    constructor() {
+        this.type = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
+    }
+}
+
+const LOAD_NOTIFICATION_PREFERENCES = '[User] Load Notification Preferences';
+const LOAD_NOTIFICATION_PREFERENCES_FAIL = '[User] Load Notification Preferences Fail';
+const LOAD_NOTIFICATION_PREFERENCES_SUCCESS = '[User] Load Notification Preferences Success';
+const UPDATE_NOTIFICATION_PREFERENCES = '[User] Update Notification Preferences';
+const UPDATE_NOTIFICATION_PREFERENCES_FAIL = '[User] Update Notification Preferences Fail';
+const UPDATE_NOTIFICATION_PREFERENCES_SUCCESS = '[User] Update Notification Preferences Success';
+const RESET_NOTIFICATION_PREFERENCES = '[User] Reset Notification Preferences';
+const CLEAR_NOTIFICATION_PREFERENCES = '[User] Clear Notification Preferences';
+class LoadNotificationPreferences extends LoaderLoadAction {
+    constructor(payload) {
+        super(NOTIFICATION_PREFERENCES);
+        this.payload = payload;
+        this.type = LOAD_NOTIFICATION_PREFERENCES;
+    }
+}
+class LoadNotificationPreferencesFail extends LoaderFailAction {
+    constructor(payload) {
+        super(NOTIFICATION_PREFERENCES, payload);
+        this.payload = payload;
+        this.type = LOAD_NOTIFICATION_PREFERENCES_FAIL;
+    }
+}
+class LoadNotificationPreferencesSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(NOTIFICATION_PREFERENCES);
+        this.payload = payload;
+        this.type = LOAD_NOTIFICATION_PREFERENCES_SUCCESS;
+    }
+}
+class UpdateNotificationPreferences extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID);
+        this.payload = payload;
+        this.type = UPDATE_NOTIFICATION_PREFERENCES;
+    }
+}
+class UpdateNotificationPreferencesFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = UPDATE_NOTIFICATION_PREFERENCES_FAIL;
+    }
+}
+class UpdateNotificationPreferencesSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID);
+        this.payload = payload;
+        this.type = UPDATE_NOTIFICATION_PREFERENCES_SUCCESS;
+    }
+}
+class ResetNotificationPreferences extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID);
+        this.type = RESET_NOTIFICATION_PREFERENCES;
+    }
+}
+class ClearNotificationPreferences extends LoaderResetAction {
+    constructor() {
+        super(NOTIFICATION_PREFERENCES);
+        this.type = CLEAR_NOTIFICATION_PREFERENCES;
+    }
+}
+
+const LOAD_ORDER_DETAILS = '[User] Load Order Details';
+const LOAD_ORDER_DETAILS_FAIL = '[User] Load Order Details Fail';
+const LOAD_ORDER_DETAILS_SUCCESS = '[User] Load Order Details Success';
+const CLEAR_ORDER_DETAILS = '[User] Clear Order Details';
+const CANCEL_ORDER = '[User] Cancel Order';
+const CANCEL_ORDER_FAIL = '[User] Cancel Order Fail';
+const CANCEL_ORDER_SUCCESS = '[User] Cancel Order Success';
+const RESET_CANCEL_ORDER_PROCESS = '[User] Reset Cancel Order Process';
+class LoadOrderDetails extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_ORDER_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_ORDER_DETAILS;
+    }
+}
+class LoadOrderDetailsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_ORDER_DETAILS, payload);
+        this.payload = payload;
+        this.type = LOAD_ORDER_DETAILS_FAIL;
+    }
+}
+class LoadOrderDetailsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_ORDER_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_ORDER_DETAILS_SUCCESS;
+    }
+}
+class ClearOrderDetails extends LoaderResetAction {
+    constructor() {
+        super(USER_ORDER_DETAILS);
+        this.type = CLEAR_ORDER_DETAILS;
+    }
+}
+class CancelOrder extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID);
+        this.payload = payload;
+        this.type = CANCEL_ORDER;
+    }
+}
+class CancelOrderFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = CANCEL_ORDER_FAIL;
+    }
+}
+class CancelOrderSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID);
+        this.type = CANCEL_ORDER_SUCCESS;
+    }
+}
+class ResetCancelOrderProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID);
+        this.type = RESET_CANCEL_ORDER_PROCESS;
+    }
+}
+
+const CREATE_ORDER_RETURN_REQUEST = '[User] Create Order Return Request';
+const CREATE_ORDER_RETURN_REQUEST_FAIL = '[User] Create Order Return Request Fail';
+const CREATE_ORDER_RETURN_REQUEST_SUCCESS = '[User] Create Order Return Request Success';
+const LOAD_ORDER_RETURN_REQUEST = '[User] Load Order Return Request details';
+const LOAD_ORDER_RETURN_REQUEST_FAIL = '[User] Load Order Return Request details Fail';
+const LOAD_ORDER_RETURN_REQUEST_SUCCESS = '[User] Load Order Return Request details Success';
+const CANCEL_ORDER_RETURN_REQUEST = '[User] Cancel Order Return Request';
+const CANCEL_ORDER_RETURN_REQUEST_FAIL = '[User] Cancel Order Return Request Fail';
+const CANCEL_ORDER_RETURN_REQUEST_SUCCESS = '[User] Cancel Order Return Request Success';
+const LOAD_ORDER_RETURN_REQUEST_LIST = '[User] Load User Order Return Request List';
+const LOAD_ORDER_RETURN_REQUEST_LIST_FAIL = '[User] Load User Order Return Request List Fail';
+const LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS = '[User] Load User Order Return Request List Success';
+const CLEAR_ORDER_RETURN_REQUEST = '[User] Clear Order Return Request Details';
+const CLEAR_ORDER_RETURN_REQUEST_LIST = '[User] Clear Order Return Request List';
+const RESET_CANCEL_RETURN_PROCESS = '[User] Reset Cancel Return Request Process';
+class CreateOrderReturnRequest extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUEST_DETAILS);
+        this.payload = payload;
+        this.type = CREATE_ORDER_RETURN_REQUEST;
+    }
+}
+class CreateOrderReturnRequestFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUEST_DETAILS, payload);
+        this.payload = payload;
+        this.type = CREATE_ORDER_RETURN_REQUEST_FAIL;
+    }
+}
+class CreateOrderReturnRequestSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUEST_DETAILS);
+        this.payload = payload;
+        this.type = CREATE_ORDER_RETURN_REQUEST_SUCCESS;
+    }
+}
+class LoadOrderReturnRequest extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUEST_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_ORDER_RETURN_REQUEST;
+    }
+}
+class LoadOrderReturnRequestFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUEST_DETAILS, payload);
+        this.payload = payload;
+        this.type = LOAD_ORDER_RETURN_REQUEST_FAIL;
+    }
+}
+class LoadOrderReturnRequestSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUEST_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_ORDER_RETURN_REQUEST_SUCCESS;
+    }
+}
+class CancelOrderReturnRequest extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID);
+        this.payload = payload;
+        this.type = CANCEL_ORDER_RETURN_REQUEST;
+    }
+}
+class CancelOrderReturnRequestFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = CANCEL_ORDER_RETURN_REQUEST_FAIL;
+    }
+}
+class CancelOrderReturnRequestSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID);
+        this.type = CANCEL_ORDER_RETURN_REQUEST_SUCCESS;
+    }
+}
+class LoadOrderReturnRequestList extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUESTS);
+        this.payload = payload;
+        this.type = LOAD_ORDER_RETURN_REQUEST_LIST;
+    }
+}
+class LoadOrderReturnRequestListFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUESTS, payload);
+        this.payload = payload;
+        this.type = LOAD_ORDER_RETURN_REQUEST_LIST_FAIL;
+    }
+}
+class LoadOrderReturnRequestListSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_RETURN_REQUESTS);
+        this.payload = payload;
+        this.type = LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS;
+    }
+}
+class ClearOrderReturnRequest extends LoaderResetAction {
+    constructor() {
+        super(USER_RETURN_REQUEST_DETAILS);
+        this.type = CLEAR_ORDER_RETURN_REQUEST;
+    }
+}
+class ClearOrderReturnRequestList extends LoaderResetAction {
+    constructor() {
+        super(USER_RETURN_REQUESTS);
+        this.type = CLEAR_ORDER_RETURN_REQUEST_LIST;
+    }
+}
+class ResetCancelReturnProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID);
+        this.type = RESET_CANCEL_RETURN_PROCESS;
+    }
+}
+
+const LOAD_USER_PAYMENT_METHODS = '[User] Load User Payment Methods';
+const LOAD_USER_PAYMENT_METHODS_FAIL = '[User] Load User Payment Methods Fail';
+const LOAD_USER_PAYMENT_METHODS_SUCCESS = '[User] Load User Payment Methods Success';
+const SET_DEFAULT_USER_PAYMENT_METHOD = '[User] Set Default User Payment Method';
+const SET_DEFAULT_USER_PAYMENT_METHOD_FAIL = '[User] Set Default User Payment Method Fail';
+const SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS = '[User] Set Default User Payment Method Success';
+const DELETE_USER_PAYMENT_METHOD = '[User] Delete User Payment Method';
+const DELETE_USER_PAYMENT_METHOD_FAIL = '[User] Delete User Payment Method Fail';
+const DELETE_USER_PAYMENT_METHOD_SUCCESS = '[User] Delete User  Payment Method Success';
+class LoadUserPaymentMethods extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS);
+        this.payload = payload;
+        this.type = LOAD_USER_PAYMENT_METHODS;
+    }
+}
+class LoadUserPaymentMethodsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS, payload);
+        this.payload = payload;
+        this.type = LOAD_USER_PAYMENT_METHODS_FAIL;
+    }
+}
+class LoadUserPaymentMethodsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS);
+        this.payload = payload;
+        this.type = LOAD_USER_PAYMENT_METHODS_SUCCESS;
+    }
+}
+class SetDefaultUserPaymentMethod extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS);
+        this.payload = payload;
+        this.type = SET_DEFAULT_USER_PAYMENT_METHOD;
+    }
+}
+class SetDefaultUserPaymentMethodFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS, payload);
+        this.payload = payload;
+        this.type = SET_DEFAULT_USER_PAYMENT_METHOD_FAIL;
+    }
+}
+class SetDefaultUserPaymentMethodSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS);
+        this.payload = payload;
+        this.type = SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS;
+    }
+}
+class DeleteUserPaymentMethod extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS);
+        this.payload = payload;
+        this.type = DELETE_USER_PAYMENT_METHOD;
+    }
+}
+class DeleteUserPaymentMethodFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS, payload);
+        this.payload = payload;
+        this.type = DELETE_USER_PAYMENT_METHOD_FAIL;
+    }
+}
+class DeleteUserPaymentMethodSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_PAYMENT_METHODS);
+        this.payload = payload;
+        this.type = DELETE_USER_PAYMENT_METHOD_SUCCESS;
+    }
+}
+
+const LOAD_PRODUCT_INTERESTS = 'Load Product Interests';
+const LOAD_PRODUCT_INTERESTS_FAIL = 'Load Product Interests Fail';
+const LOAD_PRODUCT_INTERESTS_SUCCESS = 'Load Product Interests Success';
+const REMOVE_PRODUCT_INTEREST = 'Remove Product Interest';
+const REMOVE_PRODUCT_INTEREST_SUCCESS = 'Remove Product Interest Success';
+const REMOVE_PRODUCT_INTEREST_FAIL = 'Remove Product Interest Fail';
+const ADD_PRODUCT_INTEREST = 'Add Product Interest';
+const ADD_PRODUCT_INTEREST_FAIL = 'Add Product Interest Fail';
+const ADD_PRODUCT_INTEREST_SUCCESS = 'Add Product Interest Success';
+const ADD_PRODUCT_INTEREST_RESET = 'Add Product Interest Reset';
+const REMOVE_PRODUCT_INTEREST_RESET = 'Remove Product Interest Reset';
+const CLEAR_PRODUCT_INTERESTS = 'Clear Product Interests';
+class LoadProductInterests extends LoaderLoadAction {
+    constructor(payload) {
+        super(PRODUCT_INTERESTS);
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_INTERESTS;
+    }
+}
+class LoadProductInterestsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(PRODUCT_INTERESTS, payload);
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_INTERESTS_FAIL;
+    }
+}
+class LoadProductInterestsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(PRODUCT_INTERESTS);
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_INTERESTS_SUCCESS;
+    }
+}
+class RemoveProductInterest extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID);
+        this.payload = payload;
+        this.type = REMOVE_PRODUCT_INTEREST;
+    }
+}
+class RemoveProductInterestSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID);
+        this.payload = payload;
+        this.type = REMOVE_PRODUCT_INTEREST_SUCCESS;
+    }
+}
+class RemoveProductInterestFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = REMOVE_PRODUCT_INTEREST_FAIL;
+    }
+}
+class AddProductInterest extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID);
+        this.payload = payload;
+        this.type = ADD_PRODUCT_INTEREST;
+    }
+}
+class AddProductInterestSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID);
+        this.payload = payload;
+        this.type = ADD_PRODUCT_INTEREST_SUCCESS;
+    }
+}
+class AddProductInterestFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = ADD_PRODUCT_INTEREST_FAIL;
+    }
+}
+class ResetAddInterestState extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID);
+        this.type = ADD_PRODUCT_INTEREST_RESET;
+    }
+}
+class ResetRemoveInterestState extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID);
+        this.type = REMOVE_PRODUCT_INTEREST_RESET;
+    }
+}
+class ClearProductInterests extends LoaderResetAction {
+    constructor() {
+        super(PRODUCT_INTERESTS);
+        this.type = CLEAR_PRODUCT_INTERESTS;
+    }
+}
+
+const LOAD_REGIONS = '[User] Load Regions';
+const LOAD_REGIONS_SUCCESS = '[User] Load Regions Success';
+const LOAD_REGIONS_FAIL = '[User] Load Regions Fail';
+const CLEAR_REGIONS = '[User] Clear Regions';
+class LoadRegions extends LoaderLoadAction {
+    constructor(payload) {
+        super(REGIONS);
+        this.payload = payload;
+        this.type = LOAD_REGIONS;
+    }
+}
+class LoadRegionsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(REGIONS, payload);
+        this.payload = payload;
+        this.type = LOAD_REGIONS_FAIL;
+    }
+}
+class LoadRegionsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(REGIONS);
+        this.payload = payload;
+        this.type = LOAD_REGIONS_SUCCESS;
+    }
+}
+class ClearRegions {
+    constructor() {
+        this.type = CLEAR_REGIONS;
+    }
+}
+
+const LOAD_REPLENISHMENT_ORDER_DETAILS = '[User] Load Replenishment Order Details';
+const LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS = '[User] Load Replenishment Order Details Success';
+const LOAD_REPLENISHMENT_ORDER_DETAILS_FAIL = '[User] Load Replenishment Order Details Fail';
+const ClEAR_REPLENISHMENT_ORDER_DETAILS = '[User] Clear Replenishment Order Details';
+const CANCEL_REPLENISHMENT_ORDER = '[User] Cancel Replenishment Order';
+const CANCEL_REPLENISHMENT_ORDER_SUCCESS = '[User] Cancel Replenishment Order Success';
+const CANCEL_REPLENISHMENT_ORDER_FAIL = '[User] Cancel Replenishment Order Fail';
+const CLEAR_CANCEL_REPLENISHMENT_ORDER = '[User] Clear Cancel Replenishment Order';
+class LoadReplenishmentOrderDetails extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_REPLENISHMENT_ORDER_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_REPLENISHMENT_ORDER_DETAILS;
+    }
+}
+class LoadReplenishmentOrderDetailsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_REPLENISHMENT_ORDER_DETAILS);
+        this.payload = payload;
+        this.type = LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS;
+    }
+}
+class LoadReplenishmentOrderDetailsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_REPLENISHMENT_ORDER_DETAILS, payload);
+        this.payload = payload;
+        this.type = LOAD_REPLENISHMENT_ORDER_DETAILS_FAIL;
+    }
+}
+class ClearReplenishmentOrderDetails extends LoaderResetAction {
+    constructor() {
+        super(USER_REPLENISHMENT_ORDER_DETAILS);
+        this.type = ClEAR_REPLENISHMENT_ORDER_DETAILS;
+    }
+}
+class CancelReplenishmentOrder extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID);
+        this.payload = payload;
+        this.type = CANCEL_REPLENISHMENT_ORDER;
+    }
+}
+class CancelReplenishmentOrderSuccess extends EntitySuccessAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID);
+        this.payload = payload;
+        this.type = CANCEL_REPLENISHMENT_ORDER_SUCCESS;
+    }
+}
+class CancelReplenishmentOrderFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = CANCEL_REPLENISHMENT_ORDER_FAIL;
+    }
+}
+class ClearCancelReplenishmentOrder extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID);
+        this.type = CLEAR_CANCEL_REPLENISHMENT_ORDER;
+    }
+}
+
+const RESET_PASSWORD = '[User] Reset Password';
+const RESET_PASSWORD_SUCCESS = '[User] Reset Password Success';
+const RESET_PASSWORD_FAIL = '[User] Reset Password Fail';
+class ResetPassword {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = RESET_PASSWORD;
+    }
+}
+class ResetPasswordFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = RESET_PASSWORD_FAIL;
+    }
+}
+class ResetPasswordSuccess {
+    constructor() {
+        this.type = RESET_PASSWORD_SUCCESS;
+    }
+}
+
+const LOAD_TITLES = '[User] Load Tiltes';
+const LOAD_TITLES_FAIL = '[User] Load Titles Fail';
+const LOAD_TITLES_SUCCESS = '[User] Load Titles Success';
+class LoadTitles {
+    constructor() {
+        this.type = LOAD_TITLES;
+    }
+}
+class LoadTitlesFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_TITLES_FAIL;
+    }
+}
+class LoadTitlesSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_TITLES_SUCCESS;
+    }
+}
+
+const UPDATE_EMAIL = '[User] Update Email';
+const UPDATE_EMAIL_ERROR = '[User] Update Email Error';
+const UPDATE_EMAIL_SUCCESS = '[User] Update Email Success';
+const RESET_EMAIL = '[User] Reset Email';
+class UpdateEmailAction extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID);
+        this.payload = payload;
+        this.type = UPDATE_EMAIL;
+    }
+}
+class UpdateEmailSuccessAction extends EntitySuccessAction {
+    constructor(newUid) {
+        super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID);
+        this.newUid = newUid;
+        this.type = UPDATE_EMAIL_SUCCESS;
+    }
+}
+class UpdateEmailErrorAction extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = UPDATE_EMAIL_ERROR;
+    }
+}
+class ResetUpdateEmailAction extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID);
+        this.type = RESET_EMAIL;
+    }
+}
+
+const UPDATE_PASSWORD = '[User] Update Password';
+const UPDATE_PASSWORD_FAIL = '[User] Update Password Fail';
+const UPDATE_PASSWORD_SUCCESS = '[User] Update Password Success';
+const UPDATE_PASSWORD_RESET = '[User] Reset Update Password Process State';
+class UpdatePassword extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID);
+        this.payload = payload;
+        this.type = UPDATE_PASSWORD;
+    }
+}
+class UpdatePasswordFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = UPDATE_PASSWORD_FAIL;
+    }
+}
+class UpdatePasswordSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID);
+        this.type = UPDATE_PASSWORD_SUCCESS;
+    }
+}
+class UpdatePasswordReset extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID);
+        this.type = UPDATE_PASSWORD_RESET;
+    }
+}
+
+const LOAD_USER_ADDRESSES = '[User] Load User Addresses';
+const LOAD_USER_ADDRESSES_FAIL = '[User] Load User Addresses Fail';
+const LOAD_USER_ADDRESSES_SUCCESS = '[User] Load User Addresses Success';
+const ADD_USER_ADDRESS = '[User] Add User Address';
+const ADD_USER_ADDRESS_FAIL = '[User] Add User Address Fail';
+const ADD_USER_ADDRESS_SUCCESS = '[User] Add User Address Success';
+const UPDATE_USER_ADDRESS = '[User] Update User Address';
+const UPDATE_USER_ADDRESS_FAIL = '[User] Update User Address Fail';
+const UPDATE_USER_ADDRESS_SUCCESS = '[User] Update User Address Success';
+const DELETE_USER_ADDRESS = '[User] Delete User Address';
+const DELETE_USER_ADDRESS_FAIL = '[User] Delete User Address Fail';
+const DELETE_USER_ADDRESS_SUCCESS = '[User] Delete User Address Success';
+class LoadUserAddresses extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_ADDRESSES);
+        this.payload = payload;
+        this.type = LOAD_USER_ADDRESSES;
+    }
+}
+class LoadUserAddressesFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_ADDRESSES, payload);
+        this.payload = payload;
+        this.type = LOAD_USER_ADDRESSES_FAIL;
+    }
+}
+class LoadUserAddressesSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_ADDRESSES);
+        this.payload = payload;
+        this.type = LOAD_USER_ADDRESSES_SUCCESS;
+    }
+}
+// Adding address actions
+class AddUserAddress extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_ADDRESSES);
+        this.payload = payload;
+        this.type = ADD_USER_ADDRESS;
+    }
+}
+class AddUserAddressFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_ADDRESSES, payload);
+        this.payload = payload;
+        this.type = ADD_USER_ADDRESS_FAIL;
+    }
+}
+class AddUserAddressSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_ADDRESSES);
+        this.payload = payload;
+        this.type = ADD_USER_ADDRESS_SUCCESS;
+    }
+}
+// Updating address actions
+class UpdateUserAddress extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_ADDRESSES);
+        this.payload = payload;
+        this.type = UPDATE_USER_ADDRESS;
+    }
+}
+class UpdateUserAddressFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_ADDRESSES, payload);
+        this.payload = payload;
+        this.type = UPDATE_USER_ADDRESS_FAIL;
+    }
+}
+class UpdateUserAddressSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_ADDRESSES);
+        this.payload = payload;
+        this.type = UPDATE_USER_ADDRESS_SUCCESS;
+    }
+}
+// Deleting address actions
+class DeleteUserAddress extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_ADDRESSES);
+        this.payload = payload;
+        this.type = DELETE_USER_ADDRESS;
+    }
+}
+class DeleteUserAddressFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_ADDRESSES, payload);
+        this.payload = payload;
+        this.type = DELETE_USER_ADDRESS_FAIL;
+    }
+}
+class DeleteUserAddressSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_ADDRESSES);
+        this.payload = payload;
+        this.type = DELETE_USER_ADDRESS_SUCCESS;
+    }
+}
+
+const LOAD_USER_CONSENTS = '[User] Load User Consents';
+const LOAD_USER_CONSENTS_SUCCESS = '[User] Load User Consents Success';
+const LOAD_USER_CONSENTS_FAIL = '[User] Load User Consents Fail';
+const RESET_LOAD_USER_CONSENTS = '[User] Reset Load User Consents';
+const GIVE_USER_CONSENT = '[User] Give User Consent';
+const GIVE_USER_CONSENT_FAIL = '[User] Give User Consent Fail';
+const GIVE_USER_CONSENT_SUCCESS = '[User] Give User Consent Success';
+const RESET_GIVE_USER_CONSENT_PROCESS = '[User] Reset Give User Consent Process';
+const TRANSFER_ANONYMOUS_CONSENT = '[User] Transfer Anonymous Consent';
+const WITHDRAW_USER_CONSENT = '[User] Withdraw User Consent';
+const WITHDRAW_USER_CONSENT_FAIL = '[User] Withdraw User Consent Fail';
+const WITHDRAW_USER_CONSENT_SUCCESS = '[User] Withdraw User Consent Success';
+const RESET_WITHDRAW_USER_CONSENT_PROCESS = '[User] Reset Withdraw User Consent Process';
+class LoadUserConsents extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_CONSENTS);
+        this.payload = payload;
+        this.type = LOAD_USER_CONSENTS;
+    }
+}
+class LoadUserConsentsFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_CONSENTS, payload);
+        this.payload = payload;
+        this.type = LOAD_USER_CONSENTS_FAIL;
+    }
+}
+class LoadUserConsentsSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_CONSENTS);
+        this.payload = payload;
+        this.type = LOAD_USER_CONSENTS_SUCCESS;
+    }
+}
+class ResetLoadUserConsents extends LoaderResetAction {
+    constructor() {
+        super(USER_CONSENTS);
+        this.type = RESET_LOAD_USER_CONSENTS;
+    }
+}
+class GiveUserConsent extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID);
+        this.payload = payload;
+        this.type = GIVE_USER_CONSENT;
+    }
+}
+class GiveUserConsentFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID, payload);
+        this.type = GIVE_USER_CONSENT_FAIL;
+    }
+}
+class GiveUserConsentSuccess extends EntitySuccessAction {
+    constructor(consentTemplate) {
+        super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID);
+        this.consentTemplate = consentTemplate;
+        this.type = GIVE_USER_CONSENT_SUCCESS;
+    }
+}
+class ResetGiveUserConsentProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID);
+        this.type = RESET_GIVE_USER_CONSENT_PROCESS;
+    }
+}
+class TransferAnonymousConsent {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = TRANSFER_ANONYMOUS_CONSENT;
+    }
+}
+class WithdrawUserConsent extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID);
+        this.payload = payload;
+        this.type = WITHDRAW_USER_CONSENT;
+    }
+}
+class WithdrawUserConsentFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID, payload);
+        this.type = WITHDRAW_USER_CONSENT_FAIL;
+    }
+}
+class WithdrawUserConsentSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID);
+        this.type = WITHDRAW_USER_CONSENT_SUCCESS;
+    }
+}
+class ResetWithdrawUserConsentProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID);
+        this.type = RESET_WITHDRAW_USER_CONSENT_PROCESS;
+    }
+}
+
+const LOAD_ACTIVE_COST_CENTERS = '[User] Load Active CostCenters';
+const LOAD_ACTIVE_COST_CENTERS_FAIL = '[User] Load Active CostCenters Fail';
+const LOAD_ACTIVE_COST_CENTERS_SUCCESS = '[User] Load Active CostCenters Success';
+class LoadActiveCostCenters extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_COST_CENTERS);
+        this.payload = payload;
+        this.type = LOAD_ACTIVE_COST_CENTERS;
+    }
+}
+class LoadActiveCostCentersFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_COST_CENTERS, payload);
+        this.payload = payload;
+        this.type = LOAD_ACTIVE_COST_CENTERS_FAIL;
+    }
+}
+class LoadActiveCostCentersSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_COST_CENTERS);
+        this.payload = payload;
+        this.type = LOAD_ACTIVE_COST_CENTERS_SUCCESS;
+    }
+}
+
+const LOAD_USER_DETAILS = '[User] Load User Details';
+const LOAD_USER_DETAILS_FAIL = '[User] Load User Details Fail';
+const LOAD_USER_DETAILS_SUCCESS = '[User] Load User Details Success';
+const UPDATE_USER_DETAILS = '[User] Update User Details';
+const UPDATE_USER_DETAILS_FAIL = '[User] Update User Details Fail';
+const UPDATE_USER_DETAILS_SUCCESS = '[User] Update User Details Success';
+const RESET_USER_DETAILS = '[User] Reset User Details';
+class LoadUserDetails {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_USER_DETAILS;
+    }
+}
+class LoadUserDetailsFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_USER_DETAILS_FAIL;
+    }
+}
+class LoadUserDetailsSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_USER_DETAILS_SUCCESS;
+    }
+}
+class UpdateUserDetails extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID);
+        this.payload = payload;
+        this.type = UPDATE_USER_DETAILS;
+    }
+}
+class UpdateUserDetailsFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = UPDATE_USER_DETAILS_FAIL;
+    }
+}
+class UpdateUserDetailsSuccess extends EntitySuccessAction {
+    constructor(userUpdates) {
+        super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID);
+        this.userUpdates = userUpdates;
+        this.type = UPDATE_USER_DETAILS_SUCCESS;
+    }
+}
+class ResetUpdateUserDetails extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID);
+        this.type = RESET_USER_DETAILS;
+    }
+}
+
+const CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
+class ClearUserMiscsData {
+    constructor() {
+        this.type = CLEAR_USER_MISCS_DATA;
+    }
+}
+
+const LOAD_USER_ORDERS = '[User] Load User Orders';
+const LOAD_USER_ORDERS_FAIL = '[User] Load User Orders Fail';
+const LOAD_USER_ORDERS_SUCCESS = '[User] Load User Orders Success';
+const CLEAR_USER_ORDERS = '[User] Clear User Orders';
+class LoadUserOrders extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_ORDERS);
+        this.payload = payload;
+        this.type = LOAD_USER_ORDERS;
+    }
+}
+class LoadUserOrdersFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_ORDERS, payload);
+        this.payload = payload;
+        this.type = LOAD_USER_ORDERS_FAIL;
+    }
+}
+class LoadUserOrdersSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_ORDERS);
+        this.payload = payload;
+        this.type = LOAD_USER_ORDERS_SUCCESS;
+    }
+}
+class ClearUserOrders extends LoaderResetAction {
+    constructor() {
+        super(USER_ORDERS);
+        this.type = CLEAR_USER_ORDERS;
+    }
+}
+
+const REGISTER_USER = '[User] Register User';
+const REGISTER_USER_FAIL = '[User] Register User Fail';
+const REGISTER_USER_SUCCESS = '[User] Register User Success';
+const RESET_REGISTER_USER_PROCESS = '[User] Reset Register User Process';
+const REGISTER_GUEST = '[User] Register Guest';
+const REGISTER_GUEST_FAIL = '[User] Register Guest Fail';
+const REGISTER_GUEST_SUCCESS = '[User] Register Guest Success';
+const REMOVE_USER = '[User] Remove User';
+const REMOVE_USER_FAIL = '[User] Remove User Fail';
+const REMOVE_USER_SUCCESS = '[User] Remove User Success';
+const REMOVE_USER_RESET = '[User] Reset Remove User Process State';
+class RegisterUser extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID);
+        this.payload = payload;
+        this.type = REGISTER_USER;
+    }
+}
+class RegisterUserFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = REGISTER_USER_FAIL;
+    }
+}
+class RegisterUserSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID);
+        this.type = REGISTER_USER_SUCCESS;
+    }
+}
+class ResetRegisterUserProcess extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID);
+        this.type = RESET_REGISTER_USER_PROCESS;
+    }
+}
+class RegisterGuest {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REGISTER_GUEST;
+    }
+}
+class RegisterGuestFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REGISTER_GUEST_FAIL;
+    }
+}
+class RegisterGuestSuccess {
+    constructor() {
+        this.type = REGISTER_GUEST_SUCCESS;
+    }
+}
+class RemoveUser extends EntityLoadAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID);
+        this.payload = payload;
+        this.type = REMOVE_USER;
+    }
+}
+class RemoveUserFail extends EntityFailAction {
+    constructor(payload) {
+        super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = REMOVE_USER_FAIL;
+    }
+}
+class RemoveUserSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID);
+        this.type = REMOVE_USER_SUCCESS;
+    }
+}
+class RemoveUserReset extends EntityLoaderResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID);
+        this.type = REMOVE_USER_RESET;
+    }
+}
+
+const LOAD_USER_REPLENISHMENT_ORDERS = '[User] Load User Replenishment Orders';
+const LOAD_USER_REPLENISHMENT_ORDERS_FAIL = '[User] Load User Replenishment Orders Fail';
+const LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS = '[User] Load User Replenishment Orders Success';
+const CLEAR_USER_REPLENISHMENT_ORDERS = '[User] Clear User Replenishment Orders';
+class LoadUserReplenishmentOrders extends LoaderLoadAction {
+    constructor(payload) {
+        super(USER_REPLENISHMENT_ORDERS);
+        this.payload = payload;
+        this.type = LOAD_USER_REPLENISHMENT_ORDERS;
+    }
+}
+class LoadUserReplenishmentOrdersFail extends LoaderFailAction {
+    constructor(payload) {
+        super(USER_REPLENISHMENT_ORDERS, payload);
+        this.payload = payload;
+        this.type = LOAD_USER_REPLENISHMENT_ORDERS_FAIL;
+    }
+}
+class LoadUserReplenishmentOrdersSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(USER_REPLENISHMENT_ORDERS);
+        this.payload = payload;
+        this.type = LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS;
+    }
+}
+class ClearUserReplenishmentOrders extends LoaderResetAction {
+    constructor() {
+        super(USER_REPLENISHMENT_ORDERS);
+        this.type = CLEAR_USER_REPLENISHMENT_ORDERS;
+    }
+}
+
+var userGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    LOAD_BILLING_COUNTRIES: LOAD_BILLING_COUNTRIES,
+    LOAD_BILLING_COUNTRIES_FAIL: LOAD_BILLING_COUNTRIES_FAIL,
+    LOAD_BILLING_COUNTRIES_SUCCESS: LOAD_BILLING_COUNTRIES_SUCCESS,
+    LoadBillingCountries: LoadBillingCountries,
+    LoadBillingCountriesFail: LoadBillingCountriesFail,
+    LoadBillingCountriesSuccess: LoadBillingCountriesSuccess,
+    LOAD_CONSIGNMENT_TRACKING: LOAD_CONSIGNMENT_TRACKING,
+    LOAD_CONSIGNMENT_TRACKING_FAIL: LOAD_CONSIGNMENT_TRACKING_FAIL,
+    LOAD_CONSIGNMENT_TRACKING_SUCCESS: LOAD_CONSIGNMENT_TRACKING_SUCCESS,
+    CLEAR_CONSIGNMENT_TRACKING: CLEAR_CONSIGNMENT_TRACKING,
+    LoadConsignmentTracking: LoadConsignmentTracking,
+    LoadConsignmentTrackingFail: LoadConsignmentTrackingFail,
+    LoadConsignmentTrackingSuccess: LoadConsignmentTrackingSuccess,
+    ClearConsignmentTracking: ClearConsignmentTracking,
+    LOAD_CUSTOMER_COUPONS: LOAD_CUSTOMER_COUPONS,
+    LOAD_CUSTOMER_COUPONS_FAIL: LOAD_CUSTOMER_COUPONS_FAIL,
+    LOAD_CUSTOMER_COUPONS_SUCCESS: LOAD_CUSTOMER_COUPONS_SUCCESS,
+    RESET_LOAD_CUSTOMER_COUPONS: RESET_LOAD_CUSTOMER_COUPONS,
+    SUBSCRIBE_CUSTOMER_COUPON: SUBSCRIBE_CUSTOMER_COUPON,
+    SUBSCRIBE_CUSTOMER_COUPON_FAIL: SUBSCRIBE_CUSTOMER_COUPON_FAIL,
+    SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: SUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
+    RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS,
+    UNSUBSCRIBE_CUSTOMER_COUPON: UNSUBSCRIBE_CUSTOMER_COUPON,
+    UNSUBSCRIBE_CUSTOMER_COUPON_FAIL: UNSUBSCRIBE_CUSTOMER_COUPON_FAIL,
+    UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
+    RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS,
+    CLAIM_CUSTOMER_COUPON: CLAIM_CUSTOMER_COUPON,
+    CLAIM_CUSTOMER_COUPON_FAIL: CLAIM_CUSTOMER_COUPON_FAIL,
+    CLAIM_CUSTOMER_COUPON_SUCCESS: CLAIM_CUSTOMER_COUPON_SUCCESS,
+    LoadCustomerCoupons: LoadCustomerCoupons,
+    LoadCustomerCouponsFail: LoadCustomerCouponsFail,
+    LoadCustomerCouponsSuccess: LoadCustomerCouponsSuccess,
+    ResetLoadCustomerCoupons: ResetLoadCustomerCoupons,
+    SubscribeCustomerCoupon: SubscribeCustomerCoupon,
+    SubscribeCustomerCouponFail: SubscribeCustomerCouponFail,
+    SubscribeCustomerCouponSuccess: SubscribeCustomerCouponSuccess,
+    ResetSubscribeCustomerCouponProcess: ResetSubscribeCustomerCouponProcess,
+    UnsubscribeCustomerCoupon: UnsubscribeCustomerCoupon,
+    UnsubscribeCustomerCouponFail: UnsubscribeCustomerCouponFail,
+    UnsubscribeCustomerCouponSuccess: UnsubscribeCustomerCouponSuccess,
+    ResetUnsubscribeCustomerCouponProcess: ResetUnsubscribeCustomerCouponProcess,
+    ClaimCustomerCoupon: ClaimCustomerCoupon,
+    ClaimCustomerCouponFail: ClaimCustomerCouponFail,
+    ClaimCustomerCouponSuccess: ClaimCustomerCouponSuccess,
+    LOAD_DELIVERY_COUNTRIES: LOAD_DELIVERY_COUNTRIES,
+    LOAD_DELIVERY_COUNTRIES_FAIL: LOAD_DELIVERY_COUNTRIES_FAIL,
+    LOAD_DELIVERY_COUNTRIES_SUCCESS: LOAD_DELIVERY_COUNTRIES_SUCCESS,
+    LoadDeliveryCountries: LoadDeliveryCountries,
+    LoadDeliveryCountriesFail: LoadDeliveryCountriesFail,
+    LoadDeliveryCountriesSuccess: LoadDeliveryCountriesSuccess,
+    FORGOT_PASSWORD_EMAIL_REQUEST: FORGOT_PASSWORD_EMAIL_REQUEST,
+    FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS: FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS,
+    FORGOT_PASSWORD_EMAIL_REQUEST_FAIL: FORGOT_PASSWORD_EMAIL_REQUEST_FAIL,
+    ForgotPasswordEmailRequest: ForgotPasswordEmailRequest,
+    ForgotPasswordEmailRequestFail: ForgotPasswordEmailRequestFail,
+    ForgotPasswordEmailRequestSuccess: ForgotPasswordEmailRequestSuccess,
+    LOAD_NOTIFICATION_PREFERENCES: LOAD_NOTIFICATION_PREFERENCES,
+    LOAD_NOTIFICATION_PREFERENCES_FAIL: LOAD_NOTIFICATION_PREFERENCES_FAIL,
+    LOAD_NOTIFICATION_PREFERENCES_SUCCESS: LOAD_NOTIFICATION_PREFERENCES_SUCCESS,
+    UPDATE_NOTIFICATION_PREFERENCES: UPDATE_NOTIFICATION_PREFERENCES,
+    UPDATE_NOTIFICATION_PREFERENCES_FAIL: UPDATE_NOTIFICATION_PREFERENCES_FAIL,
+    UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: UPDATE_NOTIFICATION_PREFERENCES_SUCCESS,
+    RESET_NOTIFICATION_PREFERENCES: RESET_NOTIFICATION_PREFERENCES,
+    CLEAR_NOTIFICATION_PREFERENCES: CLEAR_NOTIFICATION_PREFERENCES,
+    LoadNotificationPreferences: LoadNotificationPreferences,
+    LoadNotificationPreferencesFail: LoadNotificationPreferencesFail,
+    LoadNotificationPreferencesSuccess: LoadNotificationPreferencesSuccess,
+    UpdateNotificationPreferences: UpdateNotificationPreferences,
+    UpdateNotificationPreferencesFail: UpdateNotificationPreferencesFail,
+    UpdateNotificationPreferencesSuccess: UpdateNotificationPreferencesSuccess,
+    ResetNotificationPreferences: ResetNotificationPreferences,
+    ClearNotificationPreferences: ClearNotificationPreferences,
+    LOAD_ORDER_DETAILS: LOAD_ORDER_DETAILS,
+    LOAD_ORDER_DETAILS_FAIL: LOAD_ORDER_DETAILS_FAIL,
+    LOAD_ORDER_DETAILS_SUCCESS: LOAD_ORDER_DETAILS_SUCCESS,
+    CLEAR_ORDER_DETAILS: CLEAR_ORDER_DETAILS,
+    CANCEL_ORDER: CANCEL_ORDER,
+    CANCEL_ORDER_FAIL: CANCEL_ORDER_FAIL,
+    CANCEL_ORDER_SUCCESS: CANCEL_ORDER_SUCCESS,
+    RESET_CANCEL_ORDER_PROCESS: RESET_CANCEL_ORDER_PROCESS,
+    LoadOrderDetails: LoadOrderDetails,
+    LoadOrderDetailsFail: LoadOrderDetailsFail,
+    LoadOrderDetailsSuccess: LoadOrderDetailsSuccess,
+    ClearOrderDetails: ClearOrderDetails,
+    CancelOrder: CancelOrder,
+    CancelOrderFail: CancelOrderFail,
+    CancelOrderSuccess: CancelOrderSuccess,
+    ResetCancelOrderProcess: ResetCancelOrderProcess,
+    CREATE_ORDER_RETURN_REQUEST: CREATE_ORDER_RETURN_REQUEST,
+    CREATE_ORDER_RETURN_REQUEST_FAIL: CREATE_ORDER_RETURN_REQUEST_FAIL,
+    CREATE_ORDER_RETURN_REQUEST_SUCCESS: CREATE_ORDER_RETURN_REQUEST_SUCCESS,
+    LOAD_ORDER_RETURN_REQUEST: LOAD_ORDER_RETURN_REQUEST,
+    LOAD_ORDER_RETURN_REQUEST_FAIL: LOAD_ORDER_RETURN_REQUEST_FAIL,
+    LOAD_ORDER_RETURN_REQUEST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_SUCCESS,
+    CANCEL_ORDER_RETURN_REQUEST: CANCEL_ORDER_RETURN_REQUEST,
+    CANCEL_ORDER_RETURN_REQUEST_FAIL: CANCEL_ORDER_RETURN_REQUEST_FAIL,
+    CANCEL_ORDER_RETURN_REQUEST_SUCCESS: CANCEL_ORDER_RETURN_REQUEST_SUCCESS,
+    LOAD_ORDER_RETURN_REQUEST_LIST: LOAD_ORDER_RETURN_REQUEST_LIST,
+    LOAD_ORDER_RETURN_REQUEST_LIST_FAIL: LOAD_ORDER_RETURN_REQUEST_LIST_FAIL,
+    LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS,
+    CLEAR_ORDER_RETURN_REQUEST: CLEAR_ORDER_RETURN_REQUEST,
+    CLEAR_ORDER_RETURN_REQUEST_LIST: CLEAR_ORDER_RETURN_REQUEST_LIST,
+    RESET_CANCEL_RETURN_PROCESS: RESET_CANCEL_RETURN_PROCESS,
+    CreateOrderReturnRequest: CreateOrderReturnRequest,
+    CreateOrderReturnRequestFail: CreateOrderReturnRequestFail,
+    CreateOrderReturnRequestSuccess: CreateOrderReturnRequestSuccess,
+    LoadOrderReturnRequest: LoadOrderReturnRequest,
+    LoadOrderReturnRequestFail: LoadOrderReturnRequestFail,
+    LoadOrderReturnRequestSuccess: LoadOrderReturnRequestSuccess,
+    CancelOrderReturnRequest: CancelOrderReturnRequest,
+    CancelOrderReturnRequestFail: CancelOrderReturnRequestFail,
+    CancelOrderReturnRequestSuccess: CancelOrderReturnRequestSuccess,
+    LoadOrderReturnRequestList: LoadOrderReturnRequestList,
+    LoadOrderReturnRequestListFail: LoadOrderReturnRequestListFail,
+    LoadOrderReturnRequestListSuccess: LoadOrderReturnRequestListSuccess,
+    ClearOrderReturnRequest: ClearOrderReturnRequest,
+    ClearOrderReturnRequestList: ClearOrderReturnRequestList,
+    ResetCancelReturnProcess: ResetCancelReturnProcess,
+    LOAD_USER_PAYMENT_METHODS: LOAD_USER_PAYMENT_METHODS,
+    LOAD_USER_PAYMENT_METHODS_FAIL: LOAD_USER_PAYMENT_METHODS_FAIL,
+    LOAD_USER_PAYMENT_METHODS_SUCCESS: LOAD_USER_PAYMENT_METHODS_SUCCESS,
+    SET_DEFAULT_USER_PAYMENT_METHOD: SET_DEFAULT_USER_PAYMENT_METHOD,
+    SET_DEFAULT_USER_PAYMENT_METHOD_FAIL: SET_DEFAULT_USER_PAYMENT_METHOD_FAIL,
+    SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS: SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS,
+    DELETE_USER_PAYMENT_METHOD: DELETE_USER_PAYMENT_METHOD,
+    DELETE_USER_PAYMENT_METHOD_FAIL: DELETE_USER_PAYMENT_METHOD_FAIL,
+    DELETE_USER_PAYMENT_METHOD_SUCCESS: DELETE_USER_PAYMENT_METHOD_SUCCESS,
+    LoadUserPaymentMethods: LoadUserPaymentMethods,
+    LoadUserPaymentMethodsFail: LoadUserPaymentMethodsFail,
+    LoadUserPaymentMethodsSuccess: LoadUserPaymentMethodsSuccess,
+    SetDefaultUserPaymentMethod: SetDefaultUserPaymentMethod,
+    SetDefaultUserPaymentMethodFail: SetDefaultUserPaymentMethodFail,
+    SetDefaultUserPaymentMethodSuccess: SetDefaultUserPaymentMethodSuccess,
+    DeleteUserPaymentMethod: DeleteUserPaymentMethod,
+    DeleteUserPaymentMethodFail: DeleteUserPaymentMethodFail,
+    DeleteUserPaymentMethodSuccess: DeleteUserPaymentMethodSuccess,
+    LOAD_PRODUCT_INTERESTS: LOAD_PRODUCT_INTERESTS,
+    LOAD_PRODUCT_INTERESTS_FAIL: LOAD_PRODUCT_INTERESTS_FAIL,
+    LOAD_PRODUCT_INTERESTS_SUCCESS: LOAD_PRODUCT_INTERESTS_SUCCESS,
+    REMOVE_PRODUCT_INTEREST: REMOVE_PRODUCT_INTEREST,
+    REMOVE_PRODUCT_INTEREST_SUCCESS: REMOVE_PRODUCT_INTEREST_SUCCESS,
+    REMOVE_PRODUCT_INTEREST_FAIL: REMOVE_PRODUCT_INTEREST_FAIL,
+    ADD_PRODUCT_INTEREST: ADD_PRODUCT_INTEREST,
+    ADD_PRODUCT_INTEREST_FAIL: ADD_PRODUCT_INTEREST_FAIL,
+    ADD_PRODUCT_INTEREST_SUCCESS: ADD_PRODUCT_INTEREST_SUCCESS,
+    ADD_PRODUCT_INTEREST_RESET: ADD_PRODUCT_INTEREST_RESET,
+    REMOVE_PRODUCT_INTEREST_RESET: REMOVE_PRODUCT_INTEREST_RESET,
+    CLEAR_PRODUCT_INTERESTS: CLEAR_PRODUCT_INTERESTS,
+    LoadProductInterests: LoadProductInterests,
+    LoadProductInterestsFail: LoadProductInterestsFail,
+    LoadProductInterestsSuccess: LoadProductInterestsSuccess,
+    RemoveProductInterest: RemoveProductInterest,
+    RemoveProductInterestSuccess: RemoveProductInterestSuccess,
+    RemoveProductInterestFail: RemoveProductInterestFail,
+    AddProductInterest: AddProductInterest,
+    AddProductInterestSuccess: AddProductInterestSuccess,
+    AddProductInterestFail: AddProductInterestFail,
+    ResetAddInterestState: ResetAddInterestState,
+    ResetRemoveInterestState: ResetRemoveInterestState,
+    ClearProductInterests: ClearProductInterests,
+    LOAD_REGIONS: LOAD_REGIONS,
+    LOAD_REGIONS_SUCCESS: LOAD_REGIONS_SUCCESS,
+    LOAD_REGIONS_FAIL: LOAD_REGIONS_FAIL,
+    CLEAR_REGIONS: CLEAR_REGIONS,
+    LoadRegions: LoadRegions,
+    LoadRegionsFail: LoadRegionsFail,
+    LoadRegionsSuccess: LoadRegionsSuccess,
+    ClearRegions: ClearRegions,
+    LOAD_REPLENISHMENT_ORDER_DETAILS: LOAD_REPLENISHMENT_ORDER_DETAILS,
+    LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS: LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS,
+    LOAD_REPLENISHMENT_ORDER_DETAILS_FAIL: LOAD_REPLENISHMENT_ORDER_DETAILS_FAIL,
+    ClEAR_REPLENISHMENT_ORDER_DETAILS: ClEAR_REPLENISHMENT_ORDER_DETAILS,
+    CANCEL_REPLENISHMENT_ORDER: CANCEL_REPLENISHMENT_ORDER,
+    CANCEL_REPLENISHMENT_ORDER_SUCCESS: CANCEL_REPLENISHMENT_ORDER_SUCCESS,
+    CANCEL_REPLENISHMENT_ORDER_FAIL: CANCEL_REPLENISHMENT_ORDER_FAIL,
+    CLEAR_CANCEL_REPLENISHMENT_ORDER: CLEAR_CANCEL_REPLENISHMENT_ORDER,
+    LoadReplenishmentOrderDetails: LoadReplenishmentOrderDetails,
+    LoadReplenishmentOrderDetailsSuccess: LoadReplenishmentOrderDetailsSuccess,
+    LoadReplenishmentOrderDetailsFail: LoadReplenishmentOrderDetailsFail,
+    ClearReplenishmentOrderDetails: ClearReplenishmentOrderDetails,
+    CancelReplenishmentOrder: CancelReplenishmentOrder,
+    CancelReplenishmentOrderSuccess: CancelReplenishmentOrderSuccess,
+    CancelReplenishmentOrderFail: CancelReplenishmentOrderFail,
+    ClearCancelReplenishmentOrder: ClearCancelReplenishmentOrder,
+    RESET_PASSWORD: RESET_PASSWORD,
+    RESET_PASSWORD_SUCCESS: RESET_PASSWORD_SUCCESS,
+    RESET_PASSWORD_FAIL: RESET_PASSWORD_FAIL,
+    ResetPassword: ResetPassword,
+    ResetPasswordFail: ResetPasswordFail,
+    ResetPasswordSuccess: ResetPasswordSuccess,
+    LOAD_TITLES: LOAD_TITLES,
+    LOAD_TITLES_FAIL: LOAD_TITLES_FAIL,
+    LOAD_TITLES_SUCCESS: LOAD_TITLES_SUCCESS,
+    LoadTitles: LoadTitles,
+    LoadTitlesFail: LoadTitlesFail,
+    LoadTitlesSuccess: LoadTitlesSuccess,
+    UPDATE_EMAIL: UPDATE_EMAIL,
+    UPDATE_EMAIL_ERROR: UPDATE_EMAIL_ERROR,
+    UPDATE_EMAIL_SUCCESS: UPDATE_EMAIL_SUCCESS,
+    RESET_EMAIL: RESET_EMAIL,
+    UpdateEmailAction: UpdateEmailAction,
+    UpdateEmailSuccessAction: UpdateEmailSuccessAction,
+    UpdateEmailErrorAction: UpdateEmailErrorAction,
+    ResetUpdateEmailAction: ResetUpdateEmailAction,
+    UPDATE_PASSWORD: UPDATE_PASSWORD,
+    UPDATE_PASSWORD_FAIL: UPDATE_PASSWORD_FAIL,
+    UPDATE_PASSWORD_SUCCESS: UPDATE_PASSWORD_SUCCESS,
+    UPDATE_PASSWORD_RESET: UPDATE_PASSWORD_RESET,
+    UpdatePassword: UpdatePassword,
+    UpdatePasswordFail: UpdatePasswordFail,
+    UpdatePasswordSuccess: UpdatePasswordSuccess,
+    UpdatePasswordReset: UpdatePasswordReset,
+    LOAD_USER_ADDRESSES: LOAD_USER_ADDRESSES,
+    LOAD_USER_ADDRESSES_FAIL: LOAD_USER_ADDRESSES_FAIL,
+    LOAD_USER_ADDRESSES_SUCCESS: LOAD_USER_ADDRESSES_SUCCESS,
+    ADD_USER_ADDRESS: ADD_USER_ADDRESS,
+    ADD_USER_ADDRESS_FAIL: ADD_USER_ADDRESS_FAIL,
+    ADD_USER_ADDRESS_SUCCESS: ADD_USER_ADDRESS_SUCCESS,
+    UPDATE_USER_ADDRESS: UPDATE_USER_ADDRESS,
+    UPDATE_USER_ADDRESS_FAIL: UPDATE_USER_ADDRESS_FAIL,
+    UPDATE_USER_ADDRESS_SUCCESS: UPDATE_USER_ADDRESS_SUCCESS,
+    DELETE_USER_ADDRESS: DELETE_USER_ADDRESS,
+    DELETE_USER_ADDRESS_FAIL: DELETE_USER_ADDRESS_FAIL,
+    DELETE_USER_ADDRESS_SUCCESS: DELETE_USER_ADDRESS_SUCCESS,
+    LoadUserAddresses: LoadUserAddresses,
+    LoadUserAddressesFail: LoadUserAddressesFail,
+    LoadUserAddressesSuccess: LoadUserAddressesSuccess,
+    AddUserAddress: AddUserAddress,
+    AddUserAddressFail: AddUserAddressFail,
+    AddUserAddressSuccess: AddUserAddressSuccess,
+    UpdateUserAddress: UpdateUserAddress,
+    UpdateUserAddressFail: UpdateUserAddressFail,
+    UpdateUserAddressSuccess: UpdateUserAddressSuccess,
+    DeleteUserAddress: DeleteUserAddress,
+    DeleteUserAddressFail: DeleteUserAddressFail,
+    DeleteUserAddressSuccess: DeleteUserAddressSuccess,
+    LOAD_USER_CONSENTS: LOAD_USER_CONSENTS,
+    LOAD_USER_CONSENTS_SUCCESS: LOAD_USER_CONSENTS_SUCCESS,
+    LOAD_USER_CONSENTS_FAIL: LOAD_USER_CONSENTS_FAIL,
+    RESET_LOAD_USER_CONSENTS: RESET_LOAD_USER_CONSENTS,
+    GIVE_USER_CONSENT: GIVE_USER_CONSENT,
+    GIVE_USER_CONSENT_FAIL: GIVE_USER_CONSENT_FAIL,
+    GIVE_USER_CONSENT_SUCCESS: GIVE_USER_CONSENT_SUCCESS,
+    RESET_GIVE_USER_CONSENT_PROCESS: RESET_GIVE_USER_CONSENT_PROCESS,
+    TRANSFER_ANONYMOUS_CONSENT: TRANSFER_ANONYMOUS_CONSENT,
+    WITHDRAW_USER_CONSENT: WITHDRAW_USER_CONSENT,
+    WITHDRAW_USER_CONSENT_FAIL: WITHDRAW_USER_CONSENT_FAIL,
+    WITHDRAW_USER_CONSENT_SUCCESS: WITHDRAW_USER_CONSENT_SUCCESS,
+    RESET_WITHDRAW_USER_CONSENT_PROCESS: RESET_WITHDRAW_USER_CONSENT_PROCESS,
+    LoadUserConsents: LoadUserConsents,
+    LoadUserConsentsFail: LoadUserConsentsFail,
+    LoadUserConsentsSuccess: LoadUserConsentsSuccess,
+    ResetLoadUserConsents: ResetLoadUserConsents,
+    GiveUserConsent: GiveUserConsent,
+    GiveUserConsentFail: GiveUserConsentFail,
+    GiveUserConsentSuccess: GiveUserConsentSuccess,
+    ResetGiveUserConsentProcess: ResetGiveUserConsentProcess,
+    TransferAnonymousConsent: TransferAnonymousConsent,
+    WithdrawUserConsent: WithdrawUserConsent,
+    WithdrawUserConsentFail: WithdrawUserConsentFail,
+    WithdrawUserConsentSuccess: WithdrawUserConsentSuccess,
+    ResetWithdrawUserConsentProcess: ResetWithdrawUserConsentProcess,
+    LOAD_ACTIVE_COST_CENTERS: LOAD_ACTIVE_COST_CENTERS,
+    LOAD_ACTIVE_COST_CENTERS_FAIL: LOAD_ACTIVE_COST_CENTERS_FAIL,
+    LOAD_ACTIVE_COST_CENTERS_SUCCESS: LOAD_ACTIVE_COST_CENTERS_SUCCESS,
+    LoadActiveCostCenters: LoadActiveCostCenters,
+    LoadActiveCostCentersFail: LoadActiveCostCentersFail,
+    LoadActiveCostCentersSuccess: LoadActiveCostCentersSuccess,
+    LOAD_USER_DETAILS: LOAD_USER_DETAILS,
+    LOAD_USER_DETAILS_FAIL: LOAD_USER_DETAILS_FAIL,
+    LOAD_USER_DETAILS_SUCCESS: LOAD_USER_DETAILS_SUCCESS,
+    UPDATE_USER_DETAILS: UPDATE_USER_DETAILS,
+    UPDATE_USER_DETAILS_FAIL: UPDATE_USER_DETAILS_FAIL,
+    UPDATE_USER_DETAILS_SUCCESS: UPDATE_USER_DETAILS_SUCCESS,
+    RESET_USER_DETAILS: RESET_USER_DETAILS,
+    LoadUserDetails: LoadUserDetails,
+    LoadUserDetailsFail: LoadUserDetailsFail,
+    LoadUserDetailsSuccess: LoadUserDetailsSuccess,
+    UpdateUserDetails: UpdateUserDetails,
+    UpdateUserDetailsFail: UpdateUserDetailsFail,
+    UpdateUserDetailsSuccess: UpdateUserDetailsSuccess,
+    ResetUpdateUserDetails: ResetUpdateUserDetails,
+    CLEAR_USER_MISCS_DATA: CLEAR_USER_MISCS_DATA,
+    ClearUserMiscsData: ClearUserMiscsData,
+    LOAD_USER_ORDERS: LOAD_USER_ORDERS,
+    LOAD_USER_ORDERS_FAIL: LOAD_USER_ORDERS_FAIL,
+    LOAD_USER_ORDERS_SUCCESS: LOAD_USER_ORDERS_SUCCESS,
+    CLEAR_USER_ORDERS: CLEAR_USER_ORDERS,
+    LoadUserOrders: LoadUserOrders,
+    LoadUserOrdersFail: LoadUserOrdersFail,
+    LoadUserOrdersSuccess: LoadUserOrdersSuccess,
+    ClearUserOrders: ClearUserOrders,
+    REGISTER_USER: REGISTER_USER,
+    REGISTER_USER_FAIL: REGISTER_USER_FAIL,
+    REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
+    RESET_REGISTER_USER_PROCESS: RESET_REGISTER_USER_PROCESS,
+    REGISTER_GUEST: REGISTER_GUEST,
+    REGISTER_GUEST_FAIL: REGISTER_GUEST_FAIL,
+    REGISTER_GUEST_SUCCESS: REGISTER_GUEST_SUCCESS,
+    REMOVE_USER: REMOVE_USER,
+    REMOVE_USER_FAIL: REMOVE_USER_FAIL,
+    REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
+    REMOVE_USER_RESET: REMOVE_USER_RESET,
+    RegisterUser: RegisterUser,
+    RegisterUserFail: RegisterUserFail,
+    RegisterUserSuccess: RegisterUserSuccess,
+    ResetRegisterUserProcess: ResetRegisterUserProcess,
+    RegisterGuest: RegisterGuest,
+    RegisterGuestFail: RegisterGuestFail,
+    RegisterGuestSuccess: RegisterGuestSuccess,
+    RemoveUser: RemoveUser,
+    RemoveUserFail: RemoveUserFail,
+    RemoveUserSuccess: RemoveUserSuccess,
+    RemoveUserReset: RemoveUserReset,
+    LOAD_USER_REPLENISHMENT_ORDERS: LOAD_USER_REPLENISHMENT_ORDERS,
+    LOAD_USER_REPLENISHMENT_ORDERS_FAIL: LOAD_USER_REPLENISHMENT_ORDERS_FAIL,
+    LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS: LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS,
+    CLEAR_USER_REPLENISHMENT_ORDERS: CLEAR_USER_REPLENISHMENT_ORDERS,
+    LoadUserReplenishmentOrders: LoadUserReplenishmentOrders,
+    LoadUserReplenishmentOrdersFail: LoadUserReplenishmentOrdersFail,
+    LoadUserReplenishmentOrdersSuccess: LoadUserReplenishmentOrdersSuccess,
+    ClearUserReplenishmentOrders: ClearUserReplenishmentOrders
+});
+
+/**
+ * Normalizes HttpErrorResponse to HttpErrorModel.
+ *
+ * Can be used as a safe and generic way for embodying http errors into
+ * NgRx Action payload, as it will strip potentially unserializable parts from
+ * it and warn in debug mode if passed error is not instance of HttpErrorModel
+ * (which usually happens when logic in NgRx Effect is not sealed correctly)
+ */
+function normalizeHttpError(error) {
+    if (error instanceof HttpErrorResponse) {
+        const normalizedError = {
+            message: error.message,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        };
+        // include backend's error details
+        if (Array.isArray(error.error.errors)) {
+            normalizedError.details = error.error.errors;
+        }
+        else if (typeof error.error.error === 'string') {
+            normalizedError.details = [
+                {
+                    type: error.error.error,
+                    message: error.error.error_description,
+                },
+            ];
+        }
+        return normalizedError;
+    }
+    if (isDevMode()) {
+        console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
+    }
+    return undefined;
+}
+
+/**
+ *
+ * Withdraw from the source observable when notifier emits a value
+ *
+ * Withdraw will result in resubscribing to the source observable
+ * Operator is useful to kill ongoing emission transformation on notifier emission
+ *
+ * @param notifier
+ */
+function withdrawOn(notifier) {
+    return (source) => notifier.pipe(startWith(undefined), switchMapTo(source));
+}
+
+class CheckoutEffects {
+    constructor(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutCostCenterConnector, checkoutConnector) {
+        this.actions$ = actions$;
+        this.checkoutDeliveryConnector = checkoutDeliveryConnector;
+        this.checkoutPaymentConnector = checkoutPaymentConnector;
+        this.checkoutCostCenterConnector = checkoutCostCenterConnector;
+        this.checkoutConnector = checkoutConnector;
+        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+        this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.checkoutDeliveryConnector
+            .createAddress(payload.userId, payload.cartId, payload.address)
+            .pipe(mergeMap((address) => {
+            address['titleCode'] = payload.address.titleCode;
+            if (payload.address.region && payload.address.region.isocodeShort) {
+                Object.assign(address.region, {
+                    isocodeShort: payload.address.region.isocodeShort,
+                });
+            }
+            if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                return [
+                    new SetDeliveryAddress({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                        address: address,
+                    }),
+                ];
+            }
+            else {
+                return [
+                    new LoadUserAddresses(payload.userId),
+                    new SetDeliveryAddress({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                        address: address,
+                    }),
+                ];
+            }
+        }), catchError((error) => of(new AddDeliveryAddressFail(normalizeHttpError(error)))))), withdrawOn(this.contextChange$));
+        this.setDeliveryAddress$ = this.actions$.pipe(ofType(SET_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
+            return this.checkoutDeliveryConnector
+                .setAddress(payload.userId, payload.cartId, payload.address.id)
+                .pipe(mergeMap(() => [
+                new SetDeliveryAddressSuccess(payload.address),
+                new ClearCheckoutDeliveryMode({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+                new ClearSupportedDeliveryModes(),
+                new ResetLoadSupportedDeliveryModesProcess(),
+                new LoadSupportedDeliveryModes({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+            ]), catchError((error) => of(new SetDeliveryAddressFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+        this.loadSupportedDeliveryModes$ = this.actions$.pipe(ofType(LOAD_SUPPORTED_DELIVERY_MODES), map((action) => action.payload), mergeMap((payload) => {
+            return this.checkoutDeliveryConnector
+                .getSupportedModes(payload.userId, payload.cartId)
+                .pipe(map((data) => {
+                return new LoadSupportedDeliveryModesSuccess(data);
+            }), catchError((error) => of(new LoadSupportedDeliveryModesFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+        this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), mergeMap(() => [
+            new ResetLoadSupportedDeliveryModesProcess(),
+            new ResetLoadPaymentTypesProcess(),
+            new CheckoutClearMiscsData(),
+        ]));
+        this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE), map(() => new ClearSupportedDeliveryModes()));
+        this.clearCheckoutDataOnLogout$ = this.actions$.pipe(ofType(LOGOUT), map(() => new ClearCheckoutData()));
+        this.clearCheckoutDataOnLogin$ = this.actions$.pipe(ofType(LOGIN), map(() => new ClearCheckoutData()));
+        this.setDeliveryMode$ = this.actions$.pipe(ofType(SET_DELIVERY_MODE), map((action) => action.payload), mergeMap((payload) => {
+            return this.checkoutDeliveryConnector
+                .setMode(payload.userId, payload.cartId, payload.selectedModeId)
+                .pipe(mergeMap(() => {
+                return [
+                    new SetDeliveryModeSuccess(payload.selectedModeId),
+                    new LoadCart({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                ];
+            }), catchError((error) => of(new SetDeliveryModeFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+        this.createPaymentDetails$ = this.actions$.pipe(ofType(CREATE_PAYMENT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
+            // get information for creating a subscription directly with payment provider
+            return this.checkoutPaymentConnector
+                .create(payload.userId, payload.cartId, payload.paymentDetails)
+                .pipe(mergeMap((details) => {
+                if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                    return [new CreatePaymentDetailsSuccess(details)];
+                }
+                else {
+                    return [
+                        new LoadUserPaymentMethods(payload.userId),
+                        new CreatePaymentDetailsSuccess(details),
+                    ];
+                }
+            }), catchError((error) => of(new CreatePaymentDetailsFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+        this.setPaymentDetails$ = this.actions$.pipe(ofType(SET_PAYMENT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
+            return this.checkoutPaymentConnector
+                .set(payload.userId, payload.cartId, payload.paymentDetails.id)
+                .pipe(map(() => new SetPaymentDetailsSuccess(payload.paymentDetails)), catchError((error) => of(new SetPaymentDetailsFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+        this.placeOrder$ = this.actions$.pipe(ofType(PLACE_ORDER), map((action) => action.payload), mergeMap((payload) => {
+            return this.checkoutConnector
+                .placeOrder(payload.userId, payload.cartId, payload.termsChecked)
+                .pipe(switchMap((data) => [
+                new RemoveCart({ cartId: payload.cartId }),
+                new PlaceOrderSuccess(data),
+            ]), catchError((error) => of(new PlaceOrderFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+        this.loadCheckoutDetails$ = this.actions$.pipe(ofType(LOAD_CHECKOUT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
+            return this.checkoutConnector
+                .loadCheckoutDetails(payload.userId, payload.cartId)
+                .pipe(map((data) => new LoadCheckoutDetailsSuccess(data)), catchError((error) => of(new LoadCheckoutDetailsFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+        this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((action) => action.payload), map((payload) => {
+            return new LoadCheckoutDetails({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        }));
+        this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), map((action) => action.payload), filter((payload) => Boolean(payload.cartId)), switchMap((payload) => {
+            return this.checkoutConnector
+                .clearCheckoutDeliveryAddress(payload.userId, payload.cartId)
+                .pipe(map(() => new ClearCheckoutDeliveryAddressSuccess()), catchError((error) => of(new ClearCheckoutDeliveryAddressFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+        this.clearCheckoutDeliveryMode$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE), map((action) => action.payload), filter((payload) => Boolean(payload.cartId)), concatMap((payload) => {
+            return this.checkoutConnector
+                .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
+                .pipe(map(() => new ClearCheckoutDeliveryModeSuccess(Object.assign({}, payload))), catchError((error) => from([
+                new ClearCheckoutDeliveryModeFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
+                new LoadCart({
+                    cartId: payload.cartId,
+                    userId: payload.userId,
+                }),
+            ])));
+        }), withdrawOn(this.contextChange$));
+        this.setCostCenter$ = this.actions$.pipe(ofType(SET_COST_CENTER), map((action) => action.payload), switchMap((payload) => {
+            return this.checkoutCostCenterConnector
+                .setCostCenter(payload.userId, payload.cartId, payload.costCenterId)
+                .pipe(mergeMap((data) => [
+                // TODO(#8877): We should trigger load cart not already assign the data. We might have misconfiguration between this cart model and load cart model
+                new LoadCartSuccess({
+                    cart: data,
+                    cartId: payload.cartId,
+                    userId: payload.userId,
+                }),
+                new SetCostCenterSuccess(payload.costCenterId),
+                new ClearCheckoutDeliveryMode({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+                new ClearCheckoutDeliveryAddress({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+            ]), catchError((error) => of(new SetCostCenterFail(normalizeHttpError(error)))));
+        }), withdrawOn(this.contextChange$));
+    }
+}
+CheckoutEffects.decorators = [
+    { type: Injectable }
 ];
-OccOrderNormalizer.ctorParameters = () => [
-    { type: ConverterService }
+CheckoutEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CheckoutDeliveryConnector },
+    { type: CheckoutPaymentConnector },
+    { type: CheckoutCostCenterConnector },
+    { type: CheckoutConnector }
+];
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "addDeliveryAddress$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "setDeliveryAddress$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "clearCheckoutMiscsDataOnLanguageChange$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "clearDeliveryModesOnCurrencyChange$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "clearCheckoutDataOnLogout$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "createPaymentDetails$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "setPaymentDetails$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "placeOrder$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
+__decorate([
+    Effect()
+], CheckoutEffects.prototype, "setCostCenter$", void 0);
+
+class PaymentTypesEffects {
+    constructor(actions$, paymentTypeConnector) {
+        this.actions$ = actions$;
+        this.paymentTypeConnector = paymentTypeConnector;
+        this.loadPaymentTypes$ = this.actions$.pipe(ofType(LOAD_PAYMENT_TYPES), switchMap(() => {
+            return this.paymentTypeConnector.getPaymentTypes().pipe(map((paymentTypes) => new LoadPaymentTypesSuccess(paymentTypes)), catchError((error) => of(new LoadPaymentTypesFail(normalizeHttpError(error)))));
+        }));
+        this.setPaymentType$ = this.actions$.pipe(ofType(SET_PAYMENT_TYPE), map((action) => action.payload), switchMap((payload) => {
+            return this.paymentTypeConnector
+                .setPaymentType(payload.userId, payload.cartId, payload.typeCode, payload.poNumber)
+                .pipe(mergeMap((data) => {
+                return [
+                    new LoadCartSuccess({
+                        cart: data,
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    }),
+                    new ClearCheckoutData(),
+                    new SetPaymentTypeSuccess(data),
+                ];
+            }), catchError((error) => of(new SetPaymentTypeFail(normalizeHttpError(error)))));
+        }));
+    }
+}
+PaymentTypesEffects.decorators = [
+    { type: Injectable }
+];
+PaymentTypesEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: PaymentTypeConnector }
+];
+__decorate([
+    Effect()
+], PaymentTypesEffects.prototype, "loadPaymentTypes$", void 0);
+__decorate([
+    Effect()
+], PaymentTypesEffects.prototype, "setPaymentType$", void 0);
+
+class ReplenishmentOrderEffects {
+    constructor(actions$, checkoutReplOrderConnector) {
+        this.actions$ = actions$;
+        this.checkoutReplOrderConnector = checkoutReplOrderConnector;
+        this.scheduleReplenishmentOrder$ = this.actions$.pipe(ofType(SCHEDULE_REPLENISHMENT_ORDER), map((action) => action.payload), mergeMap((payload) => {
+            return this.checkoutReplOrderConnector
+                .scheduleReplenishmentOrder(payload.cartId, payload.scheduleReplenishmentForm, payload.termsChecked, payload.userId)
+                .pipe(switchMap((data) => [
+                new RemoveCart({ cartId: payload.cartId }),
+                new ScheduleReplenishmentOrderSuccess(data),
+            ]), catchError((error) => of(new ScheduleReplenishmentOrderFail(normalizeHttpError(error)))));
+        }));
+    }
+}
+ReplenishmentOrderEffects.decorators = [
+    { type: Injectable }
+];
+ReplenishmentOrderEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CheckoutReplenishmentOrderConnector }
+];
+__decorate([
+    Effect()
+], ReplenishmentOrderEffects.prototype, "scheduleReplenishmentOrder$", void 0);
+
+const effects$1 = [
+    CheckoutEffects,
+    AddressVerificationEffect,
+    CardTypesEffects,
+    PaymentTypesEffects,
+    ReplenishmentOrderEffects,
 ];
 
-class CheckoutDeliveryAdapter {
+const initialState$1 = {
+    results: {},
+};
+function reducer$1(state = initialState$1, action) {
+    switch (action.type) {
+        case VERIFY_ADDRESS_SUCCESS: {
+            const results = action.payload;
+            return Object.assign(Object.assign({}, state), { results });
+        }
+        case VERIFY_ADDRESS_FAIL: {
+            return Object.assign(Object.assign({}, state), { results: 'FAIL' });
+        }
+        case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
+            return Object.assign(Object.assign({}, state), { results: {} });
+        }
+    }
+    return state;
 }
+const getAddressVerificationResults = (state) => state.results;
 
-class CheckoutPaymentAdapter {
+const initialState$2 = {
+    entities: {},
+};
+function reducer$2(state = initialState$2, action) {
+    switch (action.type) {
+        case LOAD_CARD_TYPES_SUCCESS: {
+            const cardTypes = action.payload;
+            const entities = cardTypes.reduce((cardTypesEntities, name) => {
+                return Object.assign(Object.assign({}, cardTypesEntities), { [name.code]: name });
+            }, Object.assign({}, state.entities));
+            return Object.assign(Object.assign({}, state), { entities });
+        }
+        case CHECKOUT_CLEAR_MISCS_DATA: {
+            return initialState$2;
+        }
+    }
+    return state;
 }
+const getCardTypesEntites = (state) => state.entities;
 
-class PaymentTypeAdapter {
-}
-
-const defaultOccCheckoutConfig = {
-    backend: {
-        occ: {
-            endpoints: {
-                setDeliveryAddress: 'users/${userId}/carts/${cartId}/addresses/delivery',
-                placeOrder: 'users/${userId}/orders',
-            },
-        },
+const initialState$3 = {
+    poNumber: { po: undefined, costCenter: undefined },
+    address: {},
+    deliveryMode: {
+        supported: {},
+        selected: '',
     },
+    paymentDetails: {},
+    orderDetails: {},
+};
+function reducer$3(state = initialState$3, action) {
+    switch (action.type) {
+        case SET_PAYMENT_TYPE_SUCCESS: {
+            const cart = action.payload;
+            return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { po: cart.purchaseOrderNumber }) });
+        }
+        case SET_COST_CENTER_SUCCESS: {
+            return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { costCenter: action.payload }) });
+        }
+        case ADD_DELIVERY_ADDRESS_SUCCESS:
+        case SET_DELIVERY_ADDRESS_SUCCESS: {
+            const address = action.payload;
+            return Object.assign(Object.assign({}, state), { address });
+        }
+        case LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: {
+            const supportedModes = action.payload;
+            if (!supportedModes) {
+                return state;
+            }
+            const supported = supportedModes.reduce((modes, mode) => {
+                return Object.assign(Object.assign({}, modes), { [mode.code]: mode });
+            }, Object.assign({}, state.deliveryMode.supported));
+            return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported }) });
+        }
+        case SET_DELIVERY_MODE_SUCCESS: {
+            const selected = action.payload;
+            return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected }) });
+        }
+        case CREATE_PAYMENT_DETAILS_SUCCESS:
+        case SET_PAYMENT_DETAILS_SUCCESS: {
+            return Object.assign(Object.assign({}, state), { paymentDetails: action.payload });
+        }
+        case CREATE_PAYMENT_DETAILS_FAIL: {
+            const paymentDetails = action.payload;
+            if (paymentDetails['hasError']) {
+                return Object.assign(Object.assign({}, state), { paymentDetails });
+            }
+            return state;
+        }
+        case PLACE_ORDER_SUCCESS:
+        case SCHEDULE_REPLENISHMENT_ORDER_SUCCESS: {
+            const orderDetails = action.payload;
+            return Object.assign(Object.assign({}, state), { orderDetails });
+        }
+        case CLEAR_CHECKOUT_DATA: {
+            return initialState$3;
+        }
+        case CLEAR_CHECKOUT_STEP: {
+            const stepNumber = action.payload;
+            switch (stepNumber) {
+                case 1: {
+                    return Object.assign(Object.assign({}, state), { address: {} });
+                }
+                case 2: {
+                    return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {}, selected: '' }) });
+                }
+                case 3: {
+                    return Object.assign(Object.assign({}, state), { paymentDetails: {} });
+                }
+            }
+            return state;
+        }
+        case CLEAR_SUPPORTED_DELIVERY_MODES:
+        case CHECKOUT_CLEAR_MISCS_DATA: {
+            return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {} }) });
+        }
+        case LOAD_CHECKOUT_DETAILS_SUCCESS: {
+            return Object.assign(Object.assign({}, state), { address: action.payload.deliveryAddress, deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: action.payload.deliveryMode && action.payload.deliveryMode.code }), paymentDetails: action.payload.paymentInfo });
+        }
+        case CLEAR_CHECKOUT_DELIVERY_ADDRESS: {
+            return Object.assign(Object.assign({}, state), { address: {} });
+        }
+        case CLEAR_CHECKOUT_DELIVERY_MODE: {
+            return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: '' }) });
+        }
+    }
+    return state;
+}
+
+const initialState$4 = {
+    selected: ORDER_TYPE.PLACE_ORDER,
+};
+function reducer$4(state = initialState$4, action) {
+    switch (action.type) {
+        case SET_ORDER_TYPE: {
+            return Object.assign(Object.assign({}, state), { selected: action.payload });
+        }
+        case CLEAR_CHECKOUT_DATA: {
+            return initialState$4;
+        }
+        default: {
+            return state;
+        }
+    }
+}
+
+const initialState$5 = {
+    entities: {},
+    selected: undefined,
+};
+function reducer$5(state = initialState$5, action) {
+    switch (action.type) {
+        case LOAD_PAYMENT_TYPES_SUCCESS: {
+            const paymentTypes = action.payload;
+            const entities = paymentTypes.reduce((paymentTypesEntities, name) => {
+                return Object.assign(Object.assign({}, paymentTypesEntities), { [name.code]: name });
+            }, Object.assign({}, state.entities));
+            return Object.assign(Object.assign({}, state), { entities });
+        }
+        case SET_PAYMENT_TYPE_SUCCESS: {
+            return Object.assign(Object.assign({}, state), { selected: action.payload.paymentType.code });
+        }
+        case CLEAR_CHECKOUT_DATA: {
+            return Object.assign(Object.assign({}, state), { selected: undefined });
+        }
+        case CHECKOUT_CLEAR_MISCS_DATA: {
+            return initialState$5;
+        }
+    }
+    return state;
+}
+const getPaymentTypesEntites = (state) => state.entities;
+const getSelectedPaymentType = (state) => state.selected;
+
+function getReducers$1() {
+    return {
+        steps: loaderReducer(CHECKOUT_DETAILS, reducer$3),
+        cardTypes: reducer$2,
+        addressVerification: reducer$1,
+        paymentTypes: reducer$5,
+        orderType: reducer$4,
+    };
+}
+const reducerToken$1 = new InjectionToken('CheckoutReducers');
+const reducerProvider$1 = {
+    provide: reducerToken$1,
+    useFactory: getReducers$1,
 };
 
-class CheckoutCostCenterAdapter {
+class CheckoutStoreModule {
 }
+CheckoutStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$1),
+                    EffectsModule.forFeature(effects$1),
+                ],
+                providers: [reducerProvider$1],
+            },] }
+];
+
+class CheckoutModule {
+    static forRoot() {
+        return {
+            ngModule: CheckoutModule,
+            providers: [
+                {
+                    provide: PageMetaResolver,
+                    useExisting: CheckoutPageMetaResolver,
+                    multi: true,
+                },
+            ],
+        };
+    }
+}
+CheckoutModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CheckoutStoreModule, CheckoutEventModule],
+            },] }
+];
+
+const getDeliveryAddressSelector = (state) => state.address;
+const ɵ0$c = getDeliveryAddressSelector;
+const getDeliveryModeSelector = (state) => state.deliveryMode;
+const ɵ1$8 = getDeliveryModeSelector;
+const getPaymentDetailsSelector = (state) => state.paymentDetails;
+const ɵ2$4 = getPaymentDetailsSelector;
+const getOrderDetailsSelector = (state) => state.orderDetails;
+const ɵ3$3 = getOrderDetailsSelector;
+const getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
+const ɵ4$1 = (checkoutState) => checkoutState.steps;
+const getCheckoutStepsState = createSelector(getCheckoutState, ɵ4$1);
+const ɵ5 = (state) => loaderValueSelector(state);
+const getCheckoutSteps = createSelector(getCheckoutStepsState, ɵ5);
+const getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+const getDeliveryMode = createSelector(getCheckoutSteps, getDeliveryModeSelector);
+const ɵ6 = (deliveryMode) => {
+    return (deliveryMode &&
+        Object.keys(deliveryMode.supported).map((code) => deliveryMode.supported[code]));
+};
+const getSupportedDeliveryModes = createSelector(getDeliveryMode, ɵ6);
+const ɵ7 = (deliveryMode) => {
+    return deliveryMode && deliveryMode.selected;
+};
+const getSelectedDeliveryModeCode = createSelector(getDeliveryMode, ɵ7);
+const ɵ8 = (deliveryMode) => {
+    if (deliveryMode.selected !== '') {
+        if (Object.keys(deliveryMode.supported).length === 0) {
+            return null;
+        }
+        return deliveryMode.supported[deliveryMode.selected];
+    }
+};
+const getSelectedDeliveryMode = createSelector(getDeliveryMode, ɵ8);
+const getPaymentDetails = createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+const getCheckoutOrderDetails = createSelector(getCheckoutSteps, getOrderDetailsSelector);
+const ɵ9 = (state) => loaderSuccessSelector(state) &&
+    !loaderLoadingSelector(state);
+const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, ɵ9);
+const ɵ10 = (state) => state.poNumber.po;
+const getPoNumer = createSelector(getCheckoutSteps, ɵ10);
+const ɵ11 = (state) => state.poNumber.costCenter;
+const getCostCenter = createSelector(getCheckoutSteps, ɵ11);
+
+const ɵ0$d = (state) => state.addressVerification;
+const getAddressVerificationResultsState = createSelector(getCheckoutState, ɵ0$d);
+const getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+
+const ɵ0$e = (state) => state.cardTypes;
+const getCardTypesState = createSelector(getCheckoutState, ɵ0$e);
+const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
+const ɵ1$9 = (entites) => {
+    return Object.keys(entites).map((code) => entites[code]);
+};
+const getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$9);
+
+const getSelectedOrderTypeSelector = (state) => state.selected;
+const ɵ0$f = (state) => state.orderType;
+const getOrderTypesState = createSelector(getCheckoutState, ɵ0$f);
+const getSelectedOrderType = createSelector(getOrderTypesState, getSelectedOrderTypeSelector);
+
+const ɵ0$g = (state) => state.paymentTypes;
+const getPaymentTypesState = createSelector(getCheckoutState, ɵ0$g);
+const getPaymentTypesEntites$1 = createSelector(getPaymentTypesState, getPaymentTypesEntites);
+const ɵ1$a = (entites) => {
+    return Object.keys(entites).map((code) => entites[code]);
+};
+const getAllPaymentTypes = createSelector(getPaymentTypesEntites$1, ɵ1$a);
+const getSelectedPaymentType$1 = createSelector(getPaymentTypesState, getSelectedPaymentType);
+
+var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getAddressVerificationResultsState: getAddressVerificationResultsState,
+    getAddressVerificationResults: getAddressVerificationResults$1,
+    ɵ0: ɵ0$d,
+    getCardTypesState: getCardTypesState,
+    getCardTypesEntites: getCardTypesEntites$1,
+    getAllCardTypes: getAllCardTypes,
+    ɵ1: ɵ1$9,
+    getCheckoutState: getCheckoutState,
+    getCheckoutStepsState: getCheckoutStepsState,
+    getCheckoutSteps: getCheckoutSteps,
+    getDeliveryAddress: getDeliveryAddress,
+    getDeliveryMode: getDeliveryMode,
+    getSupportedDeliveryModes: getSupportedDeliveryModes,
+    getSelectedDeliveryModeCode: getSelectedDeliveryModeCode,
+    getSelectedDeliveryMode: getSelectedDeliveryMode,
+    getPaymentDetails: getPaymentDetails,
+    getCheckoutOrderDetails: getCheckoutOrderDetails,
+    getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
+    getPoNumer: getPoNumer,
+    getCostCenter: getCostCenter,
+    ɵ2: ɵ2$4,
+    ɵ3: ɵ3$3,
+    ɵ4: ɵ4$1,
+    ɵ5: ɵ5,
+    ɵ6: ɵ6,
+    ɵ7: ɵ7,
+    ɵ8: ɵ8,
+    ɵ9: ɵ9,
+    ɵ10: ɵ10,
+    ɵ11: ɵ11,
+    getSelectedOrderTypeSelector: getSelectedOrderTypeSelector,
+    getOrderTypesState: getOrderTypesState,
+    getSelectedOrderType: getSelectedOrderType,
+    getPaymentTypesState: getPaymentTypesState,
+    getPaymentTypesEntites: getPaymentTypesEntites$1,
+    getAllPaymentTypes: getAllPaymentTypes,
+    getSelectedPaymentType: getSelectedPaymentType$1
+});
+
+class CheckoutCostCenterService {
+    constructor(checkoutStore, authService, activeCartService) {
+        this.checkoutStore = checkoutStore;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
+    }
+    /**
+     * Set cost center to cart
+     * @param costCenterId : cost center id
+     */
+    setCostCenter(costCenterId) {
+        let cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .pipe(take(1))
+            .subscribe((activeCartId) => (cartId = activeCartId));
+        this.authService.invokeWithUserId((userId) => {
+            if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
+                this.checkoutStore.dispatch(new SetCostCenter({
+                    userId: userId,
+                    cartId: cartId,
+                    costCenterId: costCenterId,
+                }));
+            }
+        });
+    }
+    /**
+     * Get cost center id from cart
+     */
+    getCostCenter() {
+        return combineLatest([
+            this.activeCartService.getActive(),
+            this.checkoutStore.pipe(select(getCostCenter)),
+        ]).pipe(filter(([cart]) => Boolean(cart)), map(([cart, costCenterId]) => {
+            if (costCenterId === undefined && cart.costCenter) {
+                costCenterId = cart.costCenter.code;
+                this.checkoutStore.dispatch(new SetCostCenterSuccess(cart.costCenter.code));
+            }
+            return costCenterId;
+        }));
+    }
+}
+CheckoutCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
+CheckoutCostCenterService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutCostCenterService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService },
+    { type: ActiveCartService }
+];
+
+class CheckoutDeliveryService {
+    constructor(checkoutStore, authService, activeCartService) {
+        this.checkoutStore = checkoutStore;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
+    }
+    /**
+     * Get supported delivery modes
+     */
+    getSupportedDeliveryModes() {
+        return this.checkoutStore.pipe(select(getSupportedDeliveryModes), withLatestFrom(this.checkoutStore.pipe(select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), tap(([, loadingState]) => {
+            if (!(loadingState.loading || loadingState.success || loadingState.error)) {
+                this.loadSupportedDeliveryModes();
+            }
+        }), pluck(0), shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    /**
+     * Get selected delivery mode
+     */
+    getSelectedDeliveryMode() {
+        return this.checkoutStore.pipe(select(getSelectedDeliveryMode));
+    }
+    /**
+     * Get selected delivery mode code
+     */
+    getSelectedDeliveryModeCode() {
+        return this.checkoutStore.pipe(select(getSelectedDeliveryModeCode));
+    }
+    /**
+     * Get delivery address
+     */
+    getDeliveryAddress() {
+        return this.checkoutStore.pipe(select(getDeliveryAddress));
+    }
+    /**
+     * Get status about successfully set Delivery Address
+     */
+    getSetDeliveryAddressProcess() {
+        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
+    }
+    /**
+     * Clear info about process of setting Delivery Address
+     */
+    resetSetDeliveryAddressProcess() {
+        this.checkoutStore.dispatch(new ResetSetDeliveryAddressProcess());
+    }
+    /**
+     * Get status about of set Delivery Mode process
+     */
+    getSetDeliveryModeProcess() {
+        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
+    }
+    /**
+     * Clear info about process of setting Delivery Mode
+     */
+    resetSetDeliveryModeProcess() {
+        this.checkoutStore.dispatch(new ResetSetDeliveryModeProcess());
+    }
+    /**
+     * Clear info about process of setting Supported Delivery Modes
+     */
+    resetLoadSupportedDeliveryModesProcess() {
+        this.checkoutStore.dispatch(new ResetLoadSupportedDeliveryModesProcess());
+    }
+    /**
+     * Get status about of set supported Delivery Modes process
+     */
+    getLoadSupportedDeliveryModeProcess() {
+        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
+    }
+    /**
+     * Clear supported delivery modes loaded in last checkout process
+     */
+    clearCheckoutDeliveryModes() {
+        this.checkoutStore.dispatch(new ClearSupportedDeliveryModes());
+    }
+    /**
+     * Get address verification results
+     */
+    getAddressVerificationResults() {
+        return this.checkoutStore.pipe(select(getAddressVerificationResults$1), filter((results) => Object.keys(results).length !== 0));
+    }
+    /**
+     * Create and set a delivery address using the address param
+     * @param address : the Address to be created and set
+     */
+    createAndSetAddress(address) {
+        if (this.actionAllowed()) {
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe((occUserId) => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe((activeCartId) => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new AddDeliveryAddress({
+                    userId,
+                    cartId,
+                    address: address,
+                }));
+            }
+        }
+    }
+    /**
+     * Load supported delivery modes
+     */
+    loadSupportedDeliveryModes() {
+        if (this.actionAllowed()) {
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe((occUserId) => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe((activeCartId) => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
+                    userId,
+                    cartId,
+                }));
+            }
+        }
+    }
+    /**
+     * Set delivery mode
+     * @param mode : The delivery mode to be set
+     */
+    setDeliveryMode(mode) {
+        if (this.actionAllowed()) {
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe((occUserId) => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe((activeCartId) => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new SetDeliveryMode({
+                    userId,
+                    cartId,
+                    selectedModeId: mode,
+                }));
+            }
+        }
+    }
+    /**
+     * Verifies the address
+     * @param address : the address to be verified
+     */
+    verifyAddress(address) {
+        if (this.actionAllowed()) {
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe((occUserId) => (userId = occUserId))
+                .unsubscribe();
+            if (userId) {
+                this.checkoutStore.dispatch(new VerifyAddress({
+                    userId,
+                    address,
+                }));
+            }
+        }
+    }
+    /**
+     * Set delivery address
+     * @param address : The address to be set
+     */
+    setDeliveryAddress(address) {
+        if (this.actionAllowed()) {
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe((occUserId) => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe((activeCartId) => (cartId = activeCartId))
+                .unsubscribe();
+            if (cartId && userId) {
+                this.checkoutStore.dispatch(new SetDeliveryAddress({
+                    userId,
+                    cartId,
+                    address: address,
+                }));
+            }
+        }
+    }
+    /**
+     * Clear address verification results
+     */
+    clearAddressVerificationResults() {
+        this.checkoutStore.dispatch(new ClearAddressVerificationResults());
+    }
+    /**
+     * Clear address already setup in last checkout process
+     */
+    clearCheckoutDeliveryAddress() {
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe((occUserId) => (userId = occUserId))
+            .unsubscribe();
+        let cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .subscribe((activeCartId) => (cartId = activeCartId))
+            .unsubscribe();
+        if (userId && cartId) {
+            this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
+                userId,
+                cartId,
+            }));
+        }
+    }
+    /**
+     * Clear selected delivery mode setup in last checkout process
+     */
+    clearCheckoutDeliveryMode() {
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe((occUserId) => (userId = occUserId))
+            .unsubscribe();
+        let cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .subscribe((activeCartId) => (cartId = activeCartId))
+            .unsubscribe();
+        if (userId && cartId) {
+            this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
+                userId,
+                cartId,
+            }));
+        }
+    }
+    /**
+     * Clear address and delivery mode already setup in last checkout process
+     */
+    clearCheckoutDeliveryDetails() {
+        this.clearCheckoutDeliveryAddress();
+        this.clearCheckoutDeliveryMode();
+        this.clearCheckoutDeliveryModes();
+    }
+    actionAllowed() {
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe((occUserId) => (userId = occUserId))
+            .unsubscribe();
+        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+            this.activeCartService.isGuestCart());
+    }
+}
+CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+CheckoutDeliveryService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutDeliveryService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService },
+    { type: ActiveCartService }
+];
+
+class CheckoutPaymentService {
+    constructor(checkoutStore, authService, activeCartService) {
+        this.checkoutStore = checkoutStore;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
+    }
+    /**
+     * Get card types
+     */
+    getCardTypes() {
+        return this.checkoutStore.pipe(select(getAllCardTypes));
+    }
+    /**
+     * Get payment details
+     */
+    getPaymentDetails() {
+        return this.checkoutStore.pipe(select(getPaymentDetails));
+    }
+    /**
+     * Get status about set Payment Details process
+     */
+    getSetPaymentDetailsResultProcess() {
+        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
+    }
+    /**
+     * Clear info about process of setting Payment Details
+     */
+    resetSetPaymentDetailsProcess() {
+        this.checkoutStore.dispatch(new ResetSetPaymentDetailsProcess());
+    }
+    /**
+     * Load the supported card types
+     */
+    loadSupportedCardTypes() {
+        this.checkoutStore.dispatch(new LoadCardTypes());
+    }
+    /**
+     * Create payment details using the given paymentDetails param
+     * @param paymentDetails: the PaymentDetails to be created
+     */
+    createPaymentDetails(paymentDetails) {
+        if (this.actionAllowed()) {
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe((occUserId) => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe((activeCartId) => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new CreatePaymentDetails({
+                    userId,
+                    cartId,
+                    paymentDetails,
+                }));
+            }
+        }
+    }
+    /**
+     * Set payment details
+     * @param paymentDetails : the PaymentDetails to be set
+     */
+    setPaymentDetails(paymentDetails) {
+        if (this.actionAllowed()) {
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe((occUserId) => (userId = occUserId))
+                .unsubscribe();
+            let cart;
+            this.activeCartService
+                .getActive()
+                .subscribe((activeCart) => (cart = activeCart))
+                .unsubscribe();
+            if (userId && cart) {
+                this.checkoutStore.dispatch(new SetPaymentDetails({
+                    userId,
+                    cartId: cart.code,
+                    paymentDetails: paymentDetails,
+                }));
+            }
+        }
+    }
+    /**
+     * Sets payment loading to true without having the flicker issue (GH-3102)
+     */
+    paymentProcessSuccess() {
+        this.checkoutStore.dispatch(new PaymentProcessSuccess());
+    }
+    actionAllowed() {
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe((occUserId) => (userId = occUserId))
+            .unsubscribe();
+        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+            this.activeCartService.isGuestCart());
+    }
+}
+CheckoutPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
+CheckoutPaymentService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutPaymentService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService },
+    { type: ActiveCartService }
+];
+
+class CheckoutService {
+    constructor(checkoutStore, authService, activeCartService) {
+        this.checkoutStore = checkoutStore;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
+    }
+    /**
+     * Places an order
+     */
+    placeOrder(termsChecked) {
+        if (this.actionAllowed()) {
+            let userId;
+            this.authService
+                .getOccUserId()
+                .subscribe((occUserId) => (userId = occUserId))
+                .unsubscribe();
+            let cartId;
+            this.activeCartService
+                .getActiveCartId()
+                .subscribe((activeCartId) => (cartId = activeCartId))
+                .unsubscribe();
+            if (userId && cartId) {
+                this.checkoutStore.dispatch(new PlaceOrder({
+                    userId,
+                    cartId,
+                    termsChecked,
+                }));
+            }
+        }
+    }
+    /**
+     * Schedule a replenishment order
+     */
+    scheduleReplenishmentOrder(scheduleReplenishmentForm, termsChecked) {
+        let cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .pipe(take(1))
+            .subscribe((activeCartId) => (cartId = activeCartId));
+        this.authService.invokeWithUserId((userId) => {
+            if (Boolean(cartId) &&
+                Boolean(userId) &&
+                userId !== OCC_USER_ID_ANONYMOUS) {
+                this.checkoutStore.dispatch(new ScheduleReplenishmentOrder({
+                    cartId,
+                    scheduleReplenishmentForm,
+                    termsChecked,
+                    userId,
+                }));
+            }
+        });
+    }
+    /**
+     * Returns the place or schedule replenishment order's loading flag
+     */
+    getPlaceOrderLoading() {
+        return this.checkoutStore.pipe(select(getProcessLoadingFactory(PLACED_ORDER_PROCESS_ID)));
+    }
+    /**
+     * Returns the place or schedule replenishment order's success flag
+     */
+    getPlaceOrderSuccess() {
+        return this.checkoutStore.pipe(select(getProcessSuccessFactory(PLACED_ORDER_PROCESS_ID)));
+    }
+    /**
+     * Returns the place or schedule replenishment order's error flag
+     */
+    getPlaceOrderError() {
+        return this.checkoutStore.pipe(select(getProcessErrorFactory(PLACED_ORDER_PROCESS_ID)));
+    }
+    /**
+     * Resets the place or schedule replenishment order's processing state
+     */
+    clearPlaceOrderState() {
+        this.checkoutStore.dispatch(new ClearPlaceOrder());
+    }
+    /**
+     * Clear checkout data
+     */
+    clearCheckoutData() {
+        this.checkoutStore.dispatch(new ClearCheckoutData());
+    }
+    /**
+     * Clear checkout step
+     * @param stepNumber : the step number to be cleared
+     */
+    clearCheckoutStep(stepNumber) {
+        this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
+    }
+    /**
+     * Load checkout details data
+     * @param cartId : string Cart ID of loaded cart
+     */
+    loadCheckoutDetails(cartId) {
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe((occUserId) => (userId = occUserId))
+            .unsubscribe();
+        if (userId) {
+            this.checkoutStore.dispatch(new LoadCheckoutDetails({
+                userId,
+                cartId,
+            }));
+        }
+    }
+    /**
+     * Get status of checkout details loaded
+     */
+    getCheckoutDetailsLoaded() {
+        return this.checkoutStore.pipe(select(getCheckoutDetailsLoaded));
+    }
+    /**
+     * Get order details
+     */
+    getOrderDetails() {
+        return this.checkoutStore.pipe(select(getCheckoutOrderDetails));
+    }
+    /**
+     * Set checkout order type
+     * @param orderType : an enum of types of order we are placing
+     */
+    setOrderType(orderType) {
+        this.checkoutStore.dispatch(new SetOrderType(orderType));
+    }
+    /**
+     * Get current checkout order type
+     */
+    getCurrentOrderType() {
+        return this.checkoutStore.pipe(select(getSelectedOrderType));
+    }
+    actionAllowed() {
+        let userId;
+        this.authService
+            .getOccUserId()
+            .subscribe((occUserId) => (userId = occUserId))
+            .unsubscribe();
+        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
+            this.activeCartService.isGuestCart());
+    }
+}
+CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+CheckoutService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CheckoutService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService },
+    { type: ActiveCartService }
+];
+
+class PaymentTypeService {
+    constructor(checkoutStore, authService, activeCartService) {
+        this.checkoutStore = checkoutStore;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
+    }
+    /**
+     * Get payment types
+     */
+    getPaymentTypes() {
+        return this.checkoutStore.pipe(select(getAllPaymentTypes), withLatestFrom(this.checkoutStore.pipe(select(getProcessStateFactory(GET_PAYMENT_TYPES_PROCESS_ID)))), tap(([_, loadingState]) => {
+            if (!(loadingState.loading || loadingState.success || loadingState.error)) {
+                this.loadPaymentTypes();
+            }
+        }), pluck(0), shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    /**
+     * Load the supported payment types
+     */
+    loadPaymentTypes() {
+        this.checkoutStore.dispatch(new LoadPaymentTypes());
+    }
+    /**
+     * Set payment type to cart
+     * @param typeCode
+     * @param poNumber : purchase order number
+     */
+    setPaymentType(typeCode, poNumber) {
+        let cartId;
+        this.activeCartService
+            .getActiveCartId()
+            .pipe(take(1))
+            .subscribe((activeCartId) => (cartId = activeCartId));
+        this.authService.invokeWithUserId((userId) => {
+            if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
+                this.checkoutStore.dispatch(new SetPaymentType({
+                    userId: userId,
+                    cartId: cartId,
+                    typeCode: typeCode,
+                    poNumber: poNumber,
+                }));
+            }
+        });
+    }
+    /**
+     * Get the selected payment type
+     */
+    getSelectedPaymentType() {
+        return combineLatest([
+            this.activeCartService.getActive(),
+            this.checkoutStore.pipe(select(getSelectedPaymentType$1)),
+        ]).pipe(tap(([cart, selected]) => {
+            if (selected === undefined) {
+                // in b2b, cart always has paymentType (default value 'CARD')
+                if (cart && cart.paymentType) {
+                    this.checkoutStore.dispatch(new SetPaymentTypeSuccess(cart));
+                }
+            }
+        }), map(([, selected]) => selected));
+    }
+    /**
+     * Get whether the selected payment type is "ACCOUNT" payment
+     */
+    isAccountPayment() {
+        return this.getSelectedPaymentType().pipe(map((selected) => selected === B2BPaymentTypeEnum.ACCOUNT_PAYMENT));
+    }
+    /**
+     * Get PO Number
+     */
+    getPoNumber() {
+        return combineLatest([
+            this.activeCartService.getActive(),
+            this.checkoutStore.pipe(select(getPoNumer)),
+        ]).pipe(tap(([cart, po]) => {
+            if (po === undefined && cart && cart.purchaseOrderNumber) {
+                this.checkoutStore.dispatch(new SetPaymentTypeSuccess(cart));
+            }
+        }), map(([_, po]) => po));
+    }
+}
+PaymentTypeService.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
+PaymentTypeService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+PaymentTypeService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService },
+    { type: ActiveCartService }
+];
+
+class OccCheckoutReplenishmentOrderAdapter {
+    constructor(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    scheduleReplenishmentOrder(cartId, scheduleReplenishmentForm, termsChecked, userId) {
+        scheduleReplenishmentForm = this.converter.convert(scheduleReplenishmentForm, REPLENISHMENT_ORDER_FORM_SERIALIZER);
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        const params = new HttpParams()
+            .set('cartId', cartId)
+            .set('termsChecked', termsChecked.toString());
+        return this.http
+            .post(this.occEndpoints.getUrl('scheduleReplenishmentOrder', {
+            userId,
+        }), scheduleReplenishmentForm, { headers, params })
+            .pipe(this.converter.pipeable(REPLENISHMENT_ORDER_NORMALIZER));
+    }
+}
+OccCheckoutReplenishmentOrderAdapter.decorators = [
+    { type: Injectable }
+];
+OccCheckoutReplenishmentOrderAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: ConverterService }
+];
+
+// To be changed to a more optimised params after ticket: C3PO-1076
+const CHECKOUT_PARAMS = 'deliveryAddress(FULL),deliveryMode,paymentInfo(FULL)';
+const CARTS_ENDPOINT = '/carts/';
+class OccCheckoutAdapter {
+    constructor(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    getEndpoint(userId, subEndpoint) {
+        const orderEndpoint = 'users/' + userId + subEndpoint;
+        return this.occEndpoints.getEndpoint(orderEndpoint);
+    }
+    placeOrder(userId, cartId, termsChecked) {
+        let headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
+        const params = new HttpParams()
+            .set('cartId', cartId)
+            .set('termsChecked', termsChecked.toString());
+        return this.http
+            .post(this.occEndpoints.getUrl('placeOrder', { userId }), {}, { headers, params })
+            .pipe(this.converter.pipeable(ORDER_NORMALIZER));
+    }
+    loadCheckoutDetails(userId, cartId) {
+        const url = this.getEndpoint(userId, CARTS_ENDPOINT) + cartId;
+        const params = new HttpParams({
+            fromString: `fields=${CHECKOUT_PARAMS}`,
+        });
+        return this.http.get(url, { params });
+    }
+    clearCheckoutDeliveryAddress(userId, cartId) {
+        const url = `${this.getEndpoint(userId, CARTS_ENDPOINT)}${cartId}/addresses/delivery`;
+        return this.http.delete(url);
+    }
+    clearCheckoutDeliveryMode(userId, cartId) {
+        const url = `${this.getEndpoint(userId, CARTS_ENDPOINT)}${cartId}/deliverymode`;
+        return this.http.delete(url);
+    }
+}
+OccCheckoutAdapter.decorators = [
+    { type: Injectable }
+];
+OccCheckoutAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: ConverterService }
+];
 
 class CheckoutOccModule {
 }
@@ -4267,6 +9717,20 @@ CheckoutOccModule.decorators = [
                     {
                         provide: CheckoutCostCenterAdapter,
                         useClass: OccCheckoutCostCenterAdapter,
+                    },
+                    {
+                        provide: CheckoutReplenishmentOrderAdapter,
+                        useClass: OccCheckoutReplenishmentOrderAdapter,
+                    },
+                    {
+                        provide: REPLENISHMENT_ORDER_NORMALIZER,
+                        useExisting: OccReplenishmentOrderNormalizer,
+                        multi: true,
+                    },
+                    {
+                        provide: REPLENISHMENT_ORDER_FORM_SERIALIZER,
+                        useExisting: OccReplenishmentOrderFormSerializer,
+                        multi: true,
                     },
                 ],
             },] }
@@ -4577,246 +10041,6 @@ OccCostCenterListNormalizer.decorators = [
 ];
 OccCostCenterListNormalizer.ctorParameters = () => [
     { type: ConverterService }
-];
-
-// PRIVATE API
-/**
- * Allows for dynamic adding and removing source observables
- * and exposes them as one merged observable at a property `output$`.
- *
- * Thanks to the `share()` operator used inside, it subscribes to source observables
- * only when someone subscribes to it. And it unsubscribes from source observables
- * when the counter of consumers drops to 0.
- *
- * **To avoid memory leaks**, all manually added sources should be manually removed
- * when not plan to emit values anymore. In particular closed event sources won't be
- * automatically removed.
- */
-class MergingSubject {
-    constructor() {
-        /**
-         * List of already added sources (but not removed yet)
-         */
-        this.sources = [];
-        /**
-         * For each source: it stores a subscription responsible for
-         * passing all values from source to the consumer
-         */
-        this.subscriptionsToSources = new Map();
-        /**
-         * Observable with all sources merged.
-         *
-         * Only after subscribing to it, under the hood it subscribes to the source observables.
-         * When the number of subscribers drops to 0, it unsubscribes from all source observables.
-         * But if later on something subscribes to it again, it subscribes to the source observables again.
-         *
-         * It multicasts the emissions for each subscriber.
-         */
-        this.output$ = new Observable((consumer) => {
-            // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
-            // that is piped right after this observable.
-            // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
-            // from this observable (by the nature `refCount`-nature of the `share()` operator).
-            this.consumer = consumer;
-            this.bindAllSourcesToConsumer(consumer);
-            return () => {
-                this.consumer = null;
-                this.unbindAllSourcesFromConsumer();
-            };
-        }).pipe(share());
-        /**
-         * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
-         * For more, see docs of the `output$` observable;
-         */
-        this.consumer = null;
-    }
-    /**
-     * Registers the given source to pass its values to the `output$` observable.
-     *
-     * It does nothing, when the source has been already added (but not removed yet).
-     */
-    add(source) {
-        if (this.has(source)) {
-            return;
-        }
-        if (this.consumer) {
-            this.bindSourceToConsumer(source, this.consumer);
-        }
-        this.sources.push(source);
-    }
-    /**
-     * Starts passing all values from already added sources to consumer
-     */
-    bindAllSourcesToConsumer(consumer) {
-        this.sources.forEach((source) => this.bindSourceToConsumer(source, consumer));
-    }
-    /**
-     * Stops passing all values from already added sources to consumer
-     * (if any consumer is active at the moment)
-     */
-    unbindAllSourcesFromConsumer() {
-        this.sources.forEach((source) => this.unbindSourceFromConsumer(source));
-    }
-    /**
-     * Starts passing all values from a single source to consumer
-     */
-    bindSourceToConsumer(source, consumer) {
-        const subscriptionToSource = source.subscribe((val) => consumer.next(val)); // passes all emissions from source to consumer
-        this.subscriptionsToSources.set(source, subscriptionToSource);
-    }
-    /**
-     * Stops passing all values from a single source to consumer
-     * (if any consumer is active at the moment)
-     */
-    unbindSourceFromConsumer(source) {
-        const subscriptionToSource = this.subscriptionsToSources.get(source);
-        if (subscriptionToSource !== undefined) {
-            subscriptionToSource.unsubscribe();
-            this.subscriptionsToSources.delete(source);
-        }
-    }
-    /**
-     * Unregisters the given source so it stops passing its values to `output$` observable.
-     *
-     * Should be used when a source is no longer maintained **to avoid memory leaks**.
-     */
-    remove(source) {
-        // clear binding from source to consumer (if any consumer exists at the moment)
-        this.unbindSourceFromConsumer(source);
-        // remove source from array
-        let i;
-        if ((i = this.sources.findIndex((s) => s === source)) !== -1) {
-            this.sources.splice(i, 1);
-        }
-    }
-    /**
-     * Returns whether the given source has been already addded
-     */
-    has(source) {
-        return this.sources.includes(source);
-    }
-}
-
-/**
- * A service to register and observe event sources. Events are driven by event types, which are class signatures
- * for the given event.
- *
- * It is possible to register multiple sources to a single event, even without
- * knowing as multiple decoupled features can attach sources to the same
- * event type.
- */
-class EventService {
-    constructor() {
-        /**
-         * The various events meta are collected in a map, stored by the event type class
-         */
-        this.eventsMeta = new Map();
-    }
-    /**
-     * Register an event source for the given event type.
-     *
-     * CAUTION: To avoid memory leaks, the returned teardown function should be called
-     *  when the event source is no longer maintained by its creator
-     * (i.e. in `ngOnDestroy` if the event source was registered in the component).
-     *
-     * @param eventType the event type
-     * @param source$ an observable that represents the source
-     *
-     * @returns a teardown function which unregisters the given event source
-     */
-    register(eventType, source$) {
-        const eventMeta = this.getEventMeta(eventType);
-        if (eventMeta.mergingSubject.has(source$)) {
-            if (isDevMode()) {
-                console.warn(`EventService: the event source`, source$, `has been already registered for the type`, eventType);
-            }
-        }
-        else {
-            eventMeta.mergingSubject.add(source$);
-        }
-        return () => eventMeta.mergingSubject.remove(source$);
-    }
-    /**
-     * Returns a stream of events for the given event type
-     * @param eventTypes event type
-     */
-    get(eventType) {
-        let output$ = this.getEventMeta(eventType).mergingSubject.output$;
-        if (isDevMode()) {
-            output$ = this.getValidatedEventStream(output$, eventType);
-        }
-        return output$;
-    }
-    /**
-     * Dispatches an instance of an individual event.
-     */
-    dispatch(event) {
-        const eventType = event.constructor;
-        const inputSubject$ = this.getInputSubject(eventType);
-        inputSubject$.next(event);
-    }
-    /**
-     * Returns the input subject used to dispatch a single event.
-     * The subject is created on demand, when it's needed for the first time.
-     * @param eventType type of event
-     */
-    getInputSubject(eventType) {
-        const eventMeta = this.getEventMeta(eventType);
-        if (!eventMeta.inputSubject$) {
-            eventMeta.inputSubject$ = new Subject();
-            this.register(eventType, eventMeta.inputSubject$);
-        }
-        return eventMeta.inputSubject$;
-    }
-    /**
-     * Returns the event meta object for the given event type
-     */
-    getEventMeta(eventType) {
-        if (isDevMode()) {
-            this.validateEventType(eventType);
-        }
-        if (!this.eventsMeta.get(eventType)) {
-            this.createEventMeta(eventType);
-        }
-        return this.eventsMeta.get(eventType);
-    }
-    /**
-     * Creates the event meta object for the given event type
-     */
-    createEventMeta(eventType) {
-        this.eventsMeta.set(eventType, {
-            inputSubject$: null,
-            mergingSubject: new MergingSubject(),
-        });
-    }
-    /**
-     * Checks if the event type is a valid type (is a class with constructor).
-     *
-     * Should be used only in dev mode.
-     */
-    validateEventType(eventType) {
-        if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
-            throw new Error(`EventService:  ${eventType} is not a valid event type. Please provide a class reference.`);
-        }
-    }
-    /**
-     * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
-     *
-     * Should be used only in dev mode.
-     */
-    getValidatedEventStream(source$, eventType) {
-        return source$.pipe(tap((event) => {
-            if (!(event instanceof eventType)) {
-                console.warn(`EventService: The stream`, source$, `emitted the event`, event, `that is not an instance of the declared type`, eventType.name);
-            }
-        }));
-    }
-}
-EventService.ɵprov = ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
-EventService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
 ];
 
 /**
@@ -6192,6 +11416,70 @@ StoreFinderOccModule.decorators = [
             },] }
 ];
 
+class AnonymousConsentNormalizer {
+    constructor(anonymousConsentsService) {
+        this.anonymousConsentsService = anonymousConsentsService;
+    }
+    convert(source, target = []) {
+        target = this.anonymousConsentsService.decodeAndDeserialize(source);
+        return target;
+    }
+}
+AnonymousConsentNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
+AnonymousConsentNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+AnonymousConsentNormalizer.ctorParameters = () => [
+    { type: AnonymousConsentsService }
+];
+
+class OccReturnRequestNormalizer {
+    constructor(converter) {
+        this.converter = converter;
+    }
+    convert(source, target) {
+        if (target === undefined) {
+            target = Object.assign({}, source);
+        }
+        if (source.returnEntries) {
+            target.returnEntries = source.returnEntries.map((entry) => (Object.assign(Object.assign({}, entry), { orderEntry: this.convertOrderEntry(entry.orderEntry) })));
+        }
+        return target;
+    }
+    convertOrderEntry(source) {
+        return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+    }
+}
+OccReturnRequestNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
+OccReturnRequestNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+OccReturnRequestNormalizer.ctorParameters = () => [
+    { type: ConverterService }
+];
+
+class OccUserInterestsNormalizer {
+    constructor(converter) {
+        this.converter = converter;
+    }
+    convert(source, target) {
+        if (target === undefined) {
+            target = Object.assign({}, source);
+        }
+        if (source && source.results) {
+            target.results = source.results.map((result) => (Object.assign(Object.assign({}, result), { product: this.converter.convert(result.product, PRODUCT_NORMALIZER) })));
+        }
+        return target;
+    }
+}
+OccUserInterestsNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
+OccUserInterestsNormalizer.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+OccUserInterestsNormalizer.ctorParameters = () => [
+    { type: ConverterService }
+];
+
 const ANONYMOUS_CONSENT_NORMALIZER = new InjectionToken('AnonymousConsentNormalizer');
 
 const CONSENT_TEMPLATE_NORMALIZER = new InjectionToken('ConsentTemplateNormalizer');
@@ -6218,6 +11506,71 @@ OccAnonymousConsentTemplatesAdapter.decorators = [
     { type: Injectable }
 ];
 OccAnonymousConsentTemplatesAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: ConverterService }
+];
+
+const CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new InjectionToken('CustomerCouponSearchResultNormalizer');
+
+class OccCustomerCouponAdapter {
+    constructor(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    getCustomerCoupons(userId, pageSize, currentPage, sort) {
+        // Currently OCC only supports calls for customer coupons in case of logged users
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            return of({});
+        }
+        const url = this.occEndpoints.getUrl('customerCoupons', { userId });
+        let params = new HttpParams().set('sort', sort ? sort : 'startDate:asc');
+        if (pageSize) {
+            params = params.set('pageSize', pageSize.toString());
+        }
+        if (currentPage) {
+            params = params.set('currentPage', currentPage.toString());
+        }
+        const headers = this.newHttpHeader();
+        return this.http
+            .get(url, { headers, params })
+            .pipe(this.converter.pipeable(CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER));
+    }
+    turnOffNotification(userId, couponCode) {
+        const url = this.occEndpoints.getUrl('couponNotification', {
+            userId,
+            couponCode,
+        });
+        const headers = this.newHttpHeader();
+        return this.http.delete(url, { headers });
+    }
+    turnOnNotification(userId, couponCode) {
+        const url = this.occEndpoints.getUrl('couponNotification', {
+            userId,
+            couponCode,
+        });
+        const headers = this.newHttpHeader();
+        return this.http.post(url, { headers });
+    }
+    claimCustomerCoupon(userId, couponCode) {
+        const url = this.occEndpoints.getUrl('claimCoupon', {
+            userId,
+            couponCode,
+        });
+        const headers = this.newHttpHeader();
+        return this.http.post(url, { headers });
+    }
+    newHttpHeader() {
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+    }
+}
+OccCustomerCouponAdapter.decorators = [
+    { type: Injectable }
+];
+OccCustomerCouponAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
@@ -6340,6 +11693,134 @@ OccUserConsentAdapter.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService },
     { type: ConverterService }
+];
+
+const PRODUCT_INTERESTS_NORMALIZER = new InjectionToken('ProductInterestsNormalizer');
+
+const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+});
+class OccUserInterestsAdapter {
+    constructor(http, occEndpoints, config, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.config = config;
+        this.converter = converter;
+    }
+    getInterests(userId, pageSize, currentPage, sort, productCode, notificationType) {
+        let params = new HttpParams().set('sort', sort ? sort : 'name:asc');
+        if (pageSize) {
+            params = params.set('pageSize', pageSize.toString());
+        }
+        if (currentPage) {
+            params = params.set('currentPage', currentPage.toString());
+        }
+        if (productCode) {
+            params = params.set('productCode', productCode);
+        }
+        if (notificationType) {
+            params = params.set('notificationType', notificationType.toString());
+        }
+        return this.http
+            .get(this.occEndpoints.getUrl('getProductInterests', { userId }), {
+            headers,
+            params,
+        })
+            .pipe(this.converter.pipeable(PRODUCT_INTERESTS_NORMALIZER), catchError((error) => throwError(error)));
+    }
+    removeInterest(userId, item) {
+        const r = [];
+        item.productInterestEntry.forEach((entry) => {
+            const params = new HttpParams()
+                .set('productCode', item.product.code)
+                .set('notificationType', entry.interestType);
+            r.push(this.http
+                .delete(this.occEndpoints.getUrl('productInterests', { userId }), {
+                params: params,
+            })
+                .pipe(catchError((error) => throwError(error))));
+        });
+        return forkJoin(r);
+    }
+    addInterest(userId, productCode, notificationType) {
+        const params = new HttpParams()
+            .set('productCode', productCode)
+            .set('notificationType', notificationType.toString());
+        return this.http
+            .post(this.occEndpoints.getUrl('productInterests', { userId }), {}, {
+            headers,
+            params,
+        })
+            .pipe(catchError((error) => throwError(error)));
+    }
+}
+OccUserInterestsAdapter.decorators = [
+    { type: Injectable }
+];
+OccUserInterestsAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: OccConfig },
+    { type: ConverterService }
+];
+
+const NOTIFICATION_PREFERENCE_SERIALIZER = new InjectionToken('NotificationPreferenceSerializer');
+const NOTIFICATION_PREFERENCE_NORMALIZER = new InjectionToken('NotificationPreferenceNormalizer');
+
+class UserNotificationPreferenceAdapter {
+}
+
+class UserNotificationPreferenceConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    loadAll(userId) {
+        return this.adapter.loadAll(userId);
+    }
+    update(userId, preferences) {
+        return this.adapter.update(userId, preferences);
+    }
+}
+UserNotificationPreferenceConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
+UserNotificationPreferenceConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+UserNotificationPreferenceConnector.ctorParameters = () => [
+    { type: UserNotificationPreferenceAdapter }
+];
+
+const headers$1 = new HttpHeaders({
+    'Content-Type': 'application/json',
+});
+class OccUserNotificationPreferenceAdapter {
+    constructor(http, converter, occEndpoints) {
+        this.http = http;
+        this.converter = converter;
+        this.occEndpoints = occEndpoints;
+    }
+    loadAll(userId) {
+        return this.http
+            .get(this.occEndpoints.getUrl('notificationPreference', { userId }), {
+            headers: headers$1,
+        })
+            .pipe(map((list) => list.preferences), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), catchError((error) => throwError(error)));
+    }
+    update(userId, preferences) {
+        preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
+        return this.http
+            .patch(this.occEndpoints.getUrl('notificationPreference', { userId }), { preferences: preferences }, { headers: headers$1 })
+            .pipe(catchError((error) => throwError(error)));
+    }
+}
+OccUserNotificationPreferenceAdapter.decorators = [
+    { type: Injectable }
+];
+OccUserNotificationPreferenceAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: ConverterService },
+    { type: OccEndpointsService }
 ];
 
 const ORDER_HISTORY_NORMALIZER = new InjectionToken('OrderHistoryNormalizer');
@@ -6513,6 +11994,75 @@ OccUserPaymentAdapter.ctorParameters = () => [
     { type: ConverterService }
 ];
 
+const REPLENISHMENT_ORDER_HISTORY_NORMALIZER = new InjectionToken('ReplenishmentOrderHistoryNormalizer');
+
+class OccUserReplenishmentOrderAdapter {
+    constructor(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    load(userId, replenishmentOrderCode) {
+        return this.http
+            .get(this.occEndpoints.getUrl('replenishmentOrderDetails', {
+            userId,
+            replenishmentOrderCode,
+        }))
+            .pipe(this.converter.pipeable(REPLENISHMENT_ORDER_NORMALIZER));
+    }
+    loadReplenishmentDetailsHistory(userId, replenishmentOrderCode, pageSize, currentPage, sort) {
+        const params = {};
+        if (pageSize) {
+            params['pageSize'] = pageSize.toString();
+        }
+        if (currentPage) {
+            params['currentPage'] = currentPage.toString();
+        }
+        if (sort) {
+            params['sort'] = sort.toString();
+        }
+        return this.http
+            .get(this.occEndpoints.getUrl('replenishmentOrderDetailsHistory', {
+            userId,
+            replenishmentOrderCode,
+        }, params))
+            .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
+    }
+    cancelReplenishmentOrder(userId, replenishmentOrderCode) {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        return this.http
+            .patch(this.occEndpoints.getUrl('cancelReplenishmentOrder', {
+            userId,
+            replenishmentOrderCode,
+        }), {}, { headers })
+            .pipe(this.converter.pipeable(REPLENISHMENT_ORDER_NORMALIZER));
+    }
+    loadHistory(userId, pageSize, currentPage, sort) {
+        const params = {};
+        if (pageSize) {
+            params['pageSize'] = pageSize.toString();
+        }
+        if (currentPage) {
+            params['currentPage'] = currentPage.toString();
+        }
+        if (sort) {
+            params['sort'] = sort.toString();
+        }
+        const url = this.occEndpoints.getUrl('replenishmentOrderHistory', { userId }, params);
+        return this.http
+            .get(url)
+            .pipe(this.converter.pipeable(REPLENISHMENT_ORDER_HISTORY_NORMALIZER));
+    }
+}
+OccUserReplenishmentOrderAdapter.decorators = [
+    { type: Injectable }
+];
+OccUserReplenishmentOrderAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: ConverterService }
+];
+
 const USER_NORMALIZER = new InjectionToken('UserNormalizer');
 const USER_SERIALIZER = new InjectionToken('UserSerializer');
 const USER_SIGN_UP_SERIALIZER = new InjectionToken('UserSignUpSerializer');
@@ -6617,9 +12167,6 @@ OccUserAdapter.ctorParameters = () => [
 class AnonymousConsentTemplatesAdapter {
 }
 
-class UserAddressAdapter {
-}
-
 class UserConsentAdapter {
 }
 
@@ -6629,12 +12176,7 @@ class UserCostCenterAdapter {
 class CustomerCouponAdapter {
 }
 
-const PRODUCT_INTERESTS_NORMALIZER = new InjectionToken('ProductInterestsNormalizer');
-
 class UserInterestsAdapter {
-}
-
-class UserNotificationPreferenceAdapter {
 }
 
 class UserOrderAdapter {
@@ -6643,137 +12185,38 @@ class UserOrderAdapter {
 class UserPaymentAdapter {
 }
 
+class UserReplenishmentOrderAdapter {
+}
+
+class UserReplenishmentOrderConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    load(userId, replenishmentOrderCode) {
+        return this.adapter.load(userId, replenishmentOrderCode);
+    }
+    loadReplenishmentDetailsHistory(userId, replenishmentOrderCode, pageSize, currentPage, sort) {
+        return this.adapter.loadReplenishmentDetailsHistory(userId, replenishmentOrderCode, pageSize, currentPage, sort);
+    }
+    cancelReplenishmentOrder(userId, replenishmentOrderCode) {
+        return this.adapter.cancelReplenishmentOrder(userId, replenishmentOrderCode);
+    }
+    loadHistory(userId, pageSize, currentPage, sort) {
+        return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
+    }
+}
+UserReplenishmentOrderConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserReplenishmentOrderConnector_Factory() { return new UserReplenishmentOrderConnector(ɵɵinject(UserReplenishmentOrderAdapter)); }, token: UserReplenishmentOrderConnector, providedIn: "root" });
+UserReplenishmentOrderConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+UserReplenishmentOrderConnector.ctorParameters = () => [
+    { type: UserReplenishmentOrderAdapter }
+];
+
 class UserAdapter {
 }
-
-const CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new InjectionToken('CustomerCouponSearchResultNormalizer');
-
-class OccCustomerCouponAdapter {
-    constructor(http, occEndpoints, converter) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
-        this.converter = converter;
-    }
-    getCustomerCoupons(userId, pageSize, currentPage, sort) {
-        // Currently OCC only supports calls for customer coupons in case of logged users
-        if (userId === OCC_USER_ID_ANONYMOUS) {
-            return of({});
-        }
-        const url = this.occEndpoints.getUrl('customerCoupons', { userId });
-        let params = new HttpParams().set('sort', sort ? sort : 'startDate:asc');
-        if (pageSize) {
-            params = params.set('pageSize', pageSize.toString());
-        }
-        if (currentPage) {
-            params = params.set('currentPage', currentPage.toString());
-        }
-        const headers = this.newHttpHeader();
-        return this.http
-            .get(url, { headers, params })
-            .pipe(this.converter.pipeable(CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER));
-    }
-    turnOffNotification(userId, couponCode) {
-        const url = this.occEndpoints.getUrl('couponNotification', {
-            userId,
-            couponCode,
-        });
-        const headers = this.newHttpHeader();
-        return this.http.delete(url, { headers });
-    }
-    turnOnNotification(userId, couponCode) {
-        const url = this.occEndpoints.getUrl('couponNotification', {
-            userId,
-            couponCode,
-        });
-        const headers = this.newHttpHeader();
-        return this.http.post(url, { headers });
-    }
-    claimCustomerCoupon(userId, couponCode) {
-        const url = this.occEndpoints.getUrl('claimCoupon', {
-            userId,
-            couponCode,
-        });
-        const headers = this.newHttpHeader();
-        return this.http.post(url, { headers });
-    }
-    newHttpHeader() {
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-    }
-}
-OccCustomerCouponAdapter.decorators = [
-    { type: Injectable }
-];
-OccCustomerCouponAdapter.ctorParameters = () => [
-    { type: HttpClient },
-    { type: OccEndpointsService },
-    { type: ConverterService }
-];
-
-class AnonymousConsentNormalizer {
-    constructor(anonymousConsentsService) {
-        this.anonymousConsentsService = anonymousConsentsService;
-    }
-    convert(source, target = []) {
-        target = this.anonymousConsentsService.decodeAndDeserialize(source);
-        return target;
-    }
-}
-AnonymousConsentNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
-AnonymousConsentNormalizer.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-AnonymousConsentNormalizer.ctorParameters = () => [
-    { type: AnonymousConsentsService }
-];
-
-class OccReturnRequestNormalizer {
-    constructor(converter) {
-        this.converter = converter;
-    }
-    convert(source, target) {
-        if (target === undefined) {
-            target = Object.assign({}, source);
-        }
-        if (source.returnEntries) {
-            target.returnEntries = source.returnEntries.map((entry) => (Object.assign(Object.assign({}, entry), { orderEntry: this.convertOrderEntry(entry.orderEntry) })));
-        }
-        return target;
-    }
-    convertOrderEntry(source) {
-        return Object.assign(Object.assign({}, source), { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
-    }
-}
-OccReturnRequestNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
-OccReturnRequestNormalizer.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-OccReturnRequestNormalizer.ctorParameters = () => [
-    { type: ConverterService }
-];
-
-class OccUserInterestsNormalizer {
-    constructor(converter) {
-        this.converter = converter;
-    }
-    convert(source, target) {
-        if (target === undefined) {
-            target = Object.assign({}, source);
-        }
-        if (source && source.results) {
-            target.results = source.results.map((result) => (Object.assign(Object.assign({}, result), { product: this.converter.convert(result.product, PRODUCT_NORMALIZER) })));
-        }
-        return target;
-    }
-}
-OccUserInterestsNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccUserInterestsNormalizer_Factory() { return new OccUserInterestsNormalizer(ɵɵinject(ConverterService)); }, token: OccUserInterestsNormalizer, providedIn: "root" });
-OccUserInterestsNormalizer.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-OccUserInterestsNormalizer.ctorParameters = () => [
-    { type: ConverterService }
-];
 
 const defaultOccUserConfig = {
     backend: {
@@ -6841,129 +12284,6 @@ OccUserCostCenterAdapter.ctorParameters = () => [
     { type: ConverterService }
 ];
 
-const headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-});
-class OccUserInterestsAdapter {
-    constructor(http, occEndpoints, config, converter) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
-        this.config = config;
-        this.converter = converter;
-    }
-    getInterests(userId, pageSize, currentPage, sort, productCode, notificationType) {
-        let params = new HttpParams().set('sort', sort ? sort : 'name:asc');
-        if (pageSize) {
-            params = params.set('pageSize', pageSize.toString());
-        }
-        if (currentPage) {
-            params = params.set('currentPage', currentPage.toString());
-        }
-        if (productCode) {
-            params = params.set('productCode', productCode);
-        }
-        if (notificationType) {
-            params = params.set('notificationType', notificationType.toString());
-        }
-        return this.http
-            .get(this.occEndpoints.getUrl('getProductInterests', { userId }), {
-            headers,
-            params,
-        })
-            .pipe(this.converter.pipeable(PRODUCT_INTERESTS_NORMALIZER), catchError((error) => throwError(error)));
-    }
-    removeInterest(userId, item) {
-        const r = [];
-        item.productInterestEntry.forEach((entry) => {
-            const params = new HttpParams()
-                .set('productCode', item.product.code)
-                .set('notificationType', entry.interestType);
-            r.push(this.http
-                .delete(this.occEndpoints.getUrl('productInterests', { userId }), {
-                params: params,
-            })
-                .pipe(catchError((error) => throwError(error))));
-        });
-        return forkJoin(r);
-    }
-    addInterest(userId, productCode, notificationType) {
-        const params = new HttpParams()
-            .set('productCode', productCode)
-            .set('notificationType', notificationType.toString());
-        return this.http
-            .post(this.occEndpoints.getUrl('productInterests', { userId }), {}, {
-            headers,
-            params,
-        })
-            .pipe(catchError((error) => throwError(error)));
-    }
-}
-OccUserInterestsAdapter.decorators = [
-    { type: Injectable }
-];
-OccUserInterestsAdapter.ctorParameters = () => [
-    { type: HttpClient },
-    { type: OccEndpointsService },
-    { type: OccConfig },
-    { type: ConverterService }
-];
-
-const NOTIFICATION_PREFERENCE_SERIALIZER = new InjectionToken('NotificationPreferenceSerializer');
-const NOTIFICATION_PREFERENCE_NORMALIZER = new InjectionToken('NotificationPreferenceNormalizer');
-
-class UserNotificationPreferenceConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    loadAll(userId) {
-        return this.adapter.loadAll(userId);
-    }
-    update(userId, preferences) {
-        return this.adapter.update(userId, preferences);
-    }
-}
-UserNotificationPreferenceConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceConnector_Factory() { return new UserNotificationPreferenceConnector(ɵɵinject(UserNotificationPreferenceAdapter)); }, token: UserNotificationPreferenceConnector, providedIn: "root" });
-UserNotificationPreferenceConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UserNotificationPreferenceConnector.ctorParameters = () => [
-    { type: UserNotificationPreferenceAdapter }
-];
-
-const headers$1 = new HttpHeaders({
-    'Content-Type': 'application/json',
-});
-class OccUserNotificationPreferenceAdapter {
-    constructor(http, converter, occEndpoints) {
-        this.http = http;
-        this.converter = converter;
-        this.occEndpoints = occEndpoints;
-    }
-    loadAll(userId) {
-        return this.http
-            .get(this.occEndpoints.getUrl('notificationPreference', { userId }), {
-            headers: headers$1,
-        })
-            .pipe(map((list) => list.preferences), this.converter.pipeableMany(NOTIFICATION_PREFERENCE_NORMALIZER), catchError((error) => throwError(error)));
-    }
-    update(userId, preferences) {
-        preferences = this.converter.convert(preferences, NOTIFICATION_PREFERENCE_SERIALIZER);
-        return this.http
-            .patch(this.occEndpoints.getUrl('notificationPreference', { userId }), { preferences: preferences }, { headers: headers$1 })
-            .pipe(catchError((error) => throwError(error)));
-    }
-}
-OccUserNotificationPreferenceAdapter.decorators = [
-    { type: Injectable }
-];
-OccUserNotificationPreferenceAdapter.ctorParameters = () => [
-    { type: HttpClient },
-    { type: ConverterService },
-    { type: OccEndpointsService }
-];
-
 class UserOccModule {
 }
 UserOccModule.decorators = [
@@ -7004,6 +12324,10 @@ UserOccModule.decorators = [
                         provide: ANONYMOUS_CONSENT_NORMALIZER,
                         useExisting: AnonymousConsentNormalizer,
                         multi: true,
+                    },
+                    {
+                        provide: UserReplenishmentOrderAdapter,
+                        useClass: OccUserReplenishmentOrderAdapter,
                     },
                 ],
             },] }
@@ -8499,6 +13823,16 @@ var Occ;
         Period["QUARTER"] = "QUARTER";
         Period["YEAR"] = "YEAR";
     })(Period = Occ.Period || (Occ.Period = {}));
+    let DaysOfWeek;
+    (function (DaysOfWeek) {
+        DaysOfWeek["MONDAY"] = "MONDAY";
+        DaysOfWeek["TUESDAY"] = "TUESDAY";
+        DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
+        DaysOfWeek["THURSDAY"] = "THURSDAY";
+        DaysOfWeek["FRIDAY"] = "FRIDAY";
+        DaysOfWeek["SATURDAY"] = "SATURDAY";
+        DaysOfWeek["SUNDAY"] = "SUNDAY";
+    })(DaysOfWeek = Occ.DaysOfWeek || (Occ.DaysOfWeek = {}));
     let OrderApprovalDecisionValue;
     (function (OrderApprovalDecisionValue) {
         OrderApprovalDecisionValue["APPROVE"] = "APPROVE";
@@ -8713,73 +14047,6 @@ const interceptors$1 = [
     },
 ];
 
-/**
- * Creates an instance of the given class and fills its properties with the given data.
- *
- * @param type reference to the class
- * @param data object with properties to be copied to the class
- */
-function createFrom(type, data) {
-    return Object.assign(new type(), data);
-}
-
-/**
- * Registers streams of ngrx actions as events source streams
- */
-class StateEventService {
-    constructor(actionsSubject, eventService) {
-        this.actionsSubject = actionsSubject;
-        this.eventService = eventService;
-    }
-    /**
-     * Registers an event source stream of specific events
-     * mapped from a given action type.
-     *
-     * @param mapping mapping from action to event
-     *
-     * @returns a teardown function that unregisters the event source
-     */
-    register(mapping) {
-        return this.eventService.register(mapping.event, this.getFromAction(mapping));
-    }
-    /**
-     * Returns a stream of specific events mapped from a specific action.
-     * @param mapping mapping from action to event
-     */
-    getFromAction(mapping) {
-        return this.actionsSubject
-            .pipe(ofType(...[].concat(mapping.action)))
-            .pipe(map((action) => this.createEvent(action, mapping.event, mapping.factory)));
-    }
-    /**
-     * Creates an event instance for given class out from the action object.
-     * Unless the `factory` parameter is given, the action's `payload` is used
-     * as the argument for the event's constructor.
-     *
-     * @param action instance of an Action
-     * @param mapping mapping from action to event
-     * @param factory optional function getting an action instance and returning an event instance
-     *
-     * @returns instance of an Event
-     */
-    createEvent(action, eventType, factory) {
-        var _a;
-        return factory
-            ? factory(action)
-            : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
-    }
-}
-StateEventService.ɵprov = ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(ɵɵinject(ActionsSubject), ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
-StateEventService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-StateEventService.ctorParameters = () => [
-    { type: ActionsSubject },
-    { type: EventService }
-];
-
 class StatePersistenceService {
     constructor(winRef) {
         this.winRef = winRef;
@@ -8832,1672 +14099,194 @@ StatePersistenceService.ctorParameters = () => [
     { type: WindowRef }
 ];
 
-const PROCESS_FEATURE = 'process';
-
-function getProcessState() {
-    return createFeatureSelector(PROCESS_FEATURE);
-}
-
-function getProcessStateFactory(processId) {
-    return createSelector(getProcessState(), (entityState) => entityLoaderStateSelector(entityState, processId));
-}
-function getProcessLoadingFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderLoadingSelector(loaderState));
-}
-function getProcessSuccessFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderSuccessSelector(loaderState));
-}
-function getProcessErrorFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), (loaderState) => loaderErrorSelector(loaderState));
-}
-
-var process_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getProcessStateFactory: getProcessStateFactory,
-    getProcessLoadingFactory: getProcessLoadingFactory,
-    getProcessSuccessFactory: getProcessSuccessFactory,
-    getProcessErrorFactory: getProcessErrorFactory
-});
-
-const LOAD_BILLING_COUNTRIES = '[User] Load Billing Countries';
-const LOAD_BILLING_COUNTRIES_FAIL = '[User] Load Billing Countries Fail';
-const LOAD_BILLING_COUNTRIES_SUCCESS = '[User] Load Billing Countries Success';
-class LoadBillingCountries {
-    constructor() {
-        this.type = LOAD_BILLING_COUNTRIES;
-    }
-}
-class LoadBillingCountriesFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_BILLING_COUNTRIES_FAIL;
-    }
-}
-class LoadBillingCountriesSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_BILLING_COUNTRIES_SUCCESS;
-    }
-}
-
-const LOAD_CONSIGNMENT_TRACKING = '[User] Load Consignment Tracking';
-const LOAD_CONSIGNMENT_TRACKING_FAIL = '[User] Load Consignment Tracking Fail';
-const LOAD_CONSIGNMENT_TRACKING_SUCCESS = '[User] Load Consignment Tracking Success';
-const CLEAR_CONSIGNMENT_TRACKING = '[User] Clear Consignment Tracking';
-class LoadConsignmentTracking {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CONSIGNMENT_TRACKING;
-    }
-}
-class LoadConsignmentTrackingFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CONSIGNMENT_TRACKING_FAIL;
-    }
-}
-class LoadConsignmentTrackingSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CONSIGNMENT_TRACKING_SUCCESS;
-    }
-}
-class ClearConsignmentTracking {
-    constructor() {
-        this.type = CLEAR_CONSIGNMENT_TRACKING;
-    }
-}
-
-const LOAD_DELIVERY_COUNTRIES = '[User] Load Delivery Countries';
-const LOAD_DELIVERY_COUNTRIES_FAIL = '[User] Load Delivery Countries Fail';
-const LOAD_DELIVERY_COUNTRIES_SUCCESS = '[User] Load Delivery Countries Success';
-class LoadDeliveryCountries {
-    constructor() {
-        this.type = LOAD_DELIVERY_COUNTRIES;
-    }
-}
-class LoadDeliveryCountriesFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_DELIVERY_COUNTRIES_FAIL;
-    }
-}
-class LoadDeliveryCountriesSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_DELIVERY_COUNTRIES_SUCCESS;
-    }
-}
-
-const FORGOT_PASSWORD_EMAIL_REQUEST = '[User] Forgot Password Email Request';
-const FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS = '[User] Forgot Password Email Request Success';
-const FORGOT_PASSWORD_EMAIL_REQUEST_FAIL = '[User] Forgot Password Email Request Fail';
-class ForgotPasswordEmailRequest {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = FORGOT_PASSWORD_EMAIL_REQUEST;
-    }
-}
-class ForgotPasswordEmailRequestFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = FORGOT_PASSWORD_EMAIL_REQUEST_FAIL;
-    }
-}
-class ForgotPasswordEmailRequestSuccess {
-    constructor() {
-        this.type = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
-    }
-}
-
-const USER_FEATURE = 'user';
-const UPDATE_EMAIL_PROCESS_ID = 'updateEmail';
-const UPDATE_PASSWORD_PROCESS_ID = 'updatePassword';
-const UPDATE_USER_DETAILS_PROCESS_ID = 'updateUserDetails';
-const REGISTER_USER_PROCESS_ID = 'registerUser';
-const REMOVE_USER_PROCESS_ID = 'removeUser';
-const GIVE_CONSENT_PROCESS_ID = 'giveConsent';
-const WITHDRAW_CONSENT_PROCESS_ID = 'withdrawConsent';
-const UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID = 'updateNotificationPreferences';
-const ADD_PRODUCT_INTEREST_PROCESS_ID = 'addProductInterests';
-const REMOVE_PRODUCT_INTERESTS_PROCESS_ID = 'removeProductInterests';
-const CANCEL_ORDER_PROCESS_ID = 'cancelOrder';
-const CANCEL_RETURN_PROCESS_ID = 'cancelReturn';
-const USER_CONSENTS = '[User] User Consents';
-const USER_PAYMENT_METHODS = '[User] User Payment Methods';
-const USER_ORDERS = '[User] User Orders';
-const USER_ADDRESSES = '[User] User Addresses';
-const USER_RETURN_REQUESTS = '[User] Order Return Requests';
-const USER_RETURN_REQUEST_DETAILS = '[User] Return Request Details';
-const USER_ORDER_DETAILS = '[User] User Order Details';
-const USER_COST_CENTERS = '[User] User Cost Centers';
-const REGIONS = '[User] Regions';
-const CUSTOMER_COUPONS = '[User] Customer Coupons';
-const SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'subscribeCustomerCoupon';
-const UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'unsubscribeCustomerCoupon';
-const CLAIM_CUSTOMER_COUPON_PROCESS_ID = 'claimCustomerCoupon';
-const NOTIFICATION_PREFERENCES = '[User] Notification Preferences';
-const PRODUCT_INTERESTS = '[User] Product Interests';
-
-const LOAD_ORDER_DETAILS = '[User] Load Order Details';
-const LOAD_ORDER_DETAILS_FAIL = '[User] Load Order Details Fail';
-const LOAD_ORDER_DETAILS_SUCCESS = '[User] Load Order Details Success';
-const CLEAR_ORDER_DETAILS = '[User] Clear Order Details';
-const CANCEL_ORDER = '[User] Cancel Order';
-const CANCEL_ORDER_FAIL = '[User] Cancel Order Fail';
-const CANCEL_ORDER_SUCCESS = '[User] Cancel Order Success';
-const RESET_CANCEL_ORDER_PROCESS = '[User] Reset Cancel Order Process';
-class LoadOrderDetails extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_ORDER_DETAILS);
-        this.payload = payload;
-        this.type = LOAD_ORDER_DETAILS;
-    }
-}
-class LoadOrderDetailsFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_ORDER_DETAILS, payload);
-        this.payload = payload;
-        this.type = LOAD_ORDER_DETAILS_FAIL;
-    }
-}
-class LoadOrderDetailsSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_ORDER_DETAILS);
-        this.payload = payload;
-        this.type = LOAD_ORDER_DETAILS_SUCCESS;
-    }
-}
-class ClearOrderDetails extends LoaderResetAction {
-    constructor() {
-        super(USER_ORDER_DETAILS);
-        this.type = CLEAR_ORDER_DETAILS;
-    }
-}
-class CancelOrder extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID);
-        this.payload = payload;
-        this.type = CANCEL_ORDER;
-    }
-}
-class CancelOrderFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = CANCEL_ORDER_FAIL;
-    }
-}
-class CancelOrderSuccess extends EntitySuccessAction {
-    constructor() {
-        super(PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID);
-        this.type = CANCEL_ORDER_SUCCESS;
-    }
-}
-class ResetCancelOrderProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID);
-        this.type = RESET_CANCEL_ORDER_PROCESS;
-    }
-}
-
-const LOAD_USER_PAYMENT_METHODS = '[User] Load User Payment Methods';
-const LOAD_USER_PAYMENT_METHODS_FAIL = '[User] Load User Payment Methods Fail';
-const LOAD_USER_PAYMENT_METHODS_SUCCESS = '[User] Load User Payment Methods Success';
-const SET_DEFAULT_USER_PAYMENT_METHOD = '[User] Set Default User Payment Method';
-const SET_DEFAULT_USER_PAYMENT_METHOD_FAIL = '[User] Set Default User Payment Method Fail';
-const SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS = '[User] Set Default User Payment Method Success';
-const DELETE_USER_PAYMENT_METHOD = '[User] Delete User Payment Method';
-const DELETE_USER_PAYMENT_METHOD_FAIL = '[User] Delete User Payment Method Fail';
-const DELETE_USER_PAYMENT_METHOD_SUCCESS = '[User] Delete User  Payment Method Success';
-class LoadUserPaymentMethods extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS);
-        this.payload = payload;
-        this.type = LOAD_USER_PAYMENT_METHODS;
-    }
-}
-class LoadUserPaymentMethodsFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS, payload);
-        this.payload = payload;
-        this.type = LOAD_USER_PAYMENT_METHODS_FAIL;
-    }
-}
-class LoadUserPaymentMethodsSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS);
-        this.payload = payload;
-        this.type = LOAD_USER_PAYMENT_METHODS_SUCCESS;
-    }
-}
-class SetDefaultUserPaymentMethod extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS);
-        this.payload = payload;
-        this.type = SET_DEFAULT_USER_PAYMENT_METHOD;
-    }
-}
-class SetDefaultUserPaymentMethodFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS, payload);
-        this.payload = payload;
-        this.type = SET_DEFAULT_USER_PAYMENT_METHOD_FAIL;
-    }
-}
-class SetDefaultUserPaymentMethodSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS);
-        this.payload = payload;
-        this.type = SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS;
-    }
-}
-class DeleteUserPaymentMethod extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS);
-        this.payload = payload;
-        this.type = DELETE_USER_PAYMENT_METHOD;
-    }
-}
-class DeleteUserPaymentMethodFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS, payload);
-        this.payload = payload;
-        this.type = DELETE_USER_PAYMENT_METHOD_FAIL;
-    }
-}
-class DeleteUserPaymentMethodSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_PAYMENT_METHODS);
-        this.payload = payload;
-        this.type = DELETE_USER_PAYMENT_METHOD_SUCCESS;
-    }
-}
-
-const LOAD_REGIONS = '[User] Load Regions';
-const LOAD_REGIONS_SUCCESS = '[User] Load Regions Success';
-const LOAD_REGIONS_FAIL = '[User] Load Regions Fail';
-const CLEAR_REGIONS = '[User] Clear Regions';
-class LoadRegions extends LoaderLoadAction {
-    constructor(payload) {
-        super(REGIONS);
-        this.payload = payload;
-        this.type = LOAD_REGIONS;
-    }
-}
-class LoadRegionsFail extends LoaderFailAction {
-    constructor(payload) {
-        super(REGIONS, payload);
-        this.payload = payload;
-        this.type = LOAD_REGIONS_FAIL;
-    }
-}
-class LoadRegionsSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(REGIONS);
-        this.payload = payload;
-        this.type = LOAD_REGIONS_SUCCESS;
-    }
-}
-class ClearRegions {
-    constructor() {
-        this.type = CLEAR_REGIONS;
-    }
-}
-
-const RESET_PASSWORD = '[User] Reset Password';
-const RESET_PASSWORD_SUCCESS = '[User] Reset Password Success';
-const RESET_PASSWORD_FAIL = '[User] Reset Password Fail';
-class ResetPassword {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = RESET_PASSWORD;
-    }
-}
-class ResetPasswordFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = RESET_PASSWORD_FAIL;
-    }
-}
-class ResetPasswordSuccess {
-    constructor() {
-        this.type = RESET_PASSWORD_SUCCESS;
-    }
-}
-
-const LOAD_TITLES = '[User] Load Tiltes';
-const LOAD_TITLES_FAIL = '[User] Load Titles Fail';
-const LOAD_TITLES_SUCCESS = '[User] Load Titles Success';
-class LoadTitles {
-    constructor() {
-        this.type = LOAD_TITLES;
-    }
-}
-class LoadTitlesFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_TITLES_FAIL;
-    }
-}
-class LoadTitlesSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_TITLES_SUCCESS;
-    }
-}
-
-const UPDATE_EMAIL = '[User] Update Email';
-const UPDATE_EMAIL_ERROR = '[User] Update Email Error';
-const UPDATE_EMAIL_SUCCESS = '[User] Update Email Success';
-const RESET_EMAIL = '[User] Reset Email';
-class UpdateEmailAction extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID);
-        this.payload = payload;
-        this.type = UPDATE_EMAIL;
-    }
-}
-class UpdateEmailSuccessAction extends EntitySuccessAction {
-    constructor(newUid) {
-        super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID);
-        this.newUid = newUid;
-        this.type = UPDATE_EMAIL_SUCCESS;
-    }
-}
-class UpdateEmailErrorAction extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = UPDATE_EMAIL_ERROR;
-    }
-}
-class ResetUpdateEmailAction extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID);
-        this.type = RESET_EMAIL;
-    }
-}
-
-const UPDATE_PASSWORD = '[User] Update Password';
-const UPDATE_PASSWORD_FAIL = '[User] Update Password Fail';
-const UPDATE_PASSWORD_SUCCESS = '[User] Update Password Success';
-const UPDATE_PASSWORD_RESET = '[User] Reset Update Password Process State';
-class UpdatePassword extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID);
-        this.payload = payload;
-        this.type = UPDATE_PASSWORD;
-    }
-}
-class UpdatePasswordFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = UPDATE_PASSWORD_FAIL;
-    }
-}
-class UpdatePasswordSuccess extends EntitySuccessAction {
-    constructor() {
-        super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID);
-        this.type = UPDATE_PASSWORD_SUCCESS;
-    }
-}
-class UpdatePasswordReset extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID);
-        this.type = UPDATE_PASSWORD_RESET;
-    }
-}
-
-const LOAD_USER_ADDRESSES = '[User] Load User Addresses';
-const LOAD_USER_ADDRESSES_FAIL = '[User] Load User Addresses Fail';
-const LOAD_USER_ADDRESSES_SUCCESS = '[User] Load User Addresses Success';
-const ADD_USER_ADDRESS = '[User] Add User Address';
-const ADD_USER_ADDRESS_FAIL = '[User] Add User Address Fail';
-const ADD_USER_ADDRESS_SUCCESS = '[User] Add User Address Success';
-const UPDATE_USER_ADDRESS = '[User] Update User Address';
-const UPDATE_USER_ADDRESS_FAIL = '[User] Update User Address Fail';
-const UPDATE_USER_ADDRESS_SUCCESS = '[User] Update User Address Success';
-const DELETE_USER_ADDRESS = '[User] Delete User Address';
-const DELETE_USER_ADDRESS_FAIL = '[User] Delete User Address Fail';
-const DELETE_USER_ADDRESS_SUCCESS = '[User] Delete User Address Success';
-class LoadUserAddresses extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_ADDRESSES);
-        this.payload = payload;
-        this.type = LOAD_USER_ADDRESSES;
-    }
-}
-class LoadUserAddressesFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_ADDRESSES, payload);
-        this.payload = payload;
-        this.type = LOAD_USER_ADDRESSES_FAIL;
-    }
-}
-class LoadUserAddressesSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_ADDRESSES);
-        this.payload = payload;
-        this.type = LOAD_USER_ADDRESSES_SUCCESS;
-    }
-}
-// Adding address actions
-class AddUserAddress extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_ADDRESSES);
-        this.payload = payload;
-        this.type = ADD_USER_ADDRESS;
-    }
-}
-class AddUserAddressFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_ADDRESSES, payload);
-        this.payload = payload;
-        this.type = ADD_USER_ADDRESS_FAIL;
-    }
-}
-class AddUserAddressSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_ADDRESSES);
-        this.payload = payload;
-        this.type = ADD_USER_ADDRESS_SUCCESS;
-    }
-}
-// Updating address actions
-class UpdateUserAddress extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_ADDRESSES);
-        this.payload = payload;
-        this.type = UPDATE_USER_ADDRESS;
-    }
-}
-class UpdateUserAddressFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_ADDRESSES, payload);
-        this.payload = payload;
-        this.type = UPDATE_USER_ADDRESS_FAIL;
-    }
-}
-class UpdateUserAddressSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_ADDRESSES);
-        this.payload = payload;
-        this.type = UPDATE_USER_ADDRESS_SUCCESS;
-    }
-}
-// Deleting address actions
-class DeleteUserAddress extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_ADDRESSES);
-        this.payload = payload;
-        this.type = DELETE_USER_ADDRESS;
-    }
-}
-class DeleteUserAddressFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_ADDRESSES, payload);
-        this.payload = payload;
-        this.type = DELETE_USER_ADDRESS_FAIL;
-    }
-}
-class DeleteUserAddressSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_ADDRESSES);
-        this.payload = payload;
-        this.type = DELETE_USER_ADDRESS_SUCCESS;
-    }
-}
-
-const LOAD_USER_CONSENTS = '[User] Load User Consents';
-const LOAD_USER_CONSENTS_SUCCESS = '[User] Load User Consents Success';
-const LOAD_USER_CONSENTS_FAIL = '[User] Load User Consents Fail';
-const RESET_LOAD_USER_CONSENTS = '[User] Reset Load User Consents';
-const GIVE_USER_CONSENT = '[User] Give User Consent';
-const GIVE_USER_CONSENT_FAIL = '[User] Give User Consent Fail';
-const GIVE_USER_CONSENT_SUCCESS = '[User] Give User Consent Success';
-const RESET_GIVE_USER_CONSENT_PROCESS = '[User] Reset Give User Consent Process';
-const TRANSFER_ANONYMOUS_CONSENT = '[User] Transfer Anonymous Consent';
-const WITHDRAW_USER_CONSENT = '[User] Withdraw User Consent';
-const WITHDRAW_USER_CONSENT_FAIL = '[User] Withdraw User Consent Fail';
-const WITHDRAW_USER_CONSENT_SUCCESS = '[User] Withdraw User Consent Success';
-const RESET_WITHDRAW_USER_CONSENT_PROCESS = '[User] Reset Withdraw User Consent Process';
-class LoadUserConsents extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_CONSENTS);
-        this.payload = payload;
-        this.type = LOAD_USER_CONSENTS;
-    }
-}
-class LoadUserConsentsFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_CONSENTS, payload);
-        this.payload = payload;
-        this.type = LOAD_USER_CONSENTS_FAIL;
-    }
-}
-class LoadUserConsentsSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_CONSENTS);
-        this.payload = payload;
-        this.type = LOAD_USER_CONSENTS_SUCCESS;
-    }
-}
-class ResetLoadUserConsents extends LoaderResetAction {
-    constructor() {
-        super(USER_CONSENTS);
-        this.type = RESET_LOAD_USER_CONSENTS;
-    }
-}
-class GiveUserConsent extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID);
-        this.payload = payload;
-        this.type = GIVE_USER_CONSENT;
-    }
-}
-class GiveUserConsentFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID, payload);
-        this.type = GIVE_USER_CONSENT_FAIL;
-    }
-}
-class GiveUserConsentSuccess extends EntitySuccessAction {
-    constructor(consentTemplate) {
-        super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID);
-        this.consentTemplate = consentTemplate;
-        this.type = GIVE_USER_CONSENT_SUCCESS;
-    }
-}
-class ResetGiveUserConsentProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID);
-        this.type = RESET_GIVE_USER_CONSENT_PROCESS;
-    }
-}
-class TransferAnonymousConsent {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = TRANSFER_ANONYMOUS_CONSENT;
-    }
-}
-class WithdrawUserConsent extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID);
-        this.payload = payload;
-        this.type = WITHDRAW_USER_CONSENT;
-    }
-}
-class WithdrawUserConsentFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID, payload);
-        this.type = WITHDRAW_USER_CONSENT_FAIL;
-    }
-}
-class WithdrawUserConsentSuccess extends EntitySuccessAction {
-    constructor() {
-        super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID);
-        this.type = WITHDRAW_USER_CONSENT_SUCCESS;
-    }
-}
-class ResetWithdrawUserConsentProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID);
-        this.type = RESET_WITHDRAW_USER_CONSENT_PROCESS;
-    }
-}
-
-const LOAD_USER_DETAILS = '[User] Load User Details';
-const LOAD_USER_DETAILS_FAIL = '[User] Load User Details Fail';
-const LOAD_USER_DETAILS_SUCCESS = '[User] Load User Details Success';
-const UPDATE_USER_DETAILS = '[User] Update User Details';
-const UPDATE_USER_DETAILS_FAIL = '[User] Update User Details Fail';
-const UPDATE_USER_DETAILS_SUCCESS = '[User] Update User Details Success';
-const RESET_USER_DETAILS = '[User] Reset User Details';
-class LoadUserDetails {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_DETAILS;
-    }
-}
-class LoadUserDetailsFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_DETAILS_FAIL;
-    }
-}
-class LoadUserDetailsSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_DETAILS_SUCCESS;
-    }
-}
-class UpdateUserDetails extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = UPDATE_USER_DETAILS;
-    }
-}
-class UpdateUserDetailsFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = UPDATE_USER_DETAILS_FAIL;
-    }
-}
-class UpdateUserDetailsSuccess extends EntitySuccessAction {
-    constructor(userUpdates) {
-        super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID);
-        this.userUpdates = userUpdates;
-        this.type = UPDATE_USER_DETAILS_SUCCESS;
-    }
-}
-class ResetUpdateUserDetails extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID);
-        this.type = RESET_USER_DETAILS;
-    }
-}
-
-const CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
-class ClearUserMiscsData {
-    constructor() {
-        this.type = CLEAR_USER_MISCS_DATA;
-    }
-}
-
-const LOAD_USER_ORDERS = '[User] Load User Orders';
-const LOAD_USER_ORDERS_FAIL = '[User] Load User Orders Fail';
-const LOAD_USER_ORDERS_SUCCESS = '[User] Load User Orders Success';
-const CLEAR_USER_ORDERS = '[User] Clear User Orders';
-class LoadUserOrders extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_ORDERS);
-        this.payload = payload;
-        this.type = LOAD_USER_ORDERS;
-    }
-}
-class LoadUserOrdersFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_ORDERS, payload);
-        this.payload = payload;
-        this.type = LOAD_USER_ORDERS_FAIL;
-    }
-}
-class LoadUserOrdersSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_ORDERS);
-        this.payload = payload;
-        this.type = LOAD_USER_ORDERS_SUCCESS;
-    }
-}
-class ClearUserOrders extends LoaderResetAction {
-    constructor() {
-        super(USER_ORDERS);
-        this.type = CLEAR_USER_ORDERS;
-    }
-}
-
-const REGISTER_USER = '[User] Register User';
-const REGISTER_USER_FAIL = '[User] Register User Fail';
-const REGISTER_USER_SUCCESS = '[User] Register User Success';
-const RESET_REGISTER_USER_PROCESS = '[User] Reset Register User Process';
-const REGISTER_GUEST = '[User] Register Guest';
-const REGISTER_GUEST_FAIL = '[User] Register Guest Fail';
-const REGISTER_GUEST_SUCCESS = '[User] Register Guest Success';
-const REMOVE_USER = '[User] Remove User';
-const REMOVE_USER_FAIL = '[User] Remove User Fail';
-const REMOVE_USER_SUCCESS = '[User] Remove User Success';
-const REMOVE_USER_RESET = '[User] Reset Remove User Process State';
-class RegisterUser extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID);
-        this.payload = payload;
-        this.type = REGISTER_USER;
-    }
-}
-class RegisterUserFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = REGISTER_USER_FAIL;
-    }
-}
-class RegisterUserSuccess extends EntitySuccessAction {
-    constructor() {
-        super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID);
-        this.type = REGISTER_USER_SUCCESS;
-    }
-}
-class ResetRegisterUserProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID);
-        this.type = RESET_REGISTER_USER_PROCESS;
-    }
-}
-class RegisterGuest {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REGISTER_GUEST;
-    }
-}
-class RegisterGuestFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REGISTER_GUEST_FAIL;
-    }
-}
-class RegisterGuestSuccess {
-    constructor() {
-        this.type = REGISTER_GUEST_SUCCESS;
-    }
-}
-class RemoveUser extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID);
-        this.payload = payload;
-        this.type = REMOVE_USER;
-    }
-}
-class RemoveUserFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = REMOVE_USER_FAIL;
-    }
-}
-class RemoveUserSuccess extends EntitySuccessAction {
-    constructor() {
-        super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID);
-        this.type = REMOVE_USER_SUCCESS;
-    }
-}
-class RemoveUserReset extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID);
-        this.type = REMOVE_USER_RESET;
-    }
-}
-
-const LOAD_CUSTOMER_COUPONS = '[User] Load Customer Coupons';
-const LOAD_CUSTOMER_COUPONS_FAIL = '[User] Load Customer Coupons Fail';
-const LOAD_CUSTOMER_COUPONS_SUCCESS = '[User] Load Customer Coupons Success';
-const RESET_LOAD_CUSTOMER_COUPONS = '[User] Reset Load Customer Coupons';
-const SUBSCRIBE_CUSTOMER_COUPON = '[User] Subscribe Customer Notification Coupon';
-const SUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Subscribe Customer Coupon Notification Fail';
-const SUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Subscribe Customer Coupon Notification Success';
-const RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Subscribe Customer Coupon Process';
-const UNSUBSCRIBE_CUSTOMER_COUPON = '[User] Unsubscribe Customer Notification Coupon';
-const UNSUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Unsubscribe Customer Coupon Notification Fail';
-const UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Unsubscribe Customer Coupon Notification Success';
-const RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Unsubscribe Customer Coupon Process';
-const CLAIM_CUSTOMER_COUPON = '[User] Claim Customer';
-const CLAIM_CUSTOMER_COUPON_FAIL = '[User] Claim Customer Fail';
-const CLAIM_CUSTOMER_COUPON_SUCCESS = '[User] Claim Customer Success';
-class LoadCustomerCoupons extends LoaderLoadAction {
-    constructor(payload) {
-        super(CUSTOMER_COUPONS);
-        this.payload = payload;
-        this.type = LOAD_CUSTOMER_COUPONS;
-    }
-}
-class LoadCustomerCouponsFail extends LoaderFailAction {
-    constructor(payload) {
-        super(CUSTOMER_COUPONS, payload);
-        this.payload = payload;
-        this.type = LOAD_CUSTOMER_COUPONS_FAIL;
-    }
-}
-class LoadCustomerCouponsSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(CUSTOMER_COUPONS);
-        this.payload = payload;
-        this.type = LOAD_CUSTOMER_COUPONS_SUCCESS;
-    }
-}
-class ResetLoadCustomerCoupons extends LoaderResetAction {
-    constructor() {
-        super(CUSTOMER_COUPONS);
-        this.type = RESET_LOAD_CUSTOMER_COUPONS;
-    }
-}
-// Subscribe coupon notification actions
-class SubscribeCustomerCoupon extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
-        this.payload = payload;
-        this.type = SUBSCRIBE_CUSTOMER_COUPON;
-    }
-}
-class SubscribeCustomerCouponFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SUBSCRIBE_CUSTOMER_COUPON_FAIL;
-    }
-}
-class SubscribeCustomerCouponSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
-    }
-}
-class ResetSubscribeCustomerCouponProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
-        this.type = RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS;
-    }
-}
-class UnsubscribeCustomerCoupon extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
-        this.payload = payload;
-        this.type = UNSUBSCRIBE_CUSTOMER_COUPON;
-    }
-}
-class UnsubscribeCustomerCouponFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = UNSUBSCRIBE_CUSTOMER_COUPON_FAIL;
-    }
-}
-class UnsubscribeCustomerCouponSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
-    }
-}
-class ResetUnsubscribeCustomerCouponProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
-        this.type = RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS;
-    }
-}
-class ClaimCustomerCoupon extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID);
-        this.payload = payload;
-        this.type = CLAIM_CUSTOMER_COUPON;
-    }
-}
-class ClaimCustomerCouponFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = CLAIM_CUSTOMER_COUPON_FAIL;
-    }
-}
-class ClaimCustomerCouponSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = CLAIM_CUSTOMER_COUPON_SUCCESS;
-    }
-}
-
-const LOAD_NOTIFICATION_PREFERENCES = '[User] Load Notification Preferences';
-const LOAD_NOTIFICATION_PREFERENCES_FAIL = '[User] Load Notification Preferences Fail';
-const LOAD_NOTIFICATION_PREFERENCES_SUCCESS = '[User] Load Notification Preferences Success';
-const UPDATE_NOTIFICATION_PREFERENCES = '[User] Update Notification Preferences';
-const UPDATE_NOTIFICATION_PREFERENCES_FAIL = '[User] Update Notification Preferences Fail';
-const UPDATE_NOTIFICATION_PREFERENCES_SUCCESS = '[User] Update Notification Preferences Success';
-const RESET_NOTIFICATION_PREFERENCES = '[User] Reset Notification Preferences';
-const CLEAR_NOTIFICATION_PREFERENCES = '[User] Clear Notification Preferences';
-class LoadNotificationPreferences extends LoaderLoadAction {
-    constructor(payload) {
-        super(NOTIFICATION_PREFERENCES);
-        this.payload = payload;
-        this.type = LOAD_NOTIFICATION_PREFERENCES;
-    }
-}
-class LoadNotificationPreferencesFail extends LoaderFailAction {
-    constructor(payload) {
-        super(NOTIFICATION_PREFERENCES, payload);
-        this.payload = payload;
-        this.type = LOAD_NOTIFICATION_PREFERENCES_FAIL;
-    }
-}
-class LoadNotificationPreferencesSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(NOTIFICATION_PREFERENCES);
-        this.payload = payload;
-        this.type = LOAD_NOTIFICATION_PREFERENCES_SUCCESS;
-    }
-}
-class UpdateNotificationPreferences extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID);
-        this.payload = payload;
-        this.type = UPDATE_NOTIFICATION_PREFERENCES;
-    }
-}
-class UpdateNotificationPreferencesFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = UPDATE_NOTIFICATION_PREFERENCES_FAIL;
-    }
-}
-class UpdateNotificationPreferencesSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID);
-        this.payload = payload;
-        this.type = UPDATE_NOTIFICATION_PREFERENCES_SUCCESS;
-    }
-}
-class ResetNotificationPreferences extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID);
-        this.type = RESET_NOTIFICATION_PREFERENCES;
-    }
-}
-class ClearNotificationPreferences extends LoaderResetAction {
-    constructor() {
-        super(NOTIFICATION_PREFERENCES);
-        this.type = CLEAR_NOTIFICATION_PREFERENCES;
-    }
-}
-
-const LOAD_PRODUCT_INTERESTS = 'Load Product Interests';
-const LOAD_PRODUCT_INTERESTS_FAIL = 'Load Product Interests Fail';
-const LOAD_PRODUCT_INTERESTS_SUCCESS = 'Load Product Interests Success';
-const REMOVE_PRODUCT_INTEREST = 'Remove Product Interest';
-const REMOVE_PRODUCT_INTEREST_SUCCESS = 'Remove Product Interest Success';
-const REMOVE_PRODUCT_INTEREST_FAIL = 'Remove Product Interest Fail';
-const ADD_PRODUCT_INTEREST = 'Add Product Interest';
-const ADD_PRODUCT_INTEREST_FAIL = 'Add Product Interest Fail';
-const ADD_PRODUCT_INTEREST_SUCCESS = 'Add Product Interest Success';
-const ADD_PRODUCT_INTEREST_RESET = 'Add Product Interest Reset';
-const REMOVE_PRODUCT_INTEREST_RESET = 'Remove Product Interest Reset';
-const CLEAR_PRODUCT_INTERESTS = 'Clear Product Interests';
-class LoadProductInterests extends LoaderLoadAction {
-    constructor(payload) {
-        super(PRODUCT_INTERESTS);
-        this.payload = payload;
-        this.type = LOAD_PRODUCT_INTERESTS;
-    }
-}
-class LoadProductInterestsFail extends LoaderFailAction {
-    constructor(payload) {
-        super(PRODUCT_INTERESTS, payload);
-        this.payload = payload;
-        this.type = LOAD_PRODUCT_INTERESTS_FAIL;
-    }
-}
-class LoadProductInterestsSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(PRODUCT_INTERESTS);
-        this.payload = payload;
-        this.type = LOAD_PRODUCT_INTERESTS_SUCCESS;
-    }
-}
-class RemoveProductInterest extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID);
-        this.payload = payload;
-        this.type = REMOVE_PRODUCT_INTEREST;
-    }
-}
-class RemoveProductInterestSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID);
-        this.payload = payload;
-        this.type = REMOVE_PRODUCT_INTEREST_SUCCESS;
-    }
-}
-class RemoveProductInterestFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = REMOVE_PRODUCT_INTEREST_FAIL;
-    }
-}
-class AddProductInterest extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID);
-        this.payload = payload;
-        this.type = ADD_PRODUCT_INTEREST;
-    }
-}
-class AddProductInterestSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID);
-        this.payload = payload;
-        this.type = ADD_PRODUCT_INTEREST_SUCCESS;
-    }
-}
-class AddProductInterestFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = ADD_PRODUCT_INTEREST_FAIL;
-    }
-}
-class ResetAddInterestState extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, ADD_PRODUCT_INTEREST_PROCESS_ID);
-        this.type = ADD_PRODUCT_INTEREST_RESET;
-    }
-}
-class ResetRemoveInterestState extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, REMOVE_PRODUCT_INTERESTS_PROCESS_ID);
-        this.type = REMOVE_PRODUCT_INTEREST_RESET;
-    }
-}
-class ClearProductInterests extends LoaderResetAction {
-    constructor() {
-        super(PRODUCT_INTERESTS);
-        this.type = CLEAR_PRODUCT_INTERESTS;
-    }
-}
-
-const CREATE_ORDER_RETURN_REQUEST = '[User] Create Order Return Request';
-const CREATE_ORDER_RETURN_REQUEST_FAIL = '[User] Create Order Return Request Fail';
-const CREATE_ORDER_RETURN_REQUEST_SUCCESS = '[User] Create Order Return Request Success';
-const LOAD_ORDER_RETURN_REQUEST = '[User] Load Order Return Request details';
-const LOAD_ORDER_RETURN_REQUEST_FAIL = '[User] Load Order Return Request details Fail';
-const LOAD_ORDER_RETURN_REQUEST_SUCCESS = '[User] Load Order Return Request details Success';
-const CANCEL_ORDER_RETURN_REQUEST = '[User] Cancel Order Return Request';
-const CANCEL_ORDER_RETURN_REQUEST_FAIL = '[User] Cancel Order Return Request Fail';
-const CANCEL_ORDER_RETURN_REQUEST_SUCCESS = '[User] Cancel Order Return Request Success';
-const LOAD_ORDER_RETURN_REQUEST_LIST = '[User] Load User Order Return Request List';
-const LOAD_ORDER_RETURN_REQUEST_LIST_FAIL = '[User] Load User Order Return Request List Fail';
-const LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS = '[User] Load User Order Return Request List Success';
-const CLEAR_ORDER_RETURN_REQUEST = '[User] Clear Order Return Request Details';
-const CLEAR_ORDER_RETURN_REQUEST_LIST = '[User] Clear Order Return Request List';
-const RESET_CANCEL_RETURN_PROCESS = '[User] Reset Cancel Return Request Process';
-class CreateOrderReturnRequest extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUEST_DETAILS);
-        this.payload = payload;
-        this.type = CREATE_ORDER_RETURN_REQUEST;
-    }
-}
-class CreateOrderReturnRequestFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUEST_DETAILS, payload);
-        this.payload = payload;
-        this.type = CREATE_ORDER_RETURN_REQUEST_FAIL;
-    }
-}
-class CreateOrderReturnRequestSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUEST_DETAILS);
-        this.payload = payload;
-        this.type = CREATE_ORDER_RETURN_REQUEST_SUCCESS;
-    }
-}
-class LoadOrderReturnRequest extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUEST_DETAILS);
-        this.payload = payload;
-        this.type = LOAD_ORDER_RETURN_REQUEST;
-    }
-}
-class LoadOrderReturnRequestFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUEST_DETAILS, payload);
-        this.payload = payload;
-        this.type = LOAD_ORDER_RETURN_REQUEST_FAIL;
-    }
-}
-class LoadOrderReturnRequestSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUEST_DETAILS);
-        this.payload = payload;
-        this.type = LOAD_ORDER_RETURN_REQUEST_SUCCESS;
-    }
-}
-class CancelOrderReturnRequest extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID);
-        this.payload = payload;
-        this.type = CANCEL_ORDER_RETURN_REQUEST;
-    }
-}
-class CancelOrderReturnRequestFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = CANCEL_ORDER_RETURN_REQUEST_FAIL;
-    }
-}
-class CancelOrderReturnRequestSuccess extends EntitySuccessAction {
-    constructor() {
-        super(PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID);
-        this.type = CANCEL_ORDER_RETURN_REQUEST_SUCCESS;
-    }
-}
-class LoadOrderReturnRequestList extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUESTS);
-        this.payload = payload;
-        this.type = LOAD_ORDER_RETURN_REQUEST_LIST;
-    }
-}
-class LoadOrderReturnRequestListFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUESTS, payload);
-        this.payload = payload;
-        this.type = LOAD_ORDER_RETURN_REQUEST_LIST_FAIL;
-    }
-}
-class LoadOrderReturnRequestListSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_RETURN_REQUESTS);
-        this.payload = payload;
-        this.type = LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS;
-    }
-}
-class ClearOrderReturnRequest extends LoaderResetAction {
-    constructor() {
-        super(USER_RETURN_REQUEST_DETAILS);
-        this.type = CLEAR_ORDER_RETURN_REQUEST;
-    }
-}
-class ClearOrderReturnRequestList extends LoaderResetAction {
-    constructor() {
-        super(USER_RETURN_REQUESTS);
-        this.type = CLEAR_ORDER_RETURN_REQUEST_LIST;
-    }
-}
-class ResetCancelReturnProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID);
-        this.type = RESET_CANCEL_RETURN_PROCESS;
-    }
-}
-
-const LOAD_ACTIVE_COST_CENTERS = '[User] Load Active CostCenters';
-const LOAD_ACTIVE_COST_CENTERS_FAIL = '[User] Load Active CostCenters Fail';
-const LOAD_ACTIVE_COST_CENTERS_SUCCESS = '[User] Load Active CostCenters Success';
-class LoadActiveCostCenters extends LoaderLoadAction {
-    constructor(payload) {
-        super(USER_COST_CENTERS);
-        this.payload = payload;
-        this.type = LOAD_ACTIVE_COST_CENTERS;
-    }
-}
-class LoadActiveCostCentersFail extends LoaderFailAction {
-    constructor(payload) {
-        super(USER_COST_CENTERS, payload);
-        this.payload = payload;
-        this.type = LOAD_ACTIVE_COST_CENTERS_FAIL;
-    }
-}
-class LoadActiveCostCentersSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(USER_COST_CENTERS);
-        this.payload = payload;
-        this.type = LOAD_ACTIVE_COST_CENTERS_SUCCESS;
-    }
-}
-
-var userGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    LOAD_BILLING_COUNTRIES: LOAD_BILLING_COUNTRIES,
-    LOAD_BILLING_COUNTRIES_FAIL: LOAD_BILLING_COUNTRIES_FAIL,
-    LOAD_BILLING_COUNTRIES_SUCCESS: LOAD_BILLING_COUNTRIES_SUCCESS,
-    LoadBillingCountries: LoadBillingCountries,
-    LoadBillingCountriesFail: LoadBillingCountriesFail,
-    LoadBillingCountriesSuccess: LoadBillingCountriesSuccess,
-    LOAD_CONSIGNMENT_TRACKING: LOAD_CONSIGNMENT_TRACKING,
-    LOAD_CONSIGNMENT_TRACKING_FAIL: LOAD_CONSIGNMENT_TRACKING_FAIL,
-    LOAD_CONSIGNMENT_TRACKING_SUCCESS: LOAD_CONSIGNMENT_TRACKING_SUCCESS,
-    CLEAR_CONSIGNMENT_TRACKING: CLEAR_CONSIGNMENT_TRACKING,
-    LoadConsignmentTracking: LoadConsignmentTracking,
-    LoadConsignmentTrackingFail: LoadConsignmentTrackingFail,
-    LoadConsignmentTrackingSuccess: LoadConsignmentTrackingSuccess,
-    ClearConsignmentTracking: ClearConsignmentTracking,
-    LOAD_DELIVERY_COUNTRIES: LOAD_DELIVERY_COUNTRIES,
-    LOAD_DELIVERY_COUNTRIES_FAIL: LOAD_DELIVERY_COUNTRIES_FAIL,
-    LOAD_DELIVERY_COUNTRIES_SUCCESS: LOAD_DELIVERY_COUNTRIES_SUCCESS,
-    LoadDeliveryCountries: LoadDeliveryCountries,
-    LoadDeliveryCountriesFail: LoadDeliveryCountriesFail,
-    LoadDeliveryCountriesSuccess: LoadDeliveryCountriesSuccess,
-    FORGOT_PASSWORD_EMAIL_REQUEST: FORGOT_PASSWORD_EMAIL_REQUEST,
-    FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS: FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS,
-    FORGOT_PASSWORD_EMAIL_REQUEST_FAIL: FORGOT_PASSWORD_EMAIL_REQUEST_FAIL,
-    ForgotPasswordEmailRequest: ForgotPasswordEmailRequest,
-    ForgotPasswordEmailRequestFail: ForgotPasswordEmailRequestFail,
-    ForgotPasswordEmailRequestSuccess: ForgotPasswordEmailRequestSuccess,
-    LOAD_ORDER_DETAILS: LOAD_ORDER_DETAILS,
-    LOAD_ORDER_DETAILS_FAIL: LOAD_ORDER_DETAILS_FAIL,
-    LOAD_ORDER_DETAILS_SUCCESS: LOAD_ORDER_DETAILS_SUCCESS,
-    CLEAR_ORDER_DETAILS: CLEAR_ORDER_DETAILS,
-    CANCEL_ORDER: CANCEL_ORDER,
-    CANCEL_ORDER_FAIL: CANCEL_ORDER_FAIL,
-    CANCEL_ORDER_SUCCESS: CANCEL_ORDER_SUCCESS,
-    RESET_CANCEL_ORDER_PROCESS: RESET_CANCEL_ORDER_PROCESS,
-    LoadOrderDetails: LoadOrderDetails,
-    LoadOrderDetailsFail: LoadOrderDetailsFail,
-    LoadOrderDetailsSuccess: LoadOrderDetailsSuccess,
-    ClearOrderDetails: ClearOrderDetails,
-    CancelOrder: CancelOrder,
-    CancelOrderFail: CancelOrderFail,
-    CancelOrderSuccess: CancelOrderSuccess,
-    ResetCancelOrderProcess: ResetCancelOrderProcess,
-    LOAD_USER_PAYMENT_METHODS: LOAD_USER_PAYMENT_METHODS,
-    LOAD_USER_PAYMENT_METHODS_FAIL: LOAD_USER_PAYMENT_METHODS_FAIL,
-    LOAD_USER_PAYMENT_METHODS_SUCCESS: LOAD_USER_PAYMENT_METHODS_SUCCESS,
-    SET_DEFAULT_USER_PAYMENT_METHOD: SET_DEFAULT_USER_PAYMENT_METHOD,
-    SET_DEFAULT_USER_PAYMENT_METHOD_FAIL: SET_DEFAULT_USER_PAYMENT_METHOD_FAIL,
-    SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS: SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS,
-    DELETE_USER_PAYMENT_METHOD: DELETE_USER_PAYMENT_METHOD,
-    DELETE_USER_PAYMENT_METHOD_FAIL: DELETE_USER_PAYMENT_METHOD_FAIL,
-    DELETE_USER_PAYMENT_METHOD_SUCCESS: DELETE_USER_PAYMENT_METHOD_SUCCESS,
-    LoadUserPaymentMethods: LoadUserPaymentMethods,
-    LoadUserPaymentMethodsFail: LoadUserPaymentMethodsFail,
-    LoadUserPaymentMethodsSuccess: LoadUserPaymentMethodsSuccess,
-    SetDefaultUserPaymentMethod: SetDefaultUserPaymentMethod,
-    SetDefaultUserPaymentMethodFail: SetDefaultUserPaymentMethodFail,
-    SetDefaultUserPaymentMethodSuccess: SetDefaultUserPaymentMethodSuccess,
-    DeleteUserPaymentMethod: DeleteUserPaymentMethod,
-    DeleteUserPaymentMethodFail: DeleteUserPaymentMethodFail,
-    DeleteUserPaymentMethodSuccess: DeleteUserPaymentMethodSuccess,
-    LOAD_REGIONS: LOAD_REGIONS,
-    LOAD_REGIONS_SUCCESS: LOAD_REGIONS_SUCCESS,
-    LOAD_REGIONS_FAIL: LOAD_REGIONS_FAIL,
-    CLEAR_REGIONS: CLEAR_REGIONS,
-    LoadRegions: LoadRegions,
-    LoadRegionsFail: LoadRegionsFail,
-    LoadRegionsSuccess: LoadRegionsSuccess,
-    ClearRegions: ClearRegions,
-    RESET_PASSWORD: RESET_PASSWORD,
-    RESET_PASSWORD_SUCCESS: RESET_PASSWORD_SUCCESS,
-    RESET_PASSWORD_FAIL: RESET_PASSWORD_FAIL,
-    ResetPassword: ResetPassword,
-    ResetPasswordFail: ResetPasswordFail,
-    ResetPasswordSuccess: ResetPasswordSuccess,
-    LOAD_TITLES: LOAD_TITLES,
-    LOAD_TITLES_FAIL: LOAD_TITLES_FAIL,
-    LOAD_TITLES_SUCCESS: LOAD_TITLES_SUCCESS,
-    LoadTitles: LoadTitles,
-    LoadTitlesFail: LoadTitlesFail,
-    LoadTitlesSuccess: LoadTitlesSuccess,
-    UPDATE_EMAIL: UPDATE_EMAIL,
-    UPDATE_EMAIL_ERROR: UPDATE_EMAIL_ERROR,
-    UPDATE_EMAIL_SUCCESS: UPDATE_EMAIL_SUCCESS,
-    RESET_EMAIL: RESET_EMAIL,
-    UpdateEmailAction: UpdateEmailAction,
-    UpdateEmailSuccessAction: UpdateEmailSuccessAction,
-    UpdateEmailErrorAction: UpdateEmailErrorAction,
-    ResetUpdateEmailAction: ResetUpdateEmailAction,
-    UPDATE_PASSWORD: UPDATE_PASSWORD,
-    UPDATE_PASSWORD_FAIL: UPDATE_PASSWORD_FAIL,
-    UPDATE_PASSWORD_SUCCESS: UPDATE_PASSWORD_SUCCESS,
-    UPDATE_PASSWORD_RESET: UPDATE_PASSWORD_RESET,
-    UpdatePassword: UpdatePassword,
-    UpdatePasswordFail: UpdatePasswordFail,
-    UpdatePasswordSuccess: UpdatePasswordSuccess,
-    UpdatePasswordReset: UpdatePasswordReset,
-    LOAD_USER_ADDRESSES: LOAD_USER_ADDRESSES,
-    LOAD_USER_ADDRESSES_FAIL: LOAD_USER_ADDRESSES_FAIL,
-    LOAD_USER_ADDRESSES_SUCCESS: LOAD_USER_ADDRESSES_SUCCESS,
-    ADD_USER_ADDRESS: ADD_USER_ADDRESS,
-    ADD_USER_ADDRESS_FAIL: ADD_USER_ADDRESS_FAIL,
-    ADD_USER_ADDRESS_SUCCESS: ADD_USER_ADDRESS_SUCCESS,
-    UPDATE_USER_ADDRESS: UPDATE_USER_ADDRESS,
-    UPDATE_USER_ADDRESS_FAIL: UPDATE_USER_ADDRESS_FAIL,
-    UPDATE_USER_ADDRESS_SUCCESS: UPDATE_USER_ADDRESS_SUCCESS,
-    DELETE_USER_ADDRESS: DELETE_USER_ADDRESS,
-    DELETE_USER_ADDRESS_FAIL: DELETE_USER_ADDRESS_FAIL,
-    DELETE_USER_ADDRESS_SUCCESS: DELETE_USER_ADDRESS_SUCCESS,
-    LoadUserAddresses: LoadUserAddresses,
-    LoadUserAddressesFail: LoadUserAddressesFail,
-    LoadUserAddressesSuccess: LoadUserAddressesSuccess,
-    AddUserAddress: AddUserAddress,
-    AddUserAddressFail: AddUserAddressFail,
-    AddUserAddressSuccess: AddUserAddressSuccess,
-    UpdateUserAddress: UpdateUserAddress,
-    UpdateUserAddressFail: UpdateUserAddressFail,
-    UpdateUserAddressSuccess: UpdateUserAddressSuccess,
-    DeleteUserAddress: DeleteUserAddress,
-    DeleteUserAddressFail: DeleteUserAddressFail,
-    DeleteUserAddressSuccess: DeleteUserAddressSuccess,
-    LOAD_USER_CONSENTS: LOAD_USER_CONSENTS,
-    LOAD_USER_CONSENTS_SUCCESS: LOAD_USER_CONSENTS_SUCCESS,
-    LOAD_USER_CONSENTS_FAIL: LOAD_USER_CONSENTS_FAIL,
-    RESET_LOAD_USER_CONSENTS: RESET_LOAD_USER_CONSENTS,
-    GIVE_USER_CONSENT: GIVE_USER_CONSENT,
-    GIVE_USER_CONSENT_FAIL: GIVE_USER_CONSENT_FAIL,
-    GIVE_USER_CONSENT_SUCCESS: GIVE_USER_CONSENT_SUCCESS,
-    RESET_GIVE_USER_CONSENT_PROCESS: RESET_GIVE_USER_CONSENT_PROCESS,
-    TRANSFER_ANONYMOUS_CONSENT: TRANSFER_ANONYMOUS_CONSENT,
-    WITHDRAW_USER_CONSENT: WITHDRAW_USER_CONSENT,
-    WITHDRAW_USER_CONSENT_FAIL: WITHDRAW_USER_CONSENT_FAIL,
-    WITHDRAW_USER_CONSENT_SUCCESS: WITHDRAW_USER_CONSENT_SUCCESS,
-    RESET_WITHDRAW_USER_CONSENT_PROCESS: RESET_WITHDRAW_USER_CONSENT_PROCESS,
-    LoadUserConsents: LoadUserConsents,
-    LoadUserConsentsFail: LoadUserConsentsFail,
-    LoadUserConsentsSuccess: LoadUserConsentsSuccess,
-    ResetLoadUserConsents: ResetLoadUserConsents,
-    GiveUserConsent: GiveUserConsent,
-    GiveUserConsentFail: GiveUserConsentFail,
-    GiveUserConsentSuccess: GiveUserConsentSuccess,
-    ResetGiveUserConsentProcess: ResetGiveUserConsentProcess,
-    TransferAnonymousConsent: TransferAnonymousConsent,
-    WithdrawUserConsent: WithdrawUserConsent,
-    WithdrawUserConsentFail: WithdrawUserConsentFail,
-    WithdrawUserConsentSuccess: WithdrawUserConsentSuccess,
-    ResetWithdrawUserConsentProcess: ResetWithdrawUserConsentProcess,
-    LOAD_USER_DETAILS: LOAD_USER_DETAILS,
-    LOAD_USER_DETAILS_FAIL: LOAD_USER_DETAILS_FAIL,
-    LOAD_USER_DETAILS_SUCCESS: LOAD_USER_DETAILS_SUCCESS,
-    UPDATE_USER_DETAILS: UPDATE_USER_DETAILS,
-    UPDATE_USER_DETAILS_FAIL: UPDATE_USER_DETAILS_FAIL,
-    UPDATE_USER_DETAILS_SUCCESS: UPDATE_USER_DETAILS_SUCCESS,
-    RESET_USER_DETAILS: RESET_USER_DETAILS,
-    LoadUserDetails: LoadUserDetails,
-    LoadUserDetailsFail: LoadUserDetailsFail,
-    LoadUserDetailsSuccess: LoadUserDetailsSuccess,
-    UpdateUserDetails: UpdateUserDetails,
-    UpdateUserDetailsFail: UpdateUserDetailsFail,
-    UpdateUserDetailsSuccess: UpdateUserDetailsSuccess,
-    ResetUpdateUserDetails: ResetUpdateUserDetails,
-    CLEAR_USER_MISCS_DATA: CLEAR_USER_MISCS_DATA,
-    ClearUserMiscsData: ClearUserMiscsData,
-    LOAD_USER_ORDERS: LOAD_USER_ORDERS,
-    LOAD_USER_ORDERS_FAIL: LOAD_USER_ORDERS_FAIL,
-    LOAD_USER_ORDERS_SUCCESS: LOAD_USER_ORDERS_SUCCESS,
-    CLEAR_USER_ORDERS: CLEAR_USER_ORDERS,
-    LoadUserOrders: LoadUserOrders,
-    LoadUserOrdersFail: LoadUserOrdersFail,
-    LoadUserOrdersSuccess: LoadUserOrdersSuccess,
-    ClearUserOrders: ClearUserOrders,
-    REGISTER_USER: REGISTER_USER,
-    REGISTER_USER_FAIL: REGISTER_USER_FAIL,
-    REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
-    RESET_REGISTER_USER_PROCESS: RESET_REGISTER_USER_PROCESS,
-    REGISTER_GUEST: REGISTER_GUEST,
-    REGISTER_GUEST_FAIL: REGISTER_GUEST_FAIL,
-    REGISTER_GUEST_SUCCESS: REGISTER_GUEST_SUCCESS,
-    REMOVE_USER: REMOVE_USER,
-    REMOVE_USER_FAIL: REMOVE_USER_FAIL,
-    REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
-    REMOVE_USER_RESET: REMOVE_USER_RESET,
-    RegisterUser: RegisterUser,
-    RegisterUserFail: RegisterUserFail,
-    RegisterUserSuccess: RegisterUserSuccess,
-    ResetRegisterUserProcess: ResetRegisterUserProcess,
-    RegisterGuest: RegisterGuest,
-    RegisterGuestFail: RegisterGuestFail,
-    RegisterGuestSuccess: RegisterGuestSuccess,
-    RemoveUser: RemoveUser,
-    RemoveUserFail: RemoveUserFail,
-    RemoveUserSuccess: RemoveUserSuccess,
-    RemoveUserReset: RemoveUserReset,
-    LOAD_CUSTOMER_COUPONS: LOAD_CUSTOMER_COUPONS,
-    LOAD_CUSTOMER_COUPONS_FAIL: LOAD_CUSTOMER_COUPONS_FAIL,
-    LOAD_CUSTOMER_COUPONS_SUCCESS: LOAD_CUSTOMER_COUPONS_SUCCESS,
-    RESET_LOAD_CUSTOMER_COUPONS: RESET_LOAD_CUSTOMER_COUPONS,
-    SUBSCRIBE_CUSTOMER_COUPON: SUBSCRIBE_CUSTOMER_COUPON,
-    SUBSCRIBE_CUSTOMER_COUPON_FAIL: SUBSCRIBE_CUSTOMER_COUPON_FAIL,
-    SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: SUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
-    RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS,
-    UNSUBSCRIBE_CUSTOMER_COUPON: UNSUBSCRIBE_CUSTOMER_COUPON,
-    UNSUBSCRIBE_CUSTOMER_COUPON_FAIL: UNSUBSCRIBE_CUSTOMER_COUPON_FAIL,
-    UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
-    RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS,
-    CLAIM_CUSTOMER_COUPON: CLAIM_CUSTOMER_COUPON,
-    CLAIM_CUSTOMER_COUPON_FAIL: CLAIM_CUSTOMER_COUPON_FAIL,
-    CLAIM_CUSTOMER_COUPON_SUCCESS: CLAIM_CUSTOMER_COUPON_SUCCESS,
-    LoadCustomerCoupons: LoadCustomerCoupons,
-    LoadCustomerCouponsFail: LoadCustomerCouponsFail,
-    LoadCustomerCouponsSuccess: LoadCustomerCouponsSuccess,
-    ResetLoadCustomerCoupons: ResetLoadCustomerCoupons,
-    SubscribeCustomerCoupon: SubscribeCustomerCoupon,
-    SubscribeCustomerCouponFail: SubscribeCustomerCouponFail,
-    SubscribeCustomerCouponSuccess: SubscribeCustomerCouponSuccess,
-    ResetSubscribeCustomerCouponProcess: ResetSubscribeCustomerCouponProcess,
-    UnsubscribeCustomerCoupon: UnsubscribeCustomerCoupon,
-    UnsubscribeCustomerCouponFail: UnsubscribeCustomerCouponFail,
-    UnsubscribeCustomerCouponSuccess: UnsubscribeCustomerCouponSuccess,
-    ResetUnsubscribeCustomerCouponProcess: ResetUnsubscribeCustomerCouponProcess,
-    ClaimCustomerCoupon: ClaimCustomerCoupon,
-    ClaimCustomerCouponFail: ClaimCustomerCouponFail,
-    ClaimCustomerCouponSuccess: ClaimCustomerCouponSuccess,
-    LOAD_NOTIFICATION_PREFERENCES: LOAD_NOTIFICATION_PREFERENCES,
-    LOAD_NOTIFICATION_PREFERENCES_FAIL: LOAD_NOTIFICATION_PREFERENCES_FAIL,
-    LOAD_NOTIFICATION_PREFERENCES_SUCCESS: LOAD_NOTIFICATION_PREFERENCES_SUCCESS,
-    UPDATE_NOTIFICATION_PREFERENCES: UPDATE_NOTIFICATION_PREFERENCES,
-    UPDATE_NOTIFICATION_PREFERENCES_FAIL: UPDATE_NOTIFICATION_PREFERENCES_FAIL,
-    UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: UPDATE_NOTIFICATION_PREFERENCES_SUCCESS,
-    RESET_NOTIFICATION_PREFERENCES: RESET_NOTIFICATION_PREFERENCES,
-    CLEAR_NOTIFICATION_PREFERENCES: CLEAR_NOTIFICATION_PREFERENCES,
-    LoadNotificationPreferences: LoadNotificationPreferences,
-    LoadNotificationPreferencesFail: LoadNotificationPreferencesFail,
-    LoadNotificationPreferencesSuccess: LoadNotificationPreferencesSuccess,
-    UpdateNotificationPreferences: UpdateNotificationPreferences,
-    UpdateNotificationPreferencesFail: UpdateNotificationPreferencesFail,
-    UpdateNotificationPreferencesSuccess: UpdateNotificationPreferencesSuccess,
-    ResetNotificationPreferences: ResetNotificationPreferences,
-    ClearNotificationPreferences: ClearNotificationPreferences,
-    LOAD_PRODUCT_INTERESTS: LOAD_PRODUCT_INTERESTS,
-    LOAD_PRODUCT_INTERESTS_FAIL: LOAD_PRODUCT_INTERESTS_FAIL,
-    LOAD_PRODUCT_INTERESTS_SUCCESS: LOAD_PRODUCT_INTERESTS_SUCCESS,
-    REMOVE_PRODUCT_INTEREST: REMOVE_PRODUCT_INTEREST,
-    REMOVE_PRODUCT_INTEREST_SUCCESS: REMOVE_PRODUCT_INTEREST_SUCCESS,
-    REMOVE_PRODUCT_INTEREST_FAIL: REMOVE_PRODUCT_INTEREST_FAIL,
-    ADD_PRODUCT_INTEREST: ADD_PRODUCT_INTEREST,
-    ADD_PRODUCT_INTEREST_FAIL: ADD_PRODUCT_INTEREST_FAIL,
-    ADD_PRODUCT_INTEREST_SUCCESS: ADD_PRODUCT_INTEREST_SUCCESS,
-    ADD_PRODUCT_INTEREST_RESET: ADD_PRODUCT_INTEREST_RESET,
-    REMOVE_PRODUCT_INTEREST_RESET: REMOVE_PRODUCT_INTEREST_RESET,
-    CLEAR_PRODUCT_INTERESTS: CLEAR_PRODUCT_INTERESTS,
-    LoadProductInterests: LoadProductInterests,
-    LoadProductInterestsFail: LoadProductInterestsFail,
-    LoadProductInterestsSuccess: LoadProductInterestsSuccess,
-    RemoveProductInterest: RemoveProductInterest,
-    RemoveProductInterestSuccess: RemoveProductInterestSuccess,
-    RemoveProductInterestFail: RemoveProductInterestFail,
-    AddProductInterest: AddProductInterest,
-    AddProductInterestSuccess: AddProductInterestSuccess,
-    AddProductInterestFail: AddProductInterestFail,
-    ResetAddInterestState: ResetAddInterestState,
-    ResetRemoveInterestState: ResetRemoveInterestState,
-    ClearProductInterests: ClearProductInterests,
-    CREATE_ORDER_RETURN_REQUEST: CREATE_ORDER_RETURN_REQUEST,
-    CREATE_ORDER_RETURN_REQUEST_FAIL: CREATE_ORDER_RETURN_REQUEST_FAIL,
-    CREATE_ORDER_RETURN_REQUEST_SUCCESS: CREATE_ORDER_RETURN_REQUEST_SUCCESS,
-    LOAD_ORDER_RETURN_REQUEST: LOAD_ORDER_RETURN_REQUEST,
-    LOAD_ORDER_RETURN_REQUEST_FAIL: LOAD_ORDER_RETURN_REQUEST_FAIL,
-    LOAD_ORDER_RETURN_REQUEST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_SUCCESS,
-    CANCEL_ORDER_RETURN_REQUEST: CANCEL_ORDER_RETURN_REQUEST,
-    CANCEL_ORDER_RETURN_REQUEST_FAIL: CANCEL_ORDER_RETURN_REQUEST_FAIL,
-    CANCEL_ORDER_RETURN_REQUEST_SUCCESS: CANCEL_ORDER_RETURN_REQUEST_SUCCESS,
-    LOAD_ORDER_RETURN_REQUEST_LIST: LOAD_ORDER_RETURN_REQUEST_LIST,
-    LOAD_ORDER_RETURN_REQUEST_LIST_FAIL: LOAD_ORDER_RETURN_REQUEST_LIST_FAIL,
-    LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS,
-    CLEAR_ORDER_RETURN_REQUEST: CLEAR_ORDER_RETURN_REQUEST,
-    CLEAR_ORDER_RETURN_REQUEST_LIST: CLEAR_ORDER_RETURN_REQUEST_LIST,
-    RESET_CANCEL_RETURN_PROCESS: RESET_CANCEL_RETURN_PROCESS,
-    CreateOrderReturnRequest: CreateOrderReturnRequest,
-    CreateOrderReturnRequestFail: CreateOrderReturnRequestFail,
-    CreateOrderReturnRequestSuccess: CreateOrderReturnRequestSuccess,
-    LoadOrderReturnRequest: LoadOrderReturnRequest,
-    LoadOrderReturnRequestFail: LoadOrderReturnRequestFail,
-    LoadOrderReturnRequestSuccess: LoadOrderReturnRequestSuccess,
-    CancelOrderReturnRequest: CancelOrderReturnRequest,
-    CancelOrderReturnRequestFail: CancelOrderReturnRequestFail,
-    CancelOrderReturnRequestSuccess: CancelOrderReturnRequestSuccess,
-    LoadOrderReturnRequestList: LoadOrderReturnRequestList,
-    LoadOrderReturnRequestListFail: LoadOrderReturnRequestListFail,
-    LoadOrderReturnRequestListSuccess: LoadOrderReturnRequestListSuccess,
-    ClearOrderReturnRequest: ClearOrderReturnRequest,
-    ClearOrderReturnRequestList: ClearOrderReturnRequestList,
-    ResetCancelReturnProcess: ResetCancelReturnProcess,
-    LOAD_ACTIVE_COST_CENTERS: LOAD_ACTIVE_COST_CENTERS,
-    LOAD_ACTIVE_COST_CENTERS_FAIL: LOAD_ACTIVE_COST_CENTERS_FAIL,
-    LOAD_ACTIVE_COST_CENTERS_SUCCESS: LOAD_ACTIVE_COST_CENTERS_SUCCESS,
-    LoadActiveCostCenters: LoadActiveCostCenters,
-    LoadActiveCostCentersFail: LoadActiveCostCentersFail,
-    LoadActiveCostCentersSuccess: LoadActiveCostCentersSuccess
-});
-
 const getUserState = createFeatureSelector(USER_FEATURE);
 
-const ɵ0$b = (state) => state.billingCountries;
-const getBillingCountriesState = createSelector(getUserState, ɵ0$b);
-const ɵ1$7 = (state) => state.entities;
-const getBillingCountriesEntites = createSelector(getBillingCountriesState, ɵ1$7);
-const ɵ2$3 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
-const getAllBillingCountries = createSelector(getBillingCountriesEntites, ɵ2$3);
+const ɵ0$h = (state) => state.billingCountries;
+const getBillingCountriesState = createSelector(getUserState, ɵ0$h);
+const ɵ1$b = (state) => state.entities;
+const getBillingCountriesEntites = createSelector(getBillingCountriesState, ɵ1$b);
+const ɵ2$5 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
+const getAllBillingCountries = createSelector(getBillingCountriesEntites, ɵ2$5);
 
-const ɵ0$c = (state) => state.consignmentTracking;
-const getConsignmentTrackingState = createSelector(getUserState, ɵ0$c);
-const ɵ1$8 = (state) => state.tracking;
-const getConsignmentTracking = createSelector(getConsignmentTrackingState, ɵ1$8);
+const ɵ0$i = (state) => state.consignmentTracking;
+const getConsignmentTrackingState = createSelector(getUserState, ɵ0$i);
+const ɵ1$c = (state) => state.tracking;
+const getConsignmentTracking = createSelector(getConsignmentTrackingState, ɵ1$c);
 
-const ɵ0$d = (state) => state.countries;
-const getDeliveryCountriesState = createSelector(getUserState, ɵ0$d);
-const ɵ1$9 = (state) => state.entities;
-const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, ɵ1$9);
-const ɵ2$4 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
-const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, ɵ2$4);
+const ɵ0$j = (state) => state.customerCoupons;
+const getCustomerCouponsState = createSelector(getUserState, ɵ0$j);
+const ɵ1$d = (state) => loaderSuccessSelector(state);
+const getCustomerCouponsLoaded = createSelector(getCustomerCouponsState, ɵ1$d);
+const ɵ2$6 = (state) => loaderLoadingSelector(state);
+const getCustomerCouponsLoading = createSelector(getCustomerCouponsState, ɵ2$6);
+const ɵ3$4 = (state) => loaderValueSelector(state);
+const getCustomerCoupons = createSelector(getCustomerCouponsState, ɵ3$4);
+
+const ɵ0$k = (state) => state.countries;
+const getDeliveryCountriesState = createSelector(getUserState, ɵ0$k);
+const ɵ1$e = (state) => state.entities;
+const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, ɵ1$e);
+const ɵ2$7 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
+const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, ɵ2$7);
 const countrySelectorFactory = (isocode) => createSelector(getDeliveryCountriesEntites, (entities) => Object.keys(entities).length !== 0 ? entities[isocode] : null);
 
-const ɵ0$e = (state) => state.order;
-const getOrderState = createSelector(getUserState, ɵ0$e);
-const ɵ1$a = (state) => loaderValueSelector(state);
-const getOrderDetails = createSelector(getOrderState, ɵ1$a);
+const ɵ0$l = (state) => state.notificationPreferences;
+const getPreferencesLoaderState = createSelector(getUserState, ɵ0$l);
+const ɵ1$f = (state) => loaderValueSelector(state);
+const getPreferences = createSelector(getPreferencesLoaderState, ɵ1$f);
+const ɵ2$8 = (state) => loaderValueSelector(state).filter((p) => p.enabled);
+const getEnabledPreferences = createSelector(getPreferencesLoaderState, ɵ2$8);
+const ɵ3$5 = (state) => loaderLoadingSelector(state);
+const getPreferencesLoading = createSelector(getPreferencesLoaderState, ɵ3$5);
 
-const ɵ0$f = (state) => state.orderReturn;
-const getOrderReturnRequestState = createSelector(getUserState, ɵ0$f);
-const ɵ1$b = (state) => loaderValueSelector(state);
-const getOrderReturnRequest = createSelector(getOrderReturnRequestState, ɵ1$b);
-const ɵ2$5 = (state) => loaderLoadingSelector(state);
-const getOrderReturnRequestLoading = createSelector(getOrderReturnRequestState, ɵ2$5);
-const ɵ3$3 = (state) => loaderSuccessSelector(state) &&
+const ɵ0$m = (state) => state.order;
+const getOrderState = createSelector(getUserState, ɵ0$m);
+const ɵ1$g = (state) => loaderValueSelector(state);
+const getOrderDetails = createSelector(getOrderState, ɵ1$g);
+
+const ɵ0$n = (state) => state.orderReturn;
+const getOrderReturnRequestState = createSelector(getUserState, ɵ0$n);
+const ɵ1$h = (state) => loaderValueSelector(state);
+const getOrderReturnRequest = createSelector(getOrderReturnRequestState, ɵ1$h);
+const ɵ2$9 = (state) => loaderLoadingSelector(state);
+const getOrderReturnRequestLoading = createSelector(getOrderReturnRequestState, ɵ2$9);
+const ɵ3$6 = (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
-const getOrderReturnRequestSuccess = createSelector(getOrderReturnRequestState, ɵ3$3);
-const ɵ4$1 = (state) => state.orderReturnList;
-const getOrderReturnRequestListState = createSelector(getUserState, ɵ4$1);
-const ɵ5 = (state) => loaderValueSelector(state);
-const getOrderReturnRequestList = createSelector(getOrderReturnRequestListState, ɵ5);
+const getOrderReturnRequestSuccess = createSelector(getOrderReturnRequestState, ɵ3$6);
+const ɵ4$2 = (state) => state.orderReturnList;
+const getOrderReturnRequestListState = createSelector(getUserState, ɵ4$2);
+const ɵ5$1 = (state) => loaderValueSelector(state);
+const getOrderReturnRequestList = createSelector(getOrderReturnRequestListState, ɵ5$1);
 
-const ɵ0$g = (state) => state.payments;
-const getPaymentMethodsState = createSelector(getUserState, ɵ0$g);
-const ɵ1$c = (state) => loaderValueSelector(state);
-const getPaymentMethods = createSelector(getPaymentMethodsState, ɵ1$c);
-const ɵ2$6 = (state) => loaderLoadingSelector(state);
-const getPaymentMethodsLoading = createSelector(getPaymentMethodsState, ɵ2$6);
-const ɵ3$4 = (state) => loaderSuccessSelector(state) &&
+const ɵ0$o = (state) => state.payments;
+const getPaymentMethodsState = createSelector(getUserState, ɵ0$o);
+const ɵ1$i = (state) => loaderValueSelector(state);
+const getPaymentMethods = createSelector(getPaymentMethodsState, ɵ1$i);
+const ɵ2$a = (state) => loaderLoadingSelector(state);
+const getPaymentMethodsLoading = createSelector(getPaymentMethodsState, ɵ2$a);
+const ɵ3$7 = (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
-const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, ɵ3$4);
+const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, ɵ3$7);
 
-const ɵ0$h = (state) => state.regions;
-const getRegionsLoaderState = createSelector(getUserState, ɵ0$h);
-const ɵ1$d = (state) => {
+const ɵ0$p = (state) => state.productInterests;
+const getInterestsState = createSelector(getUserState, ɵ0$p);
+const ɵ1$j = (state) => loaderValueSelector(state);
+const getInterests = createSelector(getInterestsState, ɵ1$j);
+const ɵ2$b = (state) => loaderLoadingSelector(state);
+const getInterestsLoading = createSelector(getInterestsState, ɵ2$b);
+
+const ɵ0$q = (state) => state.regions;
+const getRegionsLoaderState = createSelector(getUserState, ɵ0$q);
+const ɵ1$k = (state) => {
     return loaderValueSelector(state).entities;
 };
-const getAllRegions = createSelector(getRegionsLoaderState, ɵ1$d);
-const ɵ2$7 = (state) => ({
+const getAllRegions = createSelector(getRegionsLoaderState, ɵ1$k);
+const ɵ2$c = (state) => ({
     loaded: loaderSuccessSelector(state),
     loading: loaderLoadingSelector(state),
     regions: loaderValueSelector(state).entities,
     country: loaderValueSelector(state).country,
 });
-const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, ɵ2$7);
-const ɵ3$5 = (state) => loaderValueSelector(state).country;
-const getRegionsCountry = createSelector(getRegionsLoaderState, ɵ3$5);
-const ɵ4$2 = (state) => loaderLoadingSelector(state);
-const getRegionsLoading = createSelector(getRegionsLoaderState, ɵ4$2);
-const ɵ5$1 = (state) => loaderSuccessSelector(state);
-const getRegionsLoaded = createSelector(getRegionsLoaderState, ɵ5$1);
+const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, ɵ2$c);
+const ɵ3$8 = (state) => loaderValueSelector(state).country;
+const getRegionsCountry = createSelector(getRegionsLoaderState, ɵ3$8);
+const ɵ4$3 = (state) => loaderLoadingSelector(state);
+const getRegionsLoading = createSelector(getRegionsLoaderState, ɵ4$3);
+const ɵ5$2 = (state) => loaderSuccessSelector(state);
+const getRegionsLoaded = createSelector(getRegionsLoaderState, ɵ5$2);
 
-const ɵ0$i = (state) => state.resetPassword;
-const getResetPassword = createSelector(getUserState, ɵ0$i);
+const ɵ0$r = (state) => state.replenishmentOrder;
+const getReplenishmentOrderState = createSelector(getUserState, ɵ0$r);
+const ɵ1$l = (state) => loaderValueSelector(state);
+const getReplenishmentOrderDetailsValue = createSelector(getReplenishmentOrderState, ɵ1$l);
+const ɵ2$d = (state) => loaderLoadingSelector(state);
+const getReplenishmentOrderDetailsLoading = createSelector(getReplenishmentOrderState, ɵ2$d);
+const ɵ3$9 = (state) => loaderSuccessSelector(state);
+const getReplenishmentOrderDetailsSuccess = createSelector(getReplenishmentOrderState, ɵ3$9);
+const ɵ4$4 = (state) => loaderErrorSelector(state);
+const getReplenishmentOrderDetailsError = createSelector(getReplenishmentOrderState, ɵ4$4);
 
-const ɵ0$j = (state) => state.titles;
-const getTitlesState = createSelector(getUserState, ɵ0$j);
-const ɵ1$e = (state) => state.entities;
-const getTitlesEntites = createSelector(getTitlesState, ɵ1$e);
-const ɵ2$8 = (entites) => Object.keys(entites).map((code) => entites[code]);
-const getAllTitles = createSelector(getTitlesEntites, ɵ2$8);
+const ɵ0$s = (state) => state.resetPassword;
+const getResetPassword = createSelector(getUserState, ɵ0$s);
+
+const ɵ0$t = (state) => state.titles;
+const getTitlesState = createSelector(getUserState, ɵ0$t);
+const ɵ1$m = (state) => state.entities;
+const getTitlesEntites = createSelector(getTitlesState, ɵ1$m);
+const ɵ2$e = (entites) => Object.keys(entites).map((code) => entites[code]);
+const getAllTitles = createSelector(getTitlesEntites, ɵ2$e);
 const titleSelectorFactory = (code) => createSelector(getTitlesEntites, (entities) => Object.keys(entities).length !== 0 ? entities[code] : null);
 
-const ɵ0$k = (state) => state.addresses;
-const getAddressesLoaderState = createSelector(getUserState, ɵ0$k);
-const ɵ1$f = (state) => loaderValueSelector(state);
-const getAddresses = createSelector(getAddressesLoaderState, ɵ1$f);
-const ɵ2$9 = (state) => loaderLoadingSelector(state);
-const getAddressesLoading = createSelector(getAddressesLoaderState, ɵ2$9);
-const ɵ3$6 = (state) => loaderSuccessSelector(state) &&
+const ɵ0$u = (state) => state.addresses;
+const getAddressesLoaderState = createSelector(getUserState, ɵ0$u);
+const ɵ1$n = (state) => loaderValueSelector(state);
+const getAddresses = createSelector(getAddressesLoaderState, ɵ1$n);
+const ɵ2$f = (state) => loaderLoadingSelector(state);
+const getAddressesLoading = createSelector(getAddressesLoaderState, ɵ2$f);
+const ɵ3$a = (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
-const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, ɵ3$6);
+const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, ɵ3$a);
 
-const ɵ0$l = (state) => state.consents;
-const getConsentsState = createSelector(getUserState, ɵ0$l);
+const ɵ0$v = (state) => state.consents;
+const getConsentsState = createSelector(getUserState, ɵ0$v);
 const getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
 const getConsentByTemplateId = (templateId) => createSelector(getConsentsValue, (templates) => templates.find((template) => template.id === templateId));
 const getConsentsLoading = createSelector(getConsentsState, loaderLoadingSelector);
 const getConsentsSuccess = createSelector(getConsentsState, loaderSuccessSelector);
 const getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
 
-const ɵ0$m = (state) => state.account;
-const getDetailsState = createSelector(getUserState, ɵ0$m);
-const ɵ1$g = (state) => state.details;
-const getDetails = createSelector(getDetailsState, ɵ1$g);
+const ɵ0$w = (state) => state.costCenters;
+const getCostCentersState = createSelector(getUserState, ɵ0$w);
+const ɵ1$o = (state) => loaderValueSelector(state);
+const getCostCenters = createSelector(getCostCentersState, ɵ1$o);
 
-const ɵ0$n = (state) => state.orders;
-const getOrdersState = createSelector(getUserState, ɵ0$n);
-const ɵ1$h = (state) => loaderSuccessSelector(state);
-const getOrdersLoaded = createSelector(getOrdersState, ɵ1$h);
-const ɵ2$a = (state) => loaderValueSelector(state);
-const getOrders = createSelector(getOrdersState, ɵ2$a);
+const ɵ0$x = (state) => state.account;
+const getDetailsState = createSelector(getUserState, ɵ0$x);
+const ɵ1$p = (state) => state.details;
+const getDetails = createSelector(getDetailsState, ɵ1$p);
 
-const ɵ0$o = (state) => state.customerCoupons;
-const getCustomerCouponsState = createSelector(getUserState, ɵ0$o);
-const ɵ1$i = (state) => loaderSuccessSelector(state);
-const getCustomerCouponsLoaded = createSelector(getCustomerCouponsState, ɵ1$i);
-const ɵ2$b = (state) => loaderLoadingSelector(state);
-const getCustomerCouponsLoading = createSelector(getCustomerCouponsState, ɵ2$b);
-const ɵ3$7 = (state) => loaderValueSelector(state);
-const getCustomerCoupons = createSelector(getCustomerCouponsState, ɵ3$7);
+const ɵ0$y = (state) => state.orders;
+const getOrdersState = createSelector(getUserState, ɵ0$y);
+const ɵ1$q = (state) => loaderSuccessSelector(state);
+const getOrdersLoaded = createSelector(getOrdersState, ɵ1$q);
+const ɵ2$g = (state) => loaderValueSelector(state);
+const getOrders = createSelector(getOrdersState, ɵ2$g);
 
-const ɵ0$p = (state) => state.notificationPreferences;
-const getPreferencesLoaderState = createSelector(getUserState, ɵ0$p);
-const ɵ1$j = (state) => loaderValueSelector(state);
-const getPreferences = createSelector(getPreferencesLoaderState, ɵ1$j);
-const ɵ2$c = (state) => loaderValueSelector(state).filter((p) => p.enabled);
-const getEnabledPreferences = createSelector(getPreferencesLoaderState, ɵ2$c);
-const ɵ3$8 = (state) => loaderLoadingSelector(state);
-const getPreferencesLoading = createSelector(getPreferencesLoaderState, ɵ3$8);
-
-const ɵ0$q = (state) => state.productInterests;
-const getInterestsState = createSelector(getUserState, ɵ0$q);
-const ɵ1$k = (state) => loaderValueSelector(state);
-const getInterests = createSelector(getInterestsState, ɵ1$k);
-const ɵ2$d = (state) => loaderLoadingSelector(state);
-const getInterestsLoading = createSelector(getInterestsState, ɵ2$d);
-
-const ɵ0$r = (state) => state.costCenters;
-const getCostCentersState = createSelector(getUserState, ɵ0$r);
-const ɵ1$l = (state) => loaderValueSelector(state);
-const getCostCenters = createSelector(getCostCentersState, ɵ1$l);
+const ɵ0$z = (state) => state.replenishmentOrders;
+const getReplenishmentOrdersState = createSelector(getUserState, ɵ0$z);
+const ɵ1$r = (state) => loaderValueSelector(state);
+const getReplenishmentOrders = createSelector(getReplenishmentOrdersState, ɵ1$r);
+const ɵ2$h = (state) => loaderLoadingSelector(state);
+const getReplenishmentOrdersLoading = createSelector(getReplenishmentOrdersState, ɵ2$h);
+const ɵ3$b = (state) => loaderErrorSelector(state);
+const getReplenishmentOrdersError = createSelector(getReplenishmentOrdersState, ɵ3$b);
+const ɵ4$5 = (state) => loaderSuccessSelector(state);
+const getReplenishmentOrdersSuccess = createSelector(getReplenishmentOrdersState, ɵ4$5);
 
 var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getBillingCountriesState: getBillingCountriesState,
     getBillingCountriesEntites: getBillingCountriesEntites,
     getAllBillingCountries: getAllBillingCountries,
-    ɵ0: ɵ0$b,
-    ɵ1: ɵ1$7,
-    ɵ2: ɵ2$3,
+    ɵ0: ɵ0$h,
+    ɵ1: ɵ1$b,
+    ɵ2: ɵ2$5,
     getConsignmentTrackingState: getConsignmentTrackingState,
     getConsignmentTracking: getConsignmentTracking,
+    getCustomerCouponsState: getCustomerCouponsState,
+    getCustomerCouponsLoaded: getCustomerCouponsLoaded,
+    getCustomerCouponsLoading: getCustomerCouponsLoading,
+    getCustomerCoupons: getCustomerCoupons,
+    ɵ3: ɵ3$4,
     getDeliveryCountriesState: getDeliveryCountriesState,
     getDeliveryCountriesEntites: getDeliveryCountriesEntites,
     getAllDeliveryCountries: getAllDeliveryCountries,
     countrySelectorFactory: countrySelectorFactory,
     getUserState: getUserState,
+    getPreferencesLoaderState: getPreferencesLoaderState,
+    getPreferences: getPreferences,
+    getEnabledPreferences: getEnabledPreferences,
+    getPreferencesLoading: getPreferencesLoading,
     getOrderState: getOrderState,
     getOrderDetails: getOrderDetails,
     getOrderReturnRequestState: getOrderReturnRequestState,
@@ -10506,19 +14295,26 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getOrderReturnRequestSuccess: getOrderReturnRequestSuccess,
     getOrderReturnRequestListState: getOrderReturnRequestListState,
     getOrderReturnRequestList: getOrderReturnRequestList,
-    ɵ3: ɵ3$3,
-    ɵ4: ɵ4$1,
-    ɵ5: ɵ5,
+    ɵ4: ɵ4$2,
+    ɵ5: ɵ5$1,
     getPaymentMethodsState: getPaymentMethodsState,
     getPaymentMethods: getPaymentMethods,
     getPaymentMethodsLoading: getPaymentMethodsLoading,
     getPaymentMethodsLoadedSuccess: getPaymentMethodsLoadedSuccess,
+    getInterestsState: getInterestsState,
+    getInterests: getInterests,
+    getInterestsLoading: getInterestsLoading,
     getRegionsLoaderState: getRegionsLoaderState,
     getAllRegions: getAllRegions,
     getRegionsDataAndLoading: getRegionsDataAndLoading,
     getRegionsCountry: getRegionsCountry,
     getRegionsLoading: getRegionsLoading,
     getRegionsLoaded: getRegionsLoaded,
+    getReplenishmentOrderState: getReplenishmentOrderState,
+    getReplenishmentOrderDetailsValue: getReplenishmentOrderDetailsValue,
+    getReplenishmentOrderDetailsLoading: getReplenishmentOrderDetailsLoading,
+    getReplenishmentOrderDetailsSuccess: getReplenishmentOrderDetailsSuccess,
+    getReplenishmentOrderDetailsError: getReplenishmentOrderDetailsError,
     getResetPassword: getResetPassword,
     getTitlesState: getTitlesState,
     getTitlesEntites: getTitlesEntites,
@@ -10534,24 +14330,18 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getConsentsLoading: getConsentsLoading,
     getConsentsSuccess: getConsentsSuccess,
     getConsentsError: getConsentsError,
+    getCostCentersState: getCostCentersState,
+    getCostCenters: getCostCenters,
     getDetailsState: getDetailsState,
     getDetails: getDetails,
     getOrdersState: getOrdersState,
     getOrdersLoaded: getOrdersLoaded,
     getOrders: getOrders,
-    getCustomerCouponsState: getCustomerCouponsState,
-    getCustomerCouponsLoaded: getCustomerCouponsLoaded,
-    getCustomerCouponsLoading: getCustomerCouponsLoading,
-    getCustomerCoupons: getCustomerCoupons,
-    getPreferencesLoaderState: getPreferencesLoaderState,
-    getPreferences: getPreferences,
-    getEnabledPreferences: getEnabledPreferences,
-    getPreferencesLoading: getPreferencesLoading,
-    getInterestsState: getInterestsState,
-    getInterests: getInterests,
-    getInterestsLoading: getInterestsLoading,
-    getCostCentersState: getCostCentersState,
-    getCostCenters: getCostCenters
+    getReplenishmentOrdersState: getReplenishmentOrdersState,
+    getReplenishmentOrders: getReplenishmentOrders,
+    getReplenishmentOrdersLoading: getReplenishmentOrdersLoading,
+    getReplenishmentOrdersError: getReplenishmentOrdersError,
+    getReplenishmentOrdersSuccess: getReplenishmentOrdersSuccess
 });
 
 class UserConsentService {
@@ -10744,42 +14534,6 @@ UserConsentService.ctorParameters = () => [
     { type: AuthService }
 ];
 
-/**
- * Normalizes HttpErrorResponse to HttpErrorModel.
- *
- * Can be used as a safe and generic way for embodying http errors into
- * NgRx Action payload, as it will strip potentially unserializable parts from
- * it and warn in debug mode if passed error is not instance of HttpErrorModel
- * (which usually happens when logic in NgRx Effect is not sealed correctly)
- */
-function normalizeHttpError(error) {
-    if (error instanceof HttpErrorResponse) {
-        const normalizedError = {
-            message: error.message,
-            status: error.status,
-            statusText: error.statusText,
-            url: error.url,
-        };
-        // include backend's error details
-        if (Array.isArray(error.error.errors)) {
-            normalizedError.details = error.error.errors;
-        }
-        else if (typeof error.error.error === 'string') {
-            normalizedError.details = [
-                {
-                    type: error.error.error,
-                    message: error.error.error_description,
-                },
-            ];
-        }
-        return normalizedError;
-    }
-    if (isDevMode()) {
-        console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
-    }
-    return undefined;
-}
-
 class AnonymousConsentTemplatesConnector {
     constructor(adapter) {
         this.adapter = adapter;
@@ -10939,7 +14693,7 @@ __decorate([
     Effect()
 ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
 
-const effects$1 = [AnonymousConsentsEffects];
+const effects$2 = [AnonymousConsentsEffects];
 
 class SiteConnector {
     constructor(adapter) {
@@ -11561,17 +15315,17 @@ __decorate([
     Effect()
 ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
 
-const effects$2 = [
+const effects$3 = [
     LanguagesEffects,
     CurrenciesEffects,
     BaseSiteEffects,
 ];
 
-const initialState$1 = {
+const initialState$6 = {
     details: {},
     activeSite: '',
 };
-function reducer$1(state = initialState$1, action) {
+function reducer$6(state = initialState$6, action) {
     switch (action.type) {
         case LOAD_BASE_SITE_SUCCESS: {
             return Object.assign(Object.assign({}, state), { details: action.payload });
@@ -11583,11 +15337,11 @@ function reducer$1(state = initialState$1, action) {
     return state;
 }
 
-const initialState$2 = {
+const initialState$7 = {
     entities: null,
     activeCurrency: null,
 };
-function reducer$2(state = initialState$2, action) {
+function reducer$7(state = initialState$7, action) {
     switch (action.type) {
         case LOAD_CURRENCIES_SUCCESS: {
             const currencies = action.payload;
@@ -11604,11 +15358,11 @@ function reducer$2(state = initialState$2, action) {
     return state;
 }
 
-const initialState$3 = {
+const initialState$8 = {
     entities: null,
     activeLanguage: null,
 };
-function reducer$3(state = initialState$3, action) {
+function reducer$8(state = initialState$8, action) {
     switch (action.type) {
         case LOAD_LANGUAGES_SUCCESS: {
             const languages = action.payload;
@@ -11625,17 +15379,17 @@ function reducer$3(state = initialState$3, action) {
     return state;
 }
 
-function getReducers$1() {
+function getReducers$2() {
     return {
-        languages: reducer$3,
-        currencies: reducer$2,
-        baseSite: reducer$1,
+        languages: reducer$8,
+        currencies: reducer$7,
+        baseSite: reducer$6,
     };
 }
-const reducerToken$1 = new InjectionToken('SiteContextReducers');
-const reducerProvider$1 = {
-    provide: reducerToken$1,
-    useFactory: getReducers$1,
+const reducerToken$2 = new InjectionToken('SiteContextReducers');
+const reducerProvider$2 = {
+    provide: reducerToken$2,
+    useFactory: getReducers$2,
 };
 
 function siteContextStoreConfigFactory() {
@@ -11656,12 +15410,12 @@ SiteContextStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
-                    EffectsModule.forFeature(effects$2),
+                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
+                    EffectsModule.forFeature(effects$3),
                 ],
                 providers: [
                     provideDefaultConfigFactory(siteContextStoreConfigFactory),
-                    reducerProvider$1,
+                    reducerProvider$2,
                 ],
             },] }
 ];
@@ -11687,8 +15441,8 @@ SiteContextModule.decorators = [
             },] }
 ];
 
-const initialState$4 = false;
-function reducer$4(state = initialState$4, action) {
+const initialState$9 = false;
+function reducer$9(state = initialState$9, action) {
     switch (action.type) {
         case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
             return action.dismissed;
@@ -11697,8 +15451,8 @@ function reducer$4(state = initialState$4, action) {
     return state;
 }
 
-const initialState$5 = false;
-function reducer$5(state = initialState$5, action) {
+const initialState$a = false;
+function reducer$a(state = initialState$a, action) {
     switch (action.type) {
         case TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: {
             return action.updated;
@@ -11707,7 +15461,7 @@ function reducer$5(state = initialState$5, action) {
     return state;
 }
 
-const initialState$6 = [];
+const initialState$b = [];
 function toggleConsentStatus(consents, templateCode, status) {
     if (!consents) {
         return [];
@@ -11719,7 +15473,7 @@ function toggleConsentStatus(consents, templateCode, status) {
         return consent;
     });
 }
-function reducer$6(state = initialState$6, action) {
+function reducer$b(state = initialState$b, action) {
     switch (action.type) {
         case GIVE_ANONYMOUS_CONSENT: {
             return toggleConsentStatus(state, action.templateCode, ANONYMOUS_CONSENT_STATUS.GIVEN);
@@ -11734,20 +15488,20 @@ function reducer$6(state = initialState$6, action) {
     return state;
 }
 
-function getReducers$2() {
+function getReducers$3() {
     return {
         templates: loaderReducer(ANONYMOUS_CONSENTS),
-        consents: reducer$6,
+        consents: reducer$b,
         ui: combineReducers({
-            bannerDismissed: reducer$4,
-            updated: reducer$5,
+            bannerDismissed: reducer$9,
+            updated: reducer$a,
         }),
     };
 }
-const reducerToken$2 = new InjectionToken('AnonymousConsentsReducers');
-const reducerProvider$2 = {
-    provide: reducerToken$2,
-    useFactory: getReducers$2,
+const reducerToken$3 = new InjectionToken('AnonymousConsentsReducers');
+const reducerProvider$3 = {
+    provide: reducerToken$3,
+    useFactory: getReducers$3,
 };
 function clearAnonymousConsentTemplates(reducer) {
     return function (state, action) {
@@ -11781,14 +15535,14 @@ AnonymousConsentsStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     StateModule,
-                    StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
+                    StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$3, {
                         metaReducers: metaReducers$1,
                     }),
-                    EffectsModule.forFeature(effects$1),
+                    EffectsModule.forFeature(effects$2),
                 ],
                 providers: [
                     provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
-                    reducerProvider$2,
+                    reducerProvider$3,
                 ],
             },] }
 ];
@@ -11978,13 +15732,13 @@ __decorate([
     Effect()
 ], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
 
-const effects$3 = [
+const effects$4 = [
     CustomerEffects,
     CustomerSupportAgentTokenEffects,
 ];
 
-const initialState$7 = { collapsed: false };
-function reducer$7(state = initialState$7, action) {
+const initialState$c = { collapsed: false };
+function reducer$c(state = initialState$c, action) {
     switch (action.type) {
         case ASM_UI_UPDATE: {
             return Object.assign(Object.assign({}, state), action.payload);
@@ -11995,17 +15749,17 @@ function reducer$7(state = initialState$7, action) {
     }
 }
 
-function getReducers$3() {
+function getReducers$4() {
     return {
         customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
-        asmUi: reducer$7,
+        asmUi: reducer$c,
         csagentToken: loaderReducer(CSAGENT_TOKEN_DATA),
     };
 }
-const reducerToken$3 = new InjectionToken('AsmReducers');
-const reducerProvider$3 = {
-    provide: reducerToken$3,
-    useFactory: getReducers$3,
+const reducerToken$4 = new InjectionToken('AsmReducers');
+const reducerProvider$4 = {
+    provide: reducerToken$4,
+    useFactory: getReducers$4,
 };
 function clearCustomerSupportAgentAsmState(reducer) {
     return function (state, action) {
@@ -12045,12 +15799,12 @@ AsmStoreModule.decorators = [
                     CommonModule,
                     HttpClientModule,
                     StateModule,
-                    StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
-                    EffectsModule.forFeature(effects$3),
+                    StoreModule.forFeature(ASM_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
+                    EffectsModule.forFeature(effects$4),
                 ],
                 providers: [
                     provideDefaultConfigFactory(asmStoreConfigFactory),
-                    reducerProvider$3,
+                    reducerProvider$4,
                 ],
             },] }
 ];
@@ -12109,8 +15863,8 @@ const GLOBAL_MESSAGE_FEATURE = 'global-message';
 
 const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
-const ɵ0$s = (state) => state.entities;
-const getGlobalMessageEntities = createSelector(getGlobalMessageState, ɵ0$s);
+const ɵ0$A = (state) => state.entities;
+const getGlobalMessageEntities = createSelector(getGlobalMessageState, ɵ0$A);
 const getGlobalMessageEntitiesByType = (type) => {
     return createSelector(getGlobalMessageEntities, (entities) => entities && entities[type]);
 };
@@ -12124,7 +15878,7 @@ var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
     getGlobalMessageEntities: getGlobalMessageEntities,
     getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
     getGlobalMessageCountByType: getGlobalMessageCountByType,
-    ɵ0: ɵ0$s
+    ɵ0: ɵ0$A
 });
 
 class GlobalMessageService {
@@ -12228,62 +15982,6 @@ BadGatewayHandler.decorators = [
                 providedIn: 'root',
             },] }
 ];
-
-/**
- * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
- */
-function getCartIdByUserId(cart, userId) {
-    if (userId === OCC_USER_ID_ANONYMOUS) {
-        return cart.guid;
-    }
-    return cart.code;
-}
-/**
- * Check if cart is selective (save for later) based on id.
- */
-function isSelectiveCart(cartId = '') {
-    return cartId.startsWith('selectivecart');
-}
-/**
- * Check if the returned error is of type notFound.
- *
- * We additionally check if the cart is not a selective cart.
- * For selective cart this error can happen only when extension is disabled.
- * It should never happen, because in that case, selective cart should also be disabled in our configuration.
- * However if that happens we want to handle these errors silently.
- */
-function isCartNotFoundError(error) {
-    return (error.reason === 'notFound' &&
-        error.subjectType === 'cart' &&
-        !isSelectiveCart(error.subject));
-}
-/**
- * Compute wishlist cart name for customer.
- */
-function getWishlistName(customerId) {
-    return `wishlist${customerId}`;
-}
-/**
- * What is a temporary cart?
- * - frontend only cart entity!
- * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
- *
- * Why we need temporary carts?
- * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
- * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
- * - cart identifiers are created in the backend, so those are only known after cart is created
- *
- * Temporary cart life cycle
- * - create cart method invoked
- * - new `temp-${uuid}` cart is created with `loading=true` state
- * - backend returns created cart
- * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
- * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
- * - in next tick temporary cart is removed
- */
-function isTempCartId(cartId) {
-    return cartId.startsWith('temp-');
-}
 
 const OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
 class BadRequestHandler extends HttpErrorHandler {
@@ -12647,10 +16345,10 @@ const httpErrorInterceptors = [
     },
 ];
 
-const initialState$8 = {
+const initialState$d = {
     entities: {},
 };
-function reducer$8(state = initialState$8, action) {
+function reducer$d(state = initialState$d, action) {
     switch (action.type) {
         case ADD_MESSAGE: {
             const message = action.payload;
@@ -12681,13 +16379,13 @@ function reducer$8(state = initialState$8, action) {
     return state;
 }
 
-function getReducers$4() {
-    return reducer$8;
+function getReducers$5() {
+    return reducer$d;
 }
-const reducerToken$4 = new InjectionToken('GlobalMessageReducers');
-const reducerProvider$4 = {
-    provide: reducerToken$4,
-    useFactory: getReducers$4,
+const reducerToken$5 = new InjectionToken('GlobalMessageReducers');
+const reducerProvider$5 = {
+    provide: reducerToken$5,
+    useFactory: getReducers$5,
 };
 
 class GlobalMessageStoreModule {
@@ -12696,9 +16394,9 @@ GlobalMessageStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     StateModule,
-                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
                 ],
-                providers: [reducerProvider$4],
+                providers: [reducerProvider$5],
             },] }
 ];
 
@@ -12856,32 +16554,32 @@ GlobalMessageModule.decorators = [
 
 const getAsmState = createFeatureSelector(ASM_FEATURE);
 
-const ɵ0$t = (state) => state.asmUi;
-const getAsmUi = createSelector(getAsmState, ɵ0$t);
+const ɵ0$B = (state) => state.asmUi;
+const getAsmUi = createSelector(getAsmState, ɵ0$B);
 
-const ɵ0$u = (state) => state.customerSearchResult;
-const getCustomerSearchResultsLoaderState = createSelector(getAsmState, ɵ0$u);
-const ɵ1$m = (state) => loaderValueSelector(state);
-const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, ɵ1$m);
-const ɵ2$e = (state) => loaderLoadingSelector(state);
-const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, ɵ2$e);
+const ɵ0$C = (state) => state.customerSearchResult;
+const getCustomerSearchResultsLoaderState = createSelector(getAsmState, ɵ0$C);
+const ɵ1$s = (state) => loaderValueSelector(state);
+const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, ɵ1$s);
+const ɵ2$i = (state) => loaderLoadingSelector(state);
+const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, ɵ2$i);
 
-const ɵ0$v = (state) => state.csagentToken;
-const getCustomerSupportAgentTokenState = createSelector(getAsmState, ɵ0$v);
-const ɵ1$n = (state) => loaderValueSelector(state);
-const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, ɵ1$n);
-const ɵ2$f = (state) => loaderLoadingSelector(state);
-const getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, ɵ2$f);
+const ɵ0$D = (state) => state.csagentToken;
+const getCustomerSupportAgentTokenState = createSelector(getAsmState, ɵ0$D);
+const ɵ1$t = (state) => loaderValueSelector(state);
+const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, ɵ1$t);
+const ɵ2$j = (state) => loaderLoadingSelector(state);
+const getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, ɵ2$j);
 
 var asmGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getAsmUi: getAsmUi,
-    ɵ0: ɵ0$t,
+    ɵ0: ɵ0$B,
     getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
     getCustomerSearchResults: getCustomerSearchResults,
     getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
-    ɵ1: ɵ1$m,
-    ɵ2: ɵ2$e,
+    ɵ1: ɵ1$s,
+    ɵ2: ɵ2$i,
     getAsmState: getAsmState,
     getCustomerSupportAgentTokenState: getCustomerSupportAgentTokenState,
     getCustomerSupportAgentToken: getCustomerSupportAgentToken,
@@ -13121,1087 +16819,6 @@ AsmService.ctorParameters = () => [
     { type: Store }
 ];
 
-/**
- * Abstract class that can be used to resolve meta data for specific pages.
- * The `getScore` method is used to select the right resolver for a specific
- * page, based on a score. The score is calculated by the (non)matching page
- * type and page template.
- */
-class PageMetaResolver {
-    /**
-     * Returns the matching score for a resolver class, based on
-     * the page type and page template.
-     */
-    getScore(page) {
-        let score = 0;
-        if (this.pageType) {
-            score += page.type === this.pageType ? 1 : -1;
-        }
-        if (this.pageTemplate) {
-            score += page.template === this.pageTemplate ? 1 : -1;
-        }
-        return score;
-    }
-    hasMatch(page) {
-        return this.getScore(page) > 0;
-    }
-    getPriority(page) {
-        return this.getScore(page);
-    }
-}
-
-// Email Standard RFC 5322:
-const EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
-const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
-
-const MULTI_CART_FEATURE = 'cart';
-const MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
-// TODO(#7241): Drop after event system implementation for cart vouchers
-/**
- * Add voucher process const
- * @deprecated since 2.0
- */
-const ADD_VOUCHER_PROCESS_ID = 'addVoucher';
-
-const getMultiCartState = createFeatureSelector(MULTI_CART_FEATURE);
-const ɵ0$w = (state) => state.carts;
-const getMultiCartEntities = createSelector(getMultiCartState, ɵ0$w);
-const getCartEntitySelectorFactory = (cartId) => {
-    return createSelector(getMultiCartEntities, (state) => entityProcessesLoaderStateSelector(state, cartId));
-};
-const getCartSelectorFactory = (cartId) => {
-    return createSelector(getMultiCartEntities, (state) => entityValueSelector(state, cartId));
-};
-const getCartIsStableSelectorFactory = (cartId) => {
-    return createSelector(getMultiCartEntities, (state) => entityIsStableSelector(state, cartId));
-};
-const getCartHasPendingProcessesSelectorFactory = (cartId) => {
-    return createSelector(getMultiCartEntities, (state) => entityHasPendingProcessesSelector(state, cartId));
-};
-const getCartEntriesSelectorFactory = (cartId) => {
-    return createSelector(getCartSelectorFactory(cartId), (state) => {
-        return state && state.entries ? state.entries : [];
-    });
-};
-const getCartEntrySelectorFactory = (cartId, productCode) => {
-    return createSelector(getCartEntriesSelectorFactory(cartId), (state) => {
-        return state
-            ? state.find((entry) => entry.product.code === productCode)
-            : undefined;
-    });
-};
-const ɵ1$o = (state) => state.active;
-const getActiveCartId = createSelector(getMultiCartState, ɵ1$o);
-const ɵ2$g = (state) => state.wishList;
-const getWishListId = createSelector(getMultiCartState, ɵ2$g);
-
-var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getMultiCartState: getMultiCartState,
-    getMultiCartEntities: getMultiCartEntities,
-    getCartEntitySelectorFactory: getCartEntitySelectorFactory,
-    getCartSelectorFactory: getCartSelectorFactory,
-    getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
-    getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
-    getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
-    getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-    getActiveCartId: getActiveCartId,
-    getWishListId: getWishListId,
-    ɵ0: ɵ0$w,
-    ɵ1: ɵ1$o,
-    ɵ2: ɵ2$g
-});
-
-const CART_ADD_ENTRY = '[Cart-entry] Add Entry';
-const CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
-const CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
-const CART_REMOVE_ENTRY = '[Cart-entry] Remove Entry';
-const CART_REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
-const CART_REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
-const CART_UPDATE_ENTRY = '[Cart-entry] Update Entry';
-const CART_UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
-const CART_UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
-class CartAddEntry extends EntityProcessesIncrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_ADD_ENTRY;
-    }
-}
-class CartAddEntrySuccess extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_ADD_ENTRY_SUCCESS;
-    }
-}
-class CartAddEntryFail extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_ADD_ENTRY_FAIL;
-    }
-}
-class CartRemoveEntry extends EntityProcessesIncrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_REMOVE_ENTRY;
-    }
-}
-class CartRemoveEntrySuccess extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_REMOVE_ENTRY_SUCCESS;
-    }
-}
-class CartRemoveEntryFail extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_REMOVE_ENTRY_FAIL;
-    }
-}
-class CartUpdateEntry extends EntityProcessesIncrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_UPDATE_ENTRY;
-    }
-}
-class CartUpdateEntrySuccess extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_UPDATE_ENTRY_SUCCESS;
-    }
-}
-class CartUpdateEntryFail extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_UPDATE_ENTRY_FAIL;
-    }
-}
-
-const CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
-const CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
-const CART_ADD_VOUCHER_SUCCESS = '[Cart-voucher] Add Cart Voucher Success';
-const CART_RESET_ADD_VOUCHER = '[Cart-voucher] Reset Add Cart Voucher';
-const CART_REMOVE_VOUCHER = '[Cart-voucher] Remove Cart Voucher';
-const CART_REMOVE_VOUCHER_FAIL = '[Cart-voucher] Remove Cart Voucher Fail';
-const CART_REMOVE_VOUCHER_SUCCESS = '[Cart-voucher] Remove Cart Voucher Success';
-// Adding cart voucher actions
-class CartAddVoucher extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
-        this.payload = payload;
-        this.type = CART_ADD_VOUCHER;
-    }
-}
-class CartAddVoucherFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload.error);
-        this.payload = payload;
-        this.type = CART_ADD_VOUCHER_FAIL;
-    }
-}
-class CartAddVoucherSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
-        this.payload = payload;
-        this.type = CART_ADD_VOUCHER_SUCCESS;
-    }
-}
-// TODO(#7241): Remove when switching to event system for vouchers
-/**
- * Resets add voucher process
- *
- * @deprecated since 2.0
- */
-class CartResetAddVoucher extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
-        this.type = CART_RESET_ADD_VOUCHER;
-    }
-}
-// Deleting cart voucher
-class CartRemoveVoucher extends EntityProcessesIncrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_REMOVE_VOUCHER;
-    }
-}
-class CartRemoveVoucherFail extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_REMOVE_VOUCHER_FAIL;
-    }
-}
-class CartRemoveVoucherSuccess extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CART_REMOVE_VOUCHER_SUCCESS;
-    }
-}
-
-const CREATE_CART = '[Cart] Create Cart';
-const CREATE_CART_FAIL = '[Cart] Create Cart Fail';
-const CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
-const LOAD_CART = '[Cart] Load Cart';
-const LOAD_CART_FAIL = '[Cart] Load Cart Fail';
-const LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
-const ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
-const ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
-const ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
-const MERGE_CART = '[Cart] Merge Cart';
-const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
-const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
-const REMOVE_CART = '[Cart] Remove Cart';
-const DELETE_CART = '[Cart] Delete Cart';
-const DELETE_CART_SUCCESS = '[Cart] Delete Cart Success';
-const DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
-class CreateCart extends EntityLoadAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.tempCartId);
-        this.payload = payload;
-        this.type = CREATE_CART;
-    }
-}
-class CreateCartFail extends EntityFailAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.tempCartId);
-        this.payload = payload;
-        this.type = CREATE_CART_FAIL;
-    }
-}
-class CreateCartSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CREATE_CART_SUCCESS;
-    }
-}
-class AddEmailToCart extends EntityProcessesIncrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART;
-    }
-}
-class AddEmailToCartFail extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART_FAIL;
-    }
-}
-class AddEmailToCartSuccess extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART_SUCCESS;
-    }
-}
-class LoadCart extends EntityLoadAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = LOAD_CART;
-    }
-}
-class LoadCartFail extends EntityFailAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId, payload.error);
-        this.payload = payload;
-        this.type = LOAD_CART_FAIL;
-    }
-}
-class LoadCartSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = LOAD_CART_SUCCESS;
-    }
-}
-class MergeCart {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = MERGE_CART;
-    }
-}
-class MergeCartSuccess extends EntityRemoveAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.oldCartId);
-        this.payload = payload;
-        this.type = MERGE_CART_SUCCESS;
-    }
-}
-/**
- * On site context change we want to keep current list of entities, but we want to clear the value and flags.
- * With ProcessesLoaderResetAction we run it on every entity of this type.
- */
-class ResetCartDetails extends ProcessesLoaderResetAction {
-    constructor() {
-        super(MULTI_CART_DATA);
-        this.type = RESET_CART_DETAILS;
-    }
-}
-/**
- * Used for cleaning cart in local state, when we get information that it no longer exists in the backend.
- * For removing particular cart in both places use DeleteCart actions.
- */
-class RemoveCart extends EntityRemoveAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = REMOVE_CART;
-    }
-}
-class DeleteCart {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = DELETE_CART;
-    }
-}
-class DeleteCartSuccess extends EntityRemoveAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = DELETE_CART_SUCCESS;
-    }
-}
-class DeleteCartFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = DELETE_CART_FAIL;
-    }
-}
-
-const SET_TEMP_CART = '[Cart] Set Temp Cart';
-const CART_PROCESSES_INCREMENT = '[Cart] Cart Processes Increment';
-const CART_PROCESSES_DECREMENT = '[Cart] Cart Processes Decrement';
-const SET_ACTIVE_CART_ID = '[Cart] Set Active Cart Id';
-const CLEAR_CART_STATE = '[Cart] Clear Cart State';
-/**
- * To keep track of cart creation process we use cart with `temp-${uuid}` id.
- * After creating cart we switch to entity with `code` or `guid`.
- * We need `temp-${uuid}` cart entities for loading/error state.
- */
-class SetTempCart extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.tempCartId, payload.cart);
-        this.payload = payload;
-        this.type = SET_TEMP_CART;
-    }
-}
-// TODO(#7241): Remove when there won't be any usage
-/**
- * Increases process counter on cart entities
- * All actions that cause computations on cart should extend EntityProcessesIncrementAction instead of dispatching this action.
- * @deprecated since 2.0
- */
-class CartProcessesIncrement extends EntityProcessesIncrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload);
-        this.payload = payload;
-        this.type = CART_PROCESSES_INCREMENT;
-    }
-}
-// TODO(#7241): Remove when there won't be any usage
-/**
- * Decrement process counter on cart entities
- * All actions that cause computations on cart should extend EntityProcessesDecrementAction instead of dispatching this action.
- * @deprecated since 2.0
- */
-class CartProcessesDecrement extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload);
-        this.payload = payload;
-        this.type = CART_PROCESSES_DECREMENT;
-    }
-}
-/**
- * Only sets active cart property with id of active cart. Then services take care of loading that cart.
- */
-class SetActiveCartId {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_ACTIVE_CART_ID;
-    }
-}
-/**
- * Clear whole cart store state: all entities + reset rest of the cart state.
- */
-class ClearCartState extends EntityRemoveAllAction {
-    constructor() {
-        super(MULTI_CART_DATA);
-        this.type = CLEAR_CART_STATE;
-    }
-}
-
-const CREATE_WISH_LIST = '[Wish List] Create Wish List';
-const CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
-const CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
-const LOAD_WISH_LIST = '[Wish List] Load Wish List';
-const LOAD_WISH_LIST_SUCCESS = '[Wish List] Load Wish List Success';
-const LOAD_WISH_LIST_FAIL = '[Wish List] Load Wish List Fail';
-const RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
-class CreateWishList {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CREATE_WISH_LIST;
-    }
-}
-class CreateWishListSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, getCartIdByUserId(payload.cart, payload.userId));
-        this.payload = payload;
-        this.type = CREATE_WISH_LIST_SUCCESS;
-    }
-}
-class CreateWishListFail extends EntityFailAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId, payload.error);
-        this.payload = payload;
-        this.type = CREATE_WISH_LIST_FAIL;
-    }
-}
-class LoadWishList extends EntityLoadAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.tempCartId);
-        this.payload = payload;
-        this.type = LOAD_WISH_LIST;
-    }
-}
-class LoadWishListSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = LOAD_WISH_LIST_SUCCESS;
-    }
-}
-class LoadWishListFail extends EntityFailAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId, payload.error);
-        this.payload = payload;
-        this.type = LOAD_WISH_LIST_FAIL;
-    }
-}
-
-var cartGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    CART_ADD_ENTRY: CART_ADD_ENTRY,
-    CART_ADD_ENTRY_SUCCESS: CART_ADD_ENTRY_SUCCESS,
-    CART_ADD_ENTRY_FAIL: CART_ADD_ENTRY_FAIL,
-    CART_REMOVE_ENTRY: CART_REMOVE_ENTRY,
-    CART_REMOVE_ENTRY_SUCCESS: CART_REMOVE_ENTRY_SUCCESS,
-    CART_REMOVE_ENTRY_FAIL: CART_REMOVE_ENTRY_FAIL,
-    CART_UPDATE_ENTRY: CART_UPDATE_ENTRY,
-    CART_UPDATE_ENTRY_SUCCESS: CART_UPDATE_ENTRY_SUCCESS,
-    CART_UPDATE_ENTRY_FAIL: CART_UPDATE_ENTRY_FAIL,
-    CartAddEntry: CartAddEntry,
-    CartAddEntrySuccess: CartAddEntrySuccess,
-    CartAddEntryFail: CartAddEntryFail,
-    CartRemoveEntry: CartRemoveEntry,
-    CartRemoveEntrySuccess: CartRemoveEntrySuccess,
-    CartRemoveEntryFail: CartRemoveEntryFail,
-    CartUpdateEntry: CartUpdateEntry,
-    CartUpdateEntrySuccess: CartUpdateEntrySuccess,
-    CartUpdateEntryFail: CartUpdateEntryFail,
-    CART_ADD_VOUCHER: CART_ADD_VOUCHER,
-    CART_ADD_VOUCHER_FAIL: CART_ADD_VOUCHER_FAIL,
-    CART_ADD_VOUCHER_SUCCESS: CART_ADD_VOUCHER_SUCCESS,
-    CART_RESET_ADD_VOUCHER: CART_RESET_ADD_VOUCHER,
-    CART_REMOVE_VOUCHER: CART_REMOVE_VOUCHER,
-    CART_REMOVE_VOUCHER_FAIL: CART_REMOVE_VOUCHER_FAIL,
-    CART_REMOVE_VOUCHER_SUCCESS: CART_REMOVE_VOUCHER_SUCCESS,
-    CartAddVoucher: CartAddVoucher,
-    CartAddVoucherFail: CartAddVoucherFail,
-    CartAddVoucherSuccess: CartAddVoucherSuccess,
-    CartResetAddVoucher: CartResetAddVoucher,
-    CartRemoveVoucher: CartRemoveVoucher,
-    CartRemoveVoucherFail: CartRemoveVoucherFail,
-    CartRemoveVoucherSuccess: CartRemoveVoucherSuccess,
-    CREATE_CART: CREATE_CART,
-    CREATE_CART_FAIL: CREATE_CART_FAIL,
-    CREATE_CART_SUCCESS: CREATE_CART_SUCCESS,
-    LOAD_CART: LOAD_CART,
-    LOAD_CART_FAIL: LOAD_CART_FAIL,
-    LOAD_CART_SUCCESS: LOAD_CART_SUCCESS,
-    ADD_EMAIL_TO_CART: ADD_EMAIL_TO_CART,
-    ADD_EMAIL_TO_CART_FAIL: ADD_EMAIL_TO_CART_FAIL,
-    ADD_EMAIL_TO_CART_SUCCESS: ADD_EMAIL_TO_CART_SUCCESS,
-    MERGE_CART: MERGE_CART,
-    MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
-    RESET_CART_DETAILS: RESET_CART_DETAILS,
-    REMOVE_CART: REMOVE_CART,
-    DELETE_CART: DELETE_CART,
-    DELETE_CART_SUCCESS: DELETE_CART_SUCCESS,
-    DELETE_CART_FAIL: DELETE_CART_FAIL,
-    CreateCart: CreateCart,
-    CreateCartFail: CreateCartFail,
-    CreateCartSuccess: CreateCartSuccess,
-    AddEmailToCart: AddEmailToCart,
-    AddEmailToCartFail: AddEmailToCartFail,
-    AddEmailToCartSuccess: AddEmailToCartSuccess,
-    LoadCart: LoadCart,
-    LoadCartFail: LoadCartFail,
-    LoadCartSuccess: LoadCartSuccess,
-    MergeCart: MergeCart,
-    MergeCartSuccess: MergeCartSuccess,
-    ResetCartDetails: ResetCartDetails,
-    RemoveCart: RemoveCart,
-    DeleteCart: DeleteCart,
-    DeleteCartSuccess: DeleteCartSuccess,
-    DeleteCartFail: DeleteCartFail,
-    SET_TEMP_CART: SET_TEMP_CART,
-    CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
-    CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
-    SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
-    CLEAR_CART_STATE: CLEAR_CART_STATE,
-    SetTempCart: SetTempCart,
-    CartProcessesIncrement: CartProcessesIncrement,
-    CartProcessesDecrement: CartProcessesDecrement,
-    SetActiveCartId: SetActiveCartId,
-    ClearCartState: ClearCartState,
-    CREATE_WISH_LIST: CREATE_WISH_LIST,
-    CREATE_WISH_LIST_FAIL: CREATE_WISH_LIST_FAIL,
-    CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
-    LOAD_WISH_LIST: LOAD_WISH_LIST,
-    LOAD_WISH_LIST_SUCCESS: LOAD_WISH_LIST_SUCCESS,
-    LOAD_WISH_LIST_FAIL: LOAD_WISH_LIST_FAIL,
-    RESET_WISH_LIST_DETAILS: RESET_WISH_LIST_DETAILS,
-    CreateWishList: CreateWishList,
-    CreateWishListSuccess: CreateWishListSuccess,
-    CreateWishListFail: CreateWishListFail,
-    LoadWishList: LoadWishList,
-    LoadWishListSuccess: LoadWishListSuccess,
-    LoadWishListFail: LoadWishListFail
-});
-
-class MultiCartService {
-    constructor(store) {
-        this.store = store;
-    }
-    /**
-     * Returns cart from store as an observable
-     *
-     * @param cartId
-     */
-    getCart(cartId) {
-        return this.store.pipe(select(getCartSelectorFactory(cartId)));
-    }
-    /**
-     * Returns cart entity from store (cart with loading, error, success flags) as an observable
-     *
-     * @param cartId
-     */
-    getCartEntity(cartId) {
-        return this.store.pipe(select(getCartEntitySelectorFactory(cartId)));
-    }
-    /**
-     * Returns true when there are no operations on that in progress and it is not currently loading
-     *
-     * @param cartId
-     */
-    isStable(cartId) {
-        return this.store.pipe(select(getCartIsStableSelectorFactory(cartId)), 
-        // We dispatch a lot of actions just after finishing some process or loading, so we want this flag not to flicker.
-        // This flickering should only be avoided when switching from false to true
-        // Start of loading should be showed instantly (no debounce)
-        // Extra actions are only dispatched after some loading
-        debounce((isStable) => (isStable ? timer(0) : EMPTY)), distinctUntilChanged());
-    }
-    /**
-     * Simple random temp cart id generator
-     */
-    generateTempCartId() {
-        const pseudoUuid = Math.random().toString(36).substr(2, 9);
-        return `temp-${pseudoUuid}`;
-    }
-    /**
-     * Create or merge cart
-     *
-     * @param params Object with userId, oldCartId, toMergeCartGuid and extraData
-     */
-    createCart({ userId, oldCartId, toMergeCartGuid, extraData, }) {
-        // to support creating multiple carts at the same time we need to use different entity for every process
-        // simple random uuid generator is used here for entity names
-        const tempCartId = this.generateTempCartId();
-        this.store.dispatch(new CreateCart({
-            extraData,
-            userId,
-            oldCartId,
-            toMergeCartGuid,
-            tempCartId,
-        }));
-        return this.getCartEntity(tempCartId);
-    }
-    /**
-     * Merge provided cart to current user cart
-     *
-     * @param params Object with userId, cartId and extraData
-     */
-    mergeToCurrentCart({ userId, cartId, extraData, }) {
-        const tempCartId = this.generateTempCartId();
-        this.store.dispatch(new MergeCart({
-            userId,
-            cartId,
-            extraData,
-            tempCartId,
-        }));
-    }
-    /**
-     * Load cart
-     *
-     * @param params Object with userId, cartId and extraData
-     */
-    loadCart({ cartId, userId, extraData, }) {
-        this.store.dispatch(new LoadCart({
-            userId,
-            cartId,
-            extraData,
-        }));
-    }
-    /**
-     * Get cart entries as an observable
-     * @param cartId
-     */
-    getEntries(cartId) {
-        return this.store.pipe(select(getCartEntriesSelectorFactory(cartId)));
-    }
-    /**
-     * Add entry to cart
-     *
-     * @param userId
-     * @param cartId
-     * @param productCode
-     * @param quantity
-     */
-    addEntry(userId, cartId, productCode, quantity) {
-        this.store.dispatch(new CartAddEntry({
-            userId,
-            cartId,
-            productCode,
-            quantity,
-        }));
-    }
-    /**
-     * Add multiple entries to cart
-     *
-     * @param userId
-     * @param cartId
-     * @param products Array with items (productCode and quantity)
-     */
-    addEntries(userId, cartId, products) {
-        products.forEach((product) => {
-            this.store.dispatch(new CartAddEntry({
-                userId,
-                cartId,
-                productCode: product.productCode,
-                quantity: product.quantity,
-            }));
-        });
-    }
-    /**
-     * Remove entry from cart
-     *
-     * @param userId
-     * @param cartId
-     * @param entryNumber
-     */
-    removeEntry(userId, cartId, entryNumber) {
-        this.store.dispatch(new CartRemoveEntry({
-            userId,
-            cartId,
-            entryNumber: `${entryNumber}`,
-        }));
-    }
-    /**
-     * Update entry in cart. For quantity = 0 it removes entry
-     *
-     * @param userId
-     * @param cartId
-     * @param entryNumber
-     * @param quantity
-     */
-    updateEntry(userId, cartId, entryNumber, quantity) {
-        if (quantity > 0) {
-            this.store.dispatch(new CartUpdateEntry({
-                userId,
-                cartId,
-                entryNumber: `${entryNumber}`,
-                quantity: quantity,
-            }));
-        }
-        else {
-            this.removeEntry(userId, cartId, entryNumber);
-        }
-    }
-    /**
-     * Get specific entry from cart
-     *
-     * @param cartId
-     * @param productCode
-     */
-    getEntry(cartId, productCode) {
-        return this.store.pipe(select(getCartEntrySelectorFactory(cartId, productCode)));
-    }
-    /**
-     * Assign email to the cart
-     *
-     * @param cartId
-     * @param userId
-     * @param email
-     */
-    assignEmail(cartId, userId, email) {
-        this.store.dispatch(new AddEmailToCart({
-            userId,
-            cartId,
-            email,
-        }));
-    }
-    /**
-     * Delete cart
-     *
-     * @param cartId
-     * @param userId
-     */
-    deleteCart(cartId, userId) {
-        this.store.dispatch(new DeleteCart({
-            userId,
-            cartId,
-        }));
-    }
-}
-MultiCartService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(ɵɵinject(Store)); }, token: MultiCartService, providedIn: "root" });
-MultiCartService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-MultiCartService.ctorParameters = () => [
-    { type: Store }
-];
-
-class ActiveCartService {
-    constructor(store, authService, multiCartService) {
-        this.store = store;
-        this.authService = authService;
-        this.multiCartService = multiCartService;
-        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
-        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
-        this.subscription = new Subscription();
-        this.userId = OCC_USER_ID_ANONYMOUS;
-        this.activeCartId$ = this.store.pipe(select(getActiveCartId), map((cartId) => {
-            if (!cartId) {
-                return OCC_CART_ID_CURRENT;
-            }
-            return cartId;
-        }));
-        this.cartSelector$ = this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getCartEntity(cartId)));
-        this.initActiveCart();
-    }
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-    initActiveCart() {
-        this.subscription.add(this.authService.getOccUserId().subscribe((userId) => {
-            this.userId = userId;
-            if (this.userId !== OCC_USER_ID_ANONYMOUS) {
-                if (this.isJustLoggedIn(userId)) {
-                    this.loadOrMerge(this.cartId);
-                }
-            }
-            this.previousUserId = userId;
-        }));
-        this.subscription.add(this.activeCartId$.subscribe((cartId) => {
-            this.cartId = cartId;
-        }));
-        this.activeCart$ = this.cartSelector$.pipe(withLatestFrom(this.activeCartId$), map(([cartEntity, activeCartId]) => {
-            return {
-                cart: cartEntity.value,
-                cartId: activeCartId,
-                isStable: !cartEntity.loading && cartEntity.processesCount === 0,
-                loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
-            };
-        }), 
-        // we want to emit empty carts even if those are not stable
-        // on merge cart action we want to switch to empty cart so no one would use old cartId which can be already obsolete
-        // so on merge action the resulting stream looks like this: old_cart -> {} -> new_cart
-        filter(({ isStable, cart }) => isStable || this.isEmpty(cart)), tap(({ cart, cartId, loaded, isStable }) => {
-            if (isStable &&
-                this.isEmpty(cart) &&
-                !loaded &&
-                !isTempCartId(cartId)) {
-                this.load(cartId);
-            }
-        }), map(({ cart }) => (cart ? cart : {})), tap((cart) => {
-            if (cart) {
-                this.cartUser = cart.user;
-            }
-        }), distinctUntilChanged(), shareReplay({ bufferSize: 1, refCount: true }));
-    }
-    /**
-     * Returns active cart
-     */
-    getActive() {
-        return this.activeCart$;
-    }
-    /**
-     * Returns active cart id
-     */
-    getActiveCartId() {
-        return this.activeCart$.pipe(map((cart) => getCartIdByUserId(cart, this.userId)), distinctUntilChanged());
-    }
-    /**
-     * Returns cart entries
-     */
-    getEntries() {
-        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getEntries(cartId)), distinctUntilChanged());
-    }
-    /**
-     * Returns cart loading state
-     */
-    getLoading() {
-        return this.cartSelector$.pipe(map((cartEntity) => cartEntity.loading), distinctUntilChanged());
-    }
-    /**
-     * Returns true when cart is stable (not loading and not pending processes on cart)
-     */
-    isStable() {
-        // Debounce is used here, to avoid flickering when we switch between different cart entities.
-        // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
-        // After load fails we might create new cart so we switch to `temp-${uuid}` cart entity used when creating cart.
-        // At the end we finally switch to cart `code` for cart id. Between those switches cart `isStable` function should not flicker.
-        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.isStable(cartId)), debounce((state) => (state ? timer(0) : EMPTY)), distinctUntilChanged());
-    }
-    loadOrMerge(cartId) {
-        // for login user, whenever there's an existing cart, we will load the user
-        // current cart and merge it into the existing cart
-        if (!cartId || cartId === OCC_CART_ID_CURRENT) {
-            this.multiCartService.loadCart({
-                userId: this.userId,
-                cartId: OCC_CART_ID_CURRENT,
-                extraData: {
-                    active: true,
-                },
-            });
-        }
-        else if (this.isGuestCart()) {
-            this.guestCartMerge(cartId);
-        }
-        else {
-            this.multiCartService.mergeToCurrentCart({
-                userId: this.userId,
-                cartId,
-                extraData: {
-                    active: true,
-                },
-            });
-        }
-    }
-    load(cartId) {
-        if (this.userId !== OCC_USER_ID_ANONYMOUS) {
-            this.multiCartService.loadCart({
-                userId: this.userId,
-                cartId: cartId ? cartId : OCC_CART_ID_CURRENT,
-                extraData: {
-                    active: true,
-                },
-            });
-        }
-        else if (cartId && cartId !== OCC_CART_ID_CURRENT) {
-            this.multiCartService.loadCart({
-                userId: this.userId,
-                cartId: cartId,
-                extraData: {
-                    active: true,
-                },
-            });
-        }
-    }
-    addEntriesGuestMerge(cartEntries) {
-        const entriesToAdd = cartEntries.map((entry) => ({
-            productCode: entry.product.code,
-            quantity: entry.quantity,
-        }));
-        this.requireLoadedCartForGuestMerge().subscribe((cartState) => {
-            this.multiCartService.addEntries(this.userId, getCartIdByUserId(cartState.value, this.userId), entriesToAdd);
-        });
-    }
-    requireLoadedCartForGuestMerge() {
-        return this.requireLoadedCart(this.cartSelector$.pipe(filter(() => !this.isGuestCart())));
-    }
-    isCartCreating(cartState) {
-        // cart creating is always represented with loading flags
-        // when all loading flags are false it means that we restored wrong cart id
-        // could happen on context change or reload right in the middle on cart create call
-        return (isTempCartId(this.cartId) &&
-            (cartState.loading || cartState.success || cartState.error));
-    }
-    requireLoadedCart(customCartSelector$) {
-        // For guest cart merge we want to filter guest cart in the whole stream
-        // We have to wait with load/create/addEntry after guest cart will be deleted.
-        // That's why you can provide custom selector with this filter applied.
-        const cartSelector$ = customCartSelector$
-            ? customCartSelector$
-            : this.cartSelector$;
-        return cartSelector$.pipe(filter((cartState) => !cartState.loading), 
-        // Avoid load/create call when there are new cart creating at the moment
-        filter((cartState) => !this.isCartCreating(cartState)), take(1), switchMap((cartState) => {
-            // Try to load the cart, because it might have been created on another device between our login and add entry call
-            if (this.isEmpty(cartState.value) &&
-                this.userId !== OCC_USER_ID_ANONYMOUS) {
-                this.load(undefined);
-            }
-            return cartSelector$;
-        }), filter((cartState) => !cartState.loading), 
-        // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
-        filter((cartState) => this.userId === OCC_USER_ID_ANONYMOUS ||
-            cartState.success ||
-            cartState.error), take(1), switchMap((cartState) => {
-            if (this.isEmpty(cartState.value)) {
-                this.multiCartService.createCart({
-                    userId: this.userId,
-                    extraData: {
-                        active: true,
-                    },
-                });
-            }
-            return cartSelector$;
-        }), filter((cartState) => !cartState.loading), filter((cartState) => cartState.success || cartState.error), 
-        // wait for active cart id to point to code/guid to avoid some work on temp cart entity
-        filter((cartState) => !this.isCartCreating(cartState)), filter((cartState) => !this.isEmpty(cartState.value)), take(1));
-    }
-    /**
-     * Add entry to active cart
-     *
-     * @param productCode
-     * @param quantity
-     */
-    addEntry(productCode, quantity) {
-        this.requireLoadedCart().subscribe((cartState) => {
-            this.multiCartService.addEntry(this.userId, getCartIdByUserId(cartState.value, this.userId), productCode, quantity);
-        });
-    }
-    /**
-     * Remove entry
-     *
-     * @param entry
-     */
-    removeEntry(entry) {
-        this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
-    }
-    /**
-     * Update entry
-     *
-     * @param entryNumber
-     * @param quantity
-     */
-    updateEntry(entryNumber, quantity) {
-        this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
-    }
-    /**
-     * Returns cart entry
-     *
-     * @param productCode
-     */
-    getEntry(productCode) {
-        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getEntry(cartId, productCode)), distinctUntilChanged());
-    }
-    /**
-     * Assign email to cart
-     *
-     * @param email
-     */
-    addEmail(email) {
-        this.multiCartService.assignEmail(this.cartId, this.userId, email);
-    }
-    /**
-     * Get assigned user to cart
-     */
-    getAssignedUser() {
-        return this.getActive().pipe(map((cart) => cart.user));
-    }
-    /**
-     * Returns true for guest cart
-     */
-    isGuestCart() {
-        return (this.cartUser &&
-            (this.cartUser.name === OCC_USER_ID_GUEST ||
-                this.isEmail(this.cartUser.uid.split('|').slice(1).join('|'))));
-    }
-    /**
-     * Add multiple entries to a cart
-     *
-     * @param cartEntries : list of entries to add (OrderEntry[])
-     */
-    addEntries(cartEntries) {
-        cartEntries.forEach((entry) => {
-            this.addEntry(entry.product.code, entry.quantity);
-        });
-    }
-    isEmail(str) {
-        if (str) {
-            return str.match(EMAIL_PATTERN) ? true : false;
-        }
-        return false;
-    }
-    // TODO: Remove once backend is updated
-    /**
-     * Temporary method to merge guest cart with user cart because of backend limitation
-     * This is for an edge case
-     */
-    guestCartMerge(cartId) {
-        let cartEntries;
-        this.getEntries()
-            .pipe(take(1))
-            .subscribe((entries) => {
-            cartEntries = entries;
-        });
-        this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
-        this.addEntriesGuestMerge(cartEntries);
-    }
-    isEmpty(cart) {
-        return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
-    }
-    isJustLoggedIn(userId) {
-        return (this.previousUserId !== userId && // *just* logged in
-            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
-        );
-    }
-}
-ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
-ActiveCartService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-ActiveCartService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService },
-    { type: MultiCartService }
-];
-
-/**
- *
- * Withdraw from the source observable when notifier emits a value
- *
- * Withdraw will result in resubscribing to the source observable
- * Operator is useful to kill ongoing emission transformation on notifier emission
- *
- * @param notifier
- */
-function withdrawOn(notifier) {
-    return (source) => notifier.pipe(startWith(undefined), switchMapTo(source));
-}
-
 class CartEntryConnector {
     constructor(adapter) {
         this.adapter = adapter;
@@ -14366,561 +16983,6 @@ __decorate([
 __decorate([
     Effect()
 ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
-
-const VERIFY_ADDRESS = '[Checkout] Verify Address';
-const VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
-const VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
-const CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
-class VerifyAddress {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = VERIFY_ADDRESS;
-    }
-}
-class VerifyAddressFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = VERIFY_ADDRESS_FAIL;
-    }
-}
-class VerifyAddressSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = VERIFY_ADDRESS_SUCCESS;
-    }
-}
-class ClearAddressVerificationResults {
-    constructor() {
-        this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
-    }
-}
-
-const LOAD_CARD_TYPES = '[Checkout] Load Card Types';
-const LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
-const LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
-class LoadCardTypes {
-    constructor() {
-        this.type = LOAD_CARD_TYPES;
-    }
-}
-class LoadCardTypesFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CARD_TYPES_FAIL;
-    }
-}
-class LoadCardTypesSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CARD_TYPES_SUCCESS;
-    }
-}
-
-const CHECKOUT_FEATURE = 'checkout';
-const CHECKOUT_DETAILS = '[Checkout] Checkout Details';
-const SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
-const SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
-const SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
-const SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
-const GET_PAYMENT_TYPES_PROCESS_ID = 'getPaymentTypes';
-const SET_COST_CENTER_PROCESS_ID = 'setCostCenter';
-
-const CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
-const CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
-const CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
-const CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
-const CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
-const CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
-const ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
-const ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
-const ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
-const SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
-const SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
-const SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
-const RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
-const LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
-const LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
-const LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
-const CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
-const SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
-const SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
-const SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
-const RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
-const SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
-const SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
-const SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
-const RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
-const CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
-const CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
-const CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
-const SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
-const SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
-const SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
-const RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
-const PLACE_ORDER = '[Checkout] Place Order';
-const PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
-const PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
-const CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
-const CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
-const LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
-const LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
-const LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
-const CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
-const PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
-const SET_COST_CENTER = '[Checkout] Set Cost Center';
-const SET_COST_CENTER_FAIL = '[Checkout] Set Cost Center Fail';
-const SET_COST_CENTER_SUCCESS = '[Checkout] Set Cost Center Success';
-const RESET_SET_COST_CENTER_PROCESS = '[Checkout] Reset Set Cost Center Process';
-class AddDeliveryAddress {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_DELIVERY_ADDRESS;
-    }
-}
-class AddDeliveryAddressFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_DELIVERY_ADDRESS_FAIL;
-    }
-}
-class AddDeliveryAddressSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
-    }
-}
-class SetDeliveryAddress extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_DELIVERY_ADDRESS;
-    }
-}
-class SetDeliveryAddressFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SET_DELIVERY_ADDRESS_FAIL;
-    }
-}
-class SetDeliveryAddressSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_DELIVERY_ADDRESS_SUCCESS;
-    }
-}
-class ResetSetDeliveryAddressProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
-        this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
-    }
-}
-class LoadSupportedDeliveryModes extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = LOAD_SUPPORTED_DELIVERY_MODES;
-    }
-}
-class LoadSupportedDeliveryModesFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
-    }
-}
-class LoadSupportedDeliveryModesSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
-    }
-}
-class ResetLoadSupportedDeliveryModesProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
-        this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
-    }
-}
-class SetDeliveryMode extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_DELIVERY_MODE;
-    }
-}
-class SetDeliveryModeFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SET_DELIVERY_MODE_FAIL;
-    }
-}
-class SetDeliveryModeSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_DELIVERY_MODE_SUCCESS;
-    }
-}
-class ResetSetDeliveryModeProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
-        this.type = RESET_SET_DELIVERY_MODE_PROCESS;
-    }
-}
-class CreatePaymentDetails extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = CREATE_PAYMENT_DETAILS;
-    }
-}
-class CreatePaymentDetailsFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = CREATE_PAYMENT_DETAILS_FAIL;
-    }
-}
-class CreatePaymentDetailsSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
-    }
-}
-class PaymentProcessSuccess extends EntitySuccessAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.type = PAYMENT_PROCESS_SUCCESS;
-    }
-}
-class SetPaymentDetails extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_PAYMENT_DETAILS;
-    }
-}
-class SetPaymentDetailsFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SET_PAYMENT_DETAILS_FAIL;
-    }
-}
-class SetPaymentDetailsSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_PAYMENT_DETAILS_SUCCESS;
-    }
-}
-class ResetSetPaymentDetailsProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
-        this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
-    }
-}
-class PlaceOrder {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = PLACE_ORDER;
-    }
-}
-class PlaceOrderFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = PLACE_ORDER_FAIL;
-    }
-}
-class PlaceOrderSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = PLACE_ORDER_SUCCESS;
-    }
-}
-class ClearSupportedDeliveryModes {
-    constructor() {
-        this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
-    }
-}
-class ClearCheckoutStep {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_STEP;
-    }
-}
-class ClearCheckoutData {
-    constructor() {
-        this.type = CLEAR_CHECKOUT_DATA;
-    }
-}
-class LoadCheckoutDetails extends LoaderLoadAction {
-    constructor(payload) {
-        super(CHECKOUT_DETAILS);
-        this.payload = payload;
-        this.type = LOAD_CHECKOUT_DETAILS;
-    }
-}
-class LoadCheckoutDetailsFail extends LoaderFailAction {
-    constructor(payload) {
-        super(CHECKOUT_DETAILS, payload);
-        this.payload = payload;
-        this.type = LOAD_CHECKOUT_DETAILS_FAIL;
-    }
-}
-class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(CHECKOUT_DETAILS);
-        this.payload = payload;
-        this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
-    }
-}
-class CheckoutClearMiscsData {
-    constructor() {
-        this.type = CHECKOUT_CLEAR_MISCS_DATA;
-    }
-}
-class ClearCheckoutDeliveryAddress {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
-    }
-}
-class ClearCheckoutDeliveryAddressSuccess {
-    constructor() {
-        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
-    }
-}
-class ClearCheckoutDeliveryAddressFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
-    }
-}
-class ClearCheckoutDeliveryMode extends EntityProcessesIncrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
-    }
-}
-class ClearCheckoutDeliveryModeSuccess extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
-    }
-}
-class ClearCheckoutDeliveryModeFail extends EntityProcessesDecrementAction {
-    constructor(payload) {
-        super(MULTI_CART_DATA, payload.cartId);
-        this.payload = payload;
-        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
-    }
-}
-class SetCostCenter extends EntityLoadAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_COST_CENTER;
-    }
-}
-class SetCostCenterFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID, payload);
-        this.payload = payload;
-        this.type = SET_COST_CENTER_FAIL;
-    }
-}
-class SetCostCenterSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID);
-        this.payload = payload;
-        this.type = SET_COST_CENTER_SUCCESS;
-    }
-}
-class ResetSetCostCenterProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, SET_COST_CENTER_PROCESS_ID);
-        this.type = RESET_SET_COST_CENTER_PROCESS;
-    }
-}
-
-const LOAD_PAYMENT_TYPES = '[Checkout] Load Payment Types';
-const LOAD_PAYMENT_TYPES_FAIL = '[Checkout] Load Payment Types Fail';
-const LOAD_PAYMENT_TYPES_SUCCESS = '[Checkout] Load Payment Types Success';
-const RESET_LOAD_PAYMENT_TYPES_PROCESS_ID = '[Checkout] Reset Load Payment Type Process';
-const SET_PAYMENT_TYPE = '[Checkout] Set Payment Type';
-const SET_PAYMENT_TYPE_FAIL = '[Checkout] Set Payment Type Fail';
-const SET_PAYMENT_TYPE_SUCCESS = '[Checkout] Set Payment Type Success';
-class LoadPaymentTypes extends EntityLoadAction {
-    constructor() {
-        super(PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID);
-        this.type = LOAD_PAYMENT_TYPES;
-    }
-}
-class LoadPaymentTypesFail extends EntityFailAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID);
-        this.payload = payload;
-        this.type = LOAD_PAYMENT_TYPES_FAIL;
-    }
-}
-class LoadPaymentTypesSuccess extends EntitySuccessAction {
-    constructor(payload) {
-        super(PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID);
-        this.payload = payload;
-        this.type = LOAD_PAYMENT_TYPES_SUCCESS;
-    }
-}
-class ResetLoadPaymentTypesProcess extends EntityLoaderResetAction {
-    constructor() {
-        super(PROCESS_FEATURE, GET_PAYMENT_TYPES_PROCESS_ID);
-        this.type = RESET_LOAD_PAYMENT_TYPES_PROCESS_ID;
-    }
-}
-class SetPaymentType {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_PAYMENT_TYPE;
-    }
-}
-class SetPaymentTypeFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_PAYMENT_TYPE_FAIL;
-    }
-}
-class SetPaymentTypeSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_PAYMENT_TYPE_SUCCESS;
-    }
-}
-
-var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    VERIFY_ADDRESS: VERIFY_ADDRESS,
-    VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
-    VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
-    CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
-    VerifyAddress: VerifyAddress,
-    VerifyAddressFail: VerifyAddressFail,
-    VerifyAddressSuccess: VerifyAddressSuccess,
-    ClearAddressVerificationResults: ClearAddressVerificationResults,
-    LOAD_CARD_TYPES: LOAD_CARD_TYPES,
-    LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
-    LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
-    LoadCardTypes: LoadCardTypes,
-    LoadCardTypesFail: LoadCardTypesFail,
-    LoadCardTypesSuccess: LoadCardTypesSuccess,
-    CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
-    CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
-    CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
-    CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
-    CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
-    CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
-    ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
-    ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
-    ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
-    SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
-    SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
-    SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
-    RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
-    LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
-    LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
-    LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
-    CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
-    SET_DELIVERY_MODE: SET_DELIVERY_MODE,
-    SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
-    SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
-    RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
-    SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
-    SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
-    SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
-    RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
-    CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
-    CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
-    CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
-    SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
-    SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
-    SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
-    RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
-    PLACE_ORDER: PLACE_ORDER,
-    PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
-    PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
-    CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
-    CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
-    LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
-    LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
-    LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
-    CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
-    PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
-    SET_COST_CENTER: SET_COST_CENTER,
-    SET_COST_CENTER_FAIL: SET_COST_CENTER_FAIL,
-    SET_COST_CENTER_SUCCESS: SET_COST_CENTER_SUCCESS,
-    RESET_SET_COST_CENTER_PROCESS: RESET_SET_COST_CENTER_PROCESS,
-    AddDeliveryAddress: AddDeliveryAddress,
-    AddDeliveryAddressFail: AddDeliveryAddressFail,
-    AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
-    SetDeliveryAddress: SetDeliveryAddress,
-    SetDeliveryAddressFail: SetDeliveryAddressFail,
-    SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
-    ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
-    LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
-    LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
-    LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
-    ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
-    SetDeliveryMode: SetDeliveryMode,
-    SetDeliveryModeFail: SetDeliveryModeFail,
-    SetDeliveryModeSuccess: SetDeliveryModeSuccess,
-    ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
-    CreatePaymentDetails: CreatePaymentDetails,
-    CreatePaymentDetailsFail: CreatePaymentDetailsFail,
-    CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
-    PaymentProcessSuccess: PaymentProcessSuccess,
-    SetPaymentDetails: SetPaymentDetails,
-    SetPaymentDetailsFail: SetPaymentDetailsFail,
-    SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
-    ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
-    PlaceOrder: PlaceOrder,
-    PlaceOrderFail: PlaceOrderFail,
-    PlaceOrderSuccess: PlaceOrderSuccess,
-    ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
-    ClearCheckoutStep: ClearCheckoutStep,
-    ClearCheckoutData: ClearCheckoutData,
-    LoadCheckoutDetails: LoadCheckoutDetails,
-    LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
-    LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
-    CheckoutClearMiscsData: CheckoutClearMiscsData,
-    ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
-    ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
-    ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
-    ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
-    ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
-    ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail,
-    SetCostCenter: SetCostCenter,
-    SetCostCenterFail: SetCostCenterFail,
-    SetCostCenterSuccess: SetCostCenterSuccess,
-    ResetSetCostCenterProcess: ResetSetCostCenterProcess,
-    LOAD_PAYMENT_TYPES: LOAD_PAYMENT_TYPES,
-    LOAD_PAYMENT_TYPES_FAIL: LOAD_PAYMENT_TYPES_FAIL,
-    LOAD_PAYMENT_TYPES_SUCCESS: LOAD_PAYMENT_TYPES_SUCCESS,
-    RESET_LOAD_PAYMENT_TYPES_PROCESS_ID: RESET_LOAD_PAYMENT_TYPES_PROCESS_ID,
-    SET_PAYMENT_TYPE: SET_PAYMENT_TYPE,
-    SET_PAYMENT_TYPE_FAIL: SET_PAYMENT_TYPE_FAIL,
-    SET_PAYMENT_TYPE_SUCCESS: SET_PAYMENT_TYPE_SUCCESS,
-    LoadPaymentTypes: LoadPaymentTypes,
-    LoadPaymentTypesFail: LoadPaymentTypesFail,
-    LoadPaymentTypesSuccess: LoadPaymentTypesSuccess,
-    ResetLoadPaymentTypesProcess: ResetLoadPaymentTypesProcess,
-    SetPaymentType: SetPaymentType,
-    SetPaymentTypeFail: SetPaymentTypeFail,
-    SetPaymentTypeSuccess: SetPaymentTypeSuccess
-});
 
 class CartConnector {
     constructor(adapter) {
@@ -15509,8 +17571,8 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getCmsState = createFeatureSelector(CMS_FEATURE);
 
-const ɵ0$x = (state) => state.components;
-const getComponentsState = createSelector(getCmsState, ɵ0$x);
+const ɵ0$E = (state) => state.components;
+const getComponentsState = createSelector(getCmsState, ɵ0$E);
 const componentsContextSelectorFactory = (uid) => {
     return createSelector(getComponentsState, (componentsState) => entitySelector(componentsState, uid));
 };
@@ -15557,8 +17619,8 @@ const componentsSelectorFactory = (uid, context) => {
     });
 };
 
-const ɵ0$y = (state) => state.navigation;
-const getNavigationEntryItemState = createSelector(getCmsState, ɵ0$y);
+const ɵ0$F = (state) => state.navigation;
+const getNavigationEntryItemState = createSelector(getCmsState, ɵ0$F);
 const getSelectedNavigationEntryItemState = (nodeId) => {
     return createSelector(getNavigationEntryItemState, (nodes) => entityLoaderStateSelector(nodes, nodeId));
 };
@@ -15567,7 +17629,7 @@ const getNavigationEntryItems = (nodeId) => {
 };
 
 const getPageEntitiesSelector = (state) => state.pageData.entities;
-const ɵ0$z = getPageEntitiesSelector;
+const ɵ0$G = getPageEntitiesSelector;
 const getIndexByType = (index, type) => {
     switch (type) {
         case PageType.CONTENT_PAGE: {
@@ -15585,7 +17647,7 @@ const getIndexByType = (index, type) => {
     }
     return { entities: {} };
 };
-const ɵ1$p = getIndexByType;
+const ɵ1$u = getIndexByType;
 const getPageComponentTypesSelector = (page) => {
     const componentTypes = new Set();
     if (page && page.slots) {
@@ -15597,11 +17659,11 @@ const getPageComponentTypesSelector = (page) => {
     }
     return Array.from(componentTypes);
 };
-const ɵ2$h = getPageComponentTypesSelector;
-const ɵ3$9 = (state) => state.page;
-const getPageState = createSelector(getCmsState, ɵ3$9);
-const ɵ4$3 = (page) => page.index;
-const getPageStateIndex = createSelector(getPageState, ɵ4$3);
+const ɵ2$k = getPageComponentTypesSelector;
+const ɵ3$c = (state) => state.page;
+const getPageState = createSelector(getCmsState, ɵ3$c);
+const ɵ4$6 = (page) => page.index;
+const getPageStateIndex = createSelector(getPageState, ɵ4$6);
 const getPageStateIndexEntityLoaderState = (pageContext) => createSelector(getPageStateIndex, (index) => getIndexByType(index, pageContext.type));
 const getPageStateIndexLoaderState = (pageContext) => createSelector(getPageStateIndexEntityLoaderState(pageContext), (indexState) => entityLoaderStateSelector(indexState, pageContext.id));
 const getPageStateIndexValue = (pageContext) => createSelector(getPageStateIndexLoaderState(pageContext), (entity) => loaderValueSelector(entity));
@@ -15624,7 +17686,7 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
     componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
     componentsDataSelectorFactory: componentsDataSelectorFactory,
     componentsSelectorFactory: componentsSelectorFactory,
-    ɵ0: ɵ0$x,
+    ɵ0: ɵ0$E,
     getCmsState: getCmsState,
     getNavigationEntryItemState: getNavigationEntryItemState,
     getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
@@ -15638,10 +17700,10 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
     getPageData: getPageData,
     getPageComponentTypes: getPageComponentTypes,
     getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory,
-    ɵ1: ɵ1$p,
-    ɵ2: ɵ2$h,
-    ɵ3: ɵ3$9,
-    ɵ4: ɵ4$3
+    ɵ1: ɵ1$u,
+    ɵ2: ɵ2$k,
+    ɵ3: ɵ3$c,
+    ɵ4: ɵ4$6
 });
 
 const CURRENT_CONTEXT_KEY = 'current';
@@ -15839,14 +17901,6 @@ CmsService.ctorParameters = () => [
     { type: RoutingService }
 ];
 
-var PageRobotsMeta;
-(function (PageRobotsMeta) {
-    PageRobotsMeta["INDEX"] = "INDEX";
-    PageRobotsMeta["NOINDEX"] = "NOINDEX";
-    PageRobotsMeta["FOLLOW"] = "FOLLOW";
-    PageRobotsMeta["NOFOLLOW"] = "NOFOLLOW";
-})(PageRobotsMeta || (PageRobotsMeta = {}));
-
 /**
  * Resolves the page metadata for the Cart page (Using the `PageType.CONTENT_PAGE`
  * and the `CartPageTemplate`). If the cart page matches this template, the more
@@ -15950,7 +18004,7 @@ __decorate([
     Effect()
 ], MultiCartEffects.prototype, "processesIncrement$", void 0);
 
-const effects$4 = [
+const effects$5 = [
     CartEffects,
     CartEntryEffects,
     CartVoucherEffects,
@@ -15967,7 +18021,7 @@ MultiCartStoreModule.decorators = [
                     StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
                         metaReducers: multiCartMetaReducers,
                     }),
-                    EffectsModule.forFeature(effects$4),
+                    EffectsModule.forFeature(effects$5),
                 ],
                 providers: [multiCartReducerProvider],
             },] }
@@ -16559,1481 +18613,6 @@ WishListService.ctorParameters = () => [
     { type: AuthService },
     { type: UserService },
     { type: MultiCartService }
-];
-
-/**
- * Indicates that a user has successfully placed an order
- */
-class OrderPlacedEvent {
-}
-
-class CheckoutEventBuilder {
-    constructor(stateEventService) {
-        this.stateEventService = stateEventService;
-        this.register();
-    }
-    /**
-     * Registers checkout events
-     */
-    register() {
-        this.orderPlacedEvent();
-    }
-    /**
-     * Register an order successfully placed event
-     */
-    orderPlacedEvent() {
-        this.stateEventService.register({
-            action: PLACE_ORDER_SUCCESS,
-            event: OrderPlacedEvent,
-        });
-    }
-}
-CheckoutEventBuilder.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutEventBuilder_Factory() { return new CheckoutEventBuilder(ɵɵinject(StateEventService)); }, token: CheckoutEventBuilder, providedIn: "root" });
-CheckoutEventBuilder.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutEventBuilder.ctorParameters = () => [
-    { type: StateEventService }
-];
-
-class CheckoutEventModule {
-    constructor(_checkoutEventBuilder) { }
-}
-CheckoutEventModule.decorators = [
-    { type: NgModule, args: [{},] }
-];
-CheckoutEventModule.ctorParameters = () => [
-    { type: CheckoutEventBuilder }
-];
-
-class TranslationService {
-}
-
-/**
- * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
- * and the `MultiStepCheckoutSummaryPageTemplate`. If the checkout page matches this template,
- * the more generic `ContentPageMetaResolver` is overriden by this resolver.
- *
- * The page title and robots are resolved in this implementation only.
- */
-class CheckoutPageMetaResolver extends PageMetaResolver {
-    constructor(translation, activeCartService) {
-        super();
-        this.translation = translation;
-        this.activeCartService = activeCartService;
-        this.cart$ = this.activeCartService.getActive();
-        this.pageType = PageType.CONTENT_PAGE;
-        this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
-    }
-    resolveTitle() {
-        return this.cart$.pipe(switchMap((c) => this.translation.translate('pageMetaResolver.checkout.title', {
-            count: c.totalItems,
-        })));
-    }
-    resolveRobots() {
-        return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
-    }
-}
-CheckoutPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(TranslationService), ɵɵinject(ActiveCartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
-CheckoutPageMetaResolver.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutPageMetaResolver.ctorParameters = () => [
-    { type: TranslationService },
-    { type: ActiveCartService }
-];
-
-const initialState$9 = {
-    results: {},
-};
-function reducer$9(state = initialState$9, action) {
-    switch (action.type) {
-        case VERIFY_ADDRESS_SUCCESS: {
-            const results = action.payload;
-            return Object.assign(Object.assign({}, state), { results });
-        }
-        case VERIFY_ADDRESS_FAIL: {
-            return Object.assign(Object.assign({}, state), { results: 'FAIL' });
-        }
-        case CLEAR_ADDRESS_VERIFICATION_RESULTS: {
-            return Object.assign(Object.assign({}, state), { results: {} });
-        }
-    }
-    return state;
-}
-const getAddressVerificationResults = (state) => state.results;
-
-const initialState$a = {
-    entities: {},
-};
-function reducer$a(state = initialState$a, action) {
-    switch (action.type) {
-        case LOAD_CARD_TYPES_SUCCESS: {
-            const cardTypes = action.payload;
-            const entities = cardTypes.reduce((cardTypesEntities, name) => {
-                return Object.assign(Object.assign({}, cardTypesEntities), { [name.code]: name });
-            }, Object.assign({}, state.entities));
-            return Object.assign(Object.assign({}, state), { entities });
-        }
-        case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$a;
-        }
-    }
-    return state;
-}
-const getCardTypesEntites = (state) => state.entities;
-
-const initialState$b = {
-    poNumber: { po: undefined, costCenter: undefined },
-    address: {},
-    deliveryMode: {
-        supported: {},
-        selected: '',
-    },
-    paymentDetails: {},
-    orderDetails: {},
-};
-function reducer$b(state = initialState$b, action) {
-    switch (action.type) {
-        case SET_PAYMENT_TYPE_SUCCESS: {
-            const cart = action.payload;
-            return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { po: cart.purchaseOrderNumber }) });
-        }
-        case SET_COST_CENTER_SUCCESS: {
-            return Object.assign(Object.assign({}, state), { poNumber: Object.assign(Object.assign({}, state.poNumber), { costCenter: action.payload }) });
-        }
-        case ADD_DELIVERY_ADDRESS_SUCCESS:
-        case SET_DELIVERY_ADDRESS_SUCCESS: {
-            const address = action.payload;
-            return Object.assign(Object.assign({}, state), { address });
-        }
-        case LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: {
-            const supportedModes = action.payload;
-            if (!supportedModes) {
-                return state;
-            }
-            const supported = supportedModes.reduce((modes, mode) => {
-                return Object.assign(Object.assign({}, modes), { [mode.code]: mode });
-            }, Object.assign({}, state.deliveryMode.supported));
-            return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported }) });
-        }
-        case SET_DELIVERY_MODE_SUCCESS: {
-            const selected = action.payload;
-            return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected }) });
-        }
-        case CREATE_PAYMENT_DETAILS_SUCCESS:
-        case SET_PAYMENT_DETAILS_SUCCESS: {
-            return Object.assign(Object.assign({}, state), { paymentDetails: action.payload });
-        }
-        case CREATE_PAYMENT_DETAILS_FAIL: {
-            const paymentDetails = action.payload;
-            if (paymentDetails['hasError']) {
-                return Object.assign(Object.assign({}, state), { paymentDetails });
-            }
-            return state;
-        }
-        case PLACE_ORDER_SUCCESS: {
-            const orderDetails = action.payload;
-            return Object.assign(Object.assign({}, state), { orderDetails });
-        }
-        case CLEAR_CHECKOUT_DATA: {
-            return initialState$b;
-        }
-        case CLEAR_CHECKOUT_STEP: {
-            const stepNumber = action.payload;
-            switch (stepNumber) {
-                case 1: {
-                    return Object.assign(Object.assign({}, state), { address: {} });
-                }
-                case 2: {
-                    return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {}, selected: '' }) });
-                }
-                case 3: {
-                    return Object.assign(Object.assign({}, state), { paymentDetails: {} });
-                }
-            }
-            return state;
-        }
-        case CLEAR_SUPPORTED_DELIVERY_MODES:
-        case CHECKOUT_CLEAR_MISCS_DATA: {
-            return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { supported: {} }) });
-        }
-        case LOAD_CHECKOUT_DETAILS_SUCCESS: {
-            return Object.assign(Object.assign({}, state), { address: action.payload.deliveryAddress, deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: action.payload.deliveryMode && action.payload.deliveryMode.code }), paymentDetails: action.payload.paymentInfo });
-        }
-        case CLEAR_CHECKOUT_DELIVERY_ADDRESS: {
-            return Object.assign(Object.assign({}, state), { address: {} });
-        }
-        case CLEAR_CHECKOUT_DELIVERY_MODE: {
-            return Object.assign(Object.assign({}, state), { deliveryMode: Object.assign(Object.assign({}, state.deliveryMode), { selected: '' }) });
-        }
-    }
-    return state;
-}
-
-const initialState$c = {
-    entities: {},
-    selected: undefined,
-};
-function reducer$c(state = initialState$c, action) {
-    switch (action.type) {
-        case LOAD_PAYMENT_TYPES_SUCCESS: {
-            const paymentTypes = action.payload;
-            const entities = paymentTypes.reduce((paymentTypesEntities, name) => {
-                return Object.assign(Object.assign({}, paymentTypesEntities), { [name.code]: name });
-            }, Object.assign({}, state.entities));
-            return Object.assign(Object.assign({}, state), { entities });
-        }
-        case SET_PAYMENT_TYPE_SUCCESS: {
-            return Object.assign(Object.assign({}, state), { selected: action.payload.paymentType.code });
-        }
-        case CLEAR_CHECKOUT_DATA: {
-            return Object.assign(Object.assign({}, state), { selected: undefined });
-        }
-        case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$c;
-        }
-    }
-    return state;
-}
-const getPaymentTypesEntites = (state) => state.entities;
-const getSelectedPaymentType = (state) => state.selected;
-
-function getReducers$5() {
-    return {
-        steps: loaderReducer(CHECKOUT_DETAILS, reducer$b),
-        cardTypes: reducer$a,
-        addressVerification: reducer$9,
-        paymentTypes: reducer$c,
-    };
-}
-const reducerToken$5 = new InjectionToken('CheckoutReducers');
-const reducerProvider$5 = {
-    provide: reducerToken$5,
-    useFactory: getReducers$5,
-};
-
-class UserAddressConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    getAll(userId) {
-        return this.adapter.loadAll(userId);
-    }
-    add(userId, address) {
-        return this.adapter.add(userId, address);
-    }
-    update(userId, addressId, address) {
-        return this.adapter.update(userId, addressId, address);
-    }
-    verify(userId, address) {
-        return this.adapter.verify(userId, address);
-    }
-    delete(userId, addressId) {
-        return this.adapter.delete(userId, addressId);
-    }
-}
-UserAddressConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
-UserAddressConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UserAddressConnector.ctorParameters = () => [
-    { type: UserAddressAdapter }
-];
-
-class AddressVerificationEffect {
-    constructor(actions$, userAddressConnector) {
-        this.actions$ = actions$;
-        this.userAddressConnector = userAddressConnector;
-        this.verifyAddress$ = this.actions$.pipe(ofType(VERIFY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.userAddressConnector.verify(payload.userId, payload.address).pipe(map((data) => new VerifyAddressSuccess(data)), catchError((error) => of(new VerifyAddressFail(makeErrorSerializable(error)))))));
-    }
-}
-AddressVerificationEffect.decorators = [
-    { type: Injectable }
-];
-AddressVerificationEffect.ctorParameters = () => [
-    { type: Actions },
-    { type: UserAddressConnector }
-];
-__decorate([
-    Effect()
-], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
-
-class CheckoutPaymentConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    create(userId, cartId, paymentDetails) {
-        return this.adapter.create(userId, cartId, paymentDetails);
-    }
-    set(userId, cartId, paymentDetailsId) {
-        return this.adapter.set(userId, cartId, paymentDetailsId);
-    }
-    getCardTypes() {
-        return this.adapter.loadCardTypes();
-    }
-}
-CheckoutPaymentConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
-CheckoutPaymentConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutPaymentConnector.ctorParameters = () => [
-    { type: CheckoutPaymentAdapter }
-];
-
-class CardTypesEffects {
-    constructor(actions$, checkoutPaymentConnector) {
-        this.actions$ = actions$;
-        this.checkoutPaymentConnector = checkoutPaymentConnector;
-        this.loadCardTypes$ = this.actions$.pipe(ofType(LOAD_CARD_TYPES), switchMap(() => {
-            return this.checkoutPaymentConnector.getCardTypes().pipe(map((cardTypes) => new LoadCardTypesSuccess(cardTypes)), catchError((error) => of(new LoadCardTypesFail(makeErrorSerializable(error)))));
-        }));
-    }
-}
-CardTypesEffects.decorators = [
-    { type: Injectable }
-];
-CardTypesEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CheckoutPaymentConnector }
-];
-__decorate([
-    Effect()
-], CardTypesEffects.prototype, "loadCardTypes$", void 0);
-
-class CheckoutConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    placeOrder(userId, cartId) {
-        return this.adapter.placeOrder(userId, cartId);
-    }
-    loadCheckoutDetails(userId, cartId) {
-        return this.adapter.loadCheckoutDetails(userId, cartId);
-    }
-    clearCheckoutDeliveryAddress(userId, cartId) {
-        return this.adapter.clearCheckoutDeliveryAddress(userId, cartId);
-    }
-    clearCheckoutDeliveryMode(userId, cartId) {
-        return this.adapter.clearCheckoutDeliveryMode(userId, cartId);
-    }
-}
-CheckoutConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
-CheckoutConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutConnector.ctorParameters = () => [
-    { type: CheckoutAdapter }
-];
-
-class CheckoutCostCenterConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    setCostCenter(userId, cartId, costCenterId) {
-        return this.adapter.setCostCenter(userId, cartId, costCenterId);
-    }
-}
-CheckoutCostCenterConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterConnector_Factory() { return new CheckoutCostCenterConnector(ɵɵinject(CheckoutCostCenterAdapter)); }, token: CheckoutCostCenterConnector, providedIn: "root" });
-CheckoutCostCenterConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutCostCenterConnector.ctorParameters = () => [
-    { type: CheckoutCostCenterAdapter }
-];
-
-class CheckoutDeliveryConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    createAddress(userId, cartId, address) {
-        return this.adapter.createAddress(userId, cartId, address);
-    }
-    setAddress(userId, cartId, addressId) {
-        return this.adapter.setAddress(userId, cartId, addressId);
-    }
-    setMode(userId, cartId, deliveryModeId) {
-        return this.adapter.setMode(userId, cartId, deliveryModeId);
-    }
-    getMode(userId, cartId) {
-        return this.adapter.getMode(userId, cartId);
-    }
-    getSupportedModes(userId, cartId) {
-        return this.adapter.getSupportedModes(userId, cartId);
-    }
-}
-CheckoutDeliveryConnector.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
-CheckoutDeliveryConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutDeliveryConnector.ctorParameters = () => [
-    { type: CheckoutDeliveryAdapter }
-];
-
-class CheckoutEffects {
-    constructor(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutCostCenterConnector, checkoutConnector) {
-        this.actions$ = actions$;
-        this.checkoutDeliveryConnector = checkoutDeliveryConnector;
-        this.checkoutPaymentConnector = checkoutPaymentConnector;
-        this.checkoutCostCenterConnector = checkoutCostCenterConnector;
-        this.checkoutConnector = checkoutConnector;
-        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-        this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.checkoutDeliveryConnector
-            .createAddress(payload.userId, payload.cartId, payload.address)
-            .pipe(mergeMap((address) => {
-            address['titleCode'] = payload.address.titleCode;
-            if (payload.address.region && payload.address.region.isocodeShort) {
-                Object.assign(address.region, {
-                    isocodeShort: payload.address.region.isocodeShort,
-                });
-            }
-            if (payload.userId === OCC_USER_ID_ANONYMOUS) {
-                return [
-                    new SetDeliveryAddress({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                        address: address,
-                    }),
-                ];
-            }
-            else {
-                return [
-                    new LoadUserAddresses(payload.userId),
-                    new SetDeliveryAddress({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                        address: address,
-                    }),
-                ];
-            }
-        }), catchError((error) => of(new AddDeliveryAddressFail(makeErrorSerializable(error)))))), withdrawOn(this.contextChange$));
-        this.setDeliveryAddress$ = this.actions$.pipe(ofType(SET_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
-            return this.checkoutDeliveryConnector
-                .setAddress(payload.userId, payload.cartId, payload.address.id)
-                .pipe(mergeMap(() => [
-                new SetDeliveryAddressSuccess(payload.address),
-                new ClearCheckoutDeliveryMode({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
-                new ClearSupportedDeliveryModes(),
-                new ResetLoadSupportedDeliveryModesProcess(),
-                new LoadSupportedDeliveryModes({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
-            ]), catchError((error) => of(new SetDeliveryAddressFail(makeErrorSerializable(error)))));
-        }), withdrawOn(this.contextChange$));
-        this.loadSupportedDeliveryModes$ = this.actions$.pipe(ofType(LOAD_SUPPORTED_DELIVERY_MODES), map((action) => action.payload), mergeMap((payload) => {
-            return this.checkoutDeliveryConnector
-                .getSupportedModes(payload.userId, payload.cartId)
-                .pipe(map((data) => {
-                return new LoadSupportedDeliveryModesSuccess(data);
-            }), catchError((error) => of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)))));
-        }), withdrawOn(this.contextChange$));
-        this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), mergeMap(() => [
-            new ResetLoadSupportedDeliveryModesProcess(),
-            new ResetLoadPaymentTypesProcess(),
-            new CheckoutClearMiscsData(),
-        ]));
-        this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE), map(() => new ClearSupportedDeliveryModes()));
-        this.clearCheckoutDataOnLogout$ = this.actions$.pipe(ofType(LOGOUT), map(() => new ClearCheckoutData()));
-        this.clearCheckoutDataOnLogin$ = this.actions$.pipe(ofType(LOGIN), map(() => new ClearCheckoutData()));
-        this.setDeliveryMode$ = this.actions$.pipe(ofType(SET_DELIVERY_MODE), map((action) => action.payload), mergeMap((payload) => {
-            return this.checkoutDeliveryConnector
-                .setMode(payload.userId, payload.cartId, payload.selectedModeId)
-                .pipe(mergeMap(() => {
-                return [
-                    new SetDeliveryModeSuccess(payload.selectedModeId),
-                    new LoadCart({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                ];
-            }), catchError((error) => of(new SetDeliveryModeFail(makeErrorSerializable(error)))));
-        }), withdrawOn(this.contextChange$));
-        this.createPaymentDetails$ = this.actions$.pipe(ofType(CREATE_PAYMENT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
-            // get information for creating a subscription directly with payment provider
-            return this.checkoutPaymentConnector
-                .create(payload.userId, payload.cartId, payload.paymentDetails)
-                .pipe(mergeMap((details) => {
-                if (payload.userId === OCC_USER_ID_ANONYMOUS) {
-                    return [new CreatePaymentDetailsSuccess(details)];
-                }
-                else {
-                    return [
-                        new LoadUserPaymentMethods(payload.userId),
-                        new CreatePaymentDetailsSuccess(details),
-                    ];
-                }
-            }), catchError((error) => of(new CreatePaymentDetailsFail(makeErrorSerializable(error)))));
-        }), withdrawOn(this.contextChange$));
-        this.setPaymentDetails$ = this.actions$.pipe(ofType(SET_PAYMENT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
-            return this.checkoutPaymentConnector
-                .set(payload.userId, payload.cartId, payload.paymentDetails.id)
-                .pipe(map(() => new SetPaymentDetailsSuccess(payload.paymentDetails)), catchError((error) => of(new SetPaymentDetailsFail(makeErrorSerializable(error)))));
-        }), withdrawOn(this.contextChange$));
-        this.placeOrder$ = this.actions$.pipe(ofType(PLACE_ORDER), map((action) => action.payload), mergeMap((payload) => {
-            return this.checkoutConnector
-                .placeOrder(payload.userId, payload.cartId)
-                .pipe(switchMap((data) => [
-                new RemoveCart({ cartId: payload.cartId }),
-                new PlaceOrderSuccess(data),
-            ]), catchError((error) => of(new PlaceOrderFail(makeErrorSerializable(error)))));
-        }), withdrawOn(this.contextChange$));
-        this.loadCheckoutDetails$ = this.actions$.pipe(ofType(LOAD_CHECKOUT_DETAILS), map((action) => action.payload), mergeMap((payload) => {
-            return this.checkoutConnector
-                .loadCheckoutDetails(payload.userId, payload.cartId)
-                .pipe(map((data) => new LoadCheckoutDetailsSuccess(data)), catchError((error) => of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)))));
-        }), withdrawOn(this.contextChange$));
-        this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((action) => action.payload), map((payload) => {
-            return new LoadCheckoutDetails({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
-        }));
-        this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), map((action) => action.payload), filter((payload) => Boolean(payload.cartId)), switchMap((payload) => {
-            return this.checkoutConnector
-                .clearCheckoutDeliveryAddress(payload.userId, payload.cartId)
-                .pipe(map(() => new ClearCheckoutDeliveryAddressSuccess()), catchError((error) => of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error)))));
-        }), withdrawOn(this.contextChange$));
-        this.clearCheckoutDeliveryMode$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE), map((action) => action.payload), filter((payload) => Boolean(payload.cartId)), concatMap((payload) => {
-            return this.checkoutConnector
-                .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
-                .pipe(map(() => new ClearCheckoutDeliveryModeSuccess(Object.assign({}, payload))), catchError((error) => from([
-                new ClearCheckoutDeliveryModeFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
-                new LoadCart({
-                    cartId: payload.cartId,
-                    userId: payload.userId,
-                }),
-            ])));
-        }), withdrawOn(this.contextChange$));
-        this.setCostCenter$ = this.actions$.pipe(ofType(SET_COST_CENTER), map((action) => action.payload), switchMap((payload) => {
-            return this.checkoutCostCenterConnector
-                .setCostCenter(payload.userId, payload.cartId, payload.costCenterId)
-                .pipe(mergeMap((data) => [
-                // TODO(#8877): We should trigger load cart not already assign the data. We might have misconfiguration between this cart model and load cart model
-                new LoadCartSuccess({
-                    cart: data,
-                    cartId: payload.cartId,
-                    userId: payload.userId,
-                }),
-                new SetCostCenterSuccess(payload.costCenterId),
-                new ClearCheckoutDeliveryMode({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
-                new ClearCheckoutDeliveryAddress({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
-            ]), catchError((error) => of(new SetCostCenterFail(normalizeHttpError(error)))));
-        }), withdrawOn(this.contextChange$));
-    }
-}
-CheckoutEffects.decorators = [
-    { type: Injectable }
-];
-CheckoutEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CheckoutDeliveryConnector },
-    { type: CheckoutPaymentConnector },
-    { type: CheckoutCostCenterConnector },
-    { type: CheckoutConnector }
-];
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "addDeliveryAddress$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "setDeliveryAddress$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "clearCheckoutMiscsDataOnLanguageChange$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "clearDeliveryModesOnCurrencyChange$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "clearCheckoutDataOnLogout$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "createPaymentDetails$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "setPaymentDetails$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "placeOrder$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
-__decorate([
-    Effect()
-], CheckoutEffects.prototype, "setCostCenter$", void 0);
-
-class PaymentTypeConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    getPaymentTypes() {
-        return this.adapter.loadPaymentTypes();
-    }
-    setPaymentType(userId, cartId, typeCode, poNumber) {
-        return this.adapter.setPaymentType(userId, cartId, typeCode, poNumber);
-    }
-}
-PaymentTypeConnector.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeConnector_Factory() { return new PaymentTypeConnector(ɵɵinject(PaymentTypeAdapter)); }, token: PaymentTypeConnector, providedIn: "root" });
-PaymentTypeConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-PaymentTypeConnector.ctorParameters = () => [
-    { type: PaymentTypeAdapter }
-];
-
-class PaymentTypesEffects {
-    constructor(actions$, paymentTypeConnector) {
-        this.actions$ = actions$;
-        this.paymentTypeConnector = paymentTypeConnector;
-        this.loadPaymentTypes$ = this.actions$.pipe(ofType(LOAD_PAYMENT_TYPES), switchMap(() => {
-            return this.paymentTypeConnector.getPaymentTypes().pipe(map((paymentTypes) => new LoadPaymentTypesSuccess(paymentTypes)), catchError((error) => of(new LoadPaymentTypesFail(normalizeHttpError(error)))));
-        }));
-        this.setPaymentType$ = this.actions$.pipe(ofType(SET_PAYMENT_TYPE), map((action) => action.payload), switchMap((payload) => {
-            return this.paymentTypeConnector
-                .setPaymentType(payload.userId, payload.cartId, payload.typeCode, payload.poNumber)
-                .pipe(mergeMap((data) => {
-                return [
-                    new LoadCartSuccess({
-                        cart: data,
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
-                    new ClearCheckoutData(),
-                    new SetPaymentTypeSuccess(data),
-                ];
-            }), catchError((error) => of(new SetPaymentTypeFail(normalizeHttpError(error)))));
-        }));
-    }
-}
-PaymentTypesEffects.decorators = [
-    { type: Injectable }
-];
-PaymentTypesEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: PaymentTypeConnector }
-];
-__decorate([
-    Effect()
-], PaymentTypesEffects.prototype, "loadPaymentTypes$", void 0);
-__decorate([
-    Effect()
-], PaymentTypesEffects.prototype, "setPaymentType$", void 0);
-
-const effects$5 = [
-    CheckoutEffects,
-    AddressVerificationEffect,
-    CardTypesEffects,
-    PaymentTypesEffects,
-];
-
-class CheckoutStoreModule {
-}
-CheckoutStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5),
-                    EffectsModule.forFeature(effects$5),
-                ],
-                providers: [reducerProvider$5],
-            },] }
-];
-
-class CheckoutModule {
-    static forRoot() {
-        return {
-            ngModule: CheckoutModule,
-            providers: [
-                {
-                    provide: PageMetaResolver,
-                    useExisting: CheckoutPageMetaResolver,
-                    multi: true,
-                },
-            ],
-        };
-    }
-}
-CheckoutModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CheckoutStoreModule, CheckoutEventModule],
-            },] }
-];
-
-const getDeliveryAddressSelector = (state) => state.address;
-const ɵ0$A = getDeliveryAddressSelector;
-const getDeliveryModeSelector = (state) => state.deliveryMode;
-const ɵ1$q = getDeliveryModeSelector;
-const getPaymentDetailsSelector = (state) => state.paymentDetails;
-const ɵ2$i = getPaymentDetailsSelector;
-const getOrderDetailsSelector = (state) => state.orderDetails;
-const ɵ3$a = getOrderDetailsSelector;
-const getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
-const ɵ4$4 = (checkoutState) => checkoutState.steps;
-const getCheckoutStepsState = createSelector(getCheckoutState, ɵ4$4);
-const ɵ5$2 = (state) => loaderValueSelector(state);
-const getCheckoutSteps = createSelector(getCheckoutStepsState, ɵ5$2);
-const getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
-const getDeliveryMode = createSelector(getCheckoutSteps, getDeliveryModeSelector);
-const ɵ6 = (deliveryMode) => {
-    return (deliveryMode &&
-        Object.keys(deliveryMode.supported).map((code) => deliveryMode.supported[code]));
-};
-const getSupportedDeliveryModes = createSelector(getDeliveryMode, ɵ6);
-const ɵ7 = (deliveryMode) => {
-    return deliveryMode && deliveryMode.selected;
-};
-const getSelectedDeliveryModeCode = createSelector(getDeliveryMode, ɵ7);
-const ɵ8 = (deliveryMode) => {
-    if (deliveryMode.selected !== '') {
-        if (Object.keys(deliveryMode.supported).length === 0) {
-            return null;
-        }
-        return deliveryMode.supported[deliveryMode.selected];
-    }
-};
-const getSelectedDeliveryMode = createSelector(getDeliveryMode, ɵ8);
-const getPaymentDetails = createSelector(getCheckoutSteps, getPaymentDetailsSelector);
-const getCheckoutOrderDetails = createSelector(getCheckoutSteps, getOrderDetailsSelector);
-const ɵ9 = (state) => loaderSuccessSelector(state) &&
-    !loaderLoadingSelector(state);
-const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, ɵ9);
-const ɵ10 = (state) => state.poNumber.po;
-const getPoNumer = createSelector(getCheckoutSteps, ɵ10);
-const ɵ11 = (state) => state.poNumber.costCenter;
-const getCostCenter = createSelector(getCheckoutSteps, ɵ11);
-
-const ɵ0$B = (state) => state.addressVerification;
-const getAddressVerificationResultsState = createSelector(getCheckoutState, ɵ0$B);
-const getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
-
-const ɵ0$C = (state) => state.cardTypes;
-const getCardTypesState = createSelector(getCheckoutState, ɵ0$C);
-const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-const ɵ1$r = (entites) => {
-    return Object.keys(entites).map((code) => entites[code]);
-};
-const getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$r);
-
-const ɵ0$D = (state) => state.paymentTypes;
-const getPaymentTypesState = createSelector(getCheckoutState, ɵ0$D);
-const getPaymentTypesEntites$1 = createSelector(getPaymentTypesState, getPaymentTypesEntites);
-const ɵ1$s = (entites) => {
-    return Object.keys(entites).map((code) => entites[code]);
-};
-const getAllPaymentTypes = createSelector(getPaymentTypesEntites$1, ɵ1$s);
-const getSelectedPaymentType$1 = createSelector(getPaymentTypesState, getSelectedPaymentType);
-
-var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getAddressVerificationResultsState: getAddressVerificationResultsState,
-    getAddressVerificationResults: getAddressVerificationResults$1,
-    ɵ0: ɵ0$B,
-    getCardTypesState: getCardTypesState,
-    getCardTypesEntites: getCardTypesEntites$1,
-    getAllCardTypes: getAllCardTypes,
-    ɵ1: ɵ1$r,
-    getCheckoutState: getCheckoutState,
-    getCheckoutStepsState: getCheckoutStepsState,
-    getCheckoutSteps: getCheckoutSteps,
-    getDeliveryAddress: getDeliveryAddress,
-    getDeliveryMode: getDeliveryMode,
-    getSupportedDeliveryModes: getSupportedDeliveryModes,
-    getSelectedDeliveryModeCode: getSelectedDeliveryModeCode,
-    getSelectedDeliveryMode: getSelectedDeliveryMode,
-    getPaymentDetails: getPaymentDetails,
-    getCheckoutOrderDetails: getCheckoutOrderDetails,
-    getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
-    getPoNumer: getPoNumer,
-    getCostCenter: getCostCenter,
-    ɵ2: ɵ2$i,
-    ɵ3: ɵ3$a,
-    ɵ4: ɵ4$4,
-    ɵ5: ɵ5$2,
-    ɵ6: ɵ6,
-    ɵ7: ɵ7,
-    ɵ8: ɵ8,
-    ɵ9: ɵ9,
-    ɵ10: ɵ10,
-    ɵ11: ɵ11,
-    getPaymentTypesState: getPaymentTypesState,
-    getPaymentTypesEntites: getPaymentTypesEntites$1,
-    getAllPaymentTypes: getAllPaymentTypes,
-    getSelectedPaymentType: getSelectedPaymentType$1
-});
-
-class CheckoutService {
-    constructor(checkoutStore, authService, activeCartService) {
-        this.checkoutStore = checkoutStore;
-        this.authService = authService;
-        this.activeCartService = activeCartService;
-    }
-    /**
-     * Places an order
-     */
-    placeOrder() {
-        if (this.actionAllowed()) {
-            let userId;
-            this.authService
-                .getOccUserId()
-                .subscribe((occUserId) => (userId = occUserId))
-                .unsubscribe();
-            let cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe((activeCartId) => (cartId = activeCartId))
-                .unsubscribe();
-            if (userId && cartId) {
-                this.checkoutStore.dispatch(new PlaceOrder({
-                    userId,
-                    cartId,
-                }));
-            }
-        }
-    }
-    /**
-     * Clear checkout data
-     */
-    clearCheckoutData() {
-        this.checkoutStore.dispatch(new ClearCheckoutData());
-    }
-    /**
-     * Clear checkout step
-     * @param stepNumber : the step number to be cleared
-     */
-    clearCheckoutStep(stepNumber) {
-        this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
-    }
-    /**
-     * Load checkout details data
-     * @param cartId : string Cart ID of loaded cart
-     */
-    loadCheckoutDetails(cartId) {
-        let userId;
-        this.authService
-            .getOccUserId()
-            .subscribe((occUserId) => (userId = occUserId))
-            .unsubscribe();
-        if (userId) {
-            this.checkoutStore.dispatch(new LoadCheckoutDetails({
-                userId,
-                cartId,
-            }));
-        }
-    }
-    /**
-     * Get status of checkout details loaded
-     */
-    getCheckoutDetailsLoaded() {
-        return this.checkoutStore.pipe(select(getCheckoutDetailsLoaded));
-    }
-    /**
-     * Get order details
-     */
-    getOrderDetails() {
-        return this.checkoutStore.pipe(select(getCheckoutOrderDetails));
-    }
-    actionAllowed() {
-        let userId;
-        this.authService
-            .getOccUserId()
-            .subscribe((occUserId) => (userId = occUserId))
-            .unsubscribe();
-        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
-            this.activeCartService.isGuestCart());
-    }
-}
-CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
-CheckoutService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
-];
-
-class CheckoutDeliveryService {
-    constructor(checkoutStore, authService, activeCartService) {
-        this.checkoutStore = checkoutStore;
-        this.authService = authService;
-        this.activeCartService = activeCartService;
-    }
-    /**
-     * Get supported delivery modes
-     */
-    getSupportedDeliveryModes() {
-        return this.checkoutStore.pipe(select(getSupportedDeliveryModes), withLatestFrom(this.checkoutStore.pipe(select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), tap(([, loadingState]) => {
-            if (!(loadingState.loading || loadingState.success || loadingState.error)) {
-                this.loadSupportedDeliveryModes();
-            }
-        }), pluck(0), shareReplay({ bufferSize: 1, refCount: true }));
-    }
-    /**
-     * Get selected delivery mode
-     */
-    getSelectedDeliveryMode() {
-        return this.checkoutStore.pipe(select(getSelectedDeliveryMode));
-    }
-    /**
-     * Get selected delivery mode code
-     */
-    getSelectedDeliveryModeCode() {
-        return this.checkoutStore.pipe(select(getSelectedDeliveryModeCode));
-    }
-    /**
-     * Get delivery address
-     */
-    getDeliveryAddress() {
-        return this.checkoutStore.pipe(select(getDeliveryAddress));
-    }
-    /**
-     * Get status about successfully set Delivery Address
-     */
-    getSetDeliveryAddressProcess() {
-        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
-    }
-    /**
-     * Clear info about process of setting Delivery Address
-     */
-    resetSetDeliveryAddressProcess() {
-        this.checkoutStore.dispatch(new ResetSetDeliveryAddressProcess());
-    }
-    /**
-     * Get status about of set Delivery Mode process
-     */
-    getSetDeliveryModeProcess() {
-        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
-    }
-    /**
-     * Clear info about process of setting Delivery Mode
-     */
-    resetSetDeliveryModeProcess() {
-        this.checkoutStore.dispatch(new ResetSetDeliveryModeProcess());
-    }
-    /**
-     * Clear info about process of setting Supported Delivery Modes
-     */
-    resetLoadSupportedDeliveryModesProcess() {
-        this.checkoutStore.dispatch(new ResetLoadSupportedDeliveryModesProcess());
-    }
-    /**
-     * Get status about of set supported Delivery Modes process
-     */
-    getLoadSupportedDeliveryModeProcess() {
-        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
-    }
-    /**
-     * Clear supported delivery modes loaded in last checkout process
-     */
-    clearCheckoutDeliveryModes() {
-        this.checkoutStore.dispatch(new ClearSupportedDeliveryModes());
-    }
-    /**
-     * Get address verification results
-     */
-    getAddressVerificationResults() {
-        return this.checkoutStore.pipe(select(getAddressVerificationResults$1), filter((results) => Object.keys(results).length !== 0));
-    }
-    /**
-     * Create and set a delivery address using the address param
-     * @param address : the Address to be created and set
-     */
-    createAndSetAddress(address) {
-        if (this.actionAllowed()) {
-            let userId;
-            this.authService
-                .getOccUserId()
-                .subscribe((occUserId) => (userId = occUserId))
-                .unsubscribe();
-            let cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe((activeCartId) => (cartId = activeCartId))
-                .unsubscribe();
-            if (userId && cartId) {
-                this.checkoutStore.dispatch(new AddDeliveryAddress({
-                    userId,
-                    cartId,
-                    address: address,
-                }));
-            }
-        }
-    }
-    /**
-     * Load supported delivery modes
-     */
-    loadSupportedDeliveryModes() {
-        if (this.actionAllowed()) {
-            let userId;
-            this.authService
-                .getOccUserId()
-                .subscribe((occUserId) => (userId = occUserId))
-                .unsubscribe();
-            let cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe((activeCartId) => (cartId = activeCartId))
-                .unsubscribe();
-            if (userId && cartId) {
-                this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
-                    userId,
-                    cartId,
-                }));
-            }
-        }
-    }
-    /**
-     * Set delivery mode
-     * @param mode : The delivery mode to be set
-     */
-    setDeliveryMode(mode) {
-        if (this.actionAllowed()) {
-            let userId;
-            this.authService
-                .getOccUserId()
-                .subscribe((occUserId) => (userId = occUserId))
-                .unsubscribe();
-            let cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe((activeCartId) => (cartId = activeCartId))
-                .unsubscribe();
-            if (userId && cartId) {
-                this.checkoutStore.dispatch(new SetDeliveryMode({
-                    userId,
-                    cartId,
-                    selectedModeId: mode,
-                }));
-            }
-        }
-    }
-    /**
-     * Verifies the address
-     * @param address : the address to be verified
-     */
-    verifyAddress(address) {
-        if (this.actionAllowed()) {
-            let userId;
-            this.authService
-                .getOccUserId()
-                .subscribe((occUserId) => (userId = occUserId))
-                .unsubscribe();
-            if (userId) {
-                this.checkoutStore.dispatch(new VerifyAddress({
-                    userId,
-                    address,
-                }));
-            }
-        }
-    }
-    /**
-     * Set delivery address
-     * @param address : The address to be set
-     */
-    setDeliveryAddress(address) {
-        if (this.actionAllowed()) {
-            let userId;
-            this.authService
-                .getOccUserId()
-                .subscribe((occUserId) => (userId = occUserId))
-                .unsubscribe();
-            let cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe((activeCartId) => (cartId = activeCartId))
-                .unsubscribe();
-            if (cartId && userId) {
-                this.checkoutStore.dispatch(new SetDeliveryAddress({
-                    userId,
-                    cartId,
-                    address: address,
-                }));
-            }
-        }
-    }
-    /**
-     * Clear address verification results
-     */
-    clearAddressVerificationResults() {
-        this.checkoutStore.dispatch(new ClearAddressVerificationResults());
-    }
-    /**
-     * Clear address already setup in last checkout process
-     */
-    clearCheckoutDeliveryAddress() {
-        let userId;
-        this.authService
-            .getOccUserId()
-            .subscribe((occUserId) => (userId = occUserId))
-            .unsubscribe();
-        let cartId;
-        this.activeCartService
-            .getActiveCartId()
-            .subscribe((activeCartId) => (cartId = activeCartId))
-            .unsubscribe();
-        if (userId && cartId) {
-            this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
-                userId,
-                cartId,
-            }));
-        }
-    }
-    /**
-     * Clear selected delivery mode setup in last checkout process
-     */
-    clearCheckoutDeliveryMode() {
-        let userId;
-        this.authService
-            .getOccUserId()
-            .subscribe((occUserId) => (userId = occUserId))
-            .unsubscribe();
-        let cartId;
-        this.activeCartService
-            .getActiveCartId()
-            .subscribe((activeCartId) => (cartId = activeCartId))
-            .unsubscribe();
-        if (userId && cartId) {
-            this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
-                userId,
-                cartId,
-            }));
-        }
-    }
-    /**
-     * Clear address and delivery mode already setup in last checkout process
-     */
-    clearCheckoutDeliveryDetails() {
-        this.clearCheckoutDeliveryAddress();
-        this.clearCheckoutDeliveryMode();
-        this.clearCheckoutDeliveryModes();
-    }
-    actionAllowed() {
-        let userId;
-        this.authService
-            .getOccUserId()
-            .subscribe((occUserId) => (userId = occUserId))
-            .unsubscribe();
-        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
-            this.activeCartService.isGuestCart());
-    }
-}
-CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
-CheckoutDeliveryService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutDeliveryService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
-];
-
-class CheckoutPaymentService {
-    constructor(checkoutStore, authService, activeCartService) {
-        this.checkoutStore = checkoutStore;
-        this.authService = authService;
-        this.activeCartService = activeCartService;
-    }
-    /**
-     * Get card types
-     */
-    getCardTypes() {
-        return this.checkoutStore.pipe(select(getAllCardTypes));
-    }
-    /**
-     * Get payment details
-     */
-    getPaymentDetails() {
-        return this.checkoutStore.pipe(select(getPaymentDetails));
-    }
-    /**
-     * Get status about set Payment Details process
-     */
-    getSetPaymentDetailsResultProcess() {
-        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
-    }
-    /**
-     * Clear info about process of setting Payment Details
-     */
-    resetSetPaymentDetailsProcess() {
-        this.checkoutStore.dispatch(new ResetSetPaymentDetailsProcess());
-    }
-    /**
-     * Load the supported card types
-     */
-    loadSupportedCardTypes() {
-        this.checkoutStore.dispatch(new LoadCardTypes());
-    }
-    /**
-     * Create payment details using the given paymentDetails param
-     * @param paymentDetails: the PaymentDetails to be created
-     */
-    createPaymentDetails(paymentDetails) {
-        if (this.actionAllowed()) {
-            let userId;
-            this.authService
-                .getOccUserId()
-                .subscribe((occUserId) => (userId = occUserId))
-                .unsubscribe();
-            let cartId;
-            this.activeCartService
-                .getActiveCartId()
-                .subscribe((activeCartId) => (cartId = activeCartId))
-                .unsubscribe();
-            if (userId && cartId) {
-                this.checkoutStore.dispatch(new CreatePaymentDetails({
-                    userId,
-                    cartId,
-                    paymentDetails,
-                }));
-            }
-        }
-    }
-    /**
-     * Set payment details
-     * @param paymentDetails : the PaymentDetails to be set
-     */
-    setPaymentDetails(paymentDetails) {
-        if (this.actionAllowed()) {
-            let userId;
-            this.authService
-                .getOccUserId()
-                .subscribe((occUserId) => (userId = occUserId))
-                .unsubscribe();
-            let cart;
-            this.activeCartService
-                .getActive()
-                .subscribe((activeCart) => (cart = activeCart))
-                .unsubscribe();
-            if (userId && cart) {
-                this.checkoutStore.dispatch(new SetPaymentDetails({
-                    userId,
-                    cartId: cart.code,
-                    paymentDetails: paymentDetails,
-                }));
-            }
-        }
-    }
-    /**
-     * Sets payment loading to true without having the flicker issue (GH-3102)
-     */
-    paymentProcessSuccess() {
-        this.checkoutStore.dispatch(new PaymentProcessSuccess());
-    }
-    actionAllowed() {
-        let userId;
-        this.authService
-            .getOccUserId()
-            .subscribe((occUserId) => (userId = occUserId))
-            .unsubscribe();
-        return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
-            this.activeCartService.isGuestCart());
-    }
-}
-CheckoutPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
-CheckoutPaymentService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutPaymentService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
-];
-
-class PaymentTypeService {
-    constructor(checkoutStore, authService, activeCartService) {
-        this.checkoutStore = checkoutStore;
-        this.authService = authService;
-        this.activeCartService = activeCartService;
-    }
-    /**
-     * Get payment types
-     */
-    getPaymentTypes() {
-        return this.checkoutStore.pipe(select(getAllPaymentTypes), withLatestFrom(this.checkoutStore.pipe(select(getProcessStateFactory(GET_PAYMENT_TYPES_PROCESS_ID)))), tap(([_, loadingState]) => {
-            if (!(loadingState.loading || loadingState.success || loadingState.error)) {
-                this.loadPaymentTypes();
-            }
-        }), pluck(0), shareReplay({ bufferSize: 1, refCount: true }));
-    }
-    /**
-     * Load the supported payment types
-     */
-    loadPaymentTypes() {
-        this.checkoutStore.dispatch(new LoadPaymentTypes());
-    }
-    /**
-     * Set payment type to cart
-     * @param typeCode
-     * @param poNumber : purchase order number
-     */
-    setPaymentType(typeCode, poNumber) {
-        let cartId;
-        this.activeCartService
-            .getActiveCartId()
-            .pipe(take(1))
-            .subscribe((activeCartId) => (cartId = activeCartId));
-        this.authService.invokeWithUserId((userId) => {
-            if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
-                this.checkoutStore.dispatch(new SetPaymentType({
-                    userId: userId,
-                    cartId: cartId,
-                    typeCode: typeCode,
-                    poNumber: poNumber,
-                }));
-            }
-        });
-    }
-    /**
-     * Get the selected payment type
-     */
-    getSelectedPaymentType() {
-        return combineLatest([
-            this.activeCartService.getActive(),
-            this.checkoutStore.pipe(select(getSelectedPaymentType$1)),
-        ]).pipe(tap(([cart, selected]) => {
-            if (selected === undefined) {
-                // in b2b, cart always has paymentType (default value 'CARD')
-                if (cart && cart.paymentType) {
-                    this.checkoutStore.dispatch(new SetPaymentTypeSuccess(cart));
-                }
-            }
-        }), map(([, selected]) => selected));
-    }
-    /**
-     * Get whether the selected payment type is "ACCOUNT" payment
-     */
-    isAccountPayment() {
-        return this.getSelectedPaymentType().pipe(map((selected) => selected === B2BPaymentTypeEnum.ACCOUNT_PAYMENT));
-    }
-    /**
-     * Get PO Number
-     */
-    getPoNumber() {
-        return combineLatest([
-            this.activeCartService.getActive(),
-            this.checkoutStore.pipe(select(getPoNumer)),
-        ]).pipe(tap(([cart, po]) => {
-            if (po === undefined && cart && cart.purchaseOrderNumber) {
-                this.checkoutStore.dispatch(new SetPaymentTypeSuccess(cart));
-            }
-        }), map(([_, po]) => po));
-    }
-}
-PaymentTypeService.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
-PaymentTypeService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-PaymentTypeService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
-];
-
-class CheckoutCostCenterService {
-    constructor(checkoutStore, authService, activeCartService) {
-        this.checkoutStore = checkoutStore;
-        this.authService = authService;
-        this.activeCartService = activeCartService;
-    }
-    /**
-     * Set cost center to cart
-     * @param costCenterId : cost center id
-     */
-    setCostCenter(costCenterId) {
-        let cartId;
-        this.activeCartService
-            .getActiveCartId()
-            .pipe(take(1))
-            .subscribe((activeCartId) => (cartId = activeCartId));
-        this.authService.invokeWithUserId((userId) => {
-            if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
-                this.checkoutStore.dispatch(new SetCostCenter({
-                    userId: userId,
-                    cartId: cartId,
-                    costCenterId: costCenterId,
-                }));
-            }
-        });
-    }
-    /**
-     * Get cost center id from cart
-     */
-    getCostCenter() {
-        return combineLatest([
-            this.activeCartService.getActive(),
-            this.checkoutStore.pipe(select(getCostCenter)),
-        ]).pipe(filter(([cart]) => Boolean(cart)), map(([cart, costCenterId]) => {
-            if (costCenterId === undefined && cart.costCenter) {
-                costCenterId = cart.costCenter.code;
-                this.checkoutStore.dispatch(new SetCostCenterSuccess(cart.costCenter.code));
-            }
-            return costCenterId;
-        }));
-    }
-}
-CheckoutCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
-CheckoutCostCenterService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CheckoutCostCenterService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
 ];
 
 const defaultCmsModuleConfig = {
@@ -19278,7 +19857,7 @@ __decorate([
 
 const effects$6 = [RouterEffects];
 
-const initialState$d = {
+const initialState$e = {
     navigationId: 0,
     state: {
         url: '',
@@ -19294,10 +19873,10 @@ const initialState$d = {
 };
 function getReducers$6() {
     return {
-        router: reducer$d,
+        router: reducer$e,
     };
 }
-function reducer$d(state = initialState$d, action) {
+function reducer$e(state = initialState$e, action) {
     switch (action.type) {
         case ROUTER_NAVIGATION: {
             return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -19657,7 +20236,7 @@ const effects$7 = [
     NavigationEntryItemEffects,
 ];
 
-const initialState$e = {
+const initialState$f = {
     component: undefined,
     pageContext: {},
 };
@@ -19671,7 +20250,7 @@ function componentExistsReducer(state, action) {
     }
     return state;
 }
-function reducer$e(state = initialState$e, action) {
+function reducer$f(state = initialState$f, action) {
     switch (action.type) {
         case LOAD_CMS_COMPONENT: {
             const pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
@@ -19699,8 +20278,8 @@ function reducer$e(state = initialState$e, action) {
     return state;
 }
 
-const initialState$f = undefined;
-function reducer$f(state = initialState$f, action) {
+const initialState$g = undefined;
+function reducer$g(state = initialState$g, action) {
     switch (action.type) {
         case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
             if (action.payload.components) {
@@ -19715,8 +20294,8 @@ function reducer$f(state = initialState$f, action) {
     return state;
 }
 
-const initialState$g = { entities: {} };
-function reducer$g(state = initialState$g, action) {
+const initialState$h = { entities: {} };
+function reducer$h(state = initialState$h, action) {
     switch (action.type) {
         case LOAD_CMS_PAGE_DATA_SUCCESS: {
             const page = action.payload;
@@ -19726,16 +20305,16 @@ function reducer$g(state = initialState$g, action) {
     return state;
 }
 
-const initialState$h = undefined;
-function reducer$h(entityType) {
-    return (state = initialState$h, action) => {
+const initialState$i = undefined;
+function reducer$i(entityType) {
+    return (state = initialState$i, action) => {
         if (action.meta && action.meta.entityType === entityType) {
             switch (action.type) {
                 case LOAD_CMS_PAGE_DATA_SUCCESS: {
                     return action.payload.pageId;
                 }
                 case LOAD_CMS_PAGE_DATA_FAIL: {
-                    return initialState$h;
+                    return initialState$i;
                 }
                 case CMS_SET_PAGE_FAIL_INDEX: {
                     return action.payload;
@@ -19752,16 +20331,16 @@ function reducer$h(entityType) {
 function getReducers$7() {
     return {
         page: combineReducers({
-            pageData: reducer$g,
+            pageData: reducer$h,
             index: combineReducers({
-                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$h(PageType.CONTENT_PAGE)),
-                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$h(PageType.PRODUCT_PAGE)),
-                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$h(PageType.CATEGORY_PAGE)),
-                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$h(PageType.CATALOG_PAGE)),
+                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$i(PageType.CONTENT_PAGE)),
+                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$i(PageType.PRODUCT_PAGE)),
+                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$i(PageType.CATEGORY_PAGE)),
+                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$i(PageType.CATALOG_PAGE)),
             }),
         }),
-        components: entityReducer(COMPONENT_ENTITY, reducer$e),
-        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
+        components: entityReducer(COMPONENT_ENTITY, reducer$f),
+        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$g),
     };
 }
 const reducerToken$7 = new InjectionToken('CmsReducers');
@@ -20438,11 +21017,11 @@ function getLoadPath(path, serverRequestOrigin) {
     return path;
 }
 
-const ɵ0$E = i18nextInit;
+const ɵ0$H = i18nextInit;
 const i18nextProviders = [
     {
         provide: APP_INITIALIZER,
-        useFactory: ɵ0$E,
+        useFactory: ɵ0$H,
         deps: [
             ConfigInitializerService,
             LanguageService,
@@ -20654,8 +21233,8 @@ var kymaGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getKymaState = createFeatureSelector(KYMA_FEATURE);
 
-const ɵ0$F = (state) => state.openIdToken;
-const getOpenIdTokenState = createSelector(getKymaState, ɵ0$F);
+const ɵ0$I = (state) => state.openIdToken;
+const getOpenIdTokenState = createSelector(getKymaState, ɵ0$I);
 const getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelector);
 const getOpenIdTokenLoading = createSelector(getOpenIdTokenState, loaderLoadingSelector);
 const getOpenIdTokenSuccess = createSelector(getOpenIdTokenState, loaderSuccessSelector);
@@ -20669,7 +21248,7 @@ var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
     getOpenIdTokenLoading: getOpenIdTokenLoading,
     getOpenIdTokenSuccess: getOpenIdTokenSuccess,
     getOpenIdTokenError: getOpenIdTokenError,
-    ɵ0: ɵ0$F
+    ɵ0: ɵ0$I
 });
 
 class KymaService {
@@ -21411,8 +21990,8 @@ var productGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getProductsState = createFeatureSelector(PRODUCT_FEATURE);
 
-const ɵ0$G = (state) => state.references;
-const getProductReferencesState = createSelector(getProductsState, ɵ0$G);
+const ɵ0$J = (state) => state.references;
+const getProductReferencesState = createSelector(getProductsState, ɵ0$J);
 const getSelectedProductReferencesFactory = (productCode, referenceType) => {
     return createSelector(getProductReferencesState, (referenceTypeData) => {
         if (referenceTypeData.productCode === productCode) {
@@ -21429,8 +22008,8 @@ const getSelectedProductReferencesFactory = (productCode, referenceType) => {
     });
 };
 
-const ɵ0$H = (state) => state.reviews;
-const getProductReviewsState = createSelector(getProductsState, ɵ0$H);
+const ɵ0$K = (state) => state.reviews;
+const getProductReviewsState = createSelector(getProductsState, ɵ0$K);
 const getSelectedProductReviewsFactory = (productCode) => {
     return createSelector(getProductReviewsState, (reviewData) => {
         if (reviewData.productCode === productCode) {
@@ -21439,12 +22018,12 @@ const getSelectedProductReviewsFactory = (productCode) => {
     });
 };
 
-const initialState$i = {
+const initialState$j = {
     results: {},
     suggestions: [],
     auxResults: {},
 };
-function reducer$i(state = initialState$i, action) {
+function reducer$j(state = initialState$j, action) {
     switch (action.type) {
         case SEARCH_PRODUCTS_SUCCESS: {
             const results = action.payload;
@@ -21469,14 +22048,14 @@ const getSearchResults = (state) => state.results;
 const getAuxSearchResults = (state) => state.auxResults;
 const getProductSuggestions = (state) => state.suggestions;
 
-const ɵ0$I = (state) => state.search;
-const getProductsSearchState = createSelector(getProductsState, ɵ0$I);
+const ɵ0$L = (state) => state.search;
+const getProductsSearchState = createSelector(getProductsState, ɵ0$L);
 const getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
 const getAuxSearchResults$1 = createSelector(getProductsSearchState, getAuxSearchResults);
 const getProductSuggestions$1 = createSelector(getProductsSearchState, getProductSuggestions);
 
-const ɵ0$J = (state) => state.details;
-const getProductState = createSelector(getProductsState, ɵ0$J);
+const ɵ0$M = (state) => state.details;
+const getProductState = createSelector(getProductsState, ɵ0$M);
 const getSelectedProductStateFactory = (code, scope = '') => {
     return createSelector(getProductState, (details) => entityLoaderStateSelector(details, code)[scope] ||
         initialLoaderState);
@@ -21493,17 +22072,17 @@ const getSelectedProductSuccessFactory = (code, scope = '') => {
 const getSelectedProductErrorFactory = (code, scope = '') => {
     return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderErrorSelector(productState));
 };
-const ɵ1$t = (details) => {
+const ɵ1$v = (details) => {
     return Object.keys(details.entities);
 };
-const getAllProductCodes = createSelector(getProductState, ɵ1$t);
+const getAllProductCodes = createSelector(getProductState, ɵ1$v);
 
 var productGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProductsState: getProductsState,
     getProductReferencesState: getProductReferencesState,
     getSelectedProductReferencesFactory: getSelectedProductReferencesFactory,
-    ɵ0: ɵ0$G,
+    ɵ0: ɵ0$J,
     getProductReviewsState: getProductReviewsState,
     getSelectedProductReviewsFactory: getSelectedProductReviewsFactory,
     getProductsSearchState: getProductsSearchState,
@@ -21517,7 +22096,7 @@ var productGroup_selectors = /*#__PURE__*/Object.freeze({
     getSelectedProductSuccessFactory: getSelectedProductSuccessFactory,
     getSelectedProductErrorFactory: getSelectedProductErrorFactory,
     getAllProductCodes: getAllProductCodes,
-    ɵ1: ɵ1$t
+    ɵ1: ɵ1$v
 });
 
 class ProductReferenceService {
@@ -22264,11 +22843,11 @@ const effects$9 = [
     ProductReferencesEffects,
 ];
 
-const initialState$j = {
+const initialState$k = {
     productCode: '',
     list: [],
 };
-function reducer$j(state = initialState$j, action) {
+function reducer$k(state = initialState$k, action) {
     switch (action.type) {
         case LOAD_PRODUCT_REFERENCES_SUCCESS: {
             const productCode = action.payload.productCode;
@@ -22282,7 +22861,7 @@ function reducer$j(state = initialState$j, action) {
                 }, []), productCode });
         }
         case CLEAN_PRODUCT_REFERENCES: {
-            return initialState$j;
+            return initialState$k;
         }
     }
     return state;
@@ -22290,11 +22869,11 @@ function reducer$j(state = initialState$j, action) {
 const getProductReferenceList = (state) => state.list;
 const getProductReferenceProductCode = (state) => state.productCode;
 
-const initialState$k = {
+const initialState$l = {
     productCode: '',
     list: [],
 };
-function reducer$k(state = initialState$k, action) {
+function reducer$l(state = initialState$l, action) {
     switch (action.type) {
         case LOAD_PRODUCT_REVIEWS_SUCCESS: {
             const productCode = action.payload.productCode;
@@ -22336,10 +22915,10 @@ function entityScopedLoaderReducer(entityType, reducer) {
 
 function getReducers$a() {
     return {
-        search: reducer$i,
+        search: reducer$j,
         details: entityScopedLoaderReducer(PRODUCT_DETAIL_ENTITY),
-        reviews: reducer$k,
-        references: reducer$j,
+        reviews: reducer$l,
+        references: reducer$k,
     };
 }
 const reducerToken$a = new InjectionToken('ProductReducers');
@@ -22631,28 +23210,28 @@ var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
 
-const ɵ0$K = (storesState) => storesState.findStores;
-const getFindStoresState = createSelector(getStoreFinderState, ɵ0$K);
-const ɵ1$u = (state) => loaderValueSelector(state);
-const getFindStoresEntities = createSelector(getFindStoresState, ɵ1$u);
-const ɵ2$j = (state) => loaderLoadingSelector(state);
-const getStoresLoading = createSelector(getFindStoresState, ɵ2$j);
+const ɵ0$N = (storesState) => storesState.findStores;
+const getFindStoresState = createSelector(getStoreFinderState, ɵ0$N);
+const ɵ1$w = (state) => loaderValueSelector(state);
+const getFindStoresEntities = createSelector(getFindStoresState, ɵ1$w);
+const ɵ2$l = (state) => loaderLoadingSelector(state);
+const getStoresLoading = createSelector(getFindStoresState, ɵ2$l);
 
-const ɵ0$L = (storesState) => storesState.viewAllStores;
-const getViewAllStoresState = createSelector(getStoreFinderState, ɵ0$L);
-const ɵ1$v = (state) => loaderValueSelector(state);
-const getViewAllStoresEntities = createSelector(getViewAllStoresState, ɵ1$v);
-const ɵ2$k = (state) => loaderLoadingSelector(state);
-const getViewAllStoresLoading = createSelector(getViewAllStoresState, ɵ2$k);
+const ɵ0$O = (storesState) => storesState.viewAllStores;
+const getViewAllStoresState = createSelector(getStoreFinderState, ɵ0$O);
+const ɵ1$x = (state) => loaderValueSelector(state);
+const getViewAllStoresEntities = createSelector(getViewAllStoresState, ɵ1$x);
+const ɵ2$m = (state) => loaderLoadingSelector(state);
+const getViewAllStoresLoading = createSelector(getViewAllStoresState, ɵ2$m);
 
 var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getFindStoresState: getFindStoresState,
     getFindStoresEntities: getFindStoresEntities,
     getStoresLoading: getStoresLoading,
-    ɵ0: ɵ0$K,
-    ɵ1: ɵ1$u,
-    ɵ2: ɵ2$j,
+    ɵ0: ɵ0$N,
+    ɵ1: ɵ1$w,
+    ɵ2: ɵ2$l,
     getViewAllStoresState: getViewAllStoresState,
     getViewAllStoresEntities: getViewAllStoresEntities,
     getViewAllStoresLoading: getViewAllStoresLoading
@@ -23104,51 +23683,6 @@ StoreFinderCoreModule.decorators = [
             },] }
 ];
 
-class UserConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    get(userId) {
-        return this.adapter.load(userId);
-    }
-    update(username, user) {
-        return this.adapter.update(username, user);
-    }
-    register(user) {
-        return this.adapter.register(user);
-    }
-    registerGuest(guid, password) {
-        return this.adapter.registerGuest(guid, password);
-    }
-    requestForgotPasswordEmail(userEmailAddress) {
-        return this.adapter.requestForgotPasswordEmail(userEmailAddress);
-    }
-    resetPassword(token, newPassword) {
-        return this.adapter.resetPassword(token, newPassword);
-    }
-    updateEmail(userId, currentPassword, newUserId) {
-        return this.adapter.updateEmail(userId, currentPassword, newUserId);
-    }
-    updatePassword(userId, oldPassword, newPassword) {
-        return this.adapter.updatePassword(userId, oldPassword, newPassword);
-    }
-    remove(userId) {
-        return this.adapter.remove(userId);
-    }
-    getTitles() {
-        return this.adapter.loadTitles();
-    }
-}
-UserConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
-UserConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UserConnector.ctorParameters = () => [
-    { type: UserAdapter }
-];
-
 class UserConsentConnector {
     constructor(adapter) {
         this.adapter = adapter;
@@ -23173,67 +23707,22 @@ UserConsentConnector.ctorParameters = () => [
     { type: UserConsentAdapter }
 ];
 
-class UserPaymentConnector {
+class UserCostCenterConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
-    getAll(userId) {
-        return this.adapter.loadAll(userId);
-    }
-    delete(userId, paymentMethodID) {
-        return this.adapter.delete(userId, paymentMethodID);
-    }
-    setDefault(userId, paymentMethodID) {
-        return this.adapter.setDefault(userId, paymentMethodID);
+    getActiveList(userId) {
+        return this.adapter.loadActiveList(userId);
     }
 }
-UserPaymentConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
-UserPaymentConnector.decorators = [
+UserCostCenterConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterConnector_Factory() { return new UserCostCenterConnector(ɵɵinject(UserCostCenterAdapter)); }, token: UserCostCenterConnector, providedIn: "root" });
+UserCostCenterConnector.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
 ];
-UserPaymentConnector.ctorParameters = () => [
-    { type: UserPaymentAdapter }
-];
-
-class UserOrderConnector {
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    get(userId, orderCode) {
-        return this.adapter.load(userId, orderCode);
-    }
-    getHistory(userId, pageSize, currentPage, sort) {
-        return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
-    }
-    getConsignmentTracking(orderCode, consignmentCode, userId) {
-        return this.adapter.getConsignmentTracking(orderCode, consignmentCode, userId);
-    }
-    cancel(userId, orderCode, cancelRequestInput) {
-        return this.adapter.cancel(userId, orderCode, cancelRequestInput);
-    }
-    return(userId, returnRequestInput) {
-        return this.adapter.createReturnRequest(userId, returnRequestInput);
-    }
-    getReturnRequestDetail(userId, returnRequestCode) {
-        return this.adapter.loadReturnRequestDetail(userId, returnRequestCode);
-    }
-    getReturnRequestList(userId, pageSize, currentPage, sort) {
-        return this.adapter.loadReturnRequestList(userId, pageSize, currentPage, sort);
-    }
-    cancelReturnRequest(userId, returnRequestCode, returnRequestModification) {
-        return this.adapter.cancelReturnRequest(userId, returnRequestCode, returnRequestModification);
-    }
-}
-UserOrderConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
-UserOrderConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UserOrderConnector.ctorParameters = () => [
-    { type: UserOrderAdapter }
+UserCostCenterConnector.ctorParameters = () => [
+    { type: UserCostCenterAdapter }
 ];
 
 class CustomerCouponConnector {
@@ -23287,22 +23776,112 @@ UserInterestsConnector.ctorParameters = () => [
     { type: UserInterestsAdapter }
 ];
 
-class UserCostCenterConnector {
+class UserOrderConnector {
     constructor(adapter) {
         this.adapter = adapter;
     }
-    getActiveList(userId) {
-        return this.adapter.loadActiveList(userId);
+    get(userId, orderCode) {
+        return this.adapter.load(userId, orderCode);
+    }
+    getHistory(userId, pageSize, currentPage, sort) {
+        return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
+    }
+    getConsignmentTracking(orderCode, consignmentCode, userId) {
+        return this.adapter.getConsignmentTracking(orderCode, consignmentCode, userId);
+    }
+    cancel(userId, orderCode, cancelRequestInput) {
+        return this.adapter.cancel(userId, orderCode, cancelRequestInput);
+    }
+    return(userId, returnRequestInput) {
+        return this.adapter.createReturnRequest(userId, returnRequestInput);
+    }
+    getReturnRequestDetail(userId, returnRequestCode) {
+        return this.adapter.loadReturnRequestDetail(userId, returnRequestCode);
+    }
+    getReturnRequestList(userId, pageSize, currentPage, sort) {
+        return this.adapter.loadReturnRequestList(userId, pageSize, currentPage, sort);
+    }
+    cancelReturnRequest(userId, returnRequestCode, returnRequestModification) {
+        return this.adapter.cancelReturnRequest(userId, returnRequestCode, returnRequestModification);
     }
 }
-UserCostCenterConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterConnector_Factory() { return new UserCostCenterConnector(ɵɵinject(UserCostCenterAdapter)); }, token: UserCostCenterConnector, providedIn: "root" });
-UserCostCenterConnector.decorators = [
+UserOrderConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
+UserOrderConnector.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
 ];
-UserCostCenterConnector.ctorParameters = () => [
-    { type: UserCostCenterAdapter }
+UserOrderConnector.ctorParameters = () => [
+    { type: UserOrderAdapter }
+];
+
+class UserPaymentConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    getAll(userId) {
+        return this.adapter.loadAll(userId);
+    }
+    delete(userId, paymentMethodID) {
+        return this.adapter.delete(userId, paymentMethodID);
+    }
+    setDefault(userId, paymentMethodID) {
+        return this.adapter.setDefault(userId, paymentMethodID);
+    }
+}
+UserPaymentConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+UserPaymentConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+UserPaymentConnector.ctorParameters = () => [
+    { type: UserPaymentAdapter }
+];
+
+class UserConnector {
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    get(userId) {
+        return this.adapter.load(userId);
+    }
+    update(username, user) {
+        return this.adapter.update(username, user);
+    }
+    register(user) {
+        return this.adapter.register(user);
+    }
+    registerGuest(guid, password) {
+        return this.adapter.registerGuest(guid, password);
+    }
+    requestForgotPasswordEmail(userEmailAddress) {
+        return this.adapter.requestForgotPasswordEmail(userEmailAddress);
+    }
+    resetPassword(token, newPassword) {
+        return this.adapter.resetPassword(token, newPassword);
+    }
+    updateEmail(userId, currentPassword, newUserId) {
+        return this.adapter.updateEmail(userId, currentPassword, newUserId);
+    }
+    updatePassword(userId, oldPassword, newPassword) {
+        return this.adapter.updatePassword(userId, oldPassword, newPassword);
+    }
+    remove(userId) {
+        return this.adapter.remove(userId);
+    }
+    getTitles() {
+        return this.adapter.loadTitles();
+    }
+}
+UserConnector.ɵprov = ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
+UserConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+UserConnector.ctorParameters = () => [
+    { type: UserAdapter }
 ];
 
 /**
@@ -23400,6 +23979,285 @@ ConsentService.decorators = [
 ConsentService.ctorParameters = () => [
     { type: AnonymousConsentsService },
     { type: UserConsentService }
+];
+
+class CustomerCouponService {
+    constructor(store, authService) {
+        this.store = store;
+        this.authService = authService;
+    }
+    /**
+     * Retrieves customer's coupons
+     * @param pageSize page size
+     * @param currentPage current page
+     * @param sort sort
+     */
+    loadCustomerCoupons(pageSize, currentPage, sort) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadCustomerCoupons({
+                userId,
+                pageSize: pageSize,
+                currentPage: currentPage,
+                sort: sort,
+            }));
+        });
+    }
+    /**
+     * Returns customer coupon search result
+     * @param pageSize page size
+     */
+    getCustomerCoupons(pageSize) {
+        return combineLatest([
+            this.store.pipe(select(getCustomerCouponsState)),
+            this.getClaimCustomerCouponResultLoading(),
+        ]).pipe(filter(([, loading]) => !loading), tap(([customerCouponsState]) => {
+            const attemptedLoad = customerCouponsState.loading ||
+                customerCouponsState.success ||
+                customerCouponsState.error;
+            if (!attemptedLoad) {
+                this.loadCustomerCoupons(pageSize);
+            }
+        }), map(([customerCouponsState]) => customerCouponsState.value));
+    }
+    /**
+     * Returns a loaded flag for customer coupons
+     */
+    getCustomerCouponsLoaded() {
+        return this.store.pipe(select(getCustomerCouponsLoaded));
+    }
+    /**
+     * Returns a loading flag for customer coupons
+     */
+    getCustomerCouponsLoading() {
+        return this.store.pipe(select(getCustomerCouponsLoading));
+    }
+    /**
+     * Subscribe a CustomerCoupon Notification
+     * @param couponCode a customer coupon code
+     */
+    subscribeCustomerCoupon(couponCode) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new SubscribeCustomerCoupon({
+                userId,
+                couponCode: couponCode,
+            }));
+        });
+    }
+    /**
+     * Returns the subscribe customer coupon notification process loading flag
+     */
+    getSubscribeCustomerCouponResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the subscribe customer coupon notification process success flag
+     */
+    getSubscribeCustomerCouponResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the subscribe customer coupon notification process error flag
+     */
+    getSubscribeCustomerCouponResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Unsubscribe a CustomerCoupon Notification
+     * @param couponCode a customer coupon code
+     */
+    unsubscribeCustomerCoupon(couponCode) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UnsubscribeCustomerCoupon({
+                userId,
+                couponCode: couponCode,
+            }));
+        });
+    }
+    /**
+     * Returns the unsubscribe customer coupon notification process loading flag
+     */
+    getUnsubscribeCustomerCouponResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the unsubscribe customer coupon notification process success flag
+     */
+    getUnsubscribeCustomerCouponResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the unsubscribe customer coupon notification process error flag
+     */
+    getUnsubscribeCustomerCouponResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Claim a CustomerCoupon
+     * @param couponCode a customer coupon code
+     */
+    claimCustomerCoupon(couponCode) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new ClaimCustomerCoupon({
+                userId,
+                couponCode,
+            }));
+        });
+    }
+    /**
+     * Returns the claim customer coupon notification process success flag
+     */
+    getClaimCustomerCouponResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the claim customer coupon notification process loading flag
+     */
+    getClaimCustomerCouponResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+}
+CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
+CustomerCouponService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+CustomerCouponService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService }
+];
+
+class OrderReturnRequestService {
+    constructor(store, authService) {
+        this.store = store;
+        this.authService = authService;
+    }
+    /**
+     * Create order return request
+     * @param orderCode an order code
+     * @param returnRequestInput order return request entry input
+     */
+    createOrderReturnRequest(returnRequestInput) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new CreateOrderReturnRequest({
+                userId,
+                returnRequestInput,
+            }));
+        });
+    }
+    /**
+     * Return an order return request
+     */
+    getOrderReturnRequest() {
+        return this.store.pipe(select(getOrderReturnRequest));
+    }
+    /**
+     * Gets order return request list
+     */
+    getOrderReturnRequestList(pageSize) {
+        return this.store.pipe(select(getOrderReturnRequestListState), tap((returnListState) => {
+            const attemptedLoad = returnListState.loading ||
+                returnListState.success ||
+                returnListState.error;
+            if (!attemptedLoad) {
+                this.loadOrderReturnRequestList(pageSize);
+            }
+        }), map((returnListState) => returnListState.value));
+    }
+    /**
+     * Loads order return request detail
+     * @param returnRequestCode
+     */
+    loadOrderReturnRequestDetail(returnRequestCode) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadOrderReturnRequest({
+                userId,
+                returnRequestCode,
+            }));
+        });
+    }
+    /**
+     * Loads order return request list
+     * @param pageSize page size
+     * @param currentPage current page
+     * @param sort sort
+     */
+    loadOrderReturnRequestList(pageSize, currentPage, sort) {
+        this.authService.invokeWithUserId((userId) => {
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new LoadOrderReturnRequestList({
+                    userId,
+                    pageSize,
+                    currentPage,
+                    sort,
+                }));
+            }
+        });
+    }
+    /**
+     * Cleaning order return request list
+     */
+    clearOrderReturnRequestList() {
+        this.store.dispatch(new ClearOrderReturnRequestList());
+    }
+    /**
+     * Get the order return request loading flag
+     */
+    getReturnRequestLoading() {
+        return this.store.pipe(select(getOrderReturnRequestLoading));
+    }
+    /**
+     * Get the order return request success flag
+     */
+    getReturnRequestSuccess() {
+        return this.store.pipe(select(getOrderReturnRequestSuccess));
+    }
+    /**
+     * Cleaning order return request details
+     */
+    clearOrderReturnRequestDetail() {
+        this.store.dispatch(new ClearOrderReturnRequest());
+    }
+    /*
+     * Cancel order return request
+     */
+    cancelOrderReturnRequest(returnRequestCode, returnRequestModification) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new CancelOrderReturnRequest({
+                userId,
+                returnRequestCode,
+                returnRequestModification,
+            }));
+        });
+    }
+    /**
+     * Returns the cancel return request loading flag
+     */
+    getCancelReturnRequestLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(CANCEL_RETURN_PROCESS_ID)));
+    }
+    /**
+     * Returns the cancel return request success flag
+     */
+    getCancelReturnRequestSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(CANCEL_RETURN_PROCESS_ID)));
+    }
+    /**
+     * Resets the cancel return request process flags
+     */
+    resetCancelReturnRequestProcessState() {
+        return this.store.dispatch(new ResetCancelReturnProcess());
+    }
+}
+OrderReturnRequestService.ɵprov = ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
+OrderReturnRequestService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+OrderReturnRequestService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService }
 ];
 
 class UserAddressService {
@@ -23549,573 +24407,57 @@ UserAddressService.ctorParameters = () => [
     { type: AuthService }
 ];
 
-class UserOrderService {
+class UserCostCenterService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
     }
     /**
-     * Returns an order's detail
+     * Load all visible active cost centers for the currently login user
      */
-    getOrderDetails() {
-        return this.store.pipe(select(getOrderDetails));
-    }
-    /**
-     * Retrieves order's details
-     *
-     * @param orderCode an order code
-     */
-    loadOrderDetails(orderCode) {
+    loadActiveCostCenters() {
         this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new LoadOrderDetails({
-                userId,
-                orderCode,
-            }));
-        });
-    }
-    /**
-     * Clears order's details
-     */
-    clearOrderDetails() {
-        this.store.dispatch(new ClearOrderDetails());
-    }
-    /**
-     * Returns order history list
-     */
-    getOrderHistoryList(pageSize) {
-        return this.store.pipe(select(getOrdersState), tap((orderListState) => {
-            const attemptedLoad = orderListState.loading ||
-                orderListState.success ||
-                orderListState.error;
-            if (!attemptedLoad) {
-                this.loadOrderList(pageSize);
-            }
-        }), map((orderListState) => orderListState.value));
-    }
-    /**
-     * Returns a loaded flag for order history list
-     */
-    getOrderHistoryListLoaded() {
-        return this.store.pipe(select(getOrdersLoaded));
-    }
-    /**
-     * Retrieves an order list
-     * @param pageSize page size
-     * @param currentPage current page
-     * @param sort sort
-     */
-    loadOrderList(pageSize, currentPage, sort) {
-        this.authService.invokeWithUserId((userId) => {
-            if (userId !== OCC_USER_ID_ANONYMOUS) {
-                this.store.dispatch(new LoadUserOrders({
-                    userId,
-                    pageSize,
-                    currentPage,
-                    sort,
-                }));
+            if (userId && userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new LoadActiveCostCenters(userId));
             }
         });
     }
-    /**
-     * Cleaning order list
-     */
-    clearOrderList() {
-        this.store.dispatch(new ClearUserOrders());
+    getCostCentersState() {
+        return this.store.select(getCostCentersState);
     }
     /**
-     *  Returns a consignment tracking detail
+     * Get all visible active cost centers
      */
-    getConsignmentTracking() {
-        return this.store.pipe(select(getConsignmentTracking));
+    getActiveCostCenters() {
+        return this.getCostCentersState().pipe(observeOn(queueScheduler), tap((process) => {
+            if (!(process.loading || process.success || process.error)) {
+                this.loadActiveCostCenters();
+            }
+        }), filter((process) => process.success || process.error), map((result) => result.value));
     }
     /**
-     * Retrieves consignment tracking details
-     * @param orderCode an order code
-     * @param consignmentCode a consignment code
+     * Get the addresses of the cost center's unit based on cost center id
+     * @param costCenterId cost center id
      */
-    loadConsignmentTracking(orderCode, consignmentCode) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new LoadConsignmentTracking({
-                userId,
-                orderCode,
-                consignmentCode,
-            }));
-        });
-    }
-    /**
-     * Cleaning consignment tracking
-     */
-    clearConsignmentTracking() {
-        this.store.dispatch(new ClearConsignmentTracking());
-    }
-    /*
-     * Cancel an order
-     */
-    cancelOrder(orderCode, cancelRequestInput) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new CancelOrder({
-                userId,
-                orderCode,
-                cancelRequestInput,
-            }));
-        });
-    }
-    /**
-     * Returns the cancel order loading flag
-     */
-    getCancelOrderLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
-    }
-    /**
-     * Returns the cancel order success flag
-     */
-    getCancelOrderSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
-    }
-    /**
-     * Resets the cancel order process flags
-     */
-    resetCancelOrderProcessState() {
-        return this.store.dispatch(new ResetCancelOrderProcess());
+    getCostCenterAddresses(costCenterId) {
+        return this.getActiveCostCenters().pipe(map((costCenters) => {
+            const costCenter = costCenters.find((cc) => cc.code === costCenterId);
+            if (costCenter && costCenter.unit) {
+                return costCenter.unit.addresses;
+            }
+            else {
+                return [];
+            }
+        }));
     }
 }
-UserOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
-UserOrderService.decorators = [
+UserCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
+UserCostCenterService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
 ];
-UserOrderService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService }
-];
-
-class CustomerCouponService {
-    constructor(store, authService) {
-        this.store = store;
-        this.authService = authService;
-    }
-    /**
-     * Retrieves customer's coupons
-     * @param pageSize page size
-     * @param currentPage current page
-     * @param sort sort
-     */
-    loadCustomerCoupons(pageSize, currentPage, sort) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new LoadCustomerCoupons({
-                userId,
-                pageSize: pageSize,
-                currentPage: currentPage,
-                sort: sort,
-            }));
-        });
-    }
-    /**
-     * Returns customer coupon search result
-     * @param pageSize page size
-     */
-    getCustomerCoupons(pageSize) {
-        return combineLatest([
-            this.store.pipe(select(getCustomerCouponsState)),
-            this.getClaimCustomerCouponResultLoading(),
-        ]).pipe(filter(([, loading]) => !loading), tap(([customerCouponsState]) => {
-            const attemptedLoad = customerCouponsState.loading ||
-                customerCouponsState.success ||
-                customerCouponsState.error;
-            if (!attemptedLoad) {
-                this.loadCustomerCoupons(pageSize);
-            }
-        }), map(([customerCouponsState]) => customerCouponsState.value));
-    }
-    /**
-     * Returns a loaded flag for customer coupons
-     */
-    getCustomerCouponsLoaded() {
-        return this.store.pipe(select(getCustomerCouponsLoaded));
-    }
-    /**
-     * Returns a loading flag for customer coupons
-     */
-    getCustomerCouponsLoading() {
-        return this.store.pipe(select(getCustomerCouponsLoading));
-    }
-    /**
-     * Subscribe a CustomerCoupon Notification
-     * @param couponCode a customer coupon code
-     */
-    subscribeCustomerCoupon(couponCode) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new SubscribeCustomerCoupon({
-                userId,
-                couponCode: couponCode,
-            }));
-        });
-    }
-    /**
-     * Returns the subscribe customer coupon notification process loading flag
-     */
-    getSubscribeCustomerCouponResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
-    }
-    /**
-     * Returns the subscribe customer coupon notification process success flag
-     */
-    getSubscribeCustomerCouponResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
-    }
-    /**
-     * Returns the subscribe customer coupon notification process error flag
-     */
-    getSubscribeCustomerCouponResultError() {
-        return this.store.pipe(select(getProcessErrorFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
-    }
-    /**
-     * Unsubscribe a CustomerCoupon Notification
-     * @param couponCode a customer coupon code
-     */
-    unsubscribeCustomerCoupon(couponCode) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new UnsubscribeCustomerCoupon({
-                userId,
-                couponCode: couponCode,
-            }));
-        });
-    }
-    /**
-     * Returns the unsubscribe customer coupon notification process loading flag
-     */
-    getUnsubscribeCustomerCouponResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
-    }
-    /**
-     * Returns the unsubscribe customer coupon notification process success flag
-     */
-    getUnsubscribeCustomerCouponResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
-    }
-    /**
-     * Returns the unsubscribe customer coupon notification process error flag
-     */
-    getUnsubscribeCustomerCouponResultError() {
-        return this.store.pipe(select(getProcessErrorFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
-    }
-    /**
-     * Claim a CustomerCoupon
-     * @param couponCode a customer coupon code
-     */
-    claimCustomerCoupon(couponCode) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new ClaimCustomerCoupon({
-                userId,
-                couponCode,
-            }));
-        });
-    }
-    /**
-     * Returns the claim customer coupon notification process success flag
-     */
-    getClaimCustomerCouponResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
-    }
-    /**
-     * Returns the claim customer coupon notification process loading flag
-     */
-    getClaimCustomerCouponResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
-    }
-}
-CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
-CustomerCouponService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-CustomerCouponService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService }
-];
-
-class UserPaymentService {
-    constructor(store, authService) {
-        this.store = store;
-        this.authService = authService;
-    }
-    /**
-     * Loads all user's payment methods.
-     */
-    loadPaymentMethods() {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new LoadUserPaymentMethods(userId));
-        });
-    }
-    /**
-     * Returns all user's payment methods
-     */
-    getPaymentMethods() {
-        return this.store.pipe(select(getPaymentMethods));
-    }
-    /**
-     * Returns a loading flag for payment methods
-     */
-    getPaymentMethodsLoading() {
-        return this.store.pipe(select(getPaymentMethodsLoading));
-    }
-    getPaymentMethodsLoadedSuccess() {
-        return this.store.pipe(select(getPaymentMethodsLoadedSuccess));
-    }
-    /**
-     * Sets the payment as a default one
-     * @param paymentMethodId a payment method ID
-     */
-    setPaymentMethodAsDefault(paymentMethodId) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new SetDefaultUserPaymentMethod({
-                userId,
-                paymentMethodId,
-            }));
-        });
-    }
-    /**
-     * Deletes the payment method
-     *
-     * @param paymentMethodId a payment method ID
-     */
-    deletePaymentMethod(paymentMethodId) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new DeleteUserPaymentMethod({
-                userId,
-                paymentMethodId,
-            }));
-        });
-    }
-    /**
-     * Returns all billing countries
-     */
-    getAllBillingCountries() {
-        return this.store.pipe(select(getAllBillingCountries));
-    }
-    /**
-     * Retrieves billing countries
-     */
-    loadBillingCountries() {
-        this.store.dispatch(new LoadBillingCountries());
-    }
-}
-UserPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
-UserPaymentService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UserPaymentService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService }
-];
-
-class OrderReturnRequestService {
-    constructor(store, authService) {
-        this.store = store;
-        this.authService = authService;
-    }
-    /**
-     * Create order return request
-     * @param orderCode an order code
-     * @param returnRequestInput order return request entry input
-     */
-    createOrderReturnRequest(returnRequestInput) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new CreateOrderReturnRequest({
-                userId,
-                returnRequestInput,
-            }));
-        });
-    }
-    /**
-     * Return an order return request
-     */
-    getOrderReturnRequest() {
-        return this.store.pipe(select(getOrderReturnRequest));
-    }
-    /**
-     * Gets order return request list
-     */
-    getOrderReturnRequestList(pageSize) {
-        return this.store.pipe(select(getOrderReturnRequestListState), tap((returnListState) => {
-            const attemptedLoad = returnListState.loading ||
-                returnListState.success ||
-                returnListState.error;
-            if (!attemptedLoad) {
-                this.loadOrderReturnRequestList(pageSize);
-            }
-        }), map((returnListState) => returnListState.value));
-    }
-    /**
-     * Loads order return request detail
-     * @param returnRequestCode
-     */
-    loadOrderReturnRequestDetail(returnRequestCode) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new LoadOrderReturnRequest({
-                userId,
-                returnRequestCode,
-            }));
-        });
-    }
-    /**
-     * Loads order return request list
-     * @param pageSize page size
-     * @param currentPage current page
-     * @param sort sort
-     */
-    loadOrderReturnRequestList(pageSize, currentPage, sort) {
-        this.authService.invokeWithUserId((userId) => {
-            if (userId !== OCC_USER_ID_ANONYMOUS) {
-                this.store.dispatch(new LoadOrderReturnRequestList({
-                    userId,
-                    pageSize,
-                    currentPage,
-                    sort,
-                }));
-            }
-        });
-    }
-    /**
-     * Cleaning order return request list
-     */
-    clearOrderReturnRequestList() {
-        this.store.dispatch(new ClearOrderReturnRequestList());
-    }
-    /**
-     * Get the order return request loading flag
-     */
-    getReturnRequestLoading() {
-        return this.store.pipe(select(getOrderReturnRequestLoading));
-    }
-    /**
-     * Get the order return request success flag
-     */
-    getReturnRequestSuccess() {
-        return this.store.pipe(select(getOrderReturnRequestSuccess));
-    }
-    /**
-     * Cleaning order return request details
-     */
-    clearOrderReturnRequestDetail() {
-        this.store.dispatch(new ClearOrderReturnRequest());
-    }
-    /*
-     * Cancel order return request
-     */
-    cancelOrderReturnRequest(returnRequestCode, returnRequestModification) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new CancelOrderReturnRequest({
-                userId,
-                returnRequestCode,
-                returnRequestModification,
-            }));
-        });
-    }
-    /**
-     * Returns the cancel return request loading flag
-     */
-    getCancelReturnRequestLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(CANCEL_RETURN_PROCESS_ID)));
-    }
-    /**
-     * Returns the cancel return request success flag
-     */
-    getCancelReturnRequestSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(CANCEL_RETURN_PROCESS_ID)));
-    }
-    /**
-     * Resets the cancel return request process flags
-     */
-    resetCancelReturnRequestProcessState() {
-        return this.store.dispatch(new ResetCancelReturnProcess());
-    }
-}
-OrderReturnRequestService.ɵprov = ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
-OrderReturnRequestService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-OrderReturnRequestService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService }
-];
-
-class UserNotificationPreferenceService {
-    constructor(store, authService) {
-        this.store = store;
-        this.authService = authService;
-    }
-    /**
-     * Returns all notification preferences.
-     */
-    getPreferences() {
-        return this.store.pipe(select(getPreferences));
-    }
-    /**
-     * Returns all enabled notification preferences.
-     */
-    getEnabledPreferences() {
-        return this.store.pipe(select(getEnabledPreferences));
-    }
-    /**
-     * Loads all notification preferences.
-     */
-    loadPreferences() {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new LoadNotificationPreferences(userId));
-        });
-    }
-    /**
-     * Clear all notification preferences.
-     */
-    clearPreferences() {
-        this.store.dispatch(new ClearNotificationPreferences());
-    }
-    /**
-     * Returns a loading flag for notification preferences.
-     */
-    getPreferencesLoading() {
-        return this.store.pipe(select(getPreferencesLoading));
-    }
-    /**
-     * Updating notification preferences.
-     * @param preferences a preference list
-     */
-    updatePreferences(preferences) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new UpdateNotificationPreferences({
-                userId,
-                preferences: preferences,
-            }));
-        });
-    }
-    /**
-     * Returns a loading flag for updating preferences.
-     */
-    getUpdatePreferencesResultLoading() {
-        return this.store.select(getProcessLoadingFactory(UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID));
-    }
-    /**
-     * Resets the update notification preferences process state. The state needs to be
-     * reset after the process concludes, regardless if it's a success or an error.
-     */
-    resetNotificationPreferences() {
-        this.store.dispatch(new ResetNotificationPreferences());
-    }
-}
-UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
-UserNotificationPreferenceService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UserNotificationPreferenceService.ctorParameters = () => [
+UserCostCenterService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
@@ -24252,65 +24594,470 @@ UserInterestsService.ctorParameters = () => [
     { type: AuthService }
 ];
 
-class UserCostCenterService {
+class UserNotificationPreferenceService {
     constructor(store, authService) {
         this.store = store;
         this.authService = authService;
     }
     /**
-     * Load all visible active cost centers for the currently login user
+     * Returns all notification preferences.
      */
-    loadActiveCostCenters() {
+    getPreferences() {
+        return this.store.pipe(select(getPreferences));
+    }
+    /**
+     * Returns all enabled notification preferences.
+     */
+    getEnabledPreferences() {
+        return this.store.pipe(select(getEnabledPreferences));
+    }
+    /**
+     * Loads all notification preferences.
+     */
+    loadPreferences() {
         this.authService.invokeWithUserId((userId) => {
-            if (userId && userId !== OCC_USER_ID_ANONYMOUS) {
-                this.store.dispatch(new LoadActiveCostCenters(userId));
-            }
+            this.store.dispatch(new LoadNotificationPreferences(userId));
         });
     }
-    getCostCentersState() {
-        return this.store.select(getCostCentersState);
+    /**
+     * Clear all notification preferences.
+     */
+    clearPreferences() {
+        this.store.dispatch(new ClearNotificationPreferences());
     }
     /**
-     * Get all visible active cost centers
+     * Returns a loading flag for notification preferences.
      */
-    getActiveCostCenters() {
-        return this.getCostCentersState().pipe(observeOn(queueScheduler), tap((process) => {
-            if (!(process.loading || process.success || process.error)) {
-                this.loadActiveCostCenters();
-            }
-        }), filter((process) => process.success || process.error), map((result) => result.value));
+    getPreferencesLoading() {
+        return this.store.pipe(select(getPreferencesLoading));
     }
     /**
-     * Get the addresses of the cost center's unit based on cost center id
-     * @param costCenterId cost center id
+     * Updating notification preferences.
+     * @param preferences a preference list
      */
-    getCostCenterAddresses(costCenterId) {
-        return this.getActiveCostCenters().pipe(map((costCenters) => {
-            const costCenter = costCenters.find((cc) => cc.code === costCenterId);
-            if (costCenter && costCenter.unit) {
-                return costCenter.unit.addresses;
-            }
-            else {
-                return [];
-            }
-        }));
+    updatePreferences(preferences) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdateNotificationPreferences({
+                userId,
+                preferences: preferences,
+            }));
+        });
+    }
+    /**
+     * Returns a loading flag for updating preferences.
+     */
+    getUpdatePreferencesResultLoading() {
+        return this.store.select(getProcessLoadingFactory(UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID));
+    }
+    /**
+     * Resets the update notification preferences process state. The state needs to be
+     * reset after the process concludes, regardless if it's a success or an error.
+     */
+    resetNotificationPreferences() {
+        this.store.dispatch(new ResetNotificationPreferences());
     }
 }
-UserCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
-UserCostCenterService.decorators = [
+UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+UserNotificationPreferenceService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
 ];
-UserCostCenterService.ctorParameters = () => [
+UserNotificationPreferenceService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
 
-const initialState$l = {
+class UserOrderService {
+    constructor(store, authService, routingService) {
+        this.store = store;
+        this.authService = authService;
+        this.routingService = routingService;
+    }
+    /**
+     * Returns an order's detail
+     */
+    getOrderDetails() {
+        return this.store.pipe(select(getOrderDetails));
+    }
+    /**
+     * Retrieves order's details
+     *
+     * @param orderCode an order code
+     */
+    loadOrderDetails(orderCode) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadOrderDetails({
+                userId,
+                orderCode,
+            }));
+        });
+    }
+    /**
+     * Clears order's details
+     */
+    clearOrderDetails() {
+        this.store.dispatch(new ClearOrderDetails());
+    }
+    /**
+     * Returns order history list
+     */
+    getOrderHistoryList(pageSize) {
+        return this.store.pipe(select(getOrdersState), tap((orderListState) => {
+            const attemptedLoad = orderListState.loading ||
+                orderListState.success ||
+                orderListState.error;
+            if (!attemptedLoad) {
+                this.loadOrderList(pageSize);
+            }
+        }), map((orderListState) => orderListState.value));
+    }
+    /**
+     * Returns a loaded flag for order history list
+     */
+    getOrderHistoryListLoaded() {
+        return this.store.pipe(select(getOrdersLoaded));
+    }
+    /**
+     * Retrieves an order list
+     * @param pageSize page size
+     * @param currentPage current page
+     * @param sort sort
+     */
+    loadOrderList(pageSize, currentPage, sort) {
+        this.authService.invokeWithUserId((userId) => {
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                let replenishmentOrderCode;
+                this.routingService
+                    .getRouterState()
+                    .pipe(take(1))
+                    .subscribe((data) => {
+                    var _a, _b;
+                    replenishmentOrderCode = (_b = (_a = data === null || data === void 0 ? void 0 : data.state) === null || _a === void 0 ? void 0 : _a.params) === null || _b === void 0 ? void 0 : _b.replenishmentOrderCode;
+                })
+                    .unsubscribe();
+                this.store.dispatch(new LoadUserOrders({
+                    userId,
+                    pageSize,
+                    currentPage,
+                    sort,
+                    replenishmentOrderCode,
+                }));
+            }
+        });
+    }
+    /**
+     * Cleaning order list
+     */
+    clearOrderList() {
+        this.store.dispatch(new ClearUserOrders());
+    }
+    /**
+     *  Returns a consignment tracking detail
+     */
+    getConsignmentTracking() {
+        return this.store.pipe(select(getConsignmentTracking));
+    }
+    /**
+     * Retrieves consignment tracking details
+     * @param orderCode an order code
+     * @param consignmentCode a consignment code
+     */
+    loadConsignmentTracking(orderCode, consignmentCode) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadConsignmentTracking({
+                userId,
+                orderCode,
+                consignmentCode,
+            }));
+        });
+    }
+    /**
+     * Cleaning consignment tracking
+     */
+    clearConsignmentTracking() {
+        this.store.dispatch(new ClearConsignmentTracking());
+    }
+    /*
+     * Cancel an order
+     */
+    cancelOrder(orderCode, cancelRequestInput) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new CancelOrder({
+                userId,
+                orderCode,
+                cancelRequestInput,
+            }));
+        });
+    }
+    /**
+     * Returns the cancel order loading flag
+     */
+    getCancelOrderLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
+    }
+    /**
+     * Returns the cancel order success flag
+     */
+    getCancelOrderSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
+    }
+    /**
+     * Resets the cancel order process flags
+     */
+    resetCancelOrderProcessState() {
+        return this.store.dispatch(new ResetCancelOrderProcess());
+    }
+}
+UserOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(RoutingService)); }, token: UserOrderService, providedIn: "root" });
+UserOrderService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+UserOrderService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService },
+    { type: RoutingService }
+];
+
+class UserPaymentService {
+    constructor(store, authService) {
+        this.store = store;
+        this.authService = authService;
+    }
+    /**
+     * Loads all user's payment methods.
+     */
+    loadPaymentMethods() {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new LoadUserPaymentMethods(userId));
+        });
+    }
+    /**
+     * Returns all user's payment methods
+     */
+    getPaymentMethods() {
+        return this.store.pipe(select(getPaymentMethods));
+    }
+    /**
+     * Returns a loading flag for payment methods
+     */
+    getPaymentMethodsLoading() {
+        return this.store.pipe(select(getPaymentMethodsLoading));
+    }
+    getPaymentMethodsLoadedSuccess() {
+        return this.store.pipe(select(getPaymentMethodsLoadedSuccess));
+    }
+    /**
+     * Sets the payment as a default one
+     * @param paymentMethodId a payment method ID
+     */
+    setPaymentMethodAsDefault(paymentMethodId) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new SetDefaultUserPaymentMethod({
+                userId,
+                paymentMethodId,
+            }));
+        });
+    }
+    /**
+     * Deletes the payment method
+     *
+     * @param paymentMethodId a payment method ID
+     */
+    deletePaymentMethod(paymentMethodId) {
+        this.authService.invokeWithUserId((userId) => {
+            this.store.dispatch(new DeleteUserPaymentMethod({
+                userId,
+                paymentMethodId,
+            }));
+        });
+    }
+    /**
+     * Returns all billing countries
+     */
+    getAllBillingCountries() {
+        return this.store.pipe(select(getAllBillingCountries));
+    }
+    /**
+     * Retrieves billing countries
+     */
+    loadBillingCountries() {
+        this.store.dispatch(new LoadBillingCountries());
+    }
+}
+UserPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
+UserPaymentService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+UserPaymentService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService }
+];
+
+class UserReplenishmentOrderService {
+    constructor(store, authService) {
+        this.store = store;
+        this.authService = authService;
+    }
+    /**
+     * Returns replenishment order details for a given 'current' user
+     *
+     * @param replenishmentOrderCode a replenishment order code
+     */
+    loadReplenishmentOrderDetails(replenishmentOrderCode) {
+        this.authService.invokeWithUserId((userId) => {
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new LoadReplenishmentOrderDetails({
+                    userId,
+                    replenishmentOrderCode,
+                }));
+            }
+        });
+    }
+    /**
+     * Returns a replenishment order details
+     */
+    getReplenishmentOrderDetails() {
+        return this.store.pipe(select(getReplenishmentOrderDetailsValue));
+    }
+    /**
+     * Returns a replenishment order details loading flag
+     */
+    getReplenishmentOrderDetailsLoading() {
+        return this.store.pipe(select(getReplenishmentOrderDetailsLoading));
+    }
+    /**
+     * Returns a replenishment order details success flag
+     */
+    getReplenishmentOrderDetailsSuccess() {
+        return this.store.pipe(select(getReplenishmentOrderDetailsSuccess));
+    }
+    /**
+     * Returns a replenishment order details error flag
+     */
+    getReplenishmentOrderDetailsError() {
+        return this.store.pipe(select(getReplenishmentOrderDetailsError));
+    }
+    /**
+     * Clears the replenishment orders details state
+     */
+    clearReplenishmentOrderDetails() {
+        this.store.dispatch(new ClearReplenishmentOrderDetails());
+    }
+    /**
+     * Cancels a specific replenishment order for a given 'current' user
+     *
+     * @param replenishmentOrderCode a replenishment order code
+     */
+    cancelReplenishmentOrder(replenishmentOrderCode) {
+        this.authService.invokeWithUserId((userId) => {
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new CancelReplenishmentOrder({
+                    userId,
+                    replenishmentOrderCode,
+                }));
+            }
+        });
+    }
+    /**
+     * Returns the cancel replenishment order loading flag
+     */
+    getCancelReplenishmentOrderLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+    }
+    /**
+     * Returns the cancel replenishment order success flag
+     */
+    getCancelReplenishmentOrderSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+    }
+    /**
+     * Returns the cancel replenishment order error flag
+     */
+    getCancelReplenishmentOrderError() {
+        return this.store.pipe(select(getProcessErrorFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+    }
+    /**
+     * Clears the cancel replenishment order processing state
+     */
+    clearCancelReplenishmentOrderProcessState() {
+        this.store.dispatch(new ClearCancelReplenishmentOrder());
+    }
+    /**
+     * Returns replenishment order history list
+     */
+    getReplenishmentOrderHistoryList(pageSize) {
+        return this.store.pipe(select(getReplenishmentOrdersState), tap((replenishmentOrderListState) => {
+            const attemptedLoad = replenishmentOrderListState.loading ||
+                replenishmentOrderListState.success ||
+                replenishmentOrderListState.error;
+            if (!attemptedLoad) {
+                this.loadReplenishmentOrderList(pageSize);
+            }
+        }), map((replenishmentOrderListState) => replenishmentOrderListState.value));
+    }
+    /**
+     * Returns a loading flag for replenishment order history list
+     */
+    getReplenishmentOrderHistoryListLoading() {
+        return this.store.pipe(select(getReplenishmentOrdersLoading));
+    }
+    /**
+     * Returns a error flag for replenishment order history list
+     */
+    getReplenishmentOrderHistoryListError() {
+        return this.store.pipe(select(getReplenishmentOrdersError));
+    }
+    /**
+     * Returns a success flag for replenishment order history list
+     */
+    getReplenishmentOrderHistoryListSuccess() {
+        return this.store.pipe(select(getReplenishmentOrdersSuccess));
+    }
+    /**
+     * Retrieves a replenishment order list
+     * @param pageSize page size
+     * @param currentPage current page
+     * @param sort sort
+     */
+    loadReplenishmentOrderList(pageSize, currentPage, sort) {
+        this.authService.invokeWithUserId((userId) => {
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new LoadUserReplenishmentOrders({
+                    userId,
+                    pageSize,
+                    currentPage,
+                    sort,
+                }));
+            }
+        });
+    }
+    /**
+     * Cleaning replenishment order list
+     */
+    clearReplenishmentOrderList() {
+        this.store.dispatch(new ClearUserReplenishmentOrders());
+    }
+}
+UserReplenishmentOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserReplenishmentOrderService_Factory() { return new UserReplenishmentOrderService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserReplenishmentOrderService, providedIn: "root" });
+UserReplenishmentOrderService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+UserReplenishmentOrderService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService }
+];
+
+const initialState$m = {
     entities: {},
 };
-function reducer$l(state = initialState$l, action) {
+function reducer$m(state = initialState$m, action) {
     switch (action.type) {
         case LOAD_BILLING_COUNTRIES_SUCCESS: {
             const billingCountries = action.payload;
@@ -24320,14 +25067,14 @@ function reducer$l(state = initialState$l, action) {
             return Object.assign(Object.assign({}, state), { entities });
         }
         case CLEAR_USER_MISCS_DATA: {
-            return initialState$l;
+            return initialState$m;
         }
     }
     return state;
 }
 
-const initialState$m = {};
-function reducer$m(state = initialState$m, action) {
+const initialState$n = {};
+function reducer$n(state = initialState$n, action) {
     switch (action.type) {
         case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
             const tracking = action.payload;
@@ -24336,184 +25083,18 @@ function reducer$m(state = initialState$m, action) {
             };
         }
         case CLEAR_CONSIGNMENT_TRACKING: {
-            return initialState$m;
-        }
-    }
-    return state;
-}
-
-const initialState$n = {
-    entities: {},
-};
-function reducer$n(state = initialState$n, action) {
-    switch (action.type) {
-        case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
-            const deliveryCountries = action.payload;
-            const entities = deliveryCountries.reduce((countryEntities, country) => {
-                return Object.assign(Object.assign({}, countryEntities), { [country.isocode]: country });
-            }, Object.assign({}, state.entities));
-            return Object.assign(Object.assign({}, state), { entities });
-        }
-        case CLEAR_USER_MISCS_DATA: {
             return initialState$n;
         }
     }
     return state;
 }
 
-const initialState$o = [];
-function reducer$o(state = initialState$o, action) {
-    switch (action.type) {
-        case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
-            return initialState$o;
-        }
-        case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
-        case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
-            return action.payload ? action.payload : initialState$o;
-        }
-    }
-    return state;
-}
-
-const initialState$p = {};
-function reducer$p(state = initialState$p, action) {
-    switch (action.type) {
-        case LOAD_ORDER_DETAILS_SUCCESS: {
-            const order = action.payload;
-            return order;
-        }
-    }
-    return state;
-}
-
-const initialState$q = [];
-function reducer$q(state = initialState$q, action) {
-    switch (action.type) {
-        case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-            return action.payload ? action.payload : initialState$q;
-        }
-        case LOAD_USER_PAYMENT_METHODS_FAIL: {
-            return initialState$q;
-        }
-    }
-    return state;
-}
-
-const initialState$r = {
-    entities: [],
-    country: null,
-};
-function reducer$r(state = initialState$r, action) {
-    switch (action.type) {
-        case LOAD_REGIONS_SUCCESS: {
-            const entities = action.payload.entities;
-            const country = action.payload.country;
-            if (entities || country) {
-                return Object.assign(Object.assign({}, state), { entities,
-                    country });
-            }
-            return initialState$r;
-        }
-    }
-    return state;
-}
-
-const initialState$s = false;
-function reducer$s(state = initialState$s, action) {
-    switch (action.type) {
-        case RESET_PASSWORD_SUCCESS: {
-            return true;
-        }
-    }
-    return state;
-}
-
-const initialState$t = {
-    entities: {},
-};
-function reducer$t(state = initialState$t, action) {
-    switch (action.type) {
-        case LOAD_TITLES_SUCCESS: {
-            const titles = action.payload;
-            const entities = titles.reduce((titleEntities, name) => {
-                return Object.assign(Object.assign({}, titleEntities), { [name.code]: name });
-            }, Object.assign({}, state.entities));
-            return Object.assign(Object.assign({}, state), { entities });
-        }
-        case CLEAR_USER_MISCS_DATA: {
-            return initialState$t;
-        }
-    }
-    return state;
-}
-
-const initialState$u = [];
-function reducer$u(state = initialState$u, action) {
-    switch (action.type) {
-        case LOAD_USER_ADDRESSES_FAIL: {
-            return initialState$u;
-        }
-        case LOAD_USER_ADDRESSES_SUCCESS: {
-            return action.payload ? action.payload : initialState$u;
-        }
-    }
-    return state;
-}
-
-const initialState$v = [];
-function reducer$v(state = initialState$v, action) {
-    switch (action.type) {
-        case LOAD_USER_CONSENTS_SUCCESS: {
-            const consents = action.payload;
-            return consents ? consents : initialState$v;
-        }
-        case GIVE_USER_CONSENT_SUCCESS: {
-            const updatedConsentTemplate = action.consentTemplate;
-            return state.map((consentTemplate) => consentTemplate.id === updatedConsentTemplate.id
-                ? updatedConsentTemplate
-                : consentTemplate);
-        }
-    }
-    return state;
-}
-
-const initialState$w = {};
-function reducer$w(state = initialState$w, action) {
-    switch (action.type) {
-        case LOAD_USER_DETAILS_SUCCESS: {
-            return action.payload;
-        }
-        case UPDATE_USER_DETAILS_SUCCESS: {
-            const updatedDetails = Object.assign(Object.assign({}, state), action.userUpdates);
-            return Object.assign(Object.assign({}, updatedDetails), { name: `${updatedDetails.firstName} ${updatedDetails.lastName}` });
-        }
-    }
-    return state;
-}
-
-const initialState$x = {
-    orders: [],
-    pagination: {},
-    sorts: [],
-};
-function reducer$x(state = initialState$x, action) {
-    switch (action.type) {
-        case LOAD_USER_ORDERS_SUCCESS: {
-            return action.payload ? action.payload : initialState$x;
-        }
-        case LOAD_USER_ORDERS_FAIL: {
-            return initialState$x;
-        }
-    }
-    return state;
-}
-
-const initialState$y = {
+const initialState$o = {
     coupons: [],
     sorts: [],
     pagination: {},
 };
-function reducer$y(state = initialState$y, action) {
+function reducer$o(state = initialState$o, action) {
     switch (action.type) {
         case LOAD_CUSTOMER_COUPONS_SUCCESS: {
             return action.payload;
@@ -24538,32 +25119,180 @@ function reducer$y(state = initialState$y, action) {
     return state;
 }
 
-const initialState$z = {
-    results: [],
-    pagination: {},
-    sorts: [],
+const initialState$p = {
+    entities: {},
 };
-function reducer$z(state = initialState$z, action) {
+function reducer$p(state = initialState$p, action) {
     switch (action.type) {
-        case LOAD_PRODUCT_INTERESTS_SUCCESS: {
-            return action.payload ? action.payload : initialState$z;
+        case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
+            const deliveryCountries = action.payload;
+            const entities = deliveryCountries.reduce((countryEntities, country) => {
+                return Object.assign(Object.assign({}, countryEntities), { [country.isocode]: country });
+            }, Object.assign({}, state.entities));
+            return Object.assign(Object.assign({}, state), { entities });
         }
-        case LOAD_PRODUCT_INTERESTS_FAIL: {
-            return initialState$z;
+        case CLEAR_USER_MISCS_DATA: {
+            return initialState$p;
         }
     }
     return state;
 }
 
-const initialState$A = {
+const initialState$q = [];
+function reducer$q(state = initialState$q, action) {
+    switch (action.type) {
+        case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
+            return initialState$q;
+        }
+        case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
+        case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
+            return action.payload ? action.payload : initialState$q;
+        }
+    }
+    return state;
+}
+
+const initialState$r = {};
+function reducer$r(state = initialState$r, action) {
+    switch (action.type) {
+        case LOAD_ORDER_DETAILS_SUCCESS: {
+            const order = action.payload;
+            return order;
+        }
+    }
+    return state;
+}
+
+const initialState$s = {
     returnRequests: [],
     pagination: {},
     sorts: [],
 };
-function reducer$A(state = initialState$A, action) {
+function reducer$s(state = initialState$s, action) {
     switch (action.type) {
         case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
-            return action.payload ? action.payload : initialState$A;
+            return action.payload ? action.payload : initialState$s;
+        }
+    }
+    return state;
+}
+
+const initialState$t = [];
+function reducer$t(state = initialState$t, action) {
+    switch (action.type) {
+        case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+            return action.payload ? action.payload : initialState$t;
+        }
+        case LOAD_USER_PAYMENT_METHODS_FAIL: {
+            return initialState$t;
+        }
+    }
+    return state;
+}
+
+const initialState$u = {
+    results: [],
+    pagination: {},
+    sorts: [],
+};
+function reducer$u(state = initialState$u, action) {
+    switch (action.type) {
+        case LOAD_PRODUCT_INTERESTS_SUCCESS: {
+            return action.payload ? action.payload : initialState$u;
+        }
+        case LOAD_PRODUCT_INTERESTS_FAIL: {
+            return initialState$u;
+        }
+    }
+    return state;
+}
+
+const initialState$v = {
+    entities: [],
+    country: null,
+};
+function reducer$v(state = initialState$v, action) {
+    switch (action.type) {
+        case LOAD_REGIONS_SUCCESS: {
+            const entities = action.payload.entities;
+            const country = action.payload.country;
+            if (entities || country) {
+                return Object.assign(Object.assign({}, state), { entities,
+                    country });
+            }
+            return initialState$v;
+        }
+    }
+    return state;
+}
+
+const initialState$w = {};
+function reducer$w(state = initialState$w, action) {
+    switch (action.type) {
+        case LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS:
+        case CANCEL_REPLENISHMENT_ORDER_SUCCESS: {
+            return action.payload ? action.payload : initialState$w;
+        }
+        default: {
+            return state;
+        }
+    }
+}
+
+const initialState$x = false;
+function reducer$x(state = initialState$x, action) {
+    switch (action.type) {
+        case RESET_PASSWORD_SUCCESS: {
+            return true;
+        }
+    }
+    return state;
+}
+
+const initialState$y = {
+    entities: {},
+};
+function reducer$y(state = initialState$y, action) {
+    switch (action.type) {
+        case LOAD_TITLES_SUCCESS: {
+            const titles = action.payload;
+            const entities = titles.reduce((titleEntities, name) => {
+                return Object.assign(Object.assign({}, titleEntities), { [name.code]: name });
+            }, Object.assign({}, state.entities));
+            return Object.assign(Object.assign({}, state), { entities });
+        }
+        case CLEAR_USER_MISCS_DATA: {
+            return initialState$y;
+        }
+    }
+    return state;
+}
+
+const initialState$z = [];
+function reducer$z(state = initialState$z, action) {
+    switch (action.type) {
+        case LOAD_USER_ADDRESSES_FAIL: {
+            return initialState$z;
+        }
+        case LOAD_USER_ADDRESSES_SUCCESS: {
+            return action.payload ? action.payload : initialState$z;
+        }
+    }
+    return state;
+}
+
+const initialState$A = [];
+function reducer$A(state = initialState$A, action) {
+    switch (action.type) {
+        case LOAD_USER_CONSENTS_SUCCESS: {
+            const consents = action.payload;
+            return consents ? consents : initialState$A;
+        }
+        case GIVE_USER_CONSENT_SUCCESS: {
+            const updatedConsentTemplate = action.consentTemplate;
+            return state.map((consentTemplate) => consentTemplate.id === updatedConsentTemplate.id
+                ? updatedConsentTemplate
+                : consentTemplate);
         }
     }
     return state;
@@ -24582,28 +25311,88 @@ function reducer$B(state = initialState$B, action) {
     return state;
 }
 
+const initialState$C = {};
+function reducer$C(state = initialState$C, action) {
+    switch (action.type) {
+        case LOAD_USER_DETAILS_SUCCESS: {
+            return action.payload;
+        }
+        case UPDATE_USER_DETAILS_SUCCESS: {
+            const updatedDetails = Object.assign(Object.assign({}, state), action.userUpdates);
+            return Object.assign(Object.assign({}, updatedDetails), { name: `${updatedDetails.firstName} ${updatedDetails.lastName}` });
+        }
+    }
+    return state;
+}
+
+const initialState$D = {
+    orders: [],
+    pagination: {},
+    sorts: [],
+};
+function reducer$D(state = initialState$D, action) {
+    switch (action.type) {
+        case LOAD_USER_ORDERS_SUCCESS: {
+            return action.payload ? action.payload : initialState$D;
+        }
+        case LOAD_USER_ORDERS_FAIL: {
+            return initialState$D;
+        }
+    }
+    return state;
+}
+
+const initialState$E = {
+    replenishmentOrders: [],
+    pagination: {},
+    sorts: [],
+};
+function reducer$E(state = initialState$E, action) {
+    switch (action.type) {
+        case LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS: {
+            return action.payload ? action.payload : initialState$E;
+        }
+        case CANCEL_REPLENISHMENT_ORDER_SUCCESS: {
+            const cancelledReplenishmentOrder = action.payload;
+            const userReplenishmentOrders = [...state.replenishmentOrders];
+            const index = userReplenishmentOrders.findIndex((replenishmentOrder) => replenishmentOrder.replenishmentOrderCode ===
+                cancelledReplenishmentOrder.replenishmentOrderCode);
+            if (index === -1) {
+                return initialState$E;
+            }
+            else {
+                userReplenishmentOrders[index] = Object.assign({}, cancelledReplenishmentOrder);
+            }
+            return Object.assign(Object.assign({}, state), { replenishmentOrders: userReplenishmentOrders });
+        }
+    }
+    return state;
+}
+
 function getReducers$c() {
     return {
         account: combineReducers({
-            details: reducer$w,
+            details: reducer$C,
         }),
-        addresses: loaderReducer(USER_ADDRESSES, reducer$u),
-        billingCountries: reducer$l,
-        consents: loaderReducer(USER_CONSENTS, reducer$v),
-        payments: loaderReducer(USER_PAYMENT_METHODS, reducer$q),
-        orders: loaderReducer(USER_ORDERS, reducer$x),
-        order: loaderReducer(USER_ORDER_DETAILS, reducer$p),
+        addresses: loaderReducer(USER_ADDRESSES, reducer$z),
+        billingCountries: reducer$m,
+        consents: loaderReducer(USER_CONSENTS, reducer$A),
+        payments: loaderReducer(USER_PAYMENT_METHODS, reducer$t),
+        orders: loaderReducer(USER_ORDERS, reducer$D),
+        order: loaderReducer(USER_ORDER_DETAILS, reducer$r),
+        replenishmentOrders: loaderReducer(USER_REPLENISHMENT_ORDERS, reducer$E),
         orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
-        orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$A),
-        countries: reducer$n,
-        titles: reducer$t,
-        regions: loaderReducer(REGIONS, reducer$r),
-        resetPassword: reducer$s,
-        consignmentTracking: reducer$m,
-        customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$y),
-        notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$o),
-        productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$z),
+        orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$s),
+        countries: reducer$p,
+        titles: reducer$y,
+        regions: loaderReducer(REGIONS, reducer$v),
+        resetPassword: reducer$x,
+        consignmentTracking: reducer$n,
+        customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$o),
+        notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$q),
+        productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$u),
         costCenters: loaderReducer(USER_COST_CENTERS, reducer$B),
+        replenishmentOrder: loaderReducer(USER_REPLENISHMENT_ORDER_DETAILS, reducer$w),
     };
 }
 const reducerToken$c = new InjectionToken('UserReducers');
@@ -24680,6 +25469,60 @@ ConsignmentTrackingEffects.ctorParameters = () => [
 __decorate([
     Effect()
 ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
+
+class CustomerCouponEffects {
+    constructor(actions$, customerCouponConnector) {
+        this.actions$ = actions$;
+        this.customerCouponConnector = customerCouponConnector;
+        this.loadCustomerCoupons$ = this.actions$.pipe(ofType(LOAD_CUSTOMER_COUPONS), map((action) => action.payload), mergeMap((payload) => {
+            return this.customerCouponConnector
+                .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
+                .pipe(map((coupons) => {
+                return new LoadCustomerCouponsSuccess(coupons);
+            }), catchError((error) => of(new LoadCustomerCouponsFail(makeErrorSerializable(error)))));
+        }));
+        this.subscribeCustomerCoupon$ = this.actions$.pipe(ofType(SUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
+            return this.customerCouponConnector
+                .turnOnNotification(payload.userId, payload.couponCode)
+                .pipe(map((data) => {
+                return new SubscribeCustomerCouponSuccess(data);
+            }), catchError((error) => of(new SubscribeCustomerCouponFail(makeErrorSerializable(error)))));
+        }));
+        this.unsubscribeCustomerCoupon$ = this.actions$.pipe(ofType(UNSUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
+            return this.customerCouponConnector
+                .turnOffNotification(payload.userId, payload.couponCode)
+                .pipe(map(() => {
+                return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
+            }), catchError((error) => of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error)))));
+        }));
+        this.claimCustomerCoupon$ = this.actions$.pipe(ofType(CLAIM_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
+            return this.customerCouponConnector
+                .claimCustomerCoupon(payload.userId, payload.couponCode)
+                .pipe(map((data) => {
+                return new ClaimCustomerCouponSuccess(data);
+            }), catchError((error) => of(new ClaimCustomerCouponFail(makeErrorSerializable(error)))));
+        }));
+    }
+}
+CustomerCouponEffects.decorators = [
+    { type: Injectable }
+];
+CustomerCouponEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CustomerCouponConnector }
+];
+__decorate([
+    Effect()
+], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
+__decorate([
+    Effect()
+], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
+__decorate([
+    Effect()
+], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
+__decorate([
+    Effect()
+], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
 
 class DeliveryCountriesEffects {
     constructor(actions$, siteConnector) {
@@ -24879,6 +25722,58 @@ __decorate([
     Effect()
 ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
 
+class ProductInterestsEffect {
+    constructor(actions$, userInterestsConnector) {
+        this.actions$ = actions$;
+        this.userInterestsConnector = userInterestsConnector;
+        this.loadProductInteres$ = this.actions$.pipe(ofType(LOAD_PRODUCT_INTERESTS), map((action) => action.payload), switchMap((payload) => {
+            return this.userInterestsConnector
+                .getInterests(payload.userId, payload.pageSize, payload.currentPage, payload.sort, payload.productCode, payload.notificationType)
+                .pipe(map((interests) => {
+                return new LoadProductInterestsSuccess(interests);
+            }), catchError((error) => of(new LoadProductInterestsFail(makeErrorSerializable(error)))));
+        }));
+        this.removeProductInterest$ = this.actions$.pipe(ofType(REMOVE_PRODUCT_INTEREST), map((action) => action.payload), switchMap((payload) => this.userInterestsConnector
+            .removeInterest(payload.userId, payload.item)
+            .pipe(switchMap((data) => [
+            new LoadProductInterests(payload.singleDelete
+                ? {
+                    userId: payload.userId,
+                    productCode: payload.item.product.code,
+                    notificationType: payload.item.productInterestEntry[0].interestType,
+                }
+                : { userId: payload.userId }),
+            new RemoveProductInterestSuccess(data),
+        ]), catchError((error) => of(new RemoveProductInterestFail(makeErrorSerializable(error)))))));
+        this.addProductInterest$ = this.actions$.pipe(ofType(ADD_PRODUCT_INTEREST), map((action) => action.payload), switchMap((payload) => this.userInterestsConnector
+            .addInterest(payload.userId, payload.productCode, payload.notificationType)
+            .pipe(switchMap((res) => [
+            new LoadProductInterests({
+                userId: payload.userId,
+                productCode: payload.productCode,
+                notificationType: payload.notificationType,
+            }),
+            new AddProductInterestSuccess(res),
+        ]), catchError((error) => of(new AddProductInterestFail(makeErrorSerializable(error)))))));
+    }
+}
+ProductInterestsEffect.decorators = [
+    { type: Injectable }
+];
+ProductInterestsEffect.ctorParameters = () => [
+    { type: Actions },
+    { type: UserInterestsConnector }
+];
+__decorate([
+    Effect()
+], ProductInterestsEffect.prototype, "loadProductInteres$", void 0);
+__decorate([
+    Effect()
+], ProductInterestsEffect.prototype, "removeProductInterest$", void 0);
+__decorate([
+    Effect()
+], ProductInterestsEffect.prototype, "addProductInterest$", void 0);
+
 class RegionsEffects {
     constructor(actions$, siteConnector) {
         this.actions$ = actions$;
@@ -24909,6 +25804,44 @@ __decorate([
 __decorate([
     Effect()
 ], RegionsEffects.prototype, "resetRegions$", void 0);
+
+class ReplenishmentOrderDetailsEffect {
+    constructor(actions$, replenishmentOrderConnector, globalMessageService) {
+        this.actions$ = actions$;
+        this.replenishmentOrderConnector = replenishmentOrderConnector;
+        this.globalMessageService = globalMessageService;
+        this.loadReplenishmentOrderDetails$ = this.actions$.pipe(ofType(LOAD_REPLENISHMENT_ORDER_DETAILS), map((action) => action.payload), switchMap((payload) => {
+            return this.replenishmentOrderConnector
+                .load(payload.userId, payload.replenishmentOrderCode)
+                .pipe(map((replenishmentOrder) => {
+                return new LoadReplenishmentOrderDetailsSuccess(replenishmentOrder);
+            }), catchError((error) => of(new LoadReplenishmentOrderDetailsFail(normalizeHttpError(error)))));
+        }));
+        this.cancelReplenishmentOrder$ = this.actions$.pipe(ofType(CANCEL_REPLENISHMENT_ORDER), map((action) => action.payload), switchMap((payload) => {
+            return this.replenishmentOrderConnector
+                .cancelReplenishmentOrder(payload.userId, payload.replenishmentOrderCode)
+                .pipe(map((replenishmentOrder) => new CancelReplenishmentOrderSuccess(replenishmentOrder)), catchError((error) => {
+                var _a;
+                (_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach((err) => this.globalMessageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR));
+                return of(new CancelReplenishmentOrderFail(normalizeHttpError(error)));
+            }));
+        }));
+    }
+}
+ReplenishmentOrderDetailsEffect.decorators = [
+    { type: Injectable }
+];
+ReplenishmentOrderDetailsEffect.ctorParameters = () => [
+    { type: Actions },
+    { type: UserReplenishmentOrderConnector },
+    { type: GlobalMessageService }
+];
+__decorate([
+    Effect()
+], ReplenishmentOrderDetailsEffect.prototype, "loadReplenishmentOrderDetails$", void 0);
+__decorate([
+    Effect()
+], ReplenishmentOrderDetailsEffect.prototype, "cancelReplenishmentOrder$", void 0);
 
 class ResetPasswordEffects {
     constructor(actions$, userAccountConnector) {
@@ -25156,6 +26089,26 @@ __decorate([
     Effect()
 ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
 
+class UserCostCenterEffects {
+    constructor(actions$, userCostCenterConnector) {
+        this.actions$ = actions$;
+        this.userCostCenterConnector = userCostCenterConnector;
+        this.loadActiveCostCenters$ = this.actions$.pipe(ofType(LOAD_ACTIVE_COST_CENTERS), map((action) => action.payload), switchMap((payload) => this.userCostCenterConnector.getActiveList(payload).pipe(
+        // TODO(#8875): Should we use here serialize utils?
+        map((data) => new LoadActiveCostCentersSuccess(data.values)), catchError((error) => of(new LoadActiveCostCentersFail(normalizeHttpError(error)))))));
+    }
+}
+UserCostCenterEffects.decorators = [
+    { type: Injectable }
+];
+UserCostCenterEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: UserCostCenterConnector }
+];
+__decorate([
+    Effect()
+], UserCostCenterEffects.prototype, "loadActiveCostCenters$", void 0);
+
 class UserDetailsEffects {
     constructor(actions$, userConnector) {
         this.actions$ = actions$;
@@ -25183,15 +26136,16 @@ __decorate([
 ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
 
 class UserOrdersEffect {
-    constructor(actions$, orderConnector) {
+    constructor(actions$, orderConnector, replenishmentOrderConnector) {
         this.actions$ = actions$;
         this.orderConnector = orderConnector;
+        this.replenishmentOrderConnector = replenishmentOrderConnector;
         this.loadUserOrders$ = this.actions$.pipe(ofType(LOAD_USER_ORDERS), map((action) => action.payload), switchMap((payload) => {
-            return this.orderConnector
-                .getHistory(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
-                .pipe(map((orders) => {
+            return (Boolean(payload.replenishmentOrderCode)
+                ? this.replenishmentOrderConnector.loadReplenishmentDetailsHistory(payload.userId, payload.replenishmentOrderCode, payload.pageSize, payload.currentPage, payload.sort)
+                : this.orderConnector.getHistory(payload.userId, payload.pageSize, payload.currentPage, payload.sort)).pipe(map((orders) => {
                 return new LoadUserOrdersSuccess(orders);
-            }), catchError((error) => of(new LoadUserOrdersFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadUserOrdersFail(normalizeHttpError(error)))));
         }));
         this.resetUserOrders$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map(() => {
             return new ClearUserOrders();
@@ -25203,7 +26157,8 @@ UserOrdersEffect.decorators = [
 ];
 UserOrdersEffect.ctorParameters = () => [
     { type: Actions },
-    { type: UserOrderConnector }
+    { type: UserOrderConnector },
+    { type: UserReplenishmentOrderConnector }
 ];
 __decorate([
     Effect()
@@ -25249,131 +26204,29 @@ __decorate([
     Effect()
 ], UserRegisterEffects.prototype, "removeUser$", void 0);
 
-class CustomerCouponEffects {
-    constructor(actions$, customerCouponConnector) {
+class UserReplenishmentOrdersEffect {
+    constructor(actions$, replenishmentOrderConnector) {
         this.actions$ = actions$;
-        this.customerCouponConnector = customerCouponConnector;
-        this.loadCustomerCoupons$ = this.actions$.pipe(ofType(LOAD_CUSTOMER_COUPONS), map((action) => action.payload), mergeMap((payload) => {
-            return this.customerCouponConnector
-                .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
-                .pipe(map((coupons) => {
-                return new LoadCustomerCouponsSuccess(coupons);
-            }), catchError((error) => of(new LoadCustomerCouponsFail(makeErrorSerializable(error)))));
-        }));
-        this.subscribeCustomerCoupon$ = this.actions$.pipe(ofType(SUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
-            return this.customerCouponConnector
-                .turnOnNotification(payload.userId, payload.couponCode)
-                .pipe(map((data) => {
-                return new SubscribeCustomerCouponSuccess(data);
-            }), catchError((error) => of(new SubscribeCustomerCouponFail(makeErrorSerializable(error)))));
-        }));
-        this.unsubscribeCustomerCoupon$ = this.actions$.pipe(ofType(UNSUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
-            return this.customerCouponConnector
-                .turnOffNotification(payload.userId, payload.couponCode)
-                .pipe(map(() => {
-                return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
-            }), catchError((error) => of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error)))));
-        }));
-        this.claimCustomerCoupon$ = this.actions$.pipe(ofType(CLAIM_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
-            return this.customerCouponConnector
-                .claimCustomerCoupon(payload.userId, payload.couponCode)
-                .pipe(map((data) => {
-                return new ClaimCustomerCouponSuccess(data);
-            }), catchError((error) => of(new ClaimCustomerCouponFail(makeErrorSerializable(error)))));
+        this.replenishmentOrderConnector = replenishmentOrderConnector;
+        this.loadUserReplenishmentOrders$ = this.actions$.pipe(ofType(LOAD_USER_REPLENISHMENT_ORDERS), map((action) => action.payload), switchMap((payload) => {
+            return this.replenishmentOrderConnector
+                .loadHistory(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
+                .pipe(map((orders) => {
+                return new LoadUserReplenishmentOrdersSuccess(orders);
+            }), catchError((error) => of(new LoadUserReplenishmentOrdersFail(normalizeHttpError(error)))));
         }));
     }
 }
-CustomerCouponEffects.decorators = [
+UserReplenishmentOrdersEffect.decorators = [
     { type: Injectable }
 ];
-CustomerCouponEffects.ctorParameters = () => [
+UserReplenishmentOrdersEffect.ctorParameters = () => [
     { type: Actions },
-    { type: CustomerCouponConnector }
+    { type: UserReplenishmentOrderConnector }
 ];
 __decorate([
     Effect()
-], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
-__decorate([
-    Effect()
-], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
-__decorate([
-    Effect()
-], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
-__decorate([
-    Effect()
-], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
-
-class ProductInterestsEffect {
-    constructor(actions$, userInterestsConnector) {
-        this.actions$ = actions$;
-        this.userInterestsConnector = userInterestsConnector;
-        this.loadProductInteres$ = this.actions$.pipe(ofType(LOAD_PRODUCT_INTERESTS), map((action) => action.payload), switchMap((payload) => {
-            return this.userInterestsConnector
-                .getInterests(payload.userId, payload.pageSize, payload.currentPage, payload.sort, payload.productCode, payload.notificationType)
-                .pipe(map((interests) => {
-                return new LoadProductInterestsSuccess(interests);
-            }), catchError((error) => of(new LoadProductInterestsFail(makeErrorSerializable(error)))));
-        }));
-        this.removeProductInterest$ = this.actions$.pipe(ofType(REMOVE_PRODUCT_INTEREST), map((action) => action.payload), switchMap((payload) => this.userInterestsConnector
-            .removeInterest(payload.userId, payload.item)
-            .pipe(switchMap((data) => [
-            new LoadProductInterests(payload.singleDelete
-                ? {
-                    userId: payload.userId,
-                    productCode: payload.item.product.code,
-                    notificationType: payload.item.productInterestEntry[0].interestType,
-                }
-                : { userId: payload.userId }),
-            new RemoveProductInterestSuccess(data),
-        ]), catchError((error) => of(new RemoveProductInterestFail(makeErrorSerializable(error)))))));
-        this.addProductInterest$ = this.actions$.pipe(ofType(ADD_PRODUCT_INTEREST), map((action) => action.payload), switchMap((payload) => this.userInterestsConnector
-            .addInterest(payload.userId, payload.productCode, payload.notificationType)
-            .pipe(switchMap((res) => [
-            new LoadProductInterests({
-                userId: payload.userId,
-                productCode: payload.productCode,
-                notificationType: payload.notificationType,
-            }),
-            new AddProductInterestSuccess(res),
-        ]), catchError((error) => of(new AddProductInterestFail(makeErrorSerializable(error)))))));
-    }
-}
-ProductInterestsEffect.decorators = [
-    { type: Injectable }
-];
-ProductInterestsEffect.ctorParameters = () => [
-    { type: Actions },
-    { type: UserInterestsConnector }
-];
-__decorate([
-    Effect()
-], ProductInterestsEffect.prototype, "loadProductInteres$", void 0);
-__decorate([
-    Effect()
-], ProductInterestsEffect.prototype, "removeProductInterest$", void 0);
-__decorate([
-    Effect()
-], ProductInterestsEffect.prototype, "addProductInterest$", void 0);
-
-class UserCostCenterEffects {
-    constructor(actions$, userCostCenterConnector) {
-        this.actions$ = actions$;
-        this.userCostCenterConnector = userCostCenterConnector;
-        this.loadActiveCostCenters$ = this.actions$.pipe(ofType(LOAD_ACTIVE_COST_CENTERS), map((action) => action.payload), switchMap((payload) => this.userCostCenterConnector.getActiveList(payload).pipe(
-        // TODO(#8875): Should we use here serialize utils?
-        map((data) => new LoadActiveCostCentersSuccess(data.values)), catchError((error) => of(new LoadActiveCostCentersFail(normalizeHttpError(error)))))));
-    }
-}
-UserCostCenterEffects.decorators = [
-    { type: Injectable }
-];
-UserCostCenterEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: UserCostCenterConnector }
-];
-__decorate([
-    Effect()
-], UserCostCenterEffects.prototype, "loadActiveCostCenters$", void 0);
+], UserReplenishmentOrdersEffect.prototype, "loadUserReplenishmentOrders$", void 0);
 
 const effects$b = [
     ClearMiscsDataEffect,
@@ -25398,6 +26251,8 @@ const effects$b = [
     ProductInterestsEffect,
     OrderReturnRequestEffect,
     UserCostCenterEffects,
+    ReplenishmentOrderDetailsEffect,
+    UserReplenishmentOrdersEffect,
 ];
 
 class UserStoreModule {
@@ -25437,5 +26292,5 @@ UserModule.decorators = [
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_HEADER, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_NORMALIZER, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActivatedRoutesService, ActiveCartService, AnonymousConsentNormalizer, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, B2BPaymentTypeEnum, B2BUserGroup, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COST_CENTERS_NORMALIZER, COST_CENTER_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutCostCenterAdapter, CheckoutCostCenterConnector, CheckoutCostCenterService, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutEventBuilder, CheckoutEventModule, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConfigurationService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CostCenterModule, CostCenterOccModule, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DefaultConfig, DefaultConfigChunk, DefaultRoutePageMetaResolver, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GET_PAYMENT_TYPES_PROCESS_ID, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, HttpParamsURIEncoder, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, ModuleInitializedEvent, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutCostCenterAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCheckoutPaymentTypeAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCostCenterListNormalizer, OccCostCenterNormalizer, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OpenIdAuthenticationTokenService, OrderPlacedEvent, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PAYMENT_TYPE_NORMALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PaymentTypeAdapter, PaymentTypeConnector, PaymentTypeService, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, RootConfig, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, RoutingPageMetaResolver, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_COST_CENTER_PROCESS_ID, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_COST_CENTERS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserCostCenterAdapter, UserCostCenterConnector, UserCostCenterService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, contextServiceMapProvider, createFrom, deepMerge, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, isObject, mediaServerConfigFromMetaTagFactory, normalizeHttpError, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, resolveApplicable, serviceMapFactory, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, CONFIG_INITIALIZER_FORROOT_GUARD as ɵb, AsmStoreModule as ɵba, getReducers$3 as ɵbb, reducerToken$3 as ɵbc, reducerProvider$3 as ɵbd, clearCustomerSupportAgentAsmState as ɵbe, metaReducers$2 as ɵbf, effects$3 as ɵbg, CustomerEffects as ɵbh, CustomerSupportAgentTokenEffects as ɵbi, UserAuthenticationTokenService as ɵbj, reducer$7 as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, defaultAsmConfig as ɵbo, authStoreConfigFactory as ɵbp, AuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, clearAuthState as ɵbu, metaReducers as ɵbv, effects as ɵbw, ClientTokenEffect as ɵbx, UserTokenEffects as ɵby, ClientAuthenticationTokenService as ɵbz, TEST_CONFIG_COOKIE_NAME as ɵc, reducer as ɵca, defaultAuthConfig as ɵcb, interceptors as ɵcc, ClientTokenInterceptor as ɵcd, UserTokenInterceptor as ɵce, AuthErrorInterceptor as ɵcf, UserErrorHandlingService as ɵcg, UrlParsingService as ɵch, RoutingParamsService as ɵci, ClientErrorHandlingService as ɵcj, TokenRevocationInterceptor as ɵck, MultiCartStoreModule as ɵcl, clearMultiCartState as ɵcm, multiCartMetaReducers as ɵcn, multiCartReducerToken as ɵco, getMultiCartReducers as ɵcp, multiCartReducerProvider as ɵcq, CartEffects as ɵcr, CartEntryEffects as ɵcs, CartVoucherEffects as ɵct, WishListEffects as ɵcu, SaveCartConnector as ɵcv, SaveCartAdapter as ɵcw, MultiCartEffects as ɵcx, entityProcessesLoaderReducer as ɵcy, entityReducer as ɵcz, configFromCookieFactory as ɵd, processesLoaderReducer as ɵda, activeCartReducer as ɵdb, cartEntitiesReducer as ɵdc, wishListReducer as ɵdd, CartPageMetaResolver as ɵde, SiteContextParamsService as ɵdf, CheckoutStoreModule as ɵdg, getReducers$5 as ɵdh, reducerToken$5 as ɵdi, reducerProvider$5 as ɵdj, effects$5 as ɵdk, AddressVerificationEffect as ɵdl, CardTypesEffects as ɵdm, CheckoutEffects as ɵdn, PaymentTypesEffects as ɵdo, reducer$b as ɵdp, reducer$a as ɵdq, reducer$9 as ɵdr, reducer$c as ɵds, cmsStoreConfigFactory as ɵdt, CmsStoreModule as ɵdu, getReducers$7 as ɵdv, reducerToken$7 as ɵdw, reducerProvider$7 as ɵdx, clearCmsState as ɵdy, metaReducers$3 as ɵdz, initConfig as ɵe, effects$7 as ɵea, ComponentsEffects as ɵeb, NavigationEntryItemEffects as ɵec, PageEffects as ɵed, reducer$g as ɵee, entityLoaderReducer as ɵef, reducer$h as ɵeg, reducer$e as ɵeh, reducer$f as ɵei, GlobalMessageStoreModule as ɵej, getReducers$4 as ɵek, reducerToken$4 as ɵel, reducerProvider$4 as ɵem, reducer$8 as ɵen, GlobalMessageEffect as ɵeo, defaultGlobalMessageConfigFactory as ɵep, HttpErrorInterceptor as ɵeq, defaultI18nConfig as ɵer, i18nextProviders as ɵes, i18nextInit as ɵet, MockTranslationService as ɵeu, kymaStoreConfigFactory as ɵev, KymaStoreModule as ɵew, getReducers$8 as ɵex, reducerToken$8 as ɵey, reducerProvider$8 as ɵez, anonymousConsentsStoreConfigFactory as ɵf, clearKymaState as ɵfa, metaReducers$4 as ɵfb, effects$8 as ɵfc, OpenIdTokenEffect as ɵfd, defaultKymaConfig as ɵfe, defaultOccAsmConfig as ɵff, defaultOccCartConfig as ɵfg, OccSaveCartAdapter as ɵfh, defaultOccCheckoutConfig as ɵfi, defaultOccCostCentersConfig as ɵfj, defaultOccProductConfig as ɵfk, defaultOccSiteContextConfig as ɵfl, defaultOccStoreFinderConfig as ɵfm, defaultOccUserConfig as ɵfn, UserNotificationPreferenceAdapter as ɵfo, OccUserCostCenterAdapter as ɵfp, defaultPersonalizationConfig as ɵfq, interceptors$3 as ɵfr, OccPersonalizationIdInterceptor as ɵfs, OccPersonalizationTimeInterceptor as ɵft, ProcessStoreModule as ɵfu, getReducers$9 as ɵfv, reducerToken$9 as ɵfw, reducerProvider$9 as ɵfx, productStoreConfigFactory as ɵfy, ProductStoreModule as ɵfz, AnonymousConsentsStoreModule as ɵg, getReducers$a as ɵga, reducerToken$a as ɵgb, reducerProvider$a as ɵgc, clearProductsState as ɵgd, metaReducers$5 as ɵge, effects$9 as ɵgf, ProductReferencesEffects as ɵgg, ProductReviewsEffects as ɵgh, ProductsSearchEffects as ɵgi, ProductEffects as ɵgj, reducer$i as ɵgk, entityScopedLoaderReducer as ɵgl, scopedLoaderReducer as ɵgm, reducer$k as ɵgn, reducer$j as ɵgo, PageMetaResolver as ɵgp, CouponSearchPageResolver as ɵgq, PageMetaResolver as ɵgr, addExternalRoutesFactory as ɵgs, getReducers$6 as ɵgt, reducer$d as ɵgu, reducerToken$6 as ɵgv, reducerProvider$6 as ɵgw, CustomSerializer as ɵgx, effects$6 as ɵgy, RouterEffects as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, siteContextStoreConfigFactory as ɵha, SiteContextStoreModule as ɵhb, getReducers$1 as ɵhc, reducerToken$1 as ɵhd, reducerProvider$1 as ɵhe, effects$2 as ɵhf, LanguagesEffects as ɵhg, CurrenciesEffects as ɵhh, BaseSiteEffects as ɵhi, reducer$3 as ɵhj, reducer$2 as ɵhk, reducer$1 as ɵhl, defaultSiteContextConfigFactory as ɵhm, initializeContext as ɵhn, contextServiceProviders as ɵho, SiteContextRoutesHandler as ɵhp, SiteContextUrlSerializer as ɵhq, siteContextParamsProviders as ɵhr, baseSiteConfigValidator as ɵhs, interceptors$4 as ɵht, CmsTicketInterceptor as ɵhu, StoreFinderStoreModule as ɵhv, getReducers$b as ɵhw, reducerToken$b as ɵhx, reducerProvider$b as ɵhy, effects$a as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, FindStoresEffect as ɵia, ViewAllStoresEffect as ɵib, defaultStoreFinderConfig as ɵic, UserStoreModule as ɵid, getReducers$c as ɵie, reducerToken$c as ɵif, reducerProvider$c as ɵig, clearUserState as ɵih, metaReducers$7 as ɵii, effects$b as ɵij, BillingCountriesEffect as ɵik, ClearMiscsDataEffect as ɵil, ConsignmentTrackingEffects as ɵim, DeliveryCountriesEffects as ɵin, NotificationPreferenceEffects as ɵio, OrderDetailsEffect as ɵip, OrderReturnRequestEffect as ɵiq, UserPaymentMethodsEffects as ɵir, RegionsEffects as ɵis, ResetPasswordEffects as ɵit, TitlesEffects as ɵiu, UserAddressesEffects as ɵiv, UserConsentsEffect as ɵiw, UserDetailsEffects as ɵix, UserOrdersEffect as ɵiy, UserRegisterEffects as ɵiz, stateMetaReducers as ɵj, CustomerCouponEffects as ɵja, ProductInterestsEffect as ɵjb, ForgotPasswordEffects as ɵjc, UpdateEmailEffects as ɵjd, UpdatePasswordEffects as ɵje, UserNotificationPreferenceConnector as ɵjf, UserCostCenterEffects as ɵjg, reducer$w as ɵjh, reducer$u as ɵji, reducer$l as ɵjj, reducer$v as ɵjk, reducer$q as ɵjl, reducer$x as ɵjm, reducer$p as ɵjn, reducer$A as ɵjo, reducer$n as ɵjp, reducer$t as ɵjq, reducer$r as ɵjr, reducer$s as ɵjs, reducer$m as ɵjt, reducer$y as ɵju, reducer$o as ɵjv, reducer$z as ɵjw, reducer$B as ɵjx, getStorageSyncReducer as ɵk, getTransferStateReducer as ɵl, getReducers$2 as ɵm, reducerToken$2 as ɵn, reducerProvider$2 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$1 as ɵr, AnonymousConsentsEffects as ɵs, loaderReducer as ɵt, reducer$6 as ɵu, reducer$4 as ɵv, reducer$5 as ɵw, interceptors$1 as ɵx, AnonymousConsentsInterceptor as ɵy, asmStoreConfigFactory as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_HEADER, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_NORMALIZER, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActivatedRoutesService, ActiveCartService, AnonymousConsentNormalizer, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, B2BPaymentTypeEnum, B2BUserGroup, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COST_CENTERS_NORMALIZER, COST_CENTER_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutCostCenterAdapter, CheckoutCostCenterConnector, CheckoutCostCenterService, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutEventBuilder, CheckoutEventModule, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutReplenishmentOrderAdapter, CheckoutReplenishmentOrderConnector, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConfigurationService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CostCenterModule, CostCenterOccModule, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DaysOfWeek, DefaultConfig, DefaultConfigChunk, DefaultRoutePageMetaResolver, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GET_PAYMENT_TYPES_PROCESS_ID, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, HttpParamsURIEncoder, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, ModuleInitializedEvent, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, ORDER_TYPE, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutCostCenterAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCheckoutPaymentTypeAdapter, OccCheckoutReplenishmentOrderAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCostCenterListNormalizer, OccCostCenterNormalizer, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccReplenishmentOrderFormSerializer, OccReplenishmentOrderNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OccUserReplenishmentOrderAdapter, OpenIdAuthenticationTokenService, OrderPlacedEvent, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PAYMENT_TYPE_NORMALIZER, PLACED_ORDER_PROCESS_ID, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PaymentTypeAdapter, PaymentTypeConnector, PaymentTypeService, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, REPLENISHMENT_ORDER_FORM_SERIALIZER, REPLENISHMENT_ORDER_HISTORY_NORMALIZER, REPLENISHMENT_ORDER_NORMALIZER, ROUTING_FEATURE, RootConfig, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, RoutingPageMetaResolver, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_COST_CENTER_PROCESS_ID, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_COST_CENTERS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_REPLENISHMENT_ORDERS, USER_REPLENISHMENT_ORDER_DETAILS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserCostCenterAdapter, UserCostCenterConnector, UserCostCenterService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserReplenishmentOrderAdapter, UserReplenishmentOrderConnector, UserReplenishmentOrderService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, contextServiceMapProvider, createFrom, deepMerge, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, isObject, mediaServerConfigFromMetaTagFactory, normalizeHttpError, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, recurrencePeriod, resolveApplicable, serviceMapFactory, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, CONFIG_INITIALIZER_FORROOT_GUARD as ɵb, AsmStoreModule as ɵba, getReducers$4 as ɵbb, reducerToken$4 as ɵbc, reducerProvider$4 as ɵbd, clearCustomerSupportAgentAsmState as ɵbe, metaReducers$2 as ɵbf, effects$4 as ɵbg, CustomerEffects as ɵbh, CustomerSupportAgentTokenEffects as ɵbi, UserAuthenticationTokenService as ɵbj, reducer$c as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, defaultAsmConfig as ɵbo, authStoreConfigFactory as ɵbp, AuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, clearAuthState as ɵbu, metaReducers as ɵbv, effects as ɵbw, ClientTokenEffect as ɵbx, UserTokenEffects as ɵby, ClientAuthenticationTokenService as ɵbz, TEST_CONFIG_COOKIE_NAME as ɵc, reducer as ɵca, defaultAuthConfig as ɵcb, interceptors as ɵcc, ClientTokenInterceptor as ɵcd, UserTokenInterceptor as ɵce, AuthErrorInterceptor as ɵcf, UserErrorHandlingService as ɵcg, UrlParsingService as ɵch, RoutingParamsService as ɵci, ClientErrorHandlingService as ɵcj, TokenRevocationInterceptor as ɵck, MultiCartStoreModule as ɵcl, clearMultiCartState as ɵcm, multiCartMetaReducers as ɵcn, multiCartReducerToken as ɵco, getMultiCartReducers as ɵcp, multiCartReducerProvider as ɵcq, CartEffects as ɵcr, CartEntryEffects as ɵcs, CartVoucherEffects as ɵct, WishListEffects as ɵcu, SaveCartConnector as ɵcv, SaveCartAdapter as ɵcw, MultiCartEffects as ɵcx, entityProcessesLoaderReducer as ɵcy, entityReducer as ɵcz, configFromCookieFactory as ɵd, processesLoaderReducer as ɵda, activeCartReducer as ɵdb, cartEntitiesReducer as ɵdc, wishListReducer as ɵdd, CartPageMetaResolver as ɵde, SiteContextParamsService as ɵdf, CheckoutStoreModule as ɵdg, getReducers$1 as ɵdh, reducerToken$1 as ɵdi, reducerProvider$1 as ɵdj, effects$1 as ɵdk, AddressVerificationEffect as ɵdl, CardTypesEffects as ɵdm, CheckoutEffects as ɵdn, PaymentTypesEffects as ɵdo, ReplenishmentOrderEffects as ɵdp, reducer$3 as ɵdq, reducer$2 as ɵdr, reducer$1 as ɵds, reducer$5 as ɵdt, reducer$4 as ɵdu, cmsStoreConfigFactory as ɵdv, CmsStoreModule as ɵdw, getReducers$7 as ɵdx, reducerToken$7 as ɵdy, reducerProvider$7 as ɵdz, initConfig as ɵe, clearCmsState as ɵea, metaReducers$3 as ɵeb, effects$7 as ɵec, ComponentsEffects as ɵed, NavigationEntryItemEffects as ɵee, PageEffects as ɵef, reducer$h as ɵeg, entityLoaderReducer as ɵeh, reducer$i as ɵei, reducer$f as ɵej, reducer$g as ɵek, GlobalMessageStoreModule as ɵel, getReducers$5 as ɵem, reducerToken$5 as ɵen, reducerProvider$5 as ɵeo, reducer$d as ɵep, GlobalMessageEffect as ɵeq, defaultGlobalMessageConfigFactory as ɵer, HttpErrorInterceptor as ɵes, defaultI18nConfig as ɵet, i18nextProviders as ɵeu, i18nextInit as ɵev, MockTranslationService as ɵew, kymaStoreConfigFactory as ɵex, KymaStoreModule as ɵey, getReducers$8 as ɵez, anonymousConsentsStoreConfigFactory as ɵf, reducerToken$8 as ɵfa, reducerProvider$8 as ɵfb, clearKymaState as ɵfc, metaReducers$4 as ɵfd, effects$8 as ɵfe, OpenIdTokenEffect as ɵff, defaultKymaConfig as ɵfg, defaultOccAsmConfig as ɵfh, defaultOccCartConfig as ɵfi, OccSaveCartAdapter as ɵfj, defaultOccCheckoutConfig as ɵfk, defaultOccCostCentersConfig as ɵfl, defaultOccProductConfig as ɵfm, defaultOccSiteContextConfig as ɵfn, defaultOccStoreFinderConfig as ɵfo, defaultOccUserConfig as ɵfp, UserNotificationPreferenceAdapter as ɵfq, OccUserCostCenterAdapter as ɵfr, UserReplenishmentOrderAdapter as ɵfs, defaultPersonalizationConfig as ɵft, interceptors$3 as ɵfu, OccPersonalizationIdInterceptor as ɵfv, OccPersonalizationTimeInterceptor as ɵfw, ProcessStoreModule as ɵfx, getReducers$9 as ɵfy, reducerToken$9 as ɵfz, AnonymousConsentsStoreModule as ɵg, reducerProvider$9 as ɵga, productStoreConfigFactory as ɵgb, ProductStoreModule as ɵgc, getReducers$a as ɵgd, reducerToken$a as ɵge, reducerProvider$a as ɵgf, clearProductsState as ɵgg, metaReducers$5 as ɵgh, effects$9 as ɵgi, ProductReferencesEffects as ɵgj, ProductReviewsEffects as ɵgk, ProductsSearchEffects as ɵgl, ProductEffects as ɵgm, reducer$j as ɵgn, entityScopedLoaderReducer as ɵgo, scopedLoaderReducer as ɵgp, reducer$l as ɵgq, reducer$k as ɵgr, PageMetaResolver as ɵgs, CouponSearchPageResolver as ɵgt, PageMetaResolver as ɵgu, addExternalRoutesFactory as ɵgv, getReducers$6 as ɵgw, reducer$e as ɵgx, reducerToken$6 as ɵgy, reducerProvider$6 as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, CustomSerializer as ɵha, effects$6 as ɵhb, RouterEffects as ɵhc, siteContextStoreConfigFactory as ɵhd, SiteContextStoreModule as ɵhe, getReducers$2 as ɵhf, reducerToken$2 as ɵhg, reducerProvider$2 as ɵhh, effects$3 as ɵhi, LanguagesEffects as ɵhj, CurrenciesEffects as ɵhk, BaseSiteEffects as ɵhl, reducer$8 as ɵhm, reducer$7 as ɵhn, reducer$6 as ɵho, defaultSiteContextConfigFactory as ɵhp, initializeContext as ɵhq, contextServiceProviders as ɵhr, SiteContextRoutesHandler as ɵhs, SiteContextUrlSerializer as ɵht, siteContextParamsProviders as ɵhu, baseSiteConfigValidator as ɵhv, interceptors$4 as ɵhw, CmsTicketInterceptor as ɵhx, StoreFinderStoreModule as ɵhy, getReducers$b as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, reducerToken$b as ɵia, reducerProvider$b as ɵib, effects$a as ɵic, FindStoresEffect as ɵid, ViewAllStoresEffect as ɵie, defaultStoreFinderConfig as ɵif, UserStoreModule as ɵig, getReducers$c as ɵih, reducerToken$c as ɵii, reducerProvider$c as ɵij, clearUserState as ɵik, metaReducers$7 as ɵil, effects$b as ɵim, BillingCountriesEffect as ɵin, ClearMiscsDataEffect as ɵio, ConsignmentTrackingEffects as ɵip, CustomerCouponEffects as ɵiq, DeliveryCountriesEffects as ɵir, NotificationPreferenceEffects as ɵis, OrderDetailsEffect as ɵit, OrderReturnRequestEffect as ɵiu, UserPaymentMethodsEffects as ɵiv, ProductInterestsEffect as ɵiw, RegionsEffects as ɵix, ReplenishmentOrderDetailsEffect as ɵiy, ResetPasswordEffects as ɵiz, stateMetaReducers as ɵj, TitlesEffects as ɵja, UserAddressesEffects as ɵjb, UserConsentsEffect as ɵjc, UserDetailsEffects as ɵjd, UserOrdersEffect as ɵje, UserRegisterEffects as ɵjf, UserReplenishmentOrdersEffect as ɵjg, ForgotPasswordEffects as ɵjh, UpdateEmailEffects as ɵji, UpdatePasswordEffects as ɵjj, UserNotificationPreferenceConnector as ɵjk, UserCostCenterEffects as ɵjl, reducer$C as ɵjm, reducer$z as ɵjn, reducer$m as ɵjo, reducer$A as ɵjp, reducer$t as ɵjq, reducer$D as ɵjr, reducer$r as ɵjs, reducer$E as ɵjt, reducer$s as ɵju, reducer$p as ɵjv, reducer$y as ɵjw, reducer$v as ɵjx, reducer$x as ɵjy, reducer$n as ɵjz, getStorageSyncReducer as ɵk, reducer$o as ɵka, reducer$q as ɵkb, reducer$u as ɵkc, reducer$B as ɵkd, reducer$w as ɵke, getTransferStateReducer as ɵl, getReducers$3 as ɵm, reducerToken$3 as ɵn, reducerProvider$3 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$2 as ɵr, AnonymousConsentsEffects as ɵs, loaderReducer as ɵt, reducer$b as ɵu, reducer$9 as ɵv, reducer$a as ɵw, interceptors$1 as ɵx, AnonymousConsentsInterceptor as ɵy, asmStoreConfigFactory as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

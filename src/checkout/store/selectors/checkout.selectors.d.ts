@@ -2,6 +2,7 @@ import { MemoizedSelector } from '@ngrx/store';
 import { Address } from '../../../model/address.model';
 import { PaymentDetails } from '../../../model/cart.model';
 import { DeliveryMode, Order } from '../../../model/order.model';
+import { ReplenishmentOrder } from '../../../model/replenishment-order.model';
 import { LoaderState } from '../../../state/utils/loader/loader-state';
 import { CheckoutState, CheckoutStepsState, StateWithCheckout } from '../checkout-state';
 export declare const getCheckoutState: MemoizedSelector<StateWithCheckout, CheckoutState>;
@@ -18,7 +19,7 @@ export declare const getSupportedDeliveryModes: MemoizedSelector<StateWithChecko
 export declare const getSelectedDeliveryModeCode: MemoizedSelector<StateWithCheckout, string>;
 export declare const getSelectedDeliveryMode: MemoizedSelector<StateWithCheckout, DeliveryMode>;
 export declare const getPaymentDetails: MemoizedSelector<StateWithCheckout, PaymentDetails>;
-export declare const getCheckoutOrderDetails: MemoizedSelector<StateWithCheckout, Order>;
+export declare const getCheckoutOrderDetails: MemoizedSelector<StateWithCheckout, Order | ReplenishmentOrder>;
 export declare const getCheckoutDetailsLoaded: MemoizedSelector<StateWithCheckout, boolean>;
 export declare const getPoNumer: MemoizedSelector<StateWithCheckout, string>;
 export declare const getCostCenter: MemoizedSelector<StateWithCheckout, string>;
