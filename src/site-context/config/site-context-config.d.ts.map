@@ -1,0 +1,1 @@
+{"version":3,"file":"site-context-config.d.ts","sources":["site-context-config.d.ts"],"names":[],"mappings":";AAAA;AACA;AACA;AACA;AACA;;AACA","sourcesContent":["export declare abstract class SiteContextConfig {\n    context?: {\n        urlParameters?: string[];\n        [contextName: string]: string[];\n    };\n}\n"]}
