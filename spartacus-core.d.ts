@@ -213,5 +213,3 @@ export { reducer as ɵjm } from './src/user/store/reducers/user-details.reducer'
 export { reducer as ɵjr } from './src/user/store/reducers/user-orders.reducer';
 export { reducer as ɵjt } from './src/user/store/reducers/user-replenishment-orders.reducer';
 export { UserStoreModule as ɵig } from './src/user/store/user-store.module';
-
-//# sourceMappingURL=spartacus-core.d.ts.map

@@ -1,6 +1,5 @@
 import { BaseSiteService } from '../../site-context/facade/base-site.service';
 import { OccConfig } from '../config/occ-config';
-import * as ɵngcc0 from '@angular/core';
 export declare class OccEndpointsService {
     private config;
     private baseSiteService;
@@ -30,7 +29,4 @@ export declare class OccEndpointsService {
      */
     getUrl(endpoint: string, urlParams?: object, queryParams?: object, scope?: string): string;
     private getEndpointForScope;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccEndpointsService, [null, { optional: true; }]>;
 }
-
-//# sourceMappingURL=occ-endpoints.service.d.ts.map
