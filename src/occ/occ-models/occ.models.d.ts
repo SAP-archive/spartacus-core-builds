@@ -45,6 +45,9 @@ export declare namespace Occ {
          */
         regions?: Region[];
     }
+    interface AddressList {
+        addresses?: Address[];
+    }
     /**
      *
      * An interface representing Address.
@@ -95,6 +98,10 @@ export declare namespace Occ {
          */
         phone?: string;
         /**
+         * @member {string} [town]
+         */
+        cellphone?: string;
+        /**
          * @member {string} [postalCode]
          */
         postalCode?: string;
@@ -102,6 +109,10 @@ export declare namespace Occ {
          * @member {Region} [region]
          */
         region?: Region;
+        /**
+         * @member {string} [town]
+         */
+        district?: string;
         /**
          * @member {boolean} [shippingAddress]
          */
@@ -3974,39 +3985,6 @@ export declare namespace Occ {
         pagination?: PaginationModel;
         sorts?: SortModel[];
     }
-    interface B2BAddress {
-        cellphone?: string;
-        companyName?: string;
-        country?: {
-            isocode?: string;
-            name?: string;
-        };
-        defaultAddress?: true;
-        district?: string;
-        email?: string;
-        firstName?: string;
-        formattedAddress?: string;
-        id?: string;
-        lastName?: string;
-        line1?: string;
-        line2?: string;
-        phone?: string;
-        postalCode?: string;
-        region?: {
-            countryIso?: string;
-            isocode?: string;
-            isocodeShort?: string;
-            name?: string;
-        };
-        shippingAddress?: true;
-        title?: string;
-        titleCode?: string;
-        town?: string;
-        visibleInAddressBook?: true;
-    }
-    interface B2BAddressList {
-        addresses?: B2BAddress[];
-    }
     interface B2BUnitNode {
         active?: boolean;
         children?: B2BUnitNode[];
@@ -4038,7 +4016,7 @@ export declare namespace Occ {
     }
     interface B2BUnit {
         active?: boolean;
-        addresses?: B2BAddress[];
+        addresses?: Address[];
         uid?: string;
         name?: string;
         parentOrgUnit?: string;

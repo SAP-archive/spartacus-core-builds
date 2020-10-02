@@ -4811,6 +4811,7 @@
     ]; };
 
     var ADDRESS_NORMALIZER = new i0.InjectionToken('AddressNormalizer');
+    var ADDRESS_LIST_NORMALIZER = new i0.InjectionToken('AddressesNormalizer');
     var ADDRESS_SERIALIZER = new i0.InjectionToken('AddressSerializer');
     var ADDRESS_VALIDATION_NORMALIZER = new i0.InjectionToken('AddressValidationNormalizer');
 
@@ -13936,6 +13937,26 @@
         return UserAdapter;
     }());
 
+    var OccAddressListNormalizer = /** @class */ (function () {
+        function OccAddressListNormalizer(converter) {
+            this.converter = converter;
+        }
+        OccAddressListNormalizer.prototype.convert = function (source, target) {
+            var _this = this;
+            if (target === undefined) {
+                target = Object.assign(Object.assign({}, source), { values: source.addresses.map(function (address) { return (Object.assign({}, _this.converter.convert(address, ADDRESS_NORMALIZER))); }) });
+            }
+            return target;
+        };
+        return OccAddressListNormalizer;
+    }());
+    OccAddressListNormalizer.decorators = [
+        { type: i0.Injectable }
+    ];
+    OccAddressListNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
+
     var defaultOccUserConfig = {
         backend: {
             occ: {
@@ -14045,6 +14066,11 @@
                         {
                             provide: ANONYMOUS_CONSENT_NORMALIZER,
                             useExisting: AnonymousConsentNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ADDRESS_LIST_NORMALIZER,
+                            useExisting: OccAddressListNormalizer,
                             multi: true,
                         },
                         {
@@ -29215,6 +29241,7 @@
      * Generated bundle index. Do not edit.
      */
 
+    exports.ADDRESS_LIST_NORMALIZER = ADDRESS_LIST_NORMALIZER;
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
@@ -29825,128 +29852,129 @@
     exports.ɵfp = defaultOccUserConfig;
     exports.ɵfq = UserNotificationPreferenceAdapter;
     exports.ɵfr = OccUserCostCenterAdapter;
-    exports.ɵfs = UserReplenishmentOrderAdapter;
-    exports.ɵft = defaultPersonalizationConfig;
-    exports.ɵfu = interceptors$3;
-    exports.ɵfv = OccPersonalizationIdInterceptor;
-    exports.ɵfw = OccPersonalizationTimeInterceptor;
-    exports.ɵfx = ProcessStoreModule;
-    exports.ɵfy = getReducers$9;
-    exports.ɵfz = reducerToken$9;
+    exports.ɵfs = OccAddressListNormalizer;
+    exports.ɵft = UserReplenishmentOrderAdapter;
+    exports.ɵfu = defaultPersonalizationConfig;
+    exports.ɵfv = interceptors$3;
+    exports.ɵfw = OccPersonalizationIdInterceptor;
+    exports.ɵfx = OccPersonalizationTimeInterceptor;
+    exports.ɵfy = ProcessStoreModule;
+    exports.ɵfz = getReducers$9;
     exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = reducerProvider$9;
-    exports.ɵgb = productStoreConfigFactory;
-    exports.ɵgc = ProductStoreModule;
-    exports.ɵgd = getReducers$a;
-    exports.ɵge = reducerToken$a;
-    exports.ɵgf = reducerProvider$a;
-    exports.ɵgg = clearProductsState;
-    exports.ɵgh = metaReducers$5;
-    exports.ɵgi = effects$9;
-    exports.ɵgj = ProductReferencesEffects;
-    exports.ɵgk = ProductReviewsEffects;
-    exports.ɵgl = ProductsSearchEffects;
-    exports.ɵgm = ProductEffects;
-    exports.ɵgn = reducer$j;
-    exports.ɵgo = entityScopedLoaderReducer;
-    exports.ɵgp = scopedLoaderReducer;
-    exports.ɵgq = reducer$l;
-    exports.ɵgr = reducer$k;
-    exports.ɵgs = PageMetaResolver;
-    exports.ɵgt = CouponSearchPageResolver;
-    exports.ɵgu = PageMetaResolver;
-    exports.ɵgv = addExternalRoutesFactory;
-    exports.ɵgw = getReducers$6;
-    exports.ɵgx = reducer$e;
-    exports.ɵgy = reducerToken$6;
-    exports.ɵgz = reducerProvider$6;
+    exports.ɵga = reducerToken$9;
+    exports.ɵgb = reducerProvider$9;
+    exports.ɵgc = productStoreConfigFactory;
+    exports.ɵgd = ProductStoreModule;
+    exports.ɵge = getReducers$a;
+    exports.ɵgf = reducerToken$a;
+    exports.ɵgg = reducerProvider$a;
+    exports.ɵgh = clearProductsState;
+    exports.ɵgi = metaReducers$5;
+    exports.ɵgj = effects$9;
+    exports.ɵgk = ProductReferencesEffects;
+    exports.ɵgl = ProductReviewsEffects;
+    exports.ɵgm = ProductsSearchEffects;
+    exports.ɵgn = ProductEffects;
+    exports.ɵgo = reducer$j;
+    exports.ɵgp = entityScopedLoaderReducer;
+    exports.ɵgq = scopedLoaderReducer;
+    exports.ɵgr = reducer$l;
+    exports.ɵgs = reducer$k;
+    exports.ɵgt = PageMetaResolver;
+    exports.ɵgu = CouponSearchPageResolver;
+    exports.ɵgv = PageMetaResolver;
+    exports.ɵgw = addExternalRoutesFactory;
+    exports.ɵgx = getReducers$6;
+    exports.ɵgy = reducer$e;
+    exports.ɵgz = reducerToken$6;
     exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = CustomSerializer;
-    exports.ɵhb = effects$6;
-    exports.ɵhc = RouterEffects;
-    exports.ɵhd = siteContextStoreConfigFactory;
-    exports.ɵhe = SiteContextStoreModule;
-    exports.ɵhf = getReducers$2;
-    exports.ɵhg = reducerToken$2;
-    exports.ɵhh = reducerProvider$2;
-    exports.ɵhi = effects$3;
-    exports.ɵhj = LanguagesEffects;
-    exports.ɵhk = CurrenciesEffects;
-    exports.ɵhl = BaseSiteEffects;
-    exports.ɵhm = reducer$8;
-    exports.ɵhn = reducer$7;
-    exports.ɵho = reducer$6;
-    exports.ɵhp = defaultSiteContextConfigFactory;
-    exports.ɵhq = initializeContext;
-    exports.ɵhr = contextServiceProviders;
-    exports.ɵhs = SiteContextRoutesHandler;
-    exports.ɵht = SiteContextUrlSerializer;
-    exports.ɵhu = siteContextParamsProviders;
-    exports.ɵhv = baseSiteConfigValidator;
-    exports.ɵhw = interceptors$4;
-    exports.ɵhx = CmsTicketInterceptor;
-    exports.ɵhy = StoreFinderStoreModule;
-    exports.ɵhz = getReducers$b;
+    exports.ɵha = reducerProvider$6;
+    exports.ɵhb = CustomSerializer;
+    exports.ɵhc = effects$6;
+    exports.ɵhd = RouterEffects;
+    exports.ɵhe = siteContextStoreConfigFactory;
+    exports.ɵhf = SiteContextStoreModule;
+    exports.ɵhg = getReducers$2;
+    exports.ɵhh = reducerToken$2;
+    exports.ɵhi = reducerProvider$2;
+    exports.ɵhj = effects$3;
+    exports.ɵhk = LanguagesEffects;
+    exports.ɵhl = CurrenciesEffects;
+    exports.ɵhm = BaseSiteEffects;
+    exports.ɵhn = reducer$8;
+    exports.ɵho = reducer$7;
+    exports.ɵhp = reducer$6;
+    exports.ɵhq = defaultSiteContextConfigFactory;
+    exports.ɵhr = initializeContext;
+    exports.ɵhs = contextServiceProviders;
+    exports.ɵht = SiteContextRoutesHandler;
+    exports.ɵhu = SiteContextUrlSerializer;
+    exports.ɵhv = siteContextParamsProviders;
+    exports.ɵhw = baseSiteConfigValidator;
+    exports.ɵhx = interceptors$4;
+    exports.ɵhy = CmsTicketInterceptor;
+    exports.ɵhz = StoreFinderStoreModule;
     exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = reducerToken$b;
-    exports.ɵib = reducerProvider$b;
-    exports.ɵic = effects$a;
-    exports.ɵid = FindStoresEffect;
-    exports.ɵie = ViewAllStoresEffect;
-    exports.ɵif = defaultStoreFinderConfig;
-    exports.ɵig = UserStoreModule;
-    exports.ɵih = getReducers$c;
-    exports.ɵii = reducerToken$c;
-    exports.ɵij = reducerProvider$c;
-    exports.ɵik = clearUserState;
-    exports.ɵil = metaReducers$7;
-    exports.ɵim = effects$b;
-    exports.ɵin = BillingCountriesEffect;
-    exports.ɵio = ClearMiscsDataEffect;
-    exports.ɵip = ConsignmentTrackingEffects;
-    exports.ɵiq = CustomerCouponEffects;
-    exports.ɵir = DeliveryCountriesEffects;
-    exports.ɵis = NotificationPreferenceEffects;
-    exports.ɵit = OrderDetailsEffect;
-    exports.ɵiu = OrderReturnRequestEffect;
-    exports.ɵiv = UserPaymentMethodsEffects;
-    exports.ɵiw = ProductInterestsEffect;
-    exports.ɵix = RegionsEffects;
-    exports.ɵiy = ReplenishmentOrderDetailsEffect;
-    exports.ɵiz = ResetPasswordEffects;
+    exports.ɵia = getReducers$b;
+    exports.ɵib = reducerToken$b;
+    exports.ɵic = reducerProvider$b;
+    exports.ɵid = effects$a;
+    exports.ɵie = FindStoresEffect;
+    exports.ɵif = ViewAllStoresEffect;
+    exports.ɵig = defaultStoreFinderConfig;
+    exports.ɵih = UserStoreModule;
+    exports.ɵii = getReducers$c;
+    exports.ɵij = reducerToken$c;
+    exports.ɵik = reducerProvider$c;
+    exports.ɵil = clearUserState;
+    exports.ɵim = metaReducers$7;
+    exports.ɵin = effects$b;
+    exports.ɵio = BillingCountriesEffect;
+    exports.ɵip = ClearMiscsDataEffect;
+    exports.ɵiq = ConsignmentTrackingEffects;
+    exports.ɵir = CustomerCouponEffects;
+    exports.ɵis = DeliveryCountriesEffects;
+    exports.ɵit = NotificationPreferenceEffects;
+    exports.ɵiu = OrderDetailsEffect;
+    exports.ɵiv = OrderReturnRequestEffect;
+    exports.ɵiw = UserPaymentMethodsEffects;
+    exports.ɵix = ProductInterestsEffect;
+    exports.ɵiy = RegionsEffects;
+    exports.ɵiz = ReplenishmentOrderDetailsEffect;
     exports.ɵj = stateMetaReducers;
-    exports.ɵja = TitlesEffects;
-    exports.ɵjb = UserAddressesEffects;
-    exports.ɵjc = UserConsentsEffect;
-    exports.ɵjd = UserDetailsEffects;
-    exports.ɵje = UserOrdersEffect;
-    exports.ɵjf = UserRegisterEffects;
-    exports.ɵjg = UserReplenishmentOrdersEffect;
-    exports.ɵjh = ForgotPasswordEffects;
-    exports.ɵji = UpdateEmailEffects;
-    exports.ɵjj = UpdatePasswordEffects;
-    exports.ɵjk = UserNotificationPreferenceConnector;
-    exports.ɵjl = UserCostCenterEffects;
-    exports.ɵjm = reducer$C;
-    exports.ɵjn = reducer$z;
-    exports.ɵjo = reducer$m;
-    exports.ɵjp = reducer$A;
-    exports.ɵjq = reducer$t;
-    exports.ɵjr = reducer$D;
-    exports.ɵjs = reducer$r;
-    exports.ɵjt = reducer$E;
-    exports.ɵju = reducer$s;
-    exports.ɵjv = reducer$p;
-    exports.ɵjw = reducer$y;
-    exports.ɵjx = reducer$v;
-    exports.ɵjy = reducer$x;
-    exports.ɵjz = reducer$n;
+    exports.ɵja = ResetPasswordEffects;
+    exports.ɵjb = TitlesEffects;
+    exports.ɵjc = UserAddressesEffects;
+    exports.ɵjd = UserConsentsEffect;
+    exports.ɵje = UserDetailsEffects;
+    exports.ɵjf = UserOrdersEffect;
+    exports.ɵjg = UserRegisterEffects;
+    exports.ɵjh = UserReplenishmentOrdersEffect;
+    exports.ɵji = ForgotPasswordEffects;
+    exports.ɵjj = UpdateEmailEffects;
+    exports.ɵjk = UpdatePasswordEffects;
+    exports.ɵjl = UserNotificationPreferenceConnector;
+    exports.ɵjm = UserCostCenterEffects;
+    exports.ɵjn = reducer$C;
+    exports.ɵjo = reducer$z;
+    exports.ɵjp = reducer$m;
+    exports.ɵjq = reducer$A;
+    exports.ɵjr = reducer$t;
+    exports.ɵjs = reducer$D;
+    exports.ɵjt = reducer$r;
+    exports.ɵju = reducer$E;
+    exports.ɵjv = reducer$s;
+    exports.ɵjw = reducer$p;
+    exports.ɵjx = reducer$y;
+    exports.ɵjy = reducer$v;
+    exports.ɵjz = reducer$x;
     exports.ɵk = getStorageSyncReducer;
-    exports.ɵka = reducer$o;
-    exports.ɵkb = reducer$q;
-    exports.ɵkc = reducer$u;
-    exports.ɵkd = reducer$B;
-    exports.ɵke = reducer$w;
+    exports.ɵka = reducer$n;
+    exports.ɵkb = reducer$o;
+    exports.ɵkc = reducer$q;
+    exports.ɵkd = reducer$u;
+    exports.ɵke = reducer$B;
+    exports.ɵkf = reducer$w;
     exports.ɵl = getTransferStateReducer;
     exports.ɵm = getReducers$3;
     exports.ɵn = reducerToken$3;

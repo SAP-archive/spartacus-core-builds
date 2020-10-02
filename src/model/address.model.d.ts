@@ -14,23 +14,25 @@ export interface Region {
     name?: string;
 }
 export interface Address {
-    companyName?: string;
-    country?: Country;
-    defaultAddress?: boolean;
-    email?: string;
-    firstName?: string;
-    formattedAddress?: string;
     id?: string;
-    lastName?: string;
-    line1?: string;
-    line2?: string;
-    phone?: string;
-    postalCode?: string;
-    region?: Region;
-    shippingAddress?: boolean;
     title?: string;
     titleCode?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    companyName?: string;
+    line1?: string;
+    line2?: string;
+    postalCode?: string;
     town?: string;
+    region?: Region;
+    district?: string;
+    country?: Country;
+    cellphone?: string;
+    defaultAddress?: boolean;
+    shippingAddress?: boolean;
+    formattedAddress?: string;
+    phone?: string;
     visibleInAddressBook?: boolean;
 }
 export interface AddressValidation {
