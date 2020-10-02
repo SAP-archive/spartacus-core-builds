@@ -11,6 +11,7 @@ import { CmsStructureModel } from '../model/page.model';
  * The intent of the `CmsStructureConfigService` however is to provide
  * fast loading pages and default cms structure for commodity commerce.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare abstract class CmsStructureConfigService {
     protected cmsDataConfig: CmsStructureConfig;
     constructor(cmsDataConfig: CmsStructureConfig);
@@ -58,4 +59,7 @@ export declare abstract class CmsStructureConfigService {
     protected mergeSlots(pageStructure: CmsStructureModel, slots?: CmsPageSlotsConfig): Observable<CmsStructureModel>;
     protected getComponentsByPosition(slots: CmsPageSlotsConfig, position: string): ContentSlotComponentData[];
     protected getComponentById(componentId: string): ContentSlotComponentData;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CmsStructureConfigService, never>;
 }
+
+//# sourceMappingURL=cms-structure-config.service.d.ts.map
