@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-import * as ɵngcc0 from '@angular/core';
 export declare class WindowRef {
     readonly document: Document;
     constructor(document: any);
@@ -13,7 +12,4 @@ export declare class WindowRef {
      * If there's no window object availale (i.e. in SSR), a null value is emitted.
      */
     get resize$(): Observable<any>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<WindowRef, never>;
 }
-
-//# sourceMappingURL=window-ref.d.ts.map
