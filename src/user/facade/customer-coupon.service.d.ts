@@ -4,7 +4,6 @@ import { AuthService } from '../../auth/facade/auth.service';
 import { CustomerCouponSearchResult } from '../../model/customer-coupon.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class CustomerCouponService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -76,7 +75,4 @@ export declare class CustomerCouponService {
      * Returns the claim customer coupon notification process loading flag
      */
     getClaimCustomerCouponResultLoading(): Observable<boolean>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomerCouponService, never>;
 }
-
-//# sourceMappingURL=customer-coupon.service.d.ts.map
