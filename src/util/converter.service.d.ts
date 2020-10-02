@@ -8,6 +8,7 @@ import { OperatorFunction } from 'rxjs';
  *
  * Converters can be stacked together to to apply decoupled customizations
  */
+import * as ɵngcc0 from '@angular/core';
 export interface Converter<S, T> {
     /**
      * Convert converts source model to target model. Can use optional target parameter,
@@ -44,4 +45,7 @@ export declare class ConverterService {
      */
     convertMany<S, T>(sources: S[], injectionToken: InjectionToken<Converter<S, T>>): T[];
     private convertSource;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConverterService, never>;
 }
+
+//# sourceMappingURL=converter.service.d.ts.map
