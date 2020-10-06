@@ -1,7 +1,6 @@
 import { OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EventService } from '../../event/event.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class ConfigurationService implements OnDestroy {
     protected rootConfig: any;
     protected defaultConfig: any;
@@ -23,7 +22,4 @@ export declare class ConfigurationService implements OnDestroy {
     private processModule;
     private emitUnifiedConfig;
     ngOnDestroy(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConfigurationService, never>;
 }
-
-//# sourceMappingURL=configuration.service.d.ts.map
