@@ -1,1 +1,0 @@
-{"version":3,"file":"product-occ.module.d.ts","sources":["product-occ.module.d.ts"],"names":[],"mappings":"AAAA;;;;AACA;;;AACA","sourcesContent":["import './product-occ-config';\nexport declare class ProductOccModule {\n}\n"]}
