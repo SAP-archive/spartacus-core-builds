@@ -1,6 +1,5 @@
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { WindowRef } from '../../window/window-ref';
-import * as ɵngcc0 from '@angular/core';
 export declare class ExternalRoutesGuard implements CanActivate {
     protected winRef: WindowRef;
     protected platformId: Object;
@@ -13,7 +12,4 @@ export declare class ExternalRoutesGuard implements CanActivate {
      * Redirects to anticipated URL using full page reload, not Angular routing
      */
     protected redirect(_: ActivatedRouteSnapshot, state: RouterStateSnapshot): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ExternalRoutesGuard, never>;
 }
-
-//# sourceMappingURL=external-routes.guard.d.ts.map
