@@ -1,0 +1,1 @@
+{"version":3,"file":"auth-config.d.ts","sources":["auth-config.d.ts"],"names":[],"mappings":"AAAA;;AACA;AACA;AACA;AACA;AACA;;AACA","sourcesContent":["import { OccConfig } from '../../occ/config/occ-config';\nexport declare abstract class AuthConfig extends OccConfig {\n    authentication?: {\n        client_id?: string;\n        client_secret?: string;\n    };\n}\n"]}
