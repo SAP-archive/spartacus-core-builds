@@ -6,7 +6,6 @@ import { SearchConfig } from '../../product/model/search-config';
 import { RoutingService } from '../../routing/index';
 import { WindowRef } from '../../window/window-ref';
 import { FindStoresState, StateWithStoreFinder, ViewAllStoresState } from '../store/store-finder-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class StoreFinderService {
     protected store: Store<StateWithStoreFinder>;
     protected winRef: WindowRef;
@@ -50,7 +49,4 @@ export declare class StoreFinderService {
      */
     viewStoreById(storeId: string): void;
     private clearWatchGeolocation;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<StoreFinderService, never>;
 }
-
-//# sourceMappingURL=store-finder.service.d.ts.map
