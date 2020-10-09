@@ -1,6 +1,7 @@
 import { ExternalJsFileLoader } from './external-js-file-loader.service';
 import { StoreDataService } from '../facade/store-data.service';
 import { StoreFinderConfig } from '../config/store-finder-config';
+import * as ɵngcc0 from '@angular/core';
 export declare class GoogleMapRendererService {
     protected config: StoreFinderConfig;
     protected externalJsFileLoader: ExternalJsFileLoader;
@@ -46,4 +47,7 @@ export declare class GoogleMapRendererService {
      * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
      */
     private drawMap;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<GoogleMapRendererService, never>;
 }
+
+//# sourceMappingURL=google-map-renderer.service.d.ts.map

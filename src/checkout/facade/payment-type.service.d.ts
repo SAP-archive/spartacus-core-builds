@@ -5,6 +5,7 @@ import { ActiveCartService } from '../../cart/facade/active-cart.service';
 import { PaymentType } from '../../model/cart.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithCheckout } from '../store/checkout-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class PaymentTypeService {
     protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -36,4 +37,7 @@ export declare class PaymentTypeService {
      * Get PO Number
      */
     getPoNumber(): Observable<string>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<PaymentTypeService, never>;
 }
+
+//# sourceMappingURL=payment-type.service.d.ts.map
