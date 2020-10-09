@@ -19554,6 +19554,16 @@
         }
         return CartAddEntryFailEvent;
     }());
+    var CartRemoveEntrySuccessEvent = /** @class */ (function () {
+        function CartRemoveEntrySuccessEvent() {
+        }
+        return CartRemoveEntrySuccessEvent;
+    }());
+    var CartUpdateEntrySuccessEvent = /** @class */ (function () {
+        function CartUpdateEntrySuccessEvent() {
+        }
+        return CartUpdateEntrySuccessEvent;
+    }());
 
     /**
      * Registers events for the active cart
@@ -19570,6 +19580,8 @@
          */
         CartEventBuilder.prototype.register = function () {
             this.registerAddEntry();
+            this.registerRemoveEntry();
+            this.registerUpdateEntry();
         };
         /**
          * Register events for adding entry to the active cart
@@ -19588,6 +19600,18 @@
                 event: CartAddEntryFailEvent,
             });
         };
+        CartEventBuilder.prototype.registerRemoveEntry = function () {
+            this.registerMapped({
+                action: CART_REMOVE_ENTRY_SUCCESS,
+                event: CartRemoveEntrySuccessEvent,
+            });
+        };
+        CartEventBuilder.prototype.registerUpdateEntry = function () {
+            this.registerMapped({
+                action: CART_UPDATE_ENTRY_SUCCESS,
+                event: CartUpdateEntrySuccessEvent,
+            });
+        };
         /**
          * Registers a stream of target events mapped from the source actions that contain the cart id equal to the active cart id.
          *
@@ -19595,13 +19619,15 @@
          *   (an with optional `factory` function - by default `action.payload` will be assigned to the properties of the event instance).
          */
         CartEventBuilder.prototype.registerMapped = function (mapping) {
-            var eventStream$ = this.getAction(mapping.action).pipe(operators.withLatestFrom(this.activeCartService.getActiveCartId()), operators.filter(function (_a) {
-                var _b = __read(_a, 2), action = _b[0], activeCartId = _b[1];
-                return action.payload['cartId'] === activeCartId;
+            var eventStream$ = this.getAction(mapping.action).pipe(operators.withLatestFrom(this.activeCartService.getActive()), operators.filter(function (_a) {
+                var _b = __read(_a, 2), action = _b[0], activeCart = _b[1];
+                return action.payload['cartId'] === activeCart.guid;
             } // assuming that action's payload contains the cart id
             ), operators.map(function (_a) {
-                var _b = __read(_a, 1), action = _b[0];
-                return createFrom(mapping.event, action.payload);
+                var _b = __read(_a, 2), action = _b[0], activeCart = _b[1];
+                return createFrom(mapping.event, Object.assign(Object.assign({}, action.payload), { entry: action.payload.entry
+                        ? action.payload.entry
+                        : activeCart.entries[Number(action.payload.entryNumber)] }));
             }));
             return this.event.register(mapping.event, eventStream$);
         };
@@ -29326,6 +29352,8 @@
     exports.CartEventModule = CartEventModule;
     exports.CartModule = CartModule;
     exports.CartOccModule = CartOccModule;
+    exports.CartRemoveEntrySuccessEvent = CartRemoveEntrySuccessEvent;
+    exports.CartUpdateEntrySuccessEvent = CartUpdateEntrySuccessEvent;
     exports.CartVoucherAdapter = CartVoucherAdapter;
     exports.CartVoucherConnector = CartVoucherConnector;
     exports.CartVoucherService = CartVoucherService;

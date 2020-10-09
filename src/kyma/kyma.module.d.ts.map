@@ -1,0 +1,1 @@
+{"version":3,"file":"kyma.module.d.ts","sources":["kyma.module.d.ts"],"names":[],"mappings":";;;;AAAA;;;AACA","sourcesContent":["export declare class KymaModule {\n}\n"]}
