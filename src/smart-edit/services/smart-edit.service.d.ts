@@ -4,6 +4,7 @@ import { Page } from '../../cms/model/page.model';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { BaseSiteService } from '../../site-context/facade/base-site.service';
 import { WindowRef } from '../../window/window-ref';
+import * as ɵngcc0 from '@angular/core';
 export declare class SmartEditService {
     protected cmsService: CmsService;
     protected routingService: RoutingService;
@@ -28,4 +29,7 @@ export declare class SmartEditService {
      * Whether the app launched in smart edit
      */
     isLaunchedInSmartEdit(): boolean;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SmartEditService, never>;
 }
+
+//# sourceMappingURL=smart-edit.service.d.ts.map
