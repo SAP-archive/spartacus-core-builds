@@ -1,10 +1,11 @@
 import { OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EventService } from '../../event/event.service';
+import { UnifiedInjector } from '../../lazy-loading/unified-injector';
+import * as ɵngcc0 from '@angular/core';
 export declare class ConfigurationService implements OnDestroy {
     protected rootConfig: any;
     protected defaultConfig: any;
-    protected events: EventService;
+    protected unifiedInjector: UnifiedInjector;
     /**
      * Will emit unified configuration when some ambient configuration will appear
      *
@@ -17,9 +18,13 @@ export declare class ConfigurationService implements OnDestroy {
     readonly config: any;
     private readonly ambientDefaultConfig;
     private readonly ambientConfig;
-    private eventsSubscription;
-    constructor(rootConfig: any, defaultConfig: any, events: EventService, config: any);
-    private processModule;
+    private subscription;
+    constructor(rootConfig: any, defaultConfig: any, unifiedInjector: UnifiedInjector, config: any);
+    private feedUnifiedConfig;
+    private processConfig;
     private emitUnifiedConfig;
     ngOnDestroy(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConfigurationService, never>;
 }
+
+//# sourceMappingURL=configuration.service.d.ts.map

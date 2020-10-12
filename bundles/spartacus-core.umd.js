@@ -11602,18 +11602,6 @@
         { type: ConverterService }
     ]; };
 
-    /**
-     * Will be thrown in case lazy loaded modules are loaded and instantiated.
-     *
-     * This event is thrown for cms driven lazy loaded feature modules amd it's
-     * dependencies
-     */
-    var ModuleInitializedEvent = /** @class */ (function () {
-        function ModuleInitializedEvent() {
-        }
-        return ModuleInitializedEvent;
-    }());
-
     var FeaturesConfig = /** @class */ (function () {
         function FeaturesConfig() {
         }
@@ -11784,33 +11772,352 @@
                 },] }
     ];
 
-    var ConfigurationService = /** @class */ (function () {
-        function ConfigurationService(rootConfig, defaultConfig, events, config) {
+    /**
+     * Helper logic to resolve best matching Applicable
+     *
+     * Finding best match is a two step process:
+     * 1. Find all matching applicables
+     *    - all applicables for which hasMatch(...matchParams) will return true
+     *    - all applicables without hasMatch method (implicit always match)
+     * 2. Find the applicable with highest priority
+     *    - applicable with highest getPriority(...priorityParams) will win
+     *    - applicable without getPriority method is treated as Priotity.NORMAL or 0
+     *    - applicables with the same priority are sorted by order of providers, the applicable that was provided later wins
+     *
+     * @param applicables - array or applicable-like instancese
+     * @param matchParams - array of parameters passed for hasMatch calls
+     * @param priorityParams - array of parameters passed for getPriority calls
+     */
+    function resolveApplicable(applicables, matchParams, priorityParams) {
+        if (matchParams === void 0) { matchParams = []; }
+        if (priorityParams === void 0) { priorityParams = []; }
+        var matchedApplicables = (applicables !== null && applicables !== void 0 ? applicables : []).filter(function (applicable) { return !applicable.hasMatch || applicable.hasMatch.apply(applicable, __spread(matchParams)); });
+        if (matchedApplicables.length < 2) {
+            return matchedApplicables[0];
+        }
+        var lastPriority = -Infinity;
+        return matchedApplicables.reduce(function (acc, curr) {
+            var currPriority = curr.getPriority
+                ? curr.getPriority.apply(curr, __spread(priorityParams)) : 0 /* NORMAL */;
+            if (lastPriority > currPriority) {
+                return acc;
+            }
+            lastPriority = currPriority;
+            return curr;
+        }, undefined);
+    }
+
+    /**
+     * @license
+     * The MIT License
+     * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
+     *
+     * See:
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
+     */
+    var QUESTION_MARK = '[^/]';
+    var WILD_SINGLE = '[^/]*';
+    var WILD_OPEN = '(?:.+\\/)?';
+    var TO_ESCAPE_BASE = [
+        { replace: /\./g, with: '\\.' },
+        { replace: /\+/g, with: '\\+' },
+        { replace: /\*/g, with: WILD_SINGLE },
+    ];
+    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: QUESTION_MARK },
+    ]);
+    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: '\\?' },
+    ]);
+    /**
+     * Converts the glob-like pattern into regex string.
+     *
+     * Patterns use a limited glob format:
+     * `**` matches 0 or more path segments
+     * `*` matches 0 or more characters excluding `/`
+     * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
+     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+     *
+     * @param glob glob-like pattern
+     * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
+     */
+    function globToRegex(glob, literalQuestionMark) {
+        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
+        var toEscape = literalQuestionMark
+            ? TO_ESCAPE_LITERAL_QM
+            : TO_ESCAPE_WILDCARD_QM;
+        var segments = glob.split('/').reverse();
+        var regex = '';
+        while (segments.length > 0) {
+            var segment = segments.pop();
+            if (segment === '**') {
+                if (segments.length > 0) {
+                    regex += WILD_OPEN;
+                }
+                else {
+                    regex += '.*';
+                }
+            }
+            else {
+                var processed = toEscape.reduce(function (seg, escape) { return seg.replace(escape.replace, escape.with); }, segment);
+                regex += processed;
+                if (segments.length > 0) {
+                    regex += '\\/';
+                }
+            }
+        }
+        return regex;
+    }
+    /**
+     * For given list of glob-like patterns, returns a matcher function.
+     *
+     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     */
+    function getGlobMatcher(patterns) {
+        var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
+            var positive = _a.positive, regex = _a.regex;
+            return ({
+                positive: positive,
+                regex: new RegExp(regex),
+            });
+        });
+        var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
+        var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
+        return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+            !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
+    }
+    /**
+     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+     */
+    function processGlobPatterns(urls) {
+        return urls.map(function (url) {
+            var positive = !url.startsWith('!');
+            url = positive ? url : url.substr(1);
+            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
+        });
+    }
+
+    var GlobService = /** @class */ (function () {
+        function GlobService() {
+        }
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         */
+        GlobService.prototype.getValidator = function (patterns) {
+            var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
+                var positive = _a.positive, regex = _a.regex;
+                return ({
+                    positive: positive,
+                    regex: new RegExp(regex),
+                });
+            });
+            var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
+            var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
+            return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
+        };
+        return GlobService;
+    }());
+    GlobService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+    GlobService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+
+    /**
+     * Will be thrown in case lazy loaded modules are loaded and instantiated.
+     *
+     * This event is thrown for cms driven lazy loaded feature modules amd it's
+     * dependencies
+     */
+    var ModuleInitializedEvent = /** @class */ (function () {
+        function ModuleInitializedEvent() {
+        }
+        return ModuleInitializedEvent;
+    }());
+
+    /**
+     * Utility service for managing dynamic imports of Angular services
+     */
+    var LazyModulesService = /** @class */ (function () {
+        function LazyModulesService(compiler, injector, events) {
+            this.compiler = compiler;
+            this.injector = injector;
+            this.events = events;
+            /**
+             * Expose lazy loaded module references
+             */
+            this.modules$ = this.events
+                .get(ModuleInitializedEvent)
+                .pipe(operators.map(function (event) { return event.moduleRef; }), operators.publishReplay());
+            this.dependencyModules = new Map();
+            this.eventSubscription = this.modules$.connect();
+        }
+        /**
+         * Resolves module instance based dynamic import wrapped in an arrow function
+         *
+         * New module instance will be created with each call.
+         *
+         * @param moduleFunc
+         * @param feature
+         */
+        LazyModulesService.prototype.resolveModuleInstance = function (moduleFunc, feature) {
             var _this = this;
+            return this.resolveModuleFactory(moduleFunc).pipe(operators.map(function (_a) {
+                var _b = __read(_a, 1), moduleFactory = _b[0];
+                return moduleFactory.create(_this.injector);
+            }), operators.tap(function (moduleRef) { return _this.events.dispatch(createFrom(ModuleInitializedEvent, {
+                feature: feature,
+                moduleRef: moduleRef,
+            })); }));
+        };
+        /**
+         * Returns dependency module instance and initializes it when needed.
+         *
+         * Module will be instantiated only once, at first request for a this specific module class
+         */
+        LazyModulesService.prototype.resolveDependencyModuleInstance = function (moduleFunc) {
+            var _this = this;
+            // We grab moduleFactory symbol from module function and if there is no
+            // such a module created yet, we create it and store it in a
+            // dependencyModules map
+            return this.resolveModuleFactory(moduleFunc).pipe(operators.map(function (_a) {
+                var _b = __read(_a, 2), moduleFactory = _b[0], module = _b[1];
+                if (!_this.dependencyModules.has(module)) {
+                    var moduleRef = moduleFactory.create(_this.injector);
+                    _this.dependencyModules.set(module, moduleRef);
+                }
+                return _this.dependencyModules.get(module);
+            }), operators.tap(function (moduleRef) { return _this.events.dispatch(createFrom(ModuleInitializedEvent, {
+                moduleRef: moduleRef,
+            })); }));
+        };
+        /**
+         * Resolve any Angular module from an function that return module or moduleFactory
+         */
+        LazyModulesService.prototype.resolveModuleFactory = function (moduleFunc) {
+            var _this = this;
+            return rxjs.from(moduleFunc()).pipe(operators.switchMap(function (module) { return module instanceof i0.NgModuleFactory
+                ? rxjs.of([module, module])
+                : rxjs.combineLatest([
+                    // using compiler here is for jit compatibility, there is no overhead
+                    // for aot production builds as it will be stubbed
+                    rxjs.from(_this.compiler.compileModuleAsync(module)),
+                    rxjs.of(module),
+                ]); }), operators.observeOn(rxjs.queueScheduler));
+        };
+        LazyModulesService.prototype.ngOnDestroy = function () {
+            if (this.eventSubscription) {
+                this.eventSubscription.unsubscribe();
+            }
+            // clean up all initialized dependency modules
+            this.dependencyModules.forEach(function (dependency) { return dependency.destroy(); });
+        };
+        return LazyModulesService;
+    }());
+    LazyModulesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function LazyModulesService_Factory() { return new LazyModulesService(i0.ɵɵinject(i0.Compiler), i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(EventService)); }, token: LazyModulesService, providedIn: "root" });
+    LazyModulesService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    LazyModulesService.ctorParameters = function () { return [
+        { type: i0.Compiler },
+        { type: i0.Injector },
+        { type: EventService }
+    ]; };
+
+    var NOT_FOUND_SYMBOL = {};
+    /**
+     * UnifiedInjector provides a way to get instances of tokens not only once, from the root injector,
+     * but also from lazy loaded module injectors that can be initialized over time.
+     */
+    var UnifiedInjector = /** @class */ (function () {
+        function UnifiedInjector(rootInjector, lazyModules) {
+            this.rootInjector = rootInjector;
+            this.lazyModules = lazyModules;
+            /**
+             * Gather all the injectors, with the root injector as a first one
+             *
+             * @private
+             */
+            this.injectors$ = this.lazyModules.modules$.pipe(operators.map(function (moduleRef) { return moduleRef.injector; }), operators.startWith(this.rootInjector));
+        }
+        /**
+         * Gen instances for specified tokens.
+         *
+         * When notFoundValue is provided, it will consistently emit once per injector,
+         * even if injector doesn't contain instances for specified token.
+         * Otherwise, emissions will only involve cases, where new instances will be found.
+         *
+         * @param token
+         * @param notFoundValue
+         */
+        UnifiedInjector.prototype.get = function (token, notFoundValue) {
+            return this.injectors$.pipe(operators.map(function (injector, index) { return injector.get(token, notFoundValue !== null && notFoundValue !== void 0 ? notFoundValue : NOT_FOUND_SYMBOL, 
+            // we want to get only Self instances from all injectors except the
+            // first one, which is a root injector
+            index ? i0.InjectFlags.Self : undefined); }), operators.filter(function (instance) { return instance !== NOT_FOUND_SYMBOL; }));
+        };
+        UnifiedInjector.prototype.getMulti = function (token) {
+            return this.get(token, []).pipe(operators.filter(function (instances) {
+                if (!Array.isArray(instances)) {
+                    throw new Error("Multi-providers mixed with single providers for " + token.toString() + "!");
+                }
+                return instances.length > 0;
+            }), operators.scan(function (acc, services) { return __spread(acc, services); }, []));
+        };
+        return UnifiedInjector;
+    }());
+    UnifiedInjector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UnifiedInjector_Factory() { return new UnifiedInjector(i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(LazyModulesService)); }, token: UnifiedInjector, providedIn: "root" });
+    UnifiedInjector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UnifiedInjector.ctorParameters = function () { return [
+        { type: i0.Injector },
+        { type: LazyModulesService }
+    ]; };
+
+    var ConfigurationService = /** @class */ (function () {
+        function ConfigurationService(rootConfig, defaultConfig, unifiedInjector, config) {
             this.rootConfig = rootConfig;
             this.defaultConfig = defaultConfig;
-            this.events = events;
+            this.unifiedInjector = unifiedInjector;
             this.ambientDefaultConfig = {};
             this.ambientConfig = {};
             this.config = config;
             this.unifiedConfig$ = new rxjs.BehaviorSubject(config);
-            this.eventsSubscription = this.events
-                .get(ModuleInitializedEvent)
-                .subscribe(function (moduleInitialized) {
-                _this.processModule(moduleInitialized);
-            });
+            // We need to use subscription to propagate changes to the config from the beginning.
+            // It will be possible to make it lazy, when we drop this compatibility feature
+            // in the future.
+            this.subscription = this.feedUnifiedConfig().subscribe();
         }
-        // We are extracting ambient configuration from lazy loaded modules
-        ConfigurationService.prototype.processModule = function (moduleInitialized) {
-            var defaultConfigs = moduleInitialized.moduleRef.injector.get(DefaultConfigChunk, null, i0.InjectFlags.Self);
-            if (defaultConfigs === null || defaultConfigs === void 0 ? void 0 : defaultConfigs.length) {
-                deepMerge.apply(void 0, __spread([this.ambientDefaultConfig], defaultConfigs));
+        ConfigurationService.prototype.feedUnifiedConfig = function () {
+            var _this = this;
+            var configChunks$ = this.unifiedInjector.get(ConfigChunk, []);
+            var defaultConfigChunks$ = this.unifiedInjector.get(DefaultConfigChunk, []);
+            return rxjs.zip(configChunks$, defaultConfigChunks$).pipe(
+            // we don't need result from the root injector
+            operators.skip(1), operators.tap(function (_a) {
+                var _b = __read(_a, 2), configChunks = _b[0], defaultConfigChunks = _b[1];
+                return _this.processConfig(configChunks, defaultConfigChunks);
+            }));
+        };
+        ConfigurationService.prototype.processConfig = function (configChunks, defaultConfigChunks) {
+            if (defaultConfigChunks === null || defaultConfigChunks === void 0 ? void 0 : defaultConfigChunks.length) {
+                deepMerge.apply(void 0, __spread([this.ambientDefaultConfig], defaultConfigChunks));
             }
-            var configs = moduleInitialized.moduleRef.injector.get(ConfigChunk, null, i0.InjectFlags.Self);
-            if (configs === null || configs === void 0 ? void 0 : configs.length) {
-                deepMerge.apply(void 0, __spread([this.ambientConfig], configs));
+            if (configChunks.length) {
+                deepMerge.apply(void 0, __spread([this.ambientConfig], configChunks));
             }
-            this.emitUnifiedConfig();
+            if (configChunks.length || defaultConfigChunks.length) {
+                this.emitUnifiedConfig();
+            }
         };
         ConfigurationService.prototype.emitUnifiedConfig = function () {
             var newConfig = deepMerge({}, this.defaultConfig, this.ambientDefaultConfig, this.ambientConfig, this.rootConfig);
@@ -11821,14 +12128,14 @@
             }
         };
         ConfigurationService.prototype.ngOnDestroy = function () {
-            if (this.eventsSubscription) {
-                this.eventsSubscription.unsubscribe();
+            if (this.subscription) {
+                this.subscription.unsubscribe();
             }
             this.unifiedConfig$.complete();
         };
         return ConfigurationService;
     }());
-    ConfigurationService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigurationService_Factory() { return new ConfigurationService(i0.ɵɵinject(RootConfig), i0.ɵɵinject(DefaultConfig), i0.ɵɵinject(EventService), i0.ɵɵinject(Config)); }, token: ConfigurationService, providedIn: "root" });
+    ConfigurationService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigurationService_Factory() { return new ConfigurationService(i0.ɵɵinject(RootConfig), i0.ɵɵinject(DefaultConfig), i0.ɵɵinject(UnifiedInjector), i0.ɵɵinject(Config)); }, token: ConfigurationService, providedIn: "root" });
     ConfigurationService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -11837,7 +12144,7 @@
     ConfigurationService.ctorParameters = function () { return [
         { type: undefined, decorators: [{ type: i0.Inject, args: [RootConfig,] }] },
         { type: undefined, decorators: [{ type: i0.Inject, args: [DefaultConfig,] }] },
-        { type: EventService },
+        { type: UnifiedInjector },
         { type: undefined, decorators: [{ type: i0.Inject, args: [Config,] }] }
     ]; };
 
@@ -18376,41 +18683,6 @@
                 },] }
     ];
 
-    /**
-     * Helper logic to resolve best matching Applicable
-     *
-     * Finding best match is a two step process:
-     * 1. Find all matching applicables
-     *    - all applicables for which hasMatch(...matchParams) will return true
-     *    - all applicables without hasMatch method (implicit always match)
-     * 2. Find the applicable with highest priority
-     *    - applicable with highest getPriority(...priorityParams) will win
-     *    - applicable without getPriority method is treated as Priotity.NORMAL or 0
-     *    - applicables with the same priority are sorted by order of providers, the applicable that was provided later wins
-     *
-     * @param applicables - array or applicable-like instancese
-     * @param matchParams - array of parameters passed for hasMatch calls
-     * @param priorityParams - array of parameters passed for getPriority calls
-     */
-    function resolveApplicable(applicables, matchParams, priorityParams) {
-        if (matchParams === void 0) { matchParams = []; }
-        if (priorityParams === void 0) { priorityParams = []; }
-        var matchedApplicables = (applicables !== null && applicables !== void 0 ? applicables : []).filter(function (applicable) { return !applicable.hasMatch || applicable.hasMatch.apply(applicable, __spread(matchParams)); });
-        if (matchedApplicables.length < 2) {
-            return matchedApplicables[0];
-        }
-        var lastPriority = -Infinity;
-        return matchedApplicables.reduce(function (acc, curr) {
-            var currPriority = curr.getPriority
-                ? curr.getPriority.apply(curr, __spread(priorityParams)) : 0 /* NORMAL */;
-            if (lastPriority > currPriority) {
-                return acc;
-            }
-            lastPriority = currPriority;
-            return curr;
-        }, undefined);
-    }
-
     var HttpErrorInterceptor = /** @class */ (function () {
         function HttpErrorInterceptor(handlers) {
             this.handlers = handlers;
@@ -21604,126 +21876,6 @@
         { type: CmsComponentConnector }
     ]; };
 
-    /**
-     * @license
-     * The MIT License
-     * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
-     *
-     * See:
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
-     */
-    var QUESTION_MARK = '[^/]';
-    var WILD_SINGLE = '[^/]*';
-    var WILD_OPEN = '(?:.+\\/)?';
-    var TO_ESCAPE_BASE = [
-        { replace: /\./g, with: '\\.' },
-        { replace: /\+/g, with: '\\+' },
-        { replace: /\*/g, with: WILD_SINGLE },
-    ];
-    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: QUESTION_MARK },
-    ]);
-    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: '\\?' },
-    ]);
-    /**
-     * Converts the glob-like pattern into regex string.
-     *
-     * Patterns use a limited glob format:
-     * `**` matches 0 or more path segments
-     * `*` matches 0 or more characters excluding `/`
-     * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
-     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
-     *
-     * @param glob glob-like pattern
-     * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
-     */
-    function globToRegex(glob, literalQuestionMark) {
-        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
-        var toEscape = literalQuestionMark
-            ? TO_ESCAPE_LITERAL_QM
-            : TO_ESCAPE_WILDCARD_QM;
-        var segments = glob.split('/').reverse();
-        var regex = '';
-        while (segments.length > 0) {
-            var segment = segments.pop();
-            if (segment === '**') {
-                if (segments.length > 0) {
-                    regex += WILD_OPEN;
-                }
-                else {
-                    regex += '.*';
-                }
-            }
-            else {
-                var processed = toEscape.reduce(function (seg, escape) { return seg.replace(escape.replace, escape.with); }, segment);
-                regex += processed;
-                if (segments.length > 0) {
-                    regex += '\\/';
-                }
-            }
-        }
-        return regex;
-    }
-    /**
-     * For given list of glob-like patterns, returns a matcher function.
-     *
-     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     */
-    function getGlobMatcher(patterns) {
-        var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
-            var positive = _a.positive, regex = _a.regex;
-            return ({
-                positive: positive,
-                regex: new RegExp(regex),
-            });
-        });
-        var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
-        var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-        return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-            !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
-    }
-    /**
-     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
-     */
-    function processGlobPatterns(urls) {
-        return urls.map(function (url) {
-            var positive = !url.startsWith('!');
-            url = positive ? url : url.substr(1);
-            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
-        });
-    }
-
-    var GlobService = /** @class */ (function () {
-        function GlobService() {
-        }
-        /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         */
-        GlobService.prototype.getValidator = function (patterns) {
-            var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
-                var positive = _a.positive, regex = _a.regex;
-                return ({
-                    positive: positive,
-                    regex: new RegExp(regex),
-                });
-            });
-            var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
-            var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-            return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
-        };
-        return GlobService;
-    }());
-    GlobService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-    GlobService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-
     var UrlMatcherService = /** @class */ (function () {
         function UrlMatcherService(globService) {
             this.globService = globService;
@@ -22938,9 +23090,15 @@
     ];
 
     var PageMetaService = /** @class */ (function () {
-        function PageMetaService(resolvers, cms) {
+        function PageMetaService(resolvers, cms, unifiedInjector) {
             this.resolvers = resolvers;
             this.cms = cms;
+            this.unifiedInjector = unifiedInjector;
+            this.resolvers$ = this.unifiedInjector
+                ? this.unifiedInjector
+                    .getMulti(PageMetaResolver)
+                    .pipe(operators.shareReplay({ bufferSize: 1, refCount: true }))
+                : rxjs.of(this.resolvers);
             /**
              * The list of resolver interfaces will be evaluated for the pageResolvers.
              *
@@ -22960,16 +23118,7 @@
         }
         PageMetaService.prototype.getMeta = function () {
             var _this = this;
-            return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) {
-                var metaResolver = _this.getMetaResolver(page);
-                if (metaResolver) {
-                    return _this.resolve(metaResolver);
-                }
-                else {
-                    // we do not have a page resolver
-                    return rxjs.of(null);
-                }
-            }));
+            return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) { return _this.getMetaResolver(page); }), operators.switchMap(function (metaResolver) { return metaResolver ? _this.resolve(metaResolver) : rxjs.of(null); }));
         };
         /**
          * If a `PageResolver` has implemented a resolver interface, the resolved data
@@ -22996,11 +23145,11 @@
          * Resolvers match by default on `PageType` and `page.template`.
          */
         PageMetaService.prototype.getMetaResolver = function (page) {
-            return resolveApplicable(this.resolvers, [page], [page]);
+            return this.resolvers$.pipe(operators.map(function (resolvers) { return resolveApplicable(resolvers, [page], [page]); }));
         };
         return PageMetaService;
     }());
-    PageMetaService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(i0.ɵɵinject(PageMetaResolver, 8), i0.ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
+    PageMetaService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(i0.ɵɵinject(PageMetaResolver, 8), i0.ɵɵinject(CmsService), i0.ɵɵinject(UnifiedInjector, 8)); }, token: PageMetaService, providedIn: "root" });
     PageMetaService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -23008,7 +23157,8 @@
     ];
     PageMetaService.ctorParameters = function () { return [
         { type: Array, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [PageMetaResolver,] }] },
-        { type: CmsService }
+        { type: CmsService },
+        { type: UnifiedInjector, decorators: [{ type: i0.Optional }] }
     ]; };
 
     var SmartEditService = /** @class */ (function () {
@@ -29494,6 +29644,7 @@
     exports.LANGUAGE_CONTEXT_ID = LANGUAGE_CONTEXT_ID;
     exports.LANGUAGE_NORMALIZER = LANGUAGE_NORMALIZER;
     exports.LanguageService = LanguageService;
+    exports.LazyModulesService = LazyModulesService;
     exports.LoadingScopesService = LoadingScopesService;
     exports.MEDIA_BASE_URL_META_TAG_NAME = MEDIA_BASE_URL_META_TAG_NAME;
     exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;
@@ -29711,6 +29862,7 @@
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.USE_CUSTOMER_SUPPORT_AGENT_TOKEN = USE_CUSTOMER_SUPPORT_AGENT_TOKEN;
     exports.UnauthorizedErrorHandler = UnauthorizedErrorHandler;
+    exports.UnifiedInjector = UnifiedInjector;
     exports.UnknownErrorHandler = UnknownErrorHandler;
     exports.UrlMatcherService = UrlMatcherService;
     exports.UrlModule = UrlModule;
