@@ -4,6 +4,7 @@ import { Cart } from '../../model/cart.model';
 import { OrderEntry } from '../../model/order.model';
 import { ProcessesLoaderState } from '../../state/utils/processes-loader/processes-loader-state';
 import { StateWithMultiCart } from '../store/multi-cart-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class MultiCartService {
     protected store: Store<StateWithMultiCart>;
     constructor(store: Store<StateWithMultiCart>);
@@ -70,6 +71,15 @@ export declare class MultiCartService {
      */
     getEntries(cartId: string): Observable<OrderEntry[]>;
     /**
+     * Get last entry for specific product code from cart.
+     * Needed to cover processes where multiple entries can share the same product code
+     * (e.g. promotions or configurable products)
+     *
+     * @param cartId
+     * @param productCode
+     */
+    getLastEntry(cartId: string, productCode: string): Observable<OrderEntry | null>;
+    /**
      * Add entry to cart
      *
      * @param userId
@@ -107,7 +117,7 @@ export declare class MultiCartService {
      */
     updateEntry(userId: string, cartId: string, entryNumber: number, quantity: number): void;
     /**
-     * Get specific entry from cart
+     * Get first entry from cart matching the specified product code
      *
      * @param cartId
      * @param productCode
@@ -128,4 +138,7 @@ export declare class MultiCartService {
      * @param userId
      */
     deleteCart(cartId: string, userId: string): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<MultiCartService, never>;
 }
+
+//# sourceMappingURL=multi-cart.service.d.ts.map

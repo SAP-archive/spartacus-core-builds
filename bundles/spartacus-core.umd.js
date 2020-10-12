@@ -7022,6 +7022,22 @@
             return this.store.pipe(i1$1.select(getCartEntriesSelectorFactory(cartId)));
         };
         /**
+         * Get last entry for specific product code from cart.
+         * Needed to cover processes where multiple entries can share the same product code
+         * (e.g. promotions or configurable products)
+         *
+         * @param cartId
+         * @param productCode
+         */
+        MultiCartService.prototype.getLastEntry = function (cartId, productCode) {
+            return this.store.pipe(i1$1.select(getCartEntriesSelectorFactory(cartId)), operators.map(function (entries) {
+                var filteredEntries = entries.filter(function (entry) { return entry.product.code === productCode; });
+                return filteredEntries
+                    ? filteredEntries[filteredEntries.length - 1]
+                    : undefined;
+            }));
+        };
+        /**
          * Add entry to cart
          *
          * @param userId
@@ -7091,7 +7107,7 @@
             }
         };
         /**
-         * Get specific entry from cart
+         * Get first entry from cart matching the specified product code
          *
          * @param cartId
          * @param productCode
@@ -7224,6 +7240,17 @@
         ActiveCartService.prototype.getEntries = function () {
             var _this = this;
             return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getEntries(cartId); }), operators.distinctUntilChanged());
+        };
+        /**
+         * Returns last cart entry for provided product code.
+         * Needed to cover processes where multiple entries can share the same product code
+         * (e.g. promotions or configurable products)
+         *
+         * @param productCode
+         */
+        ActiveCartService.prototype.getLastEntry = function (productCode) {
+            var _this = this;
+            return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.getLastEntry(cartId, productCode); }), operators.distinctUntilChanged());
         };
         /**
          * Returns cart loading state

@@ -6088,6 +6088,22 @@ class MultiCartService {
         return this.store.pipe(select(getCartEntriesSelectorFactory(cartId)));
     }
     /**
+     * Get last entry for specific product code from cart.
+     * Needed to cover processes where multiple entries can share the same product code
+     * (e.g. promotions or configurable products)
+     *
+     * @param cartId
+     * @param productCode
+     */
+    getLastEntry(cartId, productCode) {
+        return this.store.pipe(select(getCartEntriesSelectorFactory(cartId)), map((entries) => {
+            const filteredEntries = entries.filter((entry) => entry.product.code === productCode);
+            return filteredEntries
+                ? filteredEntries[filteredEntries.length - 1]
+                : undefined;
+        }));
+    }
+    /**
      * Add entry to cart
      *
      * @param userId
@@ -6156,7 +6172,7 @@ class MultiCartService {
         }
     }
     /**
-     * Get specific entry from cart
+     * Get first entry from cart matching the specified product code
      *
      * @param cartId
      * @param productCode
@@ -6276,6 +6292,16 @@ class ActiveCartService {
      */
     getEntries() {
         return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getEntries(cartId)), distinctUntilChanged());
+    }
+    /**
+     * Returns last cart entry for provided product code.
+     * Needed to cover processes where multiple entries can share the same product code
+     * (e.g. promotions or configurable products)
+     *
+     * @param productCode
+     */
+    getLastEntry(productCode) {
+        return this.activeCartId$.pipe(switchMap((cartId) => this.multiCartService.getLastEntry(cartId, productCode)), distinctUntilChanged());
     }
     /**
      * Returns cart loading state
