@@ -11579,8 +11579,25 @@
         { type: i0.Injectable }
     ];
 
+    var OccCostCenterSerializer = /** @class */ (function () {
+        function OccCostCenterSerializer() {
+        }
+        OccCostCenterSerializer.prototype.convert = function (source, target) {
+            if (target === undefined) {
+                target = Object.assign(Object.assign({}, source), { activeFlag: source.active });
+                delete target.active;
+            }
+            return target;
+        };
+        return OccCostCenterSerializer;
+    }());
+    OccCostCenterSerializer.decorators = [
+        { type: i0.Injectable }
+    ];
+
     var COST_CENTER_NORMALIZER = new i0.InjectionToken('CostCenterNormalizer');
     var COST_CENTERS_NORMALIZER = new i0.InjectionToken('CostCentersListNormalizer');
+    var COST_CENTER_SERIALIZER = new i0.InjectionToken('CostCenterSerializer');
 
     var OccCostCenterListNormalizer = /** @class */ (function () {
         function OccCostCenterListNormalizer(converter) {
@@ -12223,6 +12240,16 @@
                         {
                             provide: COST_CENTERS_NORMALIZER,
                             useClass: OccCostCenterListNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: COST_CENTER_NORMALIZER,
+                            useClass: OccCostCenterNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: COST_CENTER_SERIALIZER,
+                            useClass: OccCostCenterSerializer,
                             multi: true,
                         },
                     ],
@@ -29507,6 +29534,7 @@
     exports.CONSIGNMENT_TRACKING_NORMALIZER = CONSIGNMENT_TRACKING_NORMALIZER;
     exports.COST_CENTERS_NORMALIZER = COST_CENTERS_NORMALIZER;
     exports.COST_CENTER_NORMALIZER = COST_CENTER_NORMALIZER;
+    exports.COST_CENTER_SERIALIZER = COST_CENTER_SERIALIZER;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
     exports.CSAGENT_TOKEN_DATA = CSAGENT_TOKEN_DATA;
     exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
@@ -29693,6 +29721,7 @@
     exports.OccConfigLoaderService = OccConfigLoaderService;
     exports.OccCostCenterListNormalizer = OccCostCenterListNormalizer;
     exports.OccCostCenterNormalizer = OccCostCenterNormalizer;
+    exports.OccCostCenterSerializer = OccCostCenterSerializer;
     exports.OccCustomerCouponAdapter = OccCustomerCouponAdapter;
     exports.OccEndpointsService = OccEndpointsService;
     exports.OccFieldsService = OccFieldsService;
