@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { Translatable } from '../../i18n/translatable';
 import { GlobalMessageType } from '../models/global-message.model';
 import { GlobalMessageEntities, StateWithGlobalMessage } from '../store/global-message-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class GlobalMessageService {
     protected store: Store<StateWithGlobalMessage>;
     constructor(store: Store<StateWithGlobalMessage>);
@@ -25,7 +24,4 @@ export declare class GlobalMessageService {
      * message will be removed from list by index.
      */
     remove(type: GlobalMessageType, index?: number): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<GlobalMessageService, never>;
 }
-
-//# sourceMappingURL=global-message.service.d.ts.map

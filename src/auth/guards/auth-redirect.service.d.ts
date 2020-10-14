@@ -1,6 +1,5 @@
 import { Router } from '@angular/router';
 import { RoutingService } from '../../routing/facade/routing.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class AuthRedirectService {
     private routing;
     private router;
@@ -24,7 +23,4 @@ export declare class AuthRedirectService {
     reportAuthGuard(): void;
     reportNotAuthGuard(): void;
     private getCurrentNavigation;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthRedirectService, never>;
 }
-
-//# sourceMappingURL=auth-redirect.service.d.ts.map
