@@ -3999,17 +3999,653 @@
 
     var CUSTOMER_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('CustomerSearchPageNormalizer');
 
-    var ConverterService = /** @class */ (function () {
-        function ConverterService(injector) {
+    /**
+     * Helper logic to resolve best matching Applicable
+     *
+     * Finding best match is a two step process:
+     * 1. Find all matching applicables
+     *    - all applicables for which hasMatch(...matchParams) will return true
+     *    - all applicables without hasMatch method (implicit always match)
+     * 2. Find the applicable with highest priority
+     *    - applicable with highest getPriority(...priorityParams) will win
+     *    - applicable without getPriority method is treated as Priotity.NORMAL or 0
+     *    - applicables with the same priority are sorted by order of providers, the applicable that was provided later wins
+     *
+     * @param applicables - array or applicable-like instancese
+     * @param matchParams - array of parameters passed for hasMatch calls
+     * @param priorityParams - array of parameters passed for getPriority calls
+     */
+    function resolveApplicable(applicables, matchParams, priorityParams) {
+        if (matchParams === void 0) { matchParams = []; }
+        if (priorityParams === void 0) { priorityParams = []; }
+        var matchedApplicables = (applicables !== null && applicables !== void 0 ? applicables : []).filter(function (applicable) { return !applicable.hasMatch || applicable.hasMatch.apply(applicable, __spread(matchParams)); });
+        if (matchedApplicables.length < 2) {
+            return matchedApplicables[0];
+        }
+        var lastPriority = -Infinity;
+        return matchedApplicables.reduce(function (acc, curr) {
+            var currPriority = curr.getPriority
+                ? curr.getPriority.apply(curr, __spread(priorityParams)) : 0 /* NORMAL */;
+            if (lastPriority > currPriority) {
+                return acc;
+            }
+            lastPriority = currPriority;
+            return curr;
+        }, undefined);
+    }
+
+    /**
+     * Creates an instance of the given class and fills its properties with the given data.
+     *
+     * @param type reference to the class
+     * @param data object with properties to be copied to the class
+     */
+    function createFrom(type, data) {
+        return Object.assign(new type(), data);
+    }
+
+    /**
+     * @license
+     * The MIT License
+     * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
+     *
+     * See:
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
+     */
+    var QUESTION_MARK = '[^/]';
+    var WILD_SINGLE = '[^/]*';
+    var WILD_OPEN = '(?:.+\\/)?';
+    var TO_ESCAPE_BASE = [
+        { replace: /\./g, with: '\\.' },
+        { replace: /\+/g, with: '\\+' },
+        { replace: /\*/g, with: WILD_SINGLE },
+    ];
+    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: QUESTION_MARK },
+    ]);
+    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: '\\?' },
+    ]);
+    /**
+     * Converts the glob-like pattern into regex string.
+     *
+     * Patterns use a limited glob format:
+     * `**` matches 0 or more path segments
+     * `*` matches 0 or more characters excluding `/`
+     * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
+     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+     *
+     * @param glob glob-like pattern
+     * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
+     */
+    function globToRegex(glob, literalQuestionMark) {
+        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
+        var toEscape = literalQuestionMark
+            ? TO_ESCAPE_LITERAL_QM
+            : TO_ESCAPE_WILDCARD_QM;
+        var segments = glob.split('/').reverse();
+        var regex = '';
+        while (segments.length > 0) {
+            var segment = segments.pop();
+            if (segment === '**') {
+                if (segments.length > 0) {
+                    regex += WILD_OPEN;
+                }
+                else {
+                    regex += '.*';
+                }
+            }
+            else {
+                var processed = toEscape.reduce(function (seg, escape) { return seg.replace(escape.replace, escape.with); }, segment);
+                regex += processed;
+                if (segments.length > 0) {
+                    regex += '\\/';
+                }
+            }
+        }
+        return regex;
+    }
+    /**
+     * For given list of glob-like patterns, returns a matcher function.
+     *
+     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     */
+    function getGlobMatcher(patterns) {
+        var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
+            var positive = _a.positive, regex = _a.regex;
+            return ({
+                positive: positive,
+                regex: new RegExp(regex),
+            });
+        });
+        var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
+        var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
+        return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+            !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
+    }
+    /**
+     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+     */
+    function processGlobPatterns(urls) {
+        return urls.map(function (url) {
+            var positive = !url.startsWith('!');
+            url = positive ? url : url.substr(1);
+            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
+        });
+    }
+
+    var GlobService = /** @class */ (function () {
+        function GlobService() {
+        }
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         */
+        GlobService.prototype.getValidator = function (patterns) {
+            var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
+                var positive = _a.positive, regex = _a.regex;
+                return ({
+                    positive: positive,
+                    regex: new RegExp(regex),
+                });
+            });
+            var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
+            var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
+            return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
+        };
+        return GlobService;
+    }());
+    GlobService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+    GlobService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+
+    /**
+     * Normalizes HttpErrorResponse to HttpErrorModel.
+     *
+     * Can be used as a safe and generic way for embodying http errors into
+     * NgRx Action payload, as it will strip potentially unserializable parts from
+     * it and warn in debug mode if passed error is not instance of HttpErrorModel
+     * (which usually happens when logic in NgRx Effect is not sealed correctly)
+     */
+    function normalizeHttpError(error) {
+        if (error instanceof i1.HttpErrorResponse) {
+            var normalizedError = {
+                message: error.message,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            };
+            // include backend's error details
+            if (Array.isArray(error.error.errors)) {
+                normalizedError.details = error.error.errors;
+            }
+            else if (typeof error.error.error === 'string') {
+                normalizedError.details = [
+                    {
+                        type: error.error.error,
+                        message: error.error.error_description,
+                    },
+                ];
+            }
+            return normalizedError;
+        }
+        if (i0.isDevMode()) {
+            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
+        }
+        return undefined;
+    }
+
+    // Email Standard RFC 5322:
+    var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
+    var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
+
+    /**
+     *
+     * Withdraw from the source observable when notifier emits a value
+     *
+     * Withdraw will result in resubscribing to the source observable
+     * Operator is useful to kill ongoing emission transformation on notifier emission
+     *
+     * @param notifier
+     */
+    function withdrawOn(notifier) {
+        return function (source) { return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source)); };
+    }
+
+    /**
+     * Will grab last synchronously available value from the observable stream
+     * at the time of the call.
+     *
+     * Should be used with caution, as it's not a legitimate way for getting value
+     * from the observable. Observable composition or standard subscribe method
+     * should be used for most of the cases.
+     *
+     * @param source
+     */
+    function getLastValueSync(source) {
+        var value;
+        source.subscribe(function (emission) { return (value = emission); }).unsubscribe();
+        return value;
+    }
+
+    /**
+     * Will be thrown in case lazy loaded modules are loaded and instantiated.
+     *
+     * This event is thrown for cms driven lazy loaded feature modules amd it's
+     * dependencies
+     */
+    var ModuleInitializedEvent = /** @class */ (function () {
+        function ModuleInitializedEvent() {
+        }
+        return ModuleInitializedEvent;
+    }());
+
+    // PRIVATE API
+    /**
+     * Allows for dynamic adding and removing source observables
+     * and exposes them as one merged observable at a property `output$`.
+     *
+     * Thanks to the `share()` operator used inside, it subscribes to source observables
+     * only when someone subscribes to it. And it unsubscribes from source observables
+     * when the counter of consumers drops to 0.
+     *
+     * **To avoid memory leaks**, all manually added sources should be manually removed
+     * when not plan to emit values anymore. In particular closed event sources won't be
+     * automatically removed.
+     */
+    var MergingSubject = /** @class */ (function () {
+        function MergingSubject() {
+            var _this = this;
+            /**
+             * List of already added sources (but not removed yet)
+             */
+            this.sources = [];
+            /**
+             * For each source: it stores a subscription responsible for
+             * passing all values from source to the consumer
+             */
+            this.subscriptionsToSources = new Map();
+            /**
+             * Observable with all sources merged.
+             *
+             * Only after subscribing to it, under the hood it subscribes to the source observables.
+             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
+             * But if later on something subscribes to it again, it subscribes to the source observables again.
+             *
+             * It multicasts the emissions for each subscriber.
+             */
+            this.output$ = new rxjs.Observable(function (consumer) {
+                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
+                // that is piped right after this observable.
+                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
+                // from this observable (by the nature `refCount`-nature of the `share()` operator).
+                _this.consumer = consumer;
+                _this.bindAllSourcesToConsumer(consumer);
+                return function () {
+                    _this.consumer = null;
+                    _this.unbindAllSourcesFromConsumer();
+                };
+            }).pipe(operators.share());
+            /**
+             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
+             * For more, see docs of the `output$` observable;
+             */
+            this.consumer = null;
+        }
+        /**
+         * Registers the given source to pass its values to the `output$` observable.
+         *
+         * It does nothing, when the source has been already added (but not removed yet).
+         */
+        MergingSubject.prototype.add = function (source) {
+            if (this.has(source)) {
+                return;
+            }
+            if (this.consumer) {
+                this.bindSourceToConsumer(source, this.consumer);
+            }
+            this.sources.push(source);
+        };
+        /**
+         * Starts passing all values from already added sources to consumer
+         */
+        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
+            var _this = this;
+            this.sources.forEach(function (source) { return _this.bindSourceToConsumer(source, consumer); });
+        };
+        /**
+         * Stops passing all values from already added sources to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
+            var _this = this;
+            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
+        };
+        /**
+         * Starts passing all values from a single source to consumer
+         */
+        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
+            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
+            this.subscriptionsToSources.set(source, subscriptionToSource);
+        };
+        /**
+         * Stops passing all values from a single source to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
+            var subscriptionToSource = this.subscriptionsToSources.get(source);
+            if (subscriptionToSource !== undefined) {
+                subscriptionToSource.unsubscribe();
+                this.subscriptionsToSources.delete(source);
+            }
+        };
+        /**
+         * Unregisters the given source so it stops passing its values to `output$` observable.
+         *
+         * Should be used when a source is no longer maintained **to avoid memory leaks**.
+         */
+        MergingSubject.prototype.remove = function (source) {
+            // clear binding from source to consumer (if any consumer exists at the moment)
+            this.unbindSourceFromConsumer(source);
+            // remove source from array
+            var i;
+            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
+                this.sources.splice(i, 1);
+            }
+        };
+        /**
+         * Returns whether the given source has been already addded
+         */
+        MergingSubject.prototype.has = function (source) {
+            return this.sources.includes(source);
+        };
+        return MergingSubject;
+    }());
+
+    /**
+     * A service to register and observe event sources. Events are driven by event types, which are class signatures
+     * for the given event.
+     *
+     * It is possible to register multiple sources to a single event, even without
+     * knowing as multiple decoupled features can attach sources to the same
+     * event type.
+     */
+    var EventService = /** @class */ (function () {
+        function EventService() {
+            /**
+             * The various events meta are collected in a map, stored by the event type class
+             */
+            this.eventsMeta = new Map();
+        }
+        /**
+         * Register an event source for the given event type.
+         *
+         * CAUTION: To avoid memory leaks, the returned teardown function should be called
+         *  when the event source is no longer maintained by its creator
+         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
+         *
+         * @param eventType the event type
+         * @param source$ an observable that represents the source
+         *
+         * @returns a teardown function which unregisters the given event source
+         */
+        EventService.prototype.register = function (eventType, source$) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (eventMeta.mergingSubject.has(source$)) {
+                if (i0.isDevMode()) {
+                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
+                }
+            }
+            else {
+                eventMeta.mergingSubject.add(source$);
+            }
+            return function () { return eventMeta.mergingSubject.remove(source$); };
+        };
+        /**
+         * Returns a stream of events for the given event type
+         * @param eventTypes event type
+         */
+        EventService.prototype.get = function (eventType) {
+            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
+            if (i0.isDevMode()) {
+                output$ = this.getValidatedEventStream(output$, eventType);
+            }
+            return output$;
+        };
+        /**
+         * Dispatches an instance of an individual event.
+         */
+        EventService.prototype.dispatch = function (event) {
+            var eventType = event.constructor;
+            var inputSubject$ = this.getInputSubject(eventType);
+            inputSubject$.next(event);
+        };
+        /**
+         * Returns the input subject used to dispatch a single event.
+         * The subject is created on demand, when it's needed for the first time.
+         * @param eventType type of event
+         */
+        EventService.prototype.getInputSubject = function (eventType) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (!eventMeta.inputSubject$) {
+                eventMeta.inputSubject$ = new rxjs.Subject();
+                this.register(eventType, eventMeta.inputSubject$);
+            }
+            return eventMeta.inputSubject$;
+        };
+        /**
+         * Returns the event meta object for the given event type
+         */
+        EventService.prototype.getEventMeta = function (eventType) {
+            if (i0.isDevMode()) {
+                this.validateEventType(eventType);
+            }
+            if (!this.eventsMeta.get(eventType)) {
+                this.createEventMeta(eventType);
+            }
+            return this.eventsMeta.get(eventType);
+        };
+        /**
+         * Creates the event meta object for the given event type
+         */
+        EventService.prototype.createEventMeta = function (eventType) {
+            this.eventsMeta.set(eventType, {
+                inputSubject$: null,
+                mergingSubject: new MergingSubject(),
+            });
+        };
+        /**
+         * Checks if the event type is a valid type (is a class with constructor).
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.validateEventType = function (eventType) {
+            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
+                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
+            }
+        };
+        /**
+         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
+            return source$.pipe(operators.tap(function (event) {
+                if (!(event instanceof eventType)) {
+                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
+                }
+            }));
+        };
+        return EventService;
+    }());
+    EventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+    EventService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+
+    /**
+     * Utility service for managing dynamic imports of Angular services
+     */
+    var LazyModulesService = /** @class */ (function () {
+        function LazyModulesService(compiler, injector, events) {
+            this.compiler = compiler;
             this.injector = injector;
+            this.events = events;
+            /**
+             * Expose lazy loaded module references
+             */
+            this.modules$ = this.events
+                .get(ModuleInitializedEvent)
+                .pipe(operators.map(function (event) { return event.moduleRef; }), operators.publishReplay());
+            this.dependencyModules = new Map();
+            this.eventSubscription = this.modules$.connect();
+        }
+        /**
+         * Resolves module instance based dynamic import wrapped in an arrow function
+         *
+         * New module instance will be created with each call.
+         *
+         * @param moduleFunc
+         * @param feature
+         */
+        LazyModulesService.prototype.resolveModuleInstance = function (moduleFunc, feature) {
+            var _this = this;
+            return this.resolveModuleFactory(moduleFunc).pipe(operators.map(function (_a) {
+                var _b = __read(_a, 1), moduleFactory = _b[0];
+                return moduleFactory.create(_this.injector);
+            }), operators.tap(function (moduleRef) { return _this.events.dispatch(createFrom(ModuleInitializedEvent, {
+                feature: feature,
+                moduleRef: moduleRef,
+            })); }));
+        };
+        /**
+         * Returns dependency module instance and initializes it when needed.
+         *
+         * Module will be instantiated only once, at first request for a this specific module class
+         */
+        LazyModulesService.prototype.resolveDependencyModuleInstance = function (moduleFunc) {
+            var _this = this;
+            // We grab moduleFactory symbol from module function and if there is no
+            // such a module created yet, we create it and store it in a
+            // dependencyModules map
+            return this.resolveModuleFactory(moduleFunc).pipe(operators.map(function (_a) {
+                var _b = __read(_a, 2), moduleFactory = _b[0], module = _b[1];
+                if (!_this.dependencyModules.has(module)) {
+                    var moduleRef = moduleFactory.create(_this.injector);
+                    _this.dependencyModules.set(module, moduleRef);
+                }
+                return _this.dependencyModules.get(module);
+            }), operators.tap(function (moduleRef) { return _this.events.dispatch(createFrom(ModuleInitializedEvent, {
+                moduleRef: moduleRef,
+            })); }));
+        };
+        /**
+         * Resolve any Angular module from an function that return module or moduleFactory
+         */
+        LazyModulesService.prototype.resolveModuleFactory = function (moduleFunc) {
+            var _this = this;
+            return rxjs.from(moduleFunc()).pipe(operators.switchMap(function (module) { return module instanceof i0.NgModuleFactory
+                ? rxjs.of([module, module])
+                : rxjs.combineLatest([
+                    // using compiler here is for jit compatibility, there is no overhead
+                    // for aot production builds as it will be stubbed
+                    rxjs.from(_this.compiler.compileModuleAsync(module)),
+                    rxjs.of(module),
+                ]); }), operators.observeOn(rxjs.queueScheduler));
+        };
+        LazyModulesService.prototype.ngOnDestroy = function () {
+            if (this.eventSubscription) {
+                this.eventSubscription.unsubscribe();
+            }
+            // clean up all initialized dependency modules
+            this.dependencyModules.forEach(function (dependency) { return dependency.destroy(); });
+        };
+        return LazyModulesService;
+    }());
+    LazyModulesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function LazyModulesService_Factory() { return new LazyModulesService(i0.ɵɵinject(i0.Compiler), i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(EventService)); }, token: LazyModulesService, providedIn: "root" });
+    LazyModulesService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    LazyModulesService.ctorParameters = function () { return [
+        { type: i0.Compiler },
+        { type: i0.Injector },
+        { type: EventService }
+    ]; };
+
+    var NOT_FOUND_SYMBOL = {};
+    /**
+     * UnifiedInjector provides a way to get instances of tokens not only once, from the root injector,
+     * but also from lazy loaded module injectors that can be initialized over time.
+     */
+    var UnifiedInjector = /** @class */ (function () {
+        function UnifiedInjector(rootInjector, lazyModules) {
+            this.rootInjector = rootInjector;
+            this.lazyModules = lazyModules;
+            /**
+             * Gather all the injectors, with the root injector as a first one
+             *
+             */
+            this.injectors$ = this.lazyModules.modules$.pipe(operators.map(function (moduleRef) { return moduleRef.injector; }), operators.startWith(this.rootInjector));
+        }
+        /**
+         * Gen instances for specified tokens.
+         *
+         * When notFoundValue is provided, it will consistently emit once per injector,
+         * even if injector doesn't contain instances for specified token.
+         * Otherwise, emissions will only involve cases, where new instances will be found.
+         *
+         * @param token
+         * @param notFoundValue
+         */
+        UnifiedInjector.prototype.get = function (token, notFoundValue) {
+            return this.injectors$.pipe(operators.map(function (injector, index) { return injector.get(token, notFoundValue !== null && notFoundValue !== void 0 ? notFoundValue : NOT_FOUND_SYMBOL, 
+            // we want to get only Self instances from all injectors except the
+            // first one, which is a root injector
+            index ? i0.InjectFlags.Self : undefined); }), operators.filter(function (instance) { return instance !== NOT_FOUND_SYMBOL; }));
+        };
+        UnifiedInjector.prototype.getMulti = function (token) {
+            return this.get(token, []).pipe(operators.filter(function (instances) {
+                if (!Array.isArray(instances)) {
+                    throw new Error("Multi-providers mixed with single providers for " + token.toString() + "!");
+                }
+                return instances.length > 0;
+            }), operators.scan(function (acc, services) { return __spread(acc, services); }, []));
+        };
+        return UnifiedInjector;
+    }());
+    UnifiedInjector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UnifiedInjector_Factory() { return new UnifiedInjector(i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(LazyModulesService)); }, token: UnifiedInjector, providedIn: "root" });
+    UnifiedInjector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    UnifiedInjector.ctorParameters = function () { return [
+        { type: i0.Injector },
+        { type: LazyModulesService }
+    ]; };
+
+    var ConverterService = /** @class */ (function () {
+        function ConverterService(unifiedInjector) {
+            var _this = this;
+            this.unifiedInjector = unifiedInjector;
+            this.subscriptions = new rxjs.Subscription();
             this.converters = new Map();
+            // Clear cached converters when new injectors appear
+            var cacheResetLogic = this.unifiedInjector.injectors$.pipe(operators.tap(function () { return _this.converters.clear(); }));
+            this.subscriptions.add(cacheResetLogic.subscribe());
         }
         ConverterService.prototype.getConverters = function (injectionToken) {
             if (!this.converters.has(injectionToken)) {
-                var converters = this.injector.get(injectionToken, []);
-                if (!Array.isArray(converters)) {
-                    console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
-                }
+                var converters = getLastValueSync(this.unifiedInjector.get(injectionToken, []));
                 this.converters.set(injectionToken, converters);
             }
             return this.converters.get(injectionToken);
@@ -4073,16 +4709,19 @@
                 return converter.convert(source, target);
             }, undefined);
         };
+        ConverterService.prototype.ngOnDestroy = function () {
+            this.subscriptions.unsubscribe();
+        };
         return ConverterService;
     }());
-    ConverterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(i0.ɵɵinject(i0.INJECTOR)); }, token: ConverterService, providedIn: "root" });
+    ConverterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(i0.ɵɵinject(UnifiedInjector)); }, token: ConverterService, providedIn: "root" });
     ConverterService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ConverterService.ctorParameters = function () { return [
-        { type: i0.Injector }
+        { type: UnifiedInjector }
     ]; };
 
     var OccAsmAdapter = /** @class */ (function () {
@@ -5085,261 +5724,6 @@
         return PageMetaResolver;
     }());
 
-    // PRIVATE API
-    /**
-     * Allows for dynamic adding and removing source observables
-     * and exposes them as one merged observable at a property `output$`.
-     *
-     * Thanks to the `share()` operator used inside, it subscribes to source observables
-     * only when someone subscribes to it. And it unsubscribes from source observables
-     * when the counter of consumers drops to 0.
-     *
-     * **To avoid memory leaks**, all manually added sources should be manually removed
-     * when not plan to emit values anymore. In particular closed event sources won't be
-     * automatically removed.
-     */
-    var MergingSubject = /** @class */ (function () {
-        function MergingSubject() {
-            var _this = this;
-            /**
-             * List of already added sources (but not removed yet)
-             */
-            this.sources = [];
-            /**
-             * For each source: it stores a subscription responsible for
-             * passing all values from source to the consumer
-             */
-            this.subscriptionsToSources = new Map();
-            /**
-             * Observable with all sources merged.
-             *
-             * Only after subscribing to it, under the hood it subscribes to the source observables.
-             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
-             * But if later on something subscribes to it again, it subscribes to the source observables again.
-             *
-             * It multicasts the emissions for each subscriber.
-             */
-            this.output$ = new rxjs.Observable(function (consumer) {
-                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
-                // that is piped right after this observable.
-                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
-                // from this observable (by the nature `refCount`-nature of the `share()` operator).
-                _this.consumer = consumer;
-                _this.bindAllSourcesToConsumer(consumer);
-                return function () {
-                    _this.consumer = null;
-                    _this.unbindAllSourcesFromConsumer();
-                };
-            }).pipe(operators.share());
-            /**
-             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
-             * For more, see docs of the `output$` observable;
-             */
-            this.consumer = null;
-        }
-        /**
-         * Registers the given source to pass its values to the `output$` observable.
-         *
-         * It does nothing, when the source has been already added (but not removed yet).
-         */
-        MergingSubject.prototype.add = function (source) {
-            if (this.has(source)) {
-                return;
-            }
-            if (this.consumer) {
-                this.bindSourceToConsumer(source, this.consumer);
-            }
-            this.sources.push(source);
-        };
-        /**
-         * Starts passing all values from already added sources to consumer
-         */
-        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
-            var _this = this;
-            this.sources.forEach(function (source) { return _this.bindSourceToConsumer(source, consumer); });
-        };
-        /**
-         * Stops passing all values from already added sources to consumer
-         * (if any consumer is active at the moment)
-         */
-        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
-            var _this = this;
-            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
-        };
-        /**
-         * Starts passing all values from a single source to consumer
-         */
-        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
-            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
-            this.subscriptionsToSources.set(source, subscriptionToSource);
-        };
-        /**
-         * Stops passing all values from a single source to consumer
-         * (if any consumer is active at the moment)
-         */
-        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
-            var subscriptionToSource = this.subscriptionsToSources.get(source);
-            if (subscriptionToSource !== undefined) {
-                subscriptionToSource.unsubscribe();
-                this.subscriptionsToSources.delete(source);
-            }
-        };
-        /**
-         * Unregisters the given source so it stops passing its values to `output$` observable.
-         *
-         * Should be used when a source is no longer maintained **to avoid memory leaks**.
-         */
-        MergingSubject.prototype.remove = function (source) {
-            // clear binding from source to consumer (if any consumer exists at the moment)
-            this.unbindSourceFromConsumer(source);
-            // remove source from array
-            var i;
-            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
-                this.sources.splice(i, 1);
-            }
-        };
-        /**
-         * Returns whether the given source has been already addded
-         */
-        MergingSubject.prototype.has = function (source) {
-            return this.sources.includes(source);
-        };
-        return MergingSubject;
-    }());
-
-    /**
-     * A service to register and observe event sources. Events are driven by event types, which are class signatures
-     * for the given event.
-     *
-     * It is possible to register multiple sources to a single event, even without
-     * knowing as multiple decoupled features can attach sources to the same
-     * event type.
-     */
-    var EventService = /** @class */ (function () {
-        function EventService() {
-            /**
-             * The various events meta are collected in a map, stored by the event type class
-             */
-            this.eventsMeta = new Map();
-        }
-        /**
-         * Register an event source for the given event type.
-         *
-         * CAUTION: To avoid memory leaks, the returned teardown function should be called
-         *  when the event source is no longer maintained by its creator
-         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
-         *
-         * @param eventType the event type
-         * @param source$ an observable that represents the source
-         *
-         * @returns a teardown function which unregisters the given event source
-         */
-        EventService.prototype.register = function (eventType, source$) {
-            var eventMeta = this.getEventMeta(eventType);
-            if (eventMeta.mergingSubject.has(source$)) {
-                if (i0.isDevMode()) {
-                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
-                }
-            }
-            else {
-                eventMeta.mergingSubject.add(source$);
-            }
-            return function () { return eventMeta.mergingSubject.remove(source$); };
-        };
-        /**
-         * Returns a stream of events for the given event type
-         * @param eventTypes event type
-         */
-        EventService.prototype.get = function (eventType) {
-            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
-            if (i0.isDevMode()) {
-                output$ = this.getValidatedEventStream(output$, eventType);
-            }
-            return output$;
-        };
-        /**
-         * Dispatches an instance of an individual event.
-         */
-        EventService.prototype.dispatch = function (event) {
-            var eventType = event.constructor;
-            var inputSubject$ = this.getInputSubject(eventType);
-            inputSubject$.next(event);
-        };
-        /**
-         * Returns the input subject used to dispatch a single event.
-         * The subject is created on demand, when it's needed for the first time.
-         * @param eventType type of event
-         */
-        EventService.prototype.getInputSubject = function (eventType) {
-            var eventMeta = this.getEventMeta(eventType);
-            if (!eventMeta.inputSubject$) {
-                eventMeta.inputSubject$ = new rxjs.Subject();
-                this.register(eventType, eventMeta.inputSubject$);
-            }
-            return eventMeta.inputSubject$;
-        };
-        /**
-         * Returns the event meta object for the given event type
-         */
-        EventService.prototype.getEventMeta = function (eventType) {
-            if (i0.isDevMode()) {
-                this.validateEventType(eventType);
-            }
-            if (!this.eventsMeta.get(eventType)) {
-                this.createEventMeta(eventType);
-            }
-            return this.eventsMeta.get(eventType);
-        };
-        /**
-         * Creates the event meta object for the given event type
-         */
-        EventService.prototype.createEventMeta = function (eventType) {
-            this.eventsMeta.set(eventType, {
-                inputSubject$: null,
-                mergingSubject: new MergingSubject(),
-            });
-        };
-        /**
-         * Checks if the event type is a valid type (is a class with constructor).
-         *
-         * Should be used only in dev mode.
-         */
-        EventService.prototype.validateEventType = function (eventType) {
-            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
-                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
-            }
-        };
-        /**
-         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
-         *
-         * Should be used only in dev mode.
-         */
-        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
-            return source$.pipe(operators.tap(function (event) {
-                if (!(event instanceof eventType)) {
-                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
-                }
-            }));
-        };
-        return EventService;
-    }());
-    EventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
-    EventService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-
-    /**
-     * Creates an instance of the given class and fills its properties with the given data.
-     *
-     * @param type reference to the class
-     * @param data object with properties to be copied to the class
-     */
-    function createFrom(type, data) {
-        return Object.assign(new type(), data);
-    }
-
     /**
      * Registers streams of ngrx actions as events source streams
      */
@@ -6225,10 +6609,6 @@
     CheckoutEventModule.ctorParameters = function () { return [
         { type: CheckoutEventBuilder }
     ]; };
-
-    // Email Standard RFC 5322:
-    var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
-    var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
     var getMultiCartState = i1$1.createFeatureSelector(MULTI_CART_FEATURE);
     var ɵ0$b = function (state) { return state.carts; };
@@ -9672,55 +10052,6 @@
         ClearUserReplenishmentOrders: ClearUserReplenishmentOrders
     });
 
-    /**
-     * Normalizes HttpErrorResponse to HttpErrorModel.
-     *
-     * Can be used as a safe and generic way for embodying http errors into
-     * NgRx Action payload, as it will strip potentially unserializable parts from
-     * it and warn in debug mode if passed error is not instance of HttpErrorModel
-     * (which usually happens when logic in NgRx Effect is not sealed correctly)
-     */
-    function normalizeHttpError(error) {
-        if (error instanceof i1.HttpErrorResponse) {
-            var normalizedError = {
-                message: error.message,
-                status: error.status,
-                statusText: error.statusText,
-                url: error.url,
-            };
-            // include backend's error details
-            if (Array.isArray(error.error.errors)) {
-                normalizedError.details = error.error.errors;
-            }
-            else if (typeof error.error.error === 'string') {
-                normalizedError.details = [
-                    {
-                        type: error.error.error,
-                        message: error.error.error_description,
-                    },
-                ];
-            }
-            return normalizedError;
-        }
-        if (i0.isDevMode()) {
-            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
-        }
-        return undefined;
-    }
-
-    /**
-     *
-     * Withdraw from the source observable when notifier emits a value
-     *
-     * Withdraw will result in resubscribing to the source observable
-     * Operator is useful to kill ongoing emission transformation on notifier emission
-     *
-     * @param notifier
-     */
-    function withdrawOn(notifier) {
-        return function (source) { return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source)); };
-    }
-
     var CheckoutEffects = /** @class */ (function () {
         function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutCostCenterConnector, checkoutConnector) {
             var _this = this;
@@ -11788,317 +12119,6 @@
                     exports: [FeatureLevelDirective, FeatureDirective],
                 },] }
     ];
-
-    /**
-     * Helper logic to resolve best matching Applicable
-     *
-     * Finding best match is a two step process:
-     * 1. Find all matching applicables
-     *    - all applicables for which hasMatch(...matchParams) will return true
-     *    - all applicables without hasMatch method (implicit always match)
-     * 2. Find the applicable with highest priority
-     *    - applicable with highest getPriority(...priorityParams) will win
-     *    - applicable without getPriority method is treated as Priotity.NORMAL or 0
-     *    - applicables with the same priority are sorted by order of providers, the applicable that was provided later wins
-     *
-     * @param applicables - array or applicable-like instancese
-     * @param matchParams - array of parameters passed for hasMatch calls
-     * @param priorityParams - array of parameters passed for getPriority calls
-     */
-    function resolveApplicable(applicables, matchParams, priorityParams) {
-        if (matchParams === void 0) { matchParams = []; }
-        if (priorityParams === void 0) { priorityParams = []; }
-        var matchedApplicables = (applicables !== null && applicables !== void 0 ? applicables : []).filter(function (applicable) { return !applicable.hasMatch || applicable.hasMatch.apply(applicable, __spread(matchParams)); });
-        if (matchedApplicables.length < 2) {
-            return matchedApplicables[0];
-        }
-        var lastPriority = -Infinity;
-        return matchedApplicables.reduce(function (acc, curr) {
-            var currPriority = curr.getPriority
-                ? curr.getPriority.apply(curr, __spread(priorityParams)) : 0 /* NORMAL */;
-            if (lastPriority > currPriority) {
-                return acc;
-            }
-            lastPriority = currPriority;
-            return curr;
-        }, undefined);
-    }
-
-    /**
-     * @license
-     * The MIT License
-     * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
-     *
-     * See:
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
-     */
-    var QUESTION_MARK = '[^/]';
-    var WILD_SINGLE = '[^/]*';
-    var WILD_OPEN = '(?:.+\\/)?';
-    var TO_ESCAPE_BASE = [
-        { replace: /\./g, with: '\\.' },
-        { replace: /\+/g, with: '\\+' },
-        { replace: /\*/g, with: WILD_SINGLE },
-    ];
-    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: QUESTION_MARK },
-    ]);
-    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: '\\?' },
-    ]);
-    /**
-     * Converts the glob-like pattern into regex string.
-     *
-     * Patterns use a limited glob format:
-     * `**` matches 0 or more path segments
-     * `*` matches 0 or more characters excluding `/`
-     * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
-     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
-     *
-     * @param glob glob-like pattern
-     * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
-     */
-    function globToRegex(glob, literalQuestionMark) {
-        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
-        var toEscape = literalQuestionMark
-            ? TO_ESCAPE_LITERAL_QM
-            : TO_ESCAPE_WILDCARD_QM;
-        var segments = glob.split('/').reverse();
-        var regex = '';
-        while (segments.length > 0) {
-            var segment = segments.pop();
-            if (segment === '**') {
-                if (segments.length > 0) {
-                    regex += WILD_OPEN;
-                }
-                else {
-                    regex += '.*';
-                }
-            }
-            else {
-                var processed = toEscape.reduce(function (seg, escape) { return seg.replace(escape.replace, escape.with); }, segment);
-                regex += processed;
-                if (segments.length > 0) {
-                    regex += '\\/';
-                }
-            }
-        }
-        return regex;
-    }
-    /**
-     * For given list of glob-like patterns, returns a matcher function.
-     *
-     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     */
-    function getGlobMatcher(patterns) {
-        var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
-            var positive = _a.positive, regex = _a.regex;
-            return ({
-                positive: positive,
-                regex: new RegExp(regex),
-            });
-        });
-        var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
-        var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-        return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-            !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
-    }
-    /**
-     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
-     */
-    function processGlobPatterns(urls) {
-        return urls.map(function (url) {
-            var positive = !url.startsWith('!');
-            url = positive ? url : url.substr(1);
-            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
-        });
-    }
-
-    var GlobService = /** @class */ (function () {
-        function GlobService() {
-        }
-        /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         */
-        GlobService.prototype.getValidator = function (patterns) {
-            var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
-                var positive = _a.positive, regex = _a.regex;
-                return ({
-                    positive: positive,
-                    regex: new RegExp(regex),
-                });
-            });
-            var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
-            var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-            return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
-        };
-        return GlobService;
-    }());
-    GlobService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-    GlobService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-
-    /**
-     * Will be thrown in case lazy loaded modules are loaded and instantiated.
-     *
-     * This event is thrown for cms driven lazy loaded feature modules amd it's
-     * dependencies
-     */
-    var ModuleInitializedEvent = /** @class */ (function () {
-        function ModuleInitializedEvent() {
-        }
-        return ModuleInitializedEvent;
-    }());
-
-    /**
-     * Utility service for managing dynamic imports of Angular services
-     */
-    var LazyModulesService = /** @class */ (function () {
-        function LazyModulesService(compiler, injector, events) {
-            this.compiler = compiler;
-            this.injector = injector;
-            this.events = events;
-            /**
-             * Expose lazy loaded module references
-             */
-            this.modules$ = this.events
-                .get(ModuleInitializedEvent)
-                .pipe(operators.map(function (event) { return event.moduleRef; }), operators.publishReplay());
-            this.dependencyModules = new Map();
-            this.eventSubscription = this.modules$.connect();
-        }
-        /**
-         * Resolves module instance based dynamic import wrapped in an arrow function
-         *
-         * New module instance will be created with each call.
-         *
-         * @param moduleFunc
-         * @param feature
-         */
-        LazyModulesService.prototype.resolveModuleInstance = function (moduleFunc, feature) {
-            var _this = this;
-            return this.resolveModuleFactory(moduleFunc).pipe(operators.map(function (_a) {
-                var _b = __read(_a, 1), moduleFactory = _b[0];
-                return moduleFactory.create(_this.injector);
-            }), operators.tap(function (moduleRef) { return _this.events.dispatch(createFrom(ModuleInitializedEvent, {
-                feature: feature,
-                moduleRef: moduleRef,
-            })); }));
-        };
-        /**
-         * Returns dependency module instance and initializes it when needed.
-         *
-         * Module will be instantiated only once, at first request for a this specific module class
-         */
-        LazyModulesService.prototype.resolveDependencyModuleInstance = function (moduleFunc) {
-            var _this = this;
-            // We grab moduleFactory symbol from module function and if there is no
-            // such a module created yet, we create it and store it in a
-            // dependencyModules map
-            return this.resolveModuleFactory(moduleFunc).pipe(operators.map(function (_a) {
-                var _b = __read(_a, 2), moduleFactory = _b[0], module = _b[1];
-                if (!_this.dependencyModules.has(module)) {
-                    var moduleRef = moduleFactory.create(_this.injector);
-                    _this.dependencyModules.set(module, moduleRef);
-                }
-                return _this.dependencyModules.get(module);
-            }), operators.tap(function (moduleRef) { return _this.events.dispatch(createFrom(ModuleInitializedEvent, {
-                moduleRef: moduleRef,
-            })); }));
-        };
-        /**
-         * Resolve any Angular module from an function that return module or moduleFactory
-         */
-        LazyModulesService.prototype.resolveModuleFactory = function (moduleFunc) {
-            var _this = this;
-            return rxjs.from(moduleFunc()).pipe(operators.switchMap(function (module) { return module instanceof i0.NgModuleFactory
-                ? rxjs.of([module, module])
-                : rxjs.combineLatest([
-                    // using compiler here is for jit compatibility, there is no overhead
-                    // for aot production builds as it will be stubbed
-                    rxjs.from(_this.compiler.compileModuleAsync(module)),
-                    rxjs.of(module),
-                ]); }), operators.observeOn(rxjs.queueScheduler));
-        };
-        LazyModulesService.prototype.ngOnDestroy = function () {
-            if (this.eventSubscription) {
-                this.eventSubscription.unsubscribe();
-            }
-            // clean up all initialized dependency modules
-            this.dependencyModules.forEach(function (dependency) { return dependency.destroy(); });
-        };
-        return LazyModulesService;
-    }());
-    LazyModulesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function LazyModulesService_Factory() { return new LazyModulesService(i0.ɵɵinject(i0.Compiler), i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(EventService)); }, token: LazyModulesService, providedIn: "root" });
-    LazyModulesService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    LazyModulesService.ctorParameters = function () { return [
-        { type: i0.Compiler },
-        { type: i0.Injector },
-        { type: EventService }
-    ]; };
-
-    var NOT_FOUND_SYMBOL = {};
-    /**
-     * UnifiedInjector provides a way to get instances of tokens not only once, from the root injector,
-     * but also from lazy loaded module injectors that can be initialized over time.
-     */
-    var UnifiedInjector = /** @class */ (function () {
-        function UnifiedInjector(rootInjector, lazyModules) {
-            this.rootInjector = rootInjector;
-            this.lazyModules = lazyModules;
-            /**
-             * Gather all the injectors, with the root injector as a first one
-             *
-             * @private
-             */
-            this.injectors$ = this.lazyModules.modules$.pipe(operators.map(function (moduleRef) { return moduleRef.injector; }), operators.startWith(this.rootInjector));
-        }
-        /**
-         * Gen instances for specified tokens.
-         *
-         * When notFoundValue is provided, it will consistently emit once per injector,
-         * even if injector doesn't contain instances for specified token.
-         * Otherwise, emissions will only involve cases, where new instances will be found.
-         *
-         * @param token
-         * @param notFoundValue
-         */
-        UnifiedInjector.prototype.get = function (token, notFoundValue) {
-            return this.injectors$.pipe(operators.map(function (injector, index) { return injector.get(token, notFoundValue !== null && notFoundValue !== void 0 ? notFoundValue : NOT_FOUND_SYMBOL, 
-            // we want to get only Self instances from all injectors except the
-            // first one, which is a root injector
-            index ? i0.InjectFlags.Self : undefined); }), operators.filter(function (instance) { return instance !== NOT_FOUND_SYMBOL; }));
-        };
-        UnifiedInjector.prototype.getMulti = function (token) {
-            return this.get(token, []).pipe(operators.filter(function (instances) {
-                if (!Array.isArray(instances)) {
-                    throw new Error("Multi-providers mixed with single providers for " + token.toString() + "!");
-                }
-                return instances.length > 0;
-            }), operators.scan(function (acc, services) { return __spread(acc, services); }, []));
-        };
-        return UnifiedInjector;
-    }());
-    UnifiedInjector.ɵprov = i0.ɵɵdefineInjectable({ factory: function UnifiedInjector_Factory() { return new UnifiedInjector(i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(LazyModulesService)); }, token: UnifiedInjector, providedIn: "root" });
-    UnifiedInjector.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UnifiedInjector.ctorParameters = function () { return [
-        { type: i0.Injector },
-        { type: LazyModulesService }
-    ]; };
 
     var ConfigurationService = /** @class */ (function () {
         function ConfigurationService(rootConfig, defaultConfig, unifiedInjector, config) {
@@ -29939,6 +29959,7 @@
     exports.defaultOccConfig = defaultOccConfig;
     exports.defaultStateConfig = defaultStateConfig;
     exports.errorHandlers = errorHandlers;
+    exports.getLastValueSync = getLastValueSync;
     exports.getServerRequestProviders = getServerRequestProviders;
     exports.httpErrorInterceptors = httpErrorInterceptors;
     exports.initConfigurableRoutes = initConfigurableRoutes;

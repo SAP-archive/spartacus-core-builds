@@ -1,5 +1,6 @@
-import { InjectionToken, Injector } from '@angular/core';
-import { OperatorFunction } from 'rxjs';
+import { InjectionToken, OnDestroy } from '@angular/core';
+import { OperatorFunction, Subscription } from 'rxjs';
+import { UnifiedInjector } from '../lazy-loading/unified-injector';
 /**
  * Converter is used to convert source data model to target data model.
  * By convention, we distinguish two flows:
@@ -8,6 +9,7 @@ import { OperatorFunction } from 'rxjs';
  *
  * Converters can be stacked together to to apply decoupled customizations
  */
+import * as ɵngcc0 from '@angular/core';
 export interface Converter<S, T> {
     /**
      * Convert converts source model to target model. Can use optional target parameter,
@@ -18,9 +20,10 @@ export interface Converter<S, T> {
      */
     convert(source: S, target?: T): T;
 }
-export declare class ConverterService {
-    protected injector: Injector;
-    constructor(injector: Injector);
+export declare class ConverterService implements OnDestroy {
+    protected unifiedInjector: UnifiedInjector;
+    protected subscriptions: Subscription;
+    constructor(unifiedInjector: UnifiedInjector);
     private converters;
     private getConverters;
     /**
@@ -44,4 +47,8 @@ export declare class ConverterService {
      */
     convertMany<S, T>(sources: S[], injectionToken: InjectionToken<Converter<S, T>>): T[];
     private convertSource;
+    ngOnDestroy(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConverterService, never>;
 }
+
+//# sourceMappingURL=converter.service.d.ts.map

@@ -1,6 +1,7 @@
 import { SiteContextConfig } from '../../site-context/config/site-context-config';
 import { OccEndpoints } from '../occ-models/occ-endpoints.model';
 import { LoadingScopes } from './loading-scopes-config';
+import * as ɵngcc0 from '@angular/core';
 export declare abstract class OccConfig extends SiteContextConfig {
     backend?: {
         occ?: {
@@ -24,4 +25,7 @@ export declare abstract class OccConfig extends SiteContextConfig {
         };
         loadingScopes?: LoadingScopes;
     };
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccConfig, never>;
 }
+
+//# sourceMappingURL=occ-config.d.ts.map
