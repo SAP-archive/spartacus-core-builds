@@ -1,5 +1,4 @@
 import { RoutesConfig } from '../routes-config';
-import * as ɵngcc0 from '@angular/core';
 export declare const enum RouteLoadStrategy {
     /**
      * Don't reload the data on navigation if it was loaded before
@@ -25,7 +24,4 @@ export declare abstract class RoutingConfig {
          */
         loadStrategy?: RouteLoadStrategy;
     };
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<RoutingConfig, never>;
 }
-
-//# sourceMappingURL=routing-config.d.ts.map
