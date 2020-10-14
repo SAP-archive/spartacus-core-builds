@@ -1,5 +1,4 @@
 import { OccConfig } from '../config/occ-config';
-import * as ɵngcc0 from '@angular/core';
 export declare class LoadingScopesService {
     protected config: OccConfig;
     constructor(config: OccConfig);
@@ -23,7 +22,4 @@ export declare class LoadingScopesService {
      * @param scope
      */
     getMaxAge(model: string, scope: string): number;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<LoadingScopesService, never>;
 }
-
-//# sourceMappingURL=loading-scopes.service.d.ts.map
