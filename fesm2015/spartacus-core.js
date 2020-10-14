@@ -3835,7 +3835,7 @@ class ConverterService {
     }
     getConverters(injectionToken) {
         if (!this.converters.has(injectionToken)) {
-            const converters = getLastValueSync(this.unifiedInjector.get(injectionToken, []));
+            const converters = getLastValueSync(this.unifiedInjector.getMulti(injectionToken));
             this.converters.set(injectionToken, converters);
         }
         return this.converters.get(injectionToken);

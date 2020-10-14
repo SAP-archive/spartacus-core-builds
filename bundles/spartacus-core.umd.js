@@ -4437,7 +4437,7 @@
         }
         ConverterService.prototype.getConverters = function (injectionToken) {
             if (!this.converters.has(injectionToken)) {
-                var converters = getLastValueSync(this.unifiedInjector.get(injectionToken, []));
+                var converters = getLastValueSync(this.unifiedInjector.getMulti(injectionToken));
                 this.converters.set(injectionToken, converters);
             }
             return this.converters.get(injectionToken);
