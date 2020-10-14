@@ -10039,18 +10039,12 @@
             this.setCostCenter$ = this.actions$.pipe(i3.ofType(SET_COST_CENTER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.checkoutCostCenterConnector
                     .setCostCenter(payload.userId, payload.cartId, payload.costCenterId)
-                    .pipe(operators.mergeMap(function (data) { return [
-                    // TODO(#8877): We should trigger load cart not already assign the data. We might have misconfiguration between this cart model and load cart model
-                    new LoadCartSuccess({
-                        cart: data,
+                    .pipe(operators.mergeMap(function (_data) { return [
+                    new LoadCart({
                         cartId: payload.cartId,
                         userId: payload.userId,
                     }),
                     new SetCostCenterSuccess(payload.costCenterId),
-                    new ClearCheckoutDeliveryMode({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    }),
                     new ClearCheckoutDeliveryAddress({
                         userId: payload.userId,
                         cartId: payload.cartId,
@@ -12087,7 +12081,7 @@
         backend: {
             occ: {
                 endpoints: {
-                    costCenters: '/costcenters',
+                    getActiveCostCenters: '/costcenters?fields=DEFAULT,unit(BASIC,addresses(DEFAULT))',
                 },
             },
         },
@@ -14230,14 +14224,12 @@
             this.converter = converter;
         }
         OccUserCostCenterAdapter.prototype.loadActiveList = function (userId) {
-            // TODO(#8877): Use configurable endpoints
-            var params = new i1.HttpParams().set('fields', 'DEFAULT,unit(BASIC,addresses(DEFAULT))');
             return this.http
-                .get(this.getCostCentersEndpoint(userId), { params: params })
+                .get(this.getCostCentersEndpoint(userId))
                 .pipe(this.converter.pipeable(COST_CENTERS_NORMALIZER));
         };
         OccUserCostCenterAdapter.prototype.getCostCentersEndpoint = function (userId, params) {
-            return this.occEndpoints.getUrl('costCenters', { userId: userId }, params);
+            return this.occEndpoints.getUrl('getActiveCostCenters', { userId: userId }, params);
         };
         return OccUserCostCenterAdapter;
     }());

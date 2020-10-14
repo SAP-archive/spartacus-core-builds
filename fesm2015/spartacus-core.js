@@ -8627,18 +8627,12 @@ class CheckoutEffects {
         this.setCostCenter$ = this.actions$.pipe(ofType(SET_COST_CENTER), map((action) => action.payload), switchMap((payload) => {
             return this.checkoutCostCenterConnector
                 .setCostCenter(payload.userId, payload.cartId, payload.costCenterId)
-                .pipe(mergeMap((data) => [
-                // TODO(#8877): We should trigger load cart not already assign the data. We might have misconfiguration between this cart model and load cart model
-                new LoadCartSuccess({
-                    cart: data,
+                .pipe(mergeMap((_data) => [
+                new LoadCart({
                     cartId: payload.cartId,
                     userId: payload.userId,
                 }),
                 new SetCostCenterSuccess(payload.costCenterId),
-                new ClearCheckoutDeliveryMode({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                }),
                 new ClearCheckoutDeliveryAddress({
                     userId: payload.userId,
                     cartId: payload.cartId,
@@ -10514,7 +10508,7 @@ const defaultOccCostCentersConfig = {
     backend: {
         occ: {
             endpoints: {
-                costCenters: '/costcenters',
+                getActiveCostCenters: '/costcenters?fields=DEFAULT,unit(BASIC,addresses(DEFAULT))',
             },
         },
     },
@@ -12493,14 +12487,12 @@ class OccUserCostCenterAdapter {
         this.converter = converter;
     }
     loadActiveList(userId) {
-        // TODO(#8877): Use configurable endpoints
-        const params = new HttpParams().set('fields', 'DEFAULT,unit(BASIC,addresses(DEFAULT))');
         return this.http
-            .get(this.getCostCentersEndpoint(userId), { params })
+            .get(this.getCostCentersEndpoint(userId))
             .pipe(this.converter.pipeable(COST_CENTERS_NORMALIZER));
     }
     getCostCentersEndpoint(userId, params) {
-        return this.occEndpoints.getUrl('costCenters', { userId }, params);
+        return this.occEndpoints.getUrl('getActiveCostCenters', { userId }, params);
     }
 }
 OccUserCostCenterAdapter.decorators = [

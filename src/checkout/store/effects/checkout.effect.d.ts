@@ -8,6 +8,7 @@ import { CheckoutCostCenterConnector } from '../../connectors/cost-center/checko
 import { CheckoutDeliveryConnector } from '../../connectors/delivery/checkout-delivery.connector';
 import { CheckoutPaymentConnector } from '../../connectors/payment/checkout-payment.connector';
 import { CheckoutActions } from '../actions/index';
+import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutEffects {
     private actions$;
     private checkoutDeliveryConnector;
@@ -30,6 +31,10 @@ export declare class CheckoutEffects {
     reloadDetailsOnMergeCart$: Observable<CheckoutActions.LoadCheckoutDetails>;
     clearCheckoutDeliveryAddress$: Observable<CheckoutActions.ClearCheckoutDeliveryAddressFail | CheckoutActions.ClearCheckoutDeliveryAddressSuccess>;
     clearCheckoutDeliveryMode$: Observable<CheckoutActions.ClearCheckoutDeliveryModeFail | CheckoutActions.ClearCheckoutDeliveryModeSuccess | CartActions.LoadCart>;
-    setCostCenter$: Observable<CheckoutActions.SetCostCenterSuccess | CheckoutActions.SetCostCenterFail | CheckoutActions.ClearCheckoutDeliveryMode | CheckoutActions.ClearCheckoutDeliveryAddress | CartActions.LoadCartSuccess>;
+    setCostCenter$: Observable<CheckoutActions.SetCostCenterSuccess | CheckoutActions.SetCostCenterFail | CheckoutActions.ClearCheckoutDeliveryAddress | CartActions.LoadCart>;
     constructor(actions$: Actions, checkoutDeliveryConnector: CheckoutDeliveryConnector, checkoutPaymentConnector: CheckoutPaymentConnector, checkoutCostCenterConnector: CheckoutCostCenterConnector, checkoutConnector: CheckoutConnector);
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutEffects, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CheckoutEffects>;
 }
+
+//# sourceMappingURL=checkout.effect.d.ts.map
