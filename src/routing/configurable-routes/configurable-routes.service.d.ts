@@ -4,7 +4,6 @@ import { UrlMatcherService } from '../services/url-matcher.service';
 import { UrlMatcherFactory } from '../url-matcher/url-matcher-factory';
 import { RouteConfig } from './routes-config';
 import { RoutingConfigService } from './routing-config.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class ConfigurableRoutesService {
     protected injector: Injector;
     protected routingConfigService: RoutingConfigService;
@@ -56,7 +55,4 @@ export declare class ConfigurableRoutesService {
     protected getRouteName(route: Route): string;
     protected validateRouteConfig(routeConfig: RouteConfig, routeName: string, route: Route): void;
     private warn;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConfigurableRoutesService, never>;
 }
-
-//# sourceMappingURL=configurable-routes.service.d.ts.map
