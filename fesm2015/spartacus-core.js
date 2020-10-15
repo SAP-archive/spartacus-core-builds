@@ -3,7 +3,7 @@ import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, MET
 import { of, fromEvent, throwError, EMPTY, iif, combineLatest, Observable, Subject, from, queueScheduler, Subscription, timer, BehaviorSubject, zip, forkJoin, NEVER, using, defer, merge } from 'rxjs';
 import { map, take, filter, switchMap, debounceTime, startWith, distinctUntilChanged, shareReplay, tap, catchError, exhaustMap, mergeMap, withLatestFrom, share, publishReplay, observeOn, scan, pluck, debounce, switchMapTo, concatMap, skip, mapTo, bufferCount, delay, groupBy, distinctUntilKeyChanged, takeWhile, auditTime } from 'rxjs/operators';
 import { DOCUMENT, isPlatformBrowser, isPlatformServer, CommonModule, Location, DatePipe, getLocaleId } from '@angular/common';
-import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
+import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, NavigationEnd, DefaultUrlSerializer, NavigationStart, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
@@ -2749,7 +2749,6 @@ AuthStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    HttpClientModule,
                     StateModule,
                     StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers }),
                     EffectsModule.forFeature(effects),
@@ -2771,7 +2770,7 @@ class AuthModule {
 }
 AuthModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule, AuthStoreModule],
+                imports: [CommonModule, AuthStoreModule],
             },] }
 ];
 
@@ -3953,7 +3952,7 @@ class AsmOccModule {
 }
 AsmOccModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule],
+                imports: [CommonModule],
                 providers: [
                     provideDefaultConfig(defaultOccAsmConfig),
                     {
@@ -4257,7 +4256,7 @@ class CartOccModule {
 }
 CartOccModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule],
+                imports: [CommonModule],
                 providers: [
                     provideDefaultConfig(defaultOccCartConfig),
                     {
@@ -8966,7 +8965,6 @@ CheckoutStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    HttpClientModule,
                     StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$1),
                     EffectsModule.forFeature(effects$1),
                 ],
@@ -9878,7 +9876,7 @@ class CheckoutOccModule {
 }
 CheckoutOccModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule],
+                imports: [CommonModule],
                 providers: [
                     provideDefaultConfig(defaultOccCheckoutConfig),
                     {
@@ -10168,7 +10166,7 @@ class CmsOccModule {
 }
 CmsOccModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule],
+                imports: [CommonModule],
                 providers: [
                     {
                         provide: CmsPageAdapter,
@@ -11206,7 +11204,7 @@ class ProductOccModule {
 }
 ProductOccModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule],
+                imports: [CommonModule],
                 providers: [
                     provideDefaultConfig(defaultOccProductConfig),
                     {
@@ -11502,7 +11500,7 @@ class SiteContextOccModule {
 }
 SiteContextOccModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule],
+                imports: [CommonModule],
                 providers: [
                     provideDefaultConfig(defaultOccSiteContextConfig),
                     {
@@ -12508,7 +12506,7 @@ class UserOccModule {
 }
 UserOccModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule],
+                imports: [CommonModule],
                 providers: [
                     provideDefaultConfig(defaultOccUserConfig),
                     { provide: UserAdapter, useClass: OccUserAdapter },
@@ -15634,7 +15632,6 @@ SiteContextStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    HttpClientModule,
                     StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
                     EffectsModule.forFeature(effects$3),
                 ],
@@ -16022,7 +16019,6 @@ AsmStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    HttpClientModule,
                     StateModule,
                     StoreModule.forFeature(ASM_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
                     EffectsModule.forFeature(effects$4),
@@ -16988,7 +16984,7 @@ class AsmModule {
 }
 AsmModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule, AsmStoreModule],
+                imports: [CommonModule, AsmStoreModule],
             },] }
 ];
 
@@ -20622,7 +20618,6 @@ CmsStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    HttpClientModule,
                     StateModule,
                     StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
                     EffectsModule.forFeature(effects$7),
@@ -21636,7 +21631,6 @@ KymaStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    HttpClientModule,
                     StateModule,
                     StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
                     EffectsModule.forFeature(effects$8),
@@ -21652,7 +21646,7 @@ class KymaModule {
 }
 KymaModule.decorators = [
     { type: NgModule, args: [{
-                imports: [CommonModule, HttpClientModule, KymaStoreModule],
+                imports: [CommonModule, KymaStoreModule],
                 providers: [provideDefaultConfig(defaultKymaConfig)],
             },] }
 ];
@@ -23197,7 +23191,6 @@ ProductStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    HttpClientModule,
                     StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
                     EffectsModule.forFeature(effects$9),
                 ],
@@ -23909,7 +23902,6 @@ StoreFinderStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    HttpClientModule,
                     StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
                     EffectsModule.forFeature(effects$a),
                 ],

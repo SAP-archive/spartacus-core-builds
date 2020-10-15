@@ -3290,7 +3290,6 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1$2.CommonModule,
-                        i1.HttpClientModule,
                         StateModule,
                         i1$1.StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers: metaReducers }),
                         i3.EffectsModule.forFeature(effects),
@@ -3315,7 +3314,7 @@
     }());
     AuthModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule, AuthStoreModule],
+                    imports: [i1$2.CommonModule, AuthStoreModule],
                 },] }
     ];
 
@@ -4564,7 +4563,7 @@
     }());
     AsmOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    imports: [i1$2.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccAsmConfig),
                         {
@@ -4890,7 +4889,7 @@
     }());
     CartOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    imports: [i1$2.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccCartConfig),
                         {
@@ -10394,7 +10393,6 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1$2.CommonModule,
-                        i1.HttpClientModule,
                         i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$1),
                         i3.EffectsModule.forFeature(effects$1),
                     ],
@@ -11341,7 +11339,7 @@
     }());
     CheckoutOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    imports: [i1$2.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccCheckoutConfig),
                         {
@@ -11708,7 +11706,7 @@
     }());
     CmsOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    imports: [i1$2.CommonModule],
                     providers: [
                         {
                             provide: CmsPageAdapter,
@@ -12865,7 +12863,7 @@
     }());
     ProductOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    imports: [i1$2.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccProductConfig),
                         {
@@ -13176,7 +13174,7 @@
     }());
     SiteContextOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    imports: [i1$2.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccSiteContextConfig),
                         {
@@ -14249,7 +14247,7 @@
     }());
     UserOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule],
+                    imports: [i1$2.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccUserConfig),
                         { provide: UserAdapter, useClass: OccUserAdapter },
@@ -17670,7 +17668,6 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1$2.CommonModule,
-                        i1.HttpClientModule,
                         i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
                         i3.EffectsModule.forFeature(effects$3),
                     ],
@@ -18104,7 +18101,6 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1$2.CommonModule,
-                        i1.HttpClientModule,
                         StateModule,
                         i1$1.StoreModule.forFeature(ASM_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
                         i3.EffectsModule.forFeature(effects$4),
@@ -19137,7 +19133,7 @@
     }());
     AsmModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule, AsmStoreModule],
+                    imports: [i1$2.CommonModule, AsmStoreModule],
                 },] }
     ];
 
@@ -23099,7 +23095,6 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1$2.CommonModule,
-                        i1.HttpClientModule,
                         StateModule,
                         i1$1.StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
                         i3.EffectsModule.forFeature(effects$7),
@@ -24207,7 +24202,6 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1$2.CommonModule,
-                        i1.HttpClientModule,
                         StateModule,
                         i1$1.StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
                         i3.EffectsModule.forFeature(effects$8),
@@ -24226,7 +24220,7 @@
     }());
     KymaModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, i1.HttpClientModule, KymaStoreModule],
+                    imports: [i1$2.CommonModule, KymaStoreModule],
                     providers: [provideDefaultConfig(defaultKymaConfig)],
                 },] }
     ];
@@ -25943,7 +25937,6 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1$2.CommonModule,
-                        i1.HttpClientModule,
                         i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
                         i3.EffectsModule.forFeature(effects$9),
                     ],
@@ -26709,7 +26702,6 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1$2.CommonModule,
-                        i1.HttpClientModule,
                         i1$1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
                         i3.EffectsModule.forFeature(effects$a),
                     ],
