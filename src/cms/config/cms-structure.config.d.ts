@@ -7,6 +7,7 @@ import { CmsConfig } from './cms-config';
  * required for configurable pages have been left out and
  * will not be serialized in the adapter logic.
  */
+import * as ɵngcc0 from '@angular/core';
 export interface CmsPageConfig {
     /**
      * When the `ignoreBackend` is set to true, the CMS backend
@@ -65,4 +66,7 @@ export declare abstract class CmsStructureConfig extends CmsConfig {
         pages?: CmsPageConfig[];
         slots?: CmsPageSlotsConfig;
     };
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CmsStructureConfig, never>;
 }
+
+//# sourceMappingURL=cms-structure.config.d.ts.map
