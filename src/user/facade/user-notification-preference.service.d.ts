@@ -4,7 +4,6 @@ import { AuthService } from '../../auth/facade/auth.service';
 import { NotificationPreference } from '../../model/notification-preference.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class UserNotificationPreferenceService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -43,7 +42,4 @@ export declare class UserNotificationPreferenceService {
      * reset after the process concludes, regardless if it's a success or an error.
      */
     resetNotificationPreferences(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserNotificationPreferenceService, never>;
 }
-
-//# sourceMappingURL=user-notification-preference.service.d.ts.map
