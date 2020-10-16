@@ -2,7 +2,6 @@ import { Observable } from 'rxjs';
 import { ScopedData } from '../../model/scoped-data';
 import { OccFieldsService, ScopedDataWithUrl } from './occ-fields.service';
 import { HttpClient } from '@angular/common/http';
-import * as ɵngcc0 from '@angular/core';
 export declare class OccRequestsOptimizerService {
     protected http: HttpClient;
     protected occFields: OccFieldsService;
@@ -14,7 +13,4 @@ export declare class OccRequestsOptimizerService {
      * @param dataFactory
      */
     scopedDataLoad<T>(scopedDataWithUrls: ScopedDataWithUrl[], dataFactory?: (url: string) => Observable<T>): ScopedData<T>[];
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccRequestsOptimizerService, never>;
 }
-
-//# sourceMappingURL=occ-requests-optimizer.service.d.ts.map
