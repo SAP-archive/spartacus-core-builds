@@ -1,0 +1,1 @@
+{"version":3,"file":"site-context.module.d.ts","sources":["site-context.module.d.ts"],"names":[],"mappings":"AAAA;;;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class SiteContextModule {\n    static forRoot(): ModuleWithProviders<SiteContextModule>;\n}\n"]}
