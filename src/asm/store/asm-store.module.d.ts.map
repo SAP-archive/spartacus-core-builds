@@ -1,0 +1,1 @@
+{"version":3,"file":"asm-store.module.d.ts","sources":["asm-store.module.d.ts"],"names":[],"mappings":"AAAA;;;;;;AACA;AACA;;;AACA","sourcesContent":["import { StateConfig } from '../../state/config/state-config';\nexport declare function asmStoreConfigFactory(): StateConfig;\nexport declare class AsmStoreModule {\n}\n"]}
