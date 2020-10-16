@@ -3,12 +3,12 @@ import { Page, PageMeta } from '../model/page.model';
 import { PageMetaResolver } from '../page/page-meta.resolver';
 import { CmsService } from './cms.service';
 import { UnifiedInjector } from '../../lazy-loading/unified-injector';
+import * as ɵngcc0 from '@angular/core';
 export declare class PageMetaService {
-    protected resolvers: PageMetaResolver[];
     protected cms: CmsService;
     protected unifiedInjector?: UnifiedInjector;
     private resolvers$;
-    constructor(resolvers: PageMetaResolver[], cms: CmsService, unifiedInjector?: UnifiedInjector);
+    constructor(cms: CmsService, unifiedInjector?: UnifiedInjector);
     /**
      * The list of resolver interfaces will be evaluated for the pageResolvers.
      *
@@ -33,4 +33,7 @@ export declare class PageMetaService {
      * Resolvers match by default on `PageType` and `page.template`.
      */
     protected getMetaResolver(page: Page): Observable<PageMetaResolver>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<PageMetaService, never>;
 }
+
+//# sourceMappingURL=page-meta.service.d.ts.map

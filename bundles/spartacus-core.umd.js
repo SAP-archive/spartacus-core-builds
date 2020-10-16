@@ -23124,15 +23124,12 @@
     ];
 
     var PageMetaService = /** @class */ (function () {
-        function PageMetaService(resolvers, cms, unifiedInjector) {
-            this.resolvers = resolvers;
+        function PageMetaService(cms, unifiedInjector) {
             this.cms = cms;
             this.unifiedInjector = unifiedInjector;
             this.resolvers$ = this.unifiedInjector
-                ? this.unifiedInjector
-                    .getMulti(PageMetaResolver)
-                    .pipe(operators.shareReplay({ bufferSize: 1, refCount: true }))
-                : rxjs.of(this.resolvers);
+                .getMulti(PageMetaResolver)
+                .pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
             /**
              * The list of resolver interfaces will be evaluated for the pageResolvers.
              *
@@ -23148,7 +23145,6 @@
                 image: 'resolveImage',
                 robots: 'resolveRobots',
             };
-            this.resolvers = this.resolvers || [];
         }
         PageMetaService.prototype.getMeta = function () {
             var _this = this;
@@ -23183,16 +23179,15 @@
         };
         return PageMetaService;
     }());
-    PageMetaService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(i0.ɵɵinject(PageMetaResolver, 8), i0.ɵɵinject(CmsService), i0.ɵɵinject(UnifiedInjector, 8)); }, token: PageMetaService, providedIn: "root" });
+    PageMetaService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(i0.ɵɵinject(CmsService), i0.ɵɵinject(UnifiedInjector)); }, token: PageMetaService, providedIn: "root" });
     PageMetaService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     PageMetaService.ctorParameters = function () { return [
-        { type: Array, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [PageMetaResolver,] }] },
         { type: CmsService },
-        { type: UnifiedInjector, decorators: [{ type: i0.Optional }] }
+        { type: UnifiedInjector }
     ]; };
 
     var SmartEditService = /** @class */ (function () {

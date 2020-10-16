@@ -20644,15 +20644,12 @@ CmsModule.decorators = [
 ];
 
 class PageMetaService {
-    constructor(resolvers, cms, unifiedInjector) {
-        this.resolvers = resolvers;
+    constructor(cms, unifiedInjector) {
         this.cms = cms;
         this.unifiedInjector = unifiedInjector;
         this.resolvers$ = this.unifiedInjector
-            ? this.unifiedInjector
-                .getMulti(PageMetaResolver)
-                .pipe(shareReplay({ bufferSize: 1, refCount: true }))
-            : of(this.resolvers);
+            .getMulti(PageMetaResolver)
+            .pipe(shareReplay({ bufferSize: 1, refCount: true }));
         /**
          * The list of resolver interfaces will be evaluated for the pageResolvers.
          *
@@ -20668,7 +20665,6 @@ class PageMetaService {
             image: 'resolveImage',
             robots: 'resolveRobots',
         };
-        this.resolvers = this.resolvers || [];
     }
     getMeta() {
         return this.cms.getCurrentPage().pipe(filter(Boolean), switchMap((page) => this.getMetaResolver(page)), switchMap((metaResolver) => metaResolver ? this.resolve(metaResolver) : of(null)));
@@ -20697,16 +20693,15 @@ class PageMetaService {
         return this.resolvers$.pipe(map((resolvers) => resolveApplicable(resolvers, [page], [page])));
     }
 }
-PageMetaService.ɵprov = ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(ɵɵinject(PageMetaResolver, 8), ɵɵinject(CmsService), ɵɵinject(UnifiedInjector, 8)); }, token: PageMetaService, providedIn: "root" });
+PageMetaService.ɵprov = ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(ɵɵinject(CmsService), ɵɵinject(UnifiedInjector)); }, token: PageMetaService, providedIn: "root" });
 PageMetaService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
 ];
 PageMetaService.ctorParameters = () => [
-    { type: Array, decorators: [{ type: Optional }, { type: Inject, args: [PageMetaResolver,] }] },
     { type: CmsService },
-    { type: UnifiedInjector, decorators: [{ type: Optional }] }
+    { type: UnifiedInjector }
 ];
 
 class SmartEditService {
