@@ -4,7 +4,6 @@ import { AnonymousConsentTemplatesAdapter } from '../../../anonymous-consents/co
 import { AnonymousConsent, ConsentTemplate } from '../../../model/consent.model';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class OccAnonymousConsentTemplatesAdapter implements AnonymousConsentTemplatesAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -12,8 +11,4 @@ export declare class OccAnonymousConsentTemplatesAdapter implements AnonymousCon
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
     loadAnonymousConsentTemplates(): Observable<ConsentTemplate[]>;
     loadAnonymousConsents(): Observable<AnonymousConsent[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccAnonymousConsentTemplatesAdapter, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccAnonymousConsentTemplatesAdapter>;
 }
-
-//# sourceMappingURL=occ-anonymous-consent-templates.adapter.d.ts.map
