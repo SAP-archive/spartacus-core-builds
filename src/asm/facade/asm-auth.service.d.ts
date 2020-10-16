@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/facade/auth.service';
 import { UserToken } from '../../auth/models/token-types.model';
 import { StateWithAsm } from '../store/asm-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class AsmAuthService {
     protected store: Store<StateWithAsm>;
     protected authService: AuthService;
@@ -38,7 +37,4 @@ export declare class AsmAuthService {
      * Logout a customer support agent
      */
     logoutCustomerSupportAgent(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AsmAuthService, never>;
 }
-
-//# sourceMappingURL=asm-auth.service.d.ts.map

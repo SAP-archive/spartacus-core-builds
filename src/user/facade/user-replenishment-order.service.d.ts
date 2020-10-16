@@ -4,7 +4,6 @@ import { AuthService } from '../../auth/facade/auth.service';
 import { ReplenishmentOrder, ReplenishmentOrderList } from '../../model/replenishment-order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class UserReplenishmentOrderService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -84,7 +83,4 @@ export declare class UserReplenishmentOrderService {
      * Cleaning replenishment order list
      */
     clearReplenishmentOrderList(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserReplenishmentOrderService, never>;
 }
-
-//# sourceMappingURL=user-replenishment-order.service.d.ts.map
