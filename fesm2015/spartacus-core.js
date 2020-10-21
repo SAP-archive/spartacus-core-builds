@@ -10672,15 +10672,17 @@ class OccProductSearchPageNormalizer {
      * the facets.
      */
     normalizeUselessFacets(target) {
-        target.facets = target.facets.filter((facet) => {
-            return (!target.pagination ||
-                !target.pagination.totalResults ||
-                ((!facet.hasOwnProperty('visible') || facet.visible) &&
-                    facet.values &&
-                    facet.values.find((value) => {
-                        return (value.selected || value.count < target.pagination.totalResults);
-                    })));
-        });
+        if (target.facets) {
+            target.facets = target.facets.filter((facet) => {
+                return (!target.pagination ||
+                    !target.pagination.totalResults ||
+                    ((!facet.hasOwnProperty('visible') || facet.visible) &&
+                        facet.values &&
+                        facet.values.find((value) => {
+                            return (value.selected || value.count < target.pagination.totalResults);
+                        })));
+            });
+        }
     }
     /*
      * In case there are so-called `topValues` given for the facet values,
