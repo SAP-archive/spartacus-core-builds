@@ -1,0 +1,1 @@
+{"version":3,"file":"smart-edit.module.d.ts","sources":["smart-edit.module.d.ts"],"names":[],"mappings":"AAAA;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class SmartEditModule {\n    static forRoot(): ModuleWithProviders<SmartEditModule>;\n}\n"]}
