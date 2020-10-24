@@ -11,7 +11,6 @@ import { ProductSearchService } from '../facade/product-search.service';
  *
  * The page title, and breadcrumbs are resolved in this implementation only.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class CategoryPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver {
     protected productSearchService: ProductSearchService;
     protected cms: CmsService;
@@ -22,7 +21,4 @@ export declare class CategoryPageMetaResolver extends PageMetaResolver implement
     resolveBreadcrumbs(): Observable<BreadcrumbMeta[]>;
     protected resolveBreadcrumbData(page: ProductSearchPage, label: string): BreadcrumbMeta[];
     protected hasProductListComponent(page: Page): boolean;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CategoryPageMetaResolver, never>;
 }
-
-//# sourceMappingURL=category-page-meta.resolver.d.ts.map
