@@ -5,7 +5,6 @@ import { Cart, OrderEntry } from '../../model/index';
 import { UserService } from '../../user/facade/user.service';
 import { StateWithMultiCart } from '../store/multi-cart-state';
 import { MultiCartService } from './multi-cart.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class WishListService {
     protected store: Store<StateWithMultiCart>;
     protected authService: AuthService;
@@ -19,7 +18,4 @@ export declare class WishListService {
     removeEntry(entry: OrderEntry): void;
     getWishListLoading(): Observable<boolean>;
     protected getWishListId(): Observable<string>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<WishListService, never>;
 }
-
-//# sourceMappingURL=wish-list.service.d.ts.map
