@@ -6,6 +6,7 @@ import { CancellationRequestEntryInputList, Order, OrderHistoryList } from '../.
 import { StateWithProcess } from '../../process/store/process-state';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserOrderService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected authService: AuthService;
@@ -71,4 +72,7 @@ export declare class UserOrderService {
      * Resets the cancel order process flags
      */
     resetCancelOrderProcessState(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserOrderService, never>;
 }
+
+//# sourceMappingURL=user-order.service.d.ts.map
