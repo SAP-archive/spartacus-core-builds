@@ -10,6 +10,7 @@ import { PageRobotsResolver, PageTitleResolver } from '../../cms/page/page.resol
  *
  * The page title and robots are resolved in this implementation only.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CartPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageRobotsResolver {
     protected cms: CmsService;
     protected cms$: Observable<Page>;
@@ -22,4 +23,7 @@ export declare class CartPageMetaResolver extends PageMetaResolver implements Pa
      * Returns robots for the cart pages, which default to NOINDEX and NOFOLLOW.
      */
     resolveRobots(): Observable<PageRobotsMeta[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartPageMetaResolver, never>;
 }
+
+//# sourceMappingURL=cart-page-meta.resolver.d.ts.map
