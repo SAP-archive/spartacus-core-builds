@@ -1,13 +1,14 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/index';
+import { UserIdService } from '../../auth/index';
 import * as fromProcessStore from '../../process/store/process-state';
 import { ActiveCartService } from './active-cart.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class CartVoucherService {
     protected store: Store<fromProcessStore.StateWithProcess<void>>;
-    protected authService: AuthService;
     protected activeCartService: ActiveCartService;
-    constructor(store: Store<fromProcessStore.StateWithProcess<void>>, authService: AuthService, activeCartService: ActiveCartService);
+    protected userIdService: UserIdService;
+    constructor(store: Store<fromProcessStore.StateWithProcess<void>>, activeCartService: ActiveCartService, userIdService: UserIdService);
     addVoucher(voucherId: string, cartId?: string): void;
     removeVoucher(voucherId: string, cartId?: string): void;
     /**
@@ -31,4 +32,7 @@ export declare class CartVoucherService {
      */
     resetAddVoucherProcessingState(): void;
     private combineUserAndCartId;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartVoucherService, never>;
 }
+
+//# sourceMappingURL=cart-voucher.service.d.ts.map

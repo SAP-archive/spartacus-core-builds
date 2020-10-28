@@ -1,6 +1,7 @@
 import { Observable, Subscription } from 'rxjs';
 import { StorageSyncType } from '../../state/config/state-config';
 import { WindowRef } from '../../window/window-ref';
+import * as ɵngcc0 from '@angular/core';
 export declare class StatePersistenceService {
     protected winRef: WindowRef;
     constructor(winRef: WindowRef);
@@ -31,5 +32,23 @@ export declare class StatePersistenceService {
         storageType?: StorageSyncType;
         onRead?: (stateFromStorage: T) => void;
     }): Subscription;
+    /**
+     * Helper to read state from persistent storage (localStorage, sessionStorage).
+     * It is useful if you need synchronously access state saved with `syncWithStorage`.
+     *
+     * @param key Key to use in storage for state. Should be unique for each feature.
+     * @param context Context value for state
+     * @param storageType Storage type from to read state
+     *
+     * @returns State from the storage
+     */
+    readStateFromStorage<T>({ key, context, storageType, }: {
+        key: string;
+        context?: string | Array<string>;
+        storageType?: StorageSyncType;
+    }): T;
     protected generateKeyWithContext(context: string | Array<string>, key: string): string;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<StatePersistenceService, never>;
 }
+
+//# sourceMappingURL=state-persistence.service.d.ts.map

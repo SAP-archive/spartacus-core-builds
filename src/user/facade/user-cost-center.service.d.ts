@@ -1,14 +1,15 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { Address } from '../../model/address.model';
 import { CostCenter } from '../../model/org-unit.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserCostCenterService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
-    protected authService: AuthService;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
+    protected userIdService: UserIdService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, userIdService: UserIdService);
     /**
      * Load all visible active cost centers for the currently login user
      */
@@ -23,4 +24,7 @@ export declare class UserCostCenterService {
      * @param costCenterId cost center id
      */
     getCostCenterAddresses(costCenterId: string): Observable<Address[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserCostCenterService, never>;
 }
+
+//# sourceMappingURL=user-cost-center.service.d.ts.map

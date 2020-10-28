@@ -1,4 +1,4 @@
-import { Provider, InjectionToken } from '@angular/core';
+import { InjectionToken, Provider } from '@angular/core';
 export { getStateSlice } from '../utils/get-state-slice';
 export { getStorageSyncReducer } from './storage-sync.reducer';
 export * from './transfer-state.reducer';

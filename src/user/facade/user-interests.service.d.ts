@@ -1,13 +1,14 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { NotificationType, ProductInterestEntryRelation, ProductInterestSearchResult } from '../../model/product-interest.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserInterestsService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
-    protected authService: AuthService;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
+    protected userIdService: UserIdService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, userIdService: UserIdService);
     /**
      * Retrieves an product interest list
      * @param pageSize page size
@@ -69,4 +70,7 @@ export declare class UserInterestsService {
      * Clears product interests
      */
     clearProductInterests(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserInterestsService, never>;
 }
+
+//# sourceMappingURL=user-interests.service.d.ts.map

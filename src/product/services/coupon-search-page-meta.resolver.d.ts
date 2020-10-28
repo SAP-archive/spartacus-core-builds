@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { AuthService } from '../../auth/user-auth/facade/auth.service';
 import { BreadcrumbMeta, Page } from '../../cms/model/page.model';
 import { PageBreadcrumbResolver, PageMetaResolver, PageTitleResolver } from '../../cms/page';
 import { TranslationService } from '../../i18n/translation.service';
@@ -13,6 +13,7 @@ import { SemanticPathService } from '../../routing/configurable-routes/url-trans
  *
  * The page resolves an alternative page title and breadcrumb.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CouponSearchPageResolver extends PageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver {
     protected productSearchService: ProductSearchService;
     protected translation: TranslationService;
@@ -25,4 +26,7 @@ export declare class CouponSearchPageResolver extends PageMetaResolver implement
     resolveTitle(): Observable<string>;
     getScore(page: Page): number;
     protected get couponCode(): string;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CouponSearchPageResolver, never>;
 }
+
+//# sourceMappingURL=coupon-search-page-meta.resolver.d.ts.map

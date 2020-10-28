@@ -1,16 +1,17 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { ConsignmentTracking } from '../../model/consignment-tracking.model';
 import { CancellationRequestEntryInputList, Order, OrderHistoryList } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserOrderService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
-    protected authService: AuthService;
+    protected userIdService: UserIdService;
     protected routingService: RoutingService;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService, routingService: RoutingService);
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, userIdService: UserIdService, routingService: RoutingService);
     /**
      * Returns an order's detail
      */
@@ -71,4 +72,7 @@ export declare class UserOrderService {
      * Resets the cancel order process flags
      */
     resetCancelOrderProcessState(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserOrderService, never>;
 }
+
+//# sourceMappingURL=user-order.service.d.ts.map

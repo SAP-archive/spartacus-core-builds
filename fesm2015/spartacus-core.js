@@ -1,16 +1,135 @@
-import { isDevMode, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, InjectionToken, inject, InjectFlags, Optional, PLATFORM_ID, NgModule, NgModuleFactory, Compiler, INJECTOR, Injector, Directive, TemplateRef, ViewContainerRef, Input, APP_INITIALIZER, Pipe, NgZone, ChangeDetectorRef } from '@angular/core';
-import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule, ActionsSubject } from '@ngrx/store';
-import { of, fromEvent, throwError, EMPTY, iif, combineLatest, Observable, Subject, from, queueScheduler, Subscription, timer, BehaviorSubject, zip, forkJoin, NEVER, using, defer, merge } from 'rxjs';
-import { map, take, filter, switchMap, debounceTime, startWith, distinctUntilChanged, shareReplay, tap, catchError, exhaustMap, mergeMap, withLatestFrom, share, publishReplay, observeOn, scan, pluck, debounce, switchMapTo, concatMap, skip, mapTo, bufferCount, delay, groupBy, distinctUntilKeyChanged, takeWhile, auditTime } from 'rxjs/operators';
-import { DOCUMENT, isPlatformBrowser, isPlatformServer, CommonModule, Location, DatePipe, getLocaleId } from '@angular/common';
-import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpResponse } from '@angular/common/http';
+import { InjectionToken, inject, InjectFlags, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, isDevMode, PLATFORM_ID, Optional, NgModule, APP_INITIALIZER, NgModuleFactory, Compiler, INJECTOR, Injector, Directive, TemplateRef, ViewContainerRef, Input, Pipe, NgZone, ChangeDetectorRef } from '@angular/core';
+import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, StoreModule, ActionsSubject, combineReducers } from '@ngrx/store';
+import { of, fromEvent, BehaviorSubject, iif, combineLatest, queueScheduler, throwError, Subscription, Observable, Subject, from, timer, EMPTY, zip, forkJoin, NEVER, using, defer, merge } from 'rxjs';
+import { debounceTime, startWith, distinctUntilChanged, filter, map, shareReplay, take, withLatestFrom, tap, switchMap, observeOn, catchError, exhaustMap, mapTo, share, publishReplay, scan, pluck, mergeMap, debounce, auditTime, switchMapTo, concatMap, skip, bufferCount, delay, groupBy, distinctUntilKeyChanged, takeWhile } from 'rxjs/operators';
+import { __awaiter, __decorate, __rest } from 'tslib';
+import { DOCUMENT, isPlatformServer, isPlatformBrowser, CommonModule, Location, DatePipe, getLocaleId } from '@angular/common';
 import { PRIMARY_OUTLET, Router, NavigationEnd, DefaultUrlSerializer, NavigationStart, NavigationError, NavigationCancel, UrlSerializer, ActivatedRoute, RouterModule } from '@angular/router';
+import { OAuthStorage, OAuthService, OAuthModule } from 'angular-oauth2-oidc';
+import { HttpParams, HttpHeaders, HttpErrorResponse, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
-import { __decorate, __rest, __awaiter } from 'tslib';
 import { ROUTER_NAVIGATED, ROUTER_CANCEL, ROUTER_ERROR, ROUTER_NAVIGATION, RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import i18next from 'i18next';
 import i18nextXhrBackend from 'i18next-xhr-backend';
+
+function isObject(item) {
+    return item && typeof item === 'object' && !Array.isArray(item);
+}
+function deepMerge(target = {}, ...sources) {
+    if (!sources.length) {
+        return target;
+    }
+    const source = sources.shift() || {};
+    if (isObject(target) && isObject(source)) {
+        for (const key in source) {
+            if (source[key] instanceof Date) {
+                Object.assign(target, { [key]: source[key] });
+            }
+            else if (isObject(source[key])) {
+                if (!target[key]) {
+                    Object.assign(target, { [key]: {} });
+                }
+                deepMerge(target[key], source[key]);
+            }
+            else {
+                Object.assign(target, { [key]: source[key] });
+            }
+        }
+    }
+    return deepMerge(target, ...sources);
+}
+
+/**
+ * Global Configuration injection token, can be used to inject configuration to any part of the app
+ */
+const Config = new InjectionToken('Configuration', {
+    providedIn: 'root',
+    factory: () => deepMerge({}, inject(DefaultConfig), inject(RootConfig)),
+});
+/**
+ * Default Configuration token, used to build Global Configuration, built from DefaultConfigChunks
+ */
+const DefaultConfig = new InjectionToken('DefaultConfiguration', {
+    providedIn: 'root',
+    factory: () => { var _a; return deepMerge({}, ...((_a = inject(DefaultConfigChunk, InjectFlags.Optional)) !== null && _a !== void 0 ? _a : [])); },
+});
+/**
+ * Root Configuration token, used to build Global Configuration, built from ConfigChunks
+ */
+const RootConfig = new InjectionToken('RootConfiguration', {
+    providedIn: 'root',
+    factory: () => { var _a; return deepMerge({}, ...((_a = inject(ConfigChunk, InjectFlags.Optional)) !== null && _a !== void 0 ? _a : [])); },
+});
+/**
+ * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
+ * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
+ */
+const ConfigChunk = new InjectionToken('ConfigurationChunk');
+/**
+ * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
+ * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
+ *
+ * General rule is, that all config provided in libraries should be provided as default config.
+ */
+const DefaultConfigChunk = new InjectionToken('DefaultConfigurationChunk');
+
+/**
+ * Helper function to provide configuration chunk using ConfigChunk token
+ *
+ * To provide default configuration in libraries provideDefaultConfig should be used instead.
+ *
+ * @param config Config object to merge with the global configuration
+ */
+function provideConfig(config = {}, defaultConfig = false) {
+    return {
+        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+        useValue: config,
+        multi: true,
+    };
+}
+/**
+ * Helper function to provide configuration with factory function, using ConfigChunk token
+ *
+ * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
+ *
+ * @param configFactory Factory Function that will generate config object
+ * @param deps Optional dependencies to a factory function
+ */
+function provideConfigFactory(configFactory, deps, defaultConfig = false) {
+    return {
+        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+        useFactory: configFactory,
+        multi: true,
+        deps: deps,
+    };
+}
+/**
+ * Helper function to provide default configuration chunk using DefaultConfigChunk token
+ *
+ * @param config Config object to merge with the default configuration
+ */
+function provideDefaultConfig(config = {}) {
+    return {
+        provide: DefaultConfigChunk,
+        useValue: config,
+        multi: true,
+    };
+}
+/**
+ * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
+ *
+ * @param configFactory Factory Function that will generate config object
+ * @param deps Optional dependencies to a factory function
+ */
+function provideDefaultConfigFactory(configFactory, deps) {
+    return {
+        provide: DefaultConfigChunk,
+        useFactory: configFactory,
+        multi: true,
+        deps: deps,
+    };
+}
 
 const defaultAnonymousConsentsConfig = {
     anonymousConsents: {
@@ -24,49 +143,1340 @@ const defaultAnonymousConsentsConfig = {
     },
 };
 
-const defaultAuthConfig = {
-    authentication: {
-        client_id: 'mobile_android',
-        client_secret: 'secret',
-    },
-    backend: {
-        occ: {
-            endpoints: {
-                login: '/authorizationserver/oauth/token',
-                revoke: '/authorizationserver/oauth/revoke',
-            },
-        },
-    },
-};
-
-const USE_CLIENT_TOKEN = 'cx-use-client-token';
-const USE_CUSTOMER_SUPPORT_AGENT_TOKEN = 'cx-use-csagent-token';
-const TOKEN_REVOCATION_HEADER = 'cx-token-revocation';
-class InterceptorUtil {
-    static createHeader(headerName, interceptorParam, headers) {
-        if (headers) {
-            return headers.append(headerName, JSON.stringify(interceptorParam));
-        }
-        headers = new HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
-        return headers;
-    }
-    static removeHeader(headerName, request) {
-        const updatedHeaders = request.headers.delete(headerName);
-        return request.clone({ headers: updatedHeaders });
-    }
-    static getInterceptorParam(headerName, headers) {
-        const rawValue = headers.get(headerName);
-        if (rawValue) {
-            return JSON.parse(rawValue);
-        }
-        return undefined;
-    }
-}
-
 const OCC_USER_ID_CURRENT = 'current';
 const OCC_USER_ID_ANONYMOUS = 'anonymous';
 const OCC_USER_ID_GUEST = 'guest';
 const OCC_CART_ID_CURRENT = 'current';
+
+class WindowRef {
+    constructor(document) {
+        // it's a workaround to have document property properly typed
+        // see: https://github.com/angular/angular/issues/15640
+        this.document = document;
+    }
+    get nativeWindow() {
+        return typeof window !== 'undefined' ? window : undefined;
+    }
+    get sessionStorage() {
+        return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
+    }
+    get localStorage() {
+        return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
+    }
+    /**
+     * Returns an observable for the window resize event and emits an event
+     * every 300ms in case of resizing. An event is simulated initially.
+     *
+     * If there's no window object available (i.e. in SSR), a null value is emitted.
+     */
+    get resize$() {
+        if (!this.nativeWindow) {
+            return of(null);
+        }
+        else {
+            return fromEvent(this.nativeWindow, 'resize').pipe(debounceTime(300), startWith({ target: this.nativeWindow }), distinctUntilChanged());
+        }
+    }
+}
+WindowRef.ɵprov = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+WindowRef.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+WindowRef.ctorParameters = () => [
+    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
+];
+
+class UrlParsingService {
+    constructor(router) {
+        this.router = router;
+    }
+    getPrimarySegments(url) {
+        const urlTree = this.router.parseUrl(url);
+        return this._getPrimarySegmentsFromUrlTree(urlTree.root);
+    }
+    _getPrimarySegmentsFromUrlTree(tree) {
+        const segments = tree.segments.map((s) => s.path);
+        const childrenSegments = tree.children[PRIMARY_OUTLET]
+            ? this._getPrimarySegmentsFromUrlTree(tree.children[PRIMARY_OUTLET])
+            : [];
+        return segments.concat(childrenSegments);
+    }
+}
+UrlParsingService.ɵprov = ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(ɵɵinject(Router)); }, token: UrlParsingService, providedIn: "root" });
+UrlParsingService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+UrlParsingService.ctorParameters = () => [
+    { type: Router }
+];
+
+const isParam = (segment) => segment.startsWith(':');
+const getParamName = (segment) => segment.slice(1); // it just removes leading ':'
+const ensureLeadingSlash = (path) => path.startsWith('/') ? path : '/' + path;
+const removeLeadingSlash = (path) => path.startsWith('/') ? path.slice(1) : path;
+
+class RoutingConfig {
+}
+RoutingConfig.ɵprov = ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
+RoutingConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
+
+class RoutingConfigService {
+    constructor(config) {
+        this.config = config;
+    }
+    /**
+     * Returns the route config for the given route name.
+     */
+    getRouteConfig(routeName) {
+        var _a, _b;
+        const routeConfig = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes;
+        const result = routeConfig && routeConfig[routeName];
+        if (!routeConfig || result === undefined) {
+            this.warn(`No path was configured for the named route '${routeName}'!`);
+        }
+        return result;
+    }
+    warn(...args) {
+        if (isDevMode()) {
+            console.warn(...args);
+        }
+    }
+    /**
+     * Returns the configured route loading strategy.
+     */
+    getLoadStrategy() {
+        var _a, _b, _c;
+        return (_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.loadStrategy) !== null && _c !== void 0 ? _c : "always" /* ALWAYS */;
+    }
+    /**
+     * Returns the route name of the configured path.
+     *
+     * For example, when the config is:
+     * ```
+     * routing: {
+     *   routes: {
+     *      addressBook: { paths: ['my-account/address-book'] }
+     *   }
+     * }
+     * ```
+     *
+     * the `getRouteName('my-account/address-book')` returns `'addressBook'`.
+     */
+    getRouteName(path) {
+        if (!this.routeNamesByPath) {
+            this.initRouteNamesByPath();
+        }
+        return this.routeNamesByPath[path];
+    }
+    /**
+     * Initializes the property `routeNamesByPath`.
+     *
+     * The original config allows for reading configured path by the route name.
+     * But this method builds up a structure with a 'reversed config'
+     * to read quickly the route name by the path.
+     */
+    initRouteNamesByPath() {
+        var _a, _b, _c;
+        this.routeNamesByPath = {};
+        for (const [routeName, routeConfig] of Object.entries((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes)) {
+            (_c = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _c === void 0 ? void 0 : _c.forEach((path) => {
+                if (isDevMode() && this.routeNamesByPath[path]) {
+                    console.error(`The same path '${path}' is configured for two different route names: '${this.routeNamesByPath[path]}' and '${routeName}`);
+                }
+                this.routeNamesByPath[path] = routeName;
+            });
+        }
+    }
+}
+RoutingConfigService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
+RoutingConfigService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+RoutingConfigService.ctorParameters = () => [
+    { type: RoutingConfig }
+];
+
+class SemanticPathService {
+    constructor(routingConfigService, urlParser) {
+        this.routingConfigService = routingConfigService;
+        this.urlParser = urlParser;
+        this.ROOT_URL = ['/'];
+    }
+    /**
+     * Returns the first path alias configured for a given route name. It adds `/` at the beginning.
+     */
+    get(routeName) {
+        const routeConfig = this.routingConfigService.getRouteConfig(routeName);
+        return routeConfig && Array.isArray(routeConfig.paths)
+            ? '/' + routeConfig.paths[0]
+            : undefined;
+    }
+    /**
+     * Transforms the array of url commands. Each command can be:
+     * a) string - will be left untouched
+     * b) object { cxRoute: <route name> } - will be replaced with semantic path
+     * c) object { cxRoute: <route name>, params: { ... } } - same as above, but with passed params
+     *
+     * If the first command is the object with the `cxRoute` property, returns an absolute url (with the first element of the array `'/'`)
+     */
+    transform(commands) {
+        if (!Array.isArray(commands)) {
+            commands = [commands];
+        }
+        const result = [];
+        for (const command of commands) {
+            if (!this.isRouteCommand(command)) {
+                // don't modify segment that is not route command:
+                result.push(command);
+            }
+            else {
+                // generate array with url segments for given route command:
+                const partialResult = this.generateUrlPart(command);
+                if (partialResult === null) {
+                    return this.ROOT_URL;
+                }
+                result.push(...partialResult);
+            }
+        }
+        if (this.shouldOutputAbsolute(commands)) {
+            result.unshift('/');
+        }
+        return result;
+    }
+    isRouteCommand(command) {
+        return command && Boolean(command.cxRoute);
+    }
+    shouldOutputAbsolute(commands) {
+        return this.isRouteCommand(commands[0]);
+    }
+    generateUrlPart(command) {
+        this.standarizeRouteCommand(command);
+        if (!command.cxRoute) {
+            return null;
+        }
+        const routeConfig = this.routingConfigService.getRouteConfig(command.cxRoute);
+        // if no route translation was configured, return null:
+        if (!routeConfig || !routeConfig.paths) {
+            return null;
+        }
+        // find first path that can satisfy it's parameters with given parameters
+        const path = this.findPathWithFillableParams(routeConfig, command.params);
+        // if there is no configured path that can be satisfied with given params, return null
+        if (!path) {
+            return null;
+        }
+        const result = this.provideParamsValues(path, command.params, routeConfig.paramsMapping);
+        return result;
+    }
+    standarizeRouteCommand(command) {
+        command.params = command.params || {};
+    }
+    provideParamsValues(path, params, paramsMapping) {
+        return this.urlParser.getPrimarySegments(path).map((segment) => {
+            if (isParam(segment)) {
+                const paramName = getParamName(segment);
+                const mappedParamName = this.getMappedParamName(paramName, paramsMapping);
+                return params[mappedParamName];
+            }
+            return segment;
+        });
+    }
+    findPathWithFillableParams(routeConfig, params) {
+        const foundPath = routeConfig.paths.find((path) => this.getParams(path).every((paramName) => {
+            const mappedParamName = this.getMappedParamName(paramName, routeConfig.paramsMapping);
+            return params[mappedParamName] !== undefined;
+        }));
+        if (foundPath === undefined || foundPath === null) {
+            this.warn(`No configured path matches all its params to given object. `, `Route config: `, routeConfig, `Params object: `, params);
+            return null;
+        }
+        return foundPath;
+    }
+    getParams(path) {
+        return this.urlParser
+            .getPrimarySegments(path)
+            .filter(isParam)
+            .map(getParamName);
+    }
+    getMappedParamName(paramName, paramsMapping) {
+        if (paramsMapping) {
+            return paramsMapping[paramName] || paramName;
+        }
+        return paramName;
+    }
+    warn(...args) {
+        if (isDevMode()) {
+            console.warn(...args);
+        }
+    }
+}
+SemanticPathService.ɵprov = ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(ɵɵinject(RoutingConfigService), ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
+SemanticPathService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+SemanticPathService.ctorParameters = () => [
+    { type: RoutingConfigService },
+    { type: UrlParsingService }
+];
+
+const ROUTER_GO = '[Router] Go';
+const ROUTER_GO_BY_URL = '[Router] Go By Url';
+const ROUTER_BACK = '[Router] Back';
+const ROUTER_FORWARD = '[Router] Forward';
+class RouteGoAction {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ROUTER_GO;
+    }
+}
+class RouteGoByUrlAction {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ROUTER_GO_BY_URL;
+    }
+}
+class RouteBackAction {
+    constructor() {
+        this.type = ROUTER_BACK;
+    }
+}
+class RouteForwardAction {
+    constructor() {
+        this.type = ROUTER_FORWARD;
+    }
+}
+
+var routingGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    ROUTER_GO: ROUTER_GO,
+    ROUTER_GO_BY_URL: ROUTER_GO_BY_URL,
+    ROUTER_BACK: ROUTER_BACK,
+    ROUTER_FORWARD: ROUTER_FORWARD,
+    RouteGoAction: RouteGoAction,
+    RouteGoByUrlAction: RouteGoByUrlAction,
+    RouteBackAction: RouteBackAction,
+    RouteForwardAction: RouteForwardAction
+});
+
+const ROUTING_FEATURE = 'router';
+
+const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
+const ɵ0 = (state) => state.router;
+const getRouterState = createSelector(getRouterFeatureState, ɵ0);
+const ɵ1 = (routingState) => (routingState.state && routingState.state.semanticRoute) || '';
+const getSemanticRoute = createSelector(getRouterState, ɵ1);
+const ɵ2 = (routingState) => (routingState.state && routingState.state.context) || { id: '' };
+const getPageContext = createSelector(getRouterState, ɵ2);
+const ɵ3 = (routingState) => routingState.nextState && routingState.nextState.context;
+const getNextPageContext = createSelector(getRouterState, ɵ3);
+const ɵ4 = (context) => !!context;
+const isNavigating = createSelector(getNextPageContext, ɵ4);
+
+var routingGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getRouterFeatureState: getRouterFeatureState,
+    getRouterState: getRouterState,
+    getSemanticRoute: getSemanticRoute,
+    getPageContext: getPageContext,
+    getNextPageContext: getNextPageContext,
+    isNavigating: isNavigating,
+    ɵ0: ɵ0,
+    ɵ1: ɵ1,
+    ɵ2: ɵ2,
+    ɵ3: ɵ3,
+    ɵ4: ɵ4
+});
+
+/**
+ * Helper service to expose all activated routes
+ */
+class ActivatedRoutesService {
+    constructor(router) {
+        this.router = router;
+        /**
+         * Array of currently activated routes (from the root route to the leaf route).
+         */
+        this.routes$ = this.router.events.pipe(filter((event) => event instanceof NavigationEnd), 
+        // tslint:disable-next-line: deprecation https://github.com/ReactiveX/rxjs/issues/4772
+        startWith(undefined), // emit value for consumer who subscribed lately after NavigationEnd event
+        map(() => {
+            let route = this.router.routerState.snapshot.root;
+            const routes = [route];
+            // traverse to the leaf route:
+            while ((route = route.firstChild)) {
+                routes.push(route);
+            }
+            return routes;
+        }), shareReplay({ bufferSize: 1, refCount: true }));
+    }
+}
+ActivatedRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ActivatedRoutesService_Factory() { return new ActivatedRoutesService(ɵɵinject(Router)); }, token: ActivatedRoutesService, providedIn: "root" });
+ActivatedRoutesService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+ActivatedRoutesService.ctorParameters = () => [
+    { type: Router }
+];
+
+/**
+ * Service to expose all parameters for the router, including child routes.
+ * This is convenient in case the parent route (component) requires awareness
+ * of child routes parameters.
+ */
+class RoutingParamsService {
+    constructor(router, activatedRoutesService) {
+        this.router = router;
+        this.activatedRoutesService = activatedRoutesService;
+        this.params$ = this.activatedRoutesService.routes$.pipe(map((routes) => this.findAllParam(routes)), shareReplay({ refCount: true, bufferSize: 1 }));
+    }
+    /**
+     * Get the list of all parameters of the full route. This includes
+     * active child routes.
+     */
+    getParams() {
+        return this.params$;
+    }
+    findAllParam(routes) {
+        return Object.assign({}, ...routes.map((route) => route.params));
+    }
+}
+RoutingParamsService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingParamsService_Factory() { return new RoutingParamsService(ɵɵinject(Router), ɵɵinject(ActivatedRoutesService)); }, token: RoutingParamsService, providedIn: "root" });
+RoutingParamsService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+RoutingParamsService.ctorParameters = () => [
+    { type: Router },
+    { type: ActivatedRoutesService }
+];
+
+class RoutingService {
+    constructor(store, winRef, semanticPathService, routingParamsService) {
+        this.store = store;
+        this.winRef = winRef;
+        this.semanticPathService = semanticPathService;
+        this.routingParamsService = routingParamsService;
+    }
+    /**
+     * Get the list of all parameters of the full route. This includes
+     * active child routes.
+     */
+    getParams() {
+        var _a;
+        return (_a = this.routingParamsService) === null || _a === void 0 ? void 0 : _a.getParams();
+    }
+    /**
+     * Get the current router state
+     */
+    getRouterState() {
+        return this.store.pipe(select(getRouterState));
+    }
+    /**
+     * Get the `PageContext` from the state
+     */
+    getPageContext() {
+        return this.store.pipe(select(getPageContext));
+    }
+    /**
+     * Get the next `PageContext` from the state
+     */
+    getNextPageContext() {
+        return this.store.pipe(select(getNextPageContext));
+    }
+    /**
+     * Get the `isNavigating` info from the state
+     */
+    isNavigating() {
+        return this.store.pipe(select(isNavigating));
+    }
+    /**
+     * Navigation with a new state into history
+     * @param commands: url commands
+     * @param query
+     * @param extras: Represents the extra options used during navigation.
+     */
+    go(commands, query, extras) {
+        const path = this.semanticPathService.transform(commands);
+        return this.navigate(path, query, extras);
+    }
+    /**
+     * Navigation using URL
+     * @param url
+     */
+    goByUrl(url) {
+        this.store.dispatch(new RouteGoByUrlAction(url));
+    }
+    /**
+     * Navigating back
+     */
+    back() {
+        const isLastPageInApp = this.winRef.document.referrer.includes(this.winRef.nativeWindow.location.origin);
+        if (isLastPageInApp) {
+            this.store.dispatch(new RouteBackAction());
+            return;
+        }
+        this.go(['/']);
+        return;
+    }
+    /**
+     * Navigating forward
+     */
+    forward() {
+        this.store.dispatch(new RouteForwardAction());
+    }
+    /**
+     * Navigation with a new state into history
+     * @param path
+     * @param query
+     * @param extras: Represents the extra options used during navigation.
+     */
+    navigate(path, query, extras) {
+        this.store.dispatch(new RouteGoAction({
+            path,
+            query,
+            extras,
+        }));
+    }
+}
+RoutingService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(SemanticPathService), ɵɵinject(RoutingParamsService)); }, token: RoutingService, providedIn: "root" });
+RoutingService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+RoutingService.ctorParameters = () => [
+    { type: Store },
+    { type: WindowRef },
+    { type: SemanticPathService },
+    { type: RoutingParamsService }
+];
+
+/**
+ * This implementation is OCC specific.
+ * Different backend might have completely different need regarding user id.
+ * It might not need user id at all and work based on access_token.
+ * To implement custom solution provide your own implementation and customize services that use UserIdService
+ */
+class UserIdService {
+    constructor() {
+        this._userId = new BehaviorSubject(OCC_USER_ID_ANONYMOUS);
+    }
+    /**
+     * Sets current user id.
+     *
+     * @param userId
+     */
+    setUserId(userId) {
+        this._userId.next(userId);
+    }
+    /**
+     * This function provides the userId the OCC calls should use, depending
+     * on whether there is an active storefront session or not.
+     *
+     * It returns the userId of the current storefront user or 'anonymous'
+     * in the case there are no signed in user in the storefront.
+     *
+     * The user id of a regular customer session is 'current'. In the case of an
+     * asm customer emulation session, the userId will be the customerId.
+     */
+    getUserId() {
+        return this._userId;
+    }
+    /**
+     * Calls provided callback with current user id.
+     *
+     * @param cb callback function to invoke
+     */
+    invokeWithUserId(cb) {
+        return this.getUserId()
+            .pipe(take(1))
+            .subscribe((id) => cb(id));
+    }
+    /**
+     * Sets user id to the default value for logged out user.
+     */
+    clearUserId() {
+        this.setUserId(OCC_USER_ID_ANONYMOUS);
+    }
+    /**
+     * Checks if the userId is of emulated user type.
+     */
+    isEmulated() {
+        return this.getUserId().pipe(map((userId) => userId !== OCC_USER_ID_ANONYMOUS && userId !== OCC_USER_ID_CURRENT));
+    }
+}
+UserIdService.ɵprov = ɵɵdefineInjectable({ factory: function UserIdService_Factory() { return new UserIdService(); }, token: UserIdService, providedIn: "root" });
+UserIdService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+
+const LOGIN = '[Auth] Login';
+const LOGOUT = '[Auth] Logout';
+class Login {
+    constructor() {
+        this.type = LOGIN;
+    }
+}
+class Logout {
+    constructor() {
+        this.type = LOGOUT;
+    }
+}
+
+var authGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    LOGIN: LOGIN,
+    LOGOUT: LOGOUT,
+    Login: Login,
+    Logout: Logout
+});
+
+/**
+ * Service serves storage role for AuthRedirectService.
+ * Used by AuthStatePersistenceService to store redirect url for OAuth flows that rely on redirects.
+ */
+class AuthRedirectStorageService {
+    constructor() {
+        this.redirectUrl$ = new BehaviorSubject(undefined);
+    }
+    /**
+     * Get redirect url after logging in.
+     *
+     * @returns observable with the redirect url as string
+     */
+    getRedirectUrl() {
+        return this.redirectUrl$;
+    }
+    /**
+     * Set url to redirect to after login.
+     *
+     * @param redirectUrl
+     */
+    setRedirectUrl(redirectUrl) {
+        this.redirectUrl$.next(redirectUrl);
+    }
+}
+AuthRedirectStorageService.ɵprov = ɵɵdefineInjectable({ factory: function AuthRedirectStorageService_Factory() { return new AuthRedirectStorageService(); }, token: AuthRedirectStorageService, providedIn: "root" });
+AuthRedirectStorageService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+AuthRedirectStorageService.ctorParameters = () => [];
+
+/**
+ * Responsible for saving last accessed page (or attempted) before login and for redirecting to that page after login.
+ */
+class AuthRedirectService {
+    /**
+     * This service is responsible for redirecting to the last page before authorization. "The last page" can be:
+     * 1. Just the previously opened page; or
+     * 2. The page that we just tried to open, but AuthGuard cancelled it
+     *
+     * For example:
+     * 1. The user opens the product page, then clicks /login link and signs in
+     *    -> Then we should redirect to the product page; or
+     * 2. The user opens the product page, then he clicks /my-account link,
+     *    but is automatically redirected to the login page by the AuthGuard, and he signs in
+     *    -> Then we should redirect to the my-account page, not the product page
+     */
+    constructor(routing, router, authRedirectStorageService) {
+        this.routing = routing;
+        this.router = router;
+        this.authRedirectStorageService = authRedirectStorageService;
+        this.ignoredUrls = new Set();
+    }
+    /**
+     * Redirect to saved url (homepage if nothing is saved).
+     */
+    redirect() {
+        this.authRedirectStorageService
+            .getRedirectUrl()
+            .pipe(take(1))
+            .subscribe((redirectUrl) => {
+            if (redirectUrl === undefined) {
+                this.routing.go('/');
+            }
+            else {
+                this.routing.goByUrl(redirectUrl);
+            }
+            this.authRedirectStorageService.setRedirectUrl(undefined);
+            this.lastAuthGuardNavigation = undefined;
+        });
+    }
+    /**
+     * Saves url of a page that user wanted to access, but wasn't yet logged in.
+     */
+    reportAuthGuard() {
+        const { url, navigationId } = this.getCurrentNavigation();
+        this.lastAuthGuardNavigation = { url, navigationId };
+        this.authRedirectStorageService.setRedirectUrl(url);
+    }
+    /**
+     * Saves url of a page that was accessed before entering a page only for not auth users.
+     */
+    reportNotAuthGuard() {
+        const { url, initialUrl, navigationId } = this.getCurrentNavigation();
+        this.ignoredUrls.add(url);
+        // Don't save redirect url if you've already come from page with NotAuthGuard (i.e. user has come from login to register)
+        if (!this.ignoredUrls.has(initialUrl)) {
+            // We compare the navigation id to find out if the url cancelled by AuthGuard (i.e. my-account) is more recent
+            // than the last opened page
+            if (!this.lastAuthGuardNavigation ||
+                this.lastAuthGuardNavigation.navigationId < navigationId - 1) {
+                this.authRedirectStorageService.setRedirectUrl(initialUrl);
+                this.lastAuthGuardNavigation = undefined;
+            }
+        }
+    }
+    getCurrentNavigation() {
+        const initialUrl = this.router.url;
+        const navigation = this.router.getCurrentNavigation();
+        const url = this.router.serializeUrl(navigation.finalUrl);
+        return {
+            navigationId: navigation.id,
+            url,
+            initialUrl,
+        };
+    }
+}
+AuthRedirectService.ɵprov = ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(ɵɵinject(RoutingService), ɵɵinject(Router), ɵɵinject(AuthRedirectStorageService)); }, token: AuthRedirectService, providedIn: "root" });
+AuthRedirectService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+AuthRedirectService.ctorParameters = () => [
+    { type: RoutingService },
+    { type: Router },
+    { type: AuthRedirectStorageService }
+];
+
+/**
+ * Storage service for AuthToken. Used as a storage for angular-oauth2-oidc library.
+ */
+class AuthStorageService extends OAuthStorage {
+    constructor() {
+        super(...arguments);
+        this._token$ = new BehaviorSubject({});
+    }
+    decode(key, value) {
+        if (AuthStorageService.nonStringifiedOAuthLibKeys.includes(key)) {
+            return value;
+        }
+        return JSON.stringify(value);
+    }
+    encode(key, value) {
+        if (AuthStorageService.nonStringifiedOAuthLibKeys.includes(key)) {
+            return value;
+        }
+        else {
+            try {
+                return JSON.parse(value);
+            }
+            catch (_a) {
+                return value;
+            }
+        }
+    }
+    /* Async API for spartacus use */
+    /**
+     * Returns complete token (all fields).
+     *
+     * @return observable emitting AuthToken
+     */
+    getToken() {
+        return this._token$;
+    }
+    /**
+     * Set current value of token.
+     *
+     * @param token
+     */
+    setToken(token) {
+        this._token$.next(token);
+    }
+    /* Sync API for OAuth lib use */
+    /**
+     * Get parameter from the token (eg. access_token)
+     *
+     * @param key
+     */
+    getItem(key) {
+        let token;
+        this.getToken()
+            .subscribe((currentToken) => (token = currentToken))
+            .unsubscribe();
+        return this.decode(key, token === null || token === void 0 ? void 0 : token[key]);
+    }
+    /**
+     * Removes parameter from the token (eg. access_token)
+     *
+     * @param key
+     */
+    removeItem(key) {
+        const val = Object.assign({}, this._token$.value);
+        delete val[key];
+        this._token$.next(Object.assign({}, val));
+    }
+    /**
+     * Sets parameter of the token (eg. access_token)
+     *
+     * @param key
+     */
+    setItem(key, data) {
+        if (key) {
+            this._token$.next(Object.assign(Object.assign({}, this._token$.value), { [key]: this.encode(key, data) }));
+        }
+    }
+}
+/**
+ * Extracted keys that are not `JSON.stringify` from reading the angular-oauth2-oidc source code
+ */
+AuthStorageService.nonStringifiedOAuthLibKeys = [
+    'PKCE_verifier',
+    'access_token',
+    'refresh_token',
+    'expires_at',
+    'access_token_stored_at',
+    'id_token',
+    'id_token_expires_at',
+    'id_token_stored_at',
+    'session_state',
+    'nonce',
+];
+AuthStorageService.ɵprov = ɵɵdefineInjectable({ factory: function AuthStorageService_Factory() { return new AuthStorageService(); }, token: AuthStorageService, providedIn: "root" });
+AuthStorageService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+
+class SiteContextConfig {
+}
+SiteContextConfig.ɵprov = ɵɵdefineInjectable({ factory: function SiteContextConfig_Factory() { return ɵɵinject(Config); }, token: SiteContextConfig, providedIn: "root" });
+SiteContextConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
+
+class OccConfig extends SiteContextConfig {
+}
+OccConfig.ɵprov = ɵɵdefineInjectable({ factory: function OccConfig_Factory() { return ɵɵinject(Config); }, token: OccConfig, providedIn: "root" });
+OccConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
+
+class AuthConfig {
+}
+AuthConfig.ɵprov = ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
+AuthConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
+
+/**
+ * Supported OAuth flows.
+ */
+var OAuthFlow;
+(function (OAuthFlow) {
+    /**
+     * Flow when username and password is passed to the application and then the application through API fetches tokens from OAuth server.
+     */
+    OAuthFlow[OAuthFlow["ResourceOwnerPasswordFlow"] = 0] = "ResourceOwnerPasswordFlow";
+    /**
+     * Flow with redirect to OAuth server where user inputs credentials and the are redirected back with token.
+     */
+    OAuthFlow[OAuthFlow["ImplicitFlow"] = 1] = "ImplicitFlow";
+    /**
+     * Similar to Implicit flow, but user is redirected with code that need to later exchange through API for a token.
+     */
+    OAuthFlow[OAuthFlow["AuthorizationCode"] = 2] = "AuthorizationCode";
+})(OAuthFlow || (OAuthFlow = {}));
+
+/**
+ * Utility service on top of the authorization config.
+ * Provides handy defaults, when not everything is set in the configuration.
+ * Use this service instead of direct configuration.
+ */
+class AuthConfigService {
+    constructor(authConfig, occConfig) {
+        this.authConfig = authConfig;
+        this.occConfig = occConfig;
+    }
+    /**
+     * Get client_id
+     *
+     * @return client_id
+     */
+    getClientId() {
+        var _a;
+        return (_a = this.authConfig.authentication.client_id) !== null && _a !== void 0 ? _a : '';
+    }
+    /**
+     * Get client_secret. OAuth server shouldn't require it from web apps (but Hybris OAuth server requires).
+     *
+     * @return client_secret
+     */
+    getClientSecret() {
+        var _a;
+        return (_a = this.authConfig.authentication.client_secret) !== null && _a !== void 0 ? _a : '';
+    }
+    /**
+     * Returns base url of the authorization server
+     */
+    getBaseUrl() {
+        var _a;
+        return ((_a = this.authConfig.authentication.baseUrl) !== null && _a !== void 0 ? _a : this.occConfig.backend.occ.baseUrl + '/authorizationserver');
+    }
+    /**
+     * Returns endpoint for getting the auth token
+     */
+    getTokenEndpoint() {
+        var _a;
+        const tokenEndpoint = (_a = this.authConfig.authentication.tokenEndpoint) !== null && _a !== void 0 ? _a : '';
+        return this.prefixEndpoint(tokenEndpoint);
+    }
+    /**
+     * Returns url for redirect to the authorization server to get token/code
+     */
+    getLoginUrl() {
+        var _a;
+        const loginUrl = (_a = this.authConfig.authentication.loginUrl) !== null && _a !== void 0 ? _a : '';
+        return this.prefixEndpoint(loginUrl);
+    }
+    /**
+     * Returns endpoint for token revocation (both access and refresh token).
+     */
+    getRevokeEndpoint() {
+        var _a;
+        const revokeEndpoint = (_a = this.authConfig.authentication.revokeEndpoint) !== null && _a !== void 0 ? _a : '';
+        return this.prefixEndpoint(revokeEndpoint);
+    }
+    /**
+     * Returns logout url to redirect to on logout.
+     */
+    getLogoutUrl() {
+        var _a;
+        const logoutUrl = (_a = this.authConfig.authentication.logoutUrl) !== null && _a !== void 0 ? _a : '';
+        return this.prefixEndpoint(logoutUrl);
+    }
+    /**
+     * Returns userinfo endpoint of the OAuth server.
+     */
+    getUserinfoEndpoint() {
+        var _a;
+        const userinfoEndpoint = (_a = this.authConfig.authentication.userinfoEndpoint) !== null && _a !== void 0 ? _a : '';
+        return this.prefixEndpoint(userinfoEndpoint);
+    }
+    /**
+     * Returns configuration specific for the angular-oauth2-oidc library.
+     */
+    getOAuthLibConfig() {
+        var _a, _b;
+        return (_b = (_a = this.authConfig.authentication) === null || _a === void 0 ? void 0 : _a.OAuthLibConfig) !== null && _b !== void 0 ? _b : {};
+    }
+    prefixEndpoint(endpoint) {
+        let url = endpoint;
+        if (!url.startsWith('/')) {
+            url = '/' + url;
+        }
+        return `${this.getBaseUrl()}${url}`;
+    }
+    /**
+     * Returns the type of the OAuth flow based on auth config.
+     * Use when you have to perform particular action only in some of the OAuth flow scenarios.
+     */
+    getOAuthFlow() {
+        var _a, _b;
+        const responseType = (_b = (_a = this.authConfig.authentication) === null || _a === void 0 ? void 0 : _a.OAuthLibConfig) === null || _b === void 0 ? void 0 : _b.responseType;
+        if (responseType) {
+            const types = responseType.split(' ');
+            if (types.includes('code')) {
+                return OAuthFlow.AuthorizationCode;
+            }
+            else if (types.includes('token')) {
+                return OAuthFlow.ImplicitFlow;
+            }
+            else {
+                return OAuthFlow.ResourceOwnerPasswordFlow;
+            }
+        }
+        return OAuthFlow.ResourceOwnerPasswordFlow;
+    }
+}
+AuthConfigService.ɵprov = ɵɵdefineInjectable({ factory: function AuthConfigService_Factory() { return new AuthConfigService(ɵɵinject(AuthConfig), ɵɵinject(OccConfig)); }, token: AuthConfigService, providedIn: "root" });
+AuthConfigService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+AuthConfigService.ctorParameters = () => [
+    { type: AuthConfig },
+    { type: OccConfig }
+];
+
+/**
+ * Wrapper service on the library OAuthService. Normalizes the lib API for services.
+ * Use this service when you want to access low level OAuth library methods.
+ */
+class OAuthLibWrapperService {
+    constructor(oAuthService, authConfigService, platformId, winRef) {
+        this.oAuthService = oAuthService;
+        this.authConfigService = authConfigService;
+        this.platformId = platformId;
+        this.winRef = winRef;
+        this.initialize();
+    }
+    initialize() {
+        var _a, _b, _c, _d;
+        const isSSR = isPlatformServer(this.platformId);
+        this.oAuthService.configure(Object.assign({ tokenEndpoint: this.authConfigService.getTokenEndpoint(), loginUrl: this.authConfigService.getLoginUrl(), clientId: this.authConfigService.getClientId(), dummyClientSecret: this.authConfigService.getClientSecret(), revocationEndpoint: this.authConfigService.getRevokeEndpoint(), logoutUrl: this.authConfigService.getLogoutUrl(), userinfoEndpoint: this.authConfigService.getUserinfoEndpoint(), issuer: (_b = (_a = this.authConfigService.getOAuthLibConfig()) === null || _a === void 0 ? void 0 : _a.issuer) !== null && _b !== void 0 ? _b : this.authConfigService.getBaseUrl(), redirectUri: ((_d = (_c = this.authConfigService.getOAuthLibConfig()) === null || _c === void 0 ? void 0 : _c.redirectUri) !== null && _d !== void 0 ? _d : !isSSR) ? this.winRef.nativeWindow.location.origin
+                : '' }, this.authConfigService.getOAuthLibConfig()));
+    }
+    /**
+     * Authorize with ResourceOwnerPasswordFlow.
+     *
+     * @param userId
+     * @param password
+     *
+     * @return token response from the lib
+     */
+    authorizeWithPasswordFlow(userId, password) {
+        return this.oAuthService.fetchTokenUsingPasswordFlow(userId, password);
+    }
+    /**
+     * Refresh access_token.
+     */
+    refreshToken() {
+        this.oAuthService.refreshToken();
+    }
+    /**
+     * Revoke access tokens and clear tokens in lib state.
+     */
+    revokeAndLogout() {
+        return new Promise((resolve) => {
+            this.oAuthService
+                .revokeTokenAndLogout()
+                .catch(() => {
+                // when there would be some kind of error during revocation we can't do anything else, so at least we logout user.
+                this.oAuthService.logOut();
+            })
+                .finally(() => {
+                resolve();
+            });
+        });
+    }
+    /**
+     * Clear tokens in library state (no revocation).
+     */
+    logout() {
+        this.oAuthService.logOut();
+    }
+    /**
+     * Returns Open Id token. Might be empty, when it was not requested with the `responseType` config.
+     *
+     * @return id token
+     */
+    getIdToken() {
+        return this.oAuthService.getIdToken();
+    }
+    /**
+     * Initialize Implicit Flow or Authorization Code flows with the redirect to OAuth login url.
+     */
+    initLoginFlow() {
+        return this.oAuthService.initLoginFlow();
+    }
+    /**
+     * Tries to login user based on `code` or `token` present in the url.
+     */
+    tryLogin() {
+        return this.oAuthService.tryLogin({
+            // We don't load discovery document, because it doesn't contain revoke endpoint information
+            disableOAuth2StateCheck: true,
+        });
+    }
+}
+OAuthLibWrapperService.ɵprov = ɵɵdefineInjectable({ factory: function OAuthLibWrapperService_Factory() { return new OAuthLibWrapperService(ɵɵinject(OAuthService), ɵɵinject(AuthConfigService), ɵɵinject(PLATFORM_ID), ɵɵinject(WindowRef)); }, token: OAuthLibWrapperService, providedIn: "root" });
+OAuthLibWrapperService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+OAuthLibWrapperService.ctorParameters = () => [
+    { type: OAuthService },
+    { type: AuthConfigService },
+    { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] },
+    { type: WindowRef }
+];
+
+/**
+ * Auth service for normal user authentication.
+ * Use to check auth status, login/logout with different OAuth flows.
+ */
+class BasicAuthService {
+    constructor(store, userIdService, oAuthLibWrapperService, authStorageService, authRedirectService, routingService) {
+        this.store = store;
+        this.userIdService = userIdService;
+        this.oAuthLibWrapperService = oAuthLibWrapperService;
+        this.authStorageService = authStorageService;
+        this.authRedirectService = authRedirectService;
+        this.routingService = routingService;
+    }
+    /**
+     * Check params in url and if there is an code/token then try to login with those.
+     */
+    checkOAuthParamsInUrl() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.oAuthLibWrapperService.tryLogin();
+                const token = this.authStorageService.getItem('access_token');
+                // We get the result in the code flow even if we did not logged in that why we also need to check if we have access_token
+                if (result && token) {
+                    this.userIdService.setUserId(OCC_USER_ID_CURRENT);
+                    this.store.dispatch(new Login());
+                    this.authRedirectService.redirect();
+                }
+            }
+            catch (_a) { }
+        });
+    }
+    /**
+     * Initialize Implicit/Authorization Code flow by redirecting to OAuth server.
+     */
+    loginWithRedirect() {
+        this.oAuthLibWrapperService.initLoginFlow();
+        return true;
+    }
+    /**
+     * Loads a new user token with Resource Owner Password Flow.
+     * @param userId
+     * @param password
+     */
+    authorize(userId, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.oAuthLibWrapperService.authorizeWithPasswordFlow(userId, password);
+                // OCC specific user id handling. Customize when implementing different backend
+                this.userIdService.setUserId(OCC_USER_ID_CURRENT);
+                this.store.dispatch(new Login());
+                this.authRedirectService.redirect();
+            }
+            catch (_a) { }
+        });
+    }
+    /**
+     * Logout a storefront customer.
+     */
+    logout() {
+        this.userIdService.clearUserId();
+        return new Promise((resolve) => {
+            this.oAuthLibWrapperService.revokeAndLogout().finally(() => {
+                this.store.dispatch(new Logout());
+                resolve();
+            });
+        });
+    }
+    /**
+     * Returns `true` if the user is logged in; and `false` if the user is anonymous.
+     */
+    isUserLoggedIn() {
+        return this.authStorageService.getToken().pipe(map((userToken) => Boolean(userToken === null || userToken === void 0 ? void 0 : userToken.access_token)), distinctUntilChanged());
+    }
+    /**
+     * Initialize logout procedure by redirecting to the `logout` endpoint.
+     */
+    initLogout() {
+        this.routingService.go({ cxRoute: 'logout' });
+    }
+}
+BasicAuthService.ɵprov = ɵɵdefineInjectable({ factory: function BasicAuthService_Factory() { return new BasicAuthService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(OAuthLibWrapperService), ɵɵinject(AuthStorageService), ɵɵinject(AuthRedirectService), ɵɵinject(RoutingService)); }, token: BasicAuthService, providedIn: "root" });
+BasicAuthService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+BasicAuthService.ctorParameters = () => [
+    { type: Store },
+    { type: UserIdService },
+    { type: OAuthLibWrapperService },
+    { type: AuthStorageService },
+    { type: AuthRedirectService },
+    { type: RoutingService }
+];
+
+/**
+ * Auth facade on BasicAuthService and AsmAuthService.
+ * This service should be used in components, other core features.
+ */
+class AuthService {
+    constructor(basicAuthService) {
+        this.basicAuthService = basicAuthService;
+    }
+    /**
+     * Check params in url and if there is an code/token then try to login with those.
+     */
+    checkOAuthParamsInUrl() {
+        this.basicAuthService.checkOAuthParamsInUrl();
+    }
+    /**
+     * Initialize Implicit/Authorization Code flow by redirecting to OAuth server.
+     */
+    loginWithRedirect() {
+        return this.basicAuthService.loginWithRedirect();
+    }
+    /**
+     * Loads a new user token with Resource Owner Password Flow.
+     * @param userId
+     * @param password
+     */
+    authorize(userId, password) {
+        this.basicAuthService.authorize(userId, password);
+    }
+    /**
+     * Logout a storefront customer.
+     */
+    logout() {
+        return this.basicAuthService.logout();
+    }
+    /**
+     * Returns `true` if the user is logged in; and `false` if the user is anonymous.
+     */
+    isUserLoggedIn() {
+        return this.basicAuthService.isUserLoggedIn();
+    }
+    /**
+     * Initialize logout procedure by redirecting to the `logout` endpoint.
+     */
+    initLogout() {
+        this.basicAuthService.initLogout();
+    }
+}
+AuthService.ɵprov = ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(ɵɵinject(BasicAuthService)); }, token: AuthService, providedIn: "root" });
+AuthService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+AuthService.ctorParameters = () => [
+    { type: BasicAuthService }
+];
+
+var CountryType;
+(function (CountryType) {
+    CountryType["BILLING"] = "BILLING";
+    CountryType["SHIPPING"] = "SHIPPING";
+})(CountryType || (CountryType = {}));
+
+var PromotionLocation;
+(function (PromotionLocation) {
+    PromotionLocation["ActiveCart"] = "CART";
+    PromotionLocation["Checkout"] = "CHECKOUT";
+    PromotionLocation["Order"] = "ORDER";
+})(PromotionLocation || (PromotionLocation = {}));
+var B2BPaymentTypeEnum;
+(function (B2BPaymentTypeEnum) {
+    B2BPaymentTypeEnum["ACCOUNT_PAYMENT"] = "ACCOUNT";
+    B2BPaymentTypeEnum["CARD_PAYMENT"] = "CARD";
+})(B2BPaymentTypeEnum || (B2BPaymentTypeEnum = {}));
+
+var PageType;
+(function (PageType) {
+    PageType["CONTENT_PAGE"] = "ContentPage";
+    PageType["PRODUCT_PAGE"] = "ProductPage";
+    PageType["CATEGORY_PAGE"] = "CategoryPage";
+    PageType["CATALOG_PAGE"] = "CatalogPage";
+})(PageType || (PageType = {}));
+var CmsBannerCarouselEffect;
+(function (CmsBannerCarouselEffect) {
+    CmsBannerCarouselEffect["FADE"] = "FADE";
+    CmsBannerCarouselEffect["ZOOM"] = "ZOOM";
+    CmsBannerCarouselEffect["CURTAIN"] = "CURTAINX";
+    CmsBannerCarouselEffect["TURNDOWN"] = "TURNDOWN";
+})(CmsBannerCarouselEffect || (CmsBannerCarouselEffect = {}));
+
+var ANONYMOUS_CONSENT_STATUS;
+(function (ANONYMOUS_CONSENT_STATUS) {
+    ANONYMOUS_CONSENT_STATUS["GIVEN"] = "GIVEN";
+    ANONYMOUS_CONSENT_STATUS["WITHDRAWN"] = "WITHDRAWN";
+})(ANONYMOUS_CONSENT_STATUS || (ANONYMOUS_CONSENT_STATUS = {}));
+const ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
+
+var ImageType;
+(function (ImageType) {
+    ImageType["PRIMARY"] = "PRIMARY";
+    ImageType["GALLERY"] = "GALLERY";
+})(ImageType || (ImageType = {}));
+
+var B2BUserGroup;
+(function (B2BUserGroup) {
+    B2BUserGroup["B2B_ADMIN_GROUP"] = "b2badmingroup";
+    B2BUserGroup["B2B_CUSTOMER_GROUP"] = "b2bcustomergroup";
+    B2BUserGroup["B2B_MANAGER_GROUP"] = "b2bmanagergroup";
+    B2BUserGroup["B2B_APPROVER_GROUP"] = "b2bapprovergroup";
+})(B2BUserGroup || (B2BUserGroup = {}));
+
+var NotificationType;
+(function (NotificationType) {
+    NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
+})(NotificationType || (NotificationType = {}));
+
+var VariantType;
+(function (VariantType) {
+    VariantType["SIZE"] = "ApparelSizeVariantProduct";
+    VariantType["STYLE"] = "ApparelStyleVariantProduct";
+    VariantType["COLOR"] = "ElectronicsColorVariantProduct";
+})(VariantType || (VariantType = {}));
+var PriceType;
+(function (PriceType) {
+    PriceType["BUY"] = "BUY";
+    PriceType["FROM"] = "FROM";
+})(PriceType || (PriceType = {}));
+var VariantQualifier;
+(function (VariantQualifier) {
+    VariantQualifier["SIZE"] = "size";
+    VariantQualifier["STYLE"] = "style";
+    VariantQualifier["COLOR"] = "color";
+    VariantQualifier["THUMBNAIL"] = "thumbnail";
+    VariantQualifier["PRODUCT"] = "product";
+    VariantQualifier["ROLLUP_PROPERTY"] = "rollupProperty";
+})(VariantQualifier || (VariantQualifier = {}));
+
+var DaysOfWeek;
+(function (DaysOfWeek) {
+    DaysOfWeek["MONDAY"] = "MONDAY";
+    DaysOfWeek["TUESDAY"] = "TUESDAY";
+    DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
+    DaysOfWeek["THURSDAY"] = "THURSDAY";
+    DaysOfWeek["FRIDAY"] = "FRIDAY";
+    DaysOfWeek["SATURDAY"] = "SATURDAY";
+    DaysOfWeek["SUNDAY"] = "SUNDAY";
+})(DaysOfWeek || (DaysOfWeek = {}));
+const recurrencePeriod = {
+    DAILY: 'DAILY',
+    WEEKLY: 'WEEKLY',
+    MONTHLY: 'MONTHLY',
+};
+var ORDER_TYPE;
+(function (ORDER_TYPE) {
+    ORDER_TYPE["PLACE_ORDER"] = "PLACE_ORDER";
+    ORDER_TYPE["SCHEDULE_REPLENISHMENT_ORDER"] = "SCHEDULE_REPLENISHMENT_ORDER";
+})(ORDER_TYPE || (ORDER_TYPE = {}));
 
 const ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
 const ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
@@ -479,33 +1889,6 @@ function entitySelector(state, id) {
     return state.entities[id] || undefined;
 }
 
-function isObject(item) {
-    return item && typeof item === 'object' && !Array.isArray(item);
-}
-function deepMerge(target = {}, ...sources) {
-    if (!sources.length) {
-        return target;
-    }
-    const source = sources.shift() || {};
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-            if (source[key] instanceof Date) {
-                Object.assign(target, { [key]: source[key] });
-            }
-            else if (isObject(source[key])) {
-                if (!target[key]) {
-                    Object.assign(target, { [key]: {} });
-                }
-                deepMerge(target[key], source[key]);
-            }
-            else {
-                Object.assign(target, { [key]: source[key] });
-            }
-        }
-    }
-    return deepMerge(target, ...sources);
-}
-
 const OBJECT_SEPARATOR = '.';
 function getStateSliceValue(keys, state) {
     return keys
@@ -653,2356 +2036,6 @@ var utilsGroup = /*#__PURE__*/Object.freeze({
     processesLoaderReducer: processesLoaderReducer
 });
 
-const AUTH_FEATURE = 'auth';
-const CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
-
-const LOAD_CLIENT_TOKEN = '[Token] Load Client Token';
-const LOAD_CLIENT_TOKEN_FAIL = '[Token] Load Client Token Fail';
-const LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Load Client Token Success';
-class LoadClientToken extends LoaderLoadAction {
-    constructor() {
-        super(CLIENT_TOKEN_DATA);
-        this.type = LOAD_CLIENT_TOKEN;
-    }
-}
-class LoadClientTokenFail extends LoaderFailAction {
-    constructor(payload) {
-        super(CLIENT_TOKEN_DATA, payload);
-        this.payload = payload;
-        this.type = LOAD_CLIENT_TOKEN_FAIL;
-    }
-}
-class LoadClientTokenSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(CLIENT_TOKEN_DATA);
-        this.payload = payload;
-        this.type = LOAD_CLIENT_TOKEN_SUCCESS;
-    }
-}
-
-const LOGIN = '[Auth] Login';
-const LOGOUT = '[Auth] Logout';
-const LOGOUT_CUSTOMER_SUPPORT_AGENT = '[Auth] Logout Customer Support Agent';
-class Login {
-    constructor() {
-        this.type = LOGIN;
-    }
-}
-class Logout {
-    constructor() {
-        this.type = LOGOUT;
-    }
-}
-
-const LOAD_USER_TOKEN = '[Auth] Load User Token';
-const LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
-const LOAD_USER_TOKEN_SUCCESS = '[Auth] Load User Token Success';
-const REFRESH_USER_TOKEN = '[Auth] Refresh User Token';
-const REFRESH_USER_TOKEN_FAIL = '[Auth] Refresh User Token Fail';
-const REFRESH_USER_TOKEN_SUCCESS = '[Auth] Refresh User Token Success';
-const REVOKE_USER_TOKEN = '[Auth] Revoke User Token';
-const REVOKE_USER_TOKEN_FAIL = '[Auth] Revoke User Token Fail';
-const REVOKE_USER_TOKEN_SUCCESS = '[Auth] Revoke User Token Success';
-class LoadUserToken {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_TOKEN;
-    }
-}
-class LoadUserTokenFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_TOKEN_FAIL;
-    }
-}
-class LoadUserTokenSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_TOKEN_SUCCESS;
-    }
-}
-class RefreshUserToken {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REFRESH_USER_TOKEN;
-    }
-}
-class RefreshUserTokenSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REFRESH_USER_TOKEN_SUCCESS;
-    }
-}
-class RefreshUserTokenFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REFRESH_USER_TOKEN_FAIL;
-    }
-}
-class RevokeUserToken {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REVOKE_USER_TOKEN;
-    }
-}
-class RevokeUserTokenSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REVOKE_USER_TOKEN_SUCCESS;
-    }
-}
-class RevokeUserTokenFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REVOKE_USER_TOKEN_FAIL;
-    }
-}
-
-var authGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    LOAD_CLIENT_TOKEN: LOAD_CLIENT_TOKEN,
-    LOAD_CLIENT_TOKEN_FAIL: LOAD_CLIENT_TOKEN_FAIL,
-    LOAD_CLIENT_TOKEN_SUCCESS: LOAD_CLIENT_TOKEN_SUCCESS,
-    LoadClientToken: LoadClientToken,
-    LoadClientTokenFail: LoadClientTokenFail,
-    LoadClientTokenSuccess: LoadClientTokenSuccess,
-    LOGIN: LOGIN,
-    LOGOUT: LOGOUT,
-    LOGOUT_CUSTOMER_SUPPORT_AGENT: LOGOUT_CUSTOMER_SUPPORT_AGENT,
-    Login: Login,
-    Logout: Logout,
-    LOAD_USER_TOKEN: LOAD_USER_TOKEN,
-    LOAD_USER_TOKEN_FAIL: LOAD_USER_TOKEN_FAIL,
-    LOAD_USER_TOKEN_SUCCESS: LOAD_USER_TOKEN_SUCCESS,
-    REFRESH_USER_TOKEN: REFRESH_USER_TOKEN,
-    REFRESH_USER_TOKEN_FAIL: REFRESH_USER_TOKEN_FAIL,
-    REFRESH_USER_TOKEN_SUCCESS: REFRESH_USER_TOKEN_SUCCESS,
-    REVOKE_USER_TOKEN: REVOKE_USER_TOKEN,
-    REVOKE_USER_TOKEN_FAIL: REVOKE_USER_TOKEN_FAIL,
-    REVOKE_USER_TOKEN_SUCCESS: REVOKE_USER_TOKEN_SUCCESS,
-    LoadUserToken: LoadUserToken,
-    LoadUserTokenFail: LoadUserTokenFail,
-    LoadUserTokenSuccess: LoadUserTokenSuccess,
-    RefreshUserToken: RefreshUserToken,
-    RefreshUserTokenSuccess: RefreshUserTokenSuccess,
-    RefreshUserTokenFail: RefreshUserTokenFail,
-    RevokeUserToken: RevokeUserToken,
-    RevokeUserTokenSuccess: RevokeUserTokenSuccess,
-    RevokeUserTokenFail: RevokeUserTokenFail
-});
-
-const getAuthState = createFeatureSelector(AUTH_FEATURE);
-
-const ɵ0 = (state) => state.clientToken;
-const getClientTokenState = createSelector(getAuthState, ɵ0);
-
-const getUserTokenSelector = (state) => state.token;
-const ɵ0$1 = getUserTokenSelector;
-const ɵ1 = (state) => state.userToken;
-const getUserTokenState = createSelector(getAuthState, ɵ1);
-const getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
-
-var authGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getClientTokenState: getClientTokenState,
-    ɵ0: ɵ0,
-    getAuthState: getAuthState,
-    getUserTokenState: getUserTokenState,
-    getUserToken: getUserToken,
-    ɵ1: ɵ1
-});
-
-class AuthService {
-    constructor(store) {
-        this.store = store;
-    }
-    /**
-     * Loads a new user token
-     * @param userId
-     * @param password
-     */
-    authorize(userId, password) {
-        this.store.dispatch(new LoadUserToken({
-            userId: userId,
-            password: password,
-        }));
-    }
-    /**
-     * This function provides the userId the OCC calls should use, depending
-     * on whether there is an active storefront session or not.
-     *
-     * It returns the userId of the current storefront user or 'anonymous'
-     * in the case there are no signed in user in the storefront.
-     *
-     * The user id of a regular customer session is 'current'.  In the case of an
-     * asm customer emulation session, the userId will be the customerId.
-     */
-    getOccUserId() {
-        return this.getUserToken().pipe(map((userToken) => {
-            if (!!userToken && !!userToken.userId) {
-                return userToken.userId;
-            }
-            else {
-                return OCC_USER_ID_ANONYMOUS;
-            }
-        }));
-    }
-    /**
-     * Calls provided callback with current user id.
-     *
-     * @param cb callback function to invoke
-     */
-    invokeWithUserId(cb) {
-        return this.getOccUserId()
-            .pipe(take(1))
-            .subscribe((id) => cb(id));
-    }
-    /**
-     * Returns the user's token
-     */
-    getUserToken() {
-        return this.store.pipe(select(getUserToken));
-    }
-    /**
-     * Refreshes the user token
-     * @param token a user token to refresh
-     */
-    refreshUserToken(token) {
-        this.store.dispatch(new RefreshUserToken({
-            refreshToken: token.refresh_token,
-        }));
-    }
-    /**
-     * Store the provided token
-     */
-    authorizeWithToken(token) {
-        this.store.dispatch(new LoadUserTokenSuccess(token));
-    }
-    /**
-     * Logout a storefront customer
-     */
-    logout() {
-        this.getUserToken()
-            .pipe(take(1))
-            .subscribe((userToken) => {
-            this.store.dispatch(new Logout());
-            if (Boolean(userToken) && userToken.userId === OCC_USER_ID_CURRENT) {
-                this.store.dispatch(new RevokeUserToken(userToken));
-            }
-        });
-    }
-    /**
-     * Returns a client token.  The client token from the store is returned if there is one.
-     * Otherwise, an new token is fetched from the backend and saved in the store.
-     */
-    getClientToken() {
-        return this.store.pipe(select(getClientTokenState), filter((state) => {
-            if (this.isClientTokenLoaded(state)) {
-                return true;
-            }
-            else {
-                if (!state.loading) {
-                    this.store.dispatch(new LoadClientToken());
-                }
-                return false;
-            }
-        }), map((state) => state.value));
-    }
-    /**
-     * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
-     * The new clientToken is returned.
-     */
-    refreshClientToken() {
-        this.store.dispatch(new LoadClientToken());
-        return this.store.pipe(select(getClientTokenState), filter((state) => this.isClientTokenLoaded(state)), map((state) => state.value));
-    }
-    isClientTokenLoaded(state) {
-        return (state.success || state.error) && !state.loading;
-    }
-    /**
-     * Returns `true` if the user is logged in; and `false` if the user is anonymous.
-     */
-    isUserLoggedIn() {
-        return this.getUserToken().pipe(map((userToken) => Boolean(userToken) && Boolean(userToken.access_token)));
-    }
-}
-AuthService.ɵprov = ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(ɵɵinject(Store)); }, token: AuthService, providedIn: "root" });
-AuthService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-AuthService.ctorParameters = () => [
-    { type: Store }
-];
-
-class ClientErrorHandlingService {
-    constructor(authService) {
-        this.authService = authService;
-    }
-    handleExpiredClientToken(request, next) {
-        return this.authService.refreshClientToken().pipe(take(1), switchMap((token) => {
-            return next.handle(this.createNewRequestWithNewToken(request, token));
-        }));
-    }
-    createNewRequestWithNewToken(request, token) {
-        request = request.clone({
-            setHeaders: {
-                Authorization: `${token.token_type} ${token.access_token}`,
-            },
-        });
-        return request;
-    }
-}
-ClientErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(ɵɵinject(AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
-ClientErrorHandlingService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-ClientErrorHandlingService.ctorParameters = () => [
-    { type: AuthService }
-];
-
-class WindowRef {
-    constructor(document) {
-        // it's a workaround to have document property properly typed
-        // see: https://github.com/angular/angular/issues/15640
-        this.document = document;
-    }
-    get nativeWindow() {
-        return typeof window !== 'undefined' ? window : undefined;
-    }
-    get sessionStorage() {
-        return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
-    }
-    get localStorage() {
-        return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
-    }
-    /**
-     * Returns an observable for the window resize event and emits an event
-     * every 300ms in case of resizing. An event is simulated initially.
-     *
-     * If there's no window object available (i.e. in SSR), a null value is emitted.
-     */
-    get resize$() {
-        if (!this.nativeWindow) {
-            return of(null);
-        }
-        else {
-            return fromEvent(this.nativeWindow, 'resize').pipe(debounceTime(300), startWith({ target: this.nativeWindow }), distinctUntilChanged());
-        }
-    }
-}
-WindowRef.ɵprov = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
-WindowRef.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-WindowRef.ctorParameters = () => [
-    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
-];
-
-class UrlParsingService {
-    constructor(router) {
-        this.router = router;
-    }
-    getPrimarySegments(url) {
-        const urlTree = this.router.parseUrl(url);
-        return this._getPrimarySegmentsFromUrlTree(urlTree.root);
-    }
-    _getPrimarySegmentsFromUrlTree(tree) {
-        const segments = tree.segments.map((s) => s.path);
-        const childrenSegments = tree.children[PRIMARY_OUTLET]
-            ? this._getPrimarySegmentsFromUrlTree(tree.children[PRIMARY_OUTLET])
-            : [];
-        return segments.concat(childrenSegments);
-    }
-}
-UrlParsingService.ɵprov = ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(ɵɵinject(Router)); }, token: UrlParsingService, providedIn: "root" });
-UrlParsingService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-UrlParsingService.ctorParameters = () => [
-    { type: Router }
-];
-
-const isParam = (segment) => segment.startsWith(':');
-const getParamName = (segment) => segment.slice(1); // it just removes leading ':'
-const ensureLeadingSlash = (path) => path.startsWith('/') ? path : '/' + path;
-const removeLeadingSlash = (path) => path.startsWith('/') ? path.slice(1) : path;
-
-/**
- * Global Configuration injection token, can be used to inject configuration to any part of the app
- */
-const Config = new InjectionToken('Configuration', {
-    providedIn: 'root',
-    factory: () => deepMerge({}, inject(DefaultConfig), inject(RootConfig)),
-});
-/**
- * Default Configuration token, used to build Global Configuration, built from DefaultConfigChunks
- */
-const DefaultConfig = new InjectionToken('DefaultConfiguration', {
-    providedIn: 'root',
-    factory: () => { var _a; return deepMerge({}, ...((_a = inject(DefaultConfigChunk, InjectFlags.Optional)) !== null && _a !== void 0 ? _a : [])); },
-});
-/**
- * Root Configuration token, used to build Global Configuration, built from ConfigChunks
- */
-const RootConfig = new InjectionToken('RootConfiguration', {
-    providedIn: 'root',
-    factory: () => { var _a; return deepMerge({}, ...((_a = inject(ConfigChunk, InjectFlags.Optional)) !== null && _a !== void 0 ? _a : [])); },
-});
-/**
- * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
- * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
- */
-const ConfigChunk = new InjectionToken('ConfigurationChunk');
-/**
- * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
- * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
- *
- * General rule is, that all config provided in libraries should be provided as default config.
- */
-const DefaultConfigChunk = new InjectionToken('DefaultConfigurationChunk');
-
-class RoutingConfig {
-}
-RoutingConfig.ɵprov = ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
-RoutingConfig.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-                useExisting: Config,
-            },] }
-];
-
-class RoutingConfigService {
-    constructor(config) {
-        this.config = config;
-    }
-    /**
-     * Returns the route config for the given route name.
-     */
-    getRouteConfig(routeName) {
-        var _a, _b;
-        const routeConfig = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes;
-        const result = routeConfig && routeConfig[routeName];
-        if (!routeConfig || result === undefined) {
-            this.warn(`No path was configured for the named route '${routeName}'!`);
-        }
-        return result;
-    }
-    warn(...args) {
-        if (isDevMode()) {
-            console.warn(...args);
-        }
-    }
-    /**
-     * Returns the configured route loading strategy.
-     */
-    getLoadStrategy() {
-        var _a, _b, _c;
-        return (_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.loadStrategy) !== null && _c !== void 0 ? _c : "always" /* ALWAYS */;
-    }
-    /**
-     * Returns the route name of the configured path.
-     *
-     * For example, when the config is:
-     * ```
-     * routing: {
-     *   routes: {
-     *      addressBook: { paths: ['my-account/address-book'] }
-     *   }
-     * }
-     * ```
-     *
-     * the `getRouteName('my-account/address-book')` returns `'addressBook'`.
-     */
-    getRouteName(path) {
-        if (!this.routeNamesByPath) {
-            this.initRouteNamesByPath();
-        }
-        return this.routeNamesByPath[path];
-    }
-    /**
-     * Initializes the property `routeNamesByPath`.
-     *
-     * The original config allows for reading configured path by the route name.
-     * But this method builds up a structure with a 'reversed config'
-     * to read quickly the route name by the path.
-     */
-    initRouteNamesByPath() {
-        var _a, _b, _c;
-        this.routeNamesByPath = {};
-        for (const [routeName, routeConfig] of Object.entries((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes)) {
-            (_c = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _c === void 0 ? void 0 : _c.forEach((path) => {
-                if (isDevMode() && this.routeNamesByPath[path]) {
-                    console.error(`The same path '${path}' is configured for two different route names: '${this.routeNamesByPath[path]}' and '${routeName}`);
-                }
-                this.routeNamesByPath[path] = routeName;
-            });
-        }
-    }
-}
-RoutingConfigService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
-RoutingConfigService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-RoutingConfigService.ctorParameters = () => [
-    { type: RoutingConfig }
-];
-
-class SemanticPathService {
-    constructor(routingConfigService, urlParser) {
-        this.routingConfigService = routingConfigService;
-        this.urlParser = urlParser;
-        this.ROOT_URL = ['/'];
-    }
-    /**
-     * Returns the first path alias configured for a given route name. It adds `/` at the beginning.
-     */
-    get(routeName) {
-        const routeConfig = this.routingConfigService.getRouteConfig(routeName);
-        return routeConfig && Array.isArray(routeConfig.paths)
-            ? '/' + routeConfig.paths[0]
-            : undefined;
-    }
-    /**
-     * Transforms the array of url commands. Each command can be:
-     * a) string - will be left untouched
-     * b) object { cxRoute: <route name> } - will be replaced with semantic path
-     * c) object { cxRoute: <route name>, params: { ... } } - same as above, but with passed params
-     *
-     * If the first command is the object with the `cxRoute` property, returns an absolute url (with the first element of the array `'/'`)
-     */
-    transform(commands) {
-        if (!Array.isArray(commands)) {
-            commands = [commands];
-        }
-        const result = [];
-        for (const command of commands) {
-            if (!this.isRouteCommand(command)) {
-                // don't modify segment that is not route command:
-                result.push(command);
-            }
-            else {
-                // generate array with url segments for given route command:
-                const partialResult = this.generateUrlPart(command);
-                if (partialResult === null) {
-                    return this.ROOT_URL;
-                }
-                result.push(...partialResult);
-            }
-        }
-        if (this.shouldOutputAbsolute(commands)) {
-            result.unshift('/');
-        }
-        return result;
-    }
-    isRouteCommand(command) {
-        return command && Boolean(command.cxRoute);
-    }
-    shouldOutputAbsolute(commands) {
-        return this.isRouteCommand(commands[0]);
-    }
-    generateUrlPart(command) {
-        this.standarizeRouteCommand(command);
-        if (!command.cxRoute) {
-            return null;
-        }
-        const routeConfig = this.routingConfigService.getRouteConfig(command.cxRoute);
-        // if no route translation was configured, return null:
-        if (!routeConfig || !routeConfig.paths) {
-            return null;
-        }
-        // find first path that can satisfy it's parameters with given parameters
-        const path = this.findPathWithFillableParams(routeConfig, command.params);
-        // if there is no configured path that can be satisfied with given params, return null
-        if (!path) {
-            return null;
-        }
-        const result = this.provideParamsValues(path, command.params, routeConfig.paramsMapping);
-        return result;
-    }
-    standarizeRouteCommand(command) {
-        command.params = command.params || {};
-    }
-    provideParamsValues(path, params, paramsMapping) {
-        return this.urlParser.getPrimarySegments(path).map((segment) => {
-            if (isParam(segment)) {
-                const paramName = getParamName(segment);
-                const mappedParamName = this.getMappedParamName(paramName, paramsMapping);
-                return params[mappedParamName];
-            }
-            return segment;
-        });
-    }
-    findPathWithFillableParams(routeConfig, params) {
-        const foundPath = routeConfig.paths.find((path) => this.getParams(path).every((paramName) => {
-            const mappedParamName = this.getMappedParamName(paramName, routeConfig.paramsMapping);
-            return params[mappedParamName] !== undefined;
-        }));
-        if (foundPath === undefined || foundPath === null) {
-            this.warn(`No configured path matches all its params to given object. `, `Route config: `, routeConfig, `Params object: `, params);
-            return null;
-        }
-        return foundPath;
-    }
-    getParams(path) {
-        return this.urlParser
-            .getPrimarySegments(path)
-            .filter(isParam)
-            .map(getParamName);
-    }
-    getMappedParamName(paramName, paramsMapping) {
-        if (paramsMapping) {
-            return paramsMapping[paramName] || paramName;
-        }
-        return paramName;
-    }
-    warn(...args) {
-        if (isDevMode()) {
-            console.warn(...args);
-        }
-    }
-}
-SemanticPathService.ɵprov = ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(ɵɵinject(RoutingConfigService), ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
-SemanticPathService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-SemanticPathService.ctorParameters = () => [
-    { type: RoutingConfigService },
-    { type: UrlParsingService }
-];
-
-const ROUTER_GO = '[Router] Go';
-const ROUTER_GO_BY_URL = '[Router] Go By Url';
-const ROUTER_BACK = '[Router] Back';
-const ROUTER_FORWARD = '[Router] Forward';
-class RouteGoAction {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ROUTER_GO;
-    }
-}
-class RouteGoByUrlAction {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ROUTER_GO_BY_URL;
-    }
-}
-class RouteBackAction {
-    constructor() {
-        this.type = ROUTER_BACK;
-    }
-}
-class RouteForwardAction {
-    constructor() {
-        this.type = ROUTER_FORWARD;
-    }
-}
-
-var routingGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    ROUTER_GO: ROUTER_GO,
-    ROUTER_GO_BY_URL: ROUTER_GO_BY_URL,
-    ROUTER_BACK: ROUTER_BACK,
-    ROUTER_FORWARD: ROUTER_FORWARD,
-    RouteGoAction: RouteGoAction,
-    RouteGoByUrlAction: RouteGoByUrlAction,
-    RouteBackAction: RouteBackAction,
-    RouteForwardAction: RouteForwardAction
-});
-
-const ROUTING_FEATURE = 'router';
-
-const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
-const ɵ0$2 = (state) => state.router;
-const getRouterState = createSelector(getRouterFeatureState, ɵ0$2);
-const ɵ1$1 = (routingState) => (routingState.state && routingState.state.semanticRoute) || '';
-const getSemanticRoute = createSelector(getRouterState, ɵ1$1);
-const ɵ2 = (routingState) => (routingState.state && routingState.state.context) || { id: '' };
-const getPageContext = createSelector(getRouterState, ɵ2);
-const ɵ3 = (routingState) => routingState.nextState && routingState.nextState.context;
-const getNextPageContext = createSelector(getRouterState, ɵ3);
-const ɵ4 = (context) => !!context;
-const isNavigating = createSelector(getNextPageContext, ɵ4);
-
-var routingGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getRouterFeatureState: getRouterFeatureState,
-    getRouterState: getRouterState,
-    getSemanticRoute: getSemanticRoute,
-    getPageContext: getPageContext,
-    getNextPageContext: getNextPageContext,
-    isNavigating: isNavigating,
-    ɵ0: ɵ0$2,
-    ɵ1: ɵ1$1,
-    ɵ2: ɵ2,
-    ɵ3: ɵ3,
-    ɵ4: ɵ4
-});
-
-/**
- * Helper service to expose all activated routes
- */
-class ActivatedRoutesService {
-    constructor(router) {
-        this.router = router;
-        /**
-         * Array of currently activated routes (from the root route to the leaf route).
-         */
-        this.routes$ = this.router.events.pipe(filter((event) => event instanceof NavigationEnd), 
-        // tslint:disable-next-line: deprecation https://github.com/ReactiveX/rxjs/issues/4772
-        startWith(undefined), // emit value for consumer who subscribed lately after NavigationEnd event
-        map(() => {
-            let route = this.router.routerState.snapshot.root;
-            const routes = [route];
-            // traverse to the leaf route:
-            while ((route = route.firstChild)) {
-                routes.push(route);
-            }
-            return routes;
-        }), shareReplay({ bufferSize: 1, refCount: true }));
-    }
-}
-ActivatedRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ActivatedRoutesService_Factory() { return new ActivatedRoutesService(ɵɵinject(Router)); }, token: ActivatedRoutesService, providedIn: "root" });
-ActivatedRoutesService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-ActivatedRoutesService.ctorParameters = () => [
-    { type: Router }
-];
-
-/**
- * Service to expose all parameters for the router, including child routes.
- * This is convenient in case the parent route (component) requires awareness
- * of child routes parameters.
- */
-class RoutingParamsService {
-    constructor(router, activatedRoutesService) {
-        this.router = router;
-        this.activatedRoutesService = activatedRoutesService;
-        this.params$ = this.activatedRoutesService.routes$.pipe(map((routes) => this.findAllParam(routes)), shareReplay({ refCount: true, bufferSize: 1 }));
-    }
-    /**
-     * Get the list of all parameters of the full route. This includes
-     * active child routes.
-     */
-    getParams() {
-        return this.params$;
-    }
-    findAllParam(routes) {
-        return Object.assign({}, ...routes.map((route) => route.params));
-    }
-}
-RoutingParamsService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingParamsService_Factory() { return new RoutingParamsService(ɵɵinject(Router), ɵɵinject(ActivatedRoutesService)); }, token: RoutingParamsService, providedIn: "root" });
-RoutingParamsService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-RoutingParamsService.ctorParameters = () => [
-    { type: Router },
-    { type: ActivatedRoutesService }
-];
-
-class RoutingService {
-    constructor(store, winRef, semanticPathService, routingParamsService) {
-        this.store = store;
-        this.winRef = winRef;
-        this.semanticPathService = semanticPathService;
-        this.routingParamsService = routingParamsService;
-    }
-    /**
-     * Get the list of all parameters of the full route. This includes
-     * active child routes.
-     */
-    getParams() {
-        var _a;
-        return (_a = this.routingParamsService) === null || _a === void 0 ? void 0 : _a.getParams();
-    }
-    /**
-     * Get the current router state
-     */
-    getRouterState() {
-        return this.store.pipe(select(getRouterState));
-    }
-    /**
-     * Get the `PageContext` from the state
-     */
-    getPageContext() {
-        return this.store.pipe(select(getPageContext));
-    }
-    /**
-     * Get the next `PageContext` from the state
-     */
-    getNextPageContext() {
-        return this.store.pipe(select(getNextPageContext));
-    }
-    /**
-     * Get the `isNavigating` info from the state
-     */
-    isNavigating() {
-        return this.store.pipe(select(isNavigating));
-    }
-    /**
-     * Navigation with a new state into history
-     * @param commands: url commands
-     * @param query
-     * @param extras: Represents the extra options used during navigation.
-     */
-    go(commands, query, extras) {
-        const path = this.semanticPathService.transform(commands);
-        return this.navigate(path, query, extras);
-    }
-    /**
-     * Navigation using URL
-     * @param url
-     */
-    goByUrl(url) {
-        this.store.dispatch(new RouteGoByUrlAction(url));
-    }
-    /**
-     * Navigating back
-     */
-    back() {
-        const isLastPageInApp = this.winRef.document.referrer.includes(this.winRef.nativeWindow.location.origin);
-        if (isLastPageInApp) {
-            this.store.dispatch(new RouteBackAction());
-            return;
-        }
-        this.go(['/']);
-        return;
-    }
-    /**
-     * Navigating forward
-     */
-    forward() {
-        this.store.dispatch(new RouteForwardAction());
-    }
-    /**
-     * Navigation with a new state into history
-     * @param path
-     * @param query
-     * @param extras: Represents the extra options used during navigation.
-     */
-    navigate(path, query, extras) {
-        this.store.dispatch(new RouteGoAction({
-            path,
-            query,
-            extras,
-        }));
-    }
-}
-RoutingService.ɵprov = ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(SemanticPathService), ɵɵinject(RoutingParamsService)); }, token: RoutingService, providedIn: "root" });
-RoutingService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-RoutingService.ctorParameters = () => [
-    { type: Store },
-    { type: WindowRef },
-    { type: SemanticPathService },
-    { type: RoutingParamsService }
-];
-
-class UserErrorHandlingService {
-    constructor(authService, routingService) {
-        this.authService = authService;
-        this.routingService = routingService;
-    }
-    handleExpiredUserToken(request, next) {
-        return this.handleExpiredToken().pipe(switchMap((token) => {
-            return next.handle(this.createNewRequestWithNewToken(request, token));
-        }));
-    }
-    handleExpiredRefreshToken() {
-        // Logout user
-        this.authService.logout();
-    }
-    handleExpiredToken() {
-        let oldToken;
-        return this.authService.getUserToken().pipe(tap((token) => {
-            if (token.access_token && token.refresh_token && !oldToken) {
-                this.authService.refreshUserToken(token);
-            }
-            else if (!token.access_token && !token.refresh_token) {
-                this.routingService.go({ cxRoute: 'login' });
-            }
-            else if (!token.refresh_token) {
-                this.authService.logout();
-                this.routingService.go({ cxRoute: 'login' });
-            }
-            oldToken = oldToken || token;
-        }), filter((token) => oldToken.access_token !== token.access_token), take(1));
-    }
-    createNewRequestWithNewToken(request, token) {
-        request = request.clone({
-            setHeaders: {
-                Authorization: `${token.token_type} ${token.access_token}`,
-            },
-        });
-        return request;
-    }
-}
-UserErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(ɵɵinject(AuthService), ɵɵinject(RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
-UserErrorHandlingService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UserErrorHandlingService.ctorParameters = () => [
-    { type: AuthService },
-    { type: RoutingService }
-];
-
-const OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
-class AuthErrorInterceptor {
-    constructor(userErrorHandlingService, clientErrorHandlingService, authService) {
-        this.userErrorHandlingService = userErrorHandlingService;
-        this.clientErrorHandlingService = clientErrorHandlingService;
-        this.authService = authService;
-    }
-    intercept(request, next) {
-        const isClientTokenRequest = this.isClientTokenRequest(request);
-        if (isClientTokenRequest) {
-            request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
-        }
-        return next.handle(request).pipe(catchError((errResponse) => {
-            if (errResponse instanceof HttpErrorResponse) {
-                switch (errResponse.status) {
-                    case 401: // Unauthorized
-                        if (isClientTokenRequest) {
-                            if (this.isExpiredToken(errResponse)) {
-                                return this.clientErrorHandlingService.handleExpiredClientToken(request, next);
-                            }
-                            // user token request
-                        }
-                        else {
-                            if (this.isExpiredToken(errResponse)) {
-                                return this.userErrorHandlingService.handleExpiredUserToken(request, next);
-                            }
-                            else if (
-                            // Refresh expired token
-                            // Check that the OAUTH endpoint was called and the error is for refresh token is expired
-                            errResponse.url.includes(OAUTH_ENDPOINT) &&
-                                errResponse.error.error === 'invalid_token') {
-                                this.userErrorHandlingService.handleExpiredRefreshToken();
-                                return of();
-                            }
-                        }
-                        break;
-                    case 400: // Bad Request
-                        if (errResponse.url.includes(OAUTH_ENDPOINT) &&
-                            errResponse.error.error === 'invalid_grant') {
-                            if (request.body.get('grant_type') === 'refresh_token') {
-                                // refresh token fail, force user logout
-                                this.authService.logout();
-                            }
-                        }
-                        break;
-                }
-            }
-            return throwError(errResponse);
-        }));
-    }
-    isClientTokenRequest(request) {
-        const isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CLIENT_TOKEN, request.headers);
-        return Boolean(isRequestMapping);
-    }
-    isExpiredToken(resp) {
-        if (resp.error &&
-            resp.error.errors &&
-            resp.error.errors instanceof Array &&
-            resp.error.errors[0]) {
-            return resp.error.errors[0].type === 'InvalidTokenError';
-        }
-        return false;
-    }
-}
-AuthErrorInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function AuthErrorInterceptor_Factory() { return new AuthErrorInterceptor(ɵɵinject(UserErrorHandlingService), ɵɵinject(ClientErrorHandlingService), ɵɵinject(AuthService)); }, token: AuthErrorInterceptor, providedIn: "root" });
-AuthErrorInterceptor.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-AuthErrorInterceptor.ctorParameters = () => [
-    { type: UserErrorHandlingService },
-    { type: ClientErrorHandlingService },
-    { type: AuthService }
-];
-
-class DynamicTemplate {
-    static resolve(templateString, templateVariables) {
-        for (const variableLabel of Object.keys(templateVariables)) {
-            const placeholder = new RegExp('\\${' + variableLabel + '}', 'g');
-            templateString = templateString.replace(placeholder, templateVariables[variableLabel]);
-        }
-        return templateString;
-    }
-}
-
-/**
- * Helper function for safely getting context parameter config
- *
- * @param config
- * @param parameter
- */
-function getContextParameterValues(config, parameter) {
-    return (config.context && config.context[parameter]) || [];
-}
-/**
- * Helper function for calculating default value for context parameter from config
- *
- * @param config
- * @param parameter
- */
-function getContextParameterDefault(config, parameter) {
-    const param = getContextParameterValues(config, parameter);
-    return param && param.length ? param[0] : undefined;
-}
-
-class SiteContextConfig {
-}
-SiteContextConfig.ɵprov = ɵɵdefineInjectable({ factory: function SiteContextConfig_Factory() { return ɵɵinject(Config); }, token: SiteContextConfig, providedIn: "root" });
-SiteContextConfig.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-                useExisting: Config,
-            },] }
-];
-
-const LANGUAGE_CONTEXT_ID = 'language';
-const CURRENCY_CONTEXT_ID = 'currency';
-const BASE_SITE_CONTEXT_ID = 'baseSite';
-
-const LOAD_BASE_SITE = '[Site-context] Load BaseSite';
-const LOAD_BASE_SITE_FAIL = '[Site-context] Load BaseSite Fail';
-const LOAD_BASE_SITE_SUCCESS = '[Site-context] Load BaseSite Success';
-const SET_ACTIVE_BASE_SITE = '[Site-context] Set Active BaseSite';
-const BASE_SITE_CHANGE = '[Site-context] BaseSite Change';
-class LoadBaseSite {
-    constructor() {
-        this.type = LOAD_BASE_SITE;
-    }
-}
-class LoadBaseSiteFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_BASE_SITE_FAIL;
-    }
-}
-class LoadBaseSiteSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_BASE_SITE_SUCCESS;
-    }
-}
-class SetActiveBaseSite {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_ACTIVE_BASE_SITE;
-    }
-}
-class BaseSiteChange {
-    constructor() {
-        this.type = BASE_SITE_CHANGE;
-    }
-}
-
-const LOAD_CURRENCIES = '[Site-context] Load Currencies';
-const LOAD_CURRENCIES_FAIL = '[Site-context] Load Currencies Fail';
-const LOAD_CURRENCIES_SUCCESS = '[Site-context] Load Currencies Success';
-const SET_ACTIVE_CURRENCY = '[Site-context] Set Active Currency';
-const CURRENCY_CHANGE = '[Site-context] Currency Change';
-class LoadCurrencies {
-    constructor() {
-        this.type = LOAD_CURRENCIES;
-    }
-}
-class LoadCurrenciesFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CURRENCIES_FAIL;
-    }
-}
-class LoadCurrenciesSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CURRENCIES_SUCCESS;
-    }
-}
-class SetActiveCurrency {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_ACTIVE_CURRENCY;
-    }
-}
-class CurrencyChange {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CURRENCY_CHANGE;
-    }
-}
-
-const LOAD_LANGUAGES = '[Site-context] Load Languages';
-const LOAD_LANGUAGES_FAIL = '[Site-context] Load Languages Fail';
-const LOAD_LANGUAGES_SUCCESS = '[Site-context] Load Languages Success';
-const SET_ACTIVE_LANGUAGE = '[Site-context] Set Active Language';
-const LANGUAGE_CHANGE = '[Site-context] Language Change';
-class LoadLanguages {
-    constructor() {
-        this.type = LOAD_LANGUAGES;
-    }
-}
-class LoadLanguagesFail {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_LANGUAGES_FAIL;
-    }
-}
-class LoadLanguagesSuccess {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_LANGUAGES_SUCCESS;
-    }
-}
-class SetActiveLanguage {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_ACTIVE_LANGUAGE;
-    }
-}
-class LanguageChange {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LANGUAGE_CHANGE;
-    }
-}
-
-var siteContextGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    LOAD_BASE_SITE: LOAD_BASE_SITE,
-    LOAD_BASE_SITE_FAIL: LOAD_BASE_SITE_FAIL,
-    LOAD_BASE_SITE_SUCCESS: LOAD_BASE_SITE_SUCCESS,
-    SET_ACTIVE_BASE_SITE: SET_ACTIVE_BASE_SITE,
-    BASE_SITE_CHANGE: BASE_SITE_CHANGE,
-    LoadBaseSite: LoadBaseSite,
-    LoadBaseSiteFail: LoadBaseSiteFail,
-    LoadBaseSiteSuccess: LoadBaseSiteSuccess,
-    SetActiveBaseSite: SetActiveBaseSite,
-    BaseSiteChange: BaseSiteChange,
-    LOAD_CURRENCIES: LOAD_CURRENCIES,
-    LOAD_CURRENCIES_FAIL: LOAD_CURRENCIES_FAIL,
-    LOAD_CURRENCIES_SUCCESS: LOAD_CURRENCIES_SUCCESS,
-    SET_ACTIVE_CURRENCY: SET_ACTIVE_CURRENCY,
-    CURRENCY_CHANGE: CURRENCY_CHANGE,
-    LoadCurrencies: LoadCurrencies,
-    LoadCurrenciesFail: LoadCurrenciesFail,
-    LoadCurrenciesSuccess: LoadCurrenciesSuccess,
-    SetActiveCurrency: SetActiveCurrency,
-    CurrencyChange: CurrencyChange,
-    LOAD_LANGUAGES: LOAD_LANGUAGES,
-    LOAD_LANGUAGES_FAIL: LOAD_LANGUAGES_FAIL,
-    LOAD_LANGUAGES_SUCCESS: LOAD_LANGUAGES_SUCCESS,
-    SET_ACTIVE_LANGUAGE: SET_ACTIVE_LANGUAGE,
-    LANGUAGE_CHANGE: LANGUAGE_CHANGE,
-    LoadLanguages: LoadLanguages,
-    LoadLanguagesFail: LoadLanguagesFail,
-    LoadLanguagesSuccess: LoadLanguagesSuccess,
-    SetActiveLanguage: SetActiveLanguage,
-    LanguageChange: LanguageChange
-});
-
-const SITE_CONTEXT_FEATURE = 'siteContext';
-
-const getSiteContextState = createFeatureSelector(SITE_CONTEXT_FEATURE);
-
-const ɵ0$3 = (state) => state && state.baseSite && state.baseSite.activeSite;
-const getActiveBaseSite = createSelector(getSiteContextState, ɵ0$3);
-const ɵ1$2 = (state) => state && state.baseSite && state.baseSite.details;
-const getBaseSiteData = createSelector(getSiteContextState, ɵ1$2);
-
-const currenciesEntitiesSelector = (state) => state.entities;
-const ɵ0$4 = currenciesEntitiesSelector;
-const activeCurrencySelector = (state) => state.activeCurrency;
-const ɵ1$3 = activeCurrencySelector;
-const ɵ2$1 = (state) => state.currencies;
-const getCurrenciesState = createSelector(getSiteContextState, ɵ2$1);
-const getCurrenciesEntities = createSelector(getCurrenciesState, currenciesEntitiesSelector);
-const getActiveCurrency = createSelector(getCurrenciesState, activeCurrencySelector);
-const ɵ3$1 = (entities) => {
-    return entities
-        ? Object.keys(entities).map((isocode) => entities[isocode])
-        : null;
-};
-const getAllCurrencies = createSelector(getCurrenciesEntities, ɵ3$1);
-
-const activeLanguageSelector = (state) => state.activeLanguage;
-const ɵ0$5 = activeLanguageSelector;
-const languagesEntitiesSelector = (state) => state.entities;
-const ɵ1$4 = languagesEntitiesSelector;
-const ɵ2$2 = (state) => state.languages;
-const getLanguagesState = createSelector(getSiteContextState, ɵ2$2);
-const getLanguagesEntities = createSelector(getLanguagesState, languagesEntitiesSelector);
-const getActiveLanguage = createSelector(getLanguagesState, activeLanguageSelector);
-const ɵ3$2 = (entities) => {
-    return entities
-        ? Object.keys(entities).map((isocode) => entities[isocode])
-        : null;
-};
-const getAllLanguages = createSelector(getLanguagesEntities, ɵ3$2);
-
-var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getActiveBaseSite: getActiveBaseSite,
-    getBaseSiteData: getBaseSiteData,
-    ɵ0: ɵ0$3,
-    ɵ1: ɵ1$2,
-    getCurrenciesState: getCurrenciesState,
-    getCurrenciesEntities: getCurrenciesEntities,
-    getActiveCurrency: getActiveCurrency,
-    getAllCurrencies: getAllCurrencies,
-    ɵ2: ɵ2$1,
-    ɵ3: ɵ3$1,
-    getLanguagesState: getLanguagesState,
-    getLanguagesEntities: getLanguagesEntities,
-    getActiveLanguage: getActiveLanguage,
-    getAllLanguages: getAllLanguages,
-    getSiteContextState: getSiteContextState
-});
-
-class BaseSiteService {
-    constructor(store, config) {
-        this.store = store;
-        this.config = config;
-    }
-    /**
-     * Represents the current baseSite uid.
-     */
-    getActive() {
-        return this.store.pipe(select(getActiveBaseSite), filter((active) => Boolean(active)));
-    }
-    /**
-     * We currently don't support switching baseSite at run time
-     */
-    getAll() {
-        return this.getActive().pipe(map((baseSite) => [baseSite]));
-    }
-    setActive(baseSite) {
-        return this.store
-            .pipe(select(getActiveBaseSite), take(1))
-            .subscribe((activeBaseSite) => {
-            if (baseSite && activeBaseSite !== baseSite) {
-                this.store.dispatch(new SetActiveBaseSite(baseSite));
-            }
-        });
-    }
-    /**
-     * Initializes the active baseSite.
-     */
-    initialize() {
-        let value;
-        this.getActive()
-            .subscribe((val) => (value = val))
-            .unsubscribe();
-        if (value) {
-            // don't initialize, if there is already a value (i.e. retrieved from route or transferred from SSR)
-            return;
-        }
-        this.setActive(getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
-    }
-    /**
-     * Get the base site details data
-     */
-    getBaseSiteData() {
-        return this.store.pipe(select(getBaseSiteData), tap((baseSite) => {
-            if (Object.keys(baseSite).length === 0) {
-                this.store.dispatch(new LoadBaseSite());
-            }
-        }));
-    }
-}
-BaseSiteService.decorators = [
-    { type: Injectable }
-];
-BaseSiteService.ctorParameters = () => [
-    { type: Store },
-    { type: SiteContextConfig }
-];
-
-class HttpParamsURIEncoder {
-    encodeKey(key) {
-        return encodeURIComponent(key);
-    }
-    encodeValue(value) {
-        return encodeURIComponent(value);
-    }
-    decodeKey(key) {
-        return decodeURIComponent(key);
-    }
-    decodeValue(value) {
-        return decodeURIComponent(value);
-    }
-}
-
-class OccConfig extends SiteContextConfig {
-}
-OccConfig.ɵprov = ɵɵdefineInjectable({ factory: function OccConfig_Factory() { return ɵɵinject(Config); }, token: OccConfig, providedIn: "root" });
-OccConfig.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-                useExisting: Config,
-            },] }
-];
-
-const DEFAULT_SCOPE = 'default';
-
-class OccEndpointsService {
-    constructor(config, baseSiteService) {
-        this.config = config;
-        this.baseSiteService = baseSiteService;
-        if (this.baseSiteService) {
-            this.baseSiteService
-                .getActive()
-                .subscribe((value) => (this._activeBaseSite = value));
-        }
-    }
-    get activeBaseSite() {
-        var _a;
-        return ((_a = this._activeBaseSite) !== null && _a !== void 0 ? _a : getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
-    }
-    /**
-     * Returns and endpoint starting from the OCC baseUrl (no baseSite)
-     * @param endpoint Endpoint suffix
-     */
-    getRawEndpoint(endpoint) {
-        var _a, _b, _c;
-        if (!((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.backend) === null || _b === void 0 ? void 0 : _b.occ)) {
-            return '';
-        }
-        endpoint = (_c = this.config.backend.occ.endpoints) === null || _c === void 0 ? void 0 : _c[endpoint];
-        if (!endpoint.startsWith('/')) {
-            endpoint = '/' + endpoint;
-        }
-        return this.config.backend.occ.baseUrl + endpoint;
-    }
-    /**
-     * Returns base OCC endpoint (baseUrl + prefix + baseSite)
-     */
-    getBaseEndpoint() {
-        var _a, _b;
-        if (!((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.backend) === null || _b === void 0 ? void 0 : _b.occ)) {
-            return '';
-        }
-        return ((this.config.backend.occ.baseUrl || '') +
-            this.config.backend.occ.prefix +
-            this.activeBaseSite);
-    }
-    /**
-     * Returns an OCC endpoint including baseUrl and baseSite
-     * @param endpoint Endpoint suffix
-     */
-    getEndpoint(endpoint) {
-        if (!endpoint.startsWith('/')) {
-            endpoint = '/' + endpoint;
-        }
-        return this.getBaseEndpoint() + endpoint;
-    }
-    /**
-     * Returns a fully qualified OCC Url (including baseUrl and baseSite)
-     * @param endpoint Name of the OCC endpoint key config
-     * @param urlParams  URL parameters
-     * @param queryParams Query parameters
-     * @param scope
-     */
-    getUrl(endpoint, urlParams, queryParams, scope) {
-        endpoint = this.getEndpointForScope(endpoint, scope);
-        if (urlParams) {
-            Object.keys(urlParams).forEach((key) => {
-                urlParams[key] = encodeURIComponent(urlParams[key]);
-            });
-            endpoint = DynamicTemplate.resolve(endpoint, urlParams);
-        }
-        if (queryParams) {
-            let httpParamsOptions = { encoder: new HttpParamsURIEncoder() };
-            if (endpoint.includes('?')) {
-                let queryParamsFromEndpoint;
-                [endpoint, queryParamsFromEndpoint] = endpoint.split('?');
-                httpParamsOptions = Object.assign(Object.assign({}, httpParamsOptions), { fromString: queryParamsFromEndpoint });
-            }
-            let httpParams = new HttpParams(httpParamsOptions);
-            Object.keys(queryParams).forEach((key) => {
-                const value = queryParams[key];
-                if (value !== undefined) {
-                    if (value === null) {
-                        httpParams = httpParams.delete(key);
-                    }
-                    else {
-                        httpParams = httpParams.set(key, value);
-                    }
-                }
-            });
-            const params = httpParams.toString();
-            if (params.length) {
-                endpoint += '?' + params;
-            }
-        }
-        return this.getEndpoint(endpoint);
-    }
-    getEndpointForScope(endpoint, scope) {
-        var _a, _b;
-        const endpointsConfig = (_b = (_a = this.config.backend) === null || _a === void 0 ? void 0 : _a.occ) === null || _b === void 0 ? void 0 : _b.endpoints;
-        const endpointConfig = endpointsConfig[endpoint];
-        if (scope) {
-            if (endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[scope]) {
-                return endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[scope];
-            }
-            if (scope === DEFAULT_SCOPE && typeof endpointConfig === 'string') {
-                return endpointConfig;
-            }
-            if (isDevMode()) {
-                console.warn(`${endpoint} endpoint configuration missing for scope "${scope}"`);
-            }
-        }
-        return ((typeof endpointConfig === 'string'
-            ? endpointConfig
-            : endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[DEFAULT_SCOPE]) || endpoint);
-    }
-}
-OccEndpointsService.ɵprov = ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(ɵɵinject(OccConfig), ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
-OccEndpointsService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-OccEndpointsService.ctorParameters = () => [
-    { type: OccConfig },
-    { type: BaseSiteService, decorators: [{ type: Optional }] }
-];
-
-class ClientTokenInterceptor {
-    constructor(authService, occEndpoints) {
-        this.authService = authService;
-        this.occEndpoints = occEndpoints;
-    }
-    intercept(request, next) {
-        return this.getClientToken(request).pipe(take(1), switchMap((token) => {
-            if (token &&
-                request.url.includes(this.occEndpoints.getBaseEndpoint())) {
-                request = request.clone({
-                    setHeaders: {
-                        Authorization: `${token.token_type} ${token.access_token}`,
-                    },
-                });
-            }
-            return next.handle(request);
-        }));
-    }
-    getClientToken(request) {
-        if (InterceptorUtil.getInterceptorParam(USE_CLIENT_TOKEN, request.headers)) {
-            return this.authService.getClientToken();
-        }
-        return of(null);
-    }
-}
-ClientTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(ɵɵinject(AuthService), ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
-ClientTokenInterceptor.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-ClientTokenInterceptor.ctorParameters = () => [
-    { type: AuthService },
-    { type: OccEndpointsService }
-];
-
-class UserTokenInterceptor {
-    constructor(authService, occEndpoints) {
-        this.authService = authService;
-        this.occEndpoints = occEndpoints;
-    }
-    intercept(request, next) {
-        return this.authService.getUserToken().pipe(take(1), switchMap((token) => {
-            if (token &&
-                this.isOccUrl(request.url) &&
-                !request.headers.get('Authorization')) {
-                request = request.clone({
-                    setHeaders: {
-                        Authorization: `${token.token_type} ${token.access_token}`,
-                    },
-                });
-            }
-            return next.handle(request);
-        }));
-    }
-    isOccUrl(url) {
-        return url.includes(this.occEndpoints.getBaseEndpoint());
-    }
-}
-UserTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function UserTokenInterceptor_Factory() { return new UserTokenInterceptor(ɵɵinject(AuthService), ɵɵinject(OccEndpointsService)); }, token: UserTokenInterceptor, providedIn: "root" });
-UserTokenInterceptor.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-UserTokenInterceptor.ctorParameters = () => [
-    { type: AuthService },
-    { type: OccEndpointsService }
-];
-
-class TokenRevocationInterceptor {
-    constructor() { }
-    intercept(request, next) {
-        const isTokenRevocationRequest = this.isTokenRevocationRequest(request);
-        if (isTokenRevocationRequest) {
-            request = InterceptorUtil.removeHeader(TOKEN_REVOCATION_HEADER, request);
-        }
-        return next.handle(request).pipe(catchError((error) => {
-            if (isTokenRevocationRequest) {
-                return EMPTY;
-            }
-            return throwError(error);
-        }));
-    }
-    isTokenRevocationRequest(request) {
-        const isTokenRevocationHeaderPresent = InterceptorUtil.getInterceptorParam(TOKEN_REVOCATION_HEADER, request.headers);
-        return Boolean(isTokenRevocationHeaderPresent);
-    }
-}
-TokenRevocationInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(); }, token: TokenRevocationInterceptor, providedIn: "root" });
-TokenRevocationInterceptor.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-TokenRevocationInterceptor.ctorParameters = () => [];
-
-const interceptors = [
-    {
-        provide: HTTP_INTERCEPTORS,
-        useExisting: ClientTokenInterceptor,
-        multi: true,
-    },
-    {
-        provide: HTTP_INTERCEPTORS,
-        useExisting: UserTokenInterceptor,
-        multi: true,
-    },
-    {
-        provide: HTTP_INTERCEPTORS,
-        useExisting: AuthErrorInterceptor,
-        multi: true,
-    },
-    {
-        provide: HTTP_INTERCEPTORS,
-        useExisting: TokenRevocationInterceptor,
-        multi: true,
-    },
-];
-
-var StorageSyncType;
-(function (StorageSyncType) {
-    StorageSyncType["NO_STORAGE"] = "NO_STORAGE";
-    StorageSyncType["LOCAL_STORAGE"] = "LOCAL_STORAGE";
-    StorageSyncType["SESSION_STORAGE"] = "SESSION_STORAGE";
-})(StorageSyncType || (StorageSyncType = {}));
-var StateTransferType;
-(function (StateTransferType) {
-    StateTransferType["TRANSFER_STATE"] = "SSR";
-})(StateTransferType || (StateTransferType = {}));
-class StateConfig {
-}
-StateConfig.ɵprov = ɵɵdefineInjectable({ factory: function StateConfig_Factory() { return ɵɵinject(Config); }, token: StateConfig, providedIn: "root" });
-StateConfig.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-                useExisting: Config,
-            },] }
-];
-
-const DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
-const DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
-const defaultStateConfig = {
-    state: {
-        storageSync: {
-            localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
-            sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
-            keys: {},
-            excludeKeys: {},
-        },
-    },
-};
-
-function getStorageSyncReducer(winRef, config) {
-    if (!winRef.nativeWindow ||
-        !config ||
-        !config.state ||
-        !config.state.storageSync ||
-        !config.state.storageSync.keys) {
-        return (reducer) => reducer;
-    }
-    const storageSyncConfig = config.state.storageSync;
-    return (reducer) => {
-        return (state, action) => {
-            const newState = reducer(state, action);
-            if (action.type === INIT || action.type === UPDATE) {
-                const rehydratedState = rehydrate(config, winRef);
-                return deepMerge({}, newState, rehydratedState);
-            }
-            if (action.type !== INIT) {
-                // handle local storage
-                const localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
-                const localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
-                const localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, newState);
-                persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
-                // handle session storage
-                const sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
-                const sessionStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
-                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, newState);
-                persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
-            }
-            return newState;
-        };
-    };
-}
-function rehydrate(config, winRef) {
-    const localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
-    const sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
-    return deepMerge(localStorageValue, sessionStorageValue);
-}
-function exists(value) {
-    if (value != null) {
-        if (typeof value === 'object') {
-            return Object.keys(value).length !== 0;
-        }
-        return value !== '';
-    }
-    return false;
-}
-function getStorage(storageType, winRef) {
-    let storage;
-    switch (storageType) {
-        case StorageSyncType.LOCAL_STORAGE: {
-            storage = winRef.localStorage;
-            break;
-        }
-        case StorageSyncType.SESSION_STORAGE: {
-            storage = winRef.sessionStorage;
-            break;
-        }
-        case StorageSyncType.NO_STORAGE: {
-            storage = undefined;
-            break;
-        }
-        default: {
-            storage = winRef.sessionStorage;
-        }
-    }
-    return storage;
-}
-function persistToStorage(configKey, value, storage) {
-    if (!isSsr(storage) && value) {
-        storage.setItem(configKey, JSON.stringify(value));
-    }
-}
-function readFromStorage(storage, key) {
-    if (isSsr(storage)) {
-        return;
-    }
-    const storageValue = storage.getItem(key);
-    if (!storageValue) {
-        return;
-    }
-    return JSON.parse(storageValue);
-}
-function isSsr(storage) {
-    return !Boolean(storage);
-}
-
-const CX_KEY = makeStateKey('cx-state');
-function getTransferStateReducer(platformId, transferState, config) {
-    if (transferState &&
-        config &&
-        config.state &&
-        config.state.ssrTransfer &&
-        config.state.ssrTransfer.keys) {
-        if (isPlatformBrowser(platformId)) {
-            return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-        }
-        else if (isPlatformServer(platformId)) {
-            return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-        }
-    }
-    return (reducer) => reducer;
-}
-function getServerTransferStateReducer(transferState, keys) {
-    const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
-    return function (reducer) {
-        return function (state, action) {
-            const newState = reducer(state, action);
-            if (newState) {
-                const stateSlice = getStateSlice(transferStateKeys, [], newState);
-                transferState.set(CX_KEY, stateSlice);
-            }
-            return newState;
-        };
-    };
-}
-function getBrowserTransferStateReducer(transferState, keys) {
-    const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
-    return function (reducer) {
-        return function (state, action) {
-            if (action.type === INIT) {
-                if (!state) {
-                    state = reducer(state, action);
-                }
-                // we should not utilize transfer state if user is logged in
-                const authState = state[AUTH_FEATURE];
-                const isLoggedIn = authState && authState.userToken && authState.userToken.token;
-                if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
-                    const cxKey = transferState.get(CX_KEY, {});
-                    const transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
-                    state = deepMerge({}, state, transferredStateSlice);
-                }
-                return state;
-            }
-            return reducer(state, action);
-        };
-    };
-}
-
-const TRANSFER_STATE_META_REDUCER = new InjectionToken('TransferStateMetaReducer');
-const STORAGE_SYNC_META_REDUCER = new InjectionToken('StorageSyncMetaReducer');
-const ɵ0$6 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
-const stateMetaReducers = [
-    {
-        provide: TRANSFER_STATE_META_REDUCER,
-        useFactory: ɵ0$6,
-        deps: [
-            PLATFORM_ID,
-            [new Optional(), TransferState],
-            [new Optional(), Config],
-        ],
-    },
-    {
-        provide: STORAGE_SYNC_META_REDUCER,
-        useFactory: ɵ1$5,
-        deps: [WindowRef, [new Optional(), Config]],
-    },
-    {
-        provide: META_REDUCERS,
-        useExisting: TRANSFER_STATE_META_REDUCER,
-        multi: true,
-    },
-    {
-        provide: META_REDUCERS,
-        useExisting: STORAGE_SYNC_META_REDUCER,
-        multi: true,
-    },
-];
-
-/**
- * Helper function to provide configuration chunk using ConfigChunk token
- *
- * To provide default configuration in libraries provideDefaultConfig should be used instead.
- *
- * @param config Config object to merge with the global configuration
- */
-function provideConfig(config = {}, defaultConfig = false) {
-    return {
-        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
-        useValue: config,
-        multi: true,
-    };
-}
-/**
- * Helper function to provide configuration with factory function, using ConfigChunk token
- *
- * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
- *
- * @param configFactory Factory Function that will generate config object
- * @param deps Optional dependencies to a factory function
- */
-function provideConfigFactory(configFactory, deps, defaultConfig = false) {
-    return {
-        provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
-        useFactory: configFactory,
-        multi: true,
-        deps: deps,
-    };
-}
-/**
- * Helper function to provide default configuration chunk using DefaultConfigChunk token
- *
- * @param config Config object to merge with the default configuration
- */
-function provideDefaultConfig(config = {}) {
-    return {
-        provide: DefaultConfigChunk,
-        useValue: config,
-        multi: true,
-    };
-}
-/**
- * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
- *
- * @param configFactory Factory Function that will generate config object
- * @param deps Optional dependencies to a factory function
- */
-function provideDefaultConfigFactory(configFactory, deps) {
-    return {
-        provide: DefaultConfigChunk,
-        useFactory: configFactory,
-        multi: true,
-        deps: deps,
-    };
-}
-
-class StateModule {
-    static forRoot() {
-        return {
-            ngModule: StateModule,
-            providers: [
-                ...stateMetaReducers,
-                provideDefaultConfig(defaultStateConfig),
-            ],
-        };
-    }
-}
-StateModule.decorators = [
-    { type: NgModule, args: [{},] }
-];
-
-/**
- * @deprecated since 2.1, use normalizeHttpError instead
- */
-const UNKNOWN_ERROR = {
-    error: 'unknown error',
-};
-const circularReplacer = () => {
-    const seen = new WeakSet();
-    return (_key, value) => {
-        if (typeof value === 'object' && value !== null) {
-            if (seen.has(value)) {
-                return;
-            }
-            seen.add(value);
-        }
-        return value;
-    };
-};
-const ɵ0$7 = circularReplacer;
-/**
- * @deprecated since 2.1, use normalizeHttpError instead
- */
-function makeErrorSerializable(error) {
-    if (error instanceof Error) {
-        return {
-            message: error.message,
-            type: error.name,
-            reason: error.stack,
-        };
-    }
-    if (error instanceof HttpErrorResponse) {
-        let serializableError = error.error;
-        if (isObject(error.error)) {
-            serializableError = JSON.stringify(error.error, circularReplacer());
-        }
-        return {
-            message: error.message,
-            error: serializableError,
-            status: error.status,
-            statusText: error.statusText,
-            url: error.url,
-        };
-    }
-    return isObject(error) ? UNKNOWN_ERROR : error;
-}
-
-class AuthConfig extends OccConfig {
-}
-AuthConfig.ɵprov = ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
-AuthConfig.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-                useExisting: Config,
-            },] }
-];
-
-class ClientAuthenticationTokenService {
-    constructor(config, http, occEndpointsService) {
-        this.config = config;
-        this.http = http;
-        this.occEndpointsService = occEndpointsService;
-    }
-    loadClientAuthenticationToken() {
-        const url = this.occEndpointsService.getRawEndpoint('login');
-        const params = new HttpParams()
-            .set('client_id', encodeURIComponent(this.config.authentication.client_id))
-            .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
-            .set('grant_type', 'client_credentials');
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http.post(url, params, { headers });
-    }
-}
-ClientAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(ɵɵinject(AuthConfig), ɵɵinject(HttpClient), ɵɵinject(OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
-ClientAuthenticationTokenService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-ClientAuthenticationTokenService.ctorParameters = () => [
-    { type: AuthConfig },
-    { type: HttpClient },
-    { type: OccEndpointsService }
-];
-
-class ClientTokenEffect {
-    constructor(actions$, clientAuthenticationTokenService) {
-        this.actions$ = actions$;
-        this.clientAuthenticationTokenService = clientAuthenticationTokenService;
-        this.loadClientToken$ = this.actions$.pipe(ofType(LOAD_CLIENT_TOKEN), exhaustMap(() => {
-            return this.clientAuthenticationTokenService
-                .loadClientAuthenticationToken()
-                .pipe(map((token) => {
-                return new LoadClientTokenSuccess(token);
-            }), catchError((error) => of(new LoadClientTokenFail(makeErrorSerializable(error)))));
-        }));
-    }
-}
-ClientTokenEffect.decorators = [
-    { type: Injectable }
-];
-ClientTokenEffect.ctorParameters = () => [
-    { type: Actions },
-    { type: ClientAuthenticationTokenService }
-];
-__decorate([
-    Effect()
-], ClientTokenEffect.prototype, "loadClientToken$", void 0);
-
-class UserAuthenticationTokenService {
-    constructor(http, config, occEndpointsService) {
-        this.http = http;
-        this.config = config;
-        this.occEndpointsService = occEndpointsService;
-    }
-    loadToken(userId, password) {
-        const url = this.occEndpointsService.getRawEndpoint('login');
-        const params = new HttpParams()
-            .set('client_id', this.config.authentication.client_id)
-            .set('client_secret', this.config.authentication.client_secret)
-            .set('grant_type', 'password')
-            .set('username', userId)
-            .set('password', password);
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .post(url, params, { headers })
-            .pipe(catchError((error) => throwError(error)));
-    }
-    refreshToken(refreshToken) {
-        const url = this.occEndpointsService.getRawEndpoint('login');
-        const params = new HttpParams()
-            .set('client_id', encodeURIComponent(this.config.authentication.client_id))
-            .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
-            .set('refresh_token', encodeURI(refreshToken))
-            .set('grant_type', 'refresh_token');
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .post(url, params, { headers })
-            .pipe(catchError((error) => throwError(error)));
-    }
-    revoke(userToken) {
-        const url = this.occEndpointsService.getRawEndpoint('revoke');
-        const headers = InterceptorUtil.createHeader(TOKEN_REVOCATION_HEADER, true, new HttpHeaders({
-            Authorization: `${userToken.token_type} ${userToken.access_token}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }));
-        const params = new HttpParams().set('token', userToken.access_token);
-        return this.http
-            .post(url, params, { headers })
-            .pipe(catchError((error) => throwError(error)));
-    }
-}
-UserAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(ɵɵinject(HttpClient), ɵɵinject(AuthConfig), ɵɵinject(OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
-UserAuthenticationTokenService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UserAuthenticationTokenService.ctorParameters = () => [
-    { type: HttpClient },
-    { type: AuthConfig },
-    { type: OccEndpointsService }
-];
-
-class UserTokenEffects {
-    constructor(actions$, userTokenService) {
-        this.actions$ = actions$;
-        this.userTokenService = userTokenService;
-        this.loadUserToken$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN), map((action) => action.payload), mergeMap(({ userId, password }) => this.userTokenService.loadToken(userId, password).pipe(map((token) => {
-            const date = new Date();
-            date.setSeconds(date.getSeconds() + token.expires_in);
-            token.expiration_time = date.toJSON();
-            token.userId = OCC_USER_ID_CURRENT;
-            return new LoadUserTokenSuccess(token);
-        }), catchError((error) => of(new LoadUserTokenFail(makeErrorSerializable(error)))))));
-        this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map(() => new Login()));
-        this.refreshUserToken$ = this.actions$.pipe(ofType(REFRESH_USER_TOKEN), map((action) => action.payload), exhaustMap(({ refreshToken }) => {
-            return this.userTokenService.refreshToken(refreshToken).pipe(map((token) => {
-                const date = new Date();
-                date.setSeconds(date.getSeconds() + token.expires_in);
-                token.expiration_time = date.toJSON();
-                return new RefreshUserTokenSuccess(token);
-            }, catchError((error) => of(new RefreshUserTokenFail(makeErrorSerializable(error))))));
-        }));
-        this.revokeUserToken$ = this.actions$.pipe(ofType(REVOKE_USER_TOKEN), map((action) => {
-            return action.payload;
-        }), mergeMap((userToken) => {
-            return this.userTokenService.revoke(userToken).pipe(map(() => new RevokeUserTokenSuccess(userToken)), catchError((error) => of(new RevokeUserTokenFail(error))));
-        }));
-    }
-}
-UserTokenEffects.decorators = [
-    { type: Injectable }
-];
-UserTokenEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: UserAuthenticationTokenService }
-];
-__decorate([
-    Effect()
-], UserTokenEffects.prototype, "loadUserToken$", void 0);
-__decorate([
-    Effect()
-], UserTokenEffects.prototype, "login$", void 0);
-__decorate([
-    Effect()
-], UserTokenEffects.prototype, "refreshUserToken$", void 0);
-__decorate([
-    Effect()
-], UserTokenEffects.prototype, "revokeUserToken$", void 0);
-
-const effects = [UserTokenEffects, ClientTokenEffect];
-
-const initialState = {};
-function reducer(state = initialState, action) {
-    switch (action.type) {
-        case LOAD_USER_TOKEN:
-        case REFRESH_USER_TOKEN: {
-            return Object.assign({}, state);
-        }
-        case LOAD_USER_TOKEN_SUCCESS:
-        case REFRESH_USER_TOKEN_SUCCESS: {
-            return Object.assign(Object.assign({}, state), action.payload);
-        }
-        case LOAD_USER_TOKEN_FAIL:
-        case REFRESH_USER_TOKEN_FAIL: {
-            return Object.assign({}, state);
-        }
-    }
-    return state;
-}
-
-function getReducers() {
-    return {
-        userToken: combineReducers({ token: reducer }),
-        clientToken: loaderReducer(CLIENT_TOKEN_DATA),
-    };
-}
-const reducerToken = new InjectionToken('AuthReducers');
-const reducerProvider = {
-    provide: reducerToken,
-    useFactory: getReducers,
-};
-function clearAuthState(reducer) {
-    return function (state, action) {
-        if (action.type === LOGOUT) {
-            state = Object.assign(Object.assign({}, state), { userToken: undefined });
-        }
-        return reducer(state, action);
-    };
-}
-const metaReducers = [clearAuthState];
-
-function authStoreConfigFactory() {
-    // if we want to reuse AUTH_FEATURE const in config, we have to use factory instead of plain object
-    const config = {
-        state: {
-            storageSync: {
-                keys: {
-                    'auth.userToken.token.access_token': StorageSyncType.LOCAL_STORAGE,
-                    'auth.userToken.token.token_type': StorageSyncType.LOCAL_STORAGE,
-                    'auth.userToken.token.expires_in': StorageSyncType.LOCAL_STORAGE,
-                    'auth.userToken.token.expiration_time': StorageSyncType.LOCAL_STORAGE,
-                    'auth.userToken.token.scope': StorageSyncType.LOCAL_STORAGE,
-                    'auth.userToken.token.userId': StorageSyncType.LOCAL_STORAGE,
-                },
-            },
-        },
-    };
-    return config;
-}
-class AuthStoreModule {
-}
-AuthStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                    StateModule,
-                    StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers }),
-                    EffectsModule.forFeature(effects),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(authStoreConfigFactory),
-                    reducerProvider,
-                ],
-            },] }
-];
-
-class AuthModule {
-    static forRoot() {
-        return {
-            ngModule: AuthModule,
-            providers: [provideDefaultConfig(defaultAuthConfig), ...interceptors],
-        };
-    }
-}
-AuthModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule, AuthStoreModule],
-            },] }
-];
-
-class AuthRedirectService {
-    /**
-     * This service is responsible for redirecting to the last page before authorization. "The last page" can be:
-     * 1. Just the previously opened page; or
-     * 2. The page that we just tried to open, but AuthGuard cancelled it
-     *
-     * For example:
-     * 1. The user opens the product page, then clicks /login link and signs in
-     *    -> Then we should redirect to the product page; or
-     * 2. The user opens the product page, then he clicks /my-account link,
-     *    but is automatically redirected to the login page by the AuthGuard, and he signs in
-     *    -> Then we should redirect to the my-account page, not the product page
-     */
-    constructor(routing, router) {
-        this.routing = routing;
-        this.router = router;
-        this.ignoredUrls = new Set();
-    }
-    redirect() {
-        if (this.redirectUrl === undefined) {
-            this.routing.go('/');
-        }
-        else {
-            this.routing.goByUrl(this.redirectUrl);
-        }
-        this.redirectUrl = undefined;
-        this.lastAuthGuardNavigation = undefined;
-    }
-    reportAuthGuard() {
-        const { url, navigationId } = this.getCurrentNavigation();
-        this.lastAuthGuardNavigation = { url, navigationId };
-        this.redirectUrl = url;
-    }
-    reportNotAuthGuard() {
-        const { url, initialUrl, navigationId } = this.getCurrentNavigation();
-        this.ignoredUrls.add(url);
-        // Don't save redirect url if you've already come from page with NotAuthGuard (i.e. user has come from login to register)
-        if (!this.ignoredUrls.has(initialUrl)) {
-            // We compare the navigation id to find out if the url cancelled by AuthGuard (i.e. my-account) is more recent
-            // than the last opened page
-            if (!this.lastAuthGuardNavigation ||
-                this.lastAuthGuardNavigation.navigationId < navigationId - 1) {
-                this.redirectUrl = initialUrl;
-                this.lastAuthGuardNavigation = undefined;
-            }
-        }
-    }
-    getCurrentNavigation() {
-        const initialUrl = this.router.url;
-        const navigation = this.router.getCurrentNavigation();
-        const url = this.router.serializeUrl(navigation.finalUrl);
-        return {
-            navigationId: navigation.id,
-            url,
-            initialUrl,
-        };
-    }
-}
-AuthRedirectService.ɵprov = ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(ɵɵinject(RoutingService), ɵɵinject(Router)); }, token: AuthRedirectService, providedIn: "root" });
-AuthRedirectService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-AuthRedirectService.ctorParameters = () => [
-    { type: RoutingService },
-    { type: Router }
-];
-
-class AuthGuard {
-    constructor(routingService, authService, authRedirectService, router) {
-        this.routingService = routingService;
-        this.authService = authService;
-        this.authRedirectService = authRedirectService;
-        this.router = router;
-    }
-    canActivate() {
-        return this.authService.getUserToken().pipe(map((token) => {
-            if (!token.access_token) {
-                this.authRedirectService.reportAuthGuard();
-                this.routingService.go({ cxRoute: 'login' });
-            }
-            return !!token.access_token;
-        }));
-    }
-}
-AuthGuard.ɵprov = ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService), ɵɵinject(Router)); }, token: AuthGuard, providedIn: "root" });
-AuthGuard.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-AuthGuard.ctorParameters = () => [
-    { type: RoutingService },
-    { type: AuthService },
-    { type: AuthRedirectService },
-    { type: Router }
-];
-
-class NotAuthGuard {
-    constructor(routingService, authService, authRedirectService) {
-        this.routingService = routingService;
-        this.authService = authService;
-        this.authRedirectService = authRedirectService;
-    }
-    canActivate() {
-        this.authRedirectService.reportNotAuthGuard();
-        // redirect, if user is already logged in:
-        return this.authService.getUserToken().pipe(map((token) => {
-            if (token.access_token) {
-                this.routingService.go({ cxRoute: 'home' });
-            }
-            return !token.access_token;
-        }));
-    }
-}
-NotAuthGuard.ɵprov = ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
-NotAuthGuard.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-NotAuthGuard.ctorParameters = () => [
-    { type: RoutingService },
-    { type: AuthService },
-    { type: AuthRedirectService }
-];
-
-var CountryType;
-(function (CountryType) {
-    CountryType["BILLING"] = "BILLING";
-    CountryType["SHIPPING"] = "SHIPPING";
-})(CountryType || (CountryType = {}));
-
-var PromotionLocation;
-(function (PromotionLocation) {
-    PromotionLocation["ActiveCart"] = "CART";
-    PromotionLocation["Checkout"] = "CHECKOUT";
-    PromotionLocation["Order"] = "ORDER";
-})(PromotionLocation || (PromotionLocation = {}));
-var B2BPaymentTypeEnum;
-(function (B2BPaymentTypeEnum) {
-    B2BPaymentTypeEnum["ACCOUNT_PAYMENT"] = "ACCOUNT";
-    B2BPaymentTypeEnum["CARD_PAYMENT"] = "CARD";
-})(B2BPaymentTypeEnum || (B2BPaymentTypeEnum = {}));
-
-var PageType;
-(function (PageType) {
-    PageType["CONTENT_PAGE"] = "ContentPage";
-    PageType["PRODUCT_PAGE"] = "ProductPage";
-    PageType["CATEGORY_PAGE"] = "CategoryPage";
-    PageType["CATALOG_PAGE"] = "CatalogPage";
-})(PageType || (PageType = {}));
-var CmsBannerCarouselEffect;
-(function (CmsBannerCarouselEffect) {
-    CmsBannerCarouselEffect["FADE"] = "FADE";
-    CmsBannerCarouselEffect["ZOOM"] = "ZOOM";
-    CmsBannerCarouselEffect["CURTAIN"] = "CURTAINX";
-    CmsBannerCarouselEffect["TURNDOWN"] = "TURNDOWN";
-})(CmsBannerCarouselEffect || (CmsBannerCarouselEffect = {}));
-
-var ANONYMOUS_CONSENT_STATUS;
-(function (ANONYMOUS_CONSENT_STATUS) {
-    ANONYMOUS_CONSENT_STATUS["GIVEN"] = "GIVEN";
-    ANONYMOUS_CONSENT_STATUS["WITHDRAWN"] = "WITHDRAWN";
-})(ANONYMOUS_CONSENT_STATUS || (ANONYMOUS_CONSENT_STATUS = {}));
-const ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
-
-var ImageType;
-(function (ImageType) {
-    ImageType["PRIMARY"] = "PRIMARY";
-    ImageType["GALLERY"] = "GALLERY";
-})(ImageType || (ImageType = {}));
-
-var B2BUserGroup;
-(function (B2BUserGroup) {
-    B2BUserGroup["B2B_ADMIN_GROUP"] = "b2badmingroup";
-    B2BUserGroup["B2B_CUSTOMER_GROUP"] = "b2bcustomergroup";
-    B2BUserGroup["B2B_MANAGER_GROUP"] = "b2bmanagergroup";
-    B2BUserGroup["B2B_APPROVER_GROUP"] = "b2bapprovergroup";
-})(B2BUserGroup || (B2BUserGroup = {}));
-
-var NotificationType;
-(function (NotificationType) {
-    NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
-})(NotificationType || (NotificationType = {}));
-
-var VariantType;
-(function (VariantType) {
-    VariantType["SIZE"] = "ApparelSizeVariantProduct";
-    VariantType["STYLE"] = "ApparelStyleVariantProduct";
-    VariantType["COLOR"] = "ElectronicsColorVariantProduct";
-})(VariantType || (VariantType = {}));
-var PriceType;
-(function (PriceType) {
-    PriceType["BUY"] = "BUY";
-    PriceType["FROM"] = "FROM";
-})(PriceType || (PriceType = {}));
-var VariantQualifier;
-(function (VariantQualifier) {
-    VariantQualifier["SIZE"] = "size";
-    VariantQualifier["STYLE"] = "style";
-    VariantQualifier["COLOR"] = "color";
-    VariantQualifier["THUMBNAIL"] = "thumbnail";
-    VariantQualifier["PRODUCT"] = "product";
-    VariantQualifier["ROLLUP_PROPERTY"] = "rollupProperty";
-})(VariantQualifier || (VariantQualifier = {}));
-
-var DaysOfWeek;
-(function (DaysOfWeek) {
-    DaysOfWeek["MONDAY"] = "MONDAY";
-    DaysOfWeek["TUESDAY"] = "TUESDAY";
-    DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
-    DaysOfWeek["THURSDAY"] = "THURSDAY";
-    DaysOfWeek["FRIDAY"] = "FRIDAY";
-    DaysOfWeek["SATURDAY"] = "SATURDAY";
-    DaysOfWeek["SUNDAY"] = "SUNDAY";
-})(DaysOfWeek || (DaysOfWeek = {}));
-const recurrencePeriod = {
-    DAILY: 'DAILY',
-    WEEKLY: 'WEEKLY',
-    MONTHLY: 'MONTHLY',
-};
-var ORDER_TYPE;
-(function (ORDER_TYPE) {
-    ORDER_TYPE["PLACE_ORDER"] = "PLACE_ORDER";
-    ORDER_TYPE["SCHEDULE_REPLENISHMENT_ORDER"] = "SCHEDULE_REPLENISHMENT_ORDER";
-})(ORDER_TYPE || (ORDER_TYPE = {}));
-
 const ANONYMOUS_CONSENTS_STORE_FEATURE = 'anonymous-consents';
 const ANONYMOUS_CONSENTS = '[Anonymous Consents] Anonymous Consents';
 
@@ -3120,8 +2153,8 @@ var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
 
 const getAnonymousConsentState = createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
 
-const ɵ0$8 = (state) => state.templates;
-const getAnonymousConsentTemplatesState = createSelector(getAnonymousConsentState, ɵ0$8);
+const ɵ0$1 = (state) => state.templates;
+const getAnonymousConsentTemplatesState = createSelector(getAnonymousConsentState, ɵ0$1);
 const getAnonymousConsentTemplatesValue = createSelector(getAnonymousConsentTemplatesState, loaderValueSelector);
 const getAnonymousConsentTemplatesLoading = createSelector(getAnonymousConsentTemplatesState, loaderLoadingSelector);
 const getAnonymousConsentTemplatesSuccess = createSelector(getAnonymousConsentTemplatesState, loaderSuccessSelector);
@@ -3134,13 +2167,13 @@ const getAnonymousConsentTemplate = (templateCode) => {
     });
 };
 
-const ɵ0$9 = (state) => state.ui.updated;
-const getAnonymousConsentTemplatesUpdate = createSelector(getAnonymousConsentState, ɵ0$9);
-const ɵ1$6 = (state) => state.ui.bannerDismissed;
-const getAnonymousConsentsBannerDismissed = createSelector(getAnonymousConsentState, ɵ1$6);
+const ɵ0$2 = (state) => state.ui.updated;
+const getAnonymousConsentTemplatesUpdate = createSelector(getAnonymousConsentState, ɵ0$2);
+const ɵ1$1 = (state) => state.ui.bannerDismissed;
+const getAnonymousConsentsBannerDismissed = createSelector(getAnonymousConsentState, ɵ1$1);
 
-const ɵ0$a = (state) => state.consents;
-const getAnonymousConsents = createSelector(getAnonymousConsentState, ɵ0$a);
+const ɵ0$3 = (state) => state.consents;
+const getAnonymousConsents = createSelector(getAnonymousConsentState, ɵ0$3);
 const getAnonymousConsentByTemplateCode = (templateCode) => createSelector(getAnonymousConsents, (consents) => consents.find((consent) => consent.templateCode === templateCode));
 
 var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -3151,10 +2184,10 @@ var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
     getAnonymousConsentTemplatesSuccess: getAnonymousConsentTemplatesSuccess,
     getAnonymousConsentTemplatesError: getAnonymousConsentTemplatesError,
     getAnonymousConsentTemplate: getAnonymousConsentTemplate,
-    ɵ0: ɵ0$8,
+    ɵ0: ɵ0$1,
     getAnonymousConsentTemplatesUpdate: getAnonymousConsentTemplatesUpdate,
     getAnonymousConsentsBannerDismissed: getAnonymousConsentsBannerDismissed,
-    ɵ1: ɵ1$6,
+    ɵ1: ɵ1$1,
     getAnonymousConsents: getAnonymousConsents,
     getAnonymousConsentByTemplateCode: getAnonymousConsentByTemplateCode,
     getAnonymousConsentState: getAnonymousConsentState
@@ -3387,6 +2420,1808 @@ AnonymousConsentsService.decorators = [
 AnonymousConsentsService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
+];
+
+class DynamicTemplate {
+    static resolve(templateString, templateVariables) {
+        for (const variableLabel of Object.keys(templateVariables)) {
+            const placeholder = new RegExp('\\${' + variableLabel + '}', 'g');
+            templateString = templateString.replace(placeholder, templateVariables[variableLabel]);
+        }
+        return templateString;
+    }
+}
+
+/**
+ * Helper function for safely getting context parameter config
+ *
+ * @param config
+ * @param parameter
+ */
+function getContextParameterValues(config, parameter) {
+    return (config.context && config.context[parameter]) || [];
+}
+/**
+ * Helper function for calculating default value for context parameter from config
+ *
+ * @param config
+ * @param parameter
+ */
+function getContextParameterDefault(config, parameter) {
+    const param = getContextParameterValues(config, parameter);
+    return param && param.length ? param[0] : undefined;
+}
+
+const LANGUAGE_CONTEXT_ID = 'language';
+const CURRENCY_CONTEXT_ID = 'currency';
+const BASE_SITE_CONTEXT_ID = 'baseSite';
+
+const LOAD_BASE_SITE = '[Site-context] Load BaseSite';
+const LOAD_BASE_SITE_FAIL = '[Site-context] Load BaseSite Fail';
+const LOAD_BASE_SITE_SUCCESS = '[Site-context] Load BaseSite Success';
+const SET_ACTIVE_BASE_SITE = '[Site-context] Set Active BaseSite';
+const BASE_SITE_CHANGE = '[Site-context] BaseSite Change';
+class LoadBaseSite {
+    constructor() {
+        this.type = LOAD_BASE_SITE;
+    }
+}
+class LoadBaseSiteFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_BASE_SITE_FAIL;
+    }
+}
+class LoadBaseSiteSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_BASE_SITE_SUCCESS;
+    }
+}
+class SetActiveBaseSite {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_ACTIVE_BASE_SITE;
+    }
+}
+class BaseSiteChange {
+    constructor() {
+        this.type = BASE_SITE_CHANGE;
+    }
+}
+
+const LOAD_CURRENCIES = '[Site-context] Load Currencies';
+const LOAD_CURRENCIES_FAIL = '[Site-context] Load Currencies Fail';
+const LOAD_CURRENCIES_SUCCESS = '[Site-context] Load Currencies Success';
+const SET_ACTIVE_CURRENCY = '[Site-context] Set Active Currency';
+const CURRENCY_CHANGE = '[Site-context] Currency Change';
+class LoadCurrencies {
+    constructor() {
+        this.type = LOAD_CURRENCIES;
+    }
+}
+class LoadCurrenciesFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CURRENCIES_FAIL;
+    }
+}
+class LoadCurrenciesSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CURRENCIES_SUCCESS;
+    }
+}
+class SetActiveCurrency {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_ACTIVE_CURRENCY;
+    }
+}
+class CurrencyChange {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CURRENCY_CHANGE;
+    }
+}
+
+const LOAD_LANGUAGES = '[Site-context] Load Languages';
+const LOAD_LANGUAGES_FAIL = '[Site-context] Load Languages Fail';
+const LOAD_LANGUAGES_SUCCESS = '[Site-context] Load Languages Success';
+const SET_ACTIVE_LANGUAGE = '[Site-context] Set Active Language';
+const LANGUAGE_CHANGE = '[Site-context] Language Change';
+class LoadLanguages {
+    constructor() {
+        this.type = LOAD_LANGUAGES;
+    }
+}
+class LoadLanguagesFail {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_LANGUAGES_FAIL;
+    }
+}
+class LoadLanguagesSuccess {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_LANGUAGES_SUCCESS;
+    }
+}
+class SetActiveLanguage {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_ACTIVE_LANGUAGE;
+    }
+}
+class LanguageChange {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LANGUAGE_CHANGE;
+    }
+}
+
+var siteContextGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    LOAD_BASE_SITE: LOAD_BASE_SITE,
+    LOAD_BASE_SITE_FAIL: LOAD_BASE_SITE_FAIL,
+    LOAD_BASE_SITE_SUCCESS: LOAD_BASE_SITE_SUCCESS,
+    SET_ACTIVE_BASE_SITE: SET_ACTIVE_BASE_SITE,
+    BASE_SITE_CHANGE: BASE_SITE_CHANGE,
+    LoadBaseSite: LoadBaseSite,
+    LoadBaseSiteFail: LoadBaseSiteFail,
+    LoadBaseSiteSuccess: LoadBaseSiteSuccess,
+    SetActiveBaseSite: SetActiveBaseSite,
+    BaseSiteChange: BaseSiteChange,
+    LOAD_CURRENCIES: LOAD_CURRENCIES,
+    LOAD_CURRENCIES_FAIL: LOAD_CURRENCIES_FAIL,
+    LOAD_CURRENCIES_SUCCESS: LOAD_CURRENCIES_SUCCESS,
+    SET_ACTIVE_CURRENCY: SET_ACTIVE_CURRENCY,
+    CURRENCY_CHANGE: CURRENCY_CHANGE,
+    LoadCurrencies: LoadCurrencies,
+    LoadCurrenciesFail: LoadCurrenciesFail,
+    LoadCurrenciesSuccess: LoadCurrenciesSuccess,
+    SetActiveCurrency: SetActiveCurrency,
+    CurrencyChange: CurrencyChange,
+    LOAD_LANGUAGES: LOAD_LANGUAGES,
+    LOAD_LANGUAGES_FAIL: LOAD_LANGUAGES_FAIL,
+    LOAD_LANGUAGES_SUCCESS: LOAD_LANGUAGES_SUCCESS,
+    SET_ACTIVE_LANGUAGE: SET_ACTIVE_LANGUAGE,
+    LANGUAGE_CHANGE: LANGUAGE_CHANGE,
+    LoadLanguages: LoadLanguages,
+    LoadLanguagesFail: LoadLanguagesFail,
+    LoadLanguagesSuccess: LoadLanguagesSuccess,
+    SetActiveLanguage: SetActiveLanguage,
+    LanguageChange: LanguageChange
+});
+
+const SITE_CONTEXT_FEATURE = 'siteContext';
+
+const getSiteContextState = createFeatureSelector(SITE_CONTEXT_FEATURE);
+
+const ɵ0$4 = (state) => state && state.baseSite && state.baseSite.activeSite;
+const getActiveBaseSite = createSelector(getSiteContextState, ɵ0$4);
+const ɵ1$2 = (state) => state && state.baseSite && state.baseSite.details;
+const getBaseSiteData = createSelector(getSiteContextState, ɵ1$2);
+
+const currenciesEntitiesSelector = (state) => state.entities;
+const ɵ0$5 = currenciesEntitiesSelector;
+const activeCurrencySelector = (state) => state.activeCurrency;
+const ɵ1$3 = activeCurrencySelector;
+const ɵ2$1 = (state) => state.currencies;
+const getCurrenciesState = createSelector(getSiteContextState, ɵ2$1);
+const getCurrenciesEntities = createSelector(getCurrenciesState, currenciesEntitiesSelector);
+const getActiveCurrency = createSelector(getCurrenciesState, activeCurrencySelector);
+const ɵ3$1 = (entities) => {
+    return entities
+        ? Object.keys(entities).map((isocode) => entities[isocode])
+        : null;
+};
+const getAllCurrencies = createSelector(getCurrenciesEntities, ɵ3$1);
+
+const activeLanguageSelector = (state) => state.activeLanguage;
+const ɵ0$6 = activeLanguageSelector;
+const languagesEntitiesSelector = (state) => state.entities;
+const ɵ1$4 = languagesEntitiesSelector;
+const ɵ2$2 = (state) => state.languages;
+const getLanguagesState = createSelector(getSiteContextState, ɵ2$2);
+const getLanguagesEntities = createSelector(getLanguagesState, languagesEntitiesSelector);
+const getActiveLanguage = createSelector(getLanguagesState, activeLanguageSelector);
+const ɵ3$2 = (entities) => {
+    return entities
+        ? Object.keys(entities).map((isocode) => entities[isocode])
+        : null;
+};
+const getAllLanguages = createSelector(getLanguagesEntities, ɵ3$2);
+
+var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getActiveBaseSite: getActiveBaseSite,
+    getBaseSiteData: getBaseSiteData,
+    ɵ0: ɵ0$4,
+    ɵ1: ɵ1$2,
+    getCurrenciesState: getCurrenciesState,
+    getCurrenciesEntities: getCurrenciesEntities,
+    getActiveCurrency: getActiveCurrency,
+    getAllCurrencies: getAllCurrencies,
+    ɵ2: ɵ2$1,
+    ɵ3: ɵ3$1,
+    getLanguagesState: getLanguagesState,
+    getLanguagesEntities: getLanguagesEntities,
+    getActiveLanguage: getActiveLanguage,
+    getAllLanguages: getAllLanguages,
+    getSiteContextState: getSiteContextState
+});
+
+class BaseSiteService {
+    constructor(store, config) {
+        this.store = store;
+        this.config = config;
+    }
+    /**
+     * Represents the current baseSite uid.
+     */
+    getActive() {
+        return this.store.pipe(select(getActiveBaseSite), filter((active) => Boolean(active)));
+    }
+    /**
+     * We currently don't support switching baseSite at run time
+     */
+    getAll() {
+        return this.getActive().pipe(map((baseSite) => [baseSite]));
+    }
+    setActive(baseSite) {
+        return this.store
+            .pipe(select(getActiveBaseSite), take(1))
+            .subscribe((activeBaseSite) => {
+            if (baseSite && activeBaseSite !== baseSite) {
+                this.store.dispatch(new SetActiveBaseSite(baseSite));
+            }
+        });
+    }
+    /**
+     * Initializes the active baseSite.
+     */
+    initialize() {
+        let value;
+        this.getActive()
+            .subscribe((val) => (value = val))
+            .unsubscribe();
+        if (value) {
+            // don't initialize, if there is already a value (i.e. retrieved from route or transferred from SSR)
+            return;
+        }
+        this.setActive(getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
+    }
+    /**
+     * Get the base site details data
+     */
+    getBaseSiteData() {
+        return this.store.pipe(select(getBaseSiteData), tap((baseSite) => {
+            if (Object.keys(baseSite).length === 0) {
+                this.store.dispatch(new LoadBaseSite());
+            }
+        }));
+    }
+}
+BaseSiteService.decorators = [
+    { type: Injectable }
+];
+BaseSiteService.ctorParameters = () => [
+    { type: Store },
+    { type: SiteContextConfig }
+];
+
+class HttpParamsURIEncoder {
+    encodeKey(key) {
+        return encodeURIComponent(key);
+    }
+    encodeValue(value) {
+        return encodeURIComponent(value);
+    }
+    decodeKey(key) {
+        return decodeURIComponent(key);
+    }
+    decodeValue(value) {
+        return decodeURIComponent(value);
+    }
+}
+
+const DEFAULT_SCOPE = 'default';
+
+class OccEndpointsService {
+    constructor(config, baseSiteService) {
+        this.config = config;
+        this.baseSiteService = baseSiteService;
+        if (this.baseSiteService) {
+            this.baseSiteService
+                .getActive()
+                .subscribe((value) => (this._activeBaseSite = value));
+        }
+    }
+    get activeBaseSite() {
+        var _a;
+        return ((_a = this._activeBaseSite) !== null && _a !== void 0 ? _a : getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
+    }
+    /**
+     * Returns and endpoint starting from the OCC baseUrl (no baseSite)
+     * @param endpoint Endpoint suffix
+     */
+    getRawEndpoint(endpoint) {
+        var _a, _b, _c;
+        if (!((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.backend) === null || _b === void 0 ? void 0 : _b.occ)) {
+            return '';
+        }
+        endpoint = (_c = this.config.backend.occ.endpoints) === null || _c === void 0 ? void 0 : _c[endpoint];
+        if (!endpoint.startsWith('/')) {
+            endpoint = '/' + endpoint;
+        }
+        return this.config.backend.occ.baseUrl + endpoint;
+    }
+    /**
+     * Returns base OCC endpoint (baseUrl + prefix + baseSite)
+     */
+    getBaseEndpoint() {
+        var _a, _b;
+        if (!((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.backend) === null || _b === void 0 ? void 0 : _b.occ)) {
+            return '';
+        }
+        return ((this.config.backend.occ.baseUrl || '') +
+            this.config.backend.occ.prefix +
+            this.activeBaseSite);
+    }
+    /**
+     * Returns an OCC endpoint including baseUrl and baseSite
+     * @param endpoint Endpoint suffix
+     */
+    getEndpoint(endpoint) {
+        if (!endpoint.startsWith('/')) {
+            endpoint = '/' + endpoint;
+        }
+        return this.getBaseEndpoint() + endpoint;
+    }
+    /**
+     * Returns a fully qualified OCC Url (including baseUrl and baseSite)
+     * @param endpoint Name of the OCC endpoint key config
+     * @param urlParams  URL parameters
+     * @param queryParams Query parameters
+     * @param scope
+     */
+    getUrl(endpoint, urlParams, queryParams, scope) {
+        endpoint = this.getEndpointForScope(endpoint, scope);
+        if (urlParams) {
+            Object.keys(urlParams).forEach((key) => {
+                urlParams[key] = encodeURIComponent(urlParams[key]);
+            });
+            endpoint = DynamicTemplate.resolve(endpoint, urlParams);
+        }
+        if (queryParams) {
+            let httpParamsOptions = { encoder: new HttpParamsURIEncoder() };
+            if (endpoint.includes('?')) {
+                let queryParamsFromEndpoint;
+                [endpoint, queryParamsFromEndpoint] = endpoint.split('?');
+                httpParamsOptions = Object.assign(Object.assign({}, httpParamsOptions), { fromString: queryParamsFromEndpoint });
+            }
+            let httpParams = new HttpParams(httpParamsOptions);
+            Object.keys(queryParams).forEach((key) => {
+                const value = queryParams[key];
+                if (value !== undefined) {
+                    if (value === null) {
+                        httpParams = httpParams.delete(key);
+                    }
+                    else {
+                        httpParams = httpParams.set(key, value);
+                    }
+                }
+            });
+            const params = httpParams.toString();
+            if (params.length) {
+                endpoint += '?' + params;
+            }
+        }
+        return this.getEndpoint(endpoint);
+    }
+    getEndpointForScope(endpoint, scope) {
+        var _a, _b;
+        const endpointsConfig = (_b = (_a = this.config.backend) === null || _a === void 0 ? void 0 : _a.occ) === null || _b === void 0 ? void 0 : _b.endpoints;
+        const endpointConfig = endpointsConfig[endpoint];
+        if (scope) {
+            if (endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[scope]) {
+                return endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[scope];
+            }
+            if (scope === DEFAULT_SCOPE && typeof endpointConfig === 'string') {
+                return endpointConfig;
+            }
+            if (isDevMode()) {
+                console.warn(`${endpoint} endpoint configuration missing for scope "${scope}"`);
+            }
+        }
+        return ((typeof endpointConfig === 'string'
+            ? endpointConfig
+            : endpointConfig === null || endpointConfig === void 0 ? void 0 : endpointConfig[DEFAULT_SCOPE]) || endpoint);
+    }
+}
+OccEndpointsService.ɵprov = ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(ɵɵinject(OccConfig), ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
+OccEndpointsService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+OccEndpointsService.ctorParameters = () => [
+    { type: OccConfig },
+    { type: BaseSiteService, decorators: [{ type: Optional }] }
+];
+
+const USE_CLIENT_TOKEN = 'cx-use-client-token';
+const USE_CUSTOMER_SUPPORT_AGENT_TOKEN = 'cx-use-csagent-token';
+class InterceptorUtil {
+    static createHeader(headerName, interceptorParam, headers) {
+        if (headers) {
+            return headers.append(headerName, JSON.stringify(interceptorParam));
+        }
+        headers = new HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
+        return headers;
+    }
+    static removeHeader(headerName, request) {
+        const updatedHeaders = request.headers.delete(headerName);
+        return request.clone({ headers: updatedHeaders });
+    }
+    static getInterceptorParam(headerName, headers) {
+        const rawValue = headers.get(headerName);
+        if (rawValue) {
+            return JSON.parse(rawValue);
+        }
+        return undefined;
+    }
+}
+
+const CLIENT_AUTH_FEATURE = 'client-auth';
+const CLIENT_TOKEN_DATA = '[Client auth] Client Token Data';
+
+const LOAD_CLIENT_TOKEN = '[Token] Load Client Token';
+const LOAD_CLIENT_TOKEN_FAIL = '[Token] Load Client Token Fail';
+const LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Load Client Token Success';
+class LoadClientToken extends LoaderLoadAction {
+    constructor() {
+        super(CLIENT_TOKEN_DATA);
+        this.type = LOAD_CLIENT_TOKEN;
+    }
+}
+class LoadClientTokenFail extends LoaderFailAction {
+    constructor(payload) {
+        super(CLIENT_TOKEN_DATA, payload);
+        this.payload = payload;
+        this.type = LOAD_CLIENT_TOKEN_FAIL;
+    }
+}
+class LoadClientTokenSuccess extends LoaderSuccessAction {
+    constructor(payload) {
+        super(CLIENT_TOKEN_DATA);
+        this.payload = payload;
+        this.type = LOAD_CLIENT_TOKEN_SUCCESS;
+    }
+}
+
+var clientTokenGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    LOAD_CLIENT_TOKEN: LOAD_CLIENT_TOKEN,
+    LOAD_CLIENT_TOKEN_FAIL: LOAD_CLIENT_TOKEN_FAIL,
+    LOAD_CLIENT_TOKEN_SUCCESS: LOAD_CLIENT_TOKEN_SUCCESS,
+    LoadClientToken: LoadClientToken,
+    LoadClientTokenFail: LoadClientTokenFail,
+    LoadClientTokenSuccess: LoadClientTokenSuccess
+});
+
+const getClientAuthState = createFeatureSelector(CLIENT_AUTH_FEATURE);
+
+const ɵ0$7 = (state) => state.clientToken;
+const getClientTokenState = createSelector(getClientAuthState, ɵ0$7);
+
+var clientTokenGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getClientTokenState: getClientTokenState,
+    ɵ0: ɵ0$7,
+    getClientAuthState: getClientAuthState
+});
+
+/**
+ * Serves a role of a facade on client token store.
+ */
+class ClientTokenService {
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Returns a client token. The client token from the store is returned if there is one.
+     * Otherwise a new token is fetched from the backend and saved in the store.
+     */
+    getClientToken() {
+        return this.store.pipe(select(getClientTokenState), observeOn(queueScheduler), filter((state) => {
+            if (this.isClientTokenLoaded(state)) {
+                return true;
+            }
+            else {
+                if (!state.loading) {
+                    this.store.dispatch(new LoadClientToken());
+                }
+                return false;
+            }
+        }), map((state) => state.value));
+    }
+    /**
+     * Fetches a clientToken from the backend and saves it in the store where getClientToken can use it.
+     * The new clientToken is returned.
+     */
+    refreshClientToken() {
+        this.store.dispatch(new LoadClientToken());
+        return this.store.pipe(select(getClientTokenState), filter((state) => this.isClientTokenLoaded(state)), map((state) => state.value));
+    }
+    isClientTokenLoaded(state) {
+        return (state.success || state.error) && !state.loading;
+    }
+}
+ClientTokenService.ɵprov = ɵɵdefineInjectable({ factory: function ClientTokenService_Factory() { return new ClientTokenService(ɵɵinject(Store)); }, token: ClientTokenService, providedIn: "root" });
+ClientTokenService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+ClientTokenService.ctorParameters = () => [
+    { type: Store }
+];
+
+/**
+ * Service for handling `Authorization` header and errors for requests that
+ * require client token (eg. user registration).
+ */
+class ClientErrorHandlingService {
+    constructor(clientTokenService) {
+        this.clientTokenService = clientTokenService;
+    }
+    /**
+     * Refreshes client token and retries the request with the new token.
+     *
+     * @param request
+     * @param httpHandler
+     */
+    handleExpiredClientToken(request, next) {
+        return this.clientTokenService.refreshClientToken().pipe(take(1), switchMap((token) => {
+            return next.handle(this.createNewRequestWithNewToken(request, token));
+        }));
+    }
+    /**
+     * Clones the requests and provided `Authorization` header.
+     *
+     * @param request
+     * @param token
+     */
+    createNewRequestWithNewToken(request, token) {
+        request = request.clone({
+            setHeaders: {
+                Authorization: `${token.token_type || 'Bearer'} ${token.access_token}`,
+            },
+        });
+        return request;
+    }
+}
+ClientErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(ɵɵinject(ClientTokenService)); }, token: ClientErrorHandlingService, providedIn: "root" });
+ClientErrorHandlingService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+ClientErrorHandlingService.ctorParameters = () => [
+    { type: ClientTokenService }
+];
+
+/**
+ * Interceptor for handling requests with `USE_CLIENT_TOKEN` header.
+ * Provides `Authorization` header with client token and handles errors related to client auth.
+ */
+class ClientTokenInterceptor {
+    constructor(clientTokenService, clientErrorHandlingService, occEndpoints) {
+        this.clientTokenService = clientTokenService;
+        this.clientErrorHandlingService = clientErrorHandlingService;
+        this.occEndpoints = occEndpoints;
+    }
+    intercept(request, next) {
+        const isClientTokenRequest = this.isClientTokenRequest(request);
+        if (isClientTokenRequest) {
+            request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
+        }
+        return this.getClientToken(isClientTokenRequest).pipe(take(1), switchMap((token) => {
+            if ((token === null || token === void 0 ? void 0 : token.access_token) &&
+                request.url.includes(this.occEndpoints.getBaseEndpoint())) {
+                request = request.clone({
+                    setHeaders: {
+                        Authorization: `${token.token_type || 'Bearer'} ${token.access_token}`,
+                    },
+                });
+            }
+            return next.handle(request).pipe(catchError((errResponse) => {
+                if (errResponse instanceof HttpErrorResponse) {
+                    if (errResponse.status === 401) {
+                        if (isClientTokenRequest) {
+                            if (this.isExpiredToken(errResponse)) {
+                                return this.clientErrorHandlingService.handleExpiredClientToken(request, next);
+                            }
+                        }
+                    }
+                }
+                return throwError(errResponse);
+            }));
+        }));
+    }
+    getClientToken(isClientTokenRequest) {
+        if (isClientTokenRequest) {
+            return this.clientTokenService.getClientToken();
+        }
+        return of(null);
+    }
+    isClientTokenRequest(request) {
+        const isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CLIENT_TOKEN, request.headers);
+        return Boolean(isRequestMapping);
+    }
+    isExpiredToken(resp) {
+        var _a, _b, _c;
+        return ((_c = (_b = (_a = resp.error) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.type) === 'InvalidTokenError';
+    }
+}
+ClientTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(ɵɵinject(ClientTokenService), ɵɵinject(ClientErrorHandlingService), ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
+ClientTokenInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+ClientTokenInterceptor.ctorParameters = () => [
+    { type: ClientTokenService },
+    { type: ClientErrorHandlingService },
+    { type: OccEndpointsService }
+];
+
+const interceptors = [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useExisting: ClientTokenInterceptor,
+        multi: true,
+    },
+];
+
+const DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
+const DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
+const defaultStateConfig = {
+    state: {
+        storageSync: {
+            localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
+            sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
+            keys: {},
+            excludeKeys: {},
+        },
+    },
+};
+
+var StorageSyncType;
+(function (StorageSyncType) {
+    StorageSyncType["NO_STORAGE"] = "NO_STORAGE";
+    StorageSyncType["LOCAL_STORAGE"] = "LOCAL_STORAGE";
+    StorageSyncType["SESSION_STORAGE"] = "SESSION_STORAGE";
+})(StorageSyncType || (StorageSyncType = {}));
+var StateTransferType;
+(function (StateTransferType) {
+    StateTransferType["TRANSFER_STATE"] = "SSR";
+})(StateTransferType || (StateTransferType = {}));
+class StateConfig {
+}
+StateConfig.ɵprov = ɵɵdefineInjectable({ factory: function StateConfig_Factory() { return ɵɵinject(Config); }, token: StateConfig, providedIn: "root" });
+StateConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
+
+function getStorageSyncReducer(winRef, config) {
+    if (!winRef.nativeWindow ||
+        !config ||
+        !config.state ||
+        !config.state.storageSync ||
+        !config.state.storageSync.keys) {
+        return (reducer) => reducer;
+    }
+    const storageSyncConfig = config.state.storageSync;
+    return (reducer) => {
+        return (state, action) => {
+            const newState = reducer(state, action);
+            if (action.type === INIT || action.type === UPDATE) {
+                const rehydratedState = rehydrate(config, winRef);
+                return deepMerge({}, newState, rehydratedState);
+            }
+            if (action.type !== INIT) {
+                // handle local storage
+                const localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+                const localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
+                const localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, newState);
+                persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
+                // handle session storage
+                const sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
+                const sessionStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
+                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, newState);
+                persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
+            }
+            return newState;
+        };
+    };
+}
+function rehydrate(config, winRef) {
+    const localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
+    const sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
+    return deepMerge(localStorageValue, sessionStorageValue);
+}
+function exists(value) {
+    if (value != null) {
+        if (typeof value === 'object') {
+            return Object.keys(value).length !== 0;
+        }
+        return value !== '';
+    }
+    return false;
+}
+function getStorage(storageType, winRef) {
+    let storage;
+    switch (storageType) {
+        case StorageSyncType.LOCAL_STORAGE: {
+            storage = winRef.localStorage;
+            break;
+        }
+        case StorageSyncType.SESSION_STORAGE: {
+            storage = winRef.sessionStorage;
+            break;
+        }
+        case StorageSyncType.NO_STORAGE: {
+            storage = undefined;
+            break;
+        }
+        default: {
+            storage = winRef.sessionStorage;
+        }
+    }
+    return storage;
+}
+function persistToStorage(configKey, value, storage) {
+    if (!isSsr(storage) && value) {
+        storage.setItem(configKey, JSON.stringify(value));
+    }
+}
+function readFromStorage(storage, key) {
+    if (isSsr(storage)) {
+        return;
+    }
+    const storageValue = storage.getItem(key);
+    if (!storageValue) {
+        return;
+    }
+    return JSON.parse(storageValue);
+}
+function isSsr(storage) {
+    return !Boolean(storage);
+}
+
+class StatePersistenceService {
+    constructor(winRef) {
+        this.winRef = winRef;
+    }
+    /**
+     * Helper to synchronize state to more persistent storage (localStorage, sessionStorage).
+     * It is context aware, so you can keep different state for te same feature based on specified context.
+     *
+     * Eg. cart is valid only under the same base site. So you want to synchronize cart only with the same base site.
+     * Usage for that case: `syncWithStorage({ key: 'cart', state$: activeCartSelector$, context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]), onRead: (state) => setCorrectStateInStore(state) })`.
+     * Active cart for the `electronics` base site will be stored under `spartacus⚿electronics⚿cart` and for apparel under `spartacus⚿apparel⚿cart`.
+     *
+     * On each context change onRead function will be executed with state from storage provided as a parameter.
+     *
+     * Omitting context$ will trigger onRead only once at initialization.
+     *
+     * @param key Key to use in storage for the synchronized state. Should be unique for each feature.
+     * @param state$ State to be saved and later restored.
+     * @param context$ Context for state
+     * @param storageType Storage type to be used to persist state
+     * @param onRead Function to be executed on each storage read after context change
+     *
+     * @returns Subscriptions for reading/writing in storage on context/state change
+     */
+    syncWithStorage({ key, state$, context$ = of(''), storageType = StorageSyncType.LOCAL_STORAGE, onRead = () => { }, }) {
+        const storage = getStorage(storageType, this.winRef);
+        const subscriptions = new Subscription();
+        // Do not change order of subscription! Read should happen before write on context change.
+        subscriptions.add(context$
+            .pipe(map((context) => {
+            return readFromStorage(storage, this.generateKeyWithContext(context, key));
+        }), tap((state) => onRead(state)))
+            .subscribe());
+        subscriptions.add(state$.pipe(withLatestFrom(context$)).subscribe(([state, context]) => {
+            persistToStorage(this.generateKeyWithContext(context, key), state, storage);
+        }));
+        return subscriptions;
+    }
+    /**
+     * Helper to read state from persistent storage (localStorage, sessionStorage).
+     * It is useful if you need synchronously access state saved with `syncWithStorage`.
+     *
+     * @param key Key to use in storage for state. Should be unique for each feature.
+     * @param context Context value for state
+     * @param storageType Storage type from to read state
+     *
+     * @returns State from the storage
+     */
+    readStateFromStorage({ key, context = '', storageType = StorageSyncType.LOCAL_STORAGE, }) {
+        const storage = getStorage(storageType, this.winRef);
+        return readFromStorage(storage, this.generateKeyWithContext(context, key));
+    }
+    generateKeyWithContext(context, key) {
+        return `spartacus⚿${[].concat(context).join('⚿')}⚿${key}`;
+    }
+}
+StatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
+StatePersistenceService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+StatePersistenceService.ctorParameters = () => [
+    { type: WindowRef }
+];
+
+/**
+ * Responsible for saving the authorization data (userId, token, redirectUrl) in browser storage.
+ */
+class AuthStatePersistenceService {
+    constructor(statePersistenceService, userIdService, authStorageService, authRedirectStorageService) {
+        this.statePersistenceService = statePersistenceService;
+        this.userIdService = userIdService;
+        this.authStorageService = authStorageService;
+        this.authRedirectStorageService = authRedirectStorageService;
+        this.subscription = new Subscription();
+        /**
+         * Identifier used for storage key.
+         */
+        this.key = 'auth';
+    }
+    /**
+     * Initializes the synchronization between state and browser storage.
+     */
+    initSync() {
+        this.subscription.add(this.statePersistenceService.syncWithStorage({
+            key: this.key,
+            state$: this.getAuthState(),
+            onRead: (state) => this.onRead(state),
+        }));
+    }
+    /**
+     * Gets and transforms state from different sources into the form that should
+     * be saved in storage.
+     */
+    getAuthState() {
+        return combineLatest([
+            this.authStorageService.getToken().pipe(filter((state) => !!state), map((state) => {
+                return Object.assign({}, state);
+            })),
+            this.userIdService.getUserId(),
+            this.authRedirectStorageService.getRedirectUrl(),
+        ]).pipe(map(([authToken, userId, redirectUrl]) => {
+            let token = authToken;
+            if (token) {
+                token = Object.assign({}, token);
+                // To minimize risk of user account hijacking we don't persist user refresh_token
+                delete token.refresh_token;
+            }
+            return { token, userId, redirectUrl };
+        }));
+    }
+    /**
+     * Function called on each browser storage read.
+     * Used to update state from browser -> state.
+     */
+    onRead(state) {
+        if (state) {
+            if (state.token) {
+                this.authStorageService.setToken(state.token);
+            }
+            if (state.userId) {
+                this.userIdService.setUserId(state.userId);
+            }
+            if (state.redirectUrl) {
+                this.authRedirectStorageService.setRedirectUrl(state.redirectUrl);
+            }
+        }
+    }
+    /**
+     * Reads synchronously state from storage and returns it.
+     */
+    readStateFromStorage() {
+        return this.statePersistenceService.readStateFromStorage({
+            key: this.key,
+        });
+    }
+    /**
+     * Check synchronously in browser storage if user is logged in (required by transfer state reducer).
+     * For most cases `isUserLoggedIn` from the `AuthService` should be used instead of this.
+     */
+    isUserLoggedIn() {
+        var _a, _b;
+        return Boolean((_b = (_a = this.readStateFromStorage()) === null || _a === void 0 ? void 0 : _a.token) === null || _b === void 0 ? void 0 : _b.access_token);
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+}
+AuthStatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function AuthStatePersistenceService_Factory() { return new AuthStatePersistenceService(ɵɵinject(StatePersistenceService), ɵɵinject(UserIdService), ɵɵinject(AuthStorageService), ɵɵinject(AuthRedirectStorageService)); }, token: AuthStatePersistenceService, providedIn: "root" });
+AuthStatePersistenceService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+AuthStatePersistenceService.ctorParameters = () => [
+    { type: StatePersistenceService },
+    { type: UserIdService },
+    { type: AuthStorageService },
+    { type: AuthRedirectStorageService }
+];
+
+const CX_KEY = makeStateKey('cx-state');
+function getTransferStateReducer(platformId, transferState, config, authStatePersistenceService) {
+    var _a, _b;
+    if (transferState && ((_b = (_a = config === null || config === void 0 ? void 0 : config.state) === null || _a === void 0 ? void 0 : _a.ssrTransfer) === null || _b === void 0 ? void 0 : _b.keys)) {
+        if (isPlatformBrowser(platformId)) {
+            return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys, Boolean(authStatePersistenceService === null || authStatePersistenceService === void 0 ? void 0 : authStatePersistenceService.isUserLoggedIn()));
+        }
+        else if (isPlatformServer(platformId)) {
+            return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+        }
+    }
+    return (reducer) => reducer;
+}
+function getServerTransferStateReducer(transferState, keys) {
+    const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
+    return function (reducer) {
+        return function (state, action) {
+            const newState = reducer(state, action);
+            if (newState) {
+                const stateSlice = getStateSlice(transferStateKeys, [], newState);
+                transferState.set(CX_KEY, stateSlice);
+            }
+            return newState;
+        };
+    };
+}
+function getBrowserTransferStateReducer(transferState, keys, isLoggedIn) {
+    const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
+    return function (reducer) {
+        return function (state, action) {
+            if (action.type === INIT) {
+                if (!state) {
+                    state = reducer(state, action);
+                }
+                if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
+                    const cxKey = transferState.get(CX_KEY, {});
+                    const transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
+                    state = deepMerge({}, state, transferredStateSlice);
+                }
+                return state;
+            }
+            return reducer(state, action);
+        };
+    };
+}
+
+const TRANSFER_STATE_META_REDUCER = new InjectionToken('TransferStateMetaReducer');
+const STORAGE_SYNC_META_REDUCER = new InjectionToken('StorageSyncMetaReducer');
+const ɵ0$8 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
+const stateMetaReducers = [
+    {
+        provide: TRANSFER_STATE_META_REDUCER,
+        useFactory: ɵ0$8,
+        deps: [
+            PLATFORM_ID,
+            [new Optional(), TransferState],
+            [new Optional(), Config],
+            [new Optional(), AuthStatePersistenceService],
+        ],
+    },
+    {
+        provide: STORAGE_SYNC_META_REDUCER,
+        useFactory: ɵ1$5,
+        deps: [WindowRef, [new Optional(), Config]],
+    },
+    {
+        provide: META_REDUCERS,
+        useExisting: TRANSFER_STATE_META_REDUCER,
+        multi: true,
+    },
+    {
+        provide: META_REDUCERS,
+        useExisting: STORAGE_SYNC_META_REDUCER,
+        multi: true,
+    },
+];
+
+class StateModule {
+    static forRoot() {
+        return {
+            ngModule: StateModule,
+            providers: [
+                ...stateMetaReducers,
+                provideDefaultConfig(defaultStateConfig),
+            ],
+        };
+    }
+}
+StateModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
+
+/**
+ * Normalizes HttpErrorResponse to HttpErrorModel.
+ *
+ * Can be used as a safe and generic way for embodying http errors into
+ * NgRx Action payload, as it will strip potentially unserializable parts from
+ * it and warn in debug mode if passed error is not instance of HttpErrorModel
+ * (which usually happens when logic in NgRx Effect is not sealed correctly)
+ */
+function normalizeHttpError(error) {
+    if (error instanceof HttpErrorResponse) {
+        const normalizedError = {
+            message: error.message,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        };
+        // include backend's error details
+        if (Array.isArray(error.error.errors)) {
+            normalizedError.details = error.error.errors;
+        }
+        else if (typeof error.error.error === 'string') {
+            normalizedError.details = [
+                {
+                    type: error.error.error,
+                    message: error.error.error_description,
+                },
+            ];
+        }
+        return normalizedError;
+    }
+    if (isDevMode()) {
+        console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
+    }
+    return undefined;
+}
+
+/**
+ * Responsible for requesting from OAuth server `ClientToken` for a particular
+ * auth client.
+ */
+class ClientAuthenticationTokenService {
+    constructor(http, authConfigService) {
+        this.http = http;
+        this.authConfigService = authConfigService;
+    }
+    /**
+     * Loads token with client authentication flow.
+     *
+     * @returns observable with ClientToken
+     */
+    loadClientAuthenticationToken() {
+        const url = this.authConfigService.getTokenEndpoint();
+        const params = new HttpParams()
+            .set('client_id', encodeURIComponent(this.authConfigService.getClientId()))
+            .set('client_secret', encodeURIComponent(this.authConfigService.getClientSecret()))
+            .set('grant_type', 'client_credentials');
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        return this.http.post(url, params, { headers });
+    }
+}
+ClientAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(ɵɵinject(HttpClient), ɵɵinject(AuthConfigService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
+ClientAuthenticationTokenService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+ClientAuthenticationTokenService.ctorParameters = () => [
+    { type: HttpClient },
+    { type: AuthConfigService }
+];
+
+class ClientTokenEffect {
+    constructor(actions$, clientAuthenticationTokenService) {
+        this.actions$ = actions$;
+        this.clientAuthenticationTokenService = clientAuthenticationTokenService;
+        this.loadClientToken$ = this.actions$.pipe(ofType(LOAD_CLIENT_TOKEN), exhaustMap(() => {
+            return this.clientAuthenticationTokenService
+                .loadClientAuthenticationToken()
+                .pipe(map((token) => {
+                return new LoadClientTokenSuccess(token);
+            }), catchError((error) => of(new LoadClientTokenFail(normalizeHttpError(error)))));
+        }));
+    }
+}
+ClientTokenEffect.decorators = [
+    { type: Injectable }
+];
+ClientTokenEffect.ctorParameters = () => [
+    { type: Actions },
+    { type: ClientAuthenticationTokenService }
+];
+__decorate([
+    Effect()
+], ClientTokenEffect.prototype, "loadClientToken$", void 0);
+
+const effects = [ClientTokenEffect];
+
+function getReducers() {
+    return {
+        clientToken: loaderReducer(CLIENT_TOKEN_DATA),
+    };
+}
+const reducerToken = new InjectionToken('ClientAuthReducers');
+const reducerProvider = {
+    provide: reducerToken,
+    useFactory: getReducers,
+};
+
+class ClientAuthStoreModule {
+}
+ClientAuthStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StateModule,
+                    StoreModule.forFeature(CLIENT_AUTH_FEATURE, reducerToken),
+                    EffectsModule.forFeature(effects),
+                ],
+                providers: [reducerProvider],
+            },] }
+];
+
+/**
+ * Some of the OCC endpoints require Authorization header with the client token (eg. user registration).
+ * This pattern should not be used in the frontend apps, but until OCC changes this requirement
+ * we provide this module to support using those endpoints.
+ *
+ * After OCC improvements regarding client authentication this module can be safely removed.
+ */
+class ClientAuthModule {
+    static forRoot() {
+        return {
+            ngModule: ClientAuthModule,
+            providers: [...interceptors],
+        };
+    }
+}
+ClientAuthModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, ClientAuthStoreModule],
+            },] }
+];
+
+const CONFIG_INITIALIZER = new InjectionToken('ConfigInitializer');
+const CONFIG_INITIALIZER_FORROOT_GUARD = new InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
+
+/**
+ * Provides support for CONFIG_INITIALIZERS
+ */
+class ConfigInitializerService {
+    constructor(config, initializerGuard, rootConfig) {
+        this.config = config;
+        this.initializerGuard = initializerGuard;
+        this.rootConfig = rootConfig;
+        this.ongoingScopes$ = new BehaviorSubject(undefined);
+    }
+    /**
+     * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
+     */
+    get isStable() {
+        return (!this.initializerGuard ||
+            (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
+    }
+    /**
+     * Recommended way to get config for code that can run before app will finish
+     * initialization (APP_INITIALIZERS, selected service constructors)
+     *
+     * Used without parameters waits for the whole config to become stable
+     *
+     * Parameters allow to describe which part of the config should be stable using
+     * string describing config part, e.g.:
+     * 'siteContext', 'siteContext.language', etc.
+     *
+     * @param scopes String describing parts of the config we want to be sure are stable
+     */
+    getStableConfig(...scopes) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.isStable) {
+                return this.config;
+            }
+            return this.ongoingScopes$
+                .pipe(filter((ongoingScopes) => ongoingScopes && this.areReady(scopes, ongoingScopes)), take(1), mapTo(this.config))
+                .toPromise();
+        });
+    }
+    /**
+     * Removes provided scopes from currently ongoingScopes
+     *
+     * @param scopes
+     */
+    finishScopes(scopes) {
+        const newScopes = [...this.ongoingScopes$.value];
+        for (const scope of scopes) {
+            newScopes.splice(newScopes.indexOf(scope), 1);
+        }
+        this.ongoingScopes$.next(newScopes);
+    }
+    /**
+     * Return true if provided scopes are not part of ongoingScopes
+     *
+     * @param scopes
+     * @param ongoingScopes
+     */
+    areReady(scopes, ongoingScopes) {
+        if (!scopes.length) {
+            return !ongoingScopes.length;
+        }
+        for (const scope of scopes) {
+            for (const ongoingScope of ongoingScopes) {
+                if (this.scopesOverlap(scope, ongoingScope)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    /**
+     * Check if two scopes overlap.
+     *
+     * Example of scopes that overlap:
+     * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
+     *
+     * Example of scopes that do not overlap:
+     * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
+     *
+     * @param a ScopeA
+     * @param b ScopeB
+     */
+    scopesOverlap(a, b) {
+        if (b.length > a.length) {
+            [a, b] = [b, a];
+        }
+        return a.startsWith(b) && (a[b.length] || '.') === '.';
+    }
+    /**
+     * @internal
+     *
+     * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
+     *
+     */
+    initialize(initializers) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.ongoingScopes$.value) {
+                // guard for double initialization
+                return;
+            }
+            const ongoingScopes = [];
+            const asyncConfigs = [];
+            for (const initializer of initializers || []) {
+                if (!initializer) {
+                    continue;
+                }
+                if (!initializer.scopes || !initializer.scopes.length) {
+                    throw new Error('CONFIG_INITIALIZER should provide scope!');
+                }
+                if (isDevMode() && !this.areReady(initializer.scopes, ongoingScopes)) {
+                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
+                }
+                ongoingScopes.push(...initializer.scopes);
+                asyncConfigs.push((() => __awaiter(this, void 0, void 0, function* () {
+                    const initializerConfig = yield initializer.configFactory();
+                    // contribute configuration to rootConfig
+                    deepMerge(this.rootConfig, initializerConfig);
+                    // contribute configuration to global config
+                    deepMerge(this.config, initializerConfig);
+                    this.finishScopes(initializer.scopes);
+                }))());
+            }
+            this.ongoingScopes$.next(ongoingScopes);
+            if (asyncConfigs.length) {
+                yield Promise.all(asyncConfigs);
+            }
+        });
+    }
+}
+ConfigInitializerService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(ɵɵinject(Config), ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
+ConfigInitializerService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+ConfigInitializerService.ctorParameters = () => [
+    { type: undefined, decorators: [{ type: Inject, args: [Config,] }] },
+    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] },
+    { type: undefined, decorators: [{ type: Inject, args: [RootConfig,] }] }
+];
+
+const defaultAuthConfig = {
+    authentication: {
+        client_id: 'mobile_android',
+        client_secret: 'secret',
+        tokenEndpoint: '/oauth/token',
+        revokeEndpoint: '/oauth/revoke',
+        loginUrl: '/oauth/authorize',
+        OAuthLibConfig: {
+            scope: '',
+            customTokenParameters: ['token_type'],
+            strictDiscoveryDocumentValidation: false,
+            skipIssuerCheck: true,
+            disablePKCE: true,
+            oidc: false,
+            clearHashAfterLogin: false,
+        },
+    },
+};
+
+const ADD_MESSAGE = '[Global-message] Add a Message';
+const REMOVE_MESSAGE = '[Global-message] Remove a Message';
+const REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
+class AddMessage {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_MESSAGE;
+    }
+}
+class RemoveMessage {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REMOVE_MESSAGE;
+    }
+}
+class RemoveMessagesByType {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REMOVE_MESSAGES_BY_TYPE;
+    }
+}
+
+var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    ADD_MESSAGE: ADD_MESSAGE,
+    REMOVE_MESSAGE: REMOVE_MESSAGE,
+    REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
+    AddMessage: AddMessage,
+    RemoveMessage: RemoveMessage,
+    RemoveMessagesByType: RemoveMessagesByType
+});
+
+const GLOBAL_MESSAGE_FEATURE = 'global-message';
+
+const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+
+const ɵ0$9 = (state) => state.entities;
+const getGlobalMessageEntities = createSelector(getGlobalMessageState, ɵ0$9);
+const getGlobalMessageEntitiesByType = (type) => {
+    return createSelector(getGlobalMessageEntities, (entities) => entities && entities[type]);
+};
+const getGlobalMessageCountByType = (type) => {
+    return createSelector(getGlobalMessageEntitiesByType(type), (entities) => entities && entities.length);
+};
+
+var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getGlobalMessageState: getGlobalMessageState,
+    getGlobalMessageEntities: getGlobalMessageEntities,
+    getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
+    getGlobalMessageCountByType: getGlobalMessageCountByType,
+    ɵ0: ɵ0$9
+});
+
+class GlobalMessageService {
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Get all global messages
+     */
+    get() {
+        return this.store.pipe(select(getGlobalMessageEntities), filter((data) => data !== undefined));
+    }
+    /**
+     * Add one message into store
+     * @param text: string | Translatable
+     * @param type: GlobalMessageType object
+     * @param timeout: number
+     */
+    add(text, type, timeout) {
+        this.store.dispatch(new AddMessage({
+            text: typeof text === 'string' ? { raw: text } : text,
+            type,
+            timeout,
+        }));
+    }
+    /**
+     * Remove message(s) from store
+     * @param type: GlobalMessageType
+     * @param index:optional. Without it, messages will be removed by type; otherwise,
+     * message will be removed from list by index.
+     */
+    remove(type, index) {
+        this.store.dispatch(index !== undefined
+            ? new RemoveMessage({
+                type: type,
+                index: index,
+            })
+            : new RemoveMessagesByType(type));
+    }
+}
+GlobalMessageService.ɵprov = ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(ɵɵinject(Store)); }, token: GlobalMessageService, providedIn: "root" });
+GlobalMessageService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+GlobalMessageService.ctorParameters = () => [
+    { type: Store }
+];
+
+var GlobalMessageType;
+(function (GlobalMessageType) {
+    GlobalMessageType["MSG_TYPE_CONFIRMATION"] = "[GlobalMessage] Confirmation";
+    GlobalMessageType["MSG_TYPE_ERROR"] = "[GlobalMessage] Error";
+    GlobalMessageType["MSG_TYPE_INFO"] = "[GlobalMessage] Information";
+    GlobalMessageType["MSG_TYPE_WARNING"] = "[GlobalMessage] Warning";
+})(GlobalMessageType || (GlobalMessageType = {}));
+
+/**
+ * Extendable service for `AuthInterceptor`.
+ */
+class AuthHeaderService {
+    constructor(authService, authStorageService, oAuthLibWrapperService, routingService, occEndpoints, globalMessageService) {
+        this.authService = authService;
+        this.authStorageService = authStorageService;
+        this.oAuthLibWrapperService = oAuthLibWrapperService;
+        this.routingService = routingService;
+        this.occEndpoints = occEndpoints;
+        this.globalMessageService = globalMessageService;
+    }
+    /**
+     * Checks if request should be handled by this service (if it's OCC call).
+     */
+    shouldCatchError(request) {
+        return this.isOccUrl(request.url);
+    }
+    /**
+     * Adds `Authorization` header for OCC calls.
+     */
+    alterRequest(request) {
+        const hasAuthorizationHeader = !!this.getAuthorizationHeader(request);
+        const isOccUrl = this.isOccUrl(request.url);
+        if (!hasAuthorizationHeader && isOccUrl) {
+            return request.clone({
+                setHeaders: Object.assign({}, this.createAuthorizationHeader()),
+            });
+        }
+        return request;
+    }
+    isOccUrl(url) {
+        return url.includes(this.occEndpoints.getBaseEndpoint());
+    }
+    getAuthorizationHeader(request) {
+        const rawValue = request.headers.get('Authorization');
+        return rawValue;
+    }
+    createAuthorizationHeader() {
+        let token;
+        this.authStorageService
+            .getToken()
+            .subscribe((tok) => (token = tok))
+            .unsubscribe();
+        if (token === null || token === void 0 ? void 0 : token.access_token) {
+            return {
+                Authorization: `${token.token_type || 'Bearer'} ${token.access_token}`,
+            };
+        }
+        return {};
+    }
+    /**
+     * Refreshes access_token and then retries the call with the new token.
+     */
+    handleExpiredAccessToken(request, next) {
+        return this.handleExpiredToken().pipe(switchMap((token) => {
+            return next.handle(this.createNewRequestWithNewToken(request, token));
+        }));
+    }
+    /**
+     * Logout user, redirected to login page and informs about expired session.
+     */
+    handleExpiredRefreshToken() {
+        // Logout user
+        this.authService.logout();
+        this.routingService.go({ cxRoute: 'login' });
+        this.globalMessageService.add({
+            key: 'httpHandlers.sessionExpired',
+        }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+    /**
+     * Attempts to refresh token if possible.
+     * If it is not possible calls `handleExpiredRefreshToken`.
+     *
+     * @return observable which omits new access_token. (Warn: might never emit!).
+     */
+    handleExpiredToken() {
+        const stream = this.authStorageService.getToken();
+        let oldToken;
+        return stream.pipe(tap((token) => {
+            if (token.access_token && token.refresh_token && !oldToken) {
+                this.oAuthLibWrapperService.refreshToken();
+            }
+            else if (!token.refresh_token) {
+                this.handleExpiredRefreshToken();
+            }
+            oldToken = oldToken || token;
+        }), filter((token) => oldToken.access_token !== token.access_token), take(1));
+    }
+    createNewRequestWithNewToken(request, token) {
+        request = request.clone({
+            setHeaders: {
+                Authorization: `${token.token_type || 'Bearer'} ${token.access_token}`,
+            },
+        });
+        return request;
+    }
+}
+AuthHeaderService.ɵprov = ɵɵdefineInjectable({ factory: function AuthHeaderService_Factory() { return new AuthHeaderService(ɵɵinject(AuthService), ɵɵinject(AuthStorageService), ɵɵinject(OAuthLibWrapperService), ɵɵinject(RoutingService), ɵɵinject(OccEndpointsService), ɵɵinject(GlobalMessageService)); }, token: AuthHeaderService, providedIn: "root" });
+AuthHeaderService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+AuthHeaderService.ctorParameters = () => [
+    { type: AuthService },
+    { type: AuthStorageService },
+    { type: OAuthLibWrapperService },
+    { type: RoutingService },
+    { type: OccEndpointsService },
+    { type: GlobalMessageService }
+];
+
+/**
+ * Responsible for catching auth errors and providing `Authorization` header for API calls.
+ * Uses AuthHeaderService for request manipulation and error handling. Interceptor only hooks into request send/received events.
+ */
+class AuthInterceptor {
+    constructor(authHeaderService, authConfigService) {
+        this.authHeaderService = authHeaderService;
+        this.authConfigService = authConfigService;
+    }
+    intercept(request, next) {
+        const shouldCatchError = this.authHeaderService.shouldCatchError(request);
+        request = this.authHeaderService.alterRequest(request);
+        return next.handle(request).pipe(catchError((errResponse) => {
+            if (errResponse instanceof HttpErrorResponse) {
+                switch (errResponse.status) {
+                    case 401: // Unauthorized
+                        if (this.isExpiredToken(errResponse) && shouldCatchError) {
+                            return this.authHeaderService.handleExpiredAccessToken(request, next);
+                        }
+                        else if (
+                        // Refresh expired token
+                        // Check that the OAUTH endpoint was called and the error is for refresh token is expired
+                        errResponse.url.includes(this.authConfigService.getTokenEndpoint()) &&
+                            errResponse.error.error === 'invalid_token') {
+                            this.authHeaderService.handleExpiredRefreshToken();
+                            return of();
+                        }
+                        break;
+                    case 400: // Bad Request
+                        if (errResponse.url.includes(this.authConfigService.getTokenEndpoint()) &&
+                            errResponse.error.error === 'invalid_grant') {
+                            if (request.body.get('grant_type') === 'refresh_token') {
+                                this.authHeaderService.handleExpiredRefreshToken();
+                            }
+                        }
+                        break;
+                }
+            }
+            return throwError(errResponse);
+        }));
+    }
+    isExpiredToken(resp) {
+        var _a, _b, _c;
+        return ((_c = (_b = (_a = resp.error) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.type) === 'InvalidTokenError';
+    }
+}
+AuthInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function AuthInterceptor_Factory() { return new AuthInterceptor(ɵɵinject(AuthHeaderService), ɵɵinject(AuthConfigService)); }, token: AuthInterceptor, providedIn: "root" });
+AuthInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+AuthInterceptor.ctorParameters = () => [
+    { type: AuthHeaderService },
+    { type: AuthConfigService }
+];
+
+/**
+ * This interceptor is dedicated for Hybris OAuth server which requires `Authorization` header for revoke token calls.
+ */
+class TokenRevocationInterceptor {
+    constructor(authStorageService, authConfigService) {
+        this.authStorageService = authStorageService;
+        this.authConfigService = authConfigService;
+    }
+    intercept(request, next) {
+        const isTokenRevocationRequest = this.isTokenRevocationRequest(request);
+        return this.authStorageService.getToken().pipe(take(1), switchMap((token) => {
+            if (isTokenRevocationRequest) {
+                request = request.clone({
+                    setHeaders: {
+                        Authorization: `${token.token_type || 'Bearer'} ${token.access_token}`,
+                    },
+                });
+            }
+            return next.handle(request);
+        }));
+    }
+    isTokenRevocationRequest(request) {
+        return request.url === this.authConfigService.getRevokeEndpoint();
+    }
+}
+TokenRevocationInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(ɵɵinject(AuthStorageService), ɵɵinject(AuthConfigService)); }, token: TokenRevocationInterceptor, providedIn: "root" });
+TokenRevocationInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+TokenRevocationInterceptor.ctorParameters = () => [
+    { type: AuthStorageService },
+    { type: AuthConfigService }
+];
+
+const interceptors$1 = [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useExisting: AuthInterceptor,
+        multi: true,
+    },
+    {
+        provide: HTTP_INTERCEPTORS,
+        useExisting: TokenRevocationInterceptor,
+        multi: true,
+    },
+];
+
+/**
+ * Initialize the check for `token` or `code` in the url returned from the OAuth server.
+ */
+function checkOAuthParamsInUrl(authService, configInit) {
+    const result = () => configInit.getStableConfig().then(() => {
+        // Wait for stable config is used, because with auth redirect would kick so quickly that the page would not be loaded correctly
+        authService.checkOAuthParamsInUrl();
+    });
+    return result;
+}
+function authStatePersistenceFactory(authStatePersistenceService) {
+    const result = () => authStatePersistenceService.initSync();
+    return result;
+}
+/**
+ * Authentication module for a user. Handlers requests for logged in users,
+ * provides authorization services and storage for tokens.
+ */
+class UserAuthModule {
+    static forRoot() {
+        return {
+            ngModule: UserAuthModule,
+            providers: [
+                provideDefaultConfig(defaultAuthConfig),
+                ...interceptors$1,
+                {
+                    provide: OAuthStorage,
+                    useExisting: AuthStorageService,
+                },
+                {
+                    provide: APP_INITIALIZER,
+                    useFactory: authStatePersistenceFactory,
+                    deps: [AuthStatePersistenceService],
+                    multi: true,
+                },
+                {
+                    provide: APP_INITIALIZER,
+                    useFactory: checkOAuthParamsInUrl,
+                    deps: [AuthService, ConfigInitializerService],
+                    multi: true,
+                },
+            ],
+        };
+    }
+}
+UserAuthModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, OAuthModule.forRoot()],
+            },] }
+];
+
+class AuthModule {
+    static forRoot() {
+        return {
+            ngModule: AuthModule,
+        };
+    }
+}
+AuthModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, ClientAuthModule.forRoot(), UserAuthModule.forRoot()],
+            },] }
+];
+
+/**
+ * Checks if there is currently logged in user.
+ * Use to protect pages dedicated only for logged in users.
+ */
+class AuthGuard {
+    constructor(authService, authRedirectService, router, semanticPathService) {
+        this.authService = authService;
+        this.authRedirectService = authRedirectService;
+        this.router = router;
+        this.semanticPathService = semanticPathService;
+    }
+    canActivate() {
+        return this.authService.isUserLoggedIn().pipe(map((isLoggedIn) => {
+            if (!isLoggedIn) {
+                this.authRedirectService.reportAuthGuard();
+                return this.router.parseUrl(this.semanticPathService.get('login'));
+            }
+            return isLoggedIn;
+        }));
+    }
+}
+AuthGuard.ɵprov = ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(ɵɵinject(AuthService), ɵɵinject(AuthRedirectService), ɵɵinject(Router), ɵɵinject(SemanticPathService)); }, token: AuthGuard, providedIn: "root" });
+AuthGuard.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+AuthGuard.ctorParameters = () => [
+    { type: AuthService },
+    { type: AuthRedirectService },
+    { type: Router },
+    { type: SemanticPathService }
+];
+
+/**
+ * Checks if there isn't any logged in user.
+ * Use to protect pages dedicated only for guests (eg. login page).
+ */
+class NotAuthGuard {
+    constructor(authService, authRedirectService, semanticPathService, router) {
+        this.authService = authService;
+        this.authRedirectService = authRedirectService;
+        this.semanticPathService = semanticPathService;
+        this.router = router;
+    }
+    canActivate() {
+        this.authRedirectService.reportNotAuthGuard();
+        // redirect, if user is already logged in:
+        return this.authService.isUserLoggedIn().pipe(map((isLoggedIn) => {
+            if (isLoggedIn) {
+                return this.router.parseUrl(this.semanticPathService.get('home'));
+            }
+            return !isLoggedIn;
+        }));
+    }
+}
+NotAuthGuard.ɵprov = ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(ɵɵinject(AuthService), ɵɵinject(AuthRedirectService), ɵɵinject(SemanticPathService), ɵɵinject(Router)); }, token: NotAuthGuard, providedIn: "root" });
+NotAuthGuard.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+NotAuthGuard.ctorParameters = () => [
+    { type: AuthService },
+    { type: AuthRedirectService },
+    { type: SemanticPathService },
+    { type: Router }
 ];
 
 class AsmAdapter {
@@ -5582,8 +6417,8 @@ const EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".
 const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
 const getMultiCartState = createFeatureSelector(MULTI_CART_FEATURE);
-const ɵ0$b = (state) => state.carts;
-const getMultiCartEntities = createSelector(getMultiCartState, ɵ0$b);
+const ɵ0$a = (state) => state.carts;
+const getMultiCartEntities = createSelector(getMultiCartState, ɵ0$a);
 const getCartEntitySelectorFactory = (cartId) => {
     return createSelector(getMultiCartEntities, (state) => entityProcessesLoaderStateSelector(state, cartId));
 };
@@ -5608,8 +6443,8 @@ const getCartEntrySelectorFactory = (cartId, productCode) => {
             : undefined;
     });
 };
-const ɵ1$7 = (state) => state.active;
-const getActiveCartId = createSelector(getMultiCartState, ɵ1$7);
+const ɵ1$6 = (state) => state.active;
+const getActiveCartId = createSelector(getMultiCartState, ɵ1$6);
 const ɵ2$3 = (state) => state.wishList;
 const getWishListId = createSelector(getMultiCartState, ɵ2$3);
 
@@ -5625,8 +6460,8 @@ var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
     getCartEntrySelectorFactory: getCartEntrySelectorFactory,
     getActiveCartId: getActiveCartId,
     getWishListId: getWishListId,
-    ɵ0: ɵ0$b,
-    ɵ1: ɵ1$7,
+    ɵ0: ɵ0$a,
+    ɵ1: ɵ1$6,
     ɵ2: ɵ2$3
 });
 
@@ -6380,15 +7215,15 @@ MultiCartService.ctorParameters = () => [
 ];
 
 class ActiveCartService {
-    constructor(store, authService, multiCartService) {
+    constructor(store, userIdService, multiCartService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
         this.multiCartService = multiCartService;
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
         this.subscription = new Subscription();
         this.userId = OCC_USER_ID_ANONYMOUS;
-        this.activeCartId$ = this.store.pipe(select(getActiveCartId), map((cartId) => {
+        this.activeCartId$ = this.store.pipe(select(getActiveCartId), filter((cartId) => typeof cartId !== 'undefined'), map((cartId) => {
             if (!cartId) {
                 return OCC_CART_ID_CURRENT;
             }
@@ -6401,7 +7236,12 @@ class ActiveCartService {
         this.subscription.unsubscribe();
     }
     initActiveCart() {
-        this.subscription.add(this.authService.getOccUserId().subscribe((userId) => {
+        this.subscription.add(combineLatest([
+            this.userIdService.getUserId(),
+            this.activeCartId$.pipe(auditTime(0)),
+        ])
+            .pipe(map(([userId]) => userId))
+            .subscribe((userId) => {
             this.userId = userId;
             if (this.userId !== OCC_USER_ID_ANONYMOUS) {
                 if (this.isJustLoggedIn(userId)) {
@@ -6495,6 +7335,19 @@ class ActiveCartService {
         }
         else if (this.isGuestCart()) {
             this.guestCartMerge(cartId);
+        }
+        else if (this.userId !== this.previousUserId &&
+            this.userId !== OCC_USER_ID_ANONYMOUS &&
+            this.previousUserId !== OCC_USER_ID_ANONYMOUS) {
+            // This case covers the case when you are logged in and then asm user logs in and you don't want to merge, but only load emulated user cart
+            // Similarly when you are logged in as asm user and you logout and want to resume previous user session
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId,
+                extraData: {
+                    active: true,
+                },
+            });
         }
         else {
             this.multiCartService.mergeToCurrentCart({
@@ -6664,9 +7517,9 @@ class ActiveCartService {
             .pipe(take(1))
             .subscribe((entries) => {
             cartEntries = entries;
+            this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
+            this.addEntriesGuestMerge(cartEntries);
         });
-        this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
-        this.addEntriesGuestMerge(cartEntries);
     }
     isEmpty(cart) {
         return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
@@ -6677,7 +7530,7 @@ class ActiveCartService {
         );
     }
 }
-ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
 ActiveCartService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -6685,7 +7538,7 @@ ActiveCartService.decorators = [
 ];
 ActiveCartService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
+    { type: UserIdService },
     { type: MultiCartService }
 ];
 
@@ -6768,6 +7621,52 @@ UserAddressConnector.decorators = [
 UserAddressConnector.ctorParameters = () => [
     { type: UserAddressAdapter }
 ];
+
+/**
+ * @deprecated since 2.1, use normalizeHttpError instead
+ */
+const UNKNOWN_ERROR = {
+    error: 'unknown error',
+};
+const circularReplacer = () => {
+    const seen = new WeakSet();
+    return (_key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    };
+};
+const ɵ0$b = circularReplacer;
+/**
+ * @deprecated since 2.1, use normalizeHttpError instead
+ */
+function makeErrorSerializable(error) {
+    if (error instanceof Error) {
+        return {
+            message: error.message,
+            type: error.name,
+            reason: error.stack,
+        };
+    }
+    if (error instanceof HttpErrorResponse) {
+        let serializableError = error.error;
+        if (isObject(error.error)) {
+            serializableError = JSON.stringify(error.error, circularReplacer());
+        }
+        return {
+            message: error.message,
+            error: serializableError,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        };
+    }
+    return isObject(error) ? UNKNOWN_ERROR : error;
+}
 
 class AddressVerificationEffect {
     constructor(actions$, userAddressConnector) {
@@ -8437,42 +9336,6 @@ var userGroup_actions = /*#__PURE__*/Object.freeze({
 });
 
 /**
- * Normalizes HttpErrorResponse to HttpErrorModel.
- *
- * Can be used as a safe and generic way for embodying http errors into
- * NgRx Action payload, as it will strip potentially unserializable parts from
- * it and warn in debug mode if passed error is not instance of HttpErrorModel
- * (which usually happens when logic in NgRx Effect is not sealed correctly)
- */
-function normalizeHttpError(error) {
-    if (error instanceof HttpErrorResponse) {
-        const normalizedError = {
-            message: error.message,
-            status: error.status,
-            statusText: error.statusText,
-            url: error.url,
-        };
-        // include backend's error details
-        if (Array.isArray(error.error.errors)) {
-            normalizedError.details = error.error.errors;
-        }
-        else if (typeof error.error.error === 'string') {
-            normalizedError.details = [
-                {
-                    type: error.error.error,
-                    message: error.error.error_description,
-                },
-            ];
-        }
-        return normalizedError;
-    }
-    if (isDevMode()) {
-        console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
-    }
-    return undefined;
-}
-
-/**
  *
  * Withdraw from the source observable when notifier emits a value
  *
@@ -8770,10 +9633,10 @@ const effects$1 = [
     ReplenishmentOrderEffects,
 ];
 
-const initialState$1 = {
+const initialState = {
     results: {},
 };
-function reducer$1(state = initialState$1, action) {
+function reducer(state = initialState, action) {
     switch (action.type) {
         case VERIFY_ADDRESS_SUCCESS: {
             const results = action.payload;
@@ -8790,10 +9653,10 @@ function reducer$1(state = initialState$1, action) {
 }
 const getAddressVerificationResults = (state) => state.results;
 
-const initialState$2 = {
+const initialState$1 = {
     entities: {},
 };
-function reducer$2(state = initialState$2, action) {
+function reducer$1(state = initialState$1, action) {
     switch (action.type) {
         case LOAD_CARD_TYPES_SUCCESS: {
             const cardTypes = action.payload;
@@ -8803,14 +9666,14 @@ function reducer$2(state = initialState$2, action) {
             return Object.assign(Object.assign({}, state), { entities });
         }
         case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$2;
+            return initialState$1;
         }
     }
     return state;
 }
 const getCardTypesEntites = (state) => state.entities;
 
-const initialState$3 = {
+const initialState$2 = {
     poNumber: { po: undefined, costCenter: undefined },
     address: {},
     deliveryMode: {
@@ -8820,7 +9683,7 @@ const initialState$3 = {
     paymentDetails: {},
     orderDetails: {},
 };
-function reducer$3(state = initialState$3, action) {
+function reducer$2(state = initialState$2, action) {
     switch (action.type) {
         case SET_PAYMENT_TYPE_SUCCESS: {
             const cart = action.payload;
@@ -8865,7 +9728,7 @@ function reducer$3(state = initialState$3, action) {
             return Object.assign(Object.assign({}, state), { orderDetails });
         }
         case CLEAR_CHECKOUT_DATA: {
-            return initialState$3;
+            return initialState$2;
         }
         case CLEAR_CHECKOUT_STEP: {
             const stepNumber = action.payload;
@@ -8899,16 +9762,16 @@ function reducer$3(state = initialState$3, action) {
     return state;
 }
 
-const initialState$4 = {
+const initialState$3 = {
     selected: ORDER_TYPE.PLACE_ORDER,
 };
-function reducer$4(state = initialState$4, action) {
+function reducer$3(state = initialState$3, action) {
     switch (action.type) {
         case SET_ORDER_TYPE: {
             return Object.assign(Object.assign({}, state), { selected: action.payload });
         }
         case CLEAR_CHECKOUT_DATA: {
-            return initialState$4;
+            return initialState$3;
         }
         default: {
             return state;
@@ -8916,11 +9779,11 @@ function reducer$4(state = initialState$4, action) {
     }
 }
 
-const initialState$5 = {
+const initialState$4 = {
     entities: {},
     selected: undefined,
 };
-function reducer$5(state = initialState$5, action) {
+function reducer$4(state = initialState$4, action) {
     switch (action.type) {
         case LOAD_PAYMENT_TYPES_SUCCESS: {
             const paymentTypes = action.payload;
@@ -8936,7 +9799,7 @@ function reducer$5(state = initialState$5, action) {
             return Object.assign(Object.assign({}, state), { selected: undefined });
         }
         case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$5;
+            return initialState$4;
         }
     }
     return state;
@@ -8946,11 +9809,11 @@ const getSelectedPaymentType = (state) => state.selected;
 
 function getReducers$1() {
     return {
-        steps: loaderReducer(CHECKOUT_DETAILS, reducer$3),
-        cardTypes: reducer$2,
-        addressVerification: reducer$1,
-        paymentTypes: reducer$5,
-        orderType: reducer$4,
+        steps: loaderReducer(CHECKOUT_DETAILS, reducer$2),
+        cardTypes: reducer$1,
+        addressVerification: reducer,
+        paymentTypes: reducer$4,
+        orderType: reducer$3,
     };
 }
 const reducerToken$1 = new InjectionToken('CheckoutReducers');
@@ -8995,7 +9858,7 @@ CheckoutModule.decorators = [
 const getDeliveryAddressSelector = (state) => state.address;
 const ɵ0$c = getDeliveryAddressSelector;
 const getDeliveryModeSelector = (state) => state.deliveryMode;
-const ɵ1$8 = getDeliveryModeSelector;
+const ɵ1$7 = getDeliveryModeSelector;
 const getPaymentDetailsSelector = (state) => state.paymentDetails;
 const ɵ2$4 = getPaymentDetailsSelector;
 const getOrderDetailsSelector = (state) => state.orderDetails;
@@ -9042,10 +9905,10 @@ const getAddressVerificationResults$1 = createSelector(getAddressVerificationRes
 const ɵ0$e = (state) => state.cardTypes;
 const getCardTypesState = createSelector(getCheckoutState, ɵ0$e);
 const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-const ɵ1$9 = (entites) => {
+const ɵ1$8 = (entites) => {
     return Object.keys(entites).map((code) => entites[code]);
 };
-const getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$9);
+const getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$8);
 
 const getSelectedOrderTypeSelector = (state) => state.selected;
 const ɵ0$f = (state) => state.orderType;
@@ -9055,10 +9918,10 @@ const getSelectedOrderType = createSelector(getOrderTypesState, getSelectedOrder
 const ɵ0$g = (state) => state.paymentTypes;
 const getPaymentTypesState = createSelector(getCheckoutState, ɵ0$g);
 const getPaymentTypesEntites$1 = createSelector(getPaymentTypesState, getPaymentTypesEntites);
-const ɵ1$a = (entites) => {
+const ɵ1$9 = (entites) => {
     return Object.keys(entites).map((code) => entites[code]);
 };
-const getAllPaymentTypes = createSelector(getPaymentTypesEntites$1, ɵ1$a);
+const getAllPaymentTypes = createSelector(getPaymentTypesEntites$1, ɵ1$9);
 const getSelectedPaymentType$1 = createSelector(getPaymentTypesState, getSelectedPaymentType);
 
 var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -9069,7 +9932,7 @@ var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
     getCardTypesState: getCardTypesState,
     getCardTypesEntites: getCardTypesEntites$1,
     getAllCardTypes: getAllCardTypes,
-    ɵ1: ɵ1$9,
+    ɵ1: ɵ1$8,
     getCheckoutState: getCheckoutState,
     getCheckoutStepsState: getCheckoutStepsState,
     getCheckoutSteps: getCheckoutSteps,
@@ -9103,10 +9966,10 @@ var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
 });
 
 class CheckoutCostCenterService {
-    constructor(checkoutStore, authService, activeCartService) {
+    constructor(checkoutStore, activeCartService, userIdService) {
         this.checkoutStore = checkoutStore;
-        this.authService = authService;
         this.activeCartService = activeCartService;
+        this.userIdService = userIdService;
     }
     /**
      * Set cost center to cart
@@ -9118,7 +9981,7 @@ class CheckoutCostCenterService {
             .getActiveCartId()
             .pipe(take(1))
             .subscribe((activeCartId) => (cartId = activeCartId));
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
                 this.checkoutStore.dispatch(new SetCostCenter({
                     userId: userId,
@@ -9144,7 +10007,7 @@ class CheckoutCostCenterService {
         }));
     }
 }
-CheckoutCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
+CheckoutCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(ɵɵinject(Store), ɵɵinject(ActiveCartService), ɵɵinject(UserIdService)); }, token: CheckoutCostCenterService, providedIn: "root" });
 CheckoutCostCenterService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -9152,15 +10015,15 @@ CheckoutCostCenterService.decorators = [
 ];
 CheckoutCostCenterService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
+    { type: ActiveCartService },
+    { type: UserIdService }
 ];
 
 class CheckoutDeliveryService {
-    constructor(checkoutStore, authService, activeCartService) {
+    constructor(checkoutStore, activeCartService, userIdService) {
         this.checkoutStore = checkoutStore;
-        this.authService = authService;
         this.activeCartService = activeCartService;
+        this.userIdService = userIdService;
     }
     /**
      * Get supported delivery modes
@@ -9245,8 +10108,8 @@ class CheckoutDeliveryService {
     createAndSetAddress(address) {
         if (this.actionAllowed()) {
             let userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
@@ -9269,8 +10132,8 @@ class CheckoutDeliveryService {
     loadSupportedDeliveryModes() {
         if (this.actionAllowed()) {
             let userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
@@ -9293,8 +10156,8 @@ class CheckoutDeliveryService {
     setDeliveryMode(mode) {
         if (this.actionAllowed()) {
             let userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
@@ -9318,8 +10181,8 @@ class CheckoutDeliveryService {
     verifyAddress(address) {
         if (this.actionAllowed()) {
             let userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             if (userId) {
@@ -9337,8 +10200,8 @@ class CheckoutDeliveryService {
     setDeliveryAddress(address) {
         if (this.actionAllowed()) {
             let userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
@@ -9366,8 +10229,8 @@ class CheckoutDeliveryService {
      */
     clearCheckoutDeliveryAddress() {
         let userId;
-        this.authService
-            .getOccUserId()
+        this.userIdService
+            .getUserId()
             .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         let cartId;
@@ -9387,8 +10250,8 @@ class CheckoutDeliveryService {
      */
     clearCheckoutDeliveryMode() {
         let userId;
-        this.authService
-            .getOccUserId()
+        this.userIdService
+            .getUserId()
             .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         let cartId;
@@ -9413,15 +10276,15 @@ class CheckoutDeliveryService {
     }
     actionAllowed() {
         let userId;
-        this.authService
-            .getOccUserId()
+        this.userIdService
+            .getUserId()
             .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
     }
 }
-CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+CheckoutDeliveryService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(ActiveCartService), ɵɵinject(UserIdService)); }, token: CheckoutDeliveryService, providedIn: "root" });
 CheckoutDeliveryService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -9429,15 +10292,15 @@ CheckoutDeliveryService.decorators = [
 ];
 CheckoutDeliveryService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
+    { type: ActiveCartService },
+    { type: UserIdService }
 ];
 
 class CheckoutPaymentService {
-    constructor(checkoutStore, authService, activeCartService) {
+    constructor(checkoutStore, activeCartService, userIdService) {
         this.checkoutStore = checkoutStore;
-        this.authService = authService;
         this.activeCartService = activeCartService;
+        this.userIdService = userIdService;
     }
     /**
      * Get card types
@@ -9476,8 +10339,8 @@ class CheckoutPaymentService {
     createPaymentDetails(paymentDetails) {
         if (this.actionAllowed()) {
             let userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
@@ -9501,8 +10364,8 @@ class CheckoutPaymentService {
     setPaymentDetails(paymentDetails) {
         if (this.actionAllowed()) {
             let userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cart;
@@ -9527,15 +10390,15 @@ class CheckoutPaymentService {
     }
     actionAllowed() {
         let userId;
-        this.authService
-            .getOccUserId()
+        this.userIdService
+            .getUserId()
             .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
     }
 }
-CheckoutPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
+CheckoutPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(ActiveCartService), ɵɵinject(UserIdService)); }, token: CheckoutPaymentService, providedIn: "root" });
 CheckoutPaymentService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -9543,14 +10406,14 @@ CheckoutPaymentService.decorators = [
 ];
 CheckoutPaymentService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
+    { type: ActiveCartService },
+    { type: UserIdService }
 ];
 
 class CheckoutService {
-    constructor(checkoutStore, authService, activeCartService) {
+    constructor(checkoutStore, userIdService, activeCartService) {
         this.checkoutStore = checkoutStore;
-        this.authService = authService;
+        this.userIdService = userIdService;
         this.activeCartService = activeCartService;
     }
     /**
@@ -9559,8 +10422,8 @@ class CheckoutService {
     placeOrder(termsChecked) {
         if (this.actionAllowed()) {
             let userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe((occUserId) => (userId = occUserId))
                 .unsubscribe();
             let cartId;
@@ -9586,7 +10449,7 @@ class CheckoutService {
             .getActiveCartId()
             .pipe(take(1))
             .subscribe((activeCartId) => (cartId = activeCartId));
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (Boolean(cartId) &&
                 Boolean(userId) &&
                 userId !== OCC_USER_ID_ANONYMOUS) {
@@ -9642,8 +10505,8 @@ class CheckoutService {
      */
     loadCheckoutDetails(cartId) {
         let userId;
-        this.authService
-            .getOccUserId()
+        this.userIdService
+            .getUserId()
             .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         if (userId) {
@@ -9680,15 +10543,15 @@ class CheckoutService {
     }
     actionAllowed() {
         let userId;
-        this.authService
-            .getOccUserId()
+        this.userIdService
+            .getUserId()
             .subscribe((occUserId) => (userId = occUserId))
             .unsubscribe();
         return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
             this.activeCartService.isGuestCart());
     }
 }
-CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
 CheckoutService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -9696,15 +10559,15 @@ CheckoutService.decorators = [
 ];
 CheckoutService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
+    { type: UserIdService },
     { type: ActiveCartService }
 ];
 
 class PaymentTypeService {
-    constructor(checkoutStore, authService, activeCartService) {
+    constructor(checkoutStore, activeCartService, userIdService) {
         this.checkoutStore = checkoutStore;
-        this.authService = authService;
         this.activeCartService = activeCartService;
+        this.userIdService = userIdService;
     }
     /**
      * Get payment types
@@ -9733,7 +10596,7 @@ class PaymentTypeService {
             .getActiveCartId()
             .pipe(take(1))
             .subscribe((activeCartId) => (cartId = activeCartId));
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
                 this.checkoutStore.dispatch(new SetPaymentType({
                     userId: userId,
@@ -9780,7 +10643,7 @@ class PaymentTypeService {
         }), map(([_, po]) => po));
     }
 }
-PaymentTypeService.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
+PaymentTypeService.ɵprov = ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(ɵɵinject(Store), ɵɵinject(ActiveCartService), ɵɵinject(UserIdService)); }, token: PaymentTypeService, providedIn: "root" });
 PaymentTypeService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -9788,8 +10651,8 @@ PaymentTypeService.decorators = [
 ];
 PaymentTypeService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
+    { type: ActiveCartService },
+    { type: UserIdService }
 ];
 
 class OccCheckoutReplenishmentOrderAdapter {
@@ -12609,9 +13472,6 @@ JavaRegExpConverter.decorators = [
     { type: Injectable, args: [{ providedIn: 'root' },] }
 ];
 
-const CONFIG_INITIALIZER = new InjectionToken('ConfigInitializer');
-const CONFIG_INITIALIZER_FORROOT_GUARD = new InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
-
 /**
  * The url of the server request when running SSR
  * */
@@ -14264,7 +15124,7 @@ AnonymousConsentsInterceptor.ctorParameters = () => [
     { type: AnonymousConsentsConfig }
 ];
 
-const interceptors$1 = [
+const interceptors$2 = [
     {
         provide: HTTP_INTERCEPTORS,
         useExisting: AnonymousConsentsInterceptor,
@@ -14272,76 +15132,24 @@ const interceptors$1 = [
     },
 ];
 
-class StatePersistenceService {
-    constructor(winRef) {
-        this.winRef = winRef;
-    }
-    /**
-     * Helper to synchronize state to more persistent storage (localStorage, sessionStorage).
-     * It is context aware, so you can keep different state for te same feature based on specified context.
-     *
-     * Eg. cart is valid only under the same base site. So you want to synchronize cart only with the same base site.
-     * Usage for that case: `syncWithStorage({ key: 'cart', state$: activeCartSelector$, context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]), onRead: (state) => setCorrectStateInStore(state) })`.
-     * Active cart for the `electronics` base site will be stored under `spartacus⚿electronics⚿cart` and for apparel under `spartacus⚿apparel⚿cart`.
-     *
-     * On each context change onRead function will be executed with state from storage provided as a parameter.
-     *
-     * Omitting context$ will trigger onRead only once at initialization.
-     *
-     * @param key Key to use in storage for the synchronized state. Should be unique for each feature.
-     * @param state$ State to be saved and later restored.
-     * @param context$ Context for state
-     * @param storageType Storage type to be used to persist state
-     * @param onRead Function to be executed on each storage read after context change
-     *
-     * @returns Subscriptions for reading/writing in storage on context/state change
-     */
-    syncWithStorage({ key, state$, context$ = of(''), storageType = StorageSyncType.LOCAL_STORAGE, onRead = () => { }, }) {
-        const storage = getStorage(storageType, this.winRef);
-        const subscriptions = new Subscription();
-        // Do not change order of subscription! Read should happen before write on context change.
-        subscriptions.add(context$
-            .pipe(map((context) => {
-            return readFromStorage(storage, this.generateKeyWithContext(context, key));
-        }), tap((state) => onRead(state)))
-            .subscribe());
-        subscriptions.add(state$.pipe(withLatestFrom(context$)).subscribe(([state, context]) => {
-            persistToStorage(this.generateKeyWithContext(context, key), state, storage);
-        }));
-        return subscriptions;
-    }
-    generateKeyWithContext(context, key) {
-        return `spartacus⚿${[].concat(context).join('⚿')}⚿${key}`;
-    }
-}
-StatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
-StatePersistenceService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-StatePersistenceService.ctorParameters = () => [
-    { type: WindowRef }
-];
-
 const getUserState = createFeatureSelector(USER_FEATURE);
 
 const ɵ0$h = (state) => state.billingCountries;
 const getBillingCountriesState = createSelector(getUserState, ɵ0$h);
-const ɵ1$b = (state) => state.entities;
-const getBillingCountriesEntites = createSelector(getBillingCountriesState, ɵ1$b);
+const ɵ1$a = (state) => state.entities;
+const getBillingCountriesEntites = createSelector(getBillingCountriesState, ɵ1$a);
 const ɵ2$5 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
 const getAllBillingCountries = createSelector(getBillingCountriesEntites, ɵ2$5);
 
 const ɵ0$i = (state) => state.consignmentTracking;
 const getConsignmentTrackingState = createSelector(getUserState, ɵ0$i);
-const ɵ1$c = (state) => state.tracking;
-const getConsignmentTracking = createSelector(getConsignmentTrackingState, ɵ1$c);
+const ɵ1$b = (state) => state.tracking;
+const getConsignmentTracking = createSelector(getConsignmentTrackingState, ɵ1$b);
 
 const ɵ0$j = (state) => state.customerCoupons;
 const getCustomerCouponsState = createSelector(getUserState, ɵ0$j);
-const ɵ1$d = (state) => loaderSuccessSelector(state);
-const getCustomerCouponsLoaded = createSelector(getCustomerCouponsState, ɵ1$d);
+const ɵ1$c = (state) => loaderSuccessSelector(state);
+const getCustomerCouponsLoaded = createSelector(getCustomerCouponsState, ɵ1$c);
 const ɵ2$6 = (state) => loaderLoadingSelector(state);
 const getCustomerCouponsLoading = createSelector(getCustomerCouponsState, ɵ2$6);
 const ɵ3$4 = (state) => loaderValueSelector(state);
@@ -14349,16 +15157,16 @@ const getCustomerCoupons = createSelector(getCustomerCouponsState, ɵ3$4);
 
 const ɵ0$k = (state) => state.countries;
 const getDeliveryCountriesState = createSelector(getUserState, ɵ0$k);
-const ɵ1$e = (state) => state.entities;
-const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, ɵ1$e);
+const ɵ1$d = (state) => state.entities;
+const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, ɵ1$d);
 const ɵ2$7 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
 const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, ɵ2$7);
 const countrySelectorFactory = (isocode) => createSelector(getDeliveryCountriesEntites, (entities) => Object.keys(entities).length !== 0 ? entities[isocode] : null);
 
 const ɵ0$l = (state) => state.notificationPreferences;
 const getPreferencesLoaderState = createSelector(getUserState, ɵ0$l);
-const ɵ1$f = (state) => loaderValueSelector(state);
-const getPreferences = createSelector(getPreferencesLoaderState, ɵ1$f);
+const ɵ1$e = (state) => loaderValueSelector(state);
+const getPreferences = createSelector(getPreferencesLoaderState, ɵ1$e);
 const ɵ2$8 = (state) => loaderValueSelector(state).filter((p) => p.enabled);
 const getEnabledPreferences = createSelector(getPreferencesLoaderState, ɵ2$8);
 const ɵ3$5 = (state) => loaderLoadingSelector(state);
@@ -14366,13 +15174,13 @@ const getPreferencesLoading = createSelector(getPreferencesLoaderState, ɵ3$5);
 
 const ɵ0$m = (state) => state.order;
 const getOrderState = createSelector(getUserState, ɵ0$m);
-const ɵ1$g = (state) => loaderValueSelector(state);
-const getOrderDetails = createSelector(getOrderState, ɵ1$g);
+const ɵ1$f = (state) => loaderValueSelector(state);
+const getOrderDetails = createSelector(getOrderState, ɵ1$f);
 
 const ɵ0$n = (state) => state.orderReturn;
 const getOrderReturnRequestState = createSelector(getUserState, ɵ0$n);
-const ɵ1$h = (state) => loaderValueSelector(state);
-const getOrderReturnRequest = createSelector(getOrderReturnRequestState, ɵ1$h);
+const ɵ1$g = (state) => loaderValueSelector(state);
+const getOrderReturnRequest = createSelector(getOrderReturnRequestState, ɵ1$g);
 const ɵ2$9 = (state) => loaderLoadingSelector(state);
 const getOrderReturnRequestLoading = createSelector(getOrderReturnRequestState, ɵ2$9);
 const ɵ3$6 = (state) => loaderSuccessSelector(state) &&
@@ -14385,8 +15193,8 @@ const getOrderReturnRequestList = createSelector(getOrderReturnRequestListState,
 
 const ɵ0$o = (state) => state.payments;
 const getPaymentMethodsState = createSelector(getUserState, ɵ0$o);
-const ɵ1$i = (state) => loaderValueSelector(state);
-const getPaymentMethods = createSelector(getPaymentMethodsState, ɵ1$i);
+const ɵ1$h = (state) => loaderValueSelector(state);
+const getPaymentMethods = createSelector(getPaymentMethodsState, ɵ1$h);
 const ɵ2$a = (state) => loaderLoadingSelector(state);
 const getPaymentMethodsLoading = createSelector(getPaymentMethodsState, ɵ2$a);
 const ɵ3$7 = (state) => loaderSuccessSelector(state) &&
@@ -14395,17 +15203,17 @@ const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, ɵ
 
 const ɵ0$p = (state) => state.productInterests;
 const getInterestsState = createSelector(getUserState, ɵ0$p);
-const ɵ1$j = (state) => loaderValueSelector(state);
-const getInterests = createSelector(getInterestsState, ɵ1$j);
+const ɵ1$i = (state) => loaderValueSelector(state);
+const getInterests = createSelector(getInterestsState, ɵ1$i);
 const ɵ2$b = (state) => loaderLoadingSelector(state);
 const getInterestsLoading = createSelector(getInterestsState, ɵ2$b);
 
 const ɵ0$q = (state) => state.regions;
 const getRegionsLoaderState = createSelector(getUserState, ɵ0$q);
-const ɵ1$k = (state) => {
+const ɵ1$j = (state) => {
     return loaderValueSelector(state).entities;
 };
-const getAllRegions = createSelector(getRegionsLoaderState, ɵ1$k);
+const getAllRegions = createSelector(getRegionsLoaderState, ɵ1$j);
 const ɵ2$c = (state) => ({
     loaded: loaderSuccessSelector(state),
     loading: loaderLoadingSelector(state),
@@ -14422,8 +15230,8 @@ const getRegionsLoaded = createSelector(getRegionsLoaderState, ɵ5$2);
 
 const ɵ0$r = (state) => state.replenishmentOrder;
 const getReplenishmentOrderState = createSelector(getUserState, ɵ0$r);
-const ɵ1$l = (state) => loaderValueSelector(state);
-const getReplenishmentOrderDetailsValue = createSelector(getReplenishmentOrderState, ɵ1$l);
+const ɵ1$k = (state) => loaderValueSelector(state);
+const getReplenishmentOrderDetailsValue = createSelector(getReplenishmentOrderState, ɵ1$k);
 const ɵ2$d = (state) => loaderLoadingSelector(state);
 const getReplenishmentOrderDetailsLoading = createSelector(getReplenishmentOrderState, ɵ2$d);
 const ɵ3$9 = (state) => loaderSuccessSelector(state);
@@ -14436,16 +15244,16 @@ const getResetPassword = createSelector(getUserState, ɵ0$s);
 
 const ɵ0$t = (state) => state.titles;
 const getTitlesState = createSelector(getUserState, ɵ0$t);
-const ɵ1$m = (state) => state.entities;
-const getTitlesEntites = createSelector(getTitlesState, ɵ1$m);
+const ɵ1$l = (state) => state.entities;
+const getTitlesEntites = createSelector(getTitlesState, ɵ1$l);
 const ɵ2$e = (entites) => Object.keys(entites).map((code) => entites[code]);
 const getAllTitles = createSelector(getTitlesEntites, ɵ2$e);
 const titleSelectorFactory = (code) => createSelector(getTitlesEntites, (entities) => Object.keys(entities).length !== 0 ? entities[code] : null);
 
 const ɵ0$u = (state) => state.addresses;
 const getAddressesLoaderState = createSelector(getUserState, ɵ0$u);
-const ɵ1$n = (state) => loaderValueSelector(state);
-const getAddresses = createSelector(getAddressesLoaderState, ɵ1$n);
+const ɵ1$m = (state) => loaderValueSelector(state);
+const getAddresses = createSelector(getAddressesLoaderState, ɵ1$m);
 const ɵ2$f = (state) => loaderLoadingSelector(state);
 const getAddressesLoading = createSelector(getAddressesLoaderState, ɵ2$f);
 const ɵ3$a = (state) => loaderSuccessSelector(state) &&
@@ -14462,25 +15270,25 @@ const getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
 
 const ɵ0$w = (state) => state.costCenters;
 const getCostCentersState = createSelector(getUserState, ɵ0$w);
-const ɵ1$o = (state) => loaderValueSelector(state);
-const getCostCenters = createSelector(getCostCentersState, ɵ1$o);
+const ɵ1$n = (state) => loaderValueSelector(state);
+const getCostCenters = createSelector(getCostCentersState, ɵ1$n);
 
 const ɵ0$x = (state) => state.account;
 const getDetailsState = createSelector(getUserState, ɵ0$x);
-const ɵ1$p = (state) => state.details;
-const getDetails = createSelector(getDetailsState, ɵ1$p);
+const ɵ1$o = (state) => state.details;
+const getDetails = createSelector(getDetailsState, ɵ1$o);
 
 const ɵ0$y = (state) => state.orders;
 const getOrdersState = createSelector(getUserState, ɵ0$y);
-const ɵ1$q = (state) => loaderSuccessSelector(state);
-const getOrdersLoaded = createSelector(getOrdersState, ɵ1$q);
+const ɵ1$p = (state) => loaderSuccessSelector(state);
+const getOrdersLoaded = createSelector(getOrdersState, ɵ1$p);
 const ɵ2$g = (state) => loaderValueSelector(state);
 const getOrders = createSelector(getOrdersState, ɵ2$g);
 
 const ɵ0$z = (state) => state.replenishmentOrders;
 const getReplenishmentOrdersState = createSelector(getUserState, ɵ0$z);
-const ɵ1$r = (state) => loaderValueSelector(state);
-const getReplenishmentOrders = createSelector(getReplenishmentOrdersState, ɵ1$r);
+const ɵ1$q = (state) => loaderValueSelector(state);
+const getReplenishmentOrders = createSelector(getReplenishmentOrdersState, ɵ1$q);
 const ɵ2$h = (state) => loaderLoadingSelector(state);
 const getReplenishmentOrdersLoading = createSelector(getReplenishmentOrdersState, ɵ2$h);
 const ɵ3$b = (state) => loaderErrorSelector(state);
@@ -14494,7 +15302,7 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getBillingCountriesEntites: getBillingCountriesEntites,
     getAllBillingCountries: getAllBillingCountries,
     ɵ0: ɵ0$h,
-    ɵ1: ɵ1$b,
+    ɵ1: ɵ1$a,
     ɵ2: ɵ2$5,
     getConsignmentTrackingState: getConsignmentTrackingState,
     getConsignmentTracking: getConsignmentTracking,
@@ -14570,15 +15378,16 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
 });
 
 class UserConsentService {
-    constructor(store, authService) {
+    constructor(store, userIdService, authService) {
         this.store = store;
+        this.userIdService = userIdService;
         this.authService = authService;
     }
     /**
      * Retrieves all consents.
      */
     loadConsents() {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadUserConsents(userId));
         });
     }
@@ -14659,7 +15468,7 @@ class UserConsentService {
      * @param consentTemplateVersion a template version for which to give a consent
      */
     giveConsent(consentTemplateId, consentTemplateVersion) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new GiveUserConsent({
                 userId,
                 consentTemplateId,
@@ -14696,7 +15505,7 @@ class UserConsentService {
      * @param consentCode for which to withdraw the consent
      */
     withdrawConsent(consentCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new WithdrawUserConsent({
                 userId,
                 consentCode,
@@ -14748,7 +15557,7 @@ class UserConsentService {
         return updatedTemplateList;
     }
 }
-UserConsentService.ɵprov = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
+UserConsentService.ɵprov = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
 UserConsentService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -14756,6 +15565,7 @@ UserConsentService.decorators = [
 ];
 UserConsentService.ctorParameters = () => [
     { type: Store },
+    { type: UserIdService },
     { type: AuthService }
 ];
 
@@ -14784,13 +15594,14 @@ AnonymousConsentTemplatesConnector.ctorParameters = () => [
 ];
 
 class AnonymousConsentsEffects {
-    constructor(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService) {
+    constructor(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService, userIdService) {
         this.actions$ = actions$;
         this.anonymousConsentTemplatesConnector = anonymousConsentTemplatesConnector;
         this.authService = authService;
         this.anonymousConsentsConfig = anonymousConsentsConfig;
         this.anonymousConsentService = anonymousConsentService;
         this.userConsentService = userConsentService;
+        this.userIdService = userIdService;
         this.checkConsentVersions$ = this.actions$.pipe(ofType(ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS), withLatestFrom(this.anonymousConsentService.getConsents()), concatMap(([_, currentConsents]) => {
             // TODO{#8158} - remove this if block
             if (!this.anonymousConsentTemplatesConnector.loadAnonymousConsents()) {
@@ -14825,7 +15636,8 @@ class AnonymousConsentsEffects {
                 new ToggleAnonymousConsentTemplatesUpdated(updated),
             ];
         }), catchError((error) => of(new LoadAnonymousConsentTemplatesFail(normalizeHttpError(error)))))));
-        this.transferAnonymousConsentsToUser$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), filter(() => Boolean(this.anonymousConsentsConfig.anonymousConsents)), withLatestFrom(this.actions$.pipe(ofType(REGISTER_USER_SUCCESS))), filter(([, registerAction]) => Boolean(registerAction)), switchMap(() => this.anonymousConsentService.getConsents().pipe(withLatestFrom(this.authService.getOccUserId(), this.anonymousConsentService.getTemplates(), this.authService.isUserLoggedIn()), filter(([, , , loggedIn]) => loggedIn), concatMap(([consents, userId, templates, _loggedIn]) => {
+        // TODO(#9416): This won't work with flow different than `Resource Owner Password Flow` which involves redirect (maybe in popup in will work)
+        this.transferAnonymousConsentsToUser$ = this.actions$.pipe(ofType(LOGIN), filter(() => Boolean(this.anonymousConsentsConfig.anonymousConsents)), withLatestFrom(this.actions$.pipe(ofType(REGISTER_USER_SUCCESS))), filter(([, registerAction]) => Boolean(registerAction)), switchMap(() => this.anonymousConsentService.getConsents().pipe(withLatestFrom(this.userIdService.getUserId(), this.anonymousConsentService.getTemplates(), this.authService.isUserLoggedIn()), filter(([, , , loggedIn]) => loggedIn), concatMap(([consents, userId, templates, _loggedIn]) => {
             const actions = [];
             for (const consent of consents) {
                 if (this.anonymousConsentService.isConsentGiven(consent) &&
@@ -14849,9 +15661,9 @@ class AnonymousConsentsEffects {
             }
             return EMPTY;
         }))));
-        this.giveRequiredConsentsToUser$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), filter((action) => Boolean(this.anonymousConsentsConfig.anonymousConsents) &&
+        this.giveRequiredConsentsToUser$ = this.actions$.pipe(ofType(LOGIN), filter((action) => Boolean(this.anonymousConsentsConfig.anonymousConsents) &&
             Boolean(this.anonymousConsentsConfig.anonymousConsents.requiredConsents) &&
-            Boolean(action)), concatMap(() => this.userConsentService.getConsentsResultSuccess().pipe(withLatestFrom(this.authService.getOccUserId(), this.userConsentService.getConsents(), this.authService.isUserLoggedIn()), filter(([, , , loggedIn]) => loggedIn), tap(([loaded, _userId, _templates, _loggedIn]) => {
+            Boolean(action)), concatMap(() => this.userConsentService.getConsentsResultSuccess().pipe(withLatestFrom(this.userIdService.getUserId(), this.userConsentService.getConsents(), this.authService.isUserLoggedIn()), filter(([, , , loggedIn]) => loggedIn), tap(([loaded, _userId, _templates, _loggedIn]) => {
             if (!loaded) {
                 this.userConsentService.loadConsents();
             }
@@ -14903,7 +15715,8 @@ AnonymousConsentsEffects.ctorParameters = () => [
     { type: AuthService },
     { type: AnonymousConsentsConfig },
     { type: AnonymousConsentsService },
-    { type: UserConsentService }
+    { type: UserConsentService },
+    { type: UserIdService }
 ];
 __decorate([
     Effect()
@@ -15017,147 +15830,6 @@ function defaultSiteContextConfigFactory() {
         },
     };
 }
-
-/**
- * Provides support for CONFIG_INITIALIZERS
- */
-class ConfigInitializerService {
-    constructor(config, initializerGuard, rootConfig) {
-        this.config = config;
-        this.initializerGuard = initializerGuard;
-        this.rootConfig = rootConfig;
-        this.ongoingScopes$ = new BehaviorSubject(undefined);
-    }
-    /**
-     * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
-     */
-    get isStable() {
-        return (!this.initializerGuard ||
-            (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
-    }
-    /**
-     * Recommended way to get config for code that can run before app will finish
-     * initialization (APP_INITIALIZERS, selected service constructors)
-     *
-     * Used without parameters waits for the whole config to become stable
-     *
-     * Parameters allow to describe which part of the config should be stable using
-     * string describing config part, e.g.:
-     * 'siteContext', 'siteContext.language', etc.
-     *
-     * @param scopes String describing parts of the config we want to be sure are stable
-     */
-    getStableConfig(...scopes) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.isStable) {
-                return this.config;
-            }
-            return this.ongoingScopes$
-                .pipe(filter((ongoingScopes) => ongoingScopes && this.areReady(scopes, ongoingScopes)), take(1), mapTo(this.config))
-                .toPromise();
-        });
-    }
-    /**
-     * Removes provided scopes from currently ongoingScopes
-     *
-     * @param scopes
-     */
-    finishScopes(scopes) {
-        const newScopes = [...this.ongoingScopes$.value];
-        for (const scope of scopes) {
-            newScopes.splice(newScopes.indexOf(scope), 1);
-        }
-        this.ongoingScopes$.next(newScopes);
-    }
-    /**
-     * Return true if provided scopes are not part of ongoingScopes
-     *
-     * @param scopes
-     * @param ongoingScopes
-     */
-    areReady(scopes, ongoingScopes) {
-        if (!scopes.length) {
-            return !ongoingScopes.length;
-        }
-        for (const scope of scopes) {
-            for (const ongoingScope of ongoingScopes) {
-                if (this.scopesOverlap(scope, ongoingScope)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    /**
-     * Check if two scopes overlap.
-     *
-     * Example of scopes that overlap:
-     * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
-     *
-     * Example of scopes that do not overlap:
-     * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
-     *
-     * @param a ScopeA
-     * @param b ScopeB
-     */
-    scopesOverlap(a, b) {
-        if (b.length > a.length) {
-            [a, b] = [b, a];
-        }
-        return a.startsWith(b) && (a[b.length] || '.') === '.';
-    }
-    /**
-     * @internal
-     *
-     * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
-     *
-     */
-    initialize(initializers) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.ongoingScopes$.value) {
-                // guard for double initialization
-                return;
-            }
-            const ongoingScopes = [];
-            const asyncConfigs = [];
-            for (const initializer of initializers || []) {
-                if (!initializer) {
-                    continue;
-                }
-                if (!initializer.scopes || !initializer.scopes.length) {
-                    throw new Error('CONFIG_INITIALIZER should provide scope!');
-                }
-                if (isDevMode() && !this.areReady(initializer.scopes, ongoingScopes)) {
-                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
-                }
-                ongoingScopes.push(...initializer.scopes);
-                asyncConfigs.push((() => __awaiter(this, void 0, void 0, function* () {
-                    const initializerConfig = yield initializer.configFactory();
-                    // contribute configuration to rootConfig
-                    deepMerge(this.rootConfig, initializerConfig);
-                    // contribute configuration to global config
-                    deepMerge(this.config, initializerConfig);
-                    this.finishScopes(initializer.scopes);
-                }))());
-            }
-            this.ongoingScopes$.next(ongoingScopes);
-            if (asyncConfigs.length) {
-                yield Promise.all(asyncConfigs);
-            }
-        });
-    }
-}
-ConfigInitializerService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(ɵɵinject(Config), ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
-ConfigInitializerService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-ConfigInitializerService.ctorParameters = () => [
-    { type: undefined, decorators: [{ type: Inject, args: [Config,] }] },
-    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] },
-    { type: undefined, decorators: [{ type: Inject, args: [RootConfig,] }] }
-];
 
 class SiteContextParamsService {
     constructor(config, injector, serviceMap) {
@@ -15546,11 +16218,11 @@ const effects$3 = [
     BaseSiteEffects,
 ];
 
-const initialState$6 = {
+const initialState$5 = {
     details: {},
     activeSite: '',
 };
-function reducer$6(state = initialState$6, action) {
+function reducer$5(state = initialState$5, action) {
     switch (action.type) {
         case LOAD_BASE_SITE_SUCCESS: {
             return Object.assign(Object.assign({}, state), { details: action.payload });
@@ -15562,11 +16234,11 @@ function reducer$6(state = initialState$6, action) {
     return state;
 }
 
-const initialState$7 = {
+const initialState$6 = {
     entities: null,
     activeCurrency: null,
 };
-function reducer$7(state = initialState$7, action) {
+function reducer$6(state = initialState$6, action) {
     switch (action.type) {
         case LOAD_CURRENCIES_SUCCESS: {
             const currencies = action.payload;
@@ -15583,11 +16255,11 @@ function reducer$7(state = initialState$7, action) {
     return state;
 }
 
-const initialState$8 = {
+const initialState$7 = {
     entities: null,
     activeLanguage: null,
 };
-function reducer$8(state = initialState$8, action) {
+function reducer$7(state = initialState$7, action) {
     switch (action.type) {
         case LOAD_LANGUAGES_SUCCESS: {
             const languages = action.payload;
@@ -15606,9 +16278,9 @@ function reducer$8(state = initialState$8, action) {
 
 function getReducers$2() {
     return {
-        languages: reducer$8,
-        currencies: reducer$7,
-        baseSite: reducer$6,
+        languages: reducer$7,
+        currencies: reducer$6,
+        baseSite: reducer$5,
     };
 }
 const reducerToken$2 = new InjectionToken('SiteContextReducers');
@@ -15665,8 +16337,8 @@ SiteContextModule.decorators = [
             },] }
 ];
 
-const initialState$9 = false;
-function reducer$9(state = initialState$9, action) {
+const initialState$8 = false;
+function reducer$8(state = initialState$8, action) {
     switch (action.type) {
         case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
             return action.dismissed;
@@ -15675,8 +16347,8 @@ function reducer$9(state = initialState$9, action) {
     return state;
 }
 
-const initialState$a = false;
-function reducer$a(state = initialState$a, action) {
+const initialState$9 = false;
+function reducer$9(state = initialState$9, action) {
     switch (action.type) {
         case TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: {
             return action.updated;
@@ -15685,7 +16357,7 @@ function reducer$a(state = initialState$a, action) {
     return state;
 }
 
-const initialState$b = [];
+const initialState$a = [];
 function toggleConsentStatus(consents, templateCode, status) {
     if (!consents) {
         return [];
@@ -15697,7 +16369,7 @@ function toggleConsentStatus(consents, templateCode, status) {
         return consent;
     });
 }
-function reducer$b(state = initialState$b, action) {
+function reducer$a(state = initialState$a, action) {
     switch (action.type) {
         case GIVE_ANONYMOUS_CONSENT: {
             return toggleConsentStatus(state, action.templateCode, ANONYMOUS_CONSENT_STATUS.GIVEN);
@@ -15715,10 +16387,10 @@ function reducer$b(state = initialState$b, action) {
 function getReducers$3() {
     return {
         templates: loaderReducer(ANONYMOUS_CONSENTS),
-        consents: reducer$b,
+        consents: reducer$a,
         ui: combineReducers({
-            bannerDismissed: reducer$9,
-            updated: reducer$a,
+            bannerDismissed: reducer$8,
+            updated: reducer$9,
         }),
     };
 }
@@ -15736,7 +16408,7 @@ function clearAnonymousConsentTemplates(reducer) {
         return reducer(state, action);
     };
 }
-const metaReducers$1 = [
+const metaReducers = [
     clearAnonymousConsentTemplates,
 ];
 
@@ -15760,7 +16432,7 @@ AnonymousConsentsStoreModule.decorators = [
                     CommonModule,
                     StateModule,
                     StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$3, {
-                        metaReducers: metaReducers$1,
+                        metaReducers,
                     }),
                     EffectsModule.forFeature(effects$2),
                 ],
@@ -15776,7 +16448,7 @@ class AnonymousConsentsModule {
         return {
             ngModule: AnonymousConsentsModule,
             providers: [
-                ...interceptors$1,
+                ...interceptors$2,
                 AnonymousConsentsService,
                 provideDefaultConfig(defaultAnonymousConsentsConfig),
             ],
@@ -15800,26 +16472,338 @@ const defaultAsmConfig = {
     },
 };
 
-const ASM_FEATURE = 'asm';
-const CUSTOMER_SEARCH_DATA = '[asm] Customer search data';
-const CSAGENT_TOKEN_DATA = '[Auth] Customer Support Agent Token Data';
-
-class AsmConnector {
-    constructor(asmAdapter) {
-        this.asmAdapter = asmAdapter;
+/**
+ * Indicates if auth token is for regular user or CS Agent.
+ */
+var TokenTarget;
+(function (TokenTarget) {
+    TokenTarget["CSAgent"] = "CSAgent";
+    TokenTarget["User"] = "User";
+})(TokenTarget || (TokenTarget = {}));
+/**
+ * With AsmAuthStorageService apart from storing the token we also need to store
+ * information for which user is the token (regular user or CS Agent).
+ *
+ * Overrides `AuthStorageService`.
+ */
+class AsmAuthStorageService extends AuthStorageService {
+    constructor() {
+        super(...arguments);
+        this._tokenTarget$ = new BehaviorSubject(TokenTarget.User);
     }
-    customerSearch(options) {
-        return this.asmAdapter.customerSearch(options);
+    /**
+     * Get target user for current auth token.
+     *
+     * @return observable with TokenTarget
+     */
+    getTokenTarget() {
+        return this._tokenTarget$;
+    }
+    /**
+     * Set new token target.
+     *
+     * @param tokenTarget
+     */
+    setTokenTarget(tokenTarget) {
+        this._tokenTarget$.next(tokenTarget);
+    }
+    /**
+     * Get token for previously user session, when it was interrupted by CS agent login.
+     *
+     * @return previously logged in user token.
+     */
+    getEmulatedUserToken() {
+        return this.emulatedUserToken;
+    }
+    /**
+     * Save user token on CS agent login.
+     *
+     * @param token
+     */
+    setEmulatedUserToken(token) {
+        this.emulatedUserToken = token;
+    }
+    /**
+     * Change token target to CS Agent.
+     */
+    switchTokenTargetToCSAgent() {
+        this._tokenTarget$.next(TokenTarget.CSAgent);
+    }
+    /**
+     * Change token target to user.
+     */
+    switchTokenTargetToUser() {
+        this._tokenTarget$.next(TokenTarget.User);
+    }
+    /**
+     * When we start emulation from the UI (not by ASM login) we can't restore user session on cs agent logout.
+     * Only available solution is to drop session we could restore, to avoid account hijack.
+     */
+    clearEmulatedUserToken() {
+        this.emulatedUserToken = undefined;
     }
 }
-AsmConnector.ɵprov = ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
-AsmConnector.decorators = [
+AsmAuthStorageService.ɵprov = ɵɵdefineInjectable({ factory: function AsmAuthStorageService_Factory() { return new AsmAuthStorageService(); }, token: AsmAuthStorageService, providedIn: "root" });
+AsmAuthStorageService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
 ];
-AsmConnector.ctorParameters = () => [
-    { type: AsmAdapter }
+
+class UserService {
+    constructor(store, userIdService) {
+        this.store = store;
+        this.userIdService = userIdService;
+    }
+    /**
+     * Returns a user
+     */
+    get() {
+        return this.store.pipe(select(getDetails), tap((details) => {
+            if (Object.keys(details).length === 0) {
+                this.load();
+            }
+        }));
+    }
+    /**
+     * Loads the user's details
+     */
+    load() {
+        this.userIdService.invokeWithUserId((userId) => {
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new LoadUserDetails(userId));
+            }
+        });
+    }
+    /**
+     * Register a new user
+     *
+     * @param submitFormData as UserRegisterFormData
+     */
+    register(userRegisterFormData) {
+        this.store.dispatch(new RegisterUser(userRegisterFormData));
+    }
+    /**
+     * Register a new user from guest
+     *
+     * @param guid
+     * @param password
+     */
+    registerGuest(guid, password) {
+        this.store.dispatch(new RegisterGuest({ guid, password }));
+    }
+    /**
+     * Returns the register user process loading flag
+     */
+    getRegisterUserResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
+    }
+    /**
+     * Returns the register user process success flag
+     */
+    getRegisterUserResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
+    }
+    /**
+     * Returns the register user process error flag
+     */
+    getRegisterUserResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
+    }
+    /**
+     * Resets the register user process flags
+     */
+    resetRegisterUserProcessState() {
+        return this.store.dispatch(new ResetRegisterUserProcess());
+    }
+    /**
+     * Remove user account, that's also called close user's account
+     */
+    remove() {
+        this.userIdService.invokeWithUserId((userId) => {
+            this.store.dispatch(new RemoveUser(userId));
+        });
+    }
+    /**
+     * Returns the remove user loading flag
+     */
+    getRemoveUserResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+    }
+    /**
+     * Returns the remove user failure outcome.
+     */
+    getRemoveUserResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+    }
+    /**
+     * Returns the remove user process success outcome.
+     */
+    getRemoveUserResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+    }
+    /**
+     * Resets the remove user process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     */
+    resetRemoveUserProcessState() {
+        this.store.dispatch(new RemoveUserReset());
+    }
+    /**
+     * Returns titles.
+     */
+    getTitles() {
+        return this.store.pipe(select(getAllTitles), tap((titles) => {
+            if (Object.keys(titles).length === 0) {
+                this.loadTitles();
+            }
+        }));
+    }
+    /**
+     * Retrieves titles
+     */
+    loadTitles() {
+        this.store.dispatch(new LoadTitles());
+    }
+    /**
+     * Return whether user's password is successfully reset
+     */
+    isPasswordReset() {
+        return this.store.pipe(select(getResetPassword));
+    }
+    /**
+     * Updates the user's details
+     * @param userDetails to be updated
+     */
+    updatePersonalDetails(userDetails) {
+        this.userIdService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdateUserDetails({
+                username: userId,
+                userDetails,
+            }));
+        });
+    }
+    /**
+     * Returns the update user's personal details loading flag
+     */
+    getUpdatePersonalDetailsResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    }
+    /**
+     * Returns the update user's personal details error flag
+     */
+    getUpdatePersonalDetailsResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    }
+    /**
+     * Returns the update user's personal details success flag
+     */
+    getUpdatePersonalDetailsResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    }
+    /**
+     * Resets the update user details processing state
+     */
+    resetUpdatePersonalDetailsProcessingState() {
+        this.store.dispatch(new ResetUpdateUserDetails());
+    }
+    /**
+     * Reset new password.  Part of the forgot password flow.
+     * @param token
+     * @param password
+     */
+    resetPassword(token, password) {
+        this.store.dispatch(new ResetPassword({ token, password }));
+    }
+    /*
+     * Request an email to reset a forgotten password.
+     */
+    requestForgotPasswordEmail(userEmailAddress) {
+        this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
+    }
+    /**
+     * Updates the user's email
+     */
+    updateEmail(password, newUid) {
+        this.userIdService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdateEmailAction({
+                uid: userId,
+                password,
+                newUid,
+            }));
+        });
+    }
+    /**
+     * Returns the update user's email success flag
+     */
+    getUpdateEmailResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+    }
+    /**
+     * Returns the update user's email error flag
+     */
+    getUpdateEmailResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+    }
+    /**
+     * Returns the update user's email loading flag
+     */
+    getUpdateEmailResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+    }
+    /**
+     * Resets the update user's email processing state
+     */
+    resetUpdateEmailResultState() {
+        this.store.dispatch(new ResetUpdateEmailAction());
+    }
+    /**
+     * Updates the password for the user
+     * @param oldPassword the current password that will be changed
+     * @param newPassword the new password
+     */
+    updatePassword(oldPassword, newPassword) {
+        this.userIdService.invokeWithUserId((userId) => {
+            this.store.dispatch(new UpdatePassword({
+                userId,
+                oldPassword,
+                newPassword,
+            }));
+        });
+    }
+    /**
+     * Returns the update password loading flag
+     */
+    getUpdatePasswordResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    }
+    /**
+     * Returns the update password failure outcome.
+     */
+    getUpdatePasswordResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    }
+    /**
+     * Returns the update password process success outcome.
+     */
+    getUpdatePasswordResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    }
+    /**
+     * Resets the update password process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     */
+    resetUpdatePasswordProcessState() {
+        this.store.dispatch(new UpdatePasswordReset());
+    }
+}
+UserService.ɵprov = ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: UserService, providedIn: "root" });
+UserService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+UserService.ctorParameters = () => [
+    { type: Store },
+    { type: UserIdService }
 ];
 
 const ASM_UI_UPDATE = '[Asm] UI Update';
@@ -15829,6 +16813,9 @@ class AsmUiUpdate {
         this.type = ASM_UI_UPDATE;
     }
 }
+
+const ASM_FEATURE = 'asm';
+const CUSTOMER_SEARCH_DATA = '[asm] Customer search data';
 
 const CUSTOMER_SEARCH = '[Asm] Customer Search';
 const CUSTOMER_SEARCH_FAIL = '[Asm] Customer Search Fail';
@@ -15862,30 +16849,10 @@ class CustomerSearchReset extends LoaderResetAction {
     }
 }
 
-const LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN = '[Auth] Load Customer Service Agent Token';
-const LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL = '[Auth] Load Customer Service Agent Token Fail';
-const LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS = '[Auth] Load Customer Service Agent Token Success';
-class LoadCustomerSupportAgentToken extends LoaderLoadAction {
-    constructor(payload) {
-        super(CSAGENT_TOKEN_DATA);
-        this.payload = payload;
-        this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN;
-    }
-}
-class LoadCustomerSupportAgentTokenFail extends LoaderFailAction {
-    constructor(payload) {
-        super(CSAGENT_TOKEN_DATA);
-        this.payload = payload;
-        this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL;
-    }
-}
-class LoadCustomerSupportAgentTokenSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(CSAGENT_TOKEN_DATA);
-        this.payload = payload;
-        this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS;
-    }
-}
+const LOGOUT_CUSTOMER_SUPPORT_AGENT = '[Auth] Logout Customer Support Agent';
+/**
+ * Action dispatched after customer support agent logout. Used to clear store data (ui, search results)
+ */
 class LogoutCustomerSupportAgent {
     constructor() {
         this.type = LOGOUT_CUSTOMER_SUPPORT_AGENT;
@@ -15904,141 +16871,225 @@ var customerGroup_actions = /*#__PURE__*/Object.freeze({
     CustomerSearchFail: CustomerSearchFail,
     CustomerSearchSuccess: CustomerSearchSuccess,
     CustomerSearchReset: CustomerSearchReset,
-    LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN,
-    LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL,
-    LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS,
-    LoadCustomerSupportAgentToken: LoadCustomerSupportAgentToken,
-    LoadCustomerSupportAgentTokenFail: LoadCustomerSupportAgentTokenFail,
-    LoadCustomerSupportAgentTokenSuccess: LoadCustomerSupportAgentTokenSuccess,
+    LOGOUT_CUSTOMER_SUPPORT_AGENT: LOGOUT_CUSTOMER_SUPPORT_AGENT,
     LogoutCustomerSupportAgent: LogoutCustomerSupportAgent
 });
 
-class CustomerEffects {
-    constructor(actions$, asmConnector) {
-        this.actions$ = actions$;
-        this.asmConnector = asmConnector;
-        this.customerSearch$ = this.actions$.pipe(ofType(CUSTOMER_SEARCH), map((action) => action.payload), switchMap((options) => this.asmConnector.customerSearch(options).pipe(map((customerSearchResults) => {
-            return new CustomerSearchSuccess(customerSearchResults);
-        }), catchError((error) => of(new CustomerSearchFail(makeErrorSerializable(error)))))));
+/**
+ * Auth service for CS agent. Useful to login/logout agent, start emulation
+ * or get information about the status of emulation.
+ */
+class CsAgentAuthService {
+    constructor(authService, authStorageService, userIdService, oAuthLibWrapperService, store, userService) {
+        this.authService = authService;
+        this.authStorageService = authStorageService;
+        this.userIdService = userIdService;
+        this.oAuthLibWrapperService = oAuthLibWrapperService;
+        this.store = store;
+        this.userService = userService;
+    }
+    /**
+     * Loads access token for a customer support agent.
+     * @param userId
+     * @param password
+     */
+    authorizeCustomerSupportAgent(userId, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let userToken;
+            this.authStorageService
+                .getToken()
+                .subscribe((token) => (userToken = token))
+                .unsubscribe();
+            this.authStorageService.switchTokenTargetToCSAgent();
+            try {
+                yield this.oAuthLibWrapperService.authorizeWithPasswordFlow(userId, password);
+                // Start emulation for currently logged in user
+                let customerId;
+                this.userService
+                    .get()
+                    .subscribe((user) => (customerId = user === null || user === void 0 ? void 0 : user.customerId))
+                    .unsubscribe();
+                this.store.dispatch(new Logout());
+                if (Boolean(customerId)) {
+                    // OCC specific user id handling. Customize when implementing different backend
+                    this.userIdService.setUserId(customerId);
+                    this.authStorageService.setEmulatedUserToken(userToken);
+                    this.store.dispatch(new Login());
+                }
+                else {
+                    // When we can't get the customerId just end all current sessions
+                    this.userIdService.setUserId(OCC_USER_ID_ANONYMOUS);
+                    this.authStorageService.clearEmulatedUserToken();
+                }
+            }
+            catch (_a) {
+                this.authStorageService.switchTokenTargetToUser();
+            }
+        });
+    }
+    /**
+     * Starts an ASM customer emulation session.
+     * A customer emulation session is stopped by calling logout().
+     * @param customerId
+     */
+    startCustomerEmulationSession(customerId) {
+        this.authStorageService.clearEmulatedUserToken();
+        // OCC specific user id handling. Customize when implementing different backend
+        this.store.dispatch(new Logout());
+        this.userIdService.setUserId(customerId);
+        this.store.dispatch(new Login());
+    }
+    /**
+     * Check if CS agent is currently logged in.
+     *
+     * @returns observable emitting true when CS agent is logged in or false when not.
+     */
+    isCustomerSupportAgentLoggedIn() {
+        return combineLatest([
+            this.authStorageService.getToken(),
+            this.authStorageService.getTokenTarget(),
+        ]).pipe(map(([token, tokenTarget]) => Boolean((token === null || token === void 0 ? void 0 : token.access_token) && tokenTarget === TokenTarget.CSAgent)));
+    }
+    /**
+     * Utility function to determine if customer is emulated.
+     *
+     * @returns observable emitting true when there is active emulation session or false when not.
+     */
+    isCustomerEmulated() {
+        return this.userIdService.isEmulated();
+    }
+    /**
+     * Returns the customer support agent's token loading status
+     */
+    getCustomerSupportAgentTokenLoading() {
+        // TODO(#8248): Create new loading state outside of store
+        return of(false);
+    }
+    /**
+     * Logout a customer support agent.
+     */
+    logoutCustomerSupportAgent() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const emulatedToken = this.authStorageService.getEmulatedUserToken();
+            let isCustomerEmulated;
+            this.userIdService
+                .isEmulated()
+                .subscribe((emulated) => (isCustomerEmulated = emulated))
+                .unsubscribe();
+            yield this.oAuthLibWrapperService.revokeAndLogout();
+            this.store.dispatch(new LogoutCustomerSupportAgent());
+            this.authStorageService.setTokenTarget(TokenTarget.User);
+            if (isCustomerEmulated && emulatedToken) {
+                this.store.dispatch(new Logout());
+                this.authStorageService.setToken(emulatedToken);
+                this.userIdService.setUserId(OCC_USER_ID_CURRENT);
+                this.authStorageService.clearEmulatedUserToken();
+                this.store.dispatch(new Login());
+            }
+            else {
+                this.authService.initLogout();
+            }
+        });
     }
 }
-CustomerEffects.decorators = [
-    { type: Injectable }
-];
-CustomerEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: AsmConnector }
-];
-__decorate([
-    Effect()
-], CustomerEffects.prototype, "customerSearch$", void 0);
-
-class CustomerSupportAgentTokenEffects {
-    constructor(actions$, userTokenService) {
-        this.actions$ = actions$;
-        this.userTokenService = userTokenService;
-        this.loadCustomerSupportAgentToken$ = this.actions$.pipe(ofType(LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN), map((action) => action.payload), switchMap(({ userId, password }) => this.userTokenService.loadToken(userId, password).pipe(map((token) => {
-            const date = new Date();
-            date.setSeconds(date.getSeconds() + token.expires_in);
-            token.expiration_time = date.toJSON();
-            return new LoadCustomerSupportAgentTokenSuccess(token);
-        }), catchError((error) => of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error)))))));
-    }
-}
-CustomerSupportAgentTokenEffects.decorators = [
-    { type: Injectable }
-];
-CustomerSupportAgentTokenEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: UserAuthenticationTokenService }
-];
-__decorate([
-    Effect()
-], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
-
-const effects$4 = [
-    CustomerEffects,
-    CustomerSupportAgentTokenEffects,
-];
-
-const initialState$c = { collapsed: false };
-function reducer$c(state = initialState$c, action) {
-    switch (action.type) {
-        case ASM_UI_UPDATE: {
-            return Object.assign(Object.assign({}, state), action.payload);
-        }
-        default: {
-            return state;
-        }
-    }
-}
-
-function getReducers$4() {
-    return {
-        customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
-        asmUi: reducer$c,
-        csagentToken: loaderReducer(CSAGENT_TOKEN_DATA),
-    };
-}
-const reducerToken$4 = new InjectionToken('AsmReducers');
-const reducerProvider$4 = {
-    provide: reducerToken$4,
-    useFactory: getReducers$4,
-};
-function clearCustomerSupportAgentAsmState(reducer) {
-    return function (state, action) {
-        if (action.type === LOGOUT_CUSTOMER_SUPPORT_AGENT) {
-            state = Object.assign(Object.assign({}, state), { customerSearchResult: undefined, csagentToken: undefined });
-        }
-        return reducer(state, action);
-    };
-}
-const metaReducers$2 = [
-    clearCustomerSupportAgentAsmState,
-];
-
-function asmStoreConfigFactory() {
-    const config = {
-        state: {
-            storageSync: {
-                keys: {
-                    'asm.asmUi': StorageSyncType.LOCAL_STORAGE,
-                    'asm.csagentToken.value.access_token': StorageSyncType.LOCAL_STORAGE,
-                    'asm.csagentToken.value.token_type': StorageSyncType.LOCAL_STORAGE,
-                    'asm.csagentToken.value.expires_in': StorageSyncType.LOCAL_STORAGE,
-                    'asm.csagentToken.value.expiration_time': StorageSyncType.LOCAL_STORAGE,
-                    'asm.csagentToken.value.scope': StorageSyncType.LOCAL_STORAGE,
-                    'asm.csagentToken.value.userId': StorageSyncType.LOCAL_STORAGE,
-                },
-            },
-        },
-    };
-    return config;
-}
-class AsmStoreModule {
-}
-AsmStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                    StateModule,
-                    StoreModule.forFeature(ASM_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
-                    EffectsModule.forFeature(effects$4),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(asmStoreConfigFactory),
-                    reducerProvider$4,
-                ],
+CsAgentAuthService.ɵprov = ɵɵdefineInjectable({ factory: function CsAgentAuthService_Factory() { return new CsAgentAuthService(ɵɵinject(AuthService), ɵɵinject(AsmAuthStorageService), ɵɵinject(UserIdService), ɵɵinject(OAuthLibWrapperService), ɵɵinject(Store), ɵɵinject(UserService)); }, token: CsAgentAuthService, providedIn: "root" });
+CsAgentAuthService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
             },] }
 ];
+CsAgentAuthService.ctorParameters = () => [
+    { type: AuthService },
+    { type: AsmAuthStorageService },
+    { type: UserIdService },
+    { type: OAuthLibWrapperService },
+    { type: Store },
+    { type: UserService }
+];
 
-var GlobalMessageType;
-(function (GlobalMessageType) {
-    GlobalMessageType["MSG_TYPE_CONFIRMATION"] = "[GlobalMessage] Confirmation";
-    GlobalMessageType["MSG_TYPE_ERROR"] = "[GlobalMessage] Error";
-    GlobalMessageType["MSG_TYPE_INFO"] = "[GlobalMessage] Information";
-    GlobalMessageType["MSG_TYPE_WARNING"] = "[GlobalMessage] Warning";
-})(GlobalMessageType || (GlobalMessageType = {}));
+/**
+ * Overrides `AuthHeaderService` to handle asm calls as well (not only OCC)
+ * in cases of normal user session and on customer emulation.
+ */
+class AsmAuthHeaderService extends AuthHeaderService {
+    constructor(authService, authStorageService, csAgentAuthService, oAuthLibWrapperService, routingService, globalMessageService, occEndpointsService) {
+        super(authService, authStorageService, oAuthLibWrapperService, routingService, occEndpointsService, globalMessageService);
+        this.authService = authService;
+        this.authStorageService = authStorageService;
+        this.csAgentAuthService = csAgentAuthService;
+        this.oAuthLibWrapperService = oAuthLibWrapperService;
+        this.routingService = routingService;
+        this.globalMessageService = globalMessageService;
+        this.occEndpointsService = occEndpointsService;
+    }
+    /**
+     * @override
+     *
+     * Checks if particular request should be handled by this service.
+     */
+    shouldCatchError(request) {
+        return (super.shouldCatchError(request) || this.isCSAgentTokenRequest(request));
+    }
+    /**
+     * @override
+     *
+     * Adds `Authorization` header to occ and CS agent requests.
+     * For CS agent requests also removes the `cx-use-csagent-token` header (to avoid problems with CORS).
+     */
+    alterRequest(request) {
+        const hasAuthorizationHeader = !!this.getAuthorizationHeader(request);
+        const isCSAgentRequest = this.isCSAgentTokenRequest(request);
+        let req = super.alterRequest(request);
+        if (!hasAuthorizationHeader && isCSAgentRequest) {
+            req = request.clone({
+                setHeaders: Object.assign({}, this.createAuthorizationHeader()),
+            });
+            return InterceptorUtil.removeHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, req);
+        }
+        return req;
+    }
+    isCSAgentTokenRequest(request) {
+        const isRequestWithCSAgentToken = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
+        return Boolean(isRequestWithCSAgentToken);
+    }
+    /**
+     * @override
+     *
+     * On backend errors indicating expired `refresh_token` we need to logout
+     * currently logged in user and CS agent.
+     */
+    handleExpiredRefreshToken() {
+        this.csAgentAuthService
+            .isCustomerSupportAgentLoggedIn()
+            .pipe(take(1))
+            .subscribe((csAgentLoggedIn) => {
+            if (csAgentLoggedIn) {
+                this.csAgentAuthService.logoutCustomerSupportAgent();
+                this.globalMessageService.add({
+                    key: 'asm.csagentTokenExpired',
+                }, GlobalMessageType.MSG_TYPE_ERROR);
+            }
+            else {
+                super.handleExpiredRefreshToken();
+            }
+        });
+    }
+}
+AsmAuthHeaderService.ɵprov = ɵɵdefineInjectable({ factory: function AsmAuthHeaderService_Factory() { return new AsmAuthHeaderService(ɵɵinject(AuthService), ɵɵinject(AuthStorageService), ɵɵinject(CsAgentAuthService), ɵɵinject(OAuthLibWrapperService), ɵɵinject(RoutingService), ɵɵinject(GlobalMessageService), ɵɵinject(OccEndpointsService)); }, token: AsmAuthHeaderService, providedIn: "root" });
+AsmAuthHeaderService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+AsmAuthHeaderService.ctorParameters = () => [
+    { type: AuthService },
+    { type: AuthStorageService },
+    { type: CsAgentAuthService },
+    { type: OAuthLibWrapperService },
+    { type: RoutingService },
+    { type: GlobalMessageService },
+    { type: OccEndpointsService }
+];
 
 class GlobalMessageConfig {
 }
@@ -16048,108 +17099,6 @@ GlobalMessageConfig.decorators = [
                 providedIn: 'root',
                 useExisting: Config,
             },] }
-];
-
-const ADD_MESSAGE = '[Global-message] Add a Message';
-const REMOVE_MESSAGE = '[Global-message] Remove a Message';
-const REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
-class AddMessage {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_MESSAGE;
-    }
-}
-class RemoveMessage {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REMOVE_MESSAGE;
-    }
-}
-class RemoveMessagesByType {
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REMOVE_MESSAGES_BY_TYPE;
-    }
-}
-
-var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    ADD_MESSAGE: ADD_MESSAGE,
-    REMOVE_MESSAGE: REMOVE_MESSAGE,
-    REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
-    AddMessage: AddMessage,
-    RemoveMessage: RemoveMessage,
-    RemoveMessagesByType: RemoveMessagesByType
-});
-
-const GLOBAL_MESSAGE_FEATURE = 'global-message';
-
-const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
-
-const ɵ0$A = (state) => state.entities;
-const getGlobalMessageEntities = createSelector(getGlobalMessageState, ɵ0$A);
-const getGlobalMessageEntitiesByType = (type) => {
-    return createSelector(getGlobalMessageEntities, (entities) => entities && entities[type]);
-};
-const getGlobalMessageCountByType = (type) => {
-    return createSelector(getGlobalMessageEntitiesByType(type), (entities) => entities && entities.length);
-};
-
-var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getGlobalMessageState: getGlobalMessageState,
-    getGlobalMessageEntities: getGlobalMessageEntities,
-    getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
-    getGlobalMessageCountByType: getGlobalMessageCountByType,
-    ɵ0: ɵ0$A
-});
-
-class GlobalMessageService {
-    constructor(store) {
-        this.store = store;
-    }
-    /**
-     * Get all global messages
-     */
-    get() {
-        return this.store.pipe(select(getGlobalMessageEntities), filter((data) => data !== undefined));
-    }
-    /**
-     * Add one message into store
-     * @param text: string | Translatable
-     * @param type: GlobalMessageType object
-     * @param timeout: number
-     */
-    add(text, type, timeout) {
-        this.store.dispatch(new AddMessage({
-            text: typeof text === 'string' ? { raw: text } : text,
-            type,
-            timeout,
-        }));
-    }
-    /**
-     * Remove message(s) from store
-     * @param type: GlobalMessageType
-     * @param index:optional. Without it, messages will be removed by type; otherwise,
-     * message will be removed from list by index.
-     */
-    remove(type, index) {
-        this.store.dispatch(index !== undefined
-            ? new RemoveMessage({
-                type: type,
-                index: index,
-            })
-            : new RemoveMessagesByType(type));
-    }
-}
-GlobalMessageService.ɵprov = ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(ɵɵinject(Store)); }, token: GlobalMessageService, providedIn: "root" });
-GlobalMessageService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-GlobalMessageService.ctorParameters = () => [
-    { type: Store }
 ];
 
 var HttpResponseStatus;
@@ -16206,7 +17155,7 @@ BadGatewayHandler.decorators = [
             },] }
 ];
 
-const OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
+const OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
 class BadRequestHandler extends HttpErrorHandler {
     constructor() {
         super(...arguments);
@@ -16221,7 +17170,7 @@ class BadRequestHandler extends HttpErrorHandler {
     }
     handleBadPassword(request, response) {
         var _a, _b, _c;
-        if (((_a = response.url) === null || _a === void 0 ? void 0 : _a.includes(OAUTH_ENDPOINT$1)) &&
+        if (((_a = response.url) === null || _a === void 0 ? void 0 : _a.includes(OAUTH_ENDPOINT)) &&
             ((_b = response.error) === null || _b === void 0 ? void 0 : _b.error) === 'invalid_grant' &&
             ((_c = request.body) === null || _c === void 0 ? void 0 : _c.get('grant_type')) === 'password') {
             this.globalMessageService.add({
@@ -16374,44 +17323,6 @@ NotFoundHandler.decorators = [
 ];
 
 /**
- * Handles Oauth client errors when a 401 is returned. This is the case for failing
- * authenticaton requests to OCC.
- */
-class UnauthorizedErrorHandler extends HttpErrorHandler {
-    constructor(globalMessageService) {
-        super(globalMessageService);
-        this.globalMessageService = globalMessageService;
-        this.responseStatus = HttpResponseStatus.UNAUTHORIZED;
-    }
-    handleError(_request, response) {
-        var _a, _b;
-        if (isDevMode()) {
-            console.warn(`There's a problem with the "Oauth client" configuration. You must configure a matching Oauth client in the backend and Spartacus.`);
-        }
-        if (((_a = response.error) === null || _a === void 0 ? void 0 : _a.error) === 'invalid_client') {
-            this.globalMessageService.add(((_b = response.error) === null || _b === void 0 ? void 0 : _b.error_description) || {
-                key: 'httpHandlers.unauthorized.invalid_client',
-            }, GlobalMessageType.MSG_TYPE_ERROR);
-        }
-        else {
-            this.globalMessageService.add({ key: 'httpHandlers.unauthorized.common' }, GlobalMessageType.MSG_TYPE_ERROR);
-        }
-    }
-    getPriority() {
-        return -10 /* LOW */;
-    }
-}
-UnauthorizedErrorHandler.ɵprov = ɵɵdefineInjectable({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(ɵɵinject(GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
-UnauthorizedErrorHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-UnauthorizedErrorHandler.ctorParameters = () => [
-    { type: GlobalMessageService }
-];
-
-/**
  * Unknown Error Handler works as an fallback, to handle errors that were
  * not handled by any other error handlers
  */
@@ -16554,11 +17465,6 @@ const errorHandlers = [
         useExisting: NotFoundHandler,
         multi: true,
     },
-    {
-        provide: HttpErrorHandler,
-        useExisting: UnauthorizedErrorHandler,
-        multi: true,
-    },
 ];
 const httpErrorInterceptors = [
     {
@@ -16568,10 +17474,10 @@ const httpErrorInterceptors = [
     },
 ];
 
-const initialState$d = {
+const initialState$b = {
     entities: {},
 };
-function reducer$d(state = initialState$d, action) {
+function reducer$b(state = initialState$b, action) {
     switch (action.type) {
         case ADD_MESSAGE: {
             const message = action.payload;
@@ -16602,13 +17508,13 @@ function reducer$d(state = initialState$d, action) {
     return state;
 }
 
-function getReducers$5() {
-    return reducer$d;
+function getReducers$4() {
+    return reducer$b;
 }
-const reducerToken$5 = new InjectionToken('GlobalMessageReducers');
-const reducerProvider$5 = {
-    provide: reducerToken$5,
-    useFactory: getReducers$5,
+const reducerToken$4 = new InjectionToken('GlobalMessageReducers');
+const reducerProvider$4 = {
+    provide: reducerToken$4,
+    useFactory: getReducers$4,
 };
 
 class GlobalMessageStoreModule {
@@ -16617,9 +17523,9 @@ GlobalMessageStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     StateModule,
-                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
+                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
                 ],
-                providers: [reducerProvider$5],
+                providers: [reducerProvider$4],
             },] }
 ];
 
@@ -16775,99 +17681,103 @@ GlobalMessageModule.decorators = [
             },] }
 ];
 
-const getAsmState = createFeatureSelector(ASM_FEATURE);
-
-const ɵ0$B = (state) => state.asmUi;
-const getAsmUi = createSelector(getAsmState, ɵ0$B);
-
-const ɵ0$C = (state) => state.customerSearchResult;
-const getCustomerSearchResultsLoaderState = createSelector(getAsmState, ɵ0$C);
-const ɵ1$s = (state) => loaderValueSelector(state);
-const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, ɵ1$s);
-const ɵ2$i = (state) => loaderLoadingSelector(state);
-const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, ɵ2$i);
-
-const ɵ0$D = (state) => state.csagentToken;
-const getCustomerSupportAgentTokenState = createSelector(getAsmState, ɵ0$D);
-const ɵ1$t = (state) => loaderValueSelector(state);
-const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, ɵ1$t);
-const ɵ2$j = (state) => loaderLoadingSelector(state);
-const getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, ɵ2$j);
-
-var asmGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getAsmUi: getAsmUi,
-    ɵ0: ɵ0$B,
-    getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
-    getCustomerSearchResults: getCustomerSearchResults,
-    getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
-    ɵ1: ɵ1$s,
-    ɵ2: ɵ2$i,
-    getAsmState: getAsmState,
-    getCustomerSupportAgentTokenState: getCustomerSupportAgentTokenState,
-    getCustomerSupportAgentToken: getCustomerSupportAgentToken,
-    getCustomerSupportAgentTokenLoading: getCustomerSupportAgentTokenLoading
-});
-
-class AsmAuthService {
-    constructor(store, authService) {
+/**
+ * Version of BasicAuthService that is working for both user na CS agent.
+ * Overrides BasicAuthService when ASM module is enabled.
+ */
+class AsmAuthService extends BasicAuthService {
+    constructor(store, userIdService, oAuthLibWrapperService, authStorageService, authRedirectService, globalMessageService, routingService) {
+        super(store, userIdService, oAuthLibWrapperService, authStorageService, authRedirectService, routingService);
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
+        this.oAuthLibWrapperService = oAuthLibWrapperService;
+        this.authStorageService = authStorageService;
+        this.authRedirectService = authRedirectService;
+        this.globalMessageService = globalMessageService;
+        this.routingService = routingService;
+    }
+    canUserLogin() {
+        let tokenTarget;
+        let token;
+        this.authStorageService
+            .getToken()
+            .subscribe((tok) => (token = tok))
+            .unsubscribe();
+        this.authStorageService
+            .getTokenTarget()
+            .subscribe((tokTarget) => (tokenTarget = tokTarget))
+            .unsubscribe();
+        return !(Boolean(token === null || token === void 0 ? void 0 : token.access_token) && tokenTarget === TokenTarget.CSAgent);
+    }
+    warnAboutLoggedCSAgent() {
+        this.globalMessageService.add({
+            key: 'asm.auth.agentLoggedInError',
+        }, GlobalMessageType.MSG_TYPE_ERROR);
     }
     /**
-     * Loads a user token for a customer support agent
+     * Loads a new user token with Resource Owner Password Flow when CS agent is not logged in.
      * @param userId
      * @param password
      */
-    authorizeCustomerSupportAgent(userId, password) {
-        this.store.dispatch(new LoadCustomerSupportAgentToken({
-            userId: userId,
-            password: password,
-        }));
-    }
-    /**
-     * Starts an ASM customer emulation session.
-     * A customer emulation session is stoped by calling logout().
-     * @param customerSupportAgentToken
-     * @param customerId
-     */
-    startCustomerEmulationSession(customerSupportAgentToken, customerId) {
-        this.authService.authorizeWithToken(Object.assign(Object.assign({}, customerSupportAgentToken), { userId: customerId }));
-    }
-    /**
-     * Utility function to determine if a given token is a customer emulation session token.
-     * @param userToken
-     */
-    isCustomerEmulationToken(userToken) {
-        return (Boolean(userToken) &&
-            Boolean(userToken.userId) &&
-            userToken.userId !== OCC_USER_ID_CURRENT);
-    }
-    /**
-     * Returns the customer support agent's token
-     */
-    getCustomerSupportAgentToken() {
-        return this.store.pipe(select(getCustomerSupportAgentToken));
-    }
-    /**
-     * Returns the customer support agent's token loading status
-     */
-    getCustomerSupportAgentTokenLoading() {
-        return this.store.pipe(select(getCustomerSupportAgentTokenLoading));
-    }
-    /**
-     * Logout a customer support agent
-     */
-    logoutCustomerSupportAgent() {
-        this.getCustomerSupportAgentToken()
-            .pipe(take(1))
-            .subscribe((userToken) => {
-            this.store.dispatch(new LogoutCustomerSupportAgent());
-            this.store.dispatch(new RevokeUserToken(userToken));
+    authorize(userId, password) {
+        const _super = Object.create(null, {
+            authorize: { get: () => super.authorize }
+        });
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.canUserLogin()) {
+                yield _super.authorize.call(this, userId, password);
+            }
+            else {
+                this.warnAboutLoggedCSAgent();
+            }
         });
     }
+    /**
+     * Initialize Implicit/Authorization Code flow by redirecting to OAuth server when CS agent is not logged in.
+     */
+    loginWithRedirect() {
+        if (this.canUserLogin()) {
+            super.loginWithRedirect();
+            return true;
+        }
+        else {
+            this.warnAboutLoggedCSAgent();
+            return false;
+        }
+    }
+    /**
+     * Logout a storefront customer.
+     */
+    logout() {
+        return this.userIdService
+            .isEmulated()
+            .pipe(take(1), switchMap((isEmulated) => {
+            if (isEmulated) {
+                this.authStorageService.clearEmulatedUserToken();
+                this.userIdService.clearUserId();
+                this.store.dispatch(new Logout());
+                return of(true);
+            }
+            else {
+                return from(super.logout());
+            }
+        }))
+            .toPromise();
+    }
+    /**
+     * Returns `true` if user is logged in or being emulated.
+     */
+    isUserLoggedIn() {
+        return combineLatest([
+            this.authStorageService.getToken(),
+            this.userIdService.isEmulated(),
+            this.authStorageService.getTokenTarget(),
+        ]).pipe(map(([token, isEmulated, tokenTarget]) => Boolean(token === null || token === void 0 ? void 0 : token.access_token) &&
+            (tokenTarget === TokenTarget.User ||
+                (tokenTarget === TokenTarget.CSAgent && isEmulated))));
+    }
 }
-AsmAuthService.ɵprov = ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: AsmAuthService, providedIn: "root" });
+AsmAuthService.ɵprov = ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(OAuthLibWrapperService), ɵɵinject(AsmAuthStorageService), ɵɵinject(AuthRedirectService), ɵɵinject(GlobalMessageService), ɵɵinject(RoutingService)); }, token: AsmAuthService, providedIn: "root" });
 AsmAuthService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -16875,112 +17785,237 @@ AsmAuthService.decorators = [
 ];
 AsmAuthService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService },
+    { type: OAuthLibWrapperService },
+    { type: AsmAuthStorageService },
+    { type: AuthRedirectService },
+    { type: GlobalMessageService },
+    { type: RoutingService }
 ];
 
-class CustomerSupportAgentErrorHandlingService {
-    constructor(asmAuthService, globalMessageService) {
-        this.asmAuthService = asmAuthService;
-        this.globalMessageService = globalMessageService;
+class AsmConnector {
+    constructor(asmAdapter) {
+        this.asmAdapter = asmAdapter;
     }
-    terminateCustomerSupportAgentExpiredSession() {
-        this.asmAuthService.logoutCustomerSupportAgent();
-        this.globalMessageService.add({
-            key: 'asm.csagentTokenExpired',
-        }, GlobalMessageType.MSG_TYPE_ERROR);
+    customerSearch(options) {
+        return this.asmAdapter.customerSearch(options);
     }
 }
-CustomerSupportAgentErrorHandlingService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentErrorHandlingService_Factory() { return new CustomerSupportAgentErrorHandlingService(ɵɵinject(AsmAuthService), ɵɵinject(GlobalMessageService)); }, token: CustomerSupportAgentErrorHandlingService, providedIn: "root" });
-CustomerSupportAgentErrorHandlingService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
+AsmConnector.ɵprov = ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
+AsmConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
 ];
-CustomerSupportAgentErrorHandlingService.ctorParameters = () => [
-    { type: AsmAuthService },
-    { type: GlobalMessageService }
+AsmConnector.ctorParameters = () => [
+    { type: AsmAdapter }
 ];
 
-class CustomerSupportAgentAuthErrorInterceptor {
-    constructor(csagentErrorHandlingService) {
-        this.csagentErrorHandlingService = csagentErrorHandlingService;
+class CustomerEffects {
+    constructor(actions$, asmConnector) {
+        this.actions$ = actions$;
+        this.asmConnector = asmConnector;
+        this.customerSearch$ = this.actions$.pipe(ofType(CUSTOMER_SEARCH), map((action) => action.payload), switchMap((options) => this.asmConnector.customerSearch(options).pipe(map((customerSearchResults) => {
+            return new CustomerSearchSuccess(customerSearchResults);
+        }), catchError((error) => of(new CustomerSearchFail(normalizeHttpError(error)))))));
     }
-    intercept(request, next) {
-        const isCustomerSupportAgentRequest = this.isCustomerSupportAgentRequest(request);
-        if (isCustomerSupportAgentRequest) {
-            request = InterceptorUtil.removeHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request);
+}
+CustomerEffects.decorators = [
+    { type: Injectable }
+];
+CustomerEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: AsmConnector }
+];
+__decorate([
+    Effect()
+], CustomerEffects.prototype, "customerSearch$", void 0);
+
+const effects$4 = [CustomerEffects];
+
+const initialState$c = { collapsed: false };
+function reducer$c(state = initialState$c, action) {
+    switch (action.type) {
+        case ASM_UI_UPDATE: {
+            return Object.assign(Object.assign({}, state), action.payload);
         }
-        return next.handle(request).pipe(catchError((errResponse) => {
-            if (errResponse instanceof HttpErrorResponse) {
-                // Unauthorized
-                if (isCustomerSupportAgentRequest && errResponse.status === 401) {
-                    this.csagentErrorHandlingService.terminateCustomerSupportAgentExpiredSession();
-                    return of(undefined);
-                }
-            }
-            return throwError(errResponse);
+        default: {
+            return state;
+        }
+    }
+}
+
+function getReducers$5() {
+    return {
+        customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
+        asmUi: reducer$c,
+    };
+}
+const reducerToken$5 = new InjectionToken('AsmReducers');
+const reducerProvider$5 = {
+    provide: reducerToken$5,
+    useFactory: getReducers$5,
+};
+function clearCustomerSupportAgentAsmState(reducer) {
+    return function (state, action) {
+        if (action.type === LOGOUT_CUSTOMER_SUPPORT_AGENT) {
+            state = Object.assign(Object.assign({}, state), { customerSearchResult: undefined });
+        }
+        return reducer(state, action);
+    };
+}
+const metaReducers$1 = [
+    clearCustomerSupportAgentAsmState,
+];
+
+const getAsmState = createFeatureSelector(ASM_FEATURE);
+
+const ɵ0$A = (state) => state.asmUi;
+const getAsmUi = createSelector(getAsmState, ɵ0$A);
+
+const ɵ0$B = (state) => state.customerSearchResult;
+const getCustomerSearchResultsLoaderState = createSelector(getAsmState, ɵ0$B);
+const ɵ1$r = (state) => loaderValueSelector(state);
+const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, ɵ1$r);
+const ɵ2$i = (state) => loaderLoadingSelector(state);
+const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, ɵ2$i);
+
+var asmGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getAsmUi: getAsmUi,
+    ɵ0: ɵ0$A,
+    getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
+    getCustomerSearchResults: getCustomerSearchResults,
+    getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
+    ɵ1: ɵ1$r,
+    ɵ2: ɵ2$i,
+    getAsmState: getAsmState
+});
+
+/**
+ * Responsible for storing ASM state in the browser storage.
+ * Uses `StatePersistenceService` mechanism.
+ */
+class AsmStatePersistenceService {
+    constructor(statePersistenceService, store, authStorageService) {
+        this.statePersistenceService = statePersistenceService;
+        this.store = store;
+        this.authStorageService = authStorageService;
+        this.subscription = new Subscription();
+        /**
+         * Identifier used for storage key.
+         */
+        this.key = 'asm';
+    }
+    /**
+     * Initializes the synchronization between state and browser storage.
+     */
+    initSync() {
+        this.subscription.add(this.statePersistenceService.syncWithStorage({
+            key: this.key,
+            state$: this.getAsmState(),
+            onRead: (state) => this.onRead(state),
         }));
     }
-    isCustomerSupportAgentRequest(request) {
-        const isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
-        return Boolean(isRequestMapping);
-    }
-}
-CustomerSupportAgentAuthErrorInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentAuthErrorInterceptor_Factory() { return new CustomerSupportAgentAuthErrorInterceptor(ɵɵinject(CustomerSupportAgentErrorHandlingService)); }, token: CustomerSupportAgentAuthErrorInterceptor, providedIn: "root" });
-CustomerSupportAgentAuthErrorInterceptor.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-CustomerSupportAgentAuthErrorInterceptor.ctorParameters = () => [
-    { type: CustomerSupportAgentErrorHandlingService }
-];
-
-class CustomerSupportAgentTokenInterceptor {
-    constructor(asmAuthService) {
-        this.asmAuthService = asmAuthService;
-    }
-    intercept(request, next) {
-        return this.getCustomerSupportAgentToken(request).pipe(take(1), switchMap((token) => {
-            if (token) {
-                request = request.clone({
-                    setHeaders: {
-                        Authorization: `${token.token_type} ${token.access_token}`,
-                    },
-                });
+    /**
+     * Gets and transforms state from different sources into the form that should
+     * be saved in storage.
+     */
+    getAsmState() {
+        return combineLatest([
+            this.store.pipe(select(getAsmUi)),
+            of(this.authStorageService.getEmulatedUserToken()),
+            this.authStorageService.getTokenTarget(),
+        ]).pipe(map(([ui, emulatedUserToken, tokenTarget]) => {
+            let emulatedToken = emulatedUserToken;
+            if (emulatedToken) {
+                emulatedToken = Object.assign({}, emulatedUserToken);
+                // To minimize risk of user account hijacking we don't persist emulated user refresh_token
+                delete emulatedToken.refresh_token;
             }
-            return next.handle(request);
+            return {
+                ui,
+                emulatedUserToken: emulatedToken,
+                tokenTarget,
+            };
         }));
     }
-    getCustomerSupportAgentToken(request) {
-        if (InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers)) {
-            return this.asmAuthService.getCustomerSupportAgentToken();
+    /**
+     * Function called on each browser storage read.
+     * Used to update state from browser -> state.
+     */
+    onRead(state) {
+        if (state) {
+            if (state.ui) {
+                this.store.dispatch(new AsmUiUpdate(state.ui));
+            }
+            if (state.emulatedUserToken) {
+                this.authStorageService.setEmulatedUserToken(state.emulatedUserToken);
+            }
+            if (state.tokenTarget) {
+                this.authStorageService.setTokenTarget(state.tokenTarget);
+            }
         }
-        return of(null);
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }
-CustomerSupportAgentTokenInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(ɵɵinject(AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
-CustomerSupportAgentTokenInterceptor.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
+AsmStatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function AsmStatePersistenceService_Factory() { return new AsmStatePersistenceService(ɵɵinject(StatePersistenceService), ɵɵinject(Store), ɵɵinject(AsmAuthStorageService)); }, token: AsmStatePersistenceService, providedIn: "root" });
+AsmStatePersistenceService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
 ];
-CustomerSupportAgentTokenInterceptor.ctorParameters = () => [
-    { type: AsmAuthService }
-];
-
-const interceptors$2 = [
-    {
-        provide: HTTP_INTERCEPTORS,
-        useExisting: CustomerSupportAgentTokenInterceptor,
-        multi: true,
-    },
-    {
-        provide: HTTP_INTERCEPTORS,
-        useExisting: CustomerSupportAgentAuthErrorInterceptor,
-        multi: true,
-    },
+AsmStatePersistenceService.ctorParameters = () => [
+    { type: StatePersistenceService },
+    { type: Store },
+    { type: AsmAuthStorageService }
 ];
 
+class AsmStoreModule {
+}
+AsmStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    StateModule,
+                    StoreModule.forFeature(ASM_FEATURE, reducerToken$5, { metaReducers: metaReducers$1 }),
+                    EffectsModule.forFeature(effects$4),
+                ],
+                providers: [reducerProvider$5],
+            },] }
+];
+
+function asmStatePersistenceFactory(asmStatePersistenceService) {
+    const result = () => asmStatePersistenceService.initSync();
+    return result;
+}
 class AsmModule {
     static forRoot() {
         return {
             ngModule: AsmModule,
-            providers: [...interceptors$2, provideDefaultConfig(defaultAsmConfig)],
+            providers: [
+                provideDefaultConfig(defaultAsmConfig),
+                {
+                    provide: AuthStorageService,
+                    useExisting: AsmAuthStorageService,
+                },
+                {
+                    provide: BasicAuthService,
+                    useExisting: AsmAuthService,
+                },
+                {
+                    provide: AuthHeaderService,
+                    useExisting: AsmAuthHeaderService,
+                },
+                {
+                    provide: APP_INITIALIZER,
+                    useFactory: asmStatePersistenceFactory,
+                    deps: [AsmStatePersistenceService],
+                    multi: true,
+                },
+            ],
         };
     }
 }
@@ -17412,11 +18447,11 @@ SaveCartConnector.ctorParameters = () => [
 ];
 
 class WishListEffects {
-    constructor(actions$, cartConnector, saveCartConnector, authService, store) {
+    constructor(actions$, cartConnector, saveCartConnector, userIdService, store) {
         this.actions$ = actions$;
         this.cartConnector = cartConnector;
         this.saveCartConnector = saveCartConnector;
-        this.authService = authService;
+        this.userIdService = userIdService;
         this.store = store;
         this.createWishList$ = this.actions$.pipe(ofType(CREATE_WISH_LIST), map((action) => action.payload), switchMap((payload) => {
             return this.cartConnector.create(payload.userId).pipe(switchMap((cart) => {
@@ -17470,7 +18505,7 @@ class WishListEffects {
                 }),
             ])));
         }));
-        this.resetWishList$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), withLatestFrom(this.authService.getOccUserId(), this.store.pipe(select(getWishListId))), switchMap(([, userId, wishListId]) => {
+        this.resetWishList$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), withLatestFrom(this.userIdService.getUserId(), this.store.pipe(select(getWishListId))), switchMap(([, userId, wishListId]) => {
             if (Boolean(wishListId)) {
                 return this.cartConnector.load(userId, wishListId).pipe(switchMap((wishList) => [
                     new LoadWishListSuccess({
@@ -17497,7 +18532,7 @@ WishListEffects.ctorParameters = () => [
     { type: Actions },
     { type: CartConnector },
     { type: SaveCartConnector },
-    { type: AuthService },
+    { type: UserIdService },
     { type: Store }
 ];
 __decorate([
@@ -17582,6 +18617,102 @@ const multiCartReducerProvider = {
     provide: multiCartReducerToken,
     useFactory: getMultiCartReducers,
 };
+
+class MultiCartStatePersistenceService {
+    constructor(statePersistenceService, store, siteContextParamsService) {
+        this.statePersistenceService = statePersistenceService;
+        this.store = store;
+        this.siteContextParamsService = siteContextParamsService;
+        this.subscription = new Subscription();
+    }
+    initSync() {
+        this.subscription.add(this.statePersistenceService.syncWithStorage({
+            key: 'cart',
+            state$: this.getCartState(),
+            context$: this.siteContextParamsService.getValues([
+                BASE_SITE_CONTEXT_ID,
+            ]),
+            onRead: (state) => this.onRead(state),
+        }));
+    }
+    getCartState() {
+        return this.store.pipe(select(getMultiCartState), filter((state) => !!state), distinctUntilKeyChanged('active'), map((state) => {
+            return {
+                active: state.active,
+            };
+        }));
+    }
+    onRead(state) {
+        this.store.dispatch(new ClearCartState());
+        if (state) {
+            this.store.dispatch(new SetActiveCartId(state.active));
+        }
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+}
+MultiCartStatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(ɵɵinject(StatePersistenceService), ɵɵinject(Store), ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
+MultiCartStatePersistenceService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+MultiCartStatePersistenceService.ctorParameters = () => [
+    { type: StatePersistenceService },
+    { type: Store },
+    { type: SiteContextParamsService }
+];
+
+function cartStatePersistenceFactory(cartStatePersistenceService, configInit) {
+    const result = () => configInit.getStableConfig('context').then(() => {
+        cartStatePersistenceService.initSync();
+    });
+    return result;
+}
+/**
+ * Before `MultiCartStatePersistenceService` restores the active cart id `ActiveCartService`
+ * will use `current` cart instead of the one saved in browser. This meta reducer
+ * sets the value on store initialization to undefined cart which holds active cart loading
+ * until the data from storage is restored.
+ */
+function uninitializeActiveCartMetaReducerFactory() {
+    const metaReducer = (reducer) => (state, action) => {
+        const newState = Object.assign({}, state);
+        if (action.type === '@ngrx/store/init') {
+            newState.cart = Object.assign(Object.assign({}, newState.cart), { active: undefined });
+        }
+        return reducer(newState, action);
+    };
+    return metaReducer;
+}
+/**
+ * Complimentary module for cart to store cart id in browser storage.
+ * This makes it possible to work on the same anonymous cart even after page refresh.
+ */
+class CartPersistenceModule {
+    static forRoot() {
+        return {
+            ngModule: CartPersistenceModule,
+            providers: [
+                {
+                    provide: APP_INITIALIZER,
+                    useFactory: cartStatePersistenceFactory,
+                    deps: [MultiCartStatePersistenceService, ConfigInitializerService],
+                    multi: true,
+                },
+                {
+                    provide: META_REDUCERS,
+                    useFactory: uninitializeActiveCartMetaReducerFactory,
+                    multi: true,
+                },
+            ],
+        };
+    }
+}
+CartPersistenceModule.decorators = [
+    { type: NgModule }
+];
 
 // =====================================================================
 class CartAddEntryEvent {
@@ -17814,8 +18945,8 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getCmsState = createFeatureSelector(CMS_FEATURE);
 
-const ɵ0$E = (state) => state.components;
-const getComponentsState = createSelector(getCmsState, ɵ0$E);
+const ɵ0$C = (state) => state.components;
+const getComponentsState = createSelector(getCmsState, ɵ0$C);
 const componentsContextSelectorFactory = (uid) => {
     return createSelector(getComponentsState, (componentsState) => entitySelector(componentsState, uid));
 };
@@ -17862,8 +18993,8 @@ const componentsSelectorFactory = (uid, context) => {
     });
 };
 
-const ɵ0$F = (state) => state.navigation;
-const getNavigationEntryItemState = createSelector(getCmsState, ɵ0$F);
+const ɵ0$D = (state) => state.navigation;
+const getNavigationEntryItemState = createSelector(getCmsState, ɵ0$D);
 const getSelectedNavigationEntryItemState = (nodeId) => {
     return createSelector(getNavigationEntryItemState, (nodes) => entityLoaderStateSelector(nodes, nodeId));
 };
@@ -17872,7 +19003,7 @@ const getNavigationEntryItems = (nodeId) => {
 };
 
 const getPageEntitiesSelector = (state) => state.pageData.entities;
-const ɵ0$G = getPageEntitiesSelector;
+const ɵ0$E = getPageEntitiesSelector;
 const getIndexByType = (index, type) => {
     switch (type) {
         case PageType.CONTENT_PAGE: {
@@ -17890,7 +19021,7 @@ const getIndexByType = (index, type) => {
     }
     return { entities: {} };
 };
-const ɵ1$u = getIndexByType;
+const ɵ1$s = getIndexByType;
 const getPageComponentTypesSelector = (page) => {
     const componentTypes = new Set();
     if (page && page.slots) {
@@ -17902,7 +19033,7 @@ const getPageComponentTypesSelector = (page) => {
     }
     return Array.from(componentTypes);
 };
-const ɵ2$k = getPageComponentTypesSelector;
+const ɵ2$j = getPageComponentTypesSelector;
 const ɵ3$c = (state) => state.page;
 const getPageState = createSelector(getCmsState, ɵ3$c);
 const ɵ4$6 = (page) => page.index;
@@ -17929,7 +19060,7 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
     componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
     componentsDataSelectorFactory: componentsDataSelectorFactory,
     componentsSelectorFactory: componentsSelectorFactory,
-    ɵ0: ɵ0$E,
+    ɵ0: ɵ0$C,
     getCmsState: getCmsState,
     getNavigationEntryItemState: getNavigationEntryItemState,
     getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
@@ -17943,8 +19074,8 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
     getPageData: getPageData,
     getPageComponentTypes: getPageComponentTypes,
     getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory,
-    ɵ1: ɵ1$u,
-    ɵ2: ɵ2$k,
+    ɵ1: ɵ1$s,
+    ɵ2: ɵ2$j,
     ɵ3: ɵ3$c,
     ɵ4: ɵ4$6
 });
@@ -18184,46 +19315,6 @@ CartPageMetaResolver.ctorParameters = () => [
     { type: CmsService }
 ];
 
-class MultiCartStatePersistenceService {
-    constructor(statePersistenceService, store, siteContextParamsService) {
-        this.statePersistenceService = statePersistenceService;
-        this.store = store;
-        this.siteContextParamsService = siteContextParamsService;
-    }
-    sync() {
-        this.statePersistenceService.syncWithStorage({
-            key: 'cart',
-            state$: this.getCartState(),
-            context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]),
-            onRead: (state) => this.onRead(state),
-        });
-    }
-    getCartState() {
-        return this.store.pipe(select(getMultiCartState), filter((state) => !!state), distinctUntilKeyChanged('active'), map((state) => {
-            return {
-                active: state.active,
-            };
-        }));
-    }
-    onRead(state) {
-        this.store.dispatch(new ClearCartState());
-        if (state) {
-            this.store.dispatch(new SetActiveCartId(state.active));
-        }
-    }
-}
-MultiCartStatePersistenceService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(ɵɵinject(StatePersistenceService), ɵɵinject(Store), ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
-MultiCartStatePersistenceService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-MultiCartStatePersistenceService.ctorParameters = () => [
-    { type: StatePersistenceService },
-    { type: Store },
-    { type: SiteContextParamsService }
-];
-
 class MultiCartEffects {
     constructor(actions$) {
         this.actions$ = actions$;
@@ -18270,12 +19361,6 @@ MultiCartStoreModule.decorators = [
             },] }
 ];
 
-function cartStatePersistenceFactory(cartStatePersistenceService, configInit) {
-    const result = () => configInit.getStableConfig('context').then(() => {
-        cartStatePersistenceService.sync();
-    });
-    return result;
-}
 class CartModule {
     static forRoot() {
         return {
@@ -18286,19 +19371,17 @@ class CartModule {
                     useExisting: CartPageMetaResolver,
                     multi: true,
                 },
-                {
-                    provide: APP_INITIALIZER,
-                    useFactory: cartStatePersistenceFactory,
-                    deps: [MultiCartStatePersistenceService, ConfigInitializerService],
-                    multi: true,
-                },
             ],
         };
     }
 }
 CartModule.decorators = [
     { type: NgModule, args: [{
-                imports: [MultiCartStoreModule, CartEventModule],
+                imports: [
+                    MultiCartStoreModule,
+                    CartEventModule,
+                    CartPersistenceModule.forRoot(),
+                ],
             },] }
 ];
 
@@ -18313,10 +19396,10 @@ CartConfig.decorators = [
 ];
 
 class CartVoucherService {
-    constructor(store, authService, activeCartService) {
+    constructor(store, activeCartService, userIdService) {
         this.store = store;
-        this.authService = authService;
         this.activeCartService = activeCartService;
+        this.userIdService = userIdService;
     }
     addVoucher(voucherId, cartId) {
         this.combineUserAndCartId(cartId).subscribe(([occUserId, cartIdentifier]) => this.store.dispatch(new CartAddVoucher({
@@ -18366,17 +19449,17 @@ class CartVoucherService {
     }
     combineUserAndCartId(cartId) {
         if (cartId) {
-            return this.authService.getOccUserId().pipe(take(1), map((userId) => [userId, cartId]));
+            return this.userIdService.getUserId().pipe(take(1), map((userId) => [userId, cartId]));
         }
         else {
             return combineLatest([
-                this.authService.getOccUserId(),
+                this.userIdService.getUserId(),
                 this.activeCartService.getActiveCartId(),
             ]).pipe(take(1));
         }
     }
 }
-CartVoucherService.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
+CartVoucherService.ɵprov = ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(ɵɵinject(Store), ɵɵinject(ActiveCartService), ɵɵinject(UserIdService)); }, token: CartVoucherService, providedIn: "root" });
 CartVoucherService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -18384,264 +19467,8 @@ CartVoucherService.decorators = [
 ];
 CartVoucherService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
-    { type: ActiveCartService }
-];
-
-class UserService {
-    constructor(store, authService) {
-        this.store = store;
-        this.authService = authService;
-    }
-    /**
-     * Returns a user
-     */
-    get() {
-        return this.store.pipe(select(getDetails), tap((details) => {
-            if (Object.keys(details).length === 0) {
-                this.load();
-            }
-        }));
-    }
-    /**
-     * Loads the user's details
-     */
-    load() {
-        this.authService.invokeWithUserId((userId) => {
-            if (userId !== OCC_USER_ID_ANONYMOUS) {
-                this.store.dispatch(new LoadUserDetails(userId));
-            }
-        });
-    }
-    /**
-     * Register a new user
-     *
-     * @param submitFormData as UserRegisterFormData
-     */
-    register(userRegisterFormData) {
-        this.store.dispatch(new RegisterUser(userRegisterFormData));
-    }
-    /**
-     * Register a new user from guest
-     *
-     * @param guid
-     * @param password
-     */
-    registerGuest(guid, password) {
-        this.store.dispatch(new RegisterGuest({ guid, password }));
-    }
-    /**
-     * Returns the register user process loading flag
-     */
-    getRegisterUserResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
-    }
-    /**
-     * Returns the register user process success flag
-     */
-    getRegisterUserResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
-    }
-    /**
-     * Returns the register user process error flag
-     */
-    getRegisterUserResultError() {
-        return this.store.pipe(select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
-    }
-    /**
-     * Resets the register user process flags
-     */
-    resetRegisterUserProcessState() {
-        return this.store.dispatch(new ResetRegisterUserProcess());
-    }
-    /**
-     * Remove user account, that's also called close user's account
-     */
-    remove() {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new RemoveUser(userId));
-        });
-    }
-    /**
-     * Returns the remove user loading flag
-     */
-    getRemoveUserResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
-    }
-    /**
-     * Returns the remove user failure outcome.
-     */
-    getRemoveUserResultError() {
-        return this.store.pipe(select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
-    }
-    /**
-     * Returns the remove user process success outcome.
-     */
-    getRemoveUserResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
-    }
-    /**
-     * Resets the remove user process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     */
-    resetRemoveUserProcessState() {
-        this.store.dispatch(new RemoveUserReset());
-    }
-    /**
-     * Returns titles.
-     */
-    getTitles() {
-        return this.store.pipe(select(getAllTitles), tap((titles) => {
-            if (Object.keys(titles).length === 0) {
-                this.loadTitles();
-            }
-        }));
-    }
-    /**
-     * Retrieves titles
-     */
-    loadTitles() {
-        this.store.dispatch(new LoadTitles());
-    }
-    /**
-     * Return whether user's password is successfully reset
-     */
-    isPasswordReset() {
-        return this.store.pipe(select(getResetPassword));
-    }
-    /**
-     * Updates the user's details
-     * @param userDetails to be updated
-     */
-    updatePersonalDetails(userDetails) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new UpdateUserDetails({
-                username: userId,
-                userDetails,
-            }));
-        });
-    }
-    /**
-     * Returns the update user's personal details loading flag
-     */
-    getUpdatePersonalDetailsResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    }
-    /**
-     * Returns the update user's personal details error flag
-     */
-    getUpdatePersonalDetailsResultError() {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    }
-    /**
-     * Returns the update user's personal details success flag
-     */
-    getUpdatePersonalDetailsResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    }
-    /**
-     * Resets the update user details processing state
-     */
-    resetUpdatePersonalDetailsProcessingState() {
-        this.store.dispatch(new ResetUpdateUserDetails());
-    }
-    /**
-     * Reset new password.  Part of the forgot password flow.
-     * @param token
-     * @param password
-     */
-    resetPassword(token, password) {
-        this.store.dispatch(new ResetPassword({ token, password }));
-    }
-    /*
-     * Request an email to reset a forgotten password.
-     */
-    requestForgotPasswordEmail(userEmailAddress) {
-        this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
-    }
-    /**
-     * Updates the user's email
-     */
-    updateEmail(password, newUid) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new UpdateEmailAction({
-                uid: userId,
-                password,
-                newUid,
-            }));
-        });
-    }
-    /**
-     * Returns the update user's email success flag
-     */
-    getUpdateEmailResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
-    }
-    /**
-     * Returns the update user's email error flag
-     */
-    getUpdateEmailResultError() {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
-    }
-    /**
-     * Returns the update user's email loading flag
-     */
-    getUpdateEmailResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
-    }
-    /**
-     * Resets the update user's email processing state
-     */
-    resetUpdateEmailResultState() {
-        this.store.dispatch(new ResetUpdateEmailAction());
-    }
-    /**
-     * Updates the password for the user
-     * @param oldPassword the current password that will be changed
-     * @param newPassword the new password
-     */
-    updatePassword(oldPassword, newPassword) {
-        this.authService.invokeWithUserId((userId) => {
-            this.store.dispatch(new UpdatePassword({
-                userId,
-                oldPassword,
-                newPassword,
-            }));
-        });
-    }
-    /**
-     * Returns the update password loading flag
-     */
-    getUpdatePasswordResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    }
-    /**
-     * Returns the update password failure outcome.
-     */
-    getUpdatePasswordResultError() {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    }
-    /**
-     * Returns the update password process success outcome.
-     */
-    getUpdatePasswordResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    }
-    /**
-     * Resets the update password process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     */
-    resetUpdatePasswordProcessState() {
-        this.store.dispatch(new UpdatePasswordReset());
-    }
-}
-UserService.ɵprov = ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
-UserService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-UserService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService }
+    { type: ActiveCartService },
+    { type: UserIdService }
 ];
 
 class CartConfigService {
@@ -18664,13 +19491,13 @@ CartConfigService.ctorParameters = () => [
 ];
 
 class SelectiveCartService {
-    constructor(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
+    constructor(store, userService, multiCartService, baseSiteService, cartConfigService, userIdService) {
         this.store = store;
         this.userService = userService;
-        this.authService = authService;
         this.multiCartService = multiCartService;
         this.baseSiteService = baseSiteService;
         this.cartConfigService = cartConfigService;
+        this.userIdService = userIdService;
         this.cartId$ = new BehaviorSubject(undefined);
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
@@ -18690,7 +19517,7 @@ class SelectiveCartService {
                 this.cartId$.next(undefined);
             }
         });
-        this.authService.getOccUserId().subscribe((userId) => {
+        this.userIdService.getUserId().subscribe((userId) => {
             this.userId = userId;
             if (this.isJustLoggedIn(userId)) {
                 this.load();
@@ -18768,7 +19595,7 @@ class SelectiveCartService {
         return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
     }
 }
-SelectiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(ɵɵinject(Store), ɵɵinject(UserService), ɵɵinject(AuthService), ɵɵinject(MultiCartService), ɵɵinject(BaseSiteService), ɵɵinject(CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
+SelectiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(ɵɵinject(Store), ɵɵinject(UserService), ɵɵinject(MultiCartService), ɵɵinject(BaseSiteService), ɵɵinject(CartConfigService), ɵɵinject(UserIdService)); }, token: SelectiveCartService, providedIn: "root" });
 SelectiveCartService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -18777,18 +19604,18 @@ SelectiveCartService.decorators = [
 SelectiveCartService.ctorParameters = () => [
     { type: Store },
     { type: UserService },
-    { type: AuthService },
     { type: MultiCartService },
     { type: BaseSiteService },
-    { type: CartConfigService }
+    { type: CartConfigService },
+    { type: UserIdService }
 ];
 
 class WishListService {
-    constructor(store, authService, userService, multiCartService) {
+    constructor(store, userService, multiCartService, userIdService) {
         this.store = store;
-        this.authService = authService;
         this.userService = userService;
         this.multiCartService = multiCartService;
+        this.userIdService = userIdService;
     }
     createWishList(userId, name, description) {
         this.store.dispatch(new CreateWishList({ userId, name, description }));
@@ -18797,7 +19624,7 @@ class WishListService {
         return combineLatest([
             this.getWishListId(),
             this.userService.get(),
-            this.authService.getOccUserId(),
+            this.userIdService.getUserId(),
         ]).pipe(distinctUntilChanged(), tap(([wishListId, user, userId]) => {
             if (!Boolean(wishListId) &&
                 userId !== OCC_USER_ID_ANONYMOUS &&
@@ -18816,7 +19643,7 @@ class WishListService {
     }
     addEntry(productCode) {
         this.getWishListId()
-            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap(([wishListId, userId, user]) => {
+            .pipe(distinctUntilChanged(), withLatestFrom(this.userIdService.getUserId(), this.userService.get()), tap(([wishListId, userId, user]) => {
             if (!Boolean(wishListId) &&
                 Boolean(user) &&
                 Boolean(user.customerId)) {
@@ -18827,7 +19654,7 @@ class WishListService {
     }
     removeEntry(entry) {
         this.getWishListId()
-            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap(([wishListId, userId, user]) => {
+            .pipe(distinctUntilChanged(), withLatestFrom(this.userIdService.getUserId(), this.userService.get()), tap(([wishListId, userId, user]) => {
             if (!Boolean(wishListId) &&
                 Boolean(user) &&
                 Boolean(user.customerId)) {
@@ -18845,7 +19672,7 @@ class WishListService {
         return this.store.pipe(select(getWishListId));
     }
 }
-WishListService.ɵprov = ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(UserService), ɵɵinject(MultiCartService)); }, token: WishListService, providedIn: "root" });
+WishListService.ɵprov = ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(ɵɵinject(Store), ɵɵinject(UserService), ɵɵinject(MultiCartService), ɵɵinject(UserIdService)); }, token: WishListService, providedIn: "root" });
 WishListService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -18853,9 +19680,9 @@ WishListService.decorators = [
 ];
 WishListService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
     { type: UserService },
-    { type: MultiCartService }
+    { type: MultiCartService },
+    { type: UserIdService }
 ];
 
 const defaultCmsModuleConfig = {
@@ -20100,7 +20927,7 @@ __decorate([
 
 const effects$6 = [RouterEffects];
 
-const initialState$e = {
+const initialState$d = {
     navigationId: 0,
     state: {
         url: '',
@@ -20116,10 +20943,10 @@ const initialState$e = {
 };
 function getReducers$6() {
     return {
-        router: reducer$e,
+        router: reducer$d,
     };
 }
-function reducer$e(state = initialState$e, action) {
+function reducer$d(state = initialState$d, action) {
     switch (action.type) {
         case ROUTER_NAVIGATION: {
             return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -20479,7 +21306,7 @@ const effects$7 = [
     NavigationEntryItemEffects,
 ];
 
-const initialState$f = {
+const initialState$e = {
     component: undefined,
     pageContext: {},
 };
@@ -20493,7 +21320,7 @@ function componentExistsReducer(state, action) {
     }
     return state;
 }
-function reducer$f(state = initialState$f, action) {
+function reducer$e(state = initialState$e, action) {
     switch (action.type) {
         case LOAD_CMS_COMPONENT: {
             const pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
@@ -20521,8 +21348,8 @@ function reducer$f(state = initialState$f, action) {
     return state;
 }
 
-const initialState$g = undefined;
-function reducer$g(state = initialState$g, action) {
+const initialState$f = undefined;
+function reducer$f(state = initialState$f, action) {
     switch (action.type) {
         case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
             if (action.payload.components) {
@@ -20537,8 +21364,8 @@ function reducer$g(state = initialState$g, action) {
     return state;
 }
 
-const initialState$h = { entities: {} };
-function reducer$h(state = initialState$h, action) {
+const initialState$g = { entities: {} };
+function reducer$g(state = initialState$g, action) {
     switch (action.type) {
         case LOAD_CMS_PAGE_DATA_SUCCESS: {
             const page = action.payload;
@@ -20548,16 +21375,16 @@ function reducer$h(state = initialState$h, action) {
     return state;
 }
 
-const initialState$i = undefined;
-function reducer$i(entityType) {
-    return (state = initialState$i, action) => {
+const initialState$h = undefined;
+function reducer$h(entityType) {
+    return (state = initialState$h, action) => {
         if (action.meta && action.meta.entityType === entityType) {
             switch (action.type) {
                 case LOAD_CMS_PAGE_DATA_SUCCESS: {
                     return action.payload.pageId;
                 }
                 case LOAD_CMS_PAGE_DATA_FAIL: {
-                    return initialState$i;
+                    return initialState$h;
                 }
                 case CMS_SET_PAGE_FAIL_INDEX: {
                     return action.payload;
@@ -20574,16 +21401,16 @@ function reducer$i(entityType) {
 function getReducers$7() {
     return {
         page: combineReducers({
-            pageData: reducer$h,
+            pageData: reducer$g,
             index: combineReducers({
-                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$i(PageType.CONTENT_PAGE)),
-                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$i(PageType.PRODUCT_PAGE)),
-                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$i(PageType.CATEGORY_PAGE)),
-                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$i(PageType.CATALOG_PAGE)),
+                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$h(PageType.CONTENT_PAGE)),
+                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$h(PageType.PRODUCT_PAGE)),
+                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$h(PageType.CATEGORY_PAGE)),
+                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$h(PageType.CATALOG_PAGE)),
             }),
         }),
-        components: entityReducer(COMPONENT_ENTITY, reducer$f),
-        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$g),
+        components: entityReducer(COMPONENT_ENTITY, reducer$e),
+        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
     };
 }
 const reducerToken$7 = new InjectionToken('CmsReducers');
@@ -20601,7 +21428,7 @@ function clearCmsState(reducer) {
         return reducer(state, action);
     };
 }
-const metaReducers$3 = [clearCmsState];
+const metaReducers$2 = [clearCmsState];
 
 function cmsStoreConfigFactory() {
     // if we want to reuse CMS_FEATURE const in config, we have to use factory instead of plain object
@@ -20621,7 +21448,7 @@ CmsStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     StateModule,
-                    StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
+                    StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$2 }),
                     EffectsModule.forFeature(effects$7),
                 ],
                 providers: [
@@ -21252,11 +22079,11 @@ function getLoadPath(path, serverRequestOrigin) {
     return path;
 }
 
-const ɵ0$H = i18nextInit;
+const ɵ0$F = i18nextInit;
 const i18nextProviders = [
     {
         provide: APP_INITIALIZER,
-        useFactory: ɵ0$H,
+        useFactory: ɵ0$F,
         deps: [
             ConfigInitializerService,
             LanguageService,
@@ -21415,236 +22242,6 @@ I18nTestingModule.decorators = [
                 providers: [
                     { provide: TranslationService, useClass: MockTranslationService },
                 ],
-            },] }
-];
-
-class KymaConfig extends OccConfig {
-}
-KymaConfig.ɵprov = ɵɵdefineInjectable({ factory: function KymaConfig_Factory() { return ɵɵinject(Config); }, token: KymaConfig, providedIn: "root" });
-KymaConfig.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-                useExisting: Config,
-            },] }
-];
-
-const KYMA_FEATURE = 'kyma';
-const OPEN_ID_TOKEN_DATA = '[Kyma Auth] Open ID Token Data';
-
-const LOAD_OPEN_ID_TOKEN = '[Kyma] Load Open ID Token';
-const LOAD_OPEN_ID_TOKEN_FAIL = '[Kyma] Load Open ID Token Fail';
-const LOAD_OPEN_ID_TOKEN_SUCCESS = '[Kyma] Load Open ID Token Success';
-class LoadOpenIdToken extends LoaderLoadAction {
-    constructor(payload) {
-        super(OPEN_ID_TOKEN_DATA);
-        this.payload = payload;
-        this.type = LOAD_OPEN_ID_TOKEN;
-    }
-}
-class LoadOpenIdTokenFail extends LoaderFailAction {
-    constructor(payload) {
-        super(OPEN_ID_TOKEN_DATA, payload);
-        this.payload = payload;
-        this.type = LOAD_OPEN_ID_TOKEN_FAIL;
-    }
-}
-class LoadOpenIdTokenSuccess extends LoaderSuccessAction {
-    constructor(payload) {
-        super(OPEN_ID_TOKEN_DATA);
-        this.payload = payload;
-        this.type = LOAD_OPEN_ID_TOKEN_SUCCESS;
-    }
-}
-
-var kymaGroup_actions = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    LOAD_OPEN_ID_TOKEN: LOAD_OPEN_ID_TOKEN,
-    LOAD_OPEN_ID_TOKEN_FAIL: LOAD_OPEN_ID_TOKEN_FAIL,
-    LOAD_OPEN_ID_TOKEN_SUCCESS: LOAD_OPEN_ID_TOKEN_SUCCESS,
-    LoadOpenIdToken: LoadOpenIdToken,
-    LoadOpenIdTokenFail: LoadOpenIdTokenFail,
-    LoadOpenIdTokenSuccess: LoadOpenIdTokenSuccess
-});
-
-const getKymaState = createFeatureSelector(KYMA_FEATURE);
-
-const ɵ0$I = (state) => state.openIdToken;
-const getOpenIdTokenState = createSelector(getKymaState, ɵ0$I);
-const getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelector);
-const getOpenIdTokenLoading = createSelector(getOpenIdTokenState, loaderLoadingSelector);
-const getOpenIdTokenSuccess = createSelector(getOpenIdTokenState, loaderSuccessSelector);
-const getOpenIdTokenError = createSelector(getOpenIdTokenState, loaderErrorSelector);
-
-var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getKymaState: getKymaState,
-    getOpenIdTokenState: getOpenIdTokenState,
-    getOpenIdTokenValue: getOpenIdTokenValue,
-    getOpenIdTokenLoading: getOpenIdTokenLoading,
-    getOpenIdTokenSuccess: getOpenIdTokenSuccess,
-    getOpenIdTokenError: getOpenIdTokenError,
-    ɵ0: ɵ0$I
-});
-
-class KymaService {
-    constructor(store) {
-        this.store = store;
-    }
-    /**
-     * Authorizes using the Kyma OAuth client with scope `openid`.
-     *
-     * @param username a username
-     * @param password a password
-     */
-    authorizeOpenId(username, password) {
-        this.store.dispatch(new LoadOpenIdToken({ username, password }));
-    }
-    /**
-     * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
-     */
-    getOpenIdToken() {
-        return this.store.pipe(select(getOpenIdTokenValue));
-    }
-}
-KymaService.ɵprov = ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(ɵɵinject(Store)); }, token: KymaService, providedIn: "root" });
-KymaService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-KymaService.ctorParameters = () => [
-    { type: Store }
-];
-
-const defaultKymaConfig = {
-    authentication: {
-        kyma_client_id: 'client4kyma',
-        kyma_client_secret: 'secret',
-    },
-};
-
-const OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
-class OpenIdAuthenticationTokenService {
-    constructor(config, http) {
-        this.config = config;
-        this.http = http;
-    }
-    loadOpenIdAuthenticationToken(username, password) {
-        const url = this.getOAuthEndpoint();
-        const params = new HttpParams()
-            .set('client_id', encodeURIComponent(this.config.authentication.kyma_client_id))
-            .set('client_secret', encodeURIComponent(this.config.authentication.kyma_client_secret))
-            .set('grant_type', 'password') // authorization_code, client_credentials, password
-            .set('username', username)
-            .set('password', password)
-            .set('scope', 'openid');
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .post(url, params, { headers })
-            .pipe(catchError((error) => throwError(error)));
-    }
-    getOAuthEndpoint() {
-        return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
-    }
-}
-OpenIdAuthenticationTokenService.ɵprov = ɵɵdefineInjectable({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(ɵɵinject(KymaConfig), ɵɵinject(HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
-OpenIdAuthenticationTokenService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-OpenIdAuthenticationTokenService.ctorParameters = () => [
-    { type: KymaConfig },
-    { type: HttpClient }
-];
-
-class OpenIdTokenEffect {
-    constructor(actions$, openIdTokenService) {
-        this.actions$ = actions$;
-        this.openIdTokenService = openIdTokenService;
-        this.triggerOpenIdTokenLoading$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(([, loginAction]) => new LoadOpenIdToken({
-            username: loginAction.payload.userId,
-            password: loginAction.payload.password,
-        })));
-        this.loadOpenIdToken$ = this.actions$.pipe(ofType(LOAD_OPEN_ID_TOKEN), map((action) => action.payload), exhaustMap((payload) => this.openIdTokenService
-            .loadOpenIdAuthenticationToken(payload.username, payload.password)
-            .pipe(map((token) => new LoadOpenIdTokenSuccess(token)), catchError((error) => of(new LoadOpenIdTokenFail(makeErrorSerializable(error)))))));
-    }
-}
-OpenIdTokenEffect.decorators = [
-    { type: Injectable }
-];
-OpenIdTokenEffect.ctorParameters = () => [
-    { type: Actions },
-    { type: OpenIdAuthenticationTokenService }
-];
-__decorate([
-    Effect()
-], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
-__decorate([
-    Effect()
-], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
-
-const effects$8 = [OpenIdTokenEffect];
-
-function getReducers$8() {
-    return {
-        openIdToken: loaderReducer(OPEN_ID_TOKEN_DATA),
-    };
-}
-const reducerToken$8 = new InjectionToken('KymaReducers');
-const reducerProvider$8 = {
-    provide: reducerToken$8,
-    useFactory: getReducers$8,
-};
-function clearKymaState(reducer) {
-    return function (state, action) {
-        if (action.type === LOGOUT) {
-            state = Object.assign(Object.assign({}, state), { openIdToken: undefined });
-        }
-        return reducer(state, action);
-    };
-}
-const metaReducers$4 = [clearKymaState];
-
-function kymaStoreConfigFactory() {
-    // if we want to reuse KYMA_FEATURE const in config, we have to use factory instead of plain object
-    const config = {
-        state: {
-            storageSync: {
-                keys: {
-                    'kyma.openIdToken.value': StorageSyncType.LOCAL_STORAGE,
-                },
-            },
-        },
-    };
-    return config;
-}
-class KymaStoreModule {
-}
-KymaStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                    StateModule,
-                    StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
-                    EffectsModule.forFeature(effects$8),
-                ],
-                providers: [
-                    provideDefaultConfigFactory(kymaStoreConfigFactory),
-                    reducerProvider$8,
-                ],
-            },] }
-];
-
-class KymaModule {
-}
-KymaModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule, KymaStoreModule],
-                providers: [provideDefaultConfig(defaultKymaConfig)],
             },] }
 ];
 
@@ -21858,21 +22455,21 @@ PersonalizationContextService.ctorParameters = () => [
     { type: CmsService }
 ];
 
-function getReducers$9() {
+function getReducers$8() {
     return entityLoaderReducer(PROCESS_FEATURE);
 }
-const reducerToken$9 = new InjectionToken('ProcessReducers');
-const reducerProvider$9 = {
-    provide: reducerToken$9,
-    useFactory: getReducers$9,
+const reducerToken$8 = new InjectionToken('ProcessReducers');
+const reducerProvider$8 = {
+    provide: reducerToken$8,
+    useFactory: getReducers$8,
 };
 
 class ProcessStoreModule {
 }
 ProcessStoreModule.decorators = [
     { type: NgModule, args: [{
-                imports: [StateModule, StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
-                providers: [reducerProvider$9],
+                imports: [StateModule, StoreModule.forFeature(PROCESS_FEATURE, reducerToken$8)],
+                providers: [reducerProvider$8],
             },] }
 ];
 
@@ -22224,8 +22821,8 @@ var productGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getProductsState = createFeatureSelector(PRODUCT_FEATURE);
 
-const ɵ0$J = (state) => state.references;
-const getProductReferencesState = createSelector(getProductsState, ɵ0$J);
+const ɵ0$G = (state) => state.references;
+const getProductReferencesState = createSelector(getProductsState, ɵ0$G);
 const getSelectedProductReferencesFactory = (productCode, referenceType) => {
     return createSelector(getProductReferencesState, (referenceTypeData) => {
         if (referenceTypeData.productCode === productCode) {
@@ -22242,8 +22839,8 @@ const getSelectedProductReferencesFactory = (productCode, referenceType) => {
     });
 };
 
-const ɵ0$K = (state) => state.reviews;
-const getProductReviewsState = createSelector(getProductsState, ɵ0$K);
+const ɵ0$H = (state) => state.reviews;
+const getProductReviewsState = createSelector(getProductsState, ɵ0$H);
 const getSelectedProductReviewsFactory = (productCode) => {
     return createSelector(getProductReviewsState, (reviewData) => {
         if (reviewData.productCode === productCode) {
@@ -22252,12 +22849,12 @@ const getSelectedProductReviewsFactory = (productCode) => {
     });
 };
 
-const initialState$j = {
+const initialState$i = {
     results: {},
     suggestions: [],
     auxResults: {},
 };
-function reducer$j(state = initialState$j, action) {
+function reducer$i(state = initialState$i, action) {
     switch (action.type) {
         case SEARCH_PRODUCTS_SUCCESS: {
             const results = action.payload;
@@ -22282,14 +22879,14 @@ const getSearchResults = (state) => state.results;
 const getAuxSearchResults = (state) => state.auxResults;
 const getProductSuggestions = (state) => state.suggestions;
 
-const ɵ0$L = (state) => state.search;
-const getProductsSearchState = createSelector(getProductsState, ɵ0$L);
+const ɵ0$I = (state) => state.search;
+const getProductsSearchState = createSelector(getProductsState, ɵ0$I);
 const getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
 const getAuxSearchResults$1 = createSelector(getProductsSearchState, getAuxSearchResults);
 const getProductSuggestions$1 = createSelector(getProductsSearchState, getProductSuggestions);
 
-const ɵ0$M = (state) => state.details;
-const getProductState = createSelector(getProductsState, ɵ0$M);
+const ɵ0$J = (state) => state.details;
+const getProductState = createSelector(getProductsState, ɵ0$J);
 const getSelectedProductStateFactory = (code, scope = '') => {
     return createSelector(getProductState, (details) => entityLoaderStateSelector(details, code)[scope] ||
         initialLoaderState);
@@ -22306,17 +22903,17 @@ const getSelectedProductSuccessFactory = (code, scope = '') => {
 const getSelectedProductErrorFactory = (code, scope = '') => {
     return createSelector(getSelectedProductStateFactory(code, scope), (productState) => loaderErrorSelector(productState));
 };
-const ɵ1$v = (details) => {
+const ɵ1$t = (details) => {
     return Object.keys(details.entities);
 };
-const getAllProductCodes = createSelector(getProductState, ɵ1$v);
+const getAllProductCodes = createSelector(getProductState, ɵ1$t);
 
 var productGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProductsState: getProductsState,
     getProductReferencesState: getProductReferencesState,
     getSelectedProductReferencesFactory: getSelectedProductReferencesFactory,
-    ɵ0: ɵ0$J,
+    ɵ0: ɵ0$G,
     getProductReviewsState: getProductReviewsState,
     getSelectedProductReviewsFactory: getSelectedProductReviewsFactory,
     getProductsSearchState: getProductsSearchState,
@@ -22330,7 +22927,7 @@ var productGroup_selectors = /*#__PURE__*/Object.freeze({
     getSelectedProductSuccessFactory: getSelectedProductSuccessFactory,
     getSelectedProductErrorFactory: getSelectedProductErrorFactory,
     getAllProductCodes: getAllProductCodes,
-    ɵ1: ɵ1$v
+    ɵ1: ɵ1$t
 });
 
 class ProductReferenceService {
@@ -23070,18 +23667,18 @@ ProductEffects.ctorParameters = () => [
     { type: ProductConnector }
 ];
 
-const effects$9 = [
+const effects$8 = [
     ProductsSearchEffects,
     ProductEffects,
     ProductReviewsEffects,
     ProductReferencesEffects,
 ];
 
-const initialState$k = {
+const initialState$j = {
     productCode: '',
     list: [],
 };
-function reducer$k(state = initialState$k, action) {
+function reducer$j(state = initialState$j, action) {
     switch (action.type) {
         case LOAD_PRODUCT_REFERENCES_SUCCESS: {
             const productCode = action.payload.productCode;
@@ -23095,7 +23692,7 @@ function reducer$k(state = initialState$k, action) {
                 }, []), productCode });
         }
         case CLEAN_PRODUCT_REFERENCES: {
-            return initialState$k;
+            return initialState$j;
         }
     }
     return state;
@@ -23103,11 +23700,11 @@ function reducer$k(state = initialState$k, action) {
 const getProductReferenceList = (state) => state.list;
 const getProductReferenceProductCode = (state) => state.productCode;
 
-const initialState$l = {
+const initialState$k = {
     productCode: '',
     list: [],
 };
-function reducer$l(state = initialState$l, action) {
+function reducer$k(state = initialState$k, action) {
     switch (action.type) {
         case LOAD_PRODUCT_REVIEWS_SUCCESS: {
             const productCode = action.payload.productCode;
@@ -23147,18 +23744,18 @@ function entityScopedLoaderReducer(entityType, reducer) {
     return entityReducer(entityType, scopedLoaderReducer(entityType, reducer));
 }
 
-function getReducers$a() {
+function getReducers$9() {
     return {
-        search: reducer$j,
+        search: reducer$i,
         details: entityScopedLoaderReducer(PRODUCT_DETAIL_ENTITY),
-        reviews: reducer$l,
-        references: reducer$k,
+        reviews: reducer$k,
+        references: reducer$j,
     };
 }
-const reducerToken$a = new InjectionToken('ProductReducers');
-const reducerProvider$a = {
-    provide: reducerToken$a,
-    useFactory: getReducers$a,
+const reducerToken$9 = new InjectionToken('ProductReducers');
+const reducerProvider$9 = {
+    provide: reducerToken$9,
+    useFactory: getReducers$9,
 };
 function clearProductsState(reducer) {
     return function (state, action) {
@@ -23169,7 +23766,7 @@ function clearProductsState(reducer) {
         return reducer(state, action);
     };
 }
-const metaReducers$5 = [clearProductsState];
+const metaReducers$3 = [clearProductsState];
 
 function productStoreConfigFactory() {
     // if we want to reuse PRODUCT_FEATURE const in config, we have to use factory instead of plain object
@@ -23188,12 +23785,12 @@ ProductStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
-                    EffectsModule.forFeature(effects$9),
+                    StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$9, { metaReducers: metaReducers$3 }),
+                    EffectsModule.forFeature(effects$8),
                 ],
                 providers: [
                     provideDefaultConfigFactory(productStoreConfigFactory),
-                    reducerProvider$a,
+                    reducerProvider$9,
                 ],
             },] }
 ];
@@ -23443,28 +24040,28 @@ var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
 
-const ɵ0$N = (storesState) => storesState.findStores;
-const getFindStoresState = createSelector(getStoreFinderState, ɵ0$N);
-const ɵ1$w = (state) => loaderValueSelector(state);
-const getFindStoresEntities = createSelector(getFindStoresState, ɵ1$w);
-const ɵ2$l = (state) => loaderLoadingSelector(state);
-const getStoresLoading = createSelector(getFindStoresState, ɵ2$l);
+const ɵ0$K = (storesState) => storesState.findStores;
+const getFindStoresState = createSelector(getStoreFinderState, ɵ0$K);
+const ɵ1$u = (state) => loaderValueSelector(state);
+const getFindStoresEntities = createSelector(getFindStoresState, ɵ1$u);
+const ɵ2$k = (state) => loaderLoadingSelector(state);
+const getStoresLoading = createSelector(getFindStoresState, ɵ2$k);
 
-const ɵ0$O = (storesState) => storesState.viewAllStores;
-const getViewAllStoresState = createSelector(getStoreFinderState, ɵ0$O);
-const ɵ1$x = (state) => loaderValueSelector(state);
-const getViewAllStoresEntities = createSelector(getViewAllStoresState, ɵ1$x);
-const ɵ2$m = (state) => loaderLoadingSelector(state);
-const getViewAllStoresLoading = createSelector(getViewAllStoresState, ɵ2$m);
+const ɵ0$L = (storesState) => storesState.viewAllStores;
+const getViewAllStoresState = createSelector(getStoreFinderState, ɵ0$L);
+const ɵ1$v = (state) => loaderValueSelector(state);
+const getViewAllStoresEntities = createSelector(getViewAllStoresState, ɵ1$v);
+const ɵ2$l = (state) => loaderLoadingSelector(state);
+const getViewAllStoresLoading = createSelector(getViewAllStoresState, ɵ2$l);
 
 var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getFindStoresState: getFindStoresState,
     getFindStoresEntities: getFindStoresEntities,
     getStoresLoading: getStoresLoading,
-    ɵ0: ɵ0$N,
-    ɵ1: ɵ1$w,
-    ɵ2: ɵ2$l,
+    ɵ0: ɵ0$K,
+    ɵ1: ɵ1$u,
+    ɵ2: ɵ2$k,
     getViewAllStoresState: getViewAllStoresState,
     getViewAllStoresEntities: getViewAllStoresEntities,
     getViewAllStoresLoading: getViewAllStoresLoading
@@ -23825,18 +24422,18 @@ const defaultStoreFinderConfig = {
     },
 };
 
-function getReducers$b() {
+function getReducers$a() {
     return {
         findStores: loaderReducer(STORE_FINDER_DATA),
         viewAllStores: loaderReducer(STORE_FINDER_DATA),
     };
 }
-const reducerToken$b = new InjectionToken('StoreFinderReducers');
-const reducerProvider$b = {
-    provide: reducerToken$b,
-    useFactory: getReducers$b,
+const reducerToken$a = new InjectionToken('StoreFinderReducers');
+const reducerProvider$a = {
+    provide: reducerToken$a,
+    useFactory: getReducers$a,
 };
-const metaReducers$6 = [];
+const metaReducers$4 = [];
 
 class FindStoresEffect {
     constructor(actions$, storeFinderConnector) {
@@ -23891,7 +24488,7 @@ __decorate([
     Effect()
 ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
 
-const effects$a = [FindStoresEffect, ViewAllStoresEffect];
+const effects$9 = [FindStoresEffect, ViewAllStoresEffect];
 
 class StoreFinderStoreModule {
 }
@@ -23899,10 +24496,10 @@ StoreFinderStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
-                    EffectsModule.forFeature(effects$a),
+                    StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
+                    EffectsModule.forFeature(effects$9),
                 ],
-                providers: [reducerProvider$b],
+                providers: [reducerProvider$a],
             },] }
 ];
 
@@ -24214,9 +24811,9 @@ ConsentService.ctorParameters = () => [
 ];
 
 class CustomerCouponService {
-    constructor(store, authService) {
+    constructor(store, userIdService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Retrieves customer's coupons
@@ -24225,7 +24822,7 @@ class CustomerCouponService {
      * @param sort sort
      */
     loadCustomerCoupons(pageSize, currentPage, sort) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadCustomerCoupons({
                 userId,
                 pageSize: pageSize,
@@ -24268,7 +24865,7 @@ class CustomerCouponService {
      * @param couponCode a customer coupon code
      */
     subscribeCustomerCoupon(couponCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new SubscribeCustomerCoupon({
                 userId,
                 couponCode: couponCode,
@@ -24298,7 +24895,7 @@ class CustomerCouponService {
      * @param couponCode a customer coupon code
      */
     unsubscribeCustomerCoupon(couponCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new UnsubscribeCustomerCoupon({
                 userId,
                 couponCode: couponCode,
@@ -24328,7 +24925,7 @@ class CustomerCouponService {
      * @param couponCode a customer coupon code
      */
     claimCustomerCoupon(couponCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new ClaimCustomerCoupon({
                 userId,
                 couponCode,
@@ -24348,7 +24945,7 @@ class CustomerCouponService {
         return this.store.pipe(select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
     }
 }
-CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
+CustomerCouponService.ɵprov = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: CustomerCouponService, providedIn: "root" });
 CustomerCouponService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -24356,13 +24953,13 @@ CustomerCouponService.decorators = [
 ];
 CustomerCouponService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService }
 ];
 
 class OrderReturnRequestService {
-    constructor(store, authService) {
+    constructor(store, userIdService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Create order return request
@@ -24370,7 +24967,7 @@ class OrderReturnRequestService {
      * @param returnRequestInput order return request entry input
      */
     createOrderReturnRequest(returnRequestInput) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new CreateOrderReturnRequest({
                 userId,
                 returnRequestInput,
@@ -24401,7 +24998,7 @@ class OrderReturnRequestService {
      * @param returnRequestCode
      */
     loadOrderReturnRequestDetail(returnRequestCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadOrderReturnRequest({
                 userId,
                 returnRequestCode,
@@ -24415,7 +25012,7 @@ class OrderReturnRequestService {
      * @param sort sort
      */
     loadOrderReturnRequestList(pageSize, currentPage, sort) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (userId !== OCC_USER_ID_ANONYMOUS) {
                 this.store.dispatch(new LoadOrderReturnRequestList({
                     userId,
@@ -24454,7 +25051,7 @@ class OrderReturnRequestService {
      * Cancel order return request
      */
     cancelOrderReturnRequest(returnRequestCode, returnRequestModification) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new CancelOrderReturnRequest({
                 userId,
                 returnRequestCode,
@@ -24481,7 +25078,7 @@ class OrderReturnRequestService {
         return this.store.dispatch(new ResetCancelReturnProcess());
     }
 }
-OrderReturnRequestService.ɵprov = ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
+OrderReturnRequestService.ɵprov = ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: OrderReturnRequestService, providedIn: "root" });
 OrderReturnRequestService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -24489,19 +25086,19 @@ OrderReturnRequestService.decorators = [
 ];
 OrderReturnRequestService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService }
 ];
 
 class UserAddressService {
-    constructor(store, authService) {
+    constructor(store, userIdService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Retrieves user's addresses
      */
     loadAddresses() {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadUserAddresses(userId));
         });
     }
@@ -24510,7 +25107,7 @@ class UserAddressService {
      * @param address a user address
      */
     addUserAddress(address) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new AddUserAddress({
                 userId,
                 address,
@@ -24522,7 +25119,7 @@ class UserAddressService {
      * @param addressId a user address ID
      */
     setAddressAsDefault(addressId) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new UpdateUserAddress({
                 userId,
                 addressId,
@@ -24536,7 +25133,7 @@ class UserAddressService {
      * @param address a user address
      */
     updateUserAddress(addressId, address) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new UpdateUserAddress({
                 userId,
                 addressId,
@@ -24549,7 +25146,7 @@ class UserAddressService {
      * @param addressId a user address ID
      */
     deleteUserAddress(addressId) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new DeleteUserAddress({
                 userId,
                 addressId,
@@ -24628,7 +25225,7 @@ class UserAddressService {
         }));
     }
 }
-UserAddressService.ɵprov = ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
+UserAddressService.ɵprov = ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: UserAddressService, providedIn: "root" });
 UserAddressService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -24636,19 +25233,19 @@ UserAddressService.decorators = [
 ];
 UserAddressService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService }
 ];
 
 class UserCostCenterService {
-    constructor(store, authService) {
+    constructor(store, userIdService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Load all visible active cost centers for the currently login user
      */
     loadActiveCostCenters() {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (userId && userId !== OCC_USER_ID_ANONYMOUS) {
                 this.store.dispatch(new LoadActiveCostCenters(userId));
             }
@@ -24683,7 +25280,7 @@ class UserCostCenterService {
         }));
     }
 }
-UserCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
+UserCostCenterService.ɵprov = ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: UserCostCenterService, providedIn: "root" });
 UserCostCenterService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -24691,13 +25288,13 @@ UserCostCenterService.decorators = [
 ];
 UserCostCenterService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService }
 ];
 
 class UserInterestsService {
-    constructor(store, authService) {
+    constructor(store, userIdService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Retrieves an product interest list
@@ -24706,7 +25303,7 @@ class UserInterestsService {
      * @param sort sort
      */
     loadProductInterests(pageSize, currentPage, sort, productCode, notificationType) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadProductInterests({
                 userId,
                 pageSize: pageSize,
@@ -24749,7 +25346,7 @@ class UserInterestsService {
      * @param singleDelete flag to delete only one interest
      */
     removeProdutInterest(item, singleDelete) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new RemoveProductInterest({
                 userId,
                 item: item,
@@ -24776,7 +25373,7 @@ class UserInterestsService {
      * @param notificationType the notification type
      */
     addProductInterest(productCode, notificationType) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new AddProductInterest({
                 userId,
                 productCode: productCode,
@@ -24815,7 +25412,7 @@ class UserInterestsService {
         this.store.dispatch(new ClearProductInterests());
     }
 }
-UserInterestsService.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
+UserInterestsService.ɵprov = ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: UserInterestsService, providedIn: "root" });
 UserInterestsService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -24823,13 +25420,13 @@ UserInterestsService.decorators = [
 ];
 UserInterestsService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService }
 ];
 
 class UserNotificationPreferenceService {
-    constructor(store, authService) {
+    constructor(store, userIdService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Returns all notification preferences.
@@ -24847,7 +25444,7 @@ class UserNotificationPreferenceService {
      * Loads all notification preferences.
      */
     loadPreferences() {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadNotificationPreferences(userId));
         });
     }
@@ -24868,7 +25465,7 @@ class UserNotificationPreferenceService {
      * @param preferences a preference list
      */
     updatePreferences(preferences) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new UpdateNotificationPreferences({
                 userId,
                 preferences: preferences,
@@ -24889,7 +25486,7 @@ class UserNotificationPreferenceService {
         this.store.dispatch(new ResetNotificationPreferences());
     }
 }
-UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+UserNotificationPreferenceService.ɵprov = ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
 UserNotificationPreferenceService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -24897,13 +25494,13 @@ UserNotificationPreferenceService.decorators = [
 ];
 UserNotificationPreferenceService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService }
 ];
 
 class UserOrderService {
-    constructor(store, authService, routingService) {
+    constructor(store, userIdService, routingService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
         this.routingService = routingService;
     }
     /**
@@ -24918,7 +25515,7 @@ class UserOrderService {
      * @param orderCode an order code
      */
     loadOrderDetails(orderCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadOrderDetails({
                 userId,
                 orderCode,
@@ -24957,7 +25554,7 @@ class UserOrderService {
      * @param sort sort
      */
     loadOrderList(pageSize, currentPage, sort) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (userId !== OCC_USER_ID_ANONYMOUS) {
                 let replenishmentOrderCode;
                 this.routingService
@@ -24996,7 +25593,7 @@ class UserOrderService {
      * @param consignmentCode a consignment code
      */
     loadConsignmentTracking(orderCode, consignmentCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadConsignmentTracking({
                 userId,
                 orderCode,
@@ -25014,7 +25611,7 @@ class UserOrderService {
      * Cancel an order
      */
     cancelOrder(orderCode, cancelRequestInput) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new CancelOrder({
                 userId,
                 orderCode,
@@ -25041,7 +25638,7 @@ class UserOrderService {
         return this.store.dispatch(new ResetCancelOrderProcess());
     }
 }
-UserOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(RoutingService)); }, token: UserOrderService, providedIn: "root" });
+UserOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(RoutingService)); }, token: UserOrderService, providedIn: "root" });
 UserOrderService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -25049,20 +25646,20 @@ UserOrderService.decorators = [
 ];
 UserOrderService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService },
+    { type: UserIdService },
     { type: RoutingService }
 ];
 
 class UserPaymentService {
-    constructor(store, authService) {
+    constructor(store, userIdService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Loads all user's payment methods.
      */
     loadPaymentMethods() {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new LoadUserPaymentMethods(userId));
         });
     }
@@ -25086,7 +25683,7 @@ class UserPaymentService {
      * @param paymentMethodId a payment method ID
      */
     setPaymentMethodAsDefault(paymentMethodId) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new SetDefaultUserPaymentMethod({
                 userId,
                 paymentMethodId,
@@ -25099,7 +25696,7 @@ class UserPaymentService {
      * @param paymentMethodId a payment method ID
      */
     deletePaymentMethod(paymentMethodId) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             this.store.dispatch(new DeleteUserPaymentMethod({
                 userId,
                 paymentMethodId,
@@ -25119,7 +25716,7 @@ class UserPaymentService {
         this.store.dispatch(new LoadBillingCountries());
     }
 }
-UserPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
+UserPaymentService.ɵprov = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: UserPaymentService, providedIn: "root" });
 UserPaymentService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -25127,13 +25724,13 @@ UserPaymentService.decorators = [
 ];
 UserPaymentService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService }
 ];
 
 class UserReplenishmentOrderService {
-    constructor(store, authService) {
+    constructor(store, userIdService) {
         this.store = store;
-        this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Returns replenishment order details for a given 'current' user
@@ -25141,7 +25738,7 @@ class UserReplenishmentOrderService {
      * @param replenishmentOrderCode a replenishment order code
      */
     loadReplenishmentOrderDetails(replenishmentOrderCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (userId !== OCC_USER_ID_ANONYMOUS) {
                 this.store.dispatch(new LoadReplenishmentOrderDetails({
                     userId,
@@ -25186,7 +25783,7 @@ class UserReplenishmentOrderService {
      * @param replenishmentOrderCode a replenishment order code
      */
     cancelReplenishmentOrder(replenishmentOrderCode) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (userId !== OCC_USER_ID_ANONYMOUS) {
                 this.store.dispatch(new CancelReplenishmentOrder({
                     userId,
@@ -25257,7 +25854,7 @@ class UserReplenishmentOrderService {
      * @param sort sort
      */
     loadReplenishmentOrderList(pageSize, currentPage, sort) {
-        this.authService.invokeWithUserId((userId) => {
+        this.userIdService.invokeWithUserId((userId) => {
             if (userId !== OCC_USER_ID_ANONYMOUS) {
                 this.store.dispatch(new LoadUserReplenishmentOrders({
                     userId,
@@ -25275,7 +25872,7 @@ class UserReplenishmentOrderService {
         this.store.dispatch(new ClearUserReplenishmentOrders());
     }
 }
-UserReplenishmentOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserReplenishmentOrderService_Factory() { return new UserReplenishmentOrderService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserReplenishmentOrderService, providedIn: "root" });
+UserReplenishmentOrderService.ɵprov = ɵɵdefineInjectable({ factory: function UserReplenishmentOrderService_Factory() { return new UserReplenishmentOrderService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: UserReplenishmentOrderService, providedIn: "root" });
 UserReplenishmentOrderService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -25283,13 +25880,13 @@ UserReplenishmentOrderService.decorators = [
 ];
 UserReplenishmentOrderService.ctorParameters = () => [
     { type: Store },
-    { type: AuthService }
+    { type: UserIdService }
 ];
 
-const initialState$m = {
+const initialState$l = {
     entities: {},
 };
-function reducer$m(state = initialState$m, action) {
+function reducer$l(state = initialState$l, action) {
     switch (action.type) {
         case LOAD_BILLING_COUNTRIES_SUCCESS: {
             const billingCountries = action.payload;
@@ -25299,14 +25896,14 @@ function reducer$m(state = initialState$m, action) {
             return Object.assign(Object.assign({}, state), { entities });
         }
         case CLEAR_USER_MISCS_DATA: {
-            return initialState$m;
+            return initialState$l;
         }
     }
     return state;
 }
 
-const initialState$n = {};
-function reducer$n(state = initialState$n, action) {
+const initialState$m = {};
+function reducer$m(state = initialState$m, action) {
     switch (action.type) {
         case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
             const tracking = action.payload;
@@ -25315,18 +25912,18 @@ function reducer$n(state = initialState$n, action) {
             };
         }
         case CLEAR_CONSIGNMENT_TRACKING: {
-            return initialState$n;
+            return initialState$m;
         }
     }
     return state;
 }
 
-const initialState$o = {
+const initialState$n = {
     coupons: [],
     sorts: [],
     pagination: {},
 };
-function reducer$o(state = initialState$o, action) {
+function reducer$n(state = initialState$n, action) {
     switch (action.type) {
         case LOAD_CUSTOMER_COUPONS_SUCCESS: {
             return action.payload;
@@ -25351,10 +25948,10 @@ function reducer$o(state = initialState$o, action) {
     return state;
 }
 
-const initialState$p = {
+const initialState$o = {
     entities: {},
 };
-function reducer$p(state = initialState$p, action) {
+function reducer$o(state = initialState$o, action) {
     switch (action.type) {
         case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
             const deliveryCountries = action.payload;
@@ -25364,28 +25961,28 @@ function reducer$p(state = initialState$p, action) {
             return Object.assign(Object.assign({}, state), { entities });
         }
         case CLEAR_USER_MISCS_DATA: {
-            return initialState$p;
+            return initialState$o;
         }
     }
     return state;
 }
 
-const initialState$q = [];
-function reducer$q(state = initialState$q, action) {
+const initialState$p = [];
+function reducer$p(state = initialState$p, action) {
     switch (action.type) {
         case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
-            return initialState$q;
+            return initialState$p;
         }
         case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
         case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
-            return action.payload ? action.payload : initialState$q;
+            return action.payload ? action.payload : initialState$p;
         }
     }
     return state;
 }
 
-const initialState$r = {};
-function reducer$r(state = initialState$r, action) {
+const initialState$q = {};
+function reducer$q(state = initialState$q, action) {
     switch (action.type) {
         case LOAD_ORDER_DETAILS_SUCCESS: {
             const order = action.payload;
@@ -25395,27 +25992,44 @@ function reducer$r(state = initialState$r, action) {
     return state;
 }
 
-const initialState$s = {
+const initialState$r = {
     returnRequests: [],
     pagination: {},
     sorts: [],
 };
-function reducer$s(state = initialState$s, action) {
+function reducer$r(state = initialState$r, action) {
     switch (action.type) {
         case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
-            return action.payload ? action.payload : initialState$s;
+            return action.payload ? action.payload : initialState$r;
         }
     }
     return state;
 }
 
-const initialState$t = [];
-function reducer$t(state = initialState$t, action) {
+const initialState$s = [];
+function reducer$s(state = initialState$s, action) {
     switch (action.type) {
         case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-            return action.payload ? action.payload : initialState$t;
+            return action.payload ? action.payload : initialState$s;
         }
         case LOAD_USER_PAYMENT_METHODS_FAIL: {
+            return initialState$s;
+        }
+    }
+    return state;
+}
+
+const initialState$t = {
+    results: [],
+    pagination: {},
+    sorts: [],
+};
+function reducer$t(state = initialState$t, action) {
+    switch (action.type) {
+        case LOAD_PRODUCT_INTERESTS_SUCCESS: {
+            return action.payload ? action.payload : initialState$t;
+        }
+        case LOAD_PRODUCT_INTERESTS_FAIL: {
             return initialState$t;
         }
     }
@@ -25423,27 +26037,10 @@ function reducer$t(state = initialState$t, action) {
 }
 
 const initialState$u = {
-    results: [],
-    pagination: {},
-    sorts: [],
-};
-function reducer$u(state = initialState$u, action) {
-    switch (action.type) {
-        case LOAD_PRODUCT_INTERESTS_SUCCESS: {
-            return action.payload ? action.payload : initialState$u;
-        }
-        case LOAD_PRODUCT_INTERESTS_FAIL: {
-            return initialState$u;
-        }
-    }
-    return state;
-}
-
-const initialState$v = {
     entities: [],
     country: null,
 };
-function reducer$v(state = initialState$v, action) {
+function reducer$u(state = initialState$u, action) {
     switch (action.type) {
         case LOAD_REGIONS_SUCCESS: {
             const entities = action.payload.entities;
@@ -25452,18 +26049,18 @@ function reducer$v(state = initialState$v, action) {
                 return Object.assign(Object.assign({}, state), { entities,
                     country });
             }
-            return initialState$v;
+            return initialState$u;
         }
     }
     return state;
 }
 
-const initialState$w = {};
-function reducer$w(state = initialState$w, action) {
+const initialState$v = {};
+function reducer$v(state = initialState$v, action) {
     switch (action.type) {
         case LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS:
         case CANCEL_REPLENISHMENT_ORDER_SUCCESS: {
-            return action.payload ? action.payload : initialState$w;
+            return action.payload ? action.payload : initialState$v;
         }
         default: {
             return state;
@@ -25471,8 +26068,8 @@ function reducer$w(state = initialState$w, action) {
     }
 }
 
-const initialState$x = false;
-function reducer$x(state = initialState$x, action) {
+const initialState$w = false;
+function reducer$w(state = initialState$w, action) {
     switch (action.type) {
         case RESET_PASSWORD_SUCCESS: {
             return true;
@@ -25481,10 +26078,10 @@ function reducer$x(state = initialState$x, action) {
     return state;
 }
 
-const initialState$y = {
+const initialState$x = {
     entities: {},
 };
-function reducer$y(state = initialState$y, action) {
+function reducer$x(state = initialState$x, action) {
     switch (action.type) {
         case LOAD_TITLES_SUCCESS: {
             const titles = action.payload;
@@ -25494,7 +26091,20 @@ function reducer$y(state = initialState$y, action) {
             return Object.assign(Object.assign({}, state), { entities });
         }
         case CLEAR_USER_MISCS_DATA: {
+            return initialState$x;
+        }
+    }
+    return state;
+}
+
+const initialState$y = [];
+function reducer$y(state = initialState$y, action) {
+    switch (action.type) {
+        case LOAD_USER_ADDRESSES_FAIL: {
             return initialState$y;
+        }
+        case LOAD_USER_ADDRESSES_SUCCESS: {
+            return action.payload ? action.payload : initialState$y;
         }
     }
     return state;
@@ -25503,22 +26113,9 @@ function reducer$y(state = initialState$y, action) {
 const initialState$z = [];
 function reducer$z(state = initialState$z, action) {
     switch (action.type) {
-        case LOAD_USER_ADDRESSES_FAIL: {
-            return initialState$z;
-        }
-        case LOAD_USER_ADDRESSES_SUCCESS: {
-            return action.payload ? action.payload : initialState$z;
-        }
-    }
-    return state;
-}
-
-const initialState$A = [];
-function reducer$A(state = initialState$A, action) {
-    switch (action.type) {
         case LOAD_USER_CONSENTS_SUCCESS: {
             const consents = action.payload;
-            return consents ? consents : initialState$A;
+            return consents ? consents : initialState$z;
         }
         case GIVE_USER_CONSENT_SUCCESS: {
             const updatedConsentTemplate = action.consentTemplate;
@@ -25530,21 +26127,21 @@ function reducer$A(state = initialState$A, action) {
     return state;
 }
 
-const initialState$B = [];
-function reducer$B(state = initialState$B, action) {
+const initialState$A = [];
+function reducer$A(state = initialState$A, action) {
     switch (action.type) {
         case LOAD_ACTIVE_COST_CENTERS_FAIL: {
-            return initialState$B;
+            return initialState$A;
         }
         case LOAD_ACTIVE_COST_CENTERS_SUCCESS: {
-            return action.payload ? action.payload : initialState$B;
+            return action.payload ? action.payload : initialState$A;
         }
     }
     return state;
 }
 
-const initialState$C = {};
-function reducer$C(state = initialState$C, action) {
+const initialState$B = {};
+function reducer$B(state = initialState$B, action) {
     switch (action.type) {
         case LOAD_USER_DETAILS_SUCCESS: {
             return action.payload;
@@ -25557,32 +26154,32 @@ function reducer$C(state = initialState$C, action) {
     return state;
 }
 
-const initialState$D = {
+const initialState$C = {
     orders: [],
     pagination: {},
     sorts: [],
 };
-function reducer$D(state = initialState$D, action) {
+function reducer$C(state = initialState$C, action) {
     switch (action.type) {
         case LOAD_USER_ORDERS_SUCCESS: {
-            return action.payload ? action.payload : initialState$D;
+            return action.payload ? action.payload : initialState$C;
         }
         case LOAD_USER_ORDERS_FAIL: {
-            return initialState$D;
+            return initialState$C;
         }
     }
     return state;
 }
 
-const initialState$E = {
+const initialState$D = {
     replenishmentOrders: [],
     pagination: {},
     sorts: [],
 };
-function reducer$E(state = initialState$E, action) {
+function reducer$D(state = initialState$D, action) {
     switch (action.type) {
         case LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS: {
-            return action.payload ? action.payload : initialState$E;
+            return action.payload ? action.payload : initialState$D;
         }
         case CANCEL_REPLENISHMENT_ORDER_SUCCESS: {
             const cancelledReplenishmentOrder = action.payload;
@@ -25590,7 +26187,7 @@ function reducer$E(state = initialState$E, action) {
             const index = userReplenishmentOrders.findIndex((replenishmentOrder) => replenishmentOrder.replenishmentOrderCode ===
                 cancelledReplenishmentOrder.replenishmentOrderCode);
             if (index === -1) {
-                return initialState$E;
+                return initialState$D;
             }
             else {
                 userReplenishmentOrders[index] = Object.assign({}, cancelledReplenishmentOrder);
@@ -25601,36 +26198,36 @@ function reducer$E(state = initialState$E, action) {
     return state;
 }
 
-function getReducers$c() {
+function getReducers$b() {
     return {
         account: combineReducers({
-            details: reducer$C,
+            details: reducer$B,
         }),
-        addresses: loaderReducer(USER_ADDRESSES, reducer$z),
-        billingCountries: reducer$m,
-        consents: loaderReducer(USER_CONSENTS, reducer$A),
-        payments: loaderReducer(USER_PAYMENT_METHODS, reducer$t),
-        orders: loaderReducer(USER_ORDERS, reducer$D),
-        order: loaderReducer(USER_ORDER_DETAILS, reducer$r),
-        replenishmentOrders: loaderReducer(USER_REPLENISHMENT_ORDERS, reducer$E),
+        addresses: loaderReducer(USER_ADDRESSES, reducer$y),
+        billingCountries: reducer$l,
+        consents: loaderReducer(USER_CONSENTS, reducer$z),
+        payments: loaderReducer(USER_PAYMENT_METHODS, reducer$s),
+        orders: loaderReducer(USER_ORDERS, reducer$C),
+        order: loaderReducer(USER_ORDER_DETAILS, reducer$q),
+        replenishmentOrders: loaderReducer(USER_REPLENISHMENT_ORDERS, reducer$D),
         orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
-        orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$s),
-        countries: reducer$p,
-        titles: reducer$y,
-        regions: loaderReducer(REGIONS, reducer$v),
-        resetPassword: reducer$x,
-        consignmentTracking: reducer$n,
-        customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$o),
-        notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$q),
-        productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$u),
-        costCenters: loaderReducer(USER_COST_CENTERS, reducer$B),
-        replenishmentOrder: loaderReducer(USER_REPLENISHMENT_ORDER_DETAILS, reducer$w),
+        orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$r),
+        countries: reducer$o,
+        titles: reducer$x,
+        regions: loaderReducer(REGIONS, reducer$u),
+        resetPassword: reducer$w,
+        consignmentTracking: reducer$m,
+        customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$n),
+        notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$p),
+        productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$t),
+        costCenters: loaderReducer(USER_COST_CENTERS, reducer$A),
+        replenishmentOrder: loaderReducer(USER_REPLENISHMENT_ORDER_DETAILS, reducer$v),
     };
 }
-const reducerToken$c = new InjectionToken('UserReducers');
-const reducerProvider$c = {
-    provide: reducerToken$c,
-    useFactory: getReducers$c,
+const reducerToken$b = new InjectionToken('UserReducers');
+const reducerProvider$b = {
+    provide: reducerToken$b,
+    useFactory: getReducers$b,
 };
 function clearUserState(reducer) {
     return function (state, action) {
@@ -25640,7 +26237,7 @@ function clearUserState(reducer) {
         return reducer(state, action);
     };
 }
-const metaReducers$7 = [clearUserState];
+const metaReducers$5 = [clearUserState];
 
 class BillingCountriesEffect {
     constructor(actions$, siteConnector) {
@@ -26400,22 +26997,20 @@ __decorate([
 ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
 
 class UserRegisterEffects {
-    constructor(actions$, userConnector) {
+    constructor(actions$, userConnector, authService) {
         this.actions$ = actions$;
         this.userConnector = userConnector;
+        this.authService = authService;
         this.registerUser$ = this.actions$.pipe(ofType(REGISTER_USER), map((action) => action.payload), mergeMap((user) => this.userConnector.register(user).pipe(map(() => new RegisterUserSuccess()), catchError((error) => of(new RegisterUserFail(makeErrorSerializable(error)))))));
-        this.registerGuest$ = this.actions$.pipe(ofType(REGISTER_GUEST), map((action) => action.payload), mergeMap(({ guid, password }) => this.userConnector.registerGuest(guid, password).pipe(switchMap((user) => [
-            new LoadUserToken({
-                userId: user.uid,
-                password: password,
-            }),
-            new RegisterGuestSuccess(),
-        ]), catchError((error) => of(new RegisterGuestFail(makeErrorSerializable(error)))))));
+        this.registerGuest$ = this.actions$.pipe(ofType(REGISTER_GUEST), map((action) => action.payload), mergeMap(({ guid, password }) => this.userConnector.registerGuest(guid, password).pipe(switchMap((user) => {
+            this.authService.authorize(user.uid, password);
+            return [new RegisterGuestSuccess()];
+        }), catchError((error) => of(new RegisterGuestFail(makeErrorSerializable(error)))))));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((action) => action.payload), mergeMap((userId) => {
-            return this.userConnector.remove(userId).pipe(switchMap(() => [
-                new RemoveUserSuccess(),
-                new Logout(),
-            ]), catchError((error) => of(new RemoveUserFail(makeErrorSerializable(error)))));
+            return this.userConnector.remove(userId).pipe(switchMap(() => {
+                this.authService.initLogout();
+                return [new RemoveUserSuccess()];
+            }), catchError((error) => of(new RemoveUserFail(makeErrorSerializable(error)))));
         }));
     }
 }
@@ -26424,7 +27019,8 @@ UserRegisterEffects.decorators = [
 ];
 UserRegisterEffects.ctorParameters = () => [
     { type: Actions },
-    { type: UserConnector }
+    { type: UserConnector },
+    { type: AuthService }
 ];
 __decorate([
     Effect()
@@ -26460,7 +27056,7 @@ __decorate([
     Effect()
 ], UserReplenishmentOrdersEffect.prototype, "loadUserReplenishmentOrders$", void 0);
 
-const effects$b = [
+const effects$a = [
     ClearMiscsDataEffect,
     DeliveryCountriesEffects,
     RegionsEffects,
@@ -26494,11 +27090,11 @@ UserStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     StateModule,
-                    StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
-                    EffectsModule.forFeature(effects$b),
+                    StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$5 }),
+                    EffectsModule.forFeature(effects$a),
                     RouterModule,
                 ],
-                providers: [reducerProvider$c],
+                providers: [reducerProvider$b],
             },] }
 ];
 
@@ -26524,5 +27120,5 @@ UserModule.decorators = [
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_LIST_NORMALIZER, ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_HEADER, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_NORMALIZER, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, AUTH_FEATURE, ActivatedRoutesService, ActiveCartService, AnonymousConsentNormalizer, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, B2BPaymentTypeEnum, B2BUserGroup, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COST_CENTERS_NORMALIZER, COST_CENTER_NORMALIZER, COST_CENTER_SERIALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartRemoveEntrySuccessEvent, CartUpdateEntrySuccessEvent, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutCostCenterAdapter, CheckoutCostCenterConnector, CheckoutCostCenterService, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutEventBuilder, CheckoutEventModule, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutReplenishmentOrderAdapter, CheckoutReplenishmentOrderConnector, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConfigurationService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CostCenterModule, CostCenterOccModule, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DaysOfWeek, DefaultConfig, DefaultConfigChunk, DefaultRoutePageMetaResolver, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GET_PAYMENT_TYPES_PROCESS_ID, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, HttpParamsURIEncoder, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LazyModulesService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, ModuleInitializedEvent, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, ORDER_TYPE, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutCostCenterAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCheckoutPaymentTypeAdapter, OccCheckoutReplenishmentOrderAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCostCenterListNormalizer, OccCostCenterNormalizer, OccCostCenterSerializer, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccReplenishmentOrderFormSerializer, OccReplenishmentOrderNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OccUserReplenishmentOrderAdapter, OpenIdAuthenticationTokenService, OrderPlacedEvent, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PAYMENT_TYPE_NORMALIZER, PLACED_ORDER_PROCESS_ID, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PaymentTypeAdapter, PaymentTypeConnector, PaymentTypeService, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, REPLENISHMENT_ORDER_FORM_SERIALIZER, REPLENISHMENT_ORDER_HISTORY_NORMALIZER, REPLENISHMENT_ORDER_NORMALIZER, ROUTING_FEATURE, RootConfig, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, RoutingPageMetaResolver, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_COST_CENTER_PROCESS_ID, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_COST_CENTERS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_REPLENISHMENT_ORDERS, USER_REPLENISHMENT_ORDER_DETAILS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnauthorizedErrorHandler, UnifiedInjector, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserCostCenterAdapter, UserCostCenterConnector, UserCostCenterService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserReplenishmentOrderAdapter, UserReplenishmentOrderConnector, UserReplenishmentOrderService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, contextServiceMapProvider, createFrom, deepMerge, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getLastValueSync, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, isObject, mediaServerConfigFromMetaTagFactory, normalizeHttpError, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, recurrencePeriod, resolveApplicable, serviceMapFactory, validateConfig, withdrawOn, cartStatePersistenceFactory as ɵa, CONFIG_INITIALIZER_FORROOT_GUARD as ɵb, AsmStoreModule as ɵba, getReducers$4 as ɵbb, reducerToken$4 as ɵbc, reducerProvider$4 as ɵbd, clearCustomerSupportAgentAsmState as ɵbe, metaReducers$2 as ɵbf, effects$4 as ɵbg, CustomerEffects as ɵbh, CustomerSupportAgentTokenEffects as ɵbi, UserAuthenticationTokenService as ɵbj, reducer$c as ɵbk, interceptors$2 as ɵbl, CustomerSupportAgentAuthErrorInterceptor as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, defaultAsmConfig as ɵbo, authStoreConfigFactory as ɵbp, AuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, clearAuthState as ɵbu, metaReducers as ɵbv, effects as ɵbw, ClientTokenEffect as ɵbx, UserTokenEffects as ɵby, ClientAuthenticationTokenService as ɵbz, TEST_CONFIG_COOKIE_NAME as ɵc, reducer as ɵca, defaultAuthConfig as ɵcb, interceptors as ɵcc, ClientTokenInterceptor as ɵcd, UserTokenInterceptor as ɵce, AuthErrorInterceptor as ɵcf, UserErrorHandlingService as ɵcg, UrlParsingService as ɵch, RoutingParamsService as ɵci, ClientErrorHandlingService as ɵcj, TokenRevocationInterceptor as ɵck, MultiCartStoreModule as ɵcl, clearMultiCartState as ɵcm, multiCartMetaReducers as ɵcn, multiCartReducerToken as ɵco, getMultiCartReducers as ɵcp, multiCartReducerProvider as ɵcq, CartEffects as ɵcr, CartEntryEffects as ɵcs, CartVoucherEffects as ɵct, WishListEffects as ɵcu, SaveCartConnector as ɵcv, SaveCartAdapter as ɵcw, MultiCartEffects as ɵcx, entityProcessesLoaderReducer as ɵcy, entityReducer as ɵcz, configFromCookieFactory as ɵd, processesLoaderReducer as ɵda, activeCartReducer as ɵdb, cartEntitiesReducer as ɵdc, wishListReducer as ɵdd, CartPageMetaResolver as ɵde, SiteContextParamsService as ɵdf, CheckoutStoreModule as ɵdg, getReducers$1 as ɵdh, reducerToken$1 as ɵdi, reducerProvider$1 as ɵdj, effects$1 as ɵdk, AddressVerificationEffect as ɵdl, CardTypesEffects as ɵdm, CheckoutEffects as ɵdn, PaymentTypesEffects as ɵdo, ReplenishmentOrderEffects as ɵdp, reducer$3 as ɵdq, reducer$2 as ɵdr, reducer$1 as ɵds, reducer$5 as ɵdt, reducer$4 as ɵdu, cmsStoreConfigFactory as ɵdv, CmsStoreModule as ɵdw, getReducers$7 as ɵdx, reducerToken$7 as ɵdy, reducerProvider$7 as ɵdz, initConfig as ɵe, clearCmsState as ɵea, metaReducers$3 as ɵeb, effects$7 as ɵec, ComponentsEffects as ɵed, NavigationEntryItemEffects as ɵee, PageEffects as ɵef, reducer$h as ɵeg, entityLoaderReducer as ɵeh, reducer$i as ɵei, reducer$f as ɵej, reducer$g as ɵek, GlobalMessageStoreModule as ɵel, getReducers$5 as ɵem, reducerToken$5 as ɵen, reducerProvider$5 as ɵeo, reducer$d as ɵep, GlobalMessageEffect as ɵeq, defaultGlobalMessageConfigFactory as ɵer, HttpErrorInterceptor as ɵes, defaultI18nConfig as ɵet, i18nextProviders as ɵeu, i18nextInit as ɵev, MockTranslationService as ɵew, kymaStoreConfigFactory as ɵex, KymaStoreModule as ɵey, getReducers$8 as ɵez, anonymousConsentsStoreConfigFactory as ɵf, reducerToken$8 as ɵfa, reducerProvider$8 as ɵfb, clearKymaState as ɵfc, metaReducers$4 as ɵfd, effects$8 as ɵfe, OpenIdTokenEffect as ɵff, defaultKymaConfig as ɵfg, defaultOccAsmConfig as ɵfh, defaultOccCartConfig as ɵfi, OccSaveCartAdapter as ɵfj, defaultOccCheckoutConfig as ɵfk, defaultOccCostCentersConfig as ɵfl, defaultOccProductConfig as ɵfm, defaultOccSiteContextConfig as ɵfn, defaultOccStoreFinderConfig as ɵfo, defaultOccUserConfig as ɵfp, UserNotificationPreferenceAdapter as ɵfq, OccUserCostCenterAdapter as ɵfr, OccAddressListNormalizer as ɵfs, UserReplenishmentOrderAdapter as ɵft, defaultPersonalizationConfig as ɵfu, interceptors$3 as ɵfv, OccPersonalizationIdInterceptor as ɵfw, OccPersonalizationTimeInterceptor as ɵfx, ProcessStoreModule as ɵfy, getReducers$9 as ɵfz, AnonymousConsentsStoreModule as ɵg, reducerToken$9 as ɵga, reducerProvider$9 as ɵgb, productStoreConfigFactory as ɵgc, ProductStoreModule as ɵgd, getReducers$a as ɵge, reducerToken$a as ɵgf, reducerProvider$a as ɵgg, clearProductsState as ɵgh, metaReducers$5 as ɵgi, effects$9 as ɵgj, ProductReferencesEffects as ɵgk, ProductReviewsEffects as ɵgl, ProductsSearchEffects as ɵgm, ProductEffects as ɵgn, reducer$j as ɵgo, entityScopedLoaderReducer as ɵgp, scopedLoaderReducer as ɵgq, reducer$l as ɵgr, reducer$k as ɵgs, PageMetaResolver as ɵgt, CouponSearchPageResolver as ɵgu, PageMetaResolver as ɵgv, addExternalRoutesFactory as ɵgw, getReducers$6 as ɵgx, reducer$e as ɵgy, reducerToken$6 as ɵgz, TRANSFER_STATE_META_REDUCER as ɵh, reducerProvider$6 as ɵha, CustomSerializer as ɵhb, effects$6 as ɵhc, RouterEffects as ɵhd, siteContextStoreConfigFactory as ɵhe, SiteContextStoreModule as ɵhf, getReducers$2 as ɵhg, reducerToken$2 as ɵhh, reducerProvider$2 as ɵhi, effects$3 as ɵhj, LanguagesEffects as ɵhk, CurrenciesEffects as ɵhl, BaseSiteEffects as ɵhm, reducer$8 as ɵhn, reducer$7 as ɵho, reducer$6 as ɵhp, defaultSiteContextConfigFactory as ɵhq, initializeContext as ɵhr, contextServiceProviders as ɵhs, SiteContextRoutesHandler as ɵht, SiteContextUrlSerializer as ɵhu, siteContextParamsProviders as ɵhv, baseSiteConfigValidator as ɵhw, interceptors$4 as ɵhx, CmsTicketInterceptor as ɵhy, StoreFinderStoreModule as ɵhz, STORAGE_SYNC_META_REDUCER as ɵi, getReducers$b as ɵia, reducerToken$b as ɵib, reducerProvider$b as ɵic, effects$a as ɵid, FindStoresEffect as ɵie, ViewAllStoresEffect as ɵif, defaultStoreFinderConfig as ɵig, UserStoreModule as ɵih, getReducers$c as ɵii, reducerToken$c as ɵij, reducerProvider$c as ɵik, clearUserState as ɵil, metaReducers$7 as ɵim, effects$b as ɵin, BillingCountriesEffect as ɵio, ClearMiscsDataEffect as ɵip, ConsignmentTrackingEffects as ɵiq, CustomerCouponEffects as ɵir, DeliveryCountriesEffects as ɵis, NotificationPreferenceEffects as ɵit, OrderDetailsEffect as ɵiu, OrderReturnRequestEffect as ɵiv, UserPaymentMethodsEffects as ɵiw, ProductInterestsEffect as ɵix, RegionsEffects as ɵiy, ReplenishmentOrderDetailsEffect as ɵiz, stateMetaReducers as ɵj, ResetPasswordEffects as ɵja, TitlesEffects as ɵjb, UserAddressesEffects as ɵjc, UserConsentsEffect as ɵjd, UserDetailsEffects as ɵje, UserOrdersEffect as ɵjf, UserRegisterEffects as ɵjg, UserReplenishmentOrdersEffect as ɵjh, ForgotPasswordEffects as ɵji, UpdateEmailEffects as ɵjj, UpdatePasswordEffects as ɵjk, UserNotificationPreferenceConnector as ɵjl, UserCostCenterEffects as ɵjm, reducer$C as ɵjn, reducer$z as ɵjo, reducer$m as ɵjp, reducer$A as ɵjq, reducer$t as ɵjr, reducer$D as ɵjs, reducer$r as ɵjt, reducer$E as ɵju, reducer$s as ɵjv, reducer$p as ɵjw, reducer$y as ɵjx, reducer$v as ɵjy, reducer$x as ɵjz, getStorageSyncReducer as ɵk, reducer$n as ɵka, reducer$o as ɵkb, reducer$q as ɵkc, reducer$u as ɵkd, reducer$B as ɵke, reducer$w as ɵkf, getTransferStateReducer as ɵl, getReducers$3 as ɵm, reducerToken$3 as ɵn, reducerProvider$3 as ɵo, clearAnonymousConsentTemplates as ɵp, metaReducers$1 as ɵq, effects$2 as ɵr, AnonymousConsentsEffects as ɵs, loaderReducer as ɵt, reducer$b as ɵu, reducer$9 as ɵv, reducer$a as ɵw, interceptors$1 as ɵx, AnonymousConsentsInterceptor as ɵy, asmStoreConfigFactory as ɵz };
+export { ADDRESS_LIST_NORMALIZER, ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_HEADER, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_NORMALIZER, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, ActivatedRoutesService, ActiveCartService, AnonymousConsentNormalizer, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthHeaderService, AsmAuthService, AsmAuthStorageService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, AsmStatePersistenceService, authGroup_actions as AuthActions, AuthConfig, AuthConfigService, AuthGuard, AuthHeaderService, AuthInterceptor, AuthModule, AuthRedirectService, AuthRedirectStorageService, AuthService, AuthStatePersistenceService, AuthStorageService, B2BPaymentTypeEnum, B2BUserGroup, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, BasicAuthService, CANCEL_ORDER_PROCESS_ID, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_AUTH_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COST_CENTERS_NORMALIZER, COST_CENTER_NORMALIZER, COST_CENTER_SERIALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartPersistenceModule, CartRemoveEntrySuccessEvent, CartUpdateEntrySuccessEvent, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutCostCenterAdapter, CheckoutCostCenterConnector, CheckoutCostCenterService, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutEventBuilder, CheckoutEventModule, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutReplenishmentOrderAdapter, CheckoutReplenishmentOrderConnector, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, clientTokenGroup_actions as ClientAuthActions, ClientAuthModule, clientTokenGroup_selectors as ClientAuthSelectors, ClientAuthenticationTokenService, ClientErrorHandlingService, ClientTokenInterceptor, ClientTokenService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConfigurationService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CostCenterModule, CostCenterOccModule, CountryType, CsAgentAuthService, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DaysOfWeek, DefaultConfig, DefaultConfigChunk, DefaultRoutePageMetaResolver, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GET_PAYMENT_TYPES_PROCESS_ID, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, HttpParamsURIEncoder, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LazyModulesService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, ModuleInitializedEvent, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OAuthFlow, OAuthLibWrapperService, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, ORDER_TYPE, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutCostCenterAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCheckoutPaymentTypeAdapter, OccCheckoutReplenishmentOrderAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCostCenterListNormalizer, OccCostCenterNormalizer, OccCostCenterSerializer, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccReplenishmentOrderFormSerializer, OccReplenishmentOrderNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OccUserReplenishmentOrderAdapter, OrderPlacedEvent, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PAYMENT_TYPE_NORMALIZER, PLACED_ORDER_PROCESS_ID, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PaymentTypeAdapter, PaymentTypeConnector, PaymentTypeService, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, REPLENISHMENT_ORDER_FORM_SERIALIZER, REPLENISHMENT_ORDER_HISTORY_NORMALIZER, REPLENISHMENT_ORDER_NORMALIZER, ROUTING_FEATURE, RootConfig, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, RoutingPageMetaResolver, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_COST_CENTER_PROCESS_ID, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TokenRevocationInterceptor, TokenTarget, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_COST_CENTERS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_REPLENISHMENT_ORDERS, USER_REPLENISHMENT_ORDER_DETAILS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnifiedInjector, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserAuthModule, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserCostCenterAdapter, UserCostCenterConnector, UserCostCenterService, UserIdService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserReplenishmentOrderAdapter, UserReplenishmentOrderConnector, UserReplenishmentOrderService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, contextServiceMapProvider, createFrom, deepMerge, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getLastValueSync, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, isObject, mediaServerConfigFromMetaTagFactory, normalizeHttpError, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, recurrencePeriod, resolveApplicable, serviceMapFactory, validateConfig, withdrawOn, asmStatePersistenceFactory as ɵa, checkOAuthParamsInUrl as ɵb, reducer$a as ɵba, reducer$8 as ɵbb, reducer$9 as ɵbc, interceptors$2 as ɵbd, AnonymousConsentsInterceptor as ɵbe, AsmStoreModule as ɵbf, getReducers$5 as ɵbg, reducerToken$5 as ɵbh, reducerProvider$5 as ɵbi, clearCustomerSupportAgentAsmState as ɵbj, metaReducers$1 as ɵbk, effects$4 as ɵbl, CustomerEffects as ɵbm, reducer$c as ɵbn, defaultAsmConfig as ɵbo, ClientAuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, effects as ɵbu, ClientTokenEffect as ɵbv, interceptors as ɵbw, defaultAuthConfig as ɵbx, interceptors$1 as ɵby, SiteContextParamsService as ɵbz, authStatePersistenceFactory as ɵc, MultiCartStoreModule as ɵca, clearMultiCartState as ɵcb, multiCartMetaReducers as ɵcc, multiCartReducerToken as ɵcd, getMultiCartReducers as ɵce, multiCartReducerProvider as ɵcf, CartEffects as ɵcg, CartEntryEffects as ɵch, CartVoucherEffects as ɵci, WishListEffects as ɵcj, SaveCartConnector as ɵck, SaveCartAdapter as ɵcl, MultiCartEffects as ɵcm, entityProcessesLoaderReducer as ɵcn, entityReducer as ɵco, processesLoaderReducer as ɵcp, activeCartReducer as ɵcq, cartEntitiesReducer as ɵcr, wishListReducer as ɵcs, CartPageMetaResolver as ɵct, CheckoutStoreModule as ɵcu, getReducers$1 as ɵcv, reducerToken$1 as ɵcw, reducerProvider$1 as ɵcx, effects$1 as ɵcy, AddressVerificationEffect as ɵcz, cartStatePersistenceFactory as ɵd, CardTypesEffects as ɵda, CheckoutEffects as ɵdb, PaymentTypesEffects as ɵdc, ReplenishmentOrderEffects as ɵdd, reducer$2 as ɵde, reducer$1 as ɵdf, reducer as ɵdg, reducer$4 as ɵdh, reducer$3 as ɵdi, cmsStoreConfigFactory as ɵdj, CmsStoreModule as ɵdk, getReducers$7 as ɵdl, reducerToken$7 as ɵdm, reducerProvider$7 as ɵdn, clearCmsState as ɵdo, metaReducers$2 as ɵdp, effects$7 as ɵdq, ComponentsEffects as ɵdr, NavigationEntryItemEffects as ɵds, PageEffects as ɵdt, reducer$g as ɵdu, entityLoaderReducer as ɵdv, reducer$h as ɵdw, reducer$e as ɵdx, reducer$f as ɵdy, GlobalMessageStoreModule as ɵdz, uninitializeActiveCartMetaReducerFactory as ɵe, getReducers$4 as ɵea, reducerToken$4 as ɵeb, reducerProvider$4 as ɵec, reducer$b as ɵed, GlobalMessageEffect as ɵee, defaultGlobalMessageConfigFactory as ɵef, HttpErrorInterceptor as ɵeg, defaultI18nConfig as ɵeh, i18nextProviders as ɵei, i18nextInit as ɵej, MockTranslationService as ɵek, defaultOccAsmConfig as ɵel, defaultOccCartConfig as ɵem, OccSaveCartAdapter as ɵen, defaultOccCheckoutConfig as ɵeo, defaultOccCostCentersConfig as ɵep, defaultOccProductConfig as ɵeq, defaultOccSiteContextConfig as ɵer, defaultOccStoreFinderConfig as ɵes, defaultOccUserConfig as ɵet, UserNotificationPreferenceAdapter as ɵeu, OccUserCostCenterAdapter as ɵev, OccAddressListNormalizer as ɵew, UserReplenishmentOrderAdapter as ɵex, defaultPersonalizationConfig as ɵey, interceptors$3 as ɵez, CONFIG_INITIALIZER_FORROOT_GUARD as ɵf, OccPersonalizationIdInterceptor as ɵfa, OccPersonalizationTimeInterceptor as ɵfb, ProcessStoreModule as ɵfc, getReducers$8 as ɵfd, reducerToken$8 as ɵfe, reducerProvider$8 as ɵff, productStoreConfigFactory as ɵfg, ProductStoreModule as ɵfh, getReducers$9 as ɵfi, reducerToken$9 as ɵfj, reducerProvider$9 as ɵfk, clearProductsState as ɵfl, metaReducers$3 as ɵfm, effects$8 as ɵfn, ProductReferencesEffects as ɵfo, ProductReviewsEffects as ɵfp, ProductsSearchEffects as ɵfq, ProductEffects as ɵfr, reducer$i as ɵfs, entityScopedLoaderReducer as ɵft, scopedLoaderReducer as ɵfu, reducer$k as ɵfv, reducer$j as ɵfw, PageMetaResolver as ɵfx, CouponSearchPageResolver as ɵfy, PageMetaResolver as ɵfz, TEST_CONFIG_COOKIE_NAME as ɵg, addExternalRoutesFactory as ɵga, getReducers$6 as ɵgb, reducer$d as ɵgc, reducerToken$6 as ɵgd, reducerProvider$6 as ɵge, CustomSerializer as ɵgf, effects$6 as ɵgg, RouterEffects as ɵgh, siteContextStoreConfigFactory as ɵgi, SiteContextStoreModule as ɵgj, getReducers$2 as ɵgk, reducerToken$2 as ɵgl, reducerProvider$2 as ɵgm, effects$3 as ɵgn, LanguagesEffects as ɵgo, CurrenciesEffects as ɵgp, BaseSiteEffects as ɵgq, reducer$7 as ɵgr, reducer$6 as ɵgs, reducer$5 as ɵgt, defaultSiteContextConfigFactory as ɵgu, initializeContext as ɵgv, contextServiceProviders as ɵgw, SiteContextRoutesHandler as ɵgx, SiteContextUrlSerializer as ɵgy, siteContextParamsProviders as ɵgz, configFromCookieFactory as ɵh, baseSiteConfigValidator as ɵha, interceptors$4 as ɵhb, CmsTicketInterceptor as ɵhc, StoreFinderStoreModule as ɵhd, getReducers$a as ɵhe, reducerToken$a as ɵhf, reducerProvider$a as ɵhg, effects$9 as ɵhh, FindStoresEffect as ɵhi, ViewAllStoresEffect as ɵhj, defaultStoreFinderConfig as ɵhk, UserStoreModule as ɵhl, getReducers$b as ɵhm, reducerToken$b as ɵhn, reducerProvider$b as ɵho, clearUserState as ɵhp, metaReducers$5 as ɵhq, effects$a as ɵhr, BillingCountriesEffect as ɵhs, ClearMiscsDataEffect as ɵht, ConsignmentTrackingEffects as ɵhu, CustomerCouponEffects as ɵhv, DeliveryCountriesEffects as ɵhw, NotificationPreferenceEffects as ɵhx, OrderDetailsEffect as ɵhy, OrderReturnRequestEffect as ɵhz, initConfig as ɵi, UserPaymentMethodsEffects as ɵia, ProductInterestsEffect as ɵib, RegionsEffects as ɵic, ReplenishmentOrderDetailsEffect as ɵid, ResetPasswordEffects as ɵie, TitlesEffects as ɵif, UserAddressesEffects as ɵig, UserConsentsEffect as ɵih, UserDetailsEffects as ɵii, UserOrdersEffect as ɵij, UserRegisterEffects as ɵik, UserReplenishmentOrdersEffect as ɵil, ForgotPasswordEffects as ɵim, UpdateEmailEffects as ɵin, UpdatePasswordEffects as ɵio, UserNotificationPreferenceConnector as ɵip, UserCostCenterEffects as ɵiq, reducer$B as ɵir, reducer$y as ɵis, reducer$l as ɵit, reducer$z as ɵiu, reducer$s as ɵiv, reducer$C as ɵiw, reducer$q as ɵix, reducer$D as ɵiy, reducer$r as ɵiz, anonymousConsentsStoreConfigFactory as ɵj, reducer$o as ɵja, reducer$x as ɵjb, reducer$u as ɵjc, reducer$w as ɵjd, reducer$m as ɵje, reducer$n as ɵjf, reducer$p as ɵjg, reducer$t as ɵjh, reducer$A as ɵji, reducer$v as ɵjj, AnonymousConsentsStoreModule as ɵk, TRANSFER_STATE_META_REDUCER as ɵl, STORAGE_SYNC_META_REDUCER as ɵm, stateMetaReducers as ɵn, getStorageSyncReducer as ɵo, getTransferStateReducer as ɵp, getReducers$3 as ɵq, reducerToken$3 as ɵr, reducerProvider$3 as ɵs, clearAnonymousConsentTemplates as ɵt, metaReducers as ɵu, effects$2 as ɵv, AnonymousConsentsEffects as ɵw, UrlParsingService as ɵx, RoutingParamsService as ɵy, loaderReducer as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

@@ -1,15 +1,16 @@
 import { OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { AuthService } from '../../auth/index';
+import { UserIdService } from '../../auth/index';
 import { Cart } from '../../model/cart.model';
 import { User } from '../../model/misc.model';
 import { OrderEntry } from '../../model/order.model';
 import { StateWithMultiCart } from '../store/multi-cart-state';
 import { MultiCartService } from './multi-cart.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class ActiveCartService implements OnDestroy {
     protected store: Store<StateWithMultiCart>;
-    protected authService: AuthService;
+    protected userIdService: UserIdService;
     protected multiCartService: MultiCartService;
     private readonly PREVIOUS_USER_ID_INITIAL_VALUE;
     private previousUserId;
@@ -20,7 +21,7 @@ export declare class ActiveCartService implements OnDestroy {
     private cartUser;
     private activeCartId$;
     private cartSelector$;
-    constructor(store: Store<StateWithMultiCart>, authService: AuthService, multiCartService: MultiCartService);
+    constructor(store: Store<StateWithMultiCart>, userIdService: UserIdService, multiCartService: MultiCartService);
     ngOnDestroy(): void;
     protected initActiveCart(): void;
     /**
@@ -111,4 +112,7 @@ export declare class ActiveCartService implements OnDestroy {
     private guestCartMerge;
     private isEmpty;
     private isJustLoggedIn;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ActiveCartService, never>;
 }
+
+//# sourceMappingURL=active-cart.service.d.ts.map

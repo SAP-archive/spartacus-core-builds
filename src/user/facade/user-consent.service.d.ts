@@ -1,13 +1,16 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { AuthService } from '../../auth/user-auth/facade/auth.service';
+import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { Consent, ConsentTemplate } from '../../model/consent.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserConsentService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
+    protected userIdService: UserIdService;
     protected authService: AuthService;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, userIdService: UserIdService, authService: AuthService);
     /**
      * Retrieves all consents.
      */
@@ -106,4 +109,7 @@ export declare class UserConsentService {
      * @param hideTemplateIds template IDs to hide
      */
     filterConsentTemplates(templateList: ConsentTemplate[], hideTemplateIds?: string[]): ConsentTemplate[];
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserConsentService, never>;
 }
+
+//# sourceMappingURL=user-consent.service.d.ts.map

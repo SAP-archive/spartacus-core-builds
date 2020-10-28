@@ -1,13 +1,14 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { Title, User, UserSignUp } from '../../model/misc.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
-    protected authService: AuthService;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
+    protected userIdService: UserIdService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, userIdService: UserIdService);
     /**
      * Returns a user
      */
@@ -149,4 +150,7 @@ export declare class UserService {
      * concludes, regardless if it's a success or an error
      */
     resetUpdatePasswordProcessState(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserService, never>;
 }
+
+//# sourceMappingURL=user.service.d.ts.map

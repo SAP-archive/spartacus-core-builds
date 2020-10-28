@@ -1,18 +1,25 @@
+import { OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { SiteContextParamsService } from '../../site-context/services/site-context-params.service';
 import { StatePersistenceService } from '../../state/services/state-persistence.service';
 import { StateWithMultiCart } from '../store/multi-cart-state';
-export declare class MultiCartStatePersistenceService {
+import * as ɵngcc0 from '@angular/core';
+export declare class MultiCartStatePersistenceService implements OnDestroy {
     protected statePersistenceService: StatePersistenceService;
     protected store: Store<StateWithMultiCart>;
     protected siteContextParamsService: SiteContextParamsService;
+    protected subscription: Subscription;
     constructor(statePersistenceService: StatePersistenceService, store: Store<StateWithMultiCart>, siteContextParamsService: SiteContextParamsService);
-    sync(): void;
+    initSync(): void;
     protected getCartState(): Observable<{
         active: string;
     }>;
     protected onRead(state: {
         active: string;
     }): void;
+    ngOnDestroy(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<MultiCartStatePersistenceService, never>;
 }
+
+//# sourceMappingURL=multi-cart-state-persistence.service.d.ts.map

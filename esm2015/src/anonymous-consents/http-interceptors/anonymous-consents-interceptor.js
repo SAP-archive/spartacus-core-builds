@@ -8,7 +8,7 @@ import { AnonymousConsentsConfig } from '../config/anonymous-consents-config';
 import { AnonymousConsentsService } from '../facade/anonymous-consents.service';
 import * as i0 from "@angular/core";
 import * as i1 from "../facade/anonymous-consents.service";
-import * as i2 from "../../auth/facade/auth.service";
+import * as i2 from "../../auth/user-auth/facade/auth.service";
 import * as i3 from "../../occ/services/occ-endpoints.service";
 import * as i4 from "../config/anonymous-consents-config";
 export class AnonymousConsentsInterceptor {

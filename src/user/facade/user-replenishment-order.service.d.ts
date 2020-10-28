@@ -1,13 +1,14 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { ReplenishmentOrder, ReplenishmentOrderList } from '../../model/replenishment-order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserReplenishmentOrderService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
-    protected authService: AuthService;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
+    protected userIdService: UserIdService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, userIdService: UserIdService);
     /**
      * Returns replenishment order details for a given 'current' user
      *
@@ -83,4 +84,7 @@ export declare class UserReplenishmentOrderService {
      * Cleaning replenishment order list
      */
     clearReplenishmentOrderList(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserReplenishmentOrderService, never>;
 }
+
+//# sourceMappingURL=user-replenishment-order.service.d.ts.map

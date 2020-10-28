@@ -1,13 +1,14 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { ReturnRequest, ReturnRequestEntryInputList, ReturnRequestList, ReturnRequestModification } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class OrderReturnRequestService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
-    protected authService: AuthService;
-    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
+    protected userIdService: UserIdService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, userIdService: UserIdService);
     /**
      * Create order return request
      * @param orderCode an order code
@@ -63,4 +64,7 @@ export declare class OrderReturnRequestService {
      * Resets the cancel return request process flags
      */
     resetCancelReturnRequestProcessState(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OrderReturnRequestService, never>;
 }
+
+//# sourceMappingURL=order-return-request.service.d.ts.map

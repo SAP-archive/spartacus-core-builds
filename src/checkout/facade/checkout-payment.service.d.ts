@@ -1,16 +1,17 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/facade/auth.service';
+import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { ActiveCartService } from '../../cart/facade/active-cart.service';
 import { CardType, PaymentDetails } from '../../model/cart.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { LoaderState } from '../../state/utils/loader/loader-state';
 import { StateWithCheckout } from '../store/checkout-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutPaymentService {
     protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
-    protected authService: AuthService;
     protected activeCartService: ActiveCartService;
-    constructor(checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>, authService: AuthService, activeCartService: ActiveCartService);
+    protected userIdService: UserIdService;
+    constructor(checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>, activeCartService: ActiveCartService, userIdService: UserIdService);
     /**
      * Get card types
      */
@@ -46,4 +47,7 @@ export declare class CheckoutPaymentService {
      */
     paymentProcessSuccess(): void;
     protected actionAllowed(): boolean;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutPaymentService, never>;
 }
+
+//# sourceMappingURL=checkout-payment.service.d.ts.map

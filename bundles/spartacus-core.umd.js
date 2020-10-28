@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, (function (exports, i0, i1$1, rxjs, operators, i1$2, i1, i1$3, i3, i5, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/router'), require('angular-oauth2-oidc'), require('@angular/common/http'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/router', 'angular-oauth2-oidc', '@angular/common/http', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.router, global.angularOAuth2Oidc, global.ng.common.http, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, (function (exports, i0, i1$2, rxjs, operators, i1, i1$1, i1$3, i1$4, i3, i5, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -28,7 +28,7 @@
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b)
-                if (Object.prototype.hasOwnProperty.call(b, p))
+                if (b.hasOwnProperty(p))
                     d[p] = b[p]; };
         return extendStatics(d, b);
     };
@@ -175,10 +175,10 @@
             k2 = k;
         o[k2] = m[k];
     });
-    function __exportStar(m, o) {
+    function __exportStar(m, exports) {
         for (var p in m)
-            if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p))
-                __createBinding(o, m, p);
+            if (p !== "default" && !exports.hasOwnProperty(p))
+                __createBinding(exports, m, p);
     }
     function __values(o) {
         var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
@@ -288,7 +288,7 @@
         var result = {};
         if (mod != null)
             for (var k in mod)
-                if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+                if (Object.hasOwnProperty.call(mod, k))
                     __createBinding(result, mod, k);
         __setModuleDefault(result, mod);
         return result;
@@ -310,6 +310,134 @@
         return value;
     }
 
+    function isObject(item) {
+        return item && typeof item === 'object' && !Array.isArray(item);
+    }
+    function deepMerge(target) {
+        var _a, _b, _c;
+        if (target === void 0) { target = {}; }
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        if (!sources.length) {
+            return target;
+        }
+        var source = sources.shift() || {};
+        if (isObject(target) && isObject(source)) {
+            for (var key in source) {
+                if (source[key] instanceof Date) {
+                    Object.assign(target, (_a = {}, _a[key] = source[key], _a));
+                }
+                else if (isObject(source[key])) {
+                    if (!target[key]) {
+                        Object.assign(target, (_b = {}, _b[key] = {}, _b));
+                    }
+                    deepMerge(target[key], source[key]);
+                }
+                else {
+                    Object.assign(target, (_c = {}, _c[key] = source[key], _c));
+                }
+            }
+        }
+        return deepMerge.apply(void 0, __spread([target], sources));
+    }
+
+    /**
+     * Global Configuration injection token, can be used to inject configuration to any part of the app
+     */
+    var Config = new i0.InjectionToken('Configuration', {
+        providedIn: 'root',
+        factory: function () { return deepMerge({}, i0.inject(DefaultConfig), i0.inject(RootConfig)); },
+    });
+    /**
+     * Default Configuration token, used to build Global Configuration, built from DefaultConfigChunks
+     */
+    var DefaultConfig = new i0.InjectionToken('DefaultConfiguration', {
+        providedIn: 'root',
+        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = i0.inject(DefaultConfigChunk, i0.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
+    });
+    /**
+     * Root Configuration token, used to build Global Configuration, built from ConfigChunks
+     */
+    var RootConfig = new i0.InjectionToken('RootConfiguration', {
+        providedIn: 'root',
+        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = i0.inject(ConfigChunk, i0.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
+    });
+    /**
+     * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
+     * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
+     */
+    var ConfigChunk = new i0.InjectionToken('ConfigurationChunk');
+    /**
+     * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
+     * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
+     *
+     * General rule is, that all config provided in libraries should be provided as default config.
+     */
+    var DefaultConfigChunk = new i0.InjectionToken('DefaultConfigurationChunk');
+
+    /**
+     * Helper function to provide configuration chunk using ConfigChunk token
+     *
+     * To provide default configuration in libraries provideDefaultConfig should be used instead.
+     *
+     * @param config Config object to merge with the global configuration
+     */
+    function provideConfig(config, defaultConfig) {
+        if (config === void 0) { config = {}; }
+        if (defaultConfig === void 0) { defaultConfig = false; }
+        return {
+            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+            useValue: config,
+            multi: true,
+        };
+    }
+    /**
+     * Helper function to provide configuration with factory function, using ConfigChunk token
+     *
+     * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
+     *
+     * @param configFactory Factory Function that will generate config object
+     * @param deps Optional dependencies to a factory function
+     */
+    function provideConfigFactory(configFactory, deps, defaultConfig) {
+        if (defaultConfig === void 0) { defaultConfig = false; }
+        return {
+            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
+            useFactory: configFactory,
+            multi: true,
+            deps: deps,
+        };
+    }
+    /**
+     * Helper function to provide default configuration chunk using DefaultConfigChunk token
+     *
+     * @param config Config object to merge with the default configuration
+     */
+    function provideDefaultConfig(config) {
+        if (config === void 0) { config = {}; }
+        return {
+            provide: DefaultConfigChunk,
+            useValue: config,
+            multi: true,
+        };
+    }
+    /**
+     * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
+     *
+     * @param configFactory Factory Function that will generate config object
+     * @param deps Optional dependencies to a factory function
+     */
+    function provideDefaultConfigFactory(configFactory, deps) {
+        return {
+            provide: DefaultConfigChunk,
+            useFactory: configFactory,
+            multi: true,
+            deps: deps,
+        };
+    }
+
     var defaultAnonymousConsentsConfig = {
         anonymousConsents: {
             registerConsent: 'MARKETING_NEWSLETTER',
@@ -322,52 +450,1442 @@
         },
     };
 
-    var defaultAuthConfig = {
-        authentication: {
-            client_id: 'mobile_android',
-            client_secret: 'secret',
-        },
-        backend: {
-            occ: {
-                endpoints: {
-                    login: '/authorizationserver/oauth/token',
-                    revoke: '/authorizationserver/oauth/revoke',
-                },
-            },
-        },
-    };
-
-    var USE_CLIENT_TOKEN = 'cx-use-client-token';
-    var USE_CUSTOMER_SUPPORT_AGENT_TOKEN = 'cx-use-csagent-token';
-    var TOKEN_REVOCATION_HEADER = 'cx-token-revocation';
-    var InterceptorUtil = /** @class */ (function () {
-        function InterceptorUtil() {
-        }
-        InterceptorUtil.createHeader = function (headerName, interceptorParam, headers) {
-            if (headers) {
-                return headers.append(headerName, JSON.stringify(interceptorParam));
-            }
-            headers = new i1.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
-            return headers;
-        };
-        InterceptorUtil.removeHeader = function (headerName, request) {
-            var updatedHeaders = request.headers.delete(headerName);
-            return request.clone({ headers: updatedHeaders });
-        };
-        InterceptorUtil.getInterceptorParam = function (headerName, headers) {
-            var rawValue = headers.get(headerName);
-            if (rawValue) {
-                return JSON.parse(rawValue);
-            }
-            return undefined;
-        };
-        return InterceptorUtil;
-    }());
-
     var OCC_USER_ID_CURRENT = 'current';
     var OCC_USER_ID_ANONYMOUS = 'anonymous';
     var OCC_USER_ID_GUEST = 'guest';
     var OCC_CART_ID_CURRENT = 'current';
+
+    var WindowRef = /** @class */ (function () {
+        function WindowRef(document) {
+            // it's a workaround to have document property properly typed
+            // see: https://github.com/angular/angular/issues/15640
+            this.document = document;
+        }
+        Object.defineProperty(WindowRef.prototype, "nativeWindow", {
+            get: function () {
+                return typeof window !== 'undefined' ? window : undefined;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(WindowRef.prototype, "sessionStorage", {
+            get: function () {
+                return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(WindowRef.prototype, "localStorage", {
+            get: function () {
+                return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(WindowRef.prototype, "resize$", {
+            /**
+             * Returns an observable for the window resize event and emits an event
+             * every 300ms in case of resizing. An event is simulated initially.
+             *
+             * If there's no window object available (i.e. in SSR), a null value is emitted.
+             */
+            get: function () {
+                if (!this.nativeWindow) {
+                    return rxjs.of(null);
+                }
+                else {
+                    return rxjs.fromEvent(this.nativeWindow, 'resize').pipe(operators.debounceTime(300), operators.startWith({ target: this.nativeWindow }), operators.distinctUntilChanged());
+                }
+            },
+            enumerable: false,
+            configurable: true
+        });
+        return WindowRef;
+    }());
+    WindowRef.ɵprov = i0.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.ɵɵinject(i1.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+    WindowRef.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    WindowRef.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
+    ]; };
+
+    var UrlParsingService = /** @class */ (function () {
+        function UrlParsingService(router) {
+            this.router = router;
+        }
+        UrlParsingService.prototype.getPrimarySegments = function (url) {
+            var urlTree = this.router.parseUrl(url);
+            return this._getPrimarySegmentsFromUrlTree(urlTree.root);
+        };
+        UrlParsingService.prototype._getPrimarySegmentsFromUrlTree = function (tree) {
+            var segments = tree.segments.map(function (s) { return s.path; });
+            var childrenSegments = tree.children[i1$1.PRIMARY_OUTLET]
+                ? this._getPrimarySegmentsFromUrlTree(tree.children[i1$1.PRIMARY_OUTLET])
+                : [];
+            return segments.concat(childrenSegments);
+        };
+        return UrlParsingService;
+    }());
+    UrlParsingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.ɵɵinject(i1$1.Router)); }, token: UrlParsingService, providedIn: "root" });
+    UrlParsingService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    UrlParsingService.ctorParameters = function () { return [
+        { type: i1$1.Router }
+    ]; };
+
+    var isParam = function (segment) { return segment.startsWith(':'); };
+    var getParamName = function (segment) { return segment.slice(1); }; // it just removes leading ':'
+    var ensureLeadingSlash = function (path) { return path.startsWith('/') ? path : '/' + path; };
+    var removeLeadingSlash = function (path) { return path.startsWith('/') ? path.slice(1) : path; };
+
+    var RoutingConfig = /** @class */ (function () {
+        function RoutingConfig() {
+        }
+        return RoutingConfig;
+    }());
+    RoutingConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return i0.ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
+    RoutingConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
+
+    var RoutingConfigService = /** @class */ (function () {
+        function RoutingConfigService(config) {
+            this.config = config;
+        }
+        /**
+         * Returns the route config for the given route name.
+         */
+        RoutingConfigService.prototype.getRouteConfig = function (routeName) {
+            var _a, _b;
+            var routeConfig = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes;
+            var result = routeConfig && routeConfig[routeName];
+            if (!routeConfig || result === undefined) {
+                this.warn("No path was configured for the named route '" + routeName + "'!");
+            }
+            return result;
+        };
+        RoutingConfigService.prototype.warn = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            if (i0.isDevMode()) {
+                console.warn.apply(console, __spread(args));
+            }
+        };
+        /**
+         * Returns the configured route loading strategy.
+         */
+        RoutingConfigService.prototype.getLoadStrategy = function () {
+            var _a, _b, _c;
+            return (_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.loadStrategy) !== null && _c !== void 0 ? _c : "always" /* ALWAYS */;
+        };
+        /**
+         * Returns the route name of the configured path.
+         *
+         * For example, when the config is:
+         * ```
+         * routing: {
+         *   routes: {
+         *      addressBook: { paths: ['my-account/address-book'] }
+         *   }
+         * }
+         * ```
+         *
+         * the `getRouteName('my-account/address-book')` returns `'addressBook'`.
+         */
+        RoutingConfigService.prototype.getRouteName = function (path) {
+            if (!this.routeNamesByPath) {
+                this.initRouteNamesByPath();
+            }
+            return this.routeNamesByPath[path];
+        };
+        /**
+         * Initializes the property `routeNamesByPath`.
+         *
+         * The original config allows for reading configured path by the route name.
+         * But this method builds up a structure with a 'reversed config'
+         * to read quickly the route name by the path.
+         */
+        RoutingConfigService.prototype.initRouteNamesByPath = function () {
+            var e_1, _d;
+            var _this = this;
+            var _a, _b, _c;
+            this.routeNamesByPath = {};
+            var _loop_1 = function (routeName, routeConfig) {
+                (_c = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _c === void 0 ? void 0 : _c.forEach(function (path) {
+                    if (i0.isDevMode() && _this.routeNamesByPath[path]) {
+                        console.error("The same path '" + path + "' is configured for two different route names: '" + _this.routeNamesByPath[path] + "' and '" + routeName);
+                    }
+                    _this.routeNamesByPath[path] = routeName;
+                });
+            };
+            try {
+                for (var _e = __values(Object.entries((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes)), _f = _e.next(); !_f.done; _f = _e.next()) {
+                    var _g = __read(_f.value, 2), routeName = _g[0], routeConfig = _g[1];
+                    _loop_1(routeName, routeConfig);
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_f && !_f.done && (_d = _e.return)) _d.call(_e);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+        };
+        return RoutingConfigService;
+    }());
+    RoutingConfigService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(i0.ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
+    RoutingConfigService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    RoutingConfigService.ctorParameters = function () { return [
+        { type: RoutingConfig }
+    ]; };
+
+    var SemanticPathService = /** @class */ (function () {
+        function SemanticPathService(routingConfigService, urlParser) {
+            this.routingConfigService = routingConfigService;
+            this.urlParser = urlParser;
+            this.ROOT_URL = ['/'];
+        }
+        /**
+         * Returns the first path alias configured for a given route name. It adds `/` at the beginning.
+         */
+        SemanticPathService.prototype.get = function (routeName) {
+            var routeConfig = this.routingConfigService.getRouteConfig(routeName);
+            return routeConfig && Array.isArray(routeConfig.paths)
+                ? '/' + routeConfig.paths[0]
+                : undefined;
+        };
+        /**
+         * Transforms the array of url commands. Each command can be:
+         * a) string - will be left untouched
+         * b) object { cxRoute: <route name> } - will be replaced with semantic path
+         * c) object { cxRoute: <route name>, params: { ... } } - same as above, but with passed params
+         *
+         * If the first command is the object with the `cxRoute` property, returns an absolute url (with the first element of the array `'/'`)
+         */
+        SemanticPathService.prototype.transform = function (commands) {
+            var e_1, _a;
+            if (!Array.isArray(commands)) {
+                commands = [commands];
+            }
+            var result = [];
+            try {
+                for (var commands_1 = __values(commands), commands_1_1 = commands_1.next(); !commands_1_1.done; commands_1_1 = commands_1.next()) {
+                    var command = commands_1_1.value;
+                    if (!this.isRouteCommand(command)) {
+                        // don't modify segment that is not route command:
+                        result.push(command);
+                    }
+                    else {
+                        // generate array with url segments for given route command:
+                        var partialResult = this.generateUrlPart(command);
+                        if (partialResult === null) {
+                            return this.ROOT_URL;
+                        }
+                        result.push.apply(result, __spread(partialResult));
+                    }
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (commands_1_1 && !commands_1_1.done && (_a = commands_1.return)) _a.call(commands_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            if (this.shouldOutputAbsolute(commands)) {
+                result.unshift('/');
+            }
+            return result;
+        };
+        SemanticPathService.prototype.isRouteCommand = function (command) {
+            return command && Boolean(command.cxRoute);
+        };
+        SemanticPathService.prototype.shouldOutputAbsolute = function (commands) {
+            return this.isRouteCommand(commands[0]);
+        };
+        SemanticPathService.prototype.generateUrlPart = function (command) {
+            this.standarizeRouteCommand(command);
+            if (!command.cxRoute) {
+                return null;
+            }
+            var routeConfig = this.routingConfigService.getRouteConfig(command.cxRoute);
+            // if no route translation was configured, return null:
+            if (!routeConfig || !routeConfig.paths) {
+                return null;
+            }
+            // find first path that can satisfy it's parameters with given parameters
+            var path = this.findPathWithFillableParams(routeConfig, command.params);
+            // if there is no configured path that can be satisfied with given params, return null
+            if (!path) {
+                return null;
+            }
+            var result = this.provideParamsValues(path, command.params, routeConfig.paramsMapping);
+            return result;
+        };
+        SemanticPathService.prototype.standarizeRouteCommand = function (command) {
+            command.params = command.params || {};
+        };
+        SemanticPathService.prototype.provideParamsValues = function (path, params, paramsMapping) {
+            var _this = this;
+            return this.urlParser.getPrimarySegments(path).map(function (segment) {
+                if (isParam(segment)) {
+                    var paramName = getParamName(segment);
+                    var mappedParamName = _this.getMappedParamName(paramName, paramsMapping);
+                    return params[mappedParamName];
+                }
+                return segment;
+            });
+        };
+        SemanticPathService.prototype.findPathWithFillableParams = function (routeConfig, params) {
+            var _this = this;
+            var foundPath = routeConfig.paths.find(function (path) { return _this.getParams(path).every(function (paramName) {
+                var mappedParamName = _this.getMappedParamName(paramName, routeConfig.paramsMapping);
+                return params[mappedParamName] !== undefined;
+            }); });
+            if (foundPath === undefined || foundPath === null) {
+                this.warn("No configured path matches all its params to given object. ", "Route config: ", routeConfig, "Params object: ", params);
+                return null;
+            }
+            return foundPath;
+        };
+        SemanticPathService.prototype.getParams = function (path) {
+            return this.urlParser
+                .getPrimarySegments(path)
+                .filter(isParam)
+                .map(getParamName);
+        };
+        SemanticPathService.prototype.getMappedParamName = function (paramName, paramsMapping) {
+            if (paramsMapping) {
+                return paramsMapping[paramName] || paramName;
+            }
+            return paramName;
+        };
+        SemanticPathService.prototype.warn = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            if (i0.isDevMode()) {
+                console.warn.apply(console, __spread(args));
+            }
+        };
+        return SemanticPathService;
+    }());
+    SemanticPathService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(i0.ɵɵinject(RoutingConfigService), i0.ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
+    SemanticPathService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    SemanticPathService.ctorParameters = function () { return [
+        { type: RoutingConfigService },
+        { type: UrlParsingService }
+    ]; };
+
+    var ROUTER_GO = '[Router] Go';
+    var ROUTER_GO_BY_URL = '[Router] Go By Url';
+    var ROUTER_BACK = '[Router] Back';
+    var ROUTER_FORWARD = '[Router] Forward';
+    var RouteGoAction = /** @class */ (function () {
+        function RouteGoAction(payload) {
+            this.payload = payload;
+            this.type = ROUTER_GO;
+        }
+        return RouteGoAction;
+    }());
+    var RouteGoByUrlAction = /** @class */ (function () {
+        function RouteGoByUrlAction(payload) {
+            this.payload = payload;
+            this.type = ROUTER_GO_BY_URL;
+        }
+        return RouteGoByUrlAction;
+    }());
+    var RouteBackAction = /** @class */ (function () {
+        function RouteBackAction() {
+            this.type = ROUTER_BACK;
+        }
+        return RouteBackAction;
+    }());
+    var RouteForwardAction = /** @class */ (function () {
+        function RouteForwardAction() {
+            this.type = ROUTER_FORWARD;
+        }
+        return RouteForwardAction;
+    }());
+
+    var routingGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        ROUTER_GO: ROUTER_GO,
+        ROUTER_GO_BY_URL: ROUTER_GO_BY_URL,
+        ROUTER_BACK: ROUTER_BACK,
+        ROUTER_FORWARD: ROUTER_FORWARD,
+        RouteGoAction: RouteGoAction,
+        RouteGoByUrlAction: RouteGoByUrlAction,
+        RouteBackAction: RouteBackAction,
+        RouteForwardAction: RouteForwardAction
+    });
+
+    var ROUTING_FEATURE = 'router';
+
+    var getRouterFeatureState = i1$2.createFeatureSelector(ROUTING_FEATURE);
+    var ɵ0 = function (state) { return state.router; };
+    var getRouterState = i1$2.createSelector(getRouterFeatureState, ɵ0);
+    var ɵ1 = function (routingState) { return (routingState.state && routingState.state.semanticRoute) || ''; };
+    var getSemanticRoute = i1$2.createSelector(getRouterState, ɵ1);
+    var ɵ2 = function (routingState) { return (routingState.state && routingState.state.context) || { id: '' }; };
+    var getPageContext = i1$2.createSelector(getRouterState, ɵ2);
+    var ɵ3 = function (routingState) { return routingState.nextState && routingState.nextState.context; };
+    var getNextPageContext = i1$2.createSelector(getRouterState, ɵ3);
+    var ɵ4 = function (context) { return !!context; };
+    var isNavigating = i1$2.createSelector(getNextPageContext, ɵ4);
+
+    var routingGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getRouterFeatureState: getRouterFeatureState,
+        getRouterState: getRouterState,
+        getSemanticRoute: getSemanticRoute,
+        getPageContext: getPageContext,
+        getNextPageContext: getNextPageContext,
+        isNavigating: isNavigating,
+        ɵ0: ɵ0,
+        ɵ1: ɵ1,
+        ɵ2: ɵ2,
+        ɵ3: ɵ3,
+        ɵ4: ɵ4
+    });
+
+    /**
+     * Helper service to expose all activated routes
+     */
+    var ActivatedRoutesService = /** @class */ (function () {
+        function ActivatedRoutesService(router) {
+            var _this = this;
+            this.router = router;
+            /**
+             * Array of currently activated routes (from the root route to the leaf route).
+             */
+            this.routes$ = this.router.events.pipe(operators.filter(function (event) { return event instanceof i1$1.NavigationEnd; }), 
+            // tslint:disable-next-line: deprecation https://github.com/ReactiveX/rxjs/issues/4772
+            operators.startWith(undefined), // emit value for consumer who subscribed lately after NavigationEnd event
+            operators.map(function () {
+                var route = _this.router.routerState.snapshot.root;
+                var routes = [route];
+                // traverse to the leaf route:
+                while ((route = route.firstChild)) {
+                    routes.push(route);
+                }
+                return routes;
+            }), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        }
+        return ActivatedRoutesService;
+    }());
+    ActivatedRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActivatedRoutesService_Factory() { return new ActivatedRoutesService(i0.ɵɵinject(i1$1.Router)); }, token: ActivatedRoutesService, providedIn: "root" });
+    ActivatedRoutesService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ActivatedRoutesService.ctorParameters = function () { return [
+        { type: i1$1.Router }
+    ]; };
+
+    /**
+     * Service to expose all parameters for the router, including child routes.
+     * This is convenient in case the parent route (component) requires awareness
+     * of child routes parameters.
+     */
+    var RoutingParamsService = /** @class */ (function () {
+        function RoutingParamsService(router, activatedRoutesService) {
+            var _this = this;
+            this.router = router;
+            this.activatedRoutesService = activatedRoutesService;
+            this.params$ = this.activatedRoutesService.routes$.pipe(operators.map(function (routes) { return _this.findAllParam(routes); }), operators.shareReplay({ refCount: true, bufferSize: 1 }));
+        }
+        /**
+         * Get the list of all parameters of the full route. This includes
+         * active child routes.
+         */
+        RoutingParamsService.prototype.getParams = function () {
+            return this.params$;
+        };
+        RoutingParamsService.prototype.findAllParam = function (routes) {
+            return Object.assign.apply(Object, __spread([{}], routes.map(function (route) { return route.params; })));
+        };
+        return RoutingParamsService;
+    }());
+    RoutingParamsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingParamsService_Factory() { return new RoutingParamsService(i0.ɵɵinject(i1$1.Router), i0.ɵɵinject(ActivatedRoutesService)); }, token: RoutingParamsService, providedIn: "root" });
+    RoutingParamsService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    RoutingParamsService.ctorParameters = function () { return [
+        { type: i1$1.Router },
+        { type: ActivatedRoutesService }
+    ]; };
+
+    var RoutingService = /** @class */ (function () {
+        function RoutingService(store, winRef, semanticPathService, routingParamsService) {
+            this.store = store;
+            this.winRef = winRef;
+            this.semanticPathService = semanticPathService;
+            this.routingParamsService = routingParamsService;
+        }
+        /**
+         * Get the list of all parameters of the full route. This includes
+         * active child routes.
+         */
+        RoutingService.prototype.getParams = function () {
+            var _a;
+            return (_a = this.routingParamsService) === null || _a === void 0 ? void 0 : _a.getParams();
+        };
+        /**
+         * Get the current router state
+         */
+        RoutingService.prototype.getRouterState = function () {
+            return this.store.pipe(i1$2.select(getRouterState));
+        };
+        /**
+         * Get the `PageContext` from the state
+         */
+        RoutingService.prototype.getPageContext = function () {
+            return this.store.pipe(i1$2.select(getPageContext));
+        };
+        /**
+         * Get the next `PageContext` from the state
+         */
+        RoutingService.prototype.getNextPageContext = function () {
+            return this.store.pipe(i1$2.select(getNextPageContext));
+        };
+        /**
+         * Get the `isNavigating` info from the state
+         */
+        RoutingService.prototype.isNavigating = function () {
+            return this.store.pipe(i1$2.select(isNavigating));
+        };
+        /**
+         * Navigation with a new state into history
+         * @param commands: url commands
+         * @param query
+         * @param extras: Represents the extra options used during navigation.
+         */
+        RoutingService.prototype.go = function (commands, query, extras) {
+            var path = this.semanticPathService.transform(commands);
+            return this.navigate(path, query, extras);
+        };
+        /**
+         * Navigation using URL
+         * @param url
+         */
+        RoutingService.prototype.goByUrl = function (url) {
+            this.store.dispatch(new RouteGoByUrlAction(url));
+        };
+        /**
+         * Navigating back
+         */
+        RoutingService.prototype.back = function () {
+            var isLastPageInApp = this.winRef.document.referrer.includes(this.winRef.nativeWindow.location.origin);
+            if (isLastPageInApp) {
+                this.store.dispatch(new RouteBackAction());
+                return;
+            }
+            this.go(['/']);
+            return;
+        };
+        /**
+         * Navigating forward
+         */
+        RoutingService.prototype.forward = function () {
+            this.store.dispatch(new RouteForwardAction());
+        };
+        /**
+         * Navigation with a new state into history
+         * @param path
+         * @param query
+         * @param extras: Represents the extra options used during navigation.
+         */
+        RoutingService.prototype.navigate = function (path, query, extras) {
+            this.store.dispatch(new RouteGoAction({
+                path: path,
+                query: query,
+                extras: extras,
+            }));
+        };
+        return RoutingService;
+    }());
+    RoutingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(SemanticPathService), i0.ɵɵinject(RoutingParamsService)); }, token: RoutingService, providedIn: "root" });
+    RoutingService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    RoutingService.ctorParameters = function () { return [
+        { type: i1$2.Store },
+        { type: WindowRef },
+        { type: SemanticPathService },
+        { type: RoutingParamsService }
+    ]; };
+
+    /**
+     * This implementation is OCC specific.
+     * Different backend might have completely different need regarding user id.
+     * It might not need user id at all and work based on access_token.
+     * To implement custom solution provide your own implementation and customize services that use UserIdService
+     */
+    var UserIdService = /** @class */ (function () {
+        function UserIdService() {
+            this._userId = new rxjs.BehaviorSubject(OCC_USER_ID_ANONYMOUS);
+        }
+        /**
+         * Sets current user id.
+         *
+         * @param userId
+         */
+        UserIdService.prototype.setUserId = function (userId) {
+            this._userId.next(userId);
+        };
+        /**
+         * This function provides the userId the OCC calls should use, depending
+         * on whether there is an active storefront session or not.
+         *
+         * It returns the userId of the current storefront user or 'anonymous'
+         * in the case there are no signed in user in the storefront.
+         *
+         * The user id of a regular customer session is 'current'. In the case of an
+         * asm customer emulation session, the userId will be the customerId.
+         */
+        UserIdService.prototype.getUserId = function () {
+            return this._userId;
+        };
+        /**
+         * Calls provided callback with current user id.
+         *
+         * @param cb callback function to invoke
+         */
+        UserIdService.prototype.invokeWithUserId = function (cb) {
+            return this.getUserId()
+                .pipe(operators.take(1))
+                .subscribe(function (id) { return cb(id); });
+        };
+        /**
+         * Sets user id to the default value for logged out user.
+         */
+        UserIdService.prototype.clearUserId = function () {
+            this.setUserId(OCC_USER_ID_ANONYMOUS);
+        };
+        /**
+         * Checks if the userId is of emulated user type.
+         */
+        UserIdService.prototype.isEmulated = function () {
+            return this.getUserId().pipe(operators.map(function (userId) { return userId !== OCC_USER_ID_ANONYMOUS && userId !== OCC_USER_ID_CURRENT; }));
+        };
+        return UserIdService;
+    }());
+    UserIdService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserIdService_Factory() { return new UserIdService(); }, token: UserIdService, providedIn: "root" });
+    UserIdService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+
+    var LOGIN = '[Auth] Login';
+    var LOGOUT = '[Auth] Logout';
+    var Login = /** @class */ (function () {
+        function Login() {
+            this.type = LOGIN;
+        }
+        return Login;
+    }());
+    var Logout = /** @class */ (function () {
+        function Logout() {
+            this.type = LOGOUT;
+        }
+        return Logout;
+    }());
+
+    var authGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        LOGIN: LOGIN,
+        LOGOUT: LOGOUT,
+        Login: Login,
+        Logout: Logout
+    });
+
+    /**
+     * Service serves storage role for AuthRedirectService.
+     * Used by AuthStatePersistenceService to store redirect url for OAuth flows that rely on redirects.
+     */
+    var AuthRedirectStorageService = /** @class */ (function () {
+        function AuthRedirectStorageService() {
+            this.redirectUrl$ = new rxjs.BehaviorSubject(undefined);
+        }
+        /**
+         * Get redirect url after logging in.
+         *
+         * @returns observable with the redirect url as string
+         */
+        AuthRedirectStorageService.prototype.getRedirectUrl = function () {
+            return this.redirectUrl$;
+        };
+        /**
+         * Set url to redirect to after login.
+         *
+         * @param redirectUrl
+         */
+        AuthRedirectStorageService.prototype.setRedirectUrl = function (redirectUrl) {
+            this.redirectUrl$.next(redirectUrl);
+        };
+        return AuthRedirectStorageService;
+    }());
+    AuthRedirectStorageService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthRedirectStorageService_Factory() { return new AuthRedirectStorageService(); }, token: AuthRedirectStorageService, providedIn: "root" });
+    AuthRedirectStorageService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthRedirectStorageService.ctorParameters = function () { return []; };
+
+    /**
+     * Responsible for saving last accessed page (or attempted) before login and for redirecting to that page after login.
+     */
+    var AuthRedirectService = /** @class */ (function () {
+        /**
+         * This service is responsible for redirecting to the last page before authorization. "The last page" can be:
+         * 1. Just the previously opened page; or
+         * 2. The page that we just tried to open, but AuthGuard cancelled it
+         *
+         * For example:
+         * 1. The user opens the product page, then clicks /login link and signs in
+         *    -> Then we should redirect to the product page; or
+         * 2. The user opens the product page, then he clicks /my-account link,
+         *    but is automatically redirected to the login page by the AuthGuard, and he signs in
+         *    -> Then we should redirect to the my-account page, not the product page
+         */
+        function AuthRedirectService(routing, router, authRedirectStorageService) {
+            this.routing = routing;
+            this.router = router;
+            this.authRedirectStorageService = authRedirectStorageService;
+            this.ignoredUrls = new Set();
+        }
+        /**
+         * Redirect to saved url (homepage if nothing is saved).
+         */
+        AuthRedirectService.prototype.redirect = function () {
+            var _this = this;
+            this.authRedirectStorageService
+                .getRedirectUrl()
+                .pipe(operators.take(1))
+                .subscribe(function (redirectUrl) {
+                if (redirectUrl === undefined) {
+                    _this.routing.go('/');
+                }
+                else {
+                    _this.routing.goByUrl(redirectUrl);
+                }
+                _this.authRedirectStorageService.setRedirectUrl(undefined);
+                _this.lastAuthGuardNavigation = undefined;
+            });
+        };
+        /**
+         * Saves url of a page that user wanted to access, but wasn't yet logged in.
+         */
+        AuthRedirectService.prototype.reportAuthGuard = function () {
+            var _a = this.getCurrentNavigation(), url = _a.url, navigationId = _a.navigationId;
+            this.lastAuthGuardNavigation = { url: url, navigationId: navigationId };
+            this.authRedirectStorageService.setRedirectUrl(url);
+        };
+        /**
+         * Saves url of a page that was accessed before entering a page only for not auth users.
+         */
+        AuthRedirectService.prototype.reportNotAuthGuard = function () {
+            var _a = this.getCurrentNavigation(), url = _a.url, initialUrl = _a.initialUrl, navigationId = _a.navigationId;
+            this.ignoredUrls.add(url);
+            // Don't save redirect url if you've already come from page with NotAuthGuard (i.e. user has come from login to register)
+            if (!this.ignoredUrls.has(initialUrl)) {
+                // We compare the navigation id to find out if the url cancelled by AuthGuard (i.e. my-account) is more recent
+                // than the last opened page
+                if (!this.lastAuthGuardNavigation ||
+                    this.lastAuthGuardNavigation.navigationId < navigationId - 1) {
+                    this.authRedirectStorageService.setRedirectUrl(initialUrl);
+                    this.lastAuthGuardNavigation = undefined;
+                }
+            }
+        };
+        AuthRedirectService.prototype.getCurrentNavigation = function () {
+            var initialUrl = this.router.url;
+            var navigation = this.router.getCurrentNavigation();
+            var url = this.router.serializeUrl(navigation.finalUrl);
+            return {
+                navigationId: navigation.id,
+                url: url,
+                initialUrl: initialUrl,
+            };
+        };
+        return AuthRedirectService;
+    }());
+    AuthRedirectService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(i0.ɵɵinject(RoutingService), i0.ɵɵinject(i1$1.Router), i0.ɵɵinject(AuthRedirectStorageService)); }, token: AuthRedirectService, providedIn: "root" });
+    AuthRedirectService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthRedirectService.ctorParameters = function () { return [
+        { type: RoutingService },
+        { type: i1$1.Router },
+        { type: AuthRedirectStorageService }
+    ]; };
+
+    /**
+     * Storage service for AuthToken. Used as a storage for angular-oauth2-oidc library.
+     */
+    var AuthStorageService = /** @class */ (function (_super) {
+        __extends(AuthStorageService, _super);
+        function AuthStorageService() {
+            var _this = _super.apply(this, __spread(arguments)) || this;
+            _this._token$ = new rxjs.BehaviorSubject({});
+            return _this;
+        }
+        AuthStorageService.prototype.decode = function (key, value) {
+            if (AuthStorageService.nonStringifiedOAuthLibKeys.includes(key)) {
+                return value;
+            }
+            return JSON.stringify(value);
+        };
+        AuthStorageService.prototype.encode = function (key, value) {
+            if (AuthStorageService.nonStringifiedOAuthLibKeys.includes(key)) {
+                return value;
+            }
+            else {
+                try {
+                    return JSON.parse(value);
+                }
+                catch (_a) {
+                    return value;
+                }
+            }
+        };
+        /* Async API for spartacus use */
+        /**
+         * Returns complete token (all fields).
+         *
+         * @return observable emitting AuthToken
+         */
+        AuthStorageService.prototype.getToken = function () {
+            return this._token$;
+        };
+        /**
+         * Set current value of token.
+         *
+         * @param token
+         */
+        AuthStorageService.prototype.setToken = function (token) {
+            this._token$.next(token);
+        };
+        /* Sync API for OAuth lib use */
+        /**
+         * Get parameter from the token (eg. access_token)
+         *
+         * @param key
+         */
+        AuthStorageService.prototype.getItem = function (key) {
+            var token;
+            this.getToken()
+                .subscribe(function (currentToken) { return (token = currentToken); })
+                .unsubscribe();
+            return this.decode(key, token === null || token === void 0 ? void 0 : token[key]);
+        };
+        /**
+         * Removes parameter from the token (eg. access_token)
+         *
+         * @param key
+         */
+        AuthStorageService.prototype.removeItem = function (key) {
+            var val = Object.assign({}, this._token$.value);
+            delete val[key];
+            this._token$.next(Object.assign({}, val));
+        };
+        /**
+         * Sets parameter of the token (eg. access_token)
+         *
+         * @param key
+         */
+        AuthStorageService.prototype.setItem = function (key, data) {
+            var _b;
+            if (key) {
+                this._token$.next(Object.assign(Object.assign({}, this._token$.value), (_b = {}, _b[key] = this.encode(key, data), _b)));
+            }
+        };
+        return AuthStorageService;
+    }(i1$3.OAuthStorage));
+    /**
+     * Extracted keys that are not `JSON.stringify` from reading the angular-oauth2-oidc source code
+     */
+    AuthStorageService.nonStringifiedOAuthLibKeys = [
+        'PKCE_verifier',
+        'access_token',
+        'refresh_token',
+        'expires_at',
+        'access_token_stored_at',
+        'id_token',
+        'id_token_expires_at',
+        'id_token_stored_at',
+        'session_state',
+        'nonce',
+    ];
+    AuthStorageService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthStorageService_Factory() { return new AuthStorageService(); }, token: AuthStorageService, providedIn: "root" });
+    AuthStorageService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+
+    var SiteContextConfig = /** @class */ (function () {
+        function SiteContextConfig() {
+        }
+        return SiteContextConfig;
+    }());
+    SiteContextConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function SiteContextConfig_Factory() { return i0.ɵɵinject(Config); }, token: SiteContextConfig, providedIn: "root" });
+    SiteContextConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
+
+    var OccConfig = /** @class */ (function (_super) {
+        __extends(OccConfig, _super);
+        function OccConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return OccConfig;
+    }(SiteContextConfig));
+    OccConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccConfig_Factory() { return i0.ɵɵinject(Config); }, token: OccConfig, providedIn: "root" });
+    OccConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
+
+    var AuthConfig = /** @class */ (function () {
+        function AuthConfig() {
+        }
+        return AuthConfig;
+    }());
+    AuthConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return i0.ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
+    AuthConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
+
+    /**
+     * Supported OAuth flows.
+     */
+    (function (OAuthFlow) {
+        /**
+         * Flow when username and password is passed to the application and then the application through API fetches tokens from OAuth server.
+         */
+        OAuthFlow[OAuthFlow["ResourceOwnerPasswordFlow"] = 0] = "ResourceOwnerPasswordFlow";
+        /**
+         * Flow with redirect to OAuth server where user inputs credentials and the are redirected back with token.
+         */
+        OAuthFlow[OAuthFlow["ImplicitFlow"] = 1] = "ImplicitFlow";
+        /**
+         * Similar to Implicit flow, but user is redirected with code that need to later exchange through API for a token.
+         */
+        OAuthFlow[OAuthFlow["AuthorizationCode"] = 2] = "AuthorizationCode";
+    })(exports.OAuthFlow || (exports.OAuthFlow = {}));
+
+    /**
+     * Utility service on top of the authorization config.
+     * Provides handy defaults, when not everything is set in the configuration.
+     * Use this service instead of direct configuration.
+     */
+    var AuthConfigService = /** @class */ (function () {
+        function AuthConfigService(authConfig, occConfig) {
+            this.authConfig = authConfig;
+            this.occConfig = occConfig;
+        }
+        /**
+         * Get client_id
+         *
+         * @return client_id
+         */
+        AuthConfigService.prototype.getClientId = function () {
+            var _a;
+            return (_a = this.authConfig.authentication.client_id) !== null && _a !== void 0 ? _a : '';
+        };
+        /**
+         * Get client_secret. OAuth server shouldn't require it from web apps (but Hybris OAuth server requires).
+         *
+         * @return client_secret
+         */
+        AuthConfigService.prototype.getClientSecret = function () {
+            var _a;
+            return (_a = this.authConfig.authentication.client_secret) !== null && _a !== void 0 ? _a : '';
+        };
+        /**
+         * Returns base url of the authorization server
+         */
+        AuthConfigService.prototype.getBaseUrl = function () {
+            var _a;
+            return ((_a = this.authConfig.authentication.baseUrl) !== null && _a !== void 0 ? _a : this.occConfig.backend.occ.baseUrl + '/authorizationserver');
+        };
+        /**
+         * Returns endpoint for getting the auth token
+         */
+        AuthConfigService.prototype.getTokenEndpoint = function () {
+            var _a;
+            var tokenEndpoint = (_a = this.authConfig.authentication.tokenEndpoint) !== null && _a !== void 0 ? _a : '';
+            return this.prefixEndpoint(tokenEndpoint);
+        };
+        /**
+         * Returns url for redirect to the authorization server to get token/code
+         */
+        AuthConfigService.prototype.getLoginUrl = function () {
+            var _a;
+            var loginUrl = (_a = this.authConfig.authentication.loginUrl) !== null && _a !== void 0 ? _a : '';
+            return this.prefixEndpoint(loginUrl);
+        };
+        /**
+         * Returns endpoint for token revocation (both access and refresh token).
+         */
+        AuthConfigService.prototype.getRevokeEndpoint = function () {
+            var _a;
+            var revokeEndpoint = (_a = this.authConfig.authentication.revokeEndpoint) !== null && _a !== void 0 ? _a : '';
+            return this.prefixEndpoint(revokeEndpoint);
+        };
+        /**
+         * Returns logout url to redirect to on logout.
+         */
+        AuthConfigService.prototype.getLogoutUrl = function () {
+            var _a;
+            var logoutUrl = (_a = this.authConfig.authentication.logoutUrl) !== null && _a !== void 0 ? _a : '';
+            return this.prefixEndpoint(logoutUrl);
+        };
+        /**
+         * Returns userinfo endpoint of the OAuth server.
+         */
+        AuthConfigService.prototype.getUserinfoEndpoint = function () {
+            var _a;
+            var userinfoEndpoint = (_a = this.authConfig.authentication.userinfoEndpoint) !== null && _a !== void 0 ? _a : '';
+            return this.prefixEndpoint(userinfoEndpoint);
+        };
+        /**
+         * Returns configuration specific for the angular-oauth2-oidc library.
+         */
+        AuthConfigService.prototype.getOAuthLibConfig = function () {
+            var _a, _b;
+            return (_b = (_a = this.authConfig.authentication) === null || _a === void 0 ? void 0 : _a.OAuthLibConfig) !== null && _b !== void 0 ? _b : {};
+        };
+        AuthConfigService.prototype.prefixEndpoint = function (endpoint) {
+            var url = endpoint;
+            if (!url.startsWith('/')) {
+                url = '/' + url;
+            }
+            return "" + this.getBaseUrl() + url;
+        };
+        /**
+         * Returns the type of the OAuth flow based on auth config.
+         * Use when you have to perform particular action only in some of the OAuth flow scenarios.
+         */
+        AuthConfigService.prototype.getOAuthFlow = function () {
+            var _a, _b;
+            var responseType = (_b = (_a = this.authConfig.authentication) === null || _a === void 0 ? void 0 : _a.OAuthLibConfig) === null || _b === void 0 ? void 0 : _b.responseType;
+            if (responseType) {
+                var types = responseType.split(' ');
+                if (types.includes('code')) {
+                    return exports.OAuthFlow.AuthorizationCode;
+                }
+                else if (types.includes('token')) {
+                    return exports.OAuthFlow.ImplicitFlow;
+                }
+                else {
+                    return exports.OAuthFlow.ResourceOwnerPasswordFlow;
+                }
+            }
+            return exports.OAuthFlow.ResourceOwnerPasswordFlow;
+        };
+        return AuthConfigService;
+    }());
+    AuthConfigService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthConfigService_Factory() { return new AuthConfigService(i0.ɵɵinject(AuthConfig), i0.ɵɵinject(OccConfig)); }, token: AuthConfigService, providedIn: "root" });
+    AuthConfigService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthConfigService.ctorParameters = function () { return [
+        { type: AuthConfig },
+        { type: OccConfig }
+    ]; };
+
+    /**
+     * Wrapper service on the library OAuthService. Normalizes the lib API for services.
+     * Use this service when you want to access low level OAuth library methods.
+     */
+    var OAuthLibWrapperService = /** @class */ (function () {
+        function OAuthLibWrapperService(oAuthService, authConfigService, platformId, winRef) {
+            this.oAuthService = oAuthService;
+            this.authConfigService = authConfigService;
+            this.platformId = platformId;
+            this.winRef = winRef;
+            this.initialize();
+        }
+        OAuthLibWrapperService.prototype.initialize = function () {
+            var _a, _b, _c, _d;
+            var isSSR = i1.isPlatformServer(this.platformId);
+            this.oAuthService.configure(Object.assign({ tokenEndpoint: this.authConfigService.getTokenEndpoint(), loginUrl: this.authConfigService.getLoginUrl(), clientId: this.authConfigService.getClientId(), dummyClientSecret: this.authConfigService.getClientSecret(), revocationEndpoint: this.authConfigService.getRevokeEndpoint(), logoutUrl: this.authConfigService.getLogoutUrl(), userinfoEndpoint: this.authConfigService.getUserinfoEndpoint(), issuer: (_b = (_a = this.authConfigService.getOAuthLibConfig()) === null || _a === void 0 ? void 0 : _a.issuer) !== null && _b !== void 0 ? _b : this.authConfigService.getBaseUrl(), redirectUri: ((_d = (_c = this.authConfigService.getOAuthLibConfig()) === null || _c === void 0 ? void 0 : _c.redirectUri) !== null && _d !== void 0 ? _d : !isSSR) ? this.winRef.nativeWindow.location.origin
+                    : '' }, this.authConfigService.getOAuthLibConfig()));
+        };
+        /**
+         * Authorize with ResourceOwnerPasswordFlow.
+         *
+         * @param userId
+         * @param password
+         *
+         * @return token response from the lib
+         */
+        OAuthLibWrapperService.prototype.authorizeWithPasswordFlow = function (userId, password) {
+            return this.oAuthService.fetchTokenUsingPasswordFlow(userId, password);
+        };
+        /**
+         * Refresh access_token.
+         */
+        OAuthLibWrapperService.prototype.refreshToken = function () {
+            this.oAuthService.refreshToken();
+        };
+        /**
+         * Revoke access tokens and clear tokens in lib state.
+         */
+        OAuthLibWrapperService.prototype.revokeAndLogout = function () {
+            var _this = this;
+            return new Promise(function (resolve) {
+                _this.oAuthService
+                    .revokeTokenAndLogout()
+                    .catch(function () {
+                    // when there would be some kind of error during revocation we can't do anything else, so at least we logout user.
+                    _this.oAuthService.logOut();
+                })
+                    .finally(function () {
+                    resolve();
+                });
+            });
+        };
+        /**
+         * Clear tokens in library state (no revocation).
+         */
+        OAuthLibWrapperService.prototype.logout = function () {
+            this.oAuthService.logOut();
+        };
+        /**
+         * Returns Open Id token. Might be empty, when it was not requested with the `responseType` config.
+         *
+         * @return id token
+         */
+        OAuthLibWrapperService.prototype.getIdToken = function () {
+            return this.oAuthService.getIdToken();
+        };
+        /**
+         * Initialize Implicit Flow or Authorization Code flows with the redirect to OAuth login url.
+         */
+        OAuthLibWrapperService.prototype.initLoginFlow = function () {
+            return this.oAuthService.initLoginFlow();
+        };
+        /**
+         * Tries to login user based on `code` or `token` present in the url.
+         */
+        OAuthLibWrapperService.prototype.tryLogin = function () {
+            return this.oAuthService.tryLogin({
+                // We don't load discovery document, because it doesn't contain revoke endpoint information
+                disableOAuth2StateCheck: true,
+            });
+        };
+        return OAuthLibWrapperService;
+    }());
+    OAuthLibWrapperService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OAuthLibWrapperService_Factory() { return new OAuthLibWrapperService(i0.ɵɵinject(i1$3.OAuthService), i0.ɵɵinject(AuthConfigService), i0.ɵɵinject(i0.PLATFORM_ID), i0.ɵɵinject(WindowRef)); }, token: OAuthLibWrapperService, providedIn: "root" });
+    OAuthLibWrapperService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    OAuthLibWrapperService.ctorParameters = function () { return [
+        { type: i1$3.OAuthService },
+        { type: AuthConfigService },
+        { type: Object, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] },
+        { type: WindowRef }
+    ]; };
+
+    /**
+     * Auth service for normal user authentication.
+     * Use to check auth status, login/logout with different OAuth flows.
+     */
+    var BasicAuthService = /** @class */ (function () {
+        function BasicAuthService(store, userIdService, oAuthLibWrapperService, authStorageService, authRedirectService, routingService) {
+            this.store = store;
+            this.userIdService = userIdService;
+            this.oAuthLibWrapperService = oAuthLibWrapperService;
+            this.authStorageService = authStorageService;
+            this.authRedirectService = authRedirectService;
+            this.routingService = routingService;
+        }
+        /**
+         * Check params in url and if there is an code/token then try to login with those.
+         */
+        BasicAuthService.prototype.checkOAuthParamsInUrl = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var result, token, _a_1;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _b.trys.push([0, 2, , 3]);
+                            return [4 /*yield*/, this.oAuthLibWrapperService.tryLogin()];
+                        case 1:
+                            result = _b.sent();
+                            token = this.authStorageService.getItem('access_token');
+                            // We get the result in the code flow even if we did not logged in that why we also need to check if we have access_token
+                            if (result && token) {
+                                this.userIdService.setUserId(OCC_USER_ID_CURRENT);
+                                this.store.dispatch(new Login());
+                                this.authRedirectService.redirect();
+                            }
+                            return [3 /*break*/, 3];
+                        case 2:
+                            _a_1 = _b.sent();
+                            return [3 /*break*/, 3];
+                        case 3: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        /**
+         * Initialize Implicit/Authorization Code flow by redirecting to OAuth server.
+         */
+        BasicAuthService.prototype.loginWithRedirect = function () {
+            this.oAuthLibWrapperService.initLoginFlow();
+            return true;
+        };
+        /**
+         * Loads a new user token with Resource Owner Password Flow.
+         * @param userId
+         * @param password
+         */
+        BasicAuthService.prototype.authorize = function (userId, password) {
+            return __awaiter(this, void 0, void 0, function () {
+                var _a_2;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _b.trys.push([0, 2, , 3]);
+                            return [4 /*yield*/, this.oAuthLibWrapperService.authorizeWithPasswordFlow(userId, password)];
+                        case 1:
+                            _b.sent();
+                            // OCC specific user id handling. Customize when implementing different backend
+                            this.userIdService.setUserId(OCC_USER_ID_CURRENT);
+                            this.store.dispatch(new Login());
+                            this.authRedirectService.redirect();
+                            return [3 /*break*/, 3];
+                        case 2:
+                            _a_2 = _b.sent();
+                            return [3 /*break*/, 3];
+                        case 3: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        /**
+         * Logout a storefront customer.
+         */
+        BasicAuthService.prototype.logout = function () {
+            var _this = this;
+            this.userIdService.clearUserId();
+            return new Promise(function (resolve) {
+                _this.oAuthLibWrapperService.revokeAndLogout().finally(function () {
+                    _this.store.dispatch(new Logout());
+                    resolve();
+                });
+            });
+        };
+        /**
+         * Returns `true` if the user is logged in; and `false` if the user is anonymous.
+         */
+        BasicAuthService.prototype.isUserLoggedIn = function () {
+            return this.authStorageService.getToken().pipe(operators.map(function (userToken) { return Boolean(userToken === null || userToken === void 0 ? void 0 : userToken.access_token); }), operators.distinctUntilChanged());
+        };
+        /**
+         * Initialize logout procedure by redirecting to the `logout` endpoint.
+         */
+        BasicAuthService.prototype.initLogout = function () {
+            this.routingService.go({ cxRoute: 'logout' });
+        };
+        return BasicAuthService;
+    }());
+    BasicAuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function BasicAuthService_Factory() { return new BasicAuthService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(RoutingService)); }, token: BasicAuthService, providedIn: "root" });
+    BasicAuthService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    BasicAuthService.ctorParameters = function () { return [
+        { type: i1$2.Store },
+        { type: UserIdService },
+        { type: OAuthLibWrapperService },
+        { type: AuthStorageService },
+        { type: AuthRedirectService },
+        { type: RoutingService }
+    ]; };
+
+    /**
+     * Auth facade on BasicAuthService and AsmAuthService.
+     * This service should be used in components, other core features.
+     */
+    var AuthService = /** @class */ (function () {
+        function AuthService(basicAuthService) {
+            this.basicAuthService = basicAuthService;
+        }
+        /**
+         * Check params in url and if there is an code/token then try to login with those.
+         */
+        AuthService.prototype.checkOAuthParamsInUrl = function () {
+            this.basicAuthService.checkOAuthParamsInUrl();
+        };
+        /**
+         * Initialize Implicit/Authorization Code flow by redirecting to OAuth server.
+         */
+        AuthService.prototype.loginWithRedirect = function () {
+            return this.basicAuthService.loginWithRedirect();
+        };
+        /**
+         * Loads a new user token with Resource Owner Password Flow.
+         * @param userId
+         * @param password
+         */
+        AuthService.prototype.authorize = function (userId, password) {
+            this.basicAuthService.authorize(userId, password);
+        };
+        /**
+         * Logout a storefront customer.
+         */
+        AuthService.prototype.logout = function () {
+            return this.basicAuthService.logout();
+        };
+        /**
+         * Returns `true` if the user is logged in; and `false` if the user is anonymous.
+         */
+        AuthService.prototype.isUserLoggedIn = function () {
+            return this.basicAuthService.isUserLoggedIn();
+        };
+        /**
+         * Initialize logout procedure by redirecting to the `logout` endpoint.
+         */
+        AuthService.prototype.initLogout = function () {
+            this.basicAuthService.initLogout();
+        };
+        return AuthService;
+    }());
+    AuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.ɵɵinject(BasicAuthService)); }, token: AuthService, providedIn: "root" });
+    AuthService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthService.ctorParameters = function () { return [
+        { type: BasicAuthService }
+    ]; };
+
+    (function (CountryType) {
+        CountryType["BILLING"] = "BILLING";
+        CountryType["SHIPPING"] = "SHIPPING";
+    })(exports.CountryType || (exports.CountryType = {}));
+
+    (function (PromotionLocation) {
+        PromotionLocation["ActiveCart"] = "CART";
+        PromotionLocation["Checkout"] = "CHECKOUT";
+        PromotionLocation["Order"] = "ORDER";
+    })(exports.PromotionLocation || (exports.PromotionLocation = {}));
+    (function (B2BPaymentTypeEnum) {
+        B2BPaymentTypeEnum["ACCOUNT_PAYMENT"] = "ACCOUNT";
+        B2BPaymentTypeEnum["CARD_PAYMENT"] = "CARD";
+    })(exports.B2BPaymentTypeEnum || (exports.B2BPaymentTypeEnum = {}));
+
+    (function (PageType) {
+        PageType["CONTENT_PAGE"] = "ContentPage";
+        PageType["PRODUCT_PAGE"] = "ProductPage";
+        PageType["CATEGORY_PAGE"] = "CategoryPage";
+        PageType["CATALOG_PAGE"] = "CatalogPage";
+    })(exports.PageType || (exports.PageType = {}));
+    (function (CmsBannerCarouselEffect) {
+        CmsBannerCarouselEffect["FADE"] = "FADE";
+        CmsBannerCarouselEffect["ZOOM"] = "ZOOM";
+        CmsBannerCarouselEffect["CURTAIN"] = "CURTAINX";
+        CmsBannerCarouselEffect["TURNDOWN"] = "TURNDOWN";
+    })(exports.CmsBannerCarouselEffect || (exports.CmsBannerCarouselEffect = {}));
+
+    (function (ANONYMOUS_CONSENT_STATUS) {
+        ANONYMOUS_CONSENT_STATUS["GIVEN"] = "GIVEN";
+        ANONYMOUS_CONSENT_STATUS["WITHDRAWN"] = "WITHDRAWN";
+    })(exports.ANONYMOUS_CONSENT_STATUS || (exports.ANONYMOUS_CONSENT_STATUS = {}));
+    var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
+
+    (function (ImageType) {
+        ImageType["PRIMARY"] = "PRIMARY";
+        ImageType["GALLERY"] = "GALLERY";
+    })(exports.ImageType || (exports.ImageType = {}));
+
+    (function (B2BUserGroup) {
+        B2BUserGroup["B2B_ADMIN_GROUP"] = "b2badmingroup";
+        B2BUserGroup["B2B_CUSTOMER_GROUP"] = "b2bcustomergroup";
+        B2BUserGroup["B2B_MANAGER_GROUP"] = "b2bmanagergroup";
+        B2BUserGroup["B2B_APPROVER_GROUP"] = "b2bapprovergroup";
+    })(exports.B2BUserGroup || (exports.B2BUserGroup = {}));
+
+    (function (NotificationType) {
+        NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
+    })(exports.NotificationType || (exports.NotificationType = {}));
+
+    (function (VariantType) {
+        VariantType["SIZE"] = "ApparelSizeVariantProduct";
+        VariantType["STYLE"] = "ApparelStyleVariantProduct";
+        VariantType["COLOR"] = "ElectronicsColorVariantProduct";
+    })(exports.VariantType || (exports.VariantType = {}));
+    (function (PriceType) {
+        PriceType["BUY"] = "BUY";
+        PriceType["FROM"] = "FROM";
+    })(exports.PriceType || (exports.PriceType = {}));
+    (function (VariantQualifier) {
+        VariantQualifier["SIZE"] = "size";
+        VariantQualifier["STYLE"] = "style";
+        VariantQualifier["COLOR"] = "color";
+        VariantQualifier["THUMBNAIL"] = "thumbnail";
+        VariantQualifier["PRODUCT"] = "product";
+        VariantQualifier["ROLLUP_PROPERTY"] = "rollupProperty";
+    })(exports.VariantQualifier || (exports.VariantQualifier = {}));
+
+    (function (DaysOfWeek) {
+        DaysOfWeek["MONDAY"] = "MONDAY";
+        DaysOfWeek["TUESDAY"] = "TUESDAY";
+        DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
+        DaysOfWeek["THURSDAY"] = "THURSDAY";
+        DaysOfWeek["FRIDAY"] = "FRIDAY";
+        DaysOfWeek["SATURDAY"] = "SATURDAY";
+        DaysOfWeek["SUNDAY"] = "SUNDAY";
+    })(exports.DaysOfWeek || (exports.DaysOfWeek = {}));
+    var recurrencePeriod = {
+        DAILY: 'DAILY',
+        WEEKLY: 'WEEKLY',
+        MONTHLY: 'MONTHLY',
+    };
+    (function (ORDER_TYPE) {
+        ORDER_TYPE["PLACE_ORDER"] = "PLACE_ORDER";
+        ORDER_TYPE["SCHEDULE_REPLENISHMENT_ORDER"] = "SCHEDULE_REPLENISHMENT_ORDER";
+    })(exports.ORDER_TYPE || (exports.ORDER_TYPE = {}));
 
     var ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
     var ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
@@ -799,39 +2317,6 @@
         return state.entities[id] || undefined;
     }
 
-    function isObject(item) {
-        return item && typeof item === 'object' && !Array.isArray(item);
-    }
-    function deepMerge(target) {
-        var _a, _b, _c;
-        if (target === void 0) { target = {}; }
-        var sources = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            sources[_i - 1] = arguments[_i];
-        }
-        if (!sources.length) {
-            return target;
-        }
-        var source = sources.shift() || {};
-        if (isObject(target) && isObject(source)) {
-            for (var key in source) {
-                if (source[key] instanceof Date) {
-                    Object.assign(target, (_a = {}, _a[key] = source[key], _a));
-                }
-                else if (isObject(source[key])) {
-                    if (!target[key]) {
-                        Object.assign(target, (_b = {}, _b[key] = {}, _b));
-                    }
-                    deepMerge(target[key], source[key]);
-                }
-                else {
-                    Object.assign(target, (_c = {}, _c[key] = source[key], _c));
-                }
-            }
-        }
-        return deepMerge.apply(void 0, __spread([target], sources));
-    }
-
     var OBJECT_SEPARATOR = '.';
     function getStateSliceValue(keys, state) {
         return keys
@@ -1013,1080 +2498,430 @@
         processesLoaderReducer: processesLoaderReducer
     });
 
-    var AUTH_FEATURE = 'auth';
-    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+    var ANONYMOUS_CONSENTS_STORE_FEATURE = 'anonymous-consents';
+    var ANONYMOUS_CONSENTS = '[Anonymous Consents] Anonymous Consents';
 
-    var LOAD_CLIENT_TOKEN = '[Token] Load Client Token';
-    var LOAD_CLIENT_TOKEN_FAIL = '[Token] Load Client Token Fail';
-    var LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Load Client Token Success';
-    var LoadClientToken = /** @class */ (function (_super) {
-        __extends(LoadClientToken, _super);
-        function LoadClientToken() {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
-            _this.type = LOAD_CLIENT_TOKEN;
+    var LOAD_ANONYMOUS_CONSENT_TEMPLATES = '[Anonymous Consents] Load Anonymous Consent Templates';
+    var LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS = '[Anonymous Consents] Load Anonymous Consent Templates Success';
+    var LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL = '[Anonymous Consents] Load Anonymous Consent Templates Fail';
+    var RESET_LOAD_ANONYMOUS_CONSENT_TEMPLATES = '[Anonymous Consents] Reset Load Anonymous Consent Templates';
+    var GET_ALL_ANONYMOUS_CONSENTS = '[Anonymous Consents] Get All Anonymous Consents';
+    var GET_ANONYMOUS_CONSENT = '[Anonymous Consents] Get Anonymous Consent';
+    var SET_ANONYMOUS_CONSENTS = '[Anonymous Consents] Set Anonymous Consents';
+    var GIVE_ANONYMOUS_CONSENT = '[Anonymous Consents] Give Anonymous Consent';
+    var WITHDRAW_ANONYMOUS_CONSENT = '[Anonymous Consents] Withdraw Anonymous Consent';
+    var TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = '[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed';
+    var TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = '[Anonymous Consents] Anonymous Consent Templates Updated';
+    var ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS = '[Anonymous Consents] Check Updated Versions';
+    var LoadAnonymousConsentTemplates = /** @class */ (function (_super) {
+        __extends(LoadAnonymousConsentTemplates, _super);
+        function LoadAnonymousConsentTemplates() {
+            var _this = _super.call(this, ANONYMOUS_CONSENTS) || this;
+            _this.type = LOAD_ANONYMOUS_CONSENT_TEMPLATES;
             return _this;
         }
-        return LoadClientToken;
+        return LoadAnonymousConsentTemplates;
     }(LoaderLoadAction));
-    var LoadClientTokenFail = /** @class */ (function (_super) {
-        __extends(LoadClientTokenFail, _super);
-        function LoadClientTokenFail(payload) {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA, payload) || this;
+    var LoadAnonymousConsentTemplatesSuccess = /** @class */ (function (_super) {
+        __extends(LoadAnonymousConsentTemplatesSuccess, _super);
+        function LoadAnonymousConsentTemplatesSuccess(payload) {
+            var _this = _super.call(this, ANONYMOUS_CONSENTS) || this;
             _this.payload = payload;
-            _this.type = LOAD_CLIENT_TOKEN_FAIL;
+            _this.type = LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS;
             return _this;
         }
-        return LoadClientTokenFail;
-    }(LoaderFailAction));
-    var LoadClientTokenSuccess = /** @class */ (function (_super) {
-        __extends(LoadClientTokenSuccess, _super);
-        function LoadClientTokenSuccess(payload) {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CLIENT_TOKEN_SUCCESS;
-            return _this;
-        }
-        return LoadClientTokenSuccess;
+        return LoadAnonymousConsentTemplatesSuccess;
     }(LoaderSuccessAction));
-
-    var LOGIN = '[Auth] Login';
-    var LOGOUT = '[Auth] Logout';
-    var LOGOUT_CUSTOMER_SUPPORT_AGENT = '[Auth] Logout Customer Support Agent';
-    var Login = /** @class */ (function () {
-        function Login() {
-            this.type = LOGIN;
+    var LoadAnonymousConsentTemplatesFail = /** @class */ (function (_super) {
+        __extends(LoadAnonymousConsentTemplatesFail, _super);
+        function LoadAnonymousConsentTemplatesFail(payload) {
+            var _this = _super.call(this, ANONYMOUS_CONSENTS, payload) || this;
+            _this.type = LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL;
+            return _this;
         }
-        return Login;
-    }());
-    var Logout = /** @class */ (function () {
-        function Logout() {
-            this.type = LOGOUT;
+        return LoadAnonymousConsentTemplatesFail;
+    }(LoaderFailAction));
+    var ResetLoadAnonymousConsentTemplates = /** @class */ (function (_super) {
+        __extends(ResetLoadAnonymousConsentTemplates, _super);
+        function ResetLoadAnonymousConsentTemplates() {
+            var _this = _super.call(this, ANONYMOUS_CONSENTS) || this;
+            _this.type = RESET_LOAD_ANONYMOUS_CONSENT_TEMPLATES;
+            return _this;
         }
-        return Logout;
+        return ResetLoadAnonymousConsentTemplates;
+    }(LoaderResetAction));
+    var GetAllAnonymousConsents = /** @class */ (function () {
+        function GetAllAnonymousConsents() {
+            this.type = GET_ALL_ANONYMOUS_CONSENTS;
+        }
+        return GetAllAnonymousConsents;
     }());
-
-    var LOAD_USER_TOKEN = '[Auth] Load User Token';
-    var LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
-    var LOAD_USER_TOKEN_SUCCESS = '[Auth] Load User Token Success';
-    var REFRESH_USER_TOKEN = '[Auth] Refresh User Token';
-    var REFRESH_USER_TOKEN_FAIL = '[Auth] Refresh User Token Fail';
-    var REFRESH_USER_TOKEN_SUCCESS = '[Auth] Refresh User Token Success';
-    var REVOKE_USER_TOKEN = '[Auth] Revoke User Token';
-    var REVOKE_USER_TOKEN_FAIL = '[Auth] Revoke User Token Fail';
-    var REVOKE_USER_TOKEN_SUCCESS = '[Auth] Revoke User Token Success';
-    var LoadUserToken = /** @class */ (function () {
-        function LoadUserToken(payload) {
+    var GetAnonymousConsent = /** @class */ (function () {
+        function GetAnonymousConsent(templateCode) {
+            this.templateCode = templateCode;
+            this.type = GET_ANONYMOUS_CONSENT;
+        }
+        return GetAnonymousConsent;
+    }());
+    var SetAnonymousConsents = /** @class */ (function () {
+        function SetAnonymousConsents(payload) {
             this.payload = payload;
-            this.type = LOAD_USER_TOKEN;
+            this.type = SET_ANONYMOUS_CONSENTS;
         }
-        return LoadUserToken;
+        return SetAnonymousConsents;
     }());
-    var LoadUserTokenFail = /** @class */ (function () {
-        function LoadUserTokenFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_TOKEN_FAIL;
+    var GiveAnonymousConsent = /** @class */ (function () {
+        function GiveAnonymousConsent(templateCode) {
+            this.templateCode = templateCode;
+            this.type = GIVE_ANONYMOUS_CONSENT;
         }
-        return LoadUserTokenFail;
+        return GiveAnonymousConsent;
     }());
-    var LoadUserTokenSuccess = /** @class */ (function () {
-        function LoadUserTokenSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_TOKEN_SUCCESS;
+    var WithdrawAnonymousConsent = /** @class */ (function () {
+        function WithdrawAnonymousConsent(templateCode) {
+            this.templateCode = templateCode;
+            this.type = WITHDRAW_ANONYMOUS_CONSENT;
         }
-        return LoadUserTokenSuccess;
+        return WithdrawAnonymousConsent;
     }());
-    var RefreshUserToken = /** @class */ (function () {
-        function RefreshUserToken(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN;
+    var ToggleAnonymousConsentsBannerDissmissed = /** @class */ (function () {
+        function ToggleAnonymousConsentsBannerDissmissed(dismissed) {
+            this.dismissed = dismissed;
+            this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED;
         }
-        return RefreshUserToken;
+        return ToggleAnonymousConsentsBannerDissmissed;
     }());
-    var RefreshUserTokenSuccess = /** @class */ (function () {
-        function RefreshUserTokenSuccess(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN_SUCCESS;
+    var ToggleAnonymousConsentTemplatesUpdated = /** @class */ (function () {
+        function ToggleAnonymousConsentTemplatesUpdated(updated) {
+            this.updated = updated;
+            this.type = TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED;
         }
-        return RefreshUserTokenSuccess;
+        return ToggleAnonymousConsentTemplatesUpdated;
     }());
-    var RefreshUserTokenFail = /** @class */ (function () {
-        function RefreshUserTokenFail(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN_FAIL;
+    var AnonymousConsentCheckUpdatedVersions = /** @class */ (function () {
+        function AnonymousConsentCheckUpdatedVersions() {
+            this.type = ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS;
         }
-        return RefreshUserTokenFail;
-    }());
-    var RevokeUserToken = /** @class */ (function () {
-        function RevokeUserToken(payload) {
-            this.payload = payload;
-            this.type = REVOKE_USER_TOKEN;
-        }
-        return RevokeUserToken;
-    }());
-    var RevokeUserTokenSuccess = /** @class */ (function () {
-        function RevokeUserTokenSuccess(payload) {
-            this.payload = payload;
-            this.type = REVOKE_USER_TOKEN_SUCCESS;
-        }
-        return RevokeUserTokenSuccess;
-    }());
-    var RevokeUserTokenFail = /** @class */ (function () {
-        function RevokeUserTokenFail(payload) {
-            this.payload = payload;
-            this.type = REVOKE_USER_TOKEN_FAIL;
-        }
-        return RevokeUserTokenFail;
+        return AnonymousConsentCheckUpdatedVersions;
     }());
 
-    var authGroup_actions = /*#__PURE__*/Object.freeze({
+    var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        LOAD_CLIENT_TOKEN: LOAD_CLIENT_TOKEN,
-        LOAD_CLIENT_TOKEN_FAIL: LOAD_CLIENT_TOKEN_FAIL,
-        LOAD_CLIENT_TOKEN_SUCCESS: LOAD_CLIENT_TOKEN_SUCCESS,
-        LoadClientToken: LoadClientToken,
-        LoadClientTokenFail: LoadClientTokenFail,
-        LoadClientTokenSuccess: LoadClientTokenSuccess,
-        LOGIN: LOGIN,
-        LOGOUT: LOGOUT,
-        LOGOUT_CUSTOMER_SUPPORT_AGENT: LOGOUT_CUSTOMER_SUPPORT_AGENT,
-        Login: Login,
-        Logout: Logout,
-        LOAD_USER_TOKEN: LOAD_USER_TOKEN,
-        LOAD_USER_TOKEN_FAIL: LOAD_USER_TOKEN_FAIL,
-        LOAD_USER_TOKEN_SUCCESS: LOAD_USER_TOKEN_SUCCESS,
-        REFRESH_USER_TOKEN: REFRESH_USER_TOKEN,
-        REFRESH_USER_TOKEN_FAIL: REFRESH_USER_TOKEN_FAIL,
-        REFRESH_USER_TOKEN_SUCCESS: REFRESH_USER_TOKEN_SUCCESS,
-        REVOKE_USER_TOKEN: REVOKE_USER_TOKEN,
-        REVOKE_USER_TOKEN_FAIL: REVOKE_USER_TOKEN_FAIL,
-        REVOKE_USER_TOKEN_SUCCESS: REVOKE_USER_TOKEN_SUCCESS,
-        LoadUserToken: LoadUserToken,
-        LoadUserTokenFail: LoadUserTokenFail,
-        LoadUserTokenSuccess: LoadUserTokenSuccess,
-        RefreshUserToken: RefreshUserToken,
-        RefreshUserTokenSuccess: RefreshUserTokenSuccess,
-        RefreshUserTokenFail: RefreshUserTokenFail,
-        RevokeUserToken: RevokeUserToken,
-        RevokeUserTokenSuccess: RevokeUserTokenSuccess,
-        RevokeUserTokenFail: RevokeUserTokenFail
+        LOAD_ANONYMOUS_CONSENT_TEMPLATES: LOAD_ANONYMOUS_CONSENT_TEMPLATES,
+        LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS: LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS,
+        LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL: LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL,
+        RESET_LOAD_ANONYMOUS_CONSENT_TEMPLATES: RESET_LOAD_ANONYMOUS_CONSENT_TEMPLATES,
+        GET_ALL_ANONYMOUS_CONSENTS: GET_ALL_ANONYMOUS_CONSENTS,
+        GET_ANONYMOUS_CONSENT: GET_ANONYMOUS_CONSENT,
+        SET_ANONYMOUS_CONSENTS: SET_ANONYMOUS_CONSENTS,
+        GIVE_ANONYMOUS_CONSENT: GIVE_ANONYMOUS_CONSENT,
+        WITHDRAW_ANONYMOUS_CONSENT: WITHDRAW_ANONYMOUS_CONSENT,
+        TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED,
+        TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED,
+        ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS: ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS,
+        LoadAnonymousConsentTemplates: LoadAnonymousConsentTemplates,
+        LoadAnonymousConsentTemplatesSuccess: LoadAnonymousConsentTemplatesSuccess,
+        LoadAnonymousConsentTemplatesFail: LoadAnonymousConsentTemplatesFail,
+        ResetLoadAnonymousConsentTemplates: ResetLoadAnonymousConsentTemplates,
+        GetAllAnonymousConsents: GetAllAnonymousConsents,
+        GetAnonymousConsent: GetAnonymousConsent,
+        SetAnonymousConsents: SetAnonymousConsents,
+        GiveAnonymousConsent: GiveAnonymousConsent,
+        WithdrawAnonymousConsent: WithdrawAnonymousConsent,
+        ToggleAnonymousConsentsBannerDissmissed: ToggleAnonymousConsentsBannerDissmissed,
+        ToggleAnonymousConsentTemplatesUpdated: ToggleAnonymousConsentTemplatesUpdated,
+        AnonymousConsentCheckUpdatedVersions: AnonymousConsentCheckUpdatedVersions
     });
 
-    var getAuthState = i1$1.createFeatureSelector(AUTH_FEATURE);
+    var getAnonymousConsentState = i1$2.createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
 
-    var ɵ0 = function (state) { return state.clientToken; };
-    var getClientTokenState = i1$1.createSelector(getAuthState, ɵ0);
+    var ɵ0$1 = function (state) { return state.templates; };
+    var getAnonymousConsentTemplatesState = i1$2.createSelector(getAnonymousConsentState, ɵ0$1);
+    var getAnonymousConsentTemplatesValue = i1$2.createSelector(getAnonymousConsentTemplatesState, loaderValueSelector);
+    var getAnonymousConsentTemplatesLoading = i1$2.createSelector(getAnonymousConsentTemplatesState, loaderLoadingSelector);
+    var getAnonymousConsentTemplatesSuccess = i1$2.createSelector(getAnonymousConsentTemplatesState, loaderSuccessSelector);
+    var getAnonymousConsentTemplatesError = i1$2.createSelector(getAnonymousConsentTemplatesState, loaderErrorSelector);
+    var getAnonymousConsentTemplate = function (templateCode) {
+        return i1$2.createSelector(getAnonymousConsentTemplatesValue, function (templates) {
+            return templates
+                ? templates.find(function (template) { return template.id === templateCode; })
+                : null;
+        });
+    };
 
-    var getUserTokenSelector = function (state) { return state.token; };
-    var ɵ0$1 = getUserTokenSelector;
-    var ɵ1 = function (state) { return state.userToken; };
-    var getUserTokenState = i1$1.createSelector(getAuthState, ɵ1);
-    var getUserToken = i1$1.createSelector(getUserTokenState, getUserTokenSelector);
+    var ɵ0$2 = function (state) { return state.ui.updated; };
+    var getAnonymousConsentTemplatesUpdate = i1$2.createSelector(getAnonymousConsentState, ɵ0$2);
+    var ɵ1$1 = function (state) { return state.ui.bannerDismissed; };
+    var getAnonymousConsentsBannerDismissed = i1$2.createSelector(getAnonymousConsentState, ɵ1$1);
 
-    var authGroup_selectors = /*#__PURE__*/Object.freeze({
+    var ɵ0$3 = function (state) { return state.consents; };
+    var getAnonymousConsents = i1$2.createSelector(getAnonymousConsentState, ɵ0$3);
+    var getAnonymousConsentByTemplateCode = function (templateCode) { return i1$2.createSelector(getAnonymousConsents, function (consents) { return consents.find(function (consent) { return consent.templateCode === templateCode; }); }); };
+
+    var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        getClientTokenState: getClientTokenState,
-        ɵ0: ɵ0,
-        getAuthState: getAuthState,
-        getUserTokenState: getUserTokenState,
-        getUserToken: getUserToken,
-        ɵ1: ɵ1
+        getAnonymousConsentTemplatesState: getAnonymousConsentTemplatesState,
+        getAnonymousConsentTemplatesValue: getAnonymousConsentTemplatesValue,
+        getAnonymousConsentTemplatesLoading: getAnonymousConsentTemplatesLoading,
+        getAnonymousConsentTemplatesSuccess: getAnonymousConsentTemplatesSuccess,
+        getAnonymousConsentTemplatesError: getAnonymousConsentTemplatesError,
+        getAnonymousConsentTemplate: getAnonymousConsentTemplate,
+        ɵ0: ɵ0$1,
+        getAnonymousConsentTemplatesUpdate: getAnonymousConsentTemplatesUpdate,
+        getAnonymousConsentsBannerDismissed: getAnonymousConsentsBannerDismissed,
+        ɵ1: ɵ1$1,
+        getAnonymousConsents: getAnonymousConsents,
+        getAnonymousConsentByTemplateCode: getAnonymousConsentByTemplateCode,
+        getAnonymousConsentState: getAnonymousConsentState
     });
 
-    var AuthService = /** @class */ (function () {
-        function AuthService(store) {
+    var AnonymousConsentsService = /** @class */ (function () {
+        function AnonymousConsentsService(store, authService) {
             this.store = store;
+            this.authService = authService;
         }
         /**
-         * Loads a new user token
-         * @param userId
-         * @param password
+         * Retrieves the anonymous consent templates.
          */
-        AuthService.prototype.authorize = function (userId, password) {
-            this.store.dispatch(new LoadUserToken({
-                userId: userId,
-                password: password,
-            }));
+        AnonymousConsentsService.prototype.loadTemplates = function () {
+            this.store.dispatch(new LoadAnonymousConsentTemplates());
         };
         /**
-         * This function provides the userId the OCC calls should use, depending
-         * on whether there is an active storefront session or not.
+         * Conditionally triggers the load of the anonymous consent templates if:
+         *   - `loadIfMissing` parameter is set to `true`
+         *   - the `templates` in the store are `undefined`
          *
-         * It returns the userId of the current storefront user or 'anonymous'
-         * in the case there are no signed in user in the storefront.
+         * Othewise it just returns the value from the store.
          *
-         * The user id of a regular customer session is 'current'.  In the case of an
-         * asm customer emulation session, the userId will be the customerId.
+         * @param loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
          */
-        AuthService.prototype.getOccUserId = function () {
-            return this.getUserToken().pipe(operators.map(function (userToken) {
-                if (!!userToken && !!userToken.userId) {
-                    return userToken.userId;
-                }
-                else {
-                    return OCC_USER_ID_ANONYMOUS;
-                }
-            }));
-        };
-        /**
-         * Calls provided callback with current user id.
-         *
-         * @param cb callback function to invoke
-         */
-        AuthService.prototype.invokeWithUserId = function (cb) {
-            return this.getOccUserId()
-                .pipe(operators.take(1))
-                .subscribe(function (id) { return cb(id); });
-        };
-        /**
-         * Returns the user's token
-         */
-        AuthService.prototype.getUserToken = function () {
-            return this.store.pipe(i1$1.select(getUserToken));
-        };
-        /**
-         * Refreshes the user token
-         * @param token a user token to refresh
-         */
-        AuthService.prototype.refreshUserToken = function (token) {
-            this.store.dispatch(new RefreshUserToken({
-                refreshToken: token.refresh_token,
-            }));
-        };
-        /**
-         * Store the provided token
-         */
-        AuthService.prototype.authorizeWithToken = function (token) {
-            this.store.dispatch(new LoadUserTokenSuccess(token));
-        };
-        /**
-         * Logout a storefront customer
-         */
-        AuthService.prototype.logout = function () {
+        AnonymousConsentsService.prototype.getTemplates = function (loadIfMissing) {
             var _this = this;
-            this.getUserToken()
-                .pipe(operators.take(1))
-                .subscribe(function (userToken) {
-                _this.store.dispatch(new Logout());
-                if (Boolean(userToken) && userToken.userId === OCC_USER_ID_CURRENT) {
-                    _this.store.dispatch(new RevokeUserToken(userToken));
+            if (loadIfMissing === void 0) { loadIfMissing = false; }
+            return rxjs.iif(function () { return loadIfMissing; }, this.store.pipe(i1$2.select(getAnonymousConsentTemplatesValue), operators.withLatestFrom(this.getLoadTemplatesLoading()), operators.filter(function (_a) {
+                var _b = __read(_a, 2), _templates = _b[0], loading = _b[1];
+                return !loading;
+            }), operators.tap(function (_a) {
+                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+                if (!Boolean(templates)) {
+                    _this.loadTemplates();
                 }
-            });
+            }), operators.filter(function (_a) {
+                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+                return Boolean(templates);
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+                return templates;
+            })), this.store.pipe(i1$2.select(getAnonymousConsentTemplatesValue)));
         };
         /**
-         * Returns a client token.  The client token from the store is returned if there is one.
-         * Otherwise, an new token is fetched from the backend and saved in the store.
+         * Returns the anonymous consent templates with the given template code.
+         * @param templateCode a template code by which to filter anonymous consent templates.
          */
-        AuthService.prototype.getClientToken = function () {
+        AnonymousConsentsService.prototype.getTemplate = function (templateCode) {
+            return this.store.pipe(i1$2.select(getAnonymousConsentTemplate(templateCode)));
+        };
+        /**
+         * Returns an indicator for the loading status for the anonymous consent templates.
+         */
+        AnonymousConsentsService.prototype.getLoadTemplatesLoading = function () {
+            return this.store.pipe(i1$2.select(getAnonymousConsentTemplatesLoading));
+        };
+        /**
+         * Returns an indicator for the success status for the anonymous consent templates.
+         */
+        AnonymousConsentsService.prototype.getLoadTemplatesSuccess = function () {
+            return this.store.pipe(i1$2.select(getAnonymousConsentTemplatesSuccess));
+        };
+        /**
+         * Returns an indicator for the error status for the anonymous consent templates.
+         */
+        AnonymousConsentsService.prototype.getLoadTemplatesError = function () {
+            return this.store.pipe(i1$2.select(getAnonymousConsentTemplatesError));
+        };
+        /**
+         * Resets the loading, success and error indicators for the anonymous consent templates.
+         */
+        AnonymousConsentsService.prototype.resetLoadTemplatesState = function () {
+            this.store.dispatch(new ResetLoadAnonymousConsentTemplates());
+        };
+        /**
+         * Returns all the anonymous consents.
+         */
+        AnonymousConsentsService.prototype.getConsents = function () {
+            return this.store.pipe(i1$2.select(getAnonymousConsents));
+        };
+        /**
+         * Puts the provided anonymous consents into the store.
+         */
+        AnonymousConsentsService.prototype.setConsents = function (consents) {
+            return this.store.dispatch(new SetAnonymousConsents(consents));
+        };
+        /**
+         * Returns the anonymous consent for the given template ID.
+         *
+         * As a side-effect, the method will call `getTemplates(true)` to load the templates if those are not present.
+         *
+         * @param templateId a template ID by which to filter anonymous consent templates.
+         */
+        AnonymousConsentsService.prototype.getConsent = function (templateId) {
             var _this = this;
-            return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
-                if (_this.isClientTokenLoaded(state)) {
+            return this.authService.isUserLoggedIn().pipe(operators.filter(function (authenticated) { return !authenticated; }), operators.tap(function () { return _this.getTemplates(true); }), operators.switchMap(function () { return _this.store.pipe(i1$2.select(getAnonymousConsentByTemplateCode(templateId))); }));
+        };
+        /**
+         * Give a consent for the given `templateCode`
+         * @param templateCode for which to give the consent
+         */
+        AnonymousConsentsService.prototype.giveConsent = function (templateCode) {
+            this.store.dispatch(new GiveAnonymousConsent(templateCode));
+        };
+        /**
+         * Sets all the anonymous consents' state to given.
+         */
+        AnonymousConsentsService.prototype.giveAllConsents = function () {
+            var _this = this;
+            return this.getTemplates(true).pipe(operators.tap(function (templates) { return templates.forEach(function (template) { return _this.giveConsent(template.id); }); }));
+        };
+        /**
+         * Returns `true` if the provided `consent` is given.
+         * @param consent a consent to test
+         */
+        AnonymousConsentsService.prototype.isConsentGiven = function (consent) {
+            return consent && consent.consentState === exports.ANONYMOUS_CONSENT_STATUS.GIVEN;
+        };
+        /**
+         * Withdraw a consent for the given `templateCode`
+         * @param templateCode for which to withdraw the consent
+         */
+        AnonymousConsentsService.prototype.withdrawConsent = function (templateCode) {
+            this.store.dispatch(new WithdrawAnonymousConsent(templateCode));
+        };
+        /**
+         * Sets all the anonymous consents' state to withdrawn.
+         */
+        AnonymousConsentsService.prototype.withdrawAllConsents = function () {
+            var _this = this;
+            return this.getTemplates(true).pipe(operators.tap(function (templates) { return templates.forEach(function (template) { return _this.withdrawConsent(template.id); }); }));
+        };
+        /**
+         * Returns `true` if the provided `consent` is withdrawn.
+         * @param consent a consent to test
+         */
+        AnonymousConsentsService.prototype.isConsentWithdrawn = function (consent) {
+            return (consent && consent.consentState === exports.ANONYMOUS_CONSENT_STATUS.WITHDRAWN);
+        };
+        /**
+         * Toggles the dismissed state of the anonymous consents banner.
+         * @param dismissed the banner will be dismissed if `true` is passed, otherwise it will be visible.
+         */
+        AnonymousConsentsService.prototype.toggleBannerDismissed = function (dismissed) {
+            this.store.dispatch(new ToggleAnonymousConsentsBannerDissmissed(dismissed));
+            if (dismissed) {
+                this.toggleTemplatesUpdated(false);
+            }
+        };
+        /**
+         * Returns `true` if the banner was dismissed, `false` otherwise.
+         */
+        AnonymousConsentsService.prototype.isBannerDismissed = function () {
+            return this.store.pipe(i1$2.select(getAnonymousConsentsBannerDismissed));
+        };
+        /**
+         * Returns `true` if the consent templates were updated on the back-end.
+         * If the templates are not present in the store, it triggers the load.
+         */
+        AnonymousConsentsService.prototype.getTemplatesUpdated = function () {
+            var _this = this;
+            return this.getTemplates(true).pipe(operators.switchMap(function () { return _this.store.pipe(i1$2.select(getAnonymousConsentTemplatesUpdate)); }));
+        };
+        /**
+         * Toggles the `updated` slice of the state
+         * @param updated
+         */
+        AnonymousConsentsService.prototype.toggleTemplatesUpdated = function (updated) {
+            this.store.dispatch(new ToggleAnonymousConsentTemplatesUpdated(updated));
+        };
+        /**
+         * Returns `true` if either the banner is not dismissed or if the templates were updated on the back-end.
+         * Otherwise, it returns `false`.
+         */
+        AnonymousConsentsService.prototype.isBannerVisible = function () {
+            var _this = this;
+            return rxjs.combineLatest([
+                this.isBannerDismissed(),
+                this.getTemplatesUpdated(),
+            ]).pipe(operators.tap(function () { return _this.checkConsentVersions(); }), operators.map(function (_a) {
+                var _b = __read(_a, 2), dismissed = _b[0], updated = _b[1];
+                return !dismissed || updated;
+            }));
+        };
+        /**
+         * Dispatches an action to trigger the check
+         * whether the anonymous consent version have been updated
+         */
+        AnonymousConsentsService.prototype.checkConsentVersions = function () {
+            this.store.dispatch(new AnonymousConsentCheckUpdatedVersions());
+        };
+        /**
+         * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
+         * @param currentTemplates current templates to check
+         * @param newTemplates new templates to check
+         */
+        AnonymousConsentsService.prototype.detectUpdatedTemplates = function (currentTemplates, newTemplates) {
+            if (newTemplates.length !== currentTemplates.length) {
+                return true;
+            }
+            for (var i = 0; i < newTemplates.length; i++) {
+                var newTemplate = newTemplates[i];
+                var currentTemplate = currentTemplates[i];
+                if (newTemplate.version !== currentTemplate.version) {
                     return true;
                 }
-                else {
-                    if (!state.loading) {
-                        _this.store.dispatch(new LoadClientToken());
-                    }
-                    return false;
-                }
-            }), operators.map(function (state) { return state.value; }));
-        };
-        /**
-         * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
-         * The new clientToken is returned.
-         */
-        AuthService.prototype.refreshClientToken = function () {
-            var _this = this;
-            this.store.dispatch(new LoadClientToken());
-            return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) { return _this.isClientTokenLoaded(state); }), operators.map(function (state) { return state.value; }));
-        };
-        AuthService.prototype.isClientTokenLoaded = function (state) {
-            return (state.success || state.error) && !state.loading;
-        };
-        /**
-         * Returns `true` if the user is logged in; and `false` if the user is anonymous.
-         */
-        AuthService.prototype.isUserLoggedIn = function () {
-            return this.getUserToken().pipe(operators.map(function (userToken) { return Boolean(userToken) && Boolean(userToken.access_token); }));
-        };
-        return AuthService;
-    }());
-    AuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.ɵɵinject(i1$1.Store)); }, token: AuthService, providedIn: "root" });
-    AuthService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    AuthService.ctorParameters = function () { return [
-        { type: i1$1.Store }
-    ]; };
-
-    var ClientErrorHandlingService = /** @class */ (function () {
-        function ClientErrorHandlingService(authService) {
-            this.authService = authService;
-        }
-        ClientErrorHandlingService.prototype.handleExpiredClientToken = function (request, next) {
-            var _this = this;
-            return this.authService.refreshClientToken().pipe(operators.take(1), operators.switchMap(function (token) {
-                return next.handle(_this.createNewRequestWithNewToken(request, token));
-            }));
-        };
-        ClientErrorHandlingService.prototype.createNewRequestWithNewToken = function (request, token) {
-            request = request.clone({
-                setHeaders: {
-                    Authorization: token.token_type + " " + token.access_token,
-                },
-            });
-            return request;
-        };
-        return ClientErrorHandlingService;
-    }());
-    ClientErrorHandlingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(i0.ɵɵinject(AuthService)); }, token: ClientErrorHandlingService, providedIn: "root" });
-    ClientErrorHandlingService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    ClientErrorHandlingService.ctorParameters = function () { return [
-        { type: AuthService }
-    ]; };
-
-    var WindowRef = /** @class */ (function () {
-        function WindowRef(document) {
-            // it's a workaround to have document property properly typed
-            // see: https://github.com/angular/angular/issues/15640
-            this.document = document;
-        }
-        Object.defineProperty(WindowRef.prototype, "nativeWindow", {
-            get: function () {
-                return typeof window !== 'undefined' ? window : undefined;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        Object.defineProperty(WindowRef.prototype, "sessionStorage", {
-            get: function () {
-                return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        Object.defineProperty(WindowRef.prototype, "localStorage", {
-            get: function () {
-                return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        Object.defineProperty(WindowRef.prototype, "resize$", {
-            /**
-             * Returns an observable for the window resize event and emits an event
-             * every 300ms in case of resizing. An event is simulated initially.
-             *
-             * If there's no window object available (i.e. in SSR), a null value is emitted.
-             */
-            get: function () {
-                if (!this.nativeWindow) {
-                    return rxjs.of(null);
-                }
-                else {
-                    return rxjs.fromEvent(this.nativeWindow, 'resize').pipe(operators.debounceTime(300), operators.startWith({ target: this.nativeWindow }), operators.distinctUntilChanged());
-                }
-            },
-            enumerable: false,
-            configurable: true
-        });
-        return WindowRef;
-    }());
-    WindowRef.ɵprov = i0.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.ɵɵinject(i1$2.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
-    WindowRef.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    WindowRef.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
-    ]; };
-
-    var UrlParsingService = /** @class */ (function () {
-        function UrlParsingService(router) {
-            this.router = router;
-        }
-        UrlParsingService.prototype.getPrimarySegments = function (url) {
-            var urlTree = this.router.parseUrl(url);
-            return this._getPrimarySegmentsFromUrlTree(urlTree.root);
-        };
-        UrlParsingService.prototype._getPrimarySegmentsFromUrlTree = function (tree) {
-            var segments = tree.segments.map(function (s) { return s.path; });
-            var childrenSegments = tree.children[i1$3.PRIMARY_OUTLET]
-                ? this._getPrimarySegmentsFromUrlTree(tree.children[i1$3.PRIMARY_OUTLET])
-                : [];
-            return segments.concat(childrenSegments);
-        };
-        return UrlParsingService;
-    }());
-    UrlParsingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.ɵɵinject(i1$3.Router)); }, token: UrlParsingService, providedIn: "root" });
-    UrlParsingService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    UrlParsingService.ctorParameters = function () { return [
-        { type: i1$3.Router }
-    ]; };
-
-    var isParam = function (segment) { return segment.startsWith(':'); };
-    var getParamName = function (segment) { return segment.slice(1); }; // it just removes leading ':'
-    var ensureLeadingSlash = function (path) { return path.startsWith('/') ? path : '/' + path; };
-    var removeLeadingSlash = function (path) { return path.startsWith('/') ? path.slice(1) : path; };
-
-    /**
-     * Global Configuration injection token, can be used to inject configuration to any part of the app
-     */
-    var Config = new i0.InjectionToken('Configuration', {
-        providedIn: 'root',
-        factory: function () { return deepMerge({}, i0.inject(DefaultConfig), i0.inject(RootConfig)); },
-    });
-    /**
-     * Default Configuration token, used to build Global Configuration, built from DefaultConfigChunks
-     */
-    var DefaultConfig = new i0.InjectionToken('DefaultConfiguration', {
-        providedIn: 'root',
-        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = i0.inject(DefaultConfigChunk, i0.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
-    });
-    /**
-     * Root Configuration token, used to build Global Configuration, built from ConfigChunks
-     */
-    var RootConfig = new i0.InjectionToken('RootConfiguration', {
-        providedIn: 'root',
-        factory: function () { var _a; return deepMerge.apply(void 0, __spread([{}], ((_a = i0.inject(ConfigChunk, i0.InjectFlags.Optional)) !== null && _a !== void 0 ? _a : []))); },
-    });
-    /**
-     * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
-     * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
-     */
-    var ConfigChunk = new i0.InjectionToken('ConfigurationChunk');
-    /**
-     * Config chunk token, can be used to provide configuration chunk and contribute to the default configuration.
-     * Should not be used directly, use `provideDefaultConfig` or `provideDefaultConfigFactory` instead.
-     *
-     * General rule is, that all config provided in libraries should be provided as default config.
-     */
-    var DefaultConfigChunk = new i0.InjectionToken('DefaultConfigurationChunk');
-
-    var RoutingConfig = /** @class */ (function () {
-        function RoutingConfig() {
-        }
-        return RoutingConfig;
-    }());
-    RoutingConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return i0.ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
-    RoutingConfig.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                    useExisting: Config,
-                },] }
-    ];
-
-    var RoutingConfigService = /** @class */ (function () {
-        function RoutingConfigService(config) {
-            this.config = config;
-        }
-        /**
-         * Returns the route config for the given route name.
-         */
-        RoutingConfigService.prototype.getRouteConfig = function (routeName) {
-            var _a, _b;
-            var routeConfig = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes;
-            var result = routeConfig && routeConfig[routeName];
-            if (!routeConfig || result === undefined) {
-                this.warn("No path was configured for the named route '" + routeName + "'!");
-            }
-            return result;
-        };
-        RoutingConfigService.prototype.warn = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (i0.isDevMode()) {
-                console.warn.apply(console, __spread(args));
-            }
-        };
-        /**
-         * Returns the configured route loading strategy.
-         */
-        RoutingConfigService.prototype.getLoadStrategy = function () {
-            var _a, _b, _c;
-            return (_c = (_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.loadStrategy) !== null && _c !== void 0 ? _c : "always" /* ALWAYS */;
-        };
-        /**
-         * Returns the route name of the configured path.
-         *
-         * For example, when the config is:
-         * ```
-         * routing: {
-         *   routes: {
-         *      addressBook: { paths: ['my-account/address-book'] }
-         *   }
-         * }
-         * ```
-         *
-         * the `getRouteName('my-account/address-book')` returns `'addressBook'`.
-         */
-        RoutingConfigService.prototype.getRouteName = function (path) {
-            if (!this.routeNamesByPath) {
-                this.initRouteNamesByPath();
-            }
-            return this.routeNamesByPath[path];
-        };
-        /**
-         * Initializes the property `routeNamesByPath`.
-         *
-         * The original config allows for reading configured path by the route name.
-         * But this method builds up a structure with a 'reversed config'
-         * to read quickly the route name by the path.
-         */
-        RoutingConfigService.prototype.initRouteNamesByPath = function () {
-            var e_1, _d;
-            var _this = this;
-            var _a, _b, _c;
-            this.routeNamesByPath = {};
-            var _loop_1 = function (routeName, routeConfig) {
-                (_c = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _c === void 0 ? void 0 : _c.forEach(function (path) {
-                    if (i0.isDevMode() && _this.routeNamesByPath[path]) {
-                        console.error("The same path '" + path + "' is configured for two different route names: '" + _this.routeNamesByPath[path] + "' and '" + routeName);
-                    }
-                    _this.routeNamesByPath[path] = routeName;
-                });
-            };
-            try {
-                for (var _e = __values(Object.entries((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.routing) === null || _b === void 0 ? void 0 : _b.routes)), _f = _e.next(); !_f.done; _f = _e.next()) {
-                    var _g = __read(_f.value, 2), routeName = _g[0], routeConfig = _g[1];
-                    _loop_1(routeName, routeConfig);
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (_f && !_f.done && (_d = _e.return)) _d.call(_e);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
-        };
-        return RoutingConfigService;
-    }());
-    RoutingConfigService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(i0.ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
-    RoutingConfigService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    RoutingConfigService.ctorParameters = function () { return [
-        { type: RoutingConfig }
-    ]; };
-
-    var SemanticPathService = /** @class */ (function () {
-        function SemanticPathService(routingConfigService, urlParser) {
-            this.routingConfigService = routingConfigService;
-            this.urlParser = urlParser;
-            this.ROOT_URL = ['/'];
-        }
-        /**
-         * Returns the first path alias configured for a given route name. It adds `/` at the beginning.
-         */
-        SemanticPathService.prototype.get = function (routeName) {
-            var routeConfig = this.routingConfigService.getRouteConfig(routeName);
-            return routeConfig && Array.isArray(routeConfig.paths)
-                ? '/' + routeConfig.paths[0]
-                : undefined;
-        };
-        /**
-         * Transforms the array of url commands. Each command can be:
-         * a) string - will be left untouched
-         * b) object { cxRoute: <route name> } - will be replaced with semantic path
-         * c) object { cxRoute: <route name>, params: { ... } } - same as above, but with passed params
-         *
-         * If the first command is the object with the `cxRoute` property, returns an absolute url (with the first element of the array `'/'`)
-         */
-        SemanticPathService.prototype.transform = function (commands) {
-            var e_1, _a;
-            if (!Array.isArray(commands)) {
-                commands = [commands];
-            }
-            var result = [];
-            try {
-                for (var commands_1 = __values(commands), commands_1_1 = commands_1.next(); !commands_1_1.done; commands_1_1 = commands_1.next()) {
-                    var command = commands_1_1.value;
-                    if (!this.isRouteCommand(command)) {
-                        // don't modify segment that is not route command:
-                        result.push(command);
-                    }
-                    else {
-                        // generate array with url segments for given route command:
-                        var partialResult = this.generateUrlPart(command);
-                        if (partialResult === null) {
-                            return this.ROOT_URL;
-                        }
-                        result.push.apply(result, __spread(partialResult));
-                    }
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (commands_1_1 && !commands_1_1.done && (_a = commands_1.return)) _a.call(commands_1);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
-            if (this.shouldOutputAbsolute(commands)) {
-                result.unshift('/');
-            }
-            return result;
-        };
-        SemanticPathService.prototype.isRouteCommand = function (command) {
-            return command && Boolean(command.cxRoute);
-        };
-        SemanticPathService.prototype.shouldOutputAbsolute = function (commands) {
-            return this.isRouteCommand(commands[0]);
-        };
-        SemanticPathService.prototype.generateUrlPart = function (command) {
-            this.standarizeRouteCommand(command);
-            if (!command.cxRoute) {
-                return null;
-            }
-            var routeConfig = this.routingConfigService.getRouteConfig(command.cxRoute);
-            // if no route translation was configured, return null:
-            if (!routeConfig || !routeConfig.paths) {
-                return null;
-            }
-            // find first path that can satisfy it's parameters with given parameters
-            var path = this.findPathWithFillableParams(routeConfig, command.params);
-            // if there is no configured path that can be satisfied with given params, return null
-            if (!path) {
-                return null;
-            }
-            var result = this.provideParamsValues(path, command.params, routeConfig.paramsMapping);
-            return result;
-        };
-        SemanticPathService.prototype.standarizeRouteCommand = function (command) {
-            command.params = command.params || {};
-        };
-        SemanticPathService.prototype.provideParamsValues = function (path, params, paramsMapping) {
-            var _this = this;
-            return this.urlParser.getPrimarySegments(path).map(function (segment) {
-                if (isParam(segment)) {
-                    var paramName = getParamName(segment);
-                    var mappedParamName = _this.getMappedParamName(paramName, paramsMapping);
-                    return params[mappedParamName];
-                }
-                return segment;
-            });
-        };
-        SemanticPathService.prototype.findPathWithFillableParams = function (routeConfig, params) {
-            var _this = this;
-            var foundPath = routeConfig.paths.find(function (path) { return _this.getParams(path).every(function (paramName) {
-                var mappedParamName = _this.getMappedParamName(paramName, routeConfig.paramsMapping);
-                return params[mappedParamName] !== undefined;
-            }); });
-            if (foundPath === undefined || foundPath === null) {
-                this.warn("No configured path matches all its params to given object. ", "Route config: ", routeConfig, "Params object: ", params);
-                return null;
-            }
-            return foundPath;
-        };
-        SemanticPathService.prototype.getParams = function (path) {
-            return this.urlParser
-                .getPrimarySegments(path)
-                .filter(isParam)
-                .map(getParamName);
-        };
-        SemanticPathService.prototype.getMappedParamName = function (paramName, paramsMapping) {
-            if (paramsMapping) {
-                return paramsMapping[paramName] || paramName;
-            }
-            return paramName;
-        };
-        SemanticPathService.prototype.warn = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (i0.isDevMode()) {
-                console.warn.apply(console, __spread(args));
-            }
-        };
-        return SemanticPathService;
-    }());
-    SemanticPathService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(i0.ɵɵinject(RoutingConfigService), i0.ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
-    SemanticPathService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    SemanticPathService.ctorParameters = function () { return [
-        { type: RoutingConfigService },
-        { type: UrlParsingService }
-    ]; };
-
-    var ROUTER_GO = '[Router] Go';
-    var ROUTER_GO_BY_URL = '[Router] Go By Url';
-    var ROUTER_BACK = '[Router] Back';
-    var ROUTER_FORWARD = '[Router] Forward';
-    var RouteGoAction = /** @class */ (function () {
-        function RouteGoAction(payload) {
-            this.payload = payload;
-            this.type = ROUTER_GO;
-        }
-        return RouteGoAction;
-    }());
-    var RouteGoByUrlAction = /** @class */ (function () {
-        function RouteGoByUrlAction(payload) {
-            this.payload = payload;
-            this.type = ROUTER_GO_BY_URL;
-        }
-        return RouteGoByUrlAction;
-    }());
-    var RouteBackAction = /** @class */ (function () {
-        function RouteBackAction() {
-            this.type = ROUTER_BACK;
-        }
-        return RouteBackAction;
-    }());
-    var RouteForwardAction = /** @class */ (function () {
-        function RouteForwardAction() {
-            this.type = ROUTER_FORWARD;
-        }
-        return RouteForwardAction;
-    }());
-
-    var routingGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        ROUTER_GO: ROUTER_GO,
-        ROUTER_GO_BY_URL: ROUTER_GO_BY_URL,
-        ROUTER_BACK: ROUTER_BACK,
-        ROUTER_FORWARD: ROUTER_FORWARD,
-        RouteGoAction: RouteGoAction,
-        RouteGoByUrlAction: RouteGoByUrlAction,
-        RouteBackAction: RouteBackAction,
-        RouteForwardAction: RouteForwardAction
-    });
-
-    var ROUTING_FEATURE = 'router';
-
-    var getRouterFeatureState = i1$1.createFeatureSelector(ROUTING_FEATURE);
-    var ɵ0$2 = function (state) { return state.router; };
-    var getRouterState = i1$1.createSelector(getRouterFeatureState, ɵ0$2);
-    var ɵ1$1 = function (routingState) { return (routingState.state && routingState.state.semanticRoute) || ''; };
-    var getSemanticRoute = i1$1.createSelector(getRouterState, ɵ1$1);
-    var ɵ2 = function (routingState) { return (routingState.state && routingState.state.context) || { id: '' }; };
-    var getPageContext = i1$1.createSelector(getRouterState, ɵ2);
-    var ɵ3 = function (routingState) { return routingState.nextState && routingState.nextState.context; };
-    var getNextPageContext = i1$1.createSelector(getRouterState, ɵ3);
-    var ɵ4 = function (context) { return !!context; };
-    var isNavigating = i1$1.createSelector(getNextPageContext, ɵ4);
-
-    var routingGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getRouterFeatureState: getRouterFeatureState,
-        getRouterState: getRouterState,
-        getSemanticRoute: getSemanticRoute,
-        getPageContext: getPageContext,
-        getNextPageContext: getNextPageContext,
-        isNavigating: isNavigating,
-        ɵ0: ɵ0$2,
-        ɵ1: ɵ1$1,
-        ɵ2: ɵ2,
-        ɵ3: ɵ3,
-        ɵ4: ɵ4
-    });
-
-    /**
-     * Helper service to expose all activated routes
-     */
-    var ActivatedRoutesService = /** @class */ (function () {
-        function ActivatedRoutesService(router) {
-            var _this = this;
-            this.router = router;
-            /**
-             * Array of currently activated routes (from the root route to the leaf route).
-             */
-            this.routes$ = this.router.events.pipe(operators.filter(function (event) { return event instanceof i1$3.NavigationEnd; }), 
-            // tslint:disable-next-line: deprecation https://github.com/ReactiveX/rxjs/issues/4772
-            operators.startWith(undefined), // emit value for consumer who subscribed lately after NavigationEnd event
-            operators.map(function () {
-                var route = _this.router.routerState.snapshot.root;
-                var routes = [route];
-                // traverse to the leaf route:
-                while ((route = route.firstChild)) {
-                    routes.push(route);
-                }
-                return routes;
-            }), operators.shareReplay({ bufferSize: 1, refCount: true }));
-        }
-        return ActivatedRoutesService;
-    }());
-    ActivatedRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActivatedRoutesService_Factory() { return new ActivatedRoutesService(i0.ɵɵinject(i1$3.Router)); }, token: ActivatedRoutesService, providedIn: "root" });
-    ActivatedRoutesService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    ActivatedRoutesService.ctorParameters = function () { return [
-        { type: i1$3.Router }
-    ]; };
-
-    /**
-     * Service to expose all parameters for the router, including child routes.
-     * This is convenient in case the parent route (component) requires awareness
-     * of child routes parameters.
-     */
-    var RoutingParamsService = /** @class */ (function () {
-        function RoutingParamsService(router, activatedRoutesService) {
-            var _this = this;
-            this.router = router;
-            this.activatedRoutesService = activatedRoutesService;
-            this.params$ = this.activatedRoutesService.routes$.pipe(operators.map(function (routes) { return _this.findAllParam(routes); }), operators.shareReplay({ refCount: true, bufferSize: 1 }));
-        }
-        /**
-         * Get the list of all parameters of the full route. This includes
-         * active child routes.
-         */
-        RoutingParamsService.prototype.getParams = function () {
-            return this.params$;
-        };
-        RoutingParamsService.prototype.findAllParam = function (routes) {
-            return Object.assign.apply(Object, __spread([{}], routes.map(function (route) { return route.params; })));
-        };
-        return RoutingParamsService;
-    }());
-    RoutingParamsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingParamsService_Factory() { return new RoutingParamsService(i0.ɵɵinject(i1$3.Router), i0.ɵɵinject(ActivatedRoutesService)); }, token: RoutingParamsService, providedIn: "root" });
-    RoutingParamsService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    RoutingParamsService.ctorParameters = function () { return [
-        { type: i1$3.Router },
-        { type: ActivatedRoutesService }
-    ]; };
-
-    var RoutingService = /** @class */ (function () {
-        function RoutingService(store, winRef, semanticPathService, routingParamsService) {
-            this.store = store;
-            this.winRef = winRef;
-            this.semanticPathService = semanticPathService;
-            this.routingParamsService = routingParamsService;
-        }
-        /**
-         * Get the list of all parameters of the full route. This includes
-         * active child routes.
-         */
-        RoutingService.prototype.getParams = function () {
-            var _a;
-            return (_a = this.routingParamsService) === null || _a === void 0 ? void 0 : _a.getParams();
-        };
-        /**
-         * Get the current router state
-         */
-        RoutingService.prototype.getRouterState = function () {
-            return this.store.pipe(i1$1.select(getRouterState));
-        };
-        /**
-         * Get the `PageContext` from the state
-         */
-        RoutingService.prototype.getPageContext = function () {
-            return this.store.pipe(i1$1.select(getPageContext));
-        };
-        /**
-         * Get the next `PageContext` from the state
-         */
-        RoutingService.prototype.getNextPageContext = function () {
-            return this.store.pipe(i1$1.select(getNextPageContext));
-        };
-        /**
-         * Get the `isNavigating` info from the state
-         */
-        RoutingService.prototype.isNavigating = function () {
-            return this.store.pipe(i1$1.select(isNavigating));
-        };
-        /**
-         * Navigation with a new state into history
-         * @param commands: url commands
-         * @param query
-         * @param extras: Represents the extra options used during navigation.
-         */
-        RoutingService.prototype.go = function (commands, query, extras) {
-            var path = this.semanticPathService.transform(commands);
-            return this.navigate(path, query, extras);
-        };
-        /**
-         * Navigation using URL
-         * @param url
-         */
-        RoutingService.prototype.goByUrl = function (url) {
-            this.store.dispatch(new RouteGoByUrlAction(url));
-        };
-        /**
-         * Navigating back
-         */
-        RoutingService.prototype.back = function () {
-            var isLastPageInApp = this.winRef.document.referrer.includes(this.winRef.nativeWindow.location.origin);
-            if (isLastPageInApp) {
-                this.store.dispatch(new RouteBackAction());
-                return;
-            }
-            this.go(['/']);
-            return;
-        };
-        /**
-         * Navigating forward
-         */
-        RoutingService.prototype.forward = function () {
-            this.store.dispatch(new RouteForwardAction());
-        };
-        /**
-         * Navigation with a new state into history
-         * @param path
-         * @param query
-         * @param extras: Represents the extra options used during navigation.
-         */
-        RoutingService.prototype.navigate = function (path, query, extras) {
-            this.store.dispatch(new RouteGoAction({
-                path: path,
-                query: query,
-                extras: extras,
-            }));
-        };
-        return RoutingService;
-    }());
-    RoutingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(SemanticPathService), i0.ɵɵinject(RoutingParamsService)); }, token: RoutingService, providedIn: "root" });
-    RoutingService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    RoutingService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: WindowRef },
-        { type: SemanticPathService },
-        { type: RoutingParamsService }
-    ]; };
-
-    var UserErrorHandlingService = /** @class */ (function () {
-        function UserErrorHandlingService(authService, routingService) {
-            this.authService = authService;
-            this.routingService = routingService;
-        }
-        UserErrorHandlingService.prototype.handleExpiredUserToken = function (request, next) {
-            var _this = this;
-            return this.handleExpiredToken().pipe(operators.switchMap(function (token) {
-                return next.handle(_this.createNewRequestWithNewToken(request, token));
-            }));
-        };
-        UserErrorHandlingService.prototype.handleExpiredRefreshToken = function () {
-            // Logout user
-            this.authService.logout();
-        };
-        UserErrorHandlingService.prototype.handleExpiredToken = function () {
-            var _this = this;
-            var oldToken;
-            return this.authService.getUserToken().pipe(operators.tap(function (token) {
-                if (token.access_token && token.refresh_token && !oldToken) {
-                    _this.authService.refreshUserToken(token);
-                }
-                else if (!token.access_token && !token.refresh_token) {
-                    _this.routingService.go({ cxRoute: 'login' });
-                }
-                else if (!token.refresh_token) {
-                    _this.authService.logout();
-                    _this.routingService.go({ cxRoute: 'login' });
-                }
-                oldToken = oldToken || token;
-            }), operators.filter(function (token) { return oldToken.access_token !== token.access_token; }), operators.take(1));
-        };
-        UserErrorHandlingService.prototype.createNewRequestWithNewToken = function (request, token) {
-            request = request.clone({
-                setHeaders: {
-                    Authorization: token.token_type + " " + token.access_token,
-                },
-            });
-            return request;
-        };
-        return UserErrorHandlingService;
-    }());
-    UserErrorHandlingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserErrorHandlingService_Factory() { return new UserErrorHandlingService(i0.ɵɵinject(AuthService), i0.ɵɵinject(RoutingService)); }, token: UserErrorHandlingService, providedIn: "root" });
-    UserErrorHandlingService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserErrorHandlingService.ctorParameters = function () { return [
-        { type: AuthService },
-        { type: RoutingService }
-    ]; };
-
-    var OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
-    var AuthErrorInterceptor = /** @class */ (function () {
-        function AuthErrorInterceptor(userErrorHandlingService, clientErrorHandlingService, authService) {
-            this.userErrorHandlingService = userErrorHandlingService;
-            this.clientErrorHandlingService = clientErrorHandlingService;
-            this.authService = authService;
-        }
-        AuthErrorInterceptor.prototype.intercept = function (request, next) {
-            var _this = this;
-            var isClientTokenRequest = this.isClientTokenRequest(request);
-            if (isClientTokenRequest) {
-                request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
-            }
-            return next.handle(request).pipe(operators.catchError(function (errResponse) {
-                if (errResponse instanceof i1.HttpErrorResponse) {
-                    switch (errResponse.status) {
-                        case 401: // Unauthorized
-                            if (isClientTokenRequest) {
-                                if (_this.isExpiredToken(errResponse)) {
-                                    return _this.clientErrorHandlingService.handleExpiredClientToken(request, next);
-                                }
-                                // user token request
-                            }
-                            else {
-                                if (_this.isExpiredToken(errResponse)) {
-                                    return _this.userErrorHandlingService.handleExpiredUserToken(request, next);
-                                }
-                                else if (
-                                // Refresh expired token
-                                // Check that the OAUTH endpoint was called and the error is for refresh token is expired
-                                errResponse.url.includes(OAUTH_ENDPOINT) &&
-                                    errResponse.error.error === 'invalid_token') {
-                                    _this.userErrorHandlingService.handleExpiredRefreshToken();
-                                    return rxjs.of();
-                                }
-                            }
-                            break;
-                        case 400: // Bad Request
-                            if (errResponse.url.includes(OAUTH_ENDPOINT) &&
-                                errResponse.error.error === 'invalid_grant') {
-                                if (request.body.get('grant_type') === 'refresh_token') {
-                                    // refresh token fail, force user logout
-                                    _this.authService.logout();
-                                }
-                            }
-                            break;
-                    }
-                }
-                return rxjs.throwError(errResponse);
-            }));
-        };
-        AuthErrorInterceptor.prototype.isClientTokenRequest = function (request) {
-            var isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CLIENT_TOKEN, request.headers);
-            return Boolean(isRequestMapping);
-        };
-        AuthErrorInterceptor.prototype.isExpiredToken = function (resp) {
-            if (resp.error &&
-                resp.error.errors &&
-                resp.error.errors instanceof Array &&
-                resp.error.errors[0]) {
-                return resp.error.errors[0].type === 'InvalidTokenError';
             }
             return false;
         };
-        return AuthErrorInterceptor;
+        /**
+         * Serializes using `JSON.stringify()` and encodes using `encodeURIComponent()` methods
+         * @param consents to serialize and encode
+         */
+        AnonymousConsentsService.prototype.serializeAndEncode = function (consents) {
+            if (!consents) {
+                return '';
+            }
+            var serialized = JSON.stringify(consents);
+            var encoded = encodeURIComponent(serialized);
+            return encoded;
+        };
+        /**
+         * Decodes using `decodeURIComponent()` and deserializes using `JSON.parse()`
+         * @param rawConsents to decode an deserialize
+         */
+        AnonymousConsentsService.prototype.decodeAndDeserialize = function (rawConsents) {
+            var decoded = decodeURIComponent(rawConsents);
+            var unserialized = JSON.parse(decoded);
+            return unserialized;
+        };
+        /**
+         *
+         * Compares the given `newConsents` and `previousConsents` and returns `true` if there are differences (the `newConsents` are updates).
+         * Otherwise it returns `false`.
+         *
+         * @param newConsents new consents to compare
+         * @param previousConsents old consents to compare
+         */
+        AnonymousConsentsService.prototype.consentsUpdated = function (newConsents, previousConsents) {
+            var newRawConsents = this.serializeAndEncode(newConsents);
+            var previousRawConsents = this.serializeAndEncode(previousConsents);
+            return newRawConsents !== previousRawConsents;
+        };
+        return AnonymousConsentsService;
     }());
-    AuthErrorInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthErrorInterceptor_Factory() { return new AuthErrorInterceptor(i0.ɵɵinject(UserErrorHandlingService), i0.ɵɵinject(ClientErrorHandlingService), i0.ɵɵinject(AuthService)); }, token: AuthErrorInterceptor, providedIn: "root" });
-    AuthErrorInterceptor.decorators = [
+    AnonymousConsentsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentsService_Factory() { return new AnonymousConsentsService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(AuthService)); }, token: AnonymousConsentsService, providedIn: "root" });
+    AnonymousConsentsService.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
-    AuthErrorInterceptor.ctorParameters = function () { return [
-        { type: UserErrorHandlingService },
-        { type: ClientErrorHandlingService },
+    AnonymousConsentsService.ctorParameters = function () { return [
+        { type: i1$2.Store },
         { type: AuthService }
     ]; };
 
@@ -2133,19 +2968,6 @@
         var param = getContextParameterValues(config, parameter);
         return param && param.length ? param[0] : undefined;
     }
-
-    var SiteContextConfig = /** @class */ (function () {
-        function SiteContextConfig() {
-        }
-        return SiteContextConfig;
-    }());
-    SiteContextConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function SiteContextConfig_Factory() { return i0.ɵɵinject(Config); }, token: SiteContextConfig, providedIn: "root" });
-    SiteContextConfig.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                    useExisting: Config,
-                },] }
-    ];
 
     var LANGUAGE_CONTEXT_ID = 'language';
     var CURRENCY_CONTEXT_ID = 'currency';
@@ -2306,48 +3128,48 @@
 
     var SITE_CONTEXT_FEATURE = 'siteContext';
 
-    var getSiteContextState = i1$1.createFeatureSelector(SITE_CONTEXT_FEATURE);
+    var getSiteContextState = i1$2.createFeatureSelector(SITE_CONTEXT_FEATURE);
 
-    var ɵ0$3 = function (state) { return state && state.baseSite && state.baseSite.activeSite; };
-    var getActiveBaseSite = i1$1.createSelector(getSiteContextState, ɵ0$3);
+    var ɵ0$4 = function (state) { return state && state.baseSite && state.baseSite.activeSite; };
+    var getActiveBaseSite = i1$2.createSelector(getSiteContextState, ɵ0$4);
     var ɵ1$2 = function (state) { return state && state.baseSite && state.baseSite.details; };
-    var getBaseSiteData = i1$1.createSelector(getSiteContextState, ɵ1$2);
+    var getBaseSiteData = i1$2.createSelector(getSiteContextState, ɵ1$2);
 
     var currenciesEntitiesSelector = function (state) { return state.entities; };
-    var ɵ0$4 = currenciesEntitiesSelector;
+    var ɵ0$5 = currenciesEntitiesSelector;
     var activeCurrencySelector = function (state) { return state.activeCurrency; };
     var ɵ1$3 = activeCurrencySelector;
     var ɵ2$1 = function (state) { return state.currencies; };
-    var getCurrenciesState = i1$1.createSelector(getSiteContextState, ɵ2$1);
-    var getCurrenciesEntities = i1$1.createSelector(getCurrenciesState, currenciesEntitiesSelector);
-    var getActiveCurrency = i1$1.createSelector(getCurrenciesState, activeCurrencySelector);
+    var getCurrenciesState = i1$2.createSelector(getSiteContextState, ɵ2$1);
+    var getCurrenciesEntities = i1$2.createSelector(getCurrenciesState, currenciesEntitiesSelector);
+    var getActiveCurrency = i1$2.createSelector(getCurrenciesState, activeCurrencySelector);
     var ɵ3$1 = function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
     };
-    var getAllCurrencies = i1$1.createSelector(getCurrenciesEntities, ɵ3$1);
+    var getAllCurrencies = i1$2.createSelector(getCurrenciesEntities, ɵ3$1);
 
     var activeLanguageSelector = function (state) { return state.activeLanguage; };
-    var ɵ0$5 = activeLanguageSelector;
+    var ɵ0$6 = activeLanguageSelector;
     var languagesEntitiesSelector = function (state) { return state.entities; };
     var ɵ1$4 = languagesEntitiesSelector;
     var ɵ2$2 = function (state) { return state.languages; };
-    var getLanguagesState = i1$1.createSelector(getSiteContextState, ɵ2$2);
-    var getLanguagesEntities = i1$1.createSelector(getLanguagesState, languagesEntitiesSelector);
-    var getActiveLanguage = i1$1.createSelector(getLanguagesState, activeLanguageSelector);
+    var getLanguagesState = i1$2.createSelector(getSiteContextState, ɵ2$2);
+    var getLanguagesEntities = i1$2.createSelector(getLanguagesState, languagesEntitiesSelector);
+    var getActiveLanguage = i1$2.createSelector(getLanguagesState, activeLanguageSelector);
     var ɵ3$2 = function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
     };
-    var getAllLanguages = i1$1.createSelector(getLanguagesEntities, ɵ3$2);
+    var getAllLanguages = i1$2.createSelector(getLanguagesEntities, ɵ3$2);
 
     var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getActiveBaseSite: getActiveBaseSite,
         getBaseSiteData: getBaseSiteData,
-        ɵ0: ɵ0$3,
+        ɵ0: ɵ0$4,
         ɵ1: ɵ1$2,
         getCurrenciesState: getCurrenciesState,
         getCurrenciesEntities: getCurrenciesEntities,
@@ -2371,7 +3193,7 @@
          * Represents the current baseSite uid.
          */
         BaseSiteService.prototype.getActive = function () {
-            return this.store.pipe(i1$1.select(getActiveBaseSite), operators.filter(function (active) { return Boolean(active); }));
+            return this.store.pipe(i1$2.select(getActiveBaseSite), operators.filter(function (active) { return Boolean(active); }));
         };
         /**
          * We currently don't support switching baseSite at run time
@@ -2382,7 +3204,7 @@
         BaseSiteService.prototype.setActive = function (baseSite) {
             var _this = this;
             return this.store
-                .pipe(i1$1.select(getActiveBaseSite), operators.take(1))
+                .pipe(i1$2.select(getActiveBaseSite), operators.take(1))
                 .subscribe(function (activeBaseSite) {
                 if (baseSite && activeBaseSite !== baseSite) {
                     _this.store.dispatch(new SetActiveBaseSite(baseSite));
@@ -2408,7 +3230,7 @@
          */
         BaseSiteService.prototype.getBaseSiteData = function () {
             var _this = this;
-            return this.store.pipe(i1$1.select(getBaseSiteData), operators.tap(function (baseSite) {
+            return this.store.pipe(i1$2.select(getBaseSiteData), operators.tap(function (baseSite) {
                 if (Object.keys(baseSite).length === 0) {
                     _this.store.dispatch(new LoadBaseSite());
                 }
@@ -2420,7 +3242,7 @@
         { type: i0.Injectable }
     ];
     BaseSiteService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: SiteContextConfig }
     ]; };
 
@@ -2441,21 +3263,6 @@
         };
         return HttpParamsURIEncoder;
     }());
-
-    var OccConfig = /** @class */ (function (_super) {
-        __extends(OccConfig, _super);
-        function OccConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return OccConfig;
-    }(SiteContextConfig));
-    OccConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccConfig_Factory() { return i0.ɵɵinject(Config); }, token: OccConfig, providedIn: "root" });
-    OccConfig.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                    useExisting: Config,
-                },] }
-    ];
 
     var DEFAULT_SCOPE = 'default';
 
@@ -2538,7 +3345,7 @@
                     _d = __read(endpoint.split('?'), 2), endpoint = _d[0], queryParamsFromEndpoint = _d[1];
                     httpParamsOptions = Object.assign(Object.assign({}, httpParamsOptions), { fromString: queryParamsFromEndpoint });
                 }
-                var httpParams_1 = new i1.HttpParams(httpParamsOptions);
+                var httpParams_1 = new i1$4.HttpParams(httpParamsOptions);
                 Object.keys(queryParams).forEach(function (key) {
                     var value = queryParams[key];
                     if (value !== undefined) {
@@ -2589,125 +3396,270 @@
         { type: BaseSiteService, decorators: [{ type: i0.Optional }] }
     ]; };
 
+    var USE_CLIENT_TOKEN = 'cx-use-client-token';
+    var USE_CUSTOMER_SUPPORT_AGENT_TOKEN = 'cx-use-csagent-token';
+    var InterceptorUtil = /** @class */ (function () {
+        function InterceptorUtil() {
+        }
+        InterceptorUtil.createHeader = function (headerName, interceptorParam, headers) {
+            if (headers) {
+                return headers.append(headerName, JSON.stringify(interceptorParam));
+            }
+            headers = new i1$4.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
+            return headers;
+        };
+        InterceptorUtil.removeHeader = function (headerName, request) {
+            var updatedHeaders = request.headers.delete(headerName);
+            return request.clone({ headers: updatedHeaders });
+        };
+        InterceptorUtil.getInterceptorParam = function (headerName, headers) {
+            var rawValue = headers.get(headerName);
+            if (rawValue) {
+                return JSON.parse(rawValue);
+            }
+            return undefined;
+        };
+        return InterceptorUtil;
+    }());
+
+    var CLIENT_AUTH_FEATURE = 'client-auth';
+    var CLIENT_TOKEN_DATA = '[Client auth] Client Token Data';
+
+    var LOAD_CLIENT_TOKEN = '[Token] Load Client Token';
+    var LOAD_CLIENT_TOKEN_FAIL = '[Token] Load Client Token Fail';
+    var LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Load Client Token Success';
+    var LoadClientToken = /** @class */ (function (_super) {
+        __extends(LoadClientToken, _super);
+        function LoadClientToken() {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
+            _this.type = LOAD_CLIENT_TOKEN;
+            return _this;
+        }
+        return LoadClientToken;
+    }(LoaderLoadAction));
+    var LoadClientTokenFail = /** @class */ (function (_super) {
+        __extends(LoadClientTokenFail, _super);
+        function LoadClientTokenFail(payload) {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CLIENT_TOKEN_FAIL;
+            return _this;
+        }
+        return LoadClientTokenFail;
+    }(LoaderFailAction));
+    var LoadClientTokenSuccess = /** @class */ (function (_super) {
+        __extends(LoadClientTokenSuccess, _super);
+        function LoadClientTokenSuccess(payload) {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CLIENT_TOKEN_SUCCESS;
+            return _this;
+        }
+        return LoadClientTokenSuccess;
+    }(LoaderSuccessAction));
+
+    var clientTokenGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        LOAD_CLIENT_TOKEN: LOAD_CLIENT_TOKEN,
+        LOAD_CLIENT_TOKEN_FAIL: LOAD_CLIENT_TOKEN_FAIL,
+        LOAD_CLIENT_TOKEN_SUCCESS: LOAD_CLIENT_TOKEN_SUCCESS,
+        LoadClientToken: LoadClientToken,
+        LoadClientTokenFail: LoadClientTokenFail,
+        LoadClientTokenSuccess: LoadClientTokenSuccess
+    });
+
+    var getClientAuthState = i1$2.createFeatureSelector(CLIENT_AUTH_FEATURE);
+
+    var ɵ0$7 = function (state) { return state.clientToken; };
+    var getClientTokenState = i1$2.createSelector(getClientAuthState, ɵ0$7);
+
+    var clientTokenGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getClientTokenState: getClientTokenState,
+        ɵ0: ɵ0$7,
+        getClientAuthState: getClientAuthState
+    });
+
+    /**
+     * Serves a role of a facade on client token store.
+     */
+    var ClientTokenService = /** @class */ (function () {
+        function ClientTokenService(store) {
+            this.store = store;
+        }
+        /**
+         * Returns a client token. The client token from the store is returned if there is one.
+         * Otherwise a new token is fetched from the backend and saved in the store.
+         */
+        ClientTokenService.prototype.getClientToken = function () {
+            var _this = this;
+            return this.store.pipe(i1$2.select(getClientTokenState), operators.observeOn(rxjs.queueScheduler), operators.filter(function (state) {
+                if (_this.isClientTokenLoaded(state)) {
+                    return true;
+                }
+                else {
+                    if (!state.loading) {
+                        _this.store.dispatch(new LoadClientToken());
+                    }
+                    return false;
+                }
+            }), operators.map(function (state) { return state.value; }));
+        };
+        /**
+         * Fetches a clientToken from the backend and saves it in the store where getClientToken can use it.
+         * The new clientToken is returned.
+         */
+        ClientTokenService.prototype.refreshClientToken = function () {
+            var _this = this;
+            this.store.dispatch(new LoadClientToken());
+            return this.store.pipe(i1$2.select(getClientTokenState), operators.filter(function (state) { return _this.isClientTokenLoaded(state); }), operators.map(function (state) { return state.value; }));
+        };
+        ClientTokenService.prototype.isClientTokenLoaded = function (state) {
+            return (state.success || state.error) && !state.loading;
+        };
+        return ClientTokenService;
+    }());
+    ClientTokenService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientTokenService_Factory() { return new ClientTokenService(i0.ɵɵinject(i1$2.Store)); }, token: ClientTokenService, providedIn: "root" });
+    ClientTokenService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ClientTokenService.ctorParameters = function () { return [
+        { type: i1$2.Store }
+    ]; };
+
+    /**
+     * Service for handling `Authorization` header and errors for requests that
+     * require client token (eg. user registration).
+     */
+    var ClientErrorHandlingService = /** @class */ (function () {
+        function ClientErrorHandlingService(clientTokenService) {
+            this.clientTokenService = clientTokenService;
+        }
+        /**
+         * Refreshes client token and retries the request with the new token.
+         *
+         * @param request
+         * @param httpHandler
+         */
+        ClientErrorHandlingService.prototype.handleExpiredClientToken = function (request, next) {
+            var _this = this;
+            return this.clientTokenService.refreshClientToken().pipe(operators.take(1), operators.switchMap(function (token) {
+                return next.handle(_this.createNewRequestWithNewToken(request, token));
+            }));
+        };
+        /**
+         * Clones the requests and provided `Authorization` header.
+         *
+         * @param request
+         * @param token
+         */
+        ClientErrorHandlingService.prototype.createNewRequestWithNewToken = function (request, token) {
+            request = request.clone({
+                setHeaders: {
+                    Authorization: (token.token_type || 'Bearer') + " " + token.access_token,
+                },
+            });
+            return request;
+        };
+        return ClientErrorHandlingService;
+    }());
+    ClientErrorHandlingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientErrorHandlingService_Factory() { return new ClientErrorHandlingService(i0.ɵɵinject(ClientTokenService)); }, token: ClientErrorHandlingService, providedIn: "root" });
+    ClientErrorHandlingService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ClientErrorHandlingService.ctorParameters = function () { return [
+        { type: ClientTokenService }
+    ]; };
+
+    /**
+     * Interceptor for handling requests with `USE_CLIENT_TOKEN` header.
+     * Provides `Authorization` header with client token and handles errors related to client auth.
+     */
     var ClientTokenInterceptor = /** @class */ (function () {
-        function ClientTokenInterceptor(authService, occEndpoints) {
-            this.authService = authService;
+        function ClientTokenInterceptor(clientTokenService, clientErrorHandlingService, occEndpoints) {
+            this.clientTokenService = clientTokenService;
+            this.clientErrorHandlingService = clientErrorHandlingService;
             this.occEndpoints = occEndpoints;
         }
         ClientTokenInterceptor.prototype.intercept = function (request, next) {
             var _this = this;
-            return this.getClientToken(request).pipe(operators.take(1), operators.switchMap(function (token) {
-                if (token &&
+            var isClientTokenRequest = this.isClientTokenRequest(request);
+            if (isClientTokenRequest) {
+                request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
+            }
+            return this.getClientToken(isClientTokenRequest).pipe(operators.take(1), operators.switchMap(function (token) {
+                if ((token === null || token === void 0 ? void 0 : token.access_token) &&
                     request.url.includes(_this.occEndpoints.getBaseEndpoint())) {
                     request = request.clone({
                         setHeaders: {
-                            Authorization: token.token_type + " " + token.access_token,
+                            Authorization: (token.token_type || 'Bearer') + " " + token.access_token,
                         },
                     });
                 }
-                return next.handle(request);
+                return next.handle(request).pipe(operators.catchError(function (errResponse) {
+                    if (errResponse instanceof i1$4.HttpErrorResponse) {
+                        if (errResponse.status === 401) {
+                            if (isClientTokenRequest) {
+                                if (_this.isExpiredToken(errResponse)) {
+                                    return _this.clientErrorHandlingService.handleExpiredClientToken(request, next);
+                                }
+                            }
+                        }
+                    }
+                    return rxjs.throwError(errResponse);
+                }));
             }));
         };
-        ClientTokenInterceptor.prototype.getClientToken = function (request) {
-            if (InterceptorUtil.getInterceptorParam(USE_CLIENT_TOKEN, request.headers)) {
-                return this.authService.getClientToken();
+        ClientTokenInterceptor.prototype.getClientToken = function (isClientTokenRequest) {
+            if (isClientTokenRequest) {
+                return this.clientTokenService.getClientToken();
             }
             return rxjs.of(null);
         };
+        ClientTokenInterceptor.prototype.isClientTokenRequest = function (request) {
+            var isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CLIENT_TOKEN, request.headers);
+            return Boolean(isRequestMapping);
+        };
+        ClientTokenInterceptor.prototype.isExpiredToken = function (resp) {
+            var _a, _b, _c;
+            return ((_c = (_b = (_a = resp.error) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.type) === 'InvalidTokenError';
+        };
         return ClientTokenInterceptor;
     }());
-    ClientTokenInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(i0.ɵɵinject(AuthService), i0.ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
+    ClientTokenInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientTokenInterceptor_Factory() { return new ClientTokenInterceptor(i0.ɵɵinject(ClientTokenService), i0.ɵɵinject(ClientErrorHandlingService), i0.ɵɵinject(OccEndpointsService)); }, token: ClientTokenInterceptor, providedIn: "root" });
     ClientTokenInterceptor.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
     ClientTokenInterceptor.ctorParameters = function () { return [
-        { type: AuthService },
+        { type: ClientTokenService },
+        { type: ClientErrorHandlingService },
         { type: OccEndpointsService }
     ]; };
-
-    var UserTokenInterceptor = /** @class */ (function () {
-        function UserTokenInterceptor(authService, occEndpoints) {
-            this.authService = authService;
-            this.occEndpoints = occEndpoints;
-        }
-        UserTokenInterceptor.prototype.intercept = function (request, next) {
-            var _this = this;
-            return this.authService.getUserToken().pipe(operators.take(1), operators.switchMap(function (token) {
-                if (token &&
-                    _this.isOccUrl(request.url) &&
-                    !request.headers.get('Authorization')) {
-                    request = request.clone({
-                        setHeaders: {
-                            Authorization: token.token_type + " " + token.access_token,
-                        },
-                    });
-                }
-                return next.handle(request);
-            }));
-        };
-        UserTokenInterceptor.prototype.isOccUrl = function (url) {
-            return url.includes(this.occEndpoints.getBaseEndpoint());
-        };
-        return UserTokenInterceptor;
-    }());
-    UserTokenInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserTokenInterceptor_Factory() { return new UserTokenInterceptor(i0.ɵɵinject(AuthService), i0.ɵɵinject(OccEndpointsService)); }, token: UserTokenInterceptor, providedIn: "root" });
-    UserTokenInterceptor.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    UserTokenInterceptor.ctorParameters = function () { return [
-        { type: AuthService },
-        { type: OccEndpointsService }
-    ]; };
-
-    var TokenRevocationInterceptor = /** @class */ (function () {
-        function TokenRevocationInterceptor() {
-        }
-        TokenRevocationInterceptor.prototype.intercept = function (request, next) {
-            var isTokenRevocationRequest = this.isTokenRevocationRequest(request);
-            if (isTokenRevocationRequest) {
-                request = InterceptorUtil.removeHeader(TOKEN_REVOCATION_HEADER, request);
-            }
-            return next.handle(request).pipe(operators.catchError(function (error) {
-                if (isTokenRevocationRequest) {
-                    return rxjs.EMPTY;
-                }
-                return rxjs.throwError(error);
-            }));
-        };
-        TokenRevocationInterceptor.prototype.isTokenRevocationRequest = function (request) {
-            var isTokenRevocationHeaderPresent = InterceptorUtil.getInterceptorParam(TOKEN_REVOCATION_HEADER, request.headers);
-            return Boolean(isTokenRevocationHeaderPresent);
-        };
-        return TokenRevocationInterceptor;
-    }());
-    TokenRevocationInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(); }, token: TokenRevocationInterceptor, providedIn: "root" });
-    TokenRevocationInterceptor.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    TokenRevocationInterceptor.ctorParameters = function () { return []; };
 
     var interceptors = [
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: ClientTokenInterceptor,
             multi: true,
         },
-        {
-            provide: i1.HTTP_INTERCEPTORS,
-            useExisting: UserTokenInterceptor,
-            multi: true,
-        },
-        {
-            provide: i1.HTTP_INTERCEPTORS,
-            useExisting: AuthErrorInterceptor,
-            multi: true,
-        },
-        {
-            provide: i1.HTTP_INTERCEPTORS,
-            useExisting: TokenRevocationInterceptor,
-            multi: true,
-        },
     ];
+
+    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
+    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
+    var defaultStateConfig = {
+        state: {
+            storageSync: {
+                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
+                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
+                keys: {},
+                excludeKeys: {},
+            },
+        },
+    };
 
     (function (StorageSyncType) {
         StorageSyncType["NO_STORAGE"] = "NO_STORAGE";
@@ -2730,19 +3682,6 @@
                 },] }
     ];
 
-    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
-    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
-    var defaultStateConfig = {
-        state: {
-            storageSync: {
-                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
-                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
-                keys: {},
-                excludeKeys: {},
-            },
-        },
-    };
-
     function getStorageSyncReducer(winRef, config) {
         if (!winRef.nativeWindow ||
             !config ||
@@ -2755,11 +3694,11 @@
         return function (reducer) {
             return function (state, action) {
                 var newState = reducer(state, action);
-                if (action.type === i1$1.INIT || action.type === i1$1.UPDATE) {
+                if (action.type === i1$2.INIT || action.type === i1$2.UPDATE) {
                     var rehydratedState = rehydrate(config, winRef);
                     return deepMerge({}, newState, rehydratedState);
                 }
-                if (action.type !== i1$1.INIT) {
+                if (action.type !== i1$2.INIT) {
                     // handle local storage
                     var localStorageKeys = filterKeysByType(storageSyncConfig.keys, exports.StorageSyncType.LOCAL_STORAGE);
                     var localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, exports.StorageSyncType.LOCAL_STORAGE);
@@ -2829,17 +3768,184 @@
         return !Boolean(storage);
     }
 
-    var CX_KEY = i5.makeStateKey('cx-state');
-    function getTransferStateReducer(platformId, transferState, config) {
-        if (transferState &&
-            config &&
-            config.state &&
-            config.state.ssrTransfer &&
-            config.state.ssrTransfer.keys) {
-            if (i1$2.isPlatformBrowser(platformId)) {
-                return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+    var StatePersistenceService = /** @class */ (function () {
+        function StatePersistenceService(winRef) {
+            this.winRef = winRef;
+        }
+        /**
+         * Helper to synchronize state to more persistent storage (localStorage, sessionStorage).
+         * It is context aware, so you can keep different state for te same feature based on specified context.
+         *
+         * Eg. cart is valid only under the same base site. So you want to synchronize cart only with the same base site.
+         * Usage for that case: `syncWithStorage({ key: 'cart', state$: activeCartSelector$, context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]), onRead: (state) => setCorrectStateInStore(state) })`.
+         * Active cart for the `electronics` base site will be stored under `spartacus⚿electronics⚿cart` and for apparel under `spartacus⚿apparel⚿cart`.
+         *
+         * On each context change onRead function will be executed with state from storage provided as a parameter.
+         *
+         * Omitting context$ will trigger onRead only once at initialization.
+         *
+         * @param key Key to use in storage for the synchronized state. Should be unique for each feature.
+         * @param state$ State to be saved and later restored.
+         * @param context$ Context for state
+         * @param storageType Storage type to be used to persist state
+         * @param onRead Function to be executed on each storage read after context change
+         *
+         * @returns Subscriptions for reading/writing in storage on context/state change
+         */
+        StatePersistenceService.prototype.syncWithStorage = function (_a) {
+            var _this = this;
+            var key = _a.key, state$ = _a.state$, _b = _a.context$, context$ = _b === void 0 ? rxjs.of('') : _b, _c = _a.storageType, storageType = _c === void 0 ? exports.StorageSyncType.LOCAL_STORAGE : _c, _d = _a.onRead, onRead = _d === void 0 ? function () { } : _d;
+            var storage = getStorage(storageType, this.winRef);
+            var subscriptions = new rxjs.Subscription();
+            // Do not change order of subscription! Read should happen before write on context change.
+            subscriptions.add(context$
+                .pipe(operators.map(function (context) {
+                return readFromStorage(storage, _this.generateKeyWithContext(context, key));
+            }), operators.tap(function (state) { return onRead(state); }))
+                .subscribe());
+            subscriptions.add(state$.pipe(operators.withLatestFrom(context$)).subscribe(function (_a) {
+                var _b = __read(_a, 2), state = _b[0], context = _b[1];
+                persistToStorage(_this.generateKeyWithContext(context, key), state, storage);
+            }));
+            return subscriptions;
+        };
+        /**
+         * Helper to read state from persistent storage (localStorage, sessionStorage).
+         * It is useful if you need synchronously access state saved with `syncWithStorage`.
+         *
+         * @param key Key to use in storage for state. Should be unique for each feature.
+         * @param context Context value for state
+         * @param storageType Storage type from to read state
+         *
+         * @returns State from the storage
+         */
+        StatePersistenceService.prototype.readStateFromStorage = function (_a) {
+            var key = _a.key, _b = _a.context, context = _b === void 0 ? '' : _b, _c = _a.storageType, storageType = _c === void 0 ? exports.StorageSyncType.LOCAL_STORAGE : _c;
+            var storage = getStorage(storageType, this.winRef);
+            return readFromStorage(storage, this.generateKeyWithContext(context, key));
+        };
+        StatePersistenceService.prototype.generateKeyWithContext = function (context, key) {
+            return "spartacus\u26BF" + [].concat(context).join('⚿') + "\u26BF" + key;
+        };
+        return StatePersistenceService;
+    }());
+    StatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(i0.ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
+    StatePersistenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    StatePersistenceService.ctorParameters = function () { return [
+        { type: WindowRef }
+    ]; };
+
+    /**
+     * Responsible for saving the authorization data (userId, token, redirectUrl) in browser storage.
+     */
+    var AuthStatePersistenceService = /** @class */ (function () {
+        function AuthStatePersistenceService(statePersistenceService, userIdService, authStorageService, authRedirectStorageService) {
+            this.statePersistenceService = statePersistenceService;
+            this.userIdService = userIdService;
+            this.authStorageService = authStorageService;
+            this.authRedirectStorageService = authRedirectStorageService;
+            this.subscription = new rxjs.Subscription();
+            /**
+             * Identifier used for storage key.
+             */
+            this.key = 'auth';
+        }
+        /**
+         * Initializes the synchronization between state and browser storage.
+         */
+        AuthStatePersistenceService.prototype.initSync = function () {
+            var _this = this;
+            this.subscription.add(this.statePersistenceService.syncWithStorage({
+                key: this.key,
+                state$: this.getAuthState(),
+                onRead: function (state) { return _this.onRead(state); },
+            }));
+        };
+        /**
+         * Gets and transforms state from different sources into the form that should
+         * be saved in storage.
+         */
+        AuthStatePersistenceService.prototype.getAuthState = function () {
+            return rxjs.combineLatest([
+                this.authStorageService.getToken().pipe(operators.filter(function (state) { return !!state; }), operators.map(function (state) {
+                    return Object.assign({}, state);
+                })),
+                this.userIdService.getUserId(),
+                this.authRedirectStorageService.getRedirectUrl(),
+            ]).pipe(operators.map(function (_c) {
+                var _d = __read(_c, 3), authToken = _d[0], userId = _d[1], redirectUrl = _d[2];
+                var token = authToken;
+                if (token) {
+                    token = Object.assign({}, token);
+                    // To minimize risk of user account hijacking we don't persist user refresh_token
+                    delete token.refresh_token;
+                }
+                return { token: token, userId: userId, redirectUrl: redirectUrl };
+            }));
+        };
+        /**
+         * Function called on each browser storage read.
+         * Used to update state from browser -> state.
+         */
+        AuthStatePersistenceService.prototype.onRead = function (state) {
+            if (state) {
+                if (state.token) {
+                    this.authStorageService.setToken(state.token);
+                }
+                if (state.userId) {
+                    this.userIdService.setUserId(state.userId);
+                }
+                if (state.redirectUrl) {
+                    this.authRedirectStorageService.setRedirectUrl(state.redirectUrl);
+                }
             }
-            else if (i1$2.isPlatformServer(platformId)) {
+        };
+        /**
+         * Reads synchronously state from storage and returns it.
+         */
+        AuthStatePersistenceService.prototype.readStateFromStorage = function () {
+            return this.statePersistenceService.readStateFromStorage({
+                key: this.key,
+            });
+        };
+        /**
+         * Check synchronously in browser storage if user is logged in (required by transfer state reducer).
+         * For most cases `isUserLoggedIn` from the `AuthService` should be used instead of this.
+         */
+        AuthStatePersistenceService.prototype.isUserLoggedIn = function () {
+            var _a, _b;
+            return Boolean((_b = (_a = this.readStateFromStorage()) === null || _a === void 0 ? void 0 : _a.token) === null || _b === void 0 ? void 0 : _b.access_token);
+        };
+        AuthStatePersistenceService.prototype.ngOnDestroy = function () {
+            this.subscription.unsubscribe();
+        };
+        return AuthStatePersistenceService;
+    }());
+    AuthStatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthStatePersistenceService_Factory() { return new AuthStatePersistenceService(i0.ɵɵinject(StatePersistenceService), i0.ɵɵinject(UserIdService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(AuthRedirectStorageService)); }, token: AuthStatePersistenceService, providedIn: "root" });
+    AuthStatePersistenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthStatePersistenceService.ctorParameters = function () { return [
+        { type: StatePersistenceService },
+        { type: UserIdService },
+        { type: AuthStorageService },
+        { type: AuthRedirectStorageService }
+    ]; };
+
+    var CX_KEY = i5.makeStateKey('cx-state');
+    function getTransferStateReducer(platformId, transferState, config, authStatePersistenceService) {
+        var _a, _b;
+        if (transferState && ((_b = (_a = config === null || config === void 0 ? void 0 : config.state) === null || _a === void 0 ? void 0 : _a.ssrTransfer) === null || _b === void 0 ? void 0 : _b.keys)) {
+            if (i1.isPlatformBrowser(platformId)) {
+                return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys, Boolean(authStatePersistenceService === null || authStatePersistenceService === void 0 ? void 0 : authStatePersistenceService.isUserLoggedIn()));
+            }
+            else if (i1.isPlatformServer(platformId)) {
                 return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
         }
@@ -2858,17 +3964,14 @@
             };
         };
     }
-    function getBrowserTransferStateReducer(transferState, keys) {
+    function getBrowserTransferStateReducer(transferState, keys, isLoggedIn) {
         var transferStateKeys = filterKeysByType(keys, exports.StateTransferType.TRANSFER_STATE);
         return function (reducer) {
             return function (state, action) {
-                if (action.type === i1$1.INIT) {
+                if (action.type === i1$2.INIT) {
                     if (!state) {
                         state = reducer(state, action);
                     }
-                    // we should not utilize transfer state if user is logged in
-                    var authState = state[AUTH_FEATURE];
-                    var isLoggedIn = authState && authState.userToken && authState.userToken.token;
                     if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
                         var cxKey = transferState.get(CX_KEY, {});
                         var transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
@@ -2883,15 +3986,16 @@
 
     var TRANSFER_STATE_META_REDUCER = new i0.InjectionToken('TransferStateMetaReducer');
     var STORAGE_SYNC_META_REDUCER = new i0.InjectionToken('StorageSyncMetaReducer');
-    var ɵ0$6 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
+    var ɵ0$8 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
     var stateMetaReducers = [
         {
             provide: TRANSFER_STATE_META_REDUCER,
-            useFactory: ɵ0$6,
+            useFactory: ɵ0$8,
             deps: [
                 i0.PLATFORM_ID,
                 [new i0.Optional(), i5.TransferState],
                 [new i0.Optional(), Config],
+                [new i0.Optional(), AuthStatePersistenceService],
             ],
         },
         {
@@ -2900,77 +4004,16 @@
             deps: [WindowRef, [new i0.Optional(), Config]],
         },
         {
-            provide: i1$1.META_REDUCERS,
+            provide: i1$2.META_REDUCERS,
             useExisting: TRANSFER_STATE_META_REDUCER,
             multi: true,
         },
         {
-            provide: i1$1.META_REDUCERS,
+            provide: i1$2.META_REDUCERS,
             useExisting: STORAGE_SYNC_META_REDUCER,
             multi: true,
         },
     ];
-
-    /**
-     * Helper function to provide configuration chunk using ConfigChunk token
-     *
-     * To provide default configuration in libraries provideDefaultConfig should be used instead.
-     *
-     * @param config Config object to merge with the global configuration
-     */
-    function provideConfig(config, defaultConfig) {
-        if (config === void 0) { config = {}; }
-        if (defaultConfig === void 0) { defaultConfig = false; }
-        return {
-            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
-            useValue: config,
-            multi: true,
-        };
-    }
-    /**
-     * Helper function to provide configuration with factory function, using ConfigChunk token
-     *
-     * To provide default configuration in libraries provideDefaultConfigFactory should be used instead.
-     *
-     * @param configFactory Factory Function that will generate config object
-     * @param deps Optional dependencies to a factory function
-     */
-    function provideConfigFactory(configFactory, deps, defaultConfig) {
-        if (defaultConfig === void 0) { defaultConfig = false; }
-        return {
-            provide: defaultConfig ? DefaultConfigChunk : ConfigChunk,
-            useFactory: configFactory,
-            multi: true,
-            deps: deps,
-        };
-    }
-    /**
-     * Helper function to provide default configuration chunk using DefaultConfigChunk token
-     *
-     * @param config Config object to merge with the default configuration
-     */
-    function provideDefaultConfig(config) {
-        if (config === void 0) { config = {}; }
-        return {
-            provide: DefaultConfigChunk,
-            useValue: config,
-            multi: true,
-        };
-    }
-    /**
-     * Helper function to provide default configuration with factory function, using DefaultConfigChunk token
-     *
-     * @param configFactory Factory Function that will generate config object
-     * @param deps Optional dependencies to a factory function
-     */
-    function provideDefaultConfigFactory(configFactory, deps) {
-        return {
-            provide: DefaultConfigChunk,
-            useFactory: configFactory,
-            multi: true,
-            deps: deps,
-        };
-    }
 
     var StateModule = /** @class */ (function () {
         function StateModule() {
@@ -2990,95 +4033,77 @@
     ];
 
     /**
-     * @deprecated since 2.1, use normalizeHttpError instead
+     * Normalizes HttpErrorResponse to HttpErrorModel.
+     *
+     * Can be used as a safe and generic way for embodying http errors into
+     * NgRx Action payload, as it will strip potentially unserializable parts from
+     * it and warn in debug mode if passed error is not instance of HttpErrorModel
+     * (which usually happens when logic in NgRx Effect is not sealed correctly)
      */
-    var UNKNOWN_ERROR = {
-        error: 'unknown error',
-    };
-    var circularReplacer = function () {
-        var seen = new WeakSet();
-        return function (_key, value) {
-            if (typeof value === 'object' && value !== null) {
-                if (seen.has(value)) {
-                    return;
-                }
-                seen.add(value);
-            }
-            return value;
-        };
-    };
-    var ɵ0$7 = circularReplacer;
-    /**
-     * @deprecated since 2.1, use normalizeHttpError instead
-     */
-    function makeErrorSerializable(error) {
-        if (error instanceof Error) {
-            return {
+    function normalizeHttpError(error) {
+        if (error instanceof i1$4.HttpErrorResponse) {
+            var normalizedError = {
                 message: error.message,
-                type: error.name,
-                reason: error.stack,
-            };
-        }
-        if (error instanceof i1.HttpErrorResponse) {
-            var serializableError = error.error;
-            if (isObject(error.error)) {
-                serializableError = JSON.stringify(error.error, circularReplacer());
-            }
-            return {
-                message: error.message,
-                error: serializableError,
                 status: error.status,
                 statusText: error.statusText,
                 url: error.url,
             };
+            // include backend's error details
+            if (Array.isArray(error.error.errors)) {
+                normalizedError.details = error.error.errors;
+            }
+            else if (typeof error.error.error === 'string') {
+                normalizedError.details = [
+                    {
+                        type: error.error.error,
+                        message: error.error.error_description,
+                    },
+                ];
+            }
+            return normalizedError;
         }
-        return isObject(error) ? UNKNOWN_ERROR : error;
+        if (i0.isDevMode()) {
+            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
+        }
+        return undefined;
     }
 
-    var AuthConfig = /** @class */ (function (_super) {
-        __extends(AuthConfig, _super);
-        function AuthConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return AuthConfig;
-    }(OccConfig));
-    AuthConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthConfig_Factory() { return i0.ɵɵinject(Config); }, token: AuthConfig, providedIn: "root" });
-    AuthConfig.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                    useExisting: Config,
-                },] }
-    ];
-
+    /**
+     * Responsible for requesting from OAuth server `ClientToken` for a particular
+     * auth client.
+     */
     var ClientAuthenticationTokenService = /** @class */ (function () {
-        function ClientAuthenticationTokenService(config, http, occEndpointsService) {
-            this.config = config;
+        function ClientAuthenticationTokenService(http, authConfigService) {
             this.http = http;
-            this.occEndpointsService = occEndpointsService;
+            this.authConfigService = authConfigService;
         }
+        /**
+         * Loads token with client authentication flow.
+         *
+         * @returns observable with ClientToken
+         */
         ClientAuthenticationTokenService.prototype.loadClientAuthenticationToken = function () {
-            var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new i1.HttpParams()
-                .set('client_id', encodeURIComponent(this.config.authentication.client_id))
-                .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
+            var url = this.authConfigService.getTokenEndpoint();
+            var params = new i1$4.HttpParams()
+                .set('client_id', encodeURIComponent(this.authConfigService.getClientId()))
+                .set('client_secret', encodeURIComponent(this.authConfigService.getClientSecret()))
                 .set('grant_type', 'client_credentials');
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http.post(url, params, { headers: headers });
         };
         return ClientAuthenticationTokenService;
     }());
-    ClientAuthenticationTokenService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(i0.ɵɵinject(AuthConfig), i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(OccEndpointsService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
+    ClientAuthenticationTokenService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ClientAuthenticationTokenService_Factory() { return new ClientAuthenticationTokenService(i0.ɵɵinject(i1$4.HttpClient), i0.ɵɵinject(AuthConfigService)); }, token: ClientAuthenticationTokenService, providedIn: "root" });
     ClientAuthenticationTokenService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ClientAuthenticationTokenService.ctorParameters = function () { return [
-        { type: AuthConfig },
-        { type: i1.HttpClient },
-        { type: OccEndpointsService }
+        { type: i1$4.HttpClient },
+        { type: AuthConfigService }
     ]; };
 
     var ClientTokenEffect = /** @class */ (function () {
@@ -3091,7 +4116,7 @@
                     .loadClientAuthenticationToken()
                     .pipe(operators.map(function (token) {
                     return new LoadClientTokenSuccess(token);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadClientTokenFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadClientTokenFail(normalizeHttpError(error))); }));
             }));
         }
         return ClientTokenEffect;
@@ -3107,197 +4132,687 @@
         i3.Effect()
     ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
 
-    var UserAuthenticationTokenService = /** @class */ (function () {
-        function UserAuthenticationTokenService(http, config, occEndpointsService) {
-            this.http = http;
-            this.config = config;
-            this.occEndpointsService = occEndpointsService;
-        }
-        UserAuthenticationTokenService.prototype.loadToken = function (userId, password) {
-            var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new i1.HttpParams()
-                .set('client_id', this.config.authentication.client_id)
-                .set('client_secret', this.config.authentication.client_secret)
-                .set('grant_type', 'password')
-                .set('username', userId)
-                .set('password', password);
-            var headers = new i1.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .post(url, params, { headers: headers })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        UserAuthenticationTokenService.prototype.refreshToken = function (refreshToken) {
-            var url = this.occEndpointsService.getRawEndpoint('login');
-            var params = new i1.HttpParams()
-                .set('client_id', encodeURIComponent(this.config.authentication.client_id))
-                .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
-                .set('refresh_token', encodeURI(refreshToken))
-                .set('grant_type', 'refresh_token');
-            var headers = new i1.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .post(url, params, { headers: headers })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        UserAuthenticationTokenService.prototype.revoke = function (userToken) {
-            var url = this.occEndpointsService.getRawEndpoint('revoke');
-            var headers = InterceptorUtil.createHeader(TOKEN_REVOCATION_HEADER, true, new i1.HttpHeaders({
-                Authorization: userToken.token_type + " " + userToken.access_token,
-                'Content-Type': 'application/x-www-form-urlencoded',
-            }));
-            var params = new i1.HttpParams().set('token', userToken.access_token);
-            return this.http
-                .post(url, params, { headers: headers })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        return UserAuthenticationTokenService;
-    }());
-    UserAuthenticationTokenService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAuthenticationTokenService_Factory() { return new UserAuthenticationTokenService(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(AuthConfig), i0.ɵɵinject(OccEndpointsService)); }, token: UserAuthenticationTokenService, providedIn: "root" });
-    UserAuthenticationTokenService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UserAuthenticationTokenService.ctorParameters = function () { return [
-        { type: i1.HttpClient },
-        { type: AuthConfig },
-        { type: OccEndpointsService }
-    ]; };
-
-    var UserTokenEffects = /** @class */ (function () {
-        function UserTokenEffects(actions$, userTokenService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userTokenService = userTokenService;
-            this.loadUserToken$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
-                var userId = _a.userId, password = _a.password;
-                return _this.userTokenService.loadToken(userId, password).pipe(operators.map(function (token) {
-                    var date = new Date();
-                    date.setSeconds(date.getSeconds() + token.expires_in);
-                    token.expiration_time = date.toJSON();
-                    token.userId = OCC_USER_ID_CURRENT;
-                    return new LoadUserTokenSuccess(token);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadUserTokenFail(makeErrorSerializable(error))); }));
-            }));
-            this.login$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map(function () { return new Login(); }));
-            this.refreshUserToken$ = this.actions$.pipe(i3.ofType(REFRESH_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (_a) {
-                var refreshToken = _a.refreshToken;
-                return _this.userTokenService.refreshToken(refreshToken).pipe(operators.map(function (token) {
-                    var date = new Date();
-                    date.setSeconds(date.getSeconds() + token.expires_in);
-                    token.expiration_time = date.toJSON();
-                    return new RefreshUserTokenSuccess(token);
-                }, operators.catchError(function (error) { return rxjs.of(new RefreshUserTokenFail(makeErrorSerializable(error))); })));
-            }));
-            this.revokeUserToken$ = this.actions$.pipe(i3.ofType(REVOKE_USER_TOKEN), operators.map(function (action) {
-                return action.payload;
-            }), operators.mergeMap(function (userToken) {
-                return _this.userTokenService.revoke(userToken).pipe(operators.map(function () { return new RevokeUserTokenSuccess(userToken); }), operators.catchError(function (error) { return rxjs.of(new RevokeUserTokenFail(error)); }));
-            }));
-        }
-        return UserTokenEffects;
-    }());
-    UserTokenEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    UserTokenEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: UserAuthenticationTokenService }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], UserTokenEffects.prototype, "loadUserToken$", void 0);
-    __decorate([
-        i3.Effect()
-    ], UserTokenEffects.prototype, "login$", void 0);
-    __decorate([
-        i3.Effect()
-    ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
-    __decorate([
-        i3.Effect()
-    ], UserTokenEffects.prototype, "revokeUserToken$", void 0);
-
-    var effects = [UserTokenEffects, ClientTokenEffect];
-
-    var initialState = {};
-    function reducer(state, action) {
-        if (state === void 0) { state = initialState; }
-        switch (action.type) {
-            case LOAD_USER_TOKEN:
-            case REFRESH_USER_TOKEN: {
-                return Object.assign({}, state);
-            }
-            case LOAD_USER_TOKEN_SUCCESS:
-            case REFRESH_USER_TOKEN_SUCCESS: {
-                return Object.assign(Object.assign({}, state), action.payload);
-            }
-            case LOAD_USER_TOKEN_FAIL:
-            case REFRESH_USER_TOKEN_FAIL: {
-                return Object.assign({}, state);
-            }
-        }
-        return state;
-    }
+    var effects = [ClientTokenEffect];
 
     function getReducers() {
         return {
-            userToken: i1$1.combineReducers({ token: reducer }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
         };
     }
-    var reducerToken = new i0.InjectionToken('AuthReducers');
+    var reducerToken = new i0.InjectionToken('ClientAuthReducers');
     var reducerProvider = {
         provide: reducerToken,
         useFactory: getReducers,
     };
-    function clearAuthState(reducer) {
-        return function (state, action) {
-            if (action.type === LOGOUT) {
-                state = Object.assign(Object.assign({}, state), { userToken: undefined });
-            }
-            return reducer(state, action);
-        };
-    }
-    var metaReducers = [clearAuthState];
 
-    function authStoreConfigFactory() {
-        // if we want to reuse AUTH_FEATURE const in config, we have to use factory instead of plain object
-        var config = {
-            state: {
-                storageSync: {
-                    keys: {
-                        'auth.userToken.token.access_token': exports.StorageSyncType.LOCAL_STORAGE,
-                        'auth.userToken.token.token_type': exports.StorageSyncType.LOCAL_STORAGE,
-                        'auth.userToken.token.expires_in': exports.StorageSyncType.LOCAL_STORAGE,
-                        'auth.userToken.token.expiration_time': exports.StorageSyncType.LOCAL_STORAGE,
-                        'auth.userToken.token.scope': exports.StorageSyncType.LOCAL_STORAGE,
-                        'auth.userToken.token.userId': exports.StorageSyncType.LOCAL_STORAGE,
-                    },
-                },
-            },
-        };
-        return config;
-    }
-    var AuthStoreModule = /** @class */ (function () {
-        function AuthStoreModule() {
+    var ClientAuthStoreModule = /** @class */ (function () {
+        function ClientAuthStoreModule() {
         }
-        return AuthStoreModule;
+        return ClientAuthStoreModule;
     }());
-    AuthStoreModule.decorators = [
+    ClientAuthStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
+                        i1.CommonModule,
+                        i1$4.HttpClientModule,
                         StateModule,
-                        i1$1.StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers: metaReducers }),
+                        i1$2.StoreModule.forFeature(CLIENT_AUTH_FEATURE, reducerToken),
                         i3.EffectsModule.forFeature(effects),
                     ],
-                    providers: [
-                        provideDefaultConfigFactory(authStoreConfigFactory),
-                        reducerProvider,
-                    ],
+                    providers: [reducerProvider],
+                },] }
+    ];
+
+    /**
+     * Some of the OCC endpoints require Authorization header with the client token (eg. user registration).
+     * This pattern should not be used in the frontend apps, but until OCC changes this requirement
+     * we provide this module to support using those endpoints.
+     *
+     * After OCC improvements regarding client authentication this module can be safely removed.
+     */
+    var ClientAuthModule = /** @class */ (function () {
+        function ClientAuthModule() {
+        }
+        ClientAuthModule.forRoot = function () {
+            return {
+                ngModule: ClientAuthModule,
+                providers: __spread(interceptors),
+            };
+        };
+        return ClientAuthModule;
+    }());
+    ClientAuthModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1.CommonModule, ClientAuthStoreModule],
+                },] }
+    ];
+
+    var CONFIG_INITIALIZER = new i0.InjectionToken('ConfigInitializer');
+    var CONFIG_INITIALIZER_FORROOT_GUARD = new i0.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
+
+    /**
+     * Provides support for CONFIG_INITIALIZERS
+     */
+    var ConfigInitializerService = /** @class */ (function () {
+        function ConfigInitializerService(config, initializerGuard, rootConfig) {
+            this.config = config;
+            this.initializerGuard = initializerGuard;
+            this.rootConfig = rootConfig;
+            this.ongoingScopes$ = new rxjs.BehaviorSubject(undefined);
+        }
+        Object.defineProperty(ConfigInitializerService.prototype, "isStable", {
+            /**
+             * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
+             */
+            get: function () {
+                return (!this.initializerGuard ||
+                    (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
+            },
+            enumerable: false,
+            configurable: true
+        });
+        /**
+         * Recommended way to get config for code that can run before app will finish
+         * initialization (APP_INITIALIZERS, selected service constructors)
+         *
+         * Used without parameters waits for the whole config to become stable
+         *
+         * Parameters allow to describe which part of the config should be stable using
+         * string describing config part, e.g.:
+         * 'siteContext', 'siteContext.language', etc.
+         *
+         * @param scopes String describing parts of the config we want to be sure are stable
+         */
+        ConfigInitializerService.prototype.getStableConfig = function () {
+            var scopes = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                scopes[_i] = arguments[_i];
+            }
+            return __awaiter(this, void 0, void 0, function () {
+                var _this = this;
+                return __generator(this, function (_a) {
+                    if (this.isStable) {
+                        return [2 /*return*/, this.config];
+                    }
+                    return [2 /*return*/, this.ongoingScopes$
+                            .pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config))
+                            .toPromise()];
+                });
+            });
+        };
+        /**
+         * Removes provided scopes from currently ongoingScopes
+         *
+         * @param scopes
+         */
+        ConfigInitializerService.prototype.finishScopes = function (scopes) {
+            var e_1, _a;
+            var newScopes = __spread(this.ongoingScopes$.value);
+            try {
+                for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
+                    var scope = scopes_1_1.value;
+                    newScopes.splice(newScopes.indexOf(scope), 1);
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            this.ongoingScopes$.next(newScopes);
+        };
+        /**
+         * Return true if provided scopes are not part of ongoingScopes
+         *
+         * @param scopes
+         * @param ongoingScopes
+         */
+        ConfigInitializerService.prototype.areReady = function (scopes, ongoingScopes) {
+            var e_2, _a, e_3, _b;
+            if (!scopes.length) {
+                return !ongoingScopes.length;
+            }
+            try {
+                for (var scopes_2 = __values(scopes), scopes_2_1 = scopes_2.next(); !scopes_2_1.done; scopes_2_1 = scopes_2.next()) {
+                    var scope = scopes_2_1.value;
+                    try {
+                        for (var ongoingScopes_1 = (e_3 = void 0, __values(ongoingScopes)), ongoingScopes_1_1 = ongoingScopes_1.next(); !ongoingScopes_1_1.done; ongoingScopes_1_1 = ongoingScopes_1.next()) {
+                            var ongoingScope = ongoingScopes_1_1.value;
+                            if (this.scopesOverlap(scope, ongoingScope)) {
+                                return false;
+                            }
+                        }
+                    }
+                    catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                    finally {
+                        try {
+                            if (ongoingScopes_1_1 && !ongoingScopes_1_1.done && (_b = ongoingScopes_1.return)) _b.call(ongoingScopes_1);
+                        }
+                        finally { if (e_3) throw e_3.error; }
+                    }
+                }
+            }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            finally {
+                try {
+                    if (scopes_2_1 && !scopes_2_1.done && (_a = scopes_2.return)) _a.call(scopes_2);
+                }
+                finally { if (e_2) throw e_2.error; }
+            }
+            return true;
+        };
+        /**
+         * Check if two scopes overlap.
+         *
+         * Example of scopes that overlap:
+         * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
+         *
+         * Example of scopes that do not overlap:
+         * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
+         *
+         * @param a ScopeA
+         * @param b ScopeB
+         */
+        ConfigInitializerService.prototype.scopesOverlap = function (a, b) {
+            var _a;
+            if (b.length > a.length) {
+                _a = __read([b, a], 2), a = _a[0], b = _a[1];
+            }
+            return a.startsWith(b) && (a[b.length] || '.') === '.';
+        };
+        /**
+         * @internal
+         *
+         * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
+         *
+         */
+        ConfigInitializerService.prototype.initialize = function (initializers) {
+            return __awaiter(this, void 0, void 0, function () {
+                var ongoingScopes, asyncConfigs, _loop_1, this_1, _a, _b, initializer;
+                var e_4, _c;
+                var _this = this;
+                return __generator(this, function (_d) {
+                    switch (_d.label) {
+                        case 0:
+                            if (this.ongoingScopes$.value) {
+                                // guard for double initialization
+                                return [2 /*return*/];
+                            }
+                            ongoingScopes = [];
+                            asyncConfigs = [];
+                            _loop_1 = function (initializer) {
+                                if (!initializer) {
+                                    return "continue";
+                                }
+                                if (!initializer.scopes || !initializer.scopes.length) {
+                                    throw new Error('CONFIG_INITIALIZER should provide scope!');
+                                }
+                                if (i0.isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
+                                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
+                                }
+                                ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
+                                asyncConfigs.push((function () { return __awaiter(_this, void 0, void 0, function () {
+                                    var initializerConfig;
+                                    return __generator(this, function (_a) {
+                                        switch (_a.label) {
+                                            case 0: return [4 /*yield*/, initializer.configFactory()];
+                                            case 1:
+                                                initializerConfig = _a.sent();
+                                                // contribute configuration to rootConfig
+                                                deepMerge(this.rootConfig, initializerConfig);
+                                                // contribute configuration to global config
+                                                deepMerge(this.config, initializerConfig);
+                                                this.finishScopes(initializer.scopes);
+                                                return [2 /*return*/];
+                                        }
+                                    });
+                                }); })());
+                            };
+                            this_1 = this;
+                            try {
+                                for (_a = __values(initializers || []), _b = _a.next(); !_b.done; _b = _a.next()) {
+                                    initializer = _b.value;
+                                    _loop_1(initializer);
+                                }
+                            }
+                            catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                            finally {
+                                try {
+                                    if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                                }
+                                finally { if (e_4) throw e_4.error; }
+                            }
+                            this.ongoingScopes$.next(ongoingScopes);
+                            if (!asyncConfigs.length) return [3 /*break*/, 2];
+                            return [4 /*yield*/, Promise.all(asyncConfigs)];
+                        case 1:
+                            _d.sent();
+                            _d.label = 2;
+                        case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        return ConfigInitializerService;
+    }());
+    ConfigInitializerService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(i0.ɵɵinject(Config), i0.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), i0.ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
+    ConfigInitializerService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ConfigInitializerService.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: i0.Inject, args: [Config,] }] },
+        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [RootConfig,] }] }
+    ]; };
+
+    var defaultAuthConfig = {
+        authentication: {
+            client_id: 'mobile_android',
+            client_secret: 'secret',
+            tokenEndpoint: '/oauth/token',
+            revokeEndpoint: '/oauth/revoke',
+            loginUrl: '/oauth/authorize',
+            OAuthLibConfig: {
+                scope: '',
+                customTokenParameters: ['token_type'],
+                strictDiscoveryDocumentValidation: false,
+                skipIssuerCheck: true,
+                disablePKCE: true,
+                oidc: false,
+                clearHashAfterLogin: false,
+            },
+        },
+    };
+
+    var ADD_MESSAGE = '[Global-message] Add a Message';
+    var REMOVE_MESSAGE = '[Global-message] Remove a Message';
+    var REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
+    var AddMessage = /** @class */ (function () {
+        function AddMessage(payload) {
+            this.payload = payload;
+            this.type = ADD_MESSAGE;
+        }
+        return AddMessage;
+    }());
+    var RemoveMessage = /** @class */ (function () {
+        function RemoveMessage(payload) {
+            this.payload = payload;
+            this.type = REMOVE_MESSAGE;
+        }
+        return RemoveMessage;
+    }());
+    var RemoveMessagesByType = /** @class */ (function () {
+        function RemoveMessagesByType(payload) {
+            this.payload = payload;
+            this.type = REMOVE_MESSAGES_BY_TYPE;
+        }
+        return RemoveMessagesByType;
+    }());
+
+    var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        ADD_MESSAGE: ADD_MESSAGE,
+        REMOVE_MESSAGE: REMOVE_MESSAGE,
+        REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
+        AddMessage: AddMessage,
+        RemoveMessage: RemoveMessage,
+        RemoveMessagesByType: RemoveMessagesByType
+    });
+
+    var GLOBAL_MESSAGE_FEATURE = 'global-message';
+
+    var getGlobalMessageState = i1$2.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+
+    var ɵ0$9 = function (state) { return state.entities; };
+    var getGlobalMessageEntities = i1$2.createSelector(getGlobalMessageState, ɵ0$9);
+    var getGlobalMessageEntitiesByType = function (type) {
+        return i1$2.createSelector(getGlobalMessageEntities, function (entities) { return entities && entities[type]; });
+    };
+    var getGlobalMessageCountByType = function (type) {
+        return i1$2.createSelector(getGlobalMessageEntitiesByType(type), function (entities) { return entities && entities.length; });
+    };
+
+    var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getGlobalMessageState: getGlobalMessageState,
+        getGlobalMessageEntities: getGlobalMessageEntities,
+        getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
+        getGlobalMessageCountByType: getGlobalMessageCountByType,
+        ɵ0: ɵ0$9
+    });
+
+    var GlobalMessageService = /** @class */ (function () {
+        function GlobalMessageService(store) {
+            this.store = store;
+        }
+        /**
+         * Get all global messages
+         */
+        GlobalMessageService.prototype.get = function () {
+            return this.store.pipe(i1$2.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
+        };
+        /**
+         * Add one message into store
+         * @param text: string | Translatable
+         * @param type: GlobalMessageType object
+         * @param timeout: number
+         */
+        GlobalMessageService.prototype.add = function (text, type, timeout) {
+            this.store.dispatch(new AddMessage({
+                text: typeof text === 'string' ? { raw: text } : text,
+                type: type,
+                timeout: timeout,
+            }));
+        };
+        /**
+         * Remove message(s) from store
+         * @param type: GlobalMessageType
+         * @param index:optional. Without it, messages will be removed by type; otherwise,
+         * message will be removed from list by index.
+         */
+        GlobalMessageService.prototype.remove = function (type, index) {
+            this.store.dispatch(index !== undefined
+                ? new RemoveMessage({
+                    type: type,
+                    index: index,
+                })
+                : new RemoveMessagesByType(type));
+        };
+        return GlobalMessageService;
+    }());
+    GlobalMessageService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(i0.ɵɵinject(i1$2.Store)); }, token: GlobalMessageService, providedIn: "root" });
+    GlobalMessageService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    GlobalMessageService.ctorParameters = function () { return [
+        { type: i1$2.Store }
+    ]; };
+
+    (function (GlobalMessageType) {
+        GlobalMessageType["MSG_TYPE_CONFIRMATION"] = "[GlobalMessage] Confirmation";
+        GlobalMessageType["MSG_TYPE_ERROR"] = "[GlobalMessage] Error";
+        GlobalMessageType["MSG_TYPE_INFO"] = "[GlobalMessage] Information";
+        GlobalMessageType["MSG_TYPE_WARNING"] = "[GlobalMessage] Warning";
+    })(exports.GlobalMessageType || (exports.GlobalMessageType = {}));
+
+    /**
+     * Extendable service for `AuthInterceptor`.
+     */
+    var AuthHeaderService = /** @class */ (function () {
+        function AuthHeaderService(authService, authStorageService, oAuthLibWrapperService, routingService, occEndpoints, globalMessageService) {
+            this.authService = authService;
+            this.authStorageService = authStorageService;
+            this.oAuthLibWrapperService = oAuthLibWrapperService;
+            this.routingService = routingService;
+            this.occEndpoints = occEndpoints;
+            this.globalMessageService = globalMessageService;
+        }
+        /**
+         * Checks if request should be handled by this service (if it's OCC call).
+         */
+        AuthHeaderService.prototype.shouldCatchError = function (request) {
+            return this.isOccUrl(request.url);
+        };
+        /**
+         * Adds `Authorization` header for OCC calls.
+         */
+        AuthHeaderService.prototype.alterRequest = function (request) {
+            var hasAuthorizationHeader = !!this.getAuthorizationHeader(request);
+            var isOccUrl = this.isOccUrl(request.url);
+            if (!hasAuthorizationHeader && isOccUrl) {
+                return request.clone({
+                    setHeaders: Object.assign({}, this.createAuthorizationHeader()),
+                });
+            }
+            return request;
+        };
+        AuthHeaderService.prototype.isOccUrl = function (url) {
+            return url.includes(this.occEndpoints.getBaseEndpoint());
+        };
+        AuthHeaderService.prototype.getAuthorizationHeader = function (request) {
+            var rawValue = request.headers.get('Authorization');
+            return rawValue;
+        };
+        AuthHeaderService.prototype.createAuthorizationHeader = function () {
+            var token;
+            this.authStorageService
+                .getToken()
+                .subscribe(function (tok) { return (token = tok); })
+                .unsubscribe();
+            if (token === null || token === void 0 ? void 0 : token.access_token) {
+                return {
+                    Authorization: (token.token_type || 'Bearer') + " " + token.access_token,
+                };
+            }
+            return {};
+        };
+        /**
+         * Refreshes access_token and then retries the call with the new token.
+         */
+        AuthHeaderService.prototype.handleExpiredAccessToken = function (request, next) {
+            var _this = this;
+            return this.handleExpiredToken().pipe(operators.switchMap(function (token) {
+                return next.handle(_this.createNewRequestWithNewToken(request, token));
+            }));
+        };
+        /**
+         * Logout user, redirected to login page and informs about expired session.
+         */
+        AuthHeaderService.prototype.handleExpiredRefreshToken = function () {
+            // Logout user
+            this.authService.logout();
+            this.routingService.go({ cxRoute: 'login' });
+            this.globalMessageService.add({
+                key: 'httpHandlers.sessionExpired',
+            }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        /**
+         * Attempts to refresh token if possible.
+         * If it is not possible calls `handleExpiredRefreshToken`.
+         *
+         * @return observable which omits new access_token. (Warn: might never emit!).
+         */
+        AuthHeaderService.prototype.handleExpiredToken = function () {
+            var _this = this;
+            var stream = this.authStorageService.getToken();
+            var oldToken;
+            return stream.pipe(operators.tap(function (token) {
+                if (token.access_token && token.refresh_token && !oldToken) {
+                    _this.oAuthLibWrapperService.refreshToken();
+                }
+                else if (!token.refresh_token) {
+                    _this.handleExpiredRefreshToken();
+                }
+                oldToken = oldToken || token;
+            }), operators.filter(function (token) { return oldToken.access_token !== token.access_token; }), operators.take(1));
+        };
+        AuthHeaderService.prototype.createNewRequestWithNewToken = function (request, token) {
+            request = request.clone({
+                setHeaders: {
+                    Authorization: (token.token_type || 'Bearer') + " " + token.access_token,
+                },
+            });
+            return request;
+        };
+        return AuthHeaderService;
+    }());
+    AuthHeaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthHeaderService_Factory() { return new AuthHeaderService(i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(RoutingService), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(GlobalMessageService)); }, token: AuthHeaderService, providedIn: "root" });
+    AuthHeaderService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AuthHeaderService.ctorParameters = function () { return [
+        { type: AuthService },
+        { type: AuthStorageService },
+        { type: OAuthLibWrapperService },
+        { type: RoutingService },
+        { type: OccEndpointsService },
+        { type: GlobalMessageService }
+    ]; };
+
+    /**
+     * Responsible for catching auth errors and providing `Authorization` header for API calls.
+     * Uses AuthHeaderService for request manipulation and error handling. Interceptor only hooks into request send/received events.
+     */
+    var AuthInterceptor = /** @class */ (function () {
+        function AuthInterceptor(authHeaderService, authConfigService) {
+            this.authHeaderService = authHeaderService;
+            this.authConfigService = authConfigService;
+        }
+        AuthInterceptor.prototype.intercept = function (request, next) {
+            var _this = this;
+            var shouldCatchError = this.authHeaderService.shouldCatchError(request);
+            request = this.authHeaderService.alterRequest(request);
+            return next.handle(request).pipe(operators.catchError(function (errResponse) {
+                if (errResponse instanceof i1$4.HttpErrorResponse) {
+                    switch (errResponse.status) {
+                        case 401: // Unauthorized
+                            if (_this.isExpiredToken(errResponse) && shouldCatchError) {
+                                return _this.authHeaderService.handleExpiredAccessToken(request, next);
+                            }
+                            else if (
+                            // Refresh expired token
+                            // Check that the OAUTH endpoint was called and the error is for refresh token is expired
+                            errResponse.url.includes(_this.authConfigService.getTokenEndpoint()) &&
+                                errResponse.error.error === 'invalid_token') {
+                                _this.authHeaderService.handleExpiredRefreshToken();
+                                return rxjs.of();
+                            }
+                            break;
+                        case 400: // Bad Request
+                            if (errResponse.url.includes(_this.authConfigService.getTokenEndpoint()) &&
+                                errResponse.error.error === 'invalid_grant') {
+                                if (request.body.get('grant_type') === 'refresh_token') {
+                                    _this.authHeaderService.handleExpiredRefreshToken();
+                                }
+                            }
+                            break;
+                    }
+                }
+                return rxjs.throwError(errResponse);
+            }));
+        };
+        AuthInterceptor.prototype.isExpiredToken = function (resp) {
+            var _a, _b, _c;
+            return ((_c = (_b = (_a = resp.error) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.type) === 'InvalidTokenError';
+        };
+        return AuthInterceptor;
+    }());
+    AuthInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthInterceptor_Factory() { return new AuthInterceptor(i0.ɵɵinject(AuthHeaderService), i0.ɵɵinject(AuthConfigService)); }, token: AuthInterceptor, providedIn: "root" });
+    AuthInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    AuthInterceptor.ctorParameters = function () { return [
+        { type: AuthHeaderService },
+        { type: AuthConfigService }
+    ]; };
+
+    /**
+     * This interceptor is dedicated for Hybris OAuth server which requires `Authorization` header for revoke token calls.
+     */
+    var TokenRevocationInterceptor = /** @class */ (function () {
+        function TokenRevocationInterceptor(authStorageService, authConfigService) {
+            this.authStorageService = authStorageService;
+            this.authConfigService = authConfigService;
+        }
+        TokenRevocationInterceptor.prototype.intercept = function (request, next) {
+            var isTokenRevocationRequest = this.isTokenRevocationRequest(request);
+            return this.authStorageService.getToken().pipe(operators.take(1), operators.switchMap(function (token) {
+                if (isTokenRevocationRequest) {
+                    request = request.clone({
+                        setHeaders: {
+                            Authorization: (token.token_type || 'Bearer') + " " + token.access_token,
+                        },
+                    });
+                }
+                return next.handle(request);
+            }));
+        };
+        TokenRevocationInterceptor.prototype.isTokenRevocationRequest = function (request) {
+            return request.url === this.authConfigService.getRevokeEndpoint();
+        };
+        return TokenRevocationInterceptor;
+    }());
+    TokenRevocationInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function TokenRevocationInterceptor_Factory() { return new TokenRevocationInterceptor(i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(AuthConfigService)); }, token: TokenRevocationInterceptor, providedIn: "root" });
+    TokenRevocationInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    TokenRevocationInterceptor.ctorParameters = function () { return [
+        { type: AuthStorageService },
+        { type: AuthConfigService }
+    ]; };
+
+    var interceptors$1 = [
+        {
+            provide: i1$4.HTTP_INTERCEPTORS,
+            useExisting: AuthInterceptor,
+            multi: true,
+        },
+        {
+            provide: i1$4.HTTP_INTERCEPTORS,
+            useExisting: TokenRevocationInterceptor,
+            multi: true,
+        },
+    ];
+
+    /**
+     * Initialize the check for `token` or `code` in the url returned from the OAuth server.
+     */
+    function checkOAuthParamsInUrl(authService, configInit) {
+        var result = function () { return configInit.getStableConfig().then(function () {
+            // Wait for stable config is used, because with auth redirect would kick so quickly that the page would not be loaded correctly
+            authService.checkOAuthParamsInUrl();
+        }); };
+        return result;
+    }
+    function authStatePersistenceFactory(authStatePersistenceService) {
+        var result = function () { return authStatePersistenceService.initSync(); };
+        return result;
+    }
+    /**
+     * Authentication module for a user. Handlers requests for logged in users,
+     * provides authorization services and storage for tokens.
+     */
+    var UserAuthModule = /** @class */ (function () {
+        function UserAuthModule() {
+        }
+        UserAuthModule.forRoot = function () {
+            return {
+                ngModule: UserAuthModule,
+                providers: __spread([
+                    provideDefaultConfig(defaultAuthConfig)
+                ], interceptors$1, [
+                    {
+                        provide: i1$3.OAuthStorage,
+                        useExisting: AuthStorageService,
+                    },
+                    {
+                        provide: i0.APP_INITIALIZER,
+                        useFactory: authStatePersistenceFactory,
+                        deps: [AuthStatePersistenceService],
+                        multi: true,
+                    },
+                    {
+                        provide: i0.APP_INITIALIZER,
+                        useFactory: checkOAuthParamsInUrl,
+                        deps: [AuthService, ConfigInitializerService],
+                        multi: true,
+                    },
+                ]),
+            };
+        };
+        return UserAuthModule;
+    }());
+    UserAuthModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1.CommonModule, i1$3.OAuthModule.forRoot()],
                 },] }
     ];
 
@@ -3307,662 +4822,87 @@
         AuthModule.forRoot = function () {
             return {
                 ngModule: AuthModule,
-                providers: __spread([provideDefaultConfig(defaultAuthConfig)], interceptors),
             };
         };
         return AuthModule;
     }());
     AuthModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, AuthStoreModule],
+                    imports: [i1.CommonModule, ClientAuthModule.forRoot(), UserAuthModule.forRoot()],
                 },] }
     ];
 
-    var AuthRedirectService = /** @class */ (function () {
-        /**
-         * This service is responsible for redirecting to the last page before authorization. "The last page" can be:
-         * 1. Just the previously opened page; or
-         * 2. The page that we just tried to open, but AuthGuard cancelled it
-         *
-         * For example:
-         * 1. The user opens the product page, then clicks /login link and signs in
-         *    -> Then we should redirect to the product page; or
-         * 2. The user opens the product page, then he clicks /my-account link,
-         *    but is automatically redirected to the login page by the AuthGuard, and he signs in
-         *    -> Then we should redirect to the my-account page, not the product page
-         */
-        function AuthRedirectService(routing, router) {
-            this.routing = routing;
-            this.router = router;
-            this.ignoredUrls = new Set();
-        }
-        AuthRedirectService.prototype.redirect = function () {
-            if (this.redirectUrl === undefined) {
-                this.routing.go('/');
-            }
-            else {
-                this.routing.goByUrl(this.redirectUrl);
-            }
-            this.redirectUrl = undefined;
-            this.lastAuthGuardNavigation = undefined;
-        };
-        AuthRedirectService.prototype.reportAuthGuard = function () {
-            var _a = this.getCurrentNavigation(), url = _a.url, navigationId = _a.navigationId;
-            this.lastAuthGuardNavigation = { url: url, navigationId: navigationId };
-            this.redirectUrl = url;
-        };
-        AuthRedirectService.prototype.reportNotAuthGuard = function () {
-            var _a = this.getCurrentNavigation(), url = _a.url, initialUrl = _a.initialUrl, navigationId = _a.navigationId;
-            this.ignoredUrls.add(url);
-            // Don't save redirect url if you've already come from page with NotAuthGuard (i.e. user has come from login to register)
-            if (!this.ignoredUrls.has(initialUrl)) {
-                // We compare the navigation id to find out if the url cancelled by AuthGuard (i.e. my-account) is more recent
-                // than the last opened page
-                if (!this.lastAuthGuardNavigation ||
-                    this.lastAuthGuardNavigation.navigationId < navigationId - 1) {
-                    this.redirectUrl = initialUrl;
-                    this.lastAuthGuardNavigation = undefined;
-                }
-            }
-        };
-        AuthRedirectService.prototype.getCurrentNavigation = function () {
-            var initialUrl = this.router.url;
-            var navigation = this.router.getCurrentNavigation();
-            var url = this.router.serializeUrl(navigation.finalUrl);
-            return {
-                navigationId: navigation.id,
-                url: url,
-                initialUrl: initialUrl,
-            };
-        };
-        return AuthRedirectService;
-    }());
-    AuthRedirectService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(i0.ɵɵinject(RoutingService), i0.ɵɵinject(i1$3.Router)); }, token: AuthRedirectService, providedIn: "root" });
-    AuthRedirectService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    AuthRedirectService.ctorParameters = function () { return [
-        { type: RoutingService },
-        { type: i1$3.Router }
-    ]; };
-
+    /**
+     * Checks if there is currently logged in user.
+     * Use to protect pages dedicated only for logged in users.
+     */
     var AuthGuard = /** @class */ (function () {
-        function AuthGuard(routingService, authService, authRedirectService, router) {
-            this.routingService = routingService;
+        function AuthGuard(authService, authRedirectService, router, semanticPathService) {
             this.authService = authService;
             this.authRedirectService = authRedirectService;
             this.router = router;
+            this.semanticPathService = semanticPathService;
         }
         AuthGuard.prototype.canActivate = function () {
             var _this = this;
-            return this.authService.getUserToken().pipe(operators.map(function (token) {
-                if (!token.access_token) {
+            return this.authService.isUserLoggedIn().pipe(operators.map(function (isLoggedIn) {
+                if (!isLoggedIn) {
                     _this.authRedirectService.reportAuthGuard();
-                    _this.routingService.go({ cxRoute: 'login' });
+                    return _this.router.parseUrl(_this.semanticPathService.get('login'));
                 }
-                return !!token.access_token;
+                return isLoggedIn;
             }));
         };
         return AuthGuard;
     }());
-    AuthGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(i0.ɵɵinject(RoutingService), i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(i1$3.Router)); }, token: AuthGuard, providedIn: "root" });
+    AuthGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(i1$1.Router), i0.ɵɵinject(SemanticPathService)); }, token: AuthGuard, providedIn: "root" });
     AuthGuard.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     AuthGuard.ctorParameters = function () { return [
-        { type: RoutingService },
         { type: AuthService },
         { type: AuthRedirectService },
-        { type: i1$3.Router }
+        { type: i1$1.Router },
+        { type: SemanticPathService }
     ]; };
 
+    /**
+     * Checks if there isn't any logged in user.
+     * Use to protect pages dedicated only for guests (eg. login page).
+     */
     var NotAuthGuard = /** @class */ (function () {
-        function NotAuthGuard(routingService, authService, authRedirectService) {
-            this.routingService = routingService;
+        function NotAuthGuard(authService, authRedirectService, semanticPathService, router) {
             this.authService = authService;
             this.authRedirectService = authRedirectService;
+            this.semanticPathService = semanticPathService;
+            this.router = router;
         }
         NotAuthGuard.prototype.canActivate = function () {
             var _this = this;
             this.authRedirectService.reportNotAuthGuard();
             // redirect, if user is already logged in:
-            return this.authService.getUserToken().pipe(operators.map(function (token) {
-                if (token.access_token) {
-                    _this.routingService.go({ cxRoute: 'home' });
+            return this.authService.isUserLoggedIn().pipe(operators.map(function (isLoggedIn) {
+                if (isLoggedIn) {
+                    return _this.router.parseUrl(_this.semanticPathService.get('home'));
                 }
-                return !token.access_token;
+                return !isLoggedIn;
             }));
         };
         return NotAuthGuard;
     }());
-    NotAuthGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(i0.ɵɵinject(RoutingService), i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
+    NotAuthGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(SemanticPathService), i0.ɵɵinject(i1$1.Router)); }, token: NotAuthGuard, providedIn: "root" });
     NotAuthGuard.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     NotAuthGuard.ctorParameters = function () { return [
-        { type: RoutingService },
         { type: AuthService },
-        { type: AuthRedirectService }
-    ]; };
-
-    (function (CountryType) {
-        CountryType["BILLING"] = "BILLING";
-        CountryType["SHIPPING"] = "SHIPPING";
-    })(exports.CountryType || (exports.CountryType = {}));
-
-    (function (PromotionLocation) {
-        PromotionLocation["ActiveCart"] = "CART";
-        PromotionLocation["Checkout"] = "CHECKOUT";
-        PromotionLocation["Order"] = "ORDER";
-    })(exports.PromotionLocation || (exports.PromotionLocation = {}));
-    (function (B2BPaymentTypeEnum) {
-        B2BPaymentTypeEnum["ACCOUNT_PAYMENT"] = "ACCOUNT";
-        B2BPaymentTypeEnum["CARD_PAYMENT"] = "CARD";
-    })(exports.B2BPaymentTypeEnum || (exports.B2BPaymentTypeEnum = {}));
-
-    (function (PageType) {
-        PageType["CONTENT_PAGE"] = "ContentPage";
-        PageType["PRODUCT_PAGE"] = "ProductPage";
-        PageType["CATEGORY_PAGE"] = "CategoryPage";
-        PageType["CATALOG_PAGE"] = "CatalogPage";
-    })(exports.PageType || (exports.PageType = {}));
-    (function (CmsBannerCarouselEffect) {
-        CmsBannerCarouselEffect["FADE"] = "FADE";
-        CmsBannerCarouselEffect["ZOOM"] = "ZOOM";
-        CmsBannerCarouselEffect["CURTAIN"] = "CURTAINX";
-        CmsBannerCarouselEffect["TURNDOWN"] = "TURNDOWN";
-    })(exports.CmsBannerCarouselEffect || (exports.CmsBannerCarouselEffect = {}));
-
-    (function (ANONYMOUS_CONSENT_STATUS) {
-        ANONYMOUS_CONSENT_STATUS["GIVEN"] = "GIVEN";
-        ANONYMOUS_CONSENT_STATUS["WITHDRAWN"] = "WITHDRAWN";
-    })(exports.ANONYMOUS_CONSENT_STATUS || (exports.ANONYMOUS_CONSENT_STATUS = {}));
-    var ANONYMOUS_CONSENTS_HEADER = 'X-Anonymous-Consents';
-
-    (function (ImageType) {
-        ImageType["PRIMARY"] = "PRIMARY";
-        ImageType["GALLERY"] = "GALLERY";
-    })(exports.ImageType || (exports.ImageType = {}));
-
-    (function (B2BUserGroup) {
-        B2BUserGroup["B2B_ADMIN_GROUP"] = "b2badmingroup";
-        B2BUserGroup["B2B_CUSTOMER_GROUP"] = "b2bcustomergroup";
-        B2BUserGroup["B2B_MANAGER_GROUP"] = "b2bmanagergroup";
-        B2BUserGroup["B2B_APPROVER_GROUP"] = "b2bapprovergroup";
-    })(exports.B2BUserGroup || (exports.B2BUserGroup = {}));
-
-    (function (NotificationType) {
-        NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
-    })(exports.NotificationType || (exports.NotificationType = {}));
-
-    (function (VariantType) {
-        VariantType["SIZE"] = "ApparelSizeVariantProduct";
-        VariantType["STYLE"] = "ApparelStyleVariantProduct";
-        VariantType["COLOR"] = "ElectronicsColorVariantProduct";
-    })(exports.VariantType || (exports.VariantType = {}));
-    (function (PriceType) {
-        PriceType["BUY"] = "BUY";
-        PriceType["FROM"] = "FROM";
-    })(exports.PriceType || (exports.PriceType = {}));
-    (function (VariantQualifier) {
-        VariantQualifier["SIZE"] = "size";
-        VariantQualifier["STYLE"] = "style";
-        VariantQualifier["COLOR"] = "color";
-        VariantQualifier["THUMBNAIL"] = "thumbnail";
-        VariantQualifier["PRODUCT"] = "product";
-        VariantQualifier["ROLLUP_PROPERTY"] = "rollupProperty";
-    })(exports.VariantQualifier || (exports.VariantQualifier = {}));
-
-    (function (DaysOfWeek) {
-        DaysOfWeek["MONDAY"] = "MONDAY";
-        DaysOfWeek["TUESDAY"] = "TUESDAY";
-        DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
-        DaysOfWeek["THURSDAY"] = "THURSDAY";
-        DaysOfWeek["FRIDAY"] = "FRIDAY";
-        DaysOfWeek["SATURDAY"] = "SATURDAY";
-        DaysOfWeek["SUNDAY"] = "SUNDAY";
-    })(exports.DaysOfWeek || (exports.DaysOfWeek = {}));
-    var recurrencePeriod = {
-        DAILY: 'DAILY',
-        WEEKLY: 'WEEKLY',
-        MONTHLY: 'MONTHLY',
-    };
-    (function (ORDER_TYPE) {
-        ORDER_TYPE["PLACE_ORDER"] = "PLACE_ORDER";
-        ORDER_TYPE["SCHEDULE_REPLENISHMENT_ORDER"] = "SCHEDULE_REPLENISHMENT_ORDER";
-    })(exports.ORDER_TYPE || (exports.ORDER_TYPE = {}));
-
-    var ANONYMOUS_CONSENTS_STORE_FEATURE = 'anonymous-consents';
-    var ANONYMOUS_CONSENTS = '[Anonymous Consents] Anonymous Consents';
-
-    var LOAD_ANONYMOUS_CONSENT_TEMPLATES = '[Anonymous Consents] Load Anonymous Consent Templates';
-    var LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS = '[Anonymous Consents] Load Anonymous Consent Templates Success';
-    var LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL = '[Anonymous Consents] Load Anonymous Consent Templates Fail';
-    var RESET_LOAD_ANONYMOUS_CONSENT_TEMPLATES = '[Anonymous Consents] Reset Load Anonymous Consent Templates';
-    var GET_ALL_ANONYMOUS_CONSENTS = '[Anonymous Consents] Get All Anonymous Consents';
-    var GET_ANONYMOUS_CONSENT = '[Anonymous Consents] Get Anonymous Consent';
-    var SET_ANONYMOUS_CONSENTS = '[Anonymous Consents] Set Anonymous Consents';
-    var GIVE_ANONYMOUS_CONSENT = '[Anonymous Consents] Give Anonymous Consent';
-    var WITHDRAW_ANONYMOUS_CONSENT = '[Anonymous Consents] Withdraw Anonymous Consent';
-    var TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = '[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed';
-    var TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = '[Anonymous Consents] Anonymous Consent Templates Updated';
-    var ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS = '[Anonymous Consents] Check Updated Versions';
-    var LoadAnonymousConsentTemplates = /** @class */ (function (_super) {
-        __extends(LoadAnonymousConsentTemplates, _super);
-        function LoadAnonymousConsentTemplates() {
-            var _this = _super.call(this, ANONYMOUS_CONSENTS) || this;
-            _this.type = LOAD_ANONYMOUS_CONSENT_TEMPLATES;
-            return _this;
-        }
-        return LoadAnonymousConsentTemplates;
-    }(LoaderLoadAction));
-    var LoadAnonymousConsentTemplatesSuccess = /** @class */ (function (_super) {
-        __extends(LoadAnonymousConsentTemplatesSuccess, _super);
-        function LoadAnonymousConsentTemplatesSuccess(payload) {
-            var _this = _super.call(this, ANONYMOUS_CONSENTS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS;
-            return _this;
-        }
-        return LoadAnonymousConsentTemplatesSuccess;
-    }(LoaderSuccessAction));
-    var LoadAnonymousConsentTemplatesFail = /** @class */ (function (_super) {
-        __extends(LoadAnonymousConsentTemplatesFail, _super);
-        function LoadAnonymousConsentTemplatesFail(payload) {
-            var _this = _super.call(this, ANONYMOUS_CONSENTS, payload) || this;
-            _this.type = LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL;
-            return _this;
-        }
-        return LoadAnonymousConsentTemplatesFail;
-    }(LoaderFailAction));
-    var ResetLoadAnonymousConsentTemplates = /** @class */ (function (_super) {
-        __extends(ResetLoadAnonymousConsentTemplates, _super);
-        function ResetLoadAnonymousConsentTemplates() {
-            var _this = _super.call(this, ANONYMOUS_CONSENTS) || this;
-            _this.type = RESET_LOAD_ANONYMOUS_CONSENT_TEMPLATES;
-            return _this;
-        }
-        return ResetLoadAnonymousConsentTemplates;
-    }(LoaderResetAction));
-    var GetAllAnonymousConsents = /** @class */ (function () {
-        function GetAllAnonymousConsents() {
-            this.type = GET_ALL_ANONYMOUS_CONSENTS;
-        }
-        return GetAllAnonymousConsents;
-    }());
-    var GetAnonymousConsent = /** @class */ (function () {
-        function GetAnonymousConsent(templateCode) {
-            this.templateCode = templateCode;
-            this.type = GET_ANONYMOUS_CONSENT;
-        }
-        return GetAnonymousConsent;
-    }());
-    var SetAnonymousConsents = /** @class */ (function () {
-        function SetAnonymousConsents(payload) {
-            this.payload = payload;
-            this.type = SET_ANONYMOUS_CONSENTS;
-        }
-        return SetAnonymousConsents;
-    }());
-    var GiveAnonymousConsent = /** @class */ (function () {
-        function GiveAnonymousConsent(templateCode) {
-            this.templateCode = templateCode;
-            this.type = GIVE_ANONYMOUS_CONSENT;
-        }
-        return GiveAnonymousConsent;
-    }());
-    var WithdrawAnonymousConsent = /** @class */ (function () {
-        function WithdrawAnonymousConsent(templateCode) {
-            this.templateCode = templateCode;
-            this.type = WITHDRAW_ANONYMOUS_CONSENT;
-        }
-        return WithdrawAnonymousConsent;
-    }());
-    var ToggleAnonymousConsentsBannerDissmissed = /** @class */ (function () {
-        function ToggleAnonymousConsentsBannerDissmissed(dismissed) {
-            this.dismissed = dismissed;
-            this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED;
-        }
-        return ToggleAnonymousConsentsBannerDissmissed;
-    }());
-    var ToggleAnonymousConsentTemplatesUpdated = /** @class */ (function () {
-        function ToggleAnonymousConsentTemplatesUpdated(updated) {
-            this.updated = updated;
-            this.type = TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED;
-        }
-        return ToggleAnonymousConsentTemplatesUpdated;
-    }());
-    var AnonymousConsentCheckUpdatedVersions = /** @class */ (function () {
-        function AnonymousConsentCheckUpdatedVersions() {
-            this.type = ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS;
-        }
-        return AnonymousConsentCheckUpdatedVersions;
-    }());
-
-    var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        LOAD_ANONYMOUS_CONSENT_TEMPLATES: LOAD_ANONYMOUS_CONSENT_TEMPLATES,
-        LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS: LOAD_ANONYMOUS_CONSENT_TEMPLATES_SUCCESS,
-        LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL: LOAD_ANONYMOUS_CONSENT_TEMPLATES_FAIL,
-        RESET_LOAD_ANONYMOUS_CONSENT_TEMPLATES: RESET_LOAD_ANONYMOUS_CONSENT_TEMPLATES,
-        GET_ALL_ANONYMOUS_CONSENTS: GET_ALL_ANONYMOUS_CONSENTS,
-        GET_ANONYMOUS_CONSENT: GET_ANONYMOUS_CONSENT,
-        SET_ANONYMOUS_CONSENTS: SET_ANONYMOUS_CONSENTS,
-        GIVE_ANONYMOUS_CONSENT: GIVE_ANONYMOUS_CONSENT,
-        WITHDRAW_ANONYMOUS_CONSENT: WITHDRAW_ANONYMOUS_CONSENT,
-        TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED,
-        TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED,
-        ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS: ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS,
-        LoadAnonymousConsentTemplates: LoadAnonymousConsentTemplates,
-        LoadAnonymousConsentTemplatesSuccess: LoadAnonymousConsentTemplatesSuccess,
-        LoadAnonymousConsentTemplatesFail: LoadAnonymousConsentTemplatesFail,
-        ResetLoadAnonymousConsentTemplates: ResetLoadAnonymousConsentTemplates,
-        GetAllAnonymousConsents: GetAllAnonymousConsents,
-        GetAnonymousConsent: GetAnonymousConsent,
-        SetAnonymousConsents: SetAnonymousConsents,
-        GiveAnonymousConsent: GiveAnonymousConsent,
-        WithdrawAnonymousConsent: WithdrawAnonymousConsent,
-        ToggleAnonymousConsentsBannerDissmissed: ToggleAnonymousConsentsBannerDissmissed,
-        ToggleAnonymousConsentTemplatesUpdated: ToggleAnonymousConsentTemplatesUpdated,
-        AnonymousConsentCheckUpdatedVersions: AnonymousConsentCheckUpdatedVersions
-    });
-
-    var getAnonymousConsentState = i1$1.createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
-
-    var ɵ0$8 = function (state) { return state.templates; };
-    var getAnonymousConsentTemplatesState = i1$1.createSelector(getAnonymousConsentState, ɵ0$8);
-    var getAnonymousConsentTemplatesValue = i1$1.createSelector(getAnonymousConsentTemplatesState, loaderValueSelector);
-    var getAnonymousConsentTemplatesLoading = i1$1.createSelector(getAnonymousConsentTemplatesState, loaderLoadingSelector);
-    var getAnonymousConsentTemplatesSuccess = i1$1.createSelector(getAnonymousConsentTemplatesState, loaderSuccessSelector);
-    var getAnonymousConsentTemplatesError = i1$1.createSelector(getAnonymousConsentTemplatesState, loaderErrorSelector);
-    var getAnonymousConsentTemplate = function (templateCode) {
-        return i1$1.createSelector(getAnonymousConsentTemplatesValue, function (templates) {
-            return templates
-                ? templates.find(function (template) { return template.id === templateCode; })
-                : null;
-        });
-    };
-
-    var ɵ0$9 = function (state) { return state.ui.updated; };
-    var getAnonymousConsentTemplatesUpdate = i1$1.createSelector(getAnonymousConsentState, ɵ0$9);
-    var ɵ1$6 = function (state) { return state.ui.bannerDismissed; };
-    var getAnonymousConsentsBannerDismissed = i1$1.createSelector(getAnonymousConsentState, ɵ1$6);
-
-    var ɵ0$a = function (state) { return state.consents; };
-    var getAnonymousConsents = i1$1.createSelector(getAnonymousConsentState, ɵ0$a);
-    var getAnonymousConsentByTemplateCode = function (templateCode) { return i1$1.createSelector(getAnonymousConsents, function (consents) { return consents.find(function (consent) { return consent.templateCode === templateCode; }); }); };
-
-    var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getAnonymousConsentTemplatesState: getAnonymousConsentTemplatesState,
-        getAnonymousConsentTemplatesValue: getAnonymousConsentTemplatesValue,
-        getAnonymousConsentTemplatesLoading: getAnonymousConsentTemplatesLoading,
-        getAnonymousConsentTemplatesSuccess: getAnonymousConsentTemplatesSuccess,
-        getAnonymousConsentTemplatesError: getAnonymousConsentTemplatesError,
-        getAnonymousConsentTemplate: getAnonymousConsentTemplate,
-        ɵ0: ɵ0$8,
-        getAnonymousConsentTemplatesUpdate: getAnonymousConsentTemplatesUpdate,
-        getAnonymousConsentsBannerDismissed: getAnonymousConsentsBannerDismissed,
-        ɵ1: ɵ1$6,
-        getAnonymousConsents: getAnonymousConsents,
-        getAnonymousConsentByTemplateCode: getAnonymousConsentByTemplateCode,
-        getAnonymousConsentState: getAnonymousConsentState
-    });
-
-    var AnonymousConsentsService = /** @class */ (function () {
-        function AnonymousConsentsService(store, authService) {
-            this.store = store;
-            this.authService = authService;
-        }
-        /**
-         * Retrieves the anonymous consent templates.
-         */
-        AnonymousConsentsService.prototype.loadTemplates = function () {
-            this.store.dispatch(new LoadAnonymousConsentTemplates());
-        };
-        /**
-         * Conditionally triggers the load of the anonymous consent templates if:
-         *   - `loadIfMissing` parameter is set to `true`
-         *   - the `templates` in the store are `undefined`
-         *
-         * Othewise it just returns the value from the store.
-         *
-         * @param loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
-         */
-        AnonymousConsentsService.prototype.getTemplates = function (loadIfMissing) {
-            var _this = this;
-            if (loadIfMissing === void 0) { loadIfMissing = false; }
-            return rxjs.iif(function () { return loadIfMissing; }, this.store.pipe(i1$1.select(getAnonymousConsentTemplatesValue), operators.withLatestFrom(this.getLoadTemplatesLoading()), operators.filter(function (_a) {
-                var _b = __read(_a, 2), _templates = _b[0], loading = _b[1];
-                return !loading;
-            }), operators.tap(function (_a) {
-                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
-                if (!Boolean(templates)) {
-                    _this.loadTemplates();
-                }
-            }), operators.filter(function (_a) {
-                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
-                return Boolean(templates);
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
-                return templates;
-            })), this.store.pipe(i1$1.select(getAnonymousConsentTemplatesValue)));
-        };
-        /**
-         * Returns the anonymous consent templates with the given template code.
-         * @param templateCode a template code by which to filter anonymous consent templates.
-         */
-        AnonymousConsentsService.prototype.getTemplate = function (templateCode) {
-            return this.store.pipe(i1$1.select(getAnonymousConsentTemplate(templateCode)));
-        };
-        /**
-         * Returns an indicator for the loading status for the anonymous consent templates.
-         */
-        AnonymousConsentsService.prototype.getLoadTemplatesLoading = function () {
-            return this.store.pipe(i1$1.select(getAnonymousConsentTemplatesLoading));
-        };
-        /**
-         * Returns an indicator for the success status for the anonymous consent templates.
-         */
-        AnonymousConsentsService.prototype.getLoadTemplatesSuccess = function () {
-            return this.store.pipe(i1$1.select(getAnonymousConsentTemplatesSuccess));
-        };
-        /**
-         * Returns an indicator for the error status for the anonymous consent templates.
-         */
-        AnonymousConsentsService.prototype.getLoadTemplatesError = function () {
-            return this.store.pipe(i1$1.select(getAnonymousConsentTemplatesError));
-        };
-        /**
-         * Resets the loading, success and error indicators for the anonymous consent templates.
-         */
-        AnonymousConsentsService.prototype.resetLoadTemplatesState = function () {
-            this.store.dispatch(new ResetLoadAnonymousConsentTemplates());
-        };
-        /**
-         * Returns all the anonymous consents.
-         */
-        AnonymousConsentsService.prototype.getConsents = function () {
-            return this.store.pipe(i1$1.select(getAnonymousConsents));
-        };
-        /**
-         * Puts the provided anonymous consents into the store.
-         */
-        AnonymousConsentsService.prototype.setConsents = function (consents) {
-            return this.store.dispatch(new SetAnonymousConsents(consents));
-        };
-        /**
-         * Returns the anonymous consent for the given template ID.
-         *
-         * As a side-effect, the method will call `getTemplates(true)` to load the templates if those are not present.
-         *
-         * @param templateId a template ID by which to filter anonymous consent templates.
-         */
-        AnonymousConsentsService.prototype.getConsent = function (templateId) {
-            var _this = this;
-            return this.authService.isUserLoggedIn().pipe(operators.filter(function (authenticated) { return !authenticated; }), operators.tap(function () { return _this.getTemplates(true); }), operators.switchMap(function () { return _this.store.pipe(i1$1.select(getAnonymousConsentByTemplateCode(templateId))); }));
-        };
-        /**
-         * Give a consent for the given `templateCode`
-         * @param templateCode for which to give the consent
-         */
-        AnonymousConsentsService.prototype.giveConsent = function (templateCode) {
-            this.store.dispatch(new GiveAnonymousConsent(templateCode));
-        };
-        /**
-         * Sets all the anonymous consents' state to given.
-         */
-        AnonymousConsentsService.prototype.giveAllConsents = function () {
-            var _this = this;
-            return this.getTemplates(true).pipe(operators.tap(function (templates) { return templates.forEach(function (template) { return _this.giveConsent(template.id); }); }));
-        };
-        /**
-         * Returns `true` if the provided `consent` is given.
-         * @param consent a consent to test
-         */
-        AnonymousConsentsService.prototype.isConsentGiven = function (consent) {
-            return consent && consent.consentState === exports.ANONYMOUS_CONSENT_STATUS.GIVEN;
-        };
-        /**
-         * Withdraw a consent for the given `templateCode`
-         * @param templateCode for which to withdraw the consent
-         */
-        AnonymousConsentsService.prototype.withdrawConsent = function (templateCode) {
-            this.store.dispatch(new WithdrawAnonymousConsent(templateCode));
-        };
-        /**
-         * Sets all the anonymous consents' state to withdrawn.
-         */
-        AnonymousConsentsService.prototype.withdrawAllConsents = function () {
-            var _this = this;
-            return this.getTemplates(true).pipe(operators.tap(function (templates) { return templates.forEach(function (template) { return _this.withdrawConsent(template.id); }); }));
-        };
-        /**
-         * Returns `true` if the provided `consent` is withdrawn.
-         * @param consent a consent to test
-         */
-        AnonymousConsentsService.prototype.isConsentWithdrawn = function (consent) {
-            return (consent && consent.consentState === exports.ANONYMOUS_CONSENT_STATUS.WITHDRAWN);
-        };
-        /**
-         * Toggles the dismissed state of the anonymous consents banner.
-         * @param dismissed the banner will be dismissed if `true` is passed, otherwise it will be visible.
-         */
-        AnonymousConsentsService.prototype.toggleBannerDismissed = function (dismissed) {
-            this.store.dispatch(new ToggleAnonymousConsentsBannerDissmissed(dismissed));
-            if (dismissed) {
-                this.toggleTemplatesUpdated(false);
-            }
-        };
-        /**
-         * Returns `true` if the banner was dismissed, `false` otherwise.
-         */
-        AnonymousConsentsService.prototype.isBannerDismissed = function () {
-            return this.store.pipe(i1$1.select(getAnonymousConsentsBannerDismissed));
-        };
-        /**
-         * Returns `true` if the consent templates were updated on the back-end.
-         * If the templates are not present in the store, it triggers the load.
-         */
-        AnonymousConsentsService.prototype.getTemplatesUpdated = function () {
-            var _this = this;
-            return this.getTemplates(true).pipe(operators.switchMap(function () { return _this.store.pipe(i1$1.select(getAnonymousConsentTemplatesUpdate)); }));
-        };
-        /**
-         * Toggles the `updated` slice of the state
-         * @param updated
-         */
-        AnonymousConsentsService.prototype.toggleTemplatesUpdated = function (updated) {
-            this.store.dispatch(new ToggleAnonymousConsentTemplatesUpdated(updated));
-        };
-        /**
-         * Returns `true` if either the banner is not dismissed or if the templates were updated on the back-end.
-         * Otherwise, it returns `false`.
-         */
-        AnonymousConsentsService.prototype.isBannerVisible = function () {
-            var _this = this;
-            return rxjs.combineLatest([
-                this.isBannerDismissed(),
-                this.getTemplatesUpdated(),
-            ]).pipe(operators.tap(function () { return _this.checkConsentVersions(); }), operators.map(function (_a) {
-                var _b = __read(_a, 2), dismissed = _b[0], updated = _b[1];
-                return !dismissed || updated;
-            }));
-        };
-        /**
-         * Dispatches an action to trigger the check
-         * whether the anonymous consent version have been updated
-         */
-        AnonymousConsentsService.prototype.checkConsentVersions = function () {
-            this.store.dispatch(new AnonymousConsentCheckUpdatedVersions());
-        };
-        /**
-         * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
-         * @param currentTemplates current templates to check
-         * @param newTemplates new templates to check
-         */
-        AnonymousConsentsService.prototype.detectUpdatedTemplates = function (currentTemplates, newTemplates) {
-            if (newTemplates.length !== currentTemplates.length) {
-                return true;
-            }
-            for (var i = 0; i < newTemplates.length; i++) {
-                var newTemplate = newTemplates[i];
-                var currentTemplate = currentTemplates[i];
-                if (newTemplate.version !== currentTemplate.version) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        /**
-         * Serializes using `JSON.stringify()` and encodes using `encodeURIComponent()` methods
-         * @param consents to serialize and encode
-         */
-        AnonymousConsentsService.prototype.serializeAndEncode = function (consents) {
-            if (!consents) {
-                return '';
-            }
-            var serialized = JSON.stringify(consents);
-            var encoded = encodeURIComponent(serialized);
-            return encoded;
-        };
-        /**
-         * Decodes using `decodeURIComponent()` and deserializes using `JSON.parse()`
-         * @param rawConsents to decode an deserialize
-         */
-        AnonymousConsentsService.prototype.decodeAndDeserialize = function (rawConsents) {
-            var decoded = decodeURIComponent(rawConsents);
-            var unserialized = JSON.parse(decoded);
-            return unserialized;
-        };
-        /**
-         *
-         * Compares the given `newConsents` and `previousConsents` and returns `true` if there are differences (the `newConsents` are updates).
-         * Otherwise it returns `false`.
-         *
-         * @param newConsents new consents to compare
-         * @param previousConsents old consents to compare
-         */
-        AnonymousConsentsService.prototype.consentsUpdated = function (newConsents, previousConsents) {
-            var newRawConsents = this.serializeAndEncode(newConsents);
-            var previousRawConsents = this.serializeAndEncode(previousConsents);
-            return newRawConsents !== previousRawConsents;
-        };
-        return AnonymousConsentsService;
-    }());
-    AnonymousConsentsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentsService_Factory() { return new AnonymousConsentsService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: AnonymousConsentsService, providedIn: "root" });
-    AnonymousConsentsService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    AnonymousConsentsService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: AuthRedirectService },
+        { type: SemanticPathService },
+        { type: i1$1.Router }
     ]; };
 
     var AsmAdapter = /** @class */ (function () {
@@ -4528,8 +5468,8 @@
                 .subscribe(function (value) { return (_this.activeBaseSite = value); });
         }
         OccAsmAdapter.prototype.customerSearch = function (options) {
-            var headers = InterceptorUtil.createHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, true, new i1.HttpHeaders());
-            var params = new i1.HttpParams()
+            var headers = InterceptorUtil.createHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, true, new i1$4.HttpHeaders());
+            var params = new i1$4.HttpParams()
                 .set('baseSite', this.activeBaseSite)
                 .set('sort', 'byNameAsc');
             if (typeof options['query'] !== 'undefined') {
@@ -4549,7 +5489,7 @@
         { type: i0.Injectable }
     ];
     OccAsmAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService },
         { type: AsmConfig },
@@ -4563,7 +5503,7 @@
     }());
     AsmOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule],
+                    imports: [i1.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccAsmConfig),
                         {
@@ -4681,7 +5621,7 @@
         OccCartEntryAdapter.prototype.add = function (userId, cartId, productCode, quantity) {
             if (quantity === void 0) { quantity = 1; }
             var toAdd = JSON.stringify({});
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             var url = this.occEndpointsService.getUrl('addEntries', {
@@ -4697,7 +5637,7 @@
             if (pickupStore) {
                 params = { pickupStore: pickupStore };
             }
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             var url = this.occEndpointsService.getUrl('updateEntries', { userId: userId, cartId: cartId, entryNumber: entryNumber }, Object.assign({ qty: qty }, params));
@@ -4706,7 +5646,7 @@
                 .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
         };
         OccCartEntryAdapter.prototype.remove = function (userId, cartId, entryNumber) {
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             var url = this.occEndpointsService.getUrl('removeEntries', {
@@ -4722,7 +5662,7 @@
         { type: i0.Injectable }
     ];
     OccCartEntryAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -4739,7 +5679,7 @@
             return this.occEndpoints.getUrl('cartVoucher', { userId: userId, cartId: cartId });
         };
         OccCartVoucherAdapter.prototype.getHeaders = function (userId) {
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             if (userId === OCC_USER_ID_ANONYMOUS) {
@@ -4750,7 +5690,7 @@
         OccCartVoucherAdapter.prototype.add = function (userId, cartId, voucherId) {
             var url = this.getCartVoucherEndpoint(userId, cartId);
             var toAdd = JSON.stringify({});
-            var params = new i1.HttpParams().set('voucherId', voucherId);
+            var params = new i1$4.HttpParams().set('voucherId', voucherId);
             var headers = this.getHeaders(userId);
             return this.http.post(url, toAdd, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
         };
@@ -4769,7 +5709,7 @@
         { type: i0.Injectable }
     ];
     OccCartVoucherAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -4819,18 +5759,18 @@
                 .pipe(this.converterService.pipeable(CART_NORMALIZER));
         };
         OccCartAdapter.prototype.delete = function (userId, cartId) {
-            var headers = new i1.HttpHeaders();
+            var headers = new i1$4.HttpHeaders();
             if (userId === OCC_USER_ID_ANONYMOUS) {
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
             }
             return this.http.delete(this.occEndpointsService.getUrl('deleteCart', { userId: userId, cartId: cartId }), { headers: headers });
         };
         OccCartAdapter.prototype.addEmail = function (userId, cartId, email) {
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            var httpParams = new i1.HttpParams().set('email', email);
+            var httpParams = new i1$4.HttpParams().set('email', email);
             var url = this.occEndpointsService.getUrl('addEmail', {
                 userId: userId,
                 cartId: cartId,
@@ -4843,7 +5783,7 @@
         { type: i0.Injectable }
     ];
     OccCartAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -4857,14 +5797,14 @@
             this.converterService = converterService;
         }
         OccSaveCartAdapter.prototype.saveCart = function (userId, cartId, saveCartName, saveCartDescription) {
-            var httpParams = new i1.HttpParams();
+            var httpParams = new i1$4.HttpParams();
             if (Boolean(saveCartName)) {
                 httpParams = httpParams.set('saveCartName', saveCartName);
             }
             if (Boolean(saveCartDescription)) {
                 httpParams = httpParams.set('saveCartDescription', saveCartDescription);
             }
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http
@@ -4877,7 +5817,7 @@
         { type: i0.Injectable }
     ];
     OccSaveCartAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -4889,7 +5829,7 @@
     }());
     CartOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule],
+                    imports: [i1.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccCartConfig),
                         {
@@ -5215,7 +6155,7 @@
             this.converter = converter;
         }
         OccCheckoutCostCenterAdapter.prototype.setCostCenter = function (userId, cartId, costCenterId) {
-            var httpParams = new i1.HttpParams().set('costCenterId', costCenterId);
+            var httpParams = new i1$4.HttpParams().set('costCenterId', costCenterId);
             /* tslint:disable:max-line-length */
             httpParams = httpParams.set('fields', 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue,value),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue, value),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user');
             // TODO(#8877): Should we improve configurable endpoints for this use case?
@@ -5235,7 +6175,7 @@
         { type: i0.Injectable }
     ];
     OccCheckoutCostCenterAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -5259,7 +6199,7 @@
             address = this.converter.convert(address, ADDRESS_SERIALIZER);
             return this.http
                 .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
-                headers: new i1.HttpHeaders().set('Content-Type', 'application/json'),
+                headers: new i1$4.HttpHeaders().set('Content-Type', 'application/json'),
             })
                 .pipe(this.converter.pipeable(ADDRESS_NORMALIZER));
         };
@@ -5289,7 +6229,7 @@
         { type: i0.Injectable }
     ];
     OccCheckoutDeliveryAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -5307,7 +6247,7 @@
                 .pipe(operators.map(function (paymentTypeList) { return paymentTypeList.paymentTypes; }), this.converter.pipeableMany(PAYMENT_TYPE_NORMALIZER));
         };
         OccCheckoutPaymentTypeAdapter.prototype.setPaymentType = function (userId, cartId, paymentType, purchaseOrderNumber) {
-            var httpParams = new i1.HttpParams().set('paymentType', paymentType);
+            var httpParams = new i1$4.HttpParams().set('paymentType', paymentType);
             if (purchaseOrderNumber !== undefined) {
                 httpParams = httpParams.set('purchaseOrderNumber', purchaseOrderNumber);
             }
@@ -5330,7 +6270,7 @@
         { type: i0.Injectable }
     ];
     OccCheckoutPaymentTypeAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -5385,11 +6325,11 @@
                 '/payment/sop/request?responseUrl=sampleUrl');
         };
         OccCheckoutPaymentAdapter.prototype.createSubWithProvider = function (postUrl, parameters) {
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
                 Accept: 'text/html',
             });
-            var httpParams = new i1.HttpParams({ encoder: new HttpParamsURIEncoder() });
+            var httpParams = new i1$4.HttpParams({ encoder: new HttpParamsURIEncoder() });
             Object.keys(parameters).forEach(function (key) {
                 httpParams = httpParams.append(key, parameters[key]);
             });
@@ -5399,11 +6339,11 @@
             });
         };
         OccCheckoutPaymentAdapter.prototype.createDetailsWithParameters = function (userId, cartId, parameters) {
-            var httpParams = new i1.HttpParams({ encoder: new HttpParamsURIEncoder() });
+            var httpParams = new i1$4.HttpParams({ encoder: new HttpParamsURIEncoder() });
             Object.keys(parameters).forEach(function (key) {
                 httpParams = httpParams.append(key, parameters[key]);
             });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http.post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers: headers });
@@ -5478,7 +6418,7 @@
         { type: i0.Injectable }
     ];
     OccCheckoutPaymentAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -5563,14 +6503,14 @@
         };
         return StateEventService;
     }());
-    StateEventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(i0.ɵɵinject(i1$1.ActionsSubject), i0.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
+    StateEventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(i0.ɵɵinject(i1$2.ActionsSubject), i0.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
     StateEventService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     StateEventService.ctorParameters = function () { return [
-        { type: i1$1.ActionsSubject },
+        { type: i1$2.ActionsSubject },
         { type: EventService }
     ]; };
 
@@ -6405,37 +7345,37 @@
     var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
     var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
-    var getMultiCartState = i1$1.createFeatureSelector(MULTI_CART_FEATURE);
-    var ɵ0$b = function (state) { return state.carts; };
-    var getMultiCartEntities = i1$1.createSelector(getMultiCartState, ɵ0$b);
+    var getMultiCartState = i1$2.createFeatureSelector(MULTI_CART_FEATURE);
+    var ɵ0$a = function (state) { return state.carts; };
+    var getMultiCartEntities = i1$2.createSelector(getMultiCartState, ɵ0$a);
     var getCartEntitySelectorFactory = function (cartId) {
-        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityProcessesLoaderStateSelector(state, cartId); });
+        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityProcessesLoaderStateSelector(state, cartId); });
     };
     var getCartSelectorFactory = function (cartId) {
-        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityValueSelector(state, cartId); });
+        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityValueSelector(state, cartId); });
     };
     var getCartIsStableSelectorFactory = function (cartId) {
-        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityIsStableSelector(state, cartId); });
+        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityIsStableSelector(state, cartId); });
     };
     var getCartHasPendingProcessesSelectorFactory = function (cartId) {
-        return i1$1.createSelector(getMultiCartEntities, function (state) { return entityHasPendingProcessesSelector(state, cartId); });
+        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityHasPendingProcessesSelector(state, cartId); });
     };
     var getCartEntriesSelectorFactory = function (cartId) {
-        return i1$1.createSelector(getCartSelectorFactory(cartId), function (state) {
+        return i1$2.createSelector(getCartSelectorFactory(cartId), function (state) {
             return state && state.entries ? state.entries : [];
         });
     };
     var getCartEntrySelectorFactory = function (cartId, productCode) {
-        return i1$1.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
+        return i1$2.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
             return state
                 ? state.find(function (entry) { return entry.product.code === productCode; })
                 : undefined;
         });
     };
-    var ɵ1$7 = function (state) { return state.active; };
-    var getActiveCartId = i1$1.createSelector(getMultiCartState, ɵ1$7);
+    var ɵ1$6 = function (state) { return state.active; };
+    var getActiveCartId = i1$2.createSelector(getMultiCartState, ɵ1$6);
     var ɵ2$3 = function (state) { return state.wishList; };
-    var getWishListId = i1$1.createSelector(getMultiCartState, ɵ2$3);
+    var getWishListId = i1$2.createSelector(getMultiCartState, ɵ2$3);
 
     var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -6449,8 +7389,8 @@
         getCartEntrySelectorFactory: getCartEntrySelectorFactory,
         getActiveCartId: getActiveCartId,
         getWishListId: getWishListId,
-        ɵ0: ɵ0$b,
-        ɵ1: ɵ1$7,
+        ɵ0: ɵ0$a,
+        ɵ1: ɵ1$6,
         ɵ2: ɵ2$3
     });
 
@@ -7112,7 +8052,7 @@
          * @param cartId
          */
         MultiCartService.prototype.getCart = function (cartId) {
-            return this.store.pipe(i1$1.select(getCartSelectorFactory(cartId)));
+            return this.store.pipe(i1$2.select(getCartSelectorFactory(cartId)));
         };
         /**
          * Returns cart entity from store (cart with loading, error, success flags) as an observable
@@ -7120,7 +8060,7 @@
          * @param cartId
          */
         MultiCartService.prototype.getCartEntity = function (cartId) {
-            return this.store.pipe(i1$1.select(getCartEntitySelectorFactory(cartId)));
+            return this.store.pipe(i1$2.select(getCartEntitySelectorFactory(cartId)));
         };
         /**
          * Returns true when there are no operations on that in progress and it is not currently loading
@@ -7128,7 +8068,7 @@
          * @param cartId
          */
         MultiCartService.prototype.isStable = function (cartId) {
-            return this.store.pipe(i1$1.select(getCartIsStableSelectorFactory(cartId)), 
+            return this.store.pipe(i1$2.select(getCartIsStableSelectorFactory(cartId)), 
             // We dispatch a lot of actions just after finishing some process or loading, so we want this flag not to flicker.
             // This flickering should only be avoided when switching from false to true
             // Start of loading should be showed instantly (no debounce)
@@ -7194,7 +8134,7 @@
          * @param cartId
          */
         MultiCartService.prototype.getEntries = function (cartId) {
-            return this.store.pipe(i1$1.select(getCartEntriesSelectorFactory(cartId)));
+            return this.store.pipe(i1$2.select(getCartEntriesSelectorFactory(cartId)));
         };
         /**
          * Get last entry for specific product code from cart.
@@ -7205,7 +8145,7 @@
          * @param productCode
          */
         MultiCartService.prototype.getLastEntry = function (cartId, productCode) {
-            return this.store.pipe(i1$1.select(getCartEntriesSelectorFactory(cartId)), operators.map(function (entries) {
+            return this.store.pipe(i1$2.select(getCartEntriesSelectorFactory(cartId)), operators.map(function (entries) {
                 var filteredEntries = entries.filter(function (entry) { return entry.product.code === productCode; });
                 return filteredEntries
                     ? filteredEntries[filteredEntries.length - 1]
@@ -7288,7 +8228,7 @@
          * @param productCode
          */
         MultiCartService.prototype.getEntry = function (cartId, productCode) {
-            return this.store.pipe(i1$1.select(getCartEntrySelectorFactory(cartId, productCode)));
+            return this.store.pipe(i1$2.select(getCartEntrySelectorFactory(cartId, productCode)));
         };
         /**
          * Assign email to the cart
@@ -7318,27 +8258,27 @@
         };
         return MultiCartService;
     }());
-    MultiCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(i0.ɵɵinject(i1$1.Store)); }, token: MultiCartService, providedIn: "root" });
+    MultiCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(i0.ɵɵinject(i1$2.Store)); }, token: MultiCartService, providedIn: "root" });
     MultiCartService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     MultiCartService.ctorParameters = function () { return [
-        { type: i1$1.Store }
+        { type: i1$2.Store }
     ]; };
 
     var ActiveCartService = /** @class */ (function () {
-        function ActiveCartService(store, authService, multiCartService) {
+        function ActiveCartService(store, userIdService, multiCartService) {
             var _this = this;
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
             this.multiCartService = multiCartService;
             this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
             this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
             this.subscription = new rxjs.Subscription();
             this.userId = OCC_USER_ID_ANONYMOUS;
-            this.activeCartId$ = this.store.pipe(i1$1.select(getActiveCartId), operators.map(function (cartId) {
+            this.activeCartId$ = this.store.pipe(i1$2.select(getActiveCartId), operators.filter(function (cartId) { return typeof cartId !== 'undefined'; }), operators.map(function (cartId) {
                 if (!cartId) {
                     return OCC_CART_ID_CURRENT;
                 }
@@ -7352,7 +8292,15 @@
         };
         ActiveCartService.prototype.initActiveCart = function () {
             var _this = this;
-            this.subscription.add(this.authService.getOccUserId().subscribe(function (userId) {
+            this.subscription.add(rxjs.combineLatest([
+                this.userIdService.getUserId(),
+                this.activeCartId$.pipe(operators.auditTime(0)),
+            ])
+                .pipe(operators.map(function (_a) {
+                var _b = __read(_a, 1), userId = _b[0];
+                return userId;
+            }))
+                .subscribe(function (userId) {
                 _this.userId = userId;
                 if (_this.userId !== OCC_USER_ID_ANONYMOUS) {
                     if (_this.isJustLoggedIn(userId)) {
@@ -7458,6 +8406,19 @@
             }
             else if (this.isGuestCart()) {
                 this.guestCartMerge(cartId);
+            }
+            else if (this.userId !== this.previousUserId &&
+                this.userId !== OCC_USER_ID_ANONYMOUS &&
+                this.previousUserId !== OCC_USER_ID_ANONYMOUS) {
+                // This case covers the case when you are logged in and then asm user logs in and you don't want to merge, but only load emulated user cart
+                // Similarly when you are logged in as asm user and you logout and want to resume previous user session
+                this.multiCartService.loadCart({
+                    userId: this.userId,
+                    cartId: cartId,
+                    extraData: {
+                        active: true,
+                    },
+                });
             }
             else {
                 this.multiCartService.mergeToCurrentCart({
@@ -7628,14 +8589,15 @@
          * This is for an edge case
          */
         ActiveCartService.prototype.guestCartMerge = function (cartId) {
+            var _this = this;
             var cartEntries;
             this.getEntries()
                 .pipe(operators.take(1))
                 .subscribe(function (entries) {
                 cartEntries = entries;
+                _this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
+                _this.addEntriesGuestMerge(cartEntries);
             });
-            this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
-            this.addEntriesGuestMerge(cartEntries);
         };
         ActiveCartService.prototype.isEmpty = function (cart) {
             return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
@@ -7647,15 +8609,15 @@
         };
         return ActiveCartService;
     }());
-    ActiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+    ActiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
     ActiveCartService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ActiveCartService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
+        { type: i1$2.Store },
+        { type: UserIdService },
         { type: MultiCartService }
     ]; };
 
@@ -7748,6 +8710,52 @@
     UserAddressConnector.ctorParameters = function () { return [
         { type: UserAddressAdapter }
     ]; };
+
+    /**
+     * @deprecated since 2.1, use normalizeHttpError instead
+     */
+    var UNKNOWN_ERROR = {
+        error: 'unknown error',
+    };
+    var circularReplacer = function () {
+        var seen = new WeakSet();
+        return function (_key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (seen.has(value)) {
+                    return;
+                }
+                seen.add(value);
+            }
+            return value;
+        };
+    };
+    var ɵ0$b = circularReplacer;
+    /**
+     * @deprecated since 2.1, use normalizeHttpError instead
+     */
+    function makeErrorSerializable(error) {
+        if (error instanceof Error) {
+            return {
+                message: error.message,
+                type: error.name,
+                reason: error.stack,
+            };
+        }
+        if (error instanceof i1$4.HttpErrorResponse) {
+            var serializableError = error.error;
+            if (isObject(error.error)) {
+                serializableError = JSON.stringify(error.error, circularReplacer());
+            }
+            return {
+                message: error.message,
+                error: serializableError,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            };
+        }
+        return isObject(error) ? UNKNOWN_ERROR : error;
+    }
 
     var AddressVerificationEffect = /** @class */ (function () {
         function AddressVerificationEffect(actions$, userAddressConnector) {
@@ -7880,20 +8888,20 @@
     var PRODUCT_INTERESTS = '[User] Product Interests';
 
     function getProcessState() {
-        return i1$1.createFeatureSelector(PROCESS_FEATURE);
+        return i1$2.createFeatureSelector(PROCESS_FEATURE);
     }
 
     function getProcessStateFactory(processId) {
-        return i1$1.createSelector(getProcessState(), function (entityState) { return entityLoaderStateSelector(entityState, processId); });
+        return i1$2.createSelector(getProcessState(), function (entityState) { return entityLoaderStateSelector(entityState, processId); });
     }
     function getProcessLoadingFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
+        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
     }
     function getProcessSuccessFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
+        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
     }
     function getProcessErrorFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
+        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
     }
 
     var process_selectors = /*#__PURE__*/Object.freeze({
@@ -9848,42 +10856,6 @@
     });
 
     /**
-     * Normalizes HttpErrorResponse to HttpErrorModel.
-     *
-     * Can be used as a safe and generic way for embodying http errors into
-     * NgRx Action payload, as it will strip potentially unserializable parts from
-     * it and warn in debug mode if passed error is not instance of HttpErrorModel
-     * (which usually happens when logic in NgRx Effect is not sealed correctly)
-     */
-    function normalizeHttpError(error) {
-        if (error instanceof i1.HttpErrorResponse) {
-            var normalizedError = {
-                message: error.message,
-                status: error.status,
-                statusText: error.statusText,
-                url: error.url,
-            };
-            // include backend's error details
-            if (Array.isArray(error.error.errors)) {
-                normalizedError.details = error.error.errors;
-            }
-            else if (typeof error.error.error === 'string') {
-                normalizedError.details = [
-                    {
-                        type: error.error.error,
-                        message: error.error.error_description,
-                    },
-                ];
-            }
-            return normalizedError;
-        }
-        if (i0.isDevMode()) {
-            console.error('Error passed to normalizeHttpError is not HttpErrorResponse instance', error);
-        }
-        return undefined;
-    }
-
-    /**
      *
      * Withdraw from the source observable when notifier emits a value
      *
@@ -10187,11 +11159,11 @@
         ReplenishmentOrderEffects,
     ];
 
-    var initialState$1 = {
+    var initialState = {
         results: {},
     };
-    function reducer$1(state, action) {
-        if (state === void 0) { state = initialState$1; }
+    function reducer(state, action) {
+        if (state === void 0) { state = initialState; }
         switch (action.type) {
             case VERIFY_ADDRESS_SUCCESS: {
                 var results = action.payload;
@@ -10208,11 +11180,11 @@
     }
     var getAddressVerificationResults = function (state) { return state.results; };
 
-    var initialState$2 = {
+    var initialState$1 = {
         entities: {},
     };
-    function reducer$2(state, action) {
-        if (state === void 0) { state = initialState$2; }
+    function reducer$1(state, action) {
+        if (state === void 0) { state = initialState$1; }
         switch (action.type) {
             case LOAD_CARD_TYPES_SUCCESS: {
                 var cardTypes = action.payload;
@@ -10223,14 +11195,14 @@
                 return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$2;
+                return initialState$1;
             }
         }
         return state;
     }
     var getCardTypesEntites = function (state) { return state.entities; };
 
-    var initialState$3 = {
+    var initialState$2 = {
         poNumber: { po: undefined, costCenter: undefined },
         address: {},
         deliveryMode: {
@@ -10240,8 +11212,8 @@
         paymentDetails: {},
         orderDetails: {},
     };
-    function reducer$3(state, action) {
-        if (state === void 0) { state = initialState$3; }
+    function reducer$2(state, action) {
+        if (state === void 0) { state = initialState$2; }
         switch (action.type) {
             case SET_PAYMENT_TYPE_SUCCESS: {
                 var cart = action.payload;
@@ -10287,7 +11259,7 @@
                 return Object.assign(Object.assign({}, state), { orderDetails: orderDetails });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return initialState$3;
+                return initialState$2;
             }
             case CLEAR_CHECKOUT_STEP: {
                 var stepNumber = action.payload;
@@ -10321,17 +11293,17 @@
         return state;
     }
 
-    var initialState$4 = {
+    var initialState$3 = {
         selected: exports.ORDER_TYPE.PLACE_ORDER,
     };
-    function reducer$4(state, action) {
-        if (state === void 0) { state = initialState$4; }
+    function reducer$3(state, action) {
+        if (state === void 0) { state = initialState$3; }
         switch (action.type) {
             case SET_ORDER_TYPE: {
                 return Object.assign(Object.assign({}, state), { selected: action.payload });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return initialState$4;
+                return initialState$3;
             }
             default: {
                 return state;
@@ -10339,12 +11311,12 @@
         }
     }
 
-    var initialState$5 = {
+    var initialState$4 = {
         entities: {},
         selected: undefined,
     };
-    function reducer$5(state, action) {
-        if (state === void 0) { state = initialState$5; }
+    function reducer$4(state, action) {
+        if (state === void 0) { state = initialState$4; }
         switch (action.type) {
             case LOAD_PAYMENT_TYPES_SUCCESS: {
                 var paymentTypes = action.payload;
@@ -10361,7 +11333,7 @@
                 return Object.assign(Object.assign({}, state), { selected: undefined });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$5;
+                return initialState$4;
             }
         }
         return state;
@@ -10371,11 +11343,11 @@
 
     function getReducers$1() {
         return {
-            steps: loaderReducer(CHECKOUT_DETAILS, reducer$3),
-            cardTypes: reducer$2,
-            addressVerification: reducer$1,
-            paymentTypes: reducer$5,
-            orderType: reducer$4,
+            steps: loaderReducer(CHECKOUT_DETAILS, reducer$2),
+            cardTypes: reducer$1,
+            addressVerification: reducer,
+            paymentTypes: reducer$4,
+            orderType: reducer$3,
         };
     }
     var reducerToken$1 = new i0.InjectionToken('CheckoutReducers');
@@ -10392,8 +11364,8 @@
     CheckoutStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
-                        i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$1),
+                        i1.CommonModule,
+                        i1$2.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$1),
                         i3.EffectsModule.forFeature(effects$1),
                     ],
                     providers: [reducerProvider$1],
@@ -10426,27 +11398,27 @@
     var getDeliveryAddressSelector = function (state) { return state.address; };
     var ɵ0$c = getDeliveryAddressSelector;
     var getDeliveryModeSelector = function (state) { return state.deliveryMode; };
-    var ɵ1$8 = getDeliveryModeSelector;
+    var ɵ1$7 = getDeliveryModeSelector;
     var getPaymentDetailsSelector = function (state) { return state.paymentDetails; };
     var ɵ2$4 = getPaymentDetailsSelector;
     var getOrderDetailsSelector = function (state) { return state.orderDetails; };
     var ɵ3$3 = getOrderDetailsSelector;
-    var getCheckoutState = i1$1.createFeatureSelector(CHECKOUT_FEATURE);
+    var getCheckoutState = i1$2.createFeatureSelector(CHECKOUT_FEATURE);
     var ɵ4$1 = function (checkoutState) { return checkoutState.steps; };
-    var getCheckoutStepsState = i1$1.createSelector(getCheckoutState, ɵ4$1);
+    var getCheckoutStepsState = i1$2.createSelector(getCheckoutState, ɵ4$1);
     var ɵ5 = function (state) { return loaderValueSelector(state); };
-    var getCheckoutSteps = i1$1.createSelector(getCheckoutStepsState, ɵ5);
-    var getDeliveryAddress = i1$1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
-    var getDeliveryMode = i1$1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
+    var getCheckoutSteps = i1$2.createSelector(getCheckoutStepsState, ɵ5);
+    var getDeliveryAddress = i1$2.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+    var getDeliveryMode = i1$2.createSelector(getCheckoutSteps, getDeliveryModeSelector);
     var ɵ6 = function (deliveryMode) {
         return (deliveryMode &&
             Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; }));
     };
-    var getSupportedDeliveryModes = i1$1.createSelector(getDeliveryMode, ɵ6);
+    var getSupportedDeliveryModes = i1$2.createSelector(getDeliveryMode, ɵ6);
     var ɵ7 = function (deliveryMode) {
         return deliveryMode && deliveryMode.selected;
     };
-    var getSelectedDeliveryModeCode = i1$1.createSelector(getDeliveryMode, ɵ7);
+    var getSelectedDeliveryModeCode = i1$2.createSelector(getDeliveryMode, ɵ7);
     var ɵ8 = function (deliveryMode) {
         if (deliveryMode.selected !== '') {
             if (Object.keys(deliveryMode.supported).length === 0) {
@@ -10455,42 +11427,42 @@
             return deliveryMode.supported[deliveryMode.selected];
         }
     };
-    var getSelectedDeliveryMode = i1$1.createSelector(getDeliveryMode, ɵ8);
-    var getPaymentDetails = i1$1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
-    var getCheckoutOrderDetails = i1$1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
+    var getSelectedDeliveryMode = i1$2.createSelector(getDeliveryMode, ɵ8);
+    var getPaymentDetails = i1$2.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+    var getCheckoutOrderDetails = i1$2.createSelector(getCheckoutSteps, getOrderDetailsSelector);
     var ɵ9 = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getCheckoutDetailsLoaded = i1$1.createSelector(getCheckoutStepsState, ɵ9);
+    var getCheckoutDetailsLoaded = i1$2.createSelector(getCheckoutStepsState, ɵ9);
     var ɵ10 = function (state) { return state.poNumber.po; };
-    var getPoNumer = i1$1.createSelector(getCheckoutSteps, ɵ10);
+    var getPoNumer = i1$2.createSelector(getCheckoutSteps, ɵ10);
     var ɵ11 = function (state) { return state.poNumber.costCenter; };
-    var getCostCenter = i1$1.createSelector(getCheckoutSteps, ɵ11);
+    var getCostCenter = i1$2.createSelector(getCheckoutSteps, ɵ11);
 
     var ɵ0$d = function (state) { return state.addressVerification; };
-    var getAddressVerificationResultsState = i1$1.createSelector(getCheckoutState, ɵ0$d);
-    var getAddressVerificationResults$1 = i1$1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+    var getAddressVerificationResultsState = i1$2.createSelector(getCheckoutState, ɵ0$d);
+    var getAddressVerificationResults$1 = i1$2.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
     var ɵ0$e = function (state) { return state.cardTypes; };
-    var getCardTypesState = i1$1.createSelector(getCheckoutState, ɵ0$e);
-    var getCardTypesEntites$1 = i1$1.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$9 = function (entites) {
+    var getCardTypesState = i1$2.createSelector(getCheckoutState, ɵ0$e);
+    var getCardTypesEntites$1 = i1$2.createSelector(getCardTypesState, getCardTypesEntites);
+    var ɵ1$8 = function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     };
-    var getAllCardTypes = i1$1.createSelector(getCardTypesEntites$1, ɵ1$9);
+    var getAllCardTypes = i1$2.createSelector(getCardTypesEntites$1, ɵ1$8);
 
     var getSelectedOrderTypeSelector = function (state) { return state.selected; };
     var ɵ0$f = function (state) { return state.orderType; };
-    var getOrderTypesState = i1$1.createSelector(getCheckoutState, ɵ0$f);
-    var getSelectedOrderType = i1$1.createSelector(getOrderTypesState, getSelectedOrderTypeSelector);
+    var getOrderTypesState = i1$2.createSelector(getCheckoutState, ɵ0$f);
+    var getSelectedOrderType = i1$2.createSelector(getOrderTypesState, getSelectedOrderTypeSelector);
 
     var ɵ0$g = function (state) { return state.paymentTypes; };
-    var getPaymentTypesState = i1$1.createSelector(getCheckoutState, ɵ0$g);
-    var getPaymentTypesEntites$1 = i1$1.createSelector(getPaymentTypesState, getPaymentTypesEntites);
-    var ɵ1$a = function (entites) {
+    var getPaymentTypesState = i1$2.createSelector(getCheckoutState, ɵ0$g);
+    var getPaymentTypesEntites$1 = i1$2.createSelector(getPaymentTypesState, getPaymentTypesEntites);
+    var ɵ1$9 = function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     };
-    var getAllPaymentTypes = i1$1.createSelector(getPaymentTypesEntites$1, ɵ1$a);
-    var getSelectedPaymentType$1 = i1$1.createSelector(getPaymentTypesState, getSelectedPaymentType);
+    var getAllPaymentTypes = i1$2.createSelector(getPaymentTypesEntites$1, ɵ1$9);
+    var getSelectedPaymentType$1 = i1$2.createSelector(getPaymentTypesState, getSelectedPaymentType);
 
     var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -10500,7 +11472,7 @@
         getCardTypesState: getCardTypesState,
         getCardTypesEntites: getCardTypesEntites$1,
         getAllCardTypes: getAllCardTypes,
-        ɵ1: ɵ1$9,
+        ɵ1: ɵ1$8,
         getCheckoutState: getCheckoutState,
         getCheckoutStepsState: getCheckoutStepsState,
         getCheckoutSteps: getCheckoutSteps,
@@ -10534,10 +11506,10 @@
     });
 
     var CheckoutCostCenterService = /** @class */ (function () {
-        function CheckoutCostCenterService(checkoutStore, authService, activeCartService) {
+        function CheckoutCostCenterService(checkoutStore, activeCartService, userIdService) {
             this.checkoutStore = checkoutStore;
-            this.authService = authService;
             this.activeCartService = activeCartService;
+            this.userIdService = userIdService;
         }
         /**
          * Set cost center to cart
@@ -10550,7 +11522,7 @@
                 .getActiveCartId()
                 .pipe(operators.take(1))
                 .subscribe(function (activeCartId) { return (cartId = activeCartId); });
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
                     _this.checkoutStore.dispatch(new SetCostCenter({
                         userId: userId,
@@ -10567,7 +11539,7 @@
             var _this = this;
             return rxjs.combineLatest([
                 this.activeCartService.getActive(),
-                this.checkoutStore.pipe(i1$1.select(getCostCenter)),
+                this.checkoutStore.pipe(i1$2.select(getCostCenter)),
             ]).pipe(operators.filter(function (_a) {
                 var _b = __read(_a, 1), cart = _b[0];
                 return Boolean(cart);
@@ -10582,30 +11554,30 @@
         };
         return CheckoutCostCenterService;
     }());
-    CheckoutCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutCostCenterService, providedIn: "root" });
+    CheckoutCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCostCenterService_Factory() { return new CheckoutCostCenterService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(ActiveCartService), i0.ɵɵinject(UserIdService)); }, token: CheckoutCostCenterService, providedIn: "root" });
     CheckoutCostCenterService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     CheckoutCostCenterService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
+        { type: i1$2.Store },
+        { type: ActiveCartService },
+        { type: UserIdService }
     ]; };
 
     var CheckoutDeliveryService = /** @class */ (function () {
-        function CheckoutDeliveryService(checkoutStore, authService, activeCartService) {
+        function CheckoutDeliveryService(checkoutStore, activeCartService, userIdService) {
             this.checkoutStore = checkoutStore;
-            this.authService = authService;
             this.activeCartService = activeCartService;
+            this.userIdService = userIdService;
         }
         /**
          * Get supported delivery modes
          */
         CheckoutDeliveryService.prototype.getSupportedDeliveryModes = function () {
             var _this = this;
-            return this.checkoutStore.pipe(i1$1.select(getSupportedDeliveryModes), operators.withLatestFrom(this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), operators.tap(function (_a) {
+            return this.checkoutStore.pipe(i1$2.select(getSupportedDeliveryModes), operators.withLatestFrom(this.checkoutStore.pipe(i1$2.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), operators.tap(function (_a) {
                 var _b = __read(_a, 2), loadingState = _b[1];
                 if (!(loadingState.loading || loadingState.success || loadingState.error)) {
                     _this.loadSupportedDeliveryModes();
@@ -10616,25 +11588,25 @@
          * Get selected delivery mode
          */
         CheckoutDeliveryService.prototype.getSelectedDeliveryMode = function () {
-            return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryMode));
+            return this.checkoutStore.pipe(i1$2.select(getSelectedDeliveryMode));
         };
         /**
          * Get selected delivery mode code
          */
         CheckoutDeliveryService.prototype.getSelectedDeliveryModeCode = function () {
-            return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryModeCode));
+            return this.checkoutStore.pipe(i1$2.select(getSelectedDeliveryModeCode));
         };
         /**
          * Get delivery address
          */
         CheckoutDeliveryService.prototype.getDeliveryAddress = function () {
-            return this.checkoutStore.pipe(i1$1.select(getDeliveryAddress));
+            return this.checkoutStore.pipe(i1$2.select(getDeliveryAddress));
         };
         /**
          * Get status about successfully set Delivery Address
          */
         CheckoutDeliveryService.prototype.getSetDeliveryAddressProcess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$2.select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
         };
         /**
          * Clear info about process of setting Delivery Address
@@ -10646,7 +11618,7 @@
          * Get status about of set Delivery Mode process
          */
         CheckoutDeliveryService.prototype.getSetDeliveryModeProcess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$2.select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
         };
         /**
          * Clear info about process of setting Delivery Mode
@@ -10664,7 +11636,7 @@
          * Get status about of set supported Delivery Modes process
          */
         CheckoutDeliveryService.prototype.getLoadSupportedDeliveryModeProcess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$2.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
         };
         /**
          * Clear supported delivery modes loaded in last checkout process
@@ -10676,7 +11648,7 @@
          * Get address verification results
          */
         CheckoutDeliveryService.prototype.getAddressVerificationResults = function () {
-            return this.checkoutStore.pipe(i1$1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
+            return this.checkoutStore.pipe(i1$2.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
         };
         /**
          * Create and set a delivery address using the address param
@@ -10685,8 +11657,8 @@
         CheckoutDeliveryService.prototype.createAndSetAddress = function (address) {
             if (this.actionAllowed()) {
                 var userId_1;
-                this.authService
-                    .getOccUserId()
+                this.userIdService
+                    .getUserId()
                     .subscribe(function (occUserId) { return (userId_1 = occUserId); })
                     .unsubscribe();
                 var cartId_1;
@@ -10709,8 +11681,8 @@
         CheckoutDeliveryService.prototype.loadSupportedDeliveryModes = function () {
             if (this.actionAllowed()) {
                 var userId_2;
-                this.authService
-                    .getOccUserId()
+                this.userIdService
+                    .getUserId()
                     .subscribe(function (occUserId) { return (userId_2 = occUserId); })
                     .unsubscribe();
                 var cartId_2;
@@ -10733,8 +11705,8 @@
         CheckoutDeliveryService.prototype.setDeliveryMode = function (mode) {
             if (this.actionAllowed()) {
                 var userId_3;
-                this.authService
-                    .getOccUserId()
+                this.userIdService
+                    .getUserId()
                     .subscribe(function (occUserId) { return (userId_3 = occUserId); })
                     .unsubscribe();
                 var cartId_3;
@@ -10758,8 +11730,8 @@
         CheckoutDeliveryService.prototype.verifyAddress = function (address) {
             if (this.actionAllowed()) {
                 var userId_4;
-                this.authService
-                    .getOccUserId()
+                this.userIdService
+                    .getUserId()
                     .subscribe(function (occUserId) { return (userId_4 = occUserId); })
                     .unsubscribe();
                 if (userId_4) {
@@ -10777,8 +11749,8 @@
         CheckoutDeliveryService.prototype.setDeliveryAddress = function (address) {
             if (this.actionAllowed()) {
                 var userId_5;
-                this.authService
-                    .getOccUserId()
+                this.userIdService
+                    .getUserId()
                     .subscribe(function (occUserId) { return (userId_5 = occUserId); })
                     .unsubscribe();
                 var cartId_4;
@@ -10806,8 +11778,8 @@
          */
         CheckoutDeliveryService.prototype.clearCheckoutDeliveryAddress = function () {
             var userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe(function (occUserId) { return (userId = occUserId); })
                 .unsubscribe();
             var cartId;
@@ -10827,8 +11799,8 @@
          */
         CheckoutDeliveryService.prototype.clearCheckoutDeliveryMode = function () {
             var userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe(function (occUserId) { return (userId = occUserId); })
                 .unsubscribe();
             var cartId;
@@ -10853,8 +11825,8 @@
         };
         CheckoutDeliveryService.prototype.actionAllowed = function () {
             var userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe(function (occUserId) { return (userId = occUserId); })
                 .unsubscribe();
             return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
@@ -10862,41 +11834,41 @@
         };
         return CheckoutDeliveryService;
     }());
-    CheckoutDeliveryService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+    CheckoutDeliveryService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(ActiveCartService), i0.ɵɵinject(UserIdService)); }, token: CheckoutDeliveryService, providedIn: "root" });
     CheckoutDeliveryService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     CheckoutDeliveryService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
+        { type: i1$2.Store },
+        { type: ActiveCartService },
+        { type: UserIdService }
     ]; };
 
     var CheckoutPaymentService = /** @class */ (function () {
-        function CheckoutPaymentService(checkoutStore, authService, activeCartService) {
+        function CheckoutPaymentService(checkoutStore, activeCartService, userIdService) {
             this.checkoutStore = checkoutStore;
-            this.authService = authService;
             this.activeCartService = activeCartService;
+            this.userIdService = userIdService;
         }
         /**
          * Get card types
          */
         CheckoutPaymentService.prototype.getCardTypes = function () {
-            return this.checkoutStore.pipe(i1$1.select(getAllCardTypes));
+            return this.checkoutStore.pipe(i1$2.select(getAllCardTypes));
         };
         /**
          * Get payment details
          */
         CheckoutPaymentService.prototype.getPaymentDetails = function () {
-            return this.checkoutStore.pipe(i1$1.select(getPaymentDetails));
+            return this.checkoutStore.pipe(i1$2.select(getPaymentDetails));
         };
         /**
          * Get status about set Payment Details process
          */
         CheckoutPaymentService.prototype.getSetPaymentDetailsResultProcess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$2.select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
         };
         /**
          * Clear info about process of setting Payment Details
@@ -10917,8 +11889,8 @@
         CheckoutPaymentService.prototype.createPaymentDetails = function (paymentDetails) {
             if (this.actionAllowed()) {
                 var userId_1;
-                this.authService
-                    .getOccUserId()
+                this.userIdService
+                    .getUserId()
                     .subscribe(function (occUserId) { return (userId_1 = occUserId); })
                     .unsubscribe();
                 var cartId_1;
@@ -10942,8 +11914,8 @@
         CheckoutPaymentService.prototype.setPaymentDetails = function (paymentDetails) {
             if (this.actionAllowed()) {
                 var userId_2;
-                this.authService
-                    .getOccUserId()
+                this.userIdService
+                    .getUserId()
                     .subscribe(function (occUserId) { return (userId_2 = occUserId); })
                     .unsubscribe();
                 var cart_1;
@@ -10968,8 +11940,8 @@
         };
         CheckoutPaymentService.prototype.actionAllowed = function () {
             var userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe(function (occUserId) { return (userId = occUserId); })
                 .unsubscribe();
             return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
@@ -10977,22 +11949,22 @@
         };
         return CheckoutPaymentService;
     }());
-    CheckoutPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutPaymentService, providedIn: "root" });
+    CheckoutPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(ActiveCartService), i0.ɵɵinject(UserIdService)); }, token: CheckoutPaymentService, providedIn: "root" });
     CheckoutPaymentService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     CheckoutPaymentService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
+        { type: i1$2.Store },
+        { type: ActiveCartService },
+        { type: UserIdService }
     ]; };
 
     var CheckoutService = /** @class */ (function () {
-        function CheckoutService(checkoutStore, authService, activeCartService) {
+        function CheckoutService(checkoutStore, userIdService, activeCartService) {
             this.checkoutStore = checkoutStore;
-            this.authService = authService;
+            this.userIdService = userIdService;
             this.activeCartService = activeCartService;
         }
         /**
@@ -11001,8 +11973,8 @@
         CheckoutService.prototype.placeOrder = function (termsChecked) {
             if (this.actionAllowed()) {
                 var userId_1;
-                this.authService
-                    .getOccUserId()
+                this.userIdService
+                    .getUserId()
                     .subscribe(function (occUserId) { return (userId_1 = occUserId); })
                     .unsubscribe();
                 var cartId_1;
@@ -11029,7 +12001,7 @@
                 .getActiveCartId()
                 .pipe(operators.take(1))
                 .subscribe(function (activeCartId) { return (cartId = activeCartId); });
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (Boolean(cartId) &&
                     Boolean(userId) &&
                     userId !== OCC_USER_ID_ANONYMOUS) {
@@ -11046,19 +12018,19 @@
          * Returns the place or schedule replenishment order's loading flag
          */
         CheckoutService.prototype.getPlaceOrderLoading = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessLoadingFactory(PLACED_ORDER_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$2.select(getProcessLoadingFactory(PLACED_ORDER_PROCESS_ID)));
         };
         /**
          * Returns the place or schedule replenishment order's success flag
          */
         CheckoutService.prototype.getPlaceOrderSuccess = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessSuccessFactory(PLACED_ORDER_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$2.select(getProcessSuccessFactory(PLACED_ORDER_PROCESS_ID)));
         };
         /**
          * Returns the place or schedule replenishment order's error flag
          */
         CheckoutService.prototype.getPlaceOrderError = function () {
-            return this.checkoutStore.pipe(i1$1.select(getProcessErrorFactory(PLACED_ORDER_PROCESS_ID)));
+            return this.checkoutStore.pipe(i1$2.select(getProcessErrorFactory(PLACED_ORDER_PROCESS_ID)));
         };
         /**
          * Resets the place or schedule replenishment order's processing state
@@ -11085,8 +12057,8 @@
          */
         CheckoutService.prototype.loadCheckoutDetails = function (cartId) {
             var userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe(function (occUserId) { return (userId = occUserId); })
                 .unsubscribe();
             if (userId) {
@@ -11100,13 +12072,13 @@
          * Get status of checkout details loaded
          */
         CheckoutService.prototype.getCheckoutDetailsLoaded = function () {
-            return this.checkoutStore.pipe(i1$1.select(getCheckoutDetailsLoaded));
+            return this.checkoutStore.pipe(i1$2.select(getCheckoutDetailsLoaded));
         };
         /**
          * Get order details
          */
         CheckoutService.prototype.getOrderDetails = function () {
-            return this.checkoutStore.pipe(i1$1.select(getCheckoutOrderDetails));
+            return this.checkoutStore.pipe(i1$2.select(getCheckoutOrderDetails));
         };
         /**
          * Set checkout order type
@@ -11119,12 +12091,12 @@
          * Get current checkout order type
          */
         CheckoutService.prototype.getCurrentOrderType = function () {
-            return this.checkoutStore.pipe(i1$1.select(getSelectedOrderType));
+            return this.checkoutStore.pipe(i1$2.select(getSelectedOrderType));
         };
         CheckoutService.prototype.actionAllowed = function () {
             var userId;
-            this.authService
-                .getOccUserId()
+            this.userIdService
+                .getUserId()
                 .subscribe(function (occUserId) { return (userId = occUserId); })
                 .unsubscribe();
             return ((userId && userId !== OCC_USER_ID_ANONYMOUS) ||
@@ -11132,30 +12104,30 @@
         };
         return CheckoutService;
     }());
-    CheckoutService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+    CheckoutService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
     CheckoutService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     CheckoutService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
+        { type: i1$2.Store },
+        { type: UserIdService },
         { type: ActiveCartService }
     ]; };
 
     var PaymentTypeService = /** @class */ (function () {
-        function PaymentTypeService(checkoutStore, authService, activeCartService) {
+        function PaymentTypeService(checkoutStore, activeCartService, userIdService) {
             this.checkoutStore = checkoutStore;
-            this.authService = authService;
             this.activeCartService = activeCartService;
+            this.userIdService = userIdService;
         }
         /**
          * Get payment types
          */
         PaymentTypeService.prototype.getPaymentTypes = function () {
             var _this = this;
-            return this.checkoutStore.pipe(i1$1.select(getAllPaymentTypes), operators.withLatestFrom(this.checkoutStore.pipe(i1$1.select(getProcessStateFactory(GET_PAYMENT_TYPES_PROCESS_ID)))), operators.tap(function (_a) {
+            return this.checkoutStore.pipe(i1$2.select(getAllPaymentTypes), operators.withLatestFrom(this.checkoutStore.pipe(i1$2.select(getProcessStateFactory(GET_PAYMENT_TYPES_PROCESS_ID)))), operators.tap(function (_a) {
                 var _b = __read(_a, 2), _ = _b[0], loadingState = _b[1];
                 if (!(loadingState.loading || loadingState.success || loadingState.error)) {
                     _this.loadPaymentTypes();
@@ -11180,7 +12152,7 @@
                 .getActiveCartId()
                 .pipe(operators.take(1))
                 .subscribe(function (activeCartId) { return (cartId = activeCartId); });
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (userId && userId !== OCC_USER_ID_ANONYMOUS && cartId) {
                     _this.checkoutStore.dispatch(new SetPaymentType({
                         userId: userId,
@@ -11198,7 +12170,7 @@
             var _this = this;
             return rxjs.combineLatest([
                 this.activeCartService.getActive(),
-                this.checkoutStore.pipe(i1$1.select(getSelectedPaymentType$1)),
+                this.checkoutStore.pipe(i1$2.select(getSelectedPaymentType$1)),
             ]).pipe(operators.tap(function (_a) {
                 var _b = __read(_a, 2), cart = _b[0], selected = _b[1];
                 if (selected === undefined) {
@@ -11225,7 +12197,7 @@
             var _this = this;
             return rxjs.combineLatest([
                 this.activeCartService.getActive(),
-                this.checkoutStore.pipe(i1$1.select(getPoNumer)),
+                this.checkoutStore.pipe(i1$2.select(getPoNumer)),
             ]).pipe(operators.tap(function (_a) {
                 var _b = __read(_a, 2), cart = _b[0], po = _b[1];
                 if (po === undefined && cart && cart.purchaseOrderNumber) {
@@ -11238,16 +12210,16 @@
         };
         return PaymentTypeService;
     }());
-    PaymentTypeService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: PaymentTypeService, providedIn: "root" });
+    PaymentTypeService.ɵprov = i0.ɵɵdefineInjectable({ factory: function PaymentTypeService_Factory() { return new PaymentTypeService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(ActiveCartService), i0.ɵɵinject(UserIdService)); }, token: PaymentTypeService, providedIn: "root" });
     PaymentTypeService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     PaymentTypeService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
+        { type: i1$2.Store },
+        { type: ActiveCartService },
+        { type: UserIdService }
     ]; };
 
     var OccCheckoutReplenishmentOrderAdapter = /** @class */ (function () {
@@ -11258,8 +12230,8 @@
         }
         OccCheckoutReplenishmentOrderAdapter.prototype.scheduleReplenishmentOrder = function (cartId, scheduleReplenishmentForm, termsChecked, userId) {
             scheduleReplenishmentForm = this.converter.convert(scheduleReplenishmentForm, REPLENISHMENT_ORDER_FORM_SERIALIZER);
-            var headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
-            var params = new i1.HttpParams()
+            var headers = new i1$4.HttpHeaders().set('Content-Type', 'application/json');
+            var params = new i1$4.HttpParams()
                 .set('cartId', cartId)
                 .set('termsChecked', termsChecked.toString());
             return this.http
@@ -11274,7 +12246,7 @@
         { type: i0.Injectable }
     ];
     OccCheckoutReplenishmentOrderAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -11293,13 +12265,13 @@
             return this.occEndpoints.getEndpoint(orderEndpoint);
         };
         OccCheckoutAdapter.prototype.placeOrder = function (userId, cartId, termsChecked) {
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             if (userId === OCC_USER_ID_ANONYMOUS) {
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
             }
-            var params = new i1.HttpParams()
+            var params = new i1$4.HttpParams()
                 .set('cartId', cartId)
                 .set('termsChecked', termsChecked.toString());
             return this.http
@@ -11308,7 +12280,7 @@
         };
         OccCheckoutAdapter.prototype.loadCheckoutDetails = function (userId, cartId) {
             var url = this.getEndpoint(userId, CARTS_ENDPOINT) + cartId;
-            var params = new i1.HttpParams({
+            var params = new i1$4.HttpParams({
                 fromString: "fields=" + CHECKOUT_PARAMS,
             });
             return this.http.get(url, { params: params });
@@ -11327,7 +12299,7 @@
         { type: i0.Injectable }
     ];
     OccCheckoutAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -11339,7 +12311,7 @@
     }());
     CheckoutOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule],
+                    imports: [i1.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccCheckoutConfig),
                         {
@@ -11388,7 +12360,7 @@
             this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
+            this.headers = new i1$4.HttpHeaders().set('Content-Type', 'application/json');
         }
         OccCmsPageAdapter.prototype.load = function (pageContext, fields) {
             // load page by Id
@@ -11433,7 +12405,7 @@
         { type: i0.Injectable }
     ];
     OccCmsPageAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -11445,7 +12417,7 @@
             this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
+            this.headers = new i1$4.HttpHeaders().set('Content-Type', 'application/json');
         }
         OccCmsComponentAdapter.prototype.load = function (id, pageContext) {
             return this.http
@@ -11521,7 +12493,7 @@
         { type: i0.Injectable }
     ];
     OccCmsComponentAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -11706,7 +12678,7 @@
     }());
     CmsOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule],
+                    imports: [i1.CommonModule],
                     providers: [
                         {
                             provide: CmsPageAdapter,
@@ -12092,7 +13064,7 @@
     }());
     CostCenterOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, ConfigModule.withConfig(defaultOccCostCentersConfig)],
+                    imports: [i1.CommonModule, ConfigModule.withConfig(defaultOccCostCentersConfig)],
                     providers: [
                         {
                             provide: COST_CENTERS_NORMALIZER,
@@ -12394,7 +13366,7 @@
         { type: i0.Injectable }
     ];
     OccProductReferencesAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -12415,7 +13387,7 @@
         };
         OccProductReviewsAdapter.prototype.post = function (productCode, review) {
             review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             var body = new URLSearchParams();
@@ -12438,7 +13410,7 @@
         { type: i0.Injectable }
     ];
     OccProductReviewsAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -12479,7 +13451,7 @@
         { type: i0.Injectable }
     ];
     OccProductSearchAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -12697,14 +13669,14 @@
         };
         return OccFieldsService;
     }());
-    OccFieldsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccFieldsService_Factory() { return new OccFieldsService(i0.ɵɵinject(i1.HttpClient)); }, token: OccFieldsService, providedIn: "root" });
+    OccFieldsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccFieldsService_Factory() { return new OccFieldsService(i0.ɵɵinject(i1$4.HttpClient)); }, token: OccFieldsService, providedIn: "root" });
     OccFieldsService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     OccFieldsService.ctorParameters = function () { return [
-        { type: i1.HttpClient }
+        { type: i1$4.HttpClient }
     ]; };
 
     var OccRequestsOptimizerService = /** @class */ (function () {
@@ -12745,14 +13717,14 @@
         };
         return OccRequestsOptimizerService;
     }());
-    OccRequestsOptimizerService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccRequestsOptimizerService_Factory() { return new OccRequestsOptimizerService(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(OccFieldsService)); }, token: OccRequestsOptimizerService, providedIn: "root" });
+    OccRequestsOptimizerService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccRequestsOptimizerService_Factory() { return new OccRequestsOptimizerService(i0.ɵɵinject(i1$4.HttpClient), i0.ɵɵinject(OccFieldsService)); }, token: OccRequestsOptimizerService, providedIn: "root" });
     OccRequestsOptimizerService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     OccRequestsOptimizerService.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccFieldsService }
     ]; };
 
@@ -12789,7 +13761,7 @@
         { type: i0.Injectable }
     ];
     OccProductAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService },
         { type: OccRequestsOptimizerService }
@@ -12865,7 +13837,7 @@
     }());
     ProductOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule],
+                    imports: [i1.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccProductConfig),
                         {
@@ -12944,7 +13916,7 @@
             var urlSplits = baseUrl.split('/');
             var activeSite = urlSplits.pop();
             var url = urlSplits.join('/') + '/basesites';
-            var params = new i1.HttpParams({
+            var params = new i1$4.HttpParams({
                 fromString: 'fields=FULL',
             });
             return this.http
@@ -12959,7 +13931,7 @@
         { type: i0.Injectable }
     ];
     OccSiteAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -12997,7 +13969,7 @@
          */
         CurrencyService.prototype.getAll = function () {
             var _this = this;
-            return this.store.pipe(i1$1.select(getAllCurrencies), operators.tap(function (currencies) {
+            return this.store.pipe(i1$2.select(getAllCurrencies), operators.tap(function (currencies) {
                 if (!currencies) {
                     _this.store.dispatch(new LoadCurrencies());
                 }
@@ -13007,7 +13979,7 @@
          * Represents the isocode of the active currency.
          */
         CurrencyService.prototype.getActive = function () {
-            return this.store.pipe(i1$1.select(getActiveCurrency), operators.filter(function (active) { return Boolean(active); }));
+            return this.store.pipe(i1$2.select(getActiveCurrency), operators.filter(function (active) { return Boolean(active); }));
         };
         /**
          * Sets the active language.
@@ -13015,7 +13987,7 @@
         CurrencyService.prototype.setActive = function (isocode) {
             var _this = this;
             return this.store
-                .pipe(i1$1.select(getActiveCurrency), operators.take(1))
+                .pipe(i1$2.select(getActiveCurrency), operators.take(1))
                 .subscribe(function (activeCurrency) {
                 if (activeCurrency !== isocode) {
                     _this.store.dispatch(new SetActiveCurrency(isocode));
@@ -13051,7 +14023,7 @@
         { type: i0.Injectable }
     ];
     CurrencyService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: WindowRef },
         { type: SiteContextConfig }
     ]; };
@@ -13070,7 +14042,7 @@
          */
         LanguageService.prototype.getAll = function () {
             var _this = this;
-            return this.store.pipe(i1$1.select(getAllLanguages), operators.tap(function (languages) {
+            return this.store.pipe(i1$2.select(getAllLanguages), operators.tap(function (languages) {
                 if (!languages) {
                     _this.store.dispatch(new LoadLanguages());
                 }
@@ -13080,7 +14052,7 @@
          * Represents the isocode of the active language.
          */
         LanguageService.prototype.getActive = function () {
-            return this.store.pipe(i1$1.select(getActiveLanguage), operators.filter(function (active) { return Boolean(active); }));
+            return this.store.pipe(i1$2.select(getActiveLanguage), operators.filter(function (active) { return Boolean(active); }));
         };
         /**
          * Sets the active language.
@@ -13088,7 +14060,7 @@
         LanguageService.prototype.setActive = function (isocode) {
             var _this = this;
             return this.store
-                .pipe(i1$1.select(getActiveLanguage), operators.take(1))
+                .pipe(i1$2.select(getActiveLanguage), operators.take(1))
                 .subscribe(function (activeLanguage) {
                 if (activeLanguage !== isocode) {
                     _this.store.dispatch(new SetActiveLanguage(isocode));
@@ -13124,7 +14096,7 @@
         { type: i0.Injectable }
     ];
     LanguageService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: WindowRef },
         { type: SiteContextConfig }
     ]; };
@@ -13176,7 +14148,7 @@
     }());
     SiteContextOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule],
+                    imports: [i1.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccSiteContextConfig),
                         {
@@ -13184,7 +14156,7 @@
                             useClass: OccSiteAdapter,
                         },
                         {
-                            provide: i1.HTTP_INTERCEPTORS,
+                            provide: i1$4.HTTP_INTERCEPTORS,
                             useExisting: SiteContextInterceptor,
                             multi: true,
                         },
@@ -13286,7 +14258,7 @@
         { type: i0.Injectable }
     ];
     OccStoreFinderAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -13402,7 +14374,7 @@
         { type: i0.Injectable }
     ];
     OccAnonymousConsentTemplatesAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -13421,7 +14393,7 @@
                 return rxjs.of({});
             }
             var url = this.occEndpoints.getUrl('customerCoupons', { userId: userId });
-            var params = new i1.HttpParams().set('sort', sort ? sort : 'startDate:asc');
+            var params = new i1$4.HttpParams().set('sort', sort ? sort : 'startDate:asc');
             if (pageSize) {
                 params = params.set('pageSize', pageSize.toString());
             }
@@ -13458,7 +14430,7 @@
             return this.http.post(url, { headers: headers });
         };
         OccCustomerCouponAdapter.prototype.newHttpHeader = function () {
-            return new i1.HttpHeaders({
+            return new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
         };
@@ -13468,7 +14440,7 @@
         { type: i0.Injectable }
     ];
     OccCustomerCouponAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -13481,7 +14453,7 @@
         }
         OccUserAddressAdapter.prototype.loadAll = function (userId) {
             var url = this.occEndpoints.getUrl('addresses', { userId: userId });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -13490,7 +14462,7 @@
         };
         OccUserAddressAdapter.prototype.add = function (userId, address) {
             var url = this.occEndpoints.getUrl('addresses', { userId: userId });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             address = this.converter.convert(address, ADDRESS_SERIALIZER);
@@ -13503,7 +14475,7 @@
                 userId: userId,
                 addressId: addressId,
             });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             address = this.converter.convert(address, ADDRESS_SERIALIZER);
@@ -13513,7 +14485,7 @@
         };
         OccUserAddressAdapter.prototype.verify = function (userId, address) {
             var url = this.occEndpoints.getUrl('addressVerification', { userId: userId });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             if (userId === OCC_USER_ID_ANONYMOUS) {
@@ -13529,7 +14501,7 @@
                 userId: userId,
                 addressId: addressId,
             });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -13542,7 +14514,7 @@
         { type: i0.Injectable }
     ];
     OccUserAddressAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -13555,17 +14527,17 @@
         }
         OccUserConsentAdapter.prototype.loadConsents = function (userId) {
             var url = this.occEndpoints.getUrl('consentTemplates', { userId: userId });
-            var headers = new i1.HttpHeaders({ 'Cache-Control': 'no-cache' });
+            var headers = new i1$4.HttpHeaders({ 'Cache-Control': 'no-cache' });
             return this.http
                 .get(url, { headers: headers })
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (consentList) { return consentList.consentTemplates; }), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
         };
         OccUserConsentAdapter.prototype.giveConsent = function (userId, consentTemplateId, consentTemplateVersion) {
             var url = this.occEndpoints.getUrl('consents', { userId: userId });
-            var httpParams = new i1.HttpParams()
+            var httpParams = new i1$4.HttpParams()
                 .set('consentTemplateId', consentTemplateId)
                 .set('consentTemplateVersion', consentTemplateVersion.toString());
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Cache-Control': 'no-cache',
             });
@@ -13574,7 +14546,7 @@
                 .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(CONSENT_TEMPLATE_NORMALIZER));
         };
         OccUserConsentAdapter.prototype.withdrawConsent = function (userId, consentCode) {
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Cache-Control': 'no-cache',
             });
             var url = this.occEndpoints.getUrl('consentDetail', {
@@ -13589,14 +14561,14 @@
         { type: i0.Injectable }
     ];
     OccUserConsentAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
 
     var PRODUCT_INTERESTS_NORMALIZER = new i0.InjectionToken('ProductInterestsNormalizer');
 
-    var headers = new i1.HttpHeaders({
+    var headers = new i1$4.HttpHeaders({
         'Content-Type': 'application/json',
     });
     var OccUserInterestsAdapter = /** @class */ (function () {
@@ -13607,7 +14579,7 @@
             this.converter = converter;
         }
         OccUserInterestsAdapter.prototype.getInterests = function (userId, pageSize, currentPage, sort, productCode, notificationType) {
-            var params = new i1.HttpParams().set('sort', sort ? sort : 'name:asc');
+            var params = new i1$4.HttpParams().set('sort', sort ? sort : 'name:asc');
             if (pageSize) {
                 params = params.set('pageSize', pageSize.toString());
             }
@@ -13631,7 +14603,7 @@
             var _this = this;
             var r = [];
             item.productInterestEntry.forEach(function (entry) {
-                var params = new i1.HttpParams()
+                var params = new i1$4.HttpParams()
                     .set('productCode', item.product.code)
                     .set('notificationType', entry.interestType);
                 r.push(_this.http
@@ -13643,7 +14615,7 @@
             return rxjs.forkJoin(r);
         };
         OccUserInterestsAdapter.prototype.addInterest = function (userId, productCode, notificationType) {
-            var params = new i1.HttpParams()
+            var params = new i1$4.HttpParams()
                 .set('productCode', productCode)
                 .set('notificationType', notificationType.toString());
             return this.http
@@ -13659,7 +14631,7 @@
         { type: i0.Injectable }
     ];
     OccUserInterestsAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: OccConfig },
         { type: ConverterService }
@@ -13696,7 +14668,7 @@
         { type: UserNotificationPreferenceAdapter }
     ]; };
 
-    var headers$1 = new i1.HttpHeaders({
+    var headers$1 = new i1$4.HttpHeaders({
         'Content-Type': 'application/json',
     });
     var OccUserNotificationPreferenceAdapter = /** @class */ (function () {
@@ -13724,7 +14696,7 @@
         { type: i0.Injectable }
     ];
     OccUserNotificationPreferenceAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: ConverterService },
         { type: OccEndpointsService }
     ]; };
@@ -13746,7 +14718,7 @@
                 userId: userId,
                 orderId: orderCode,
             });
-            var headers = new i1.HttpHeaders();
+            var headers = new i1$4.HttpHeaders();
             if (userId === OCC_USER_ID_ANONYMOUS) {
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
             }
@@ -13786,7 +14758,7 @@
                 userId: userId,
                 orderId: orderCode,
             });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -13797,7 +14769,7 @@
             var url = this.occEndpoints.getUrl('returnOrder', {
                 userId: userId,
             });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             returnRequestInput = this.converter.convert(returnRequestInput, ORDER_RETURN_REQUEST_INPUT_SERIALIZER);
@@ -13833,7 +14805,7 @@
                 userId: userId,
                 returnRequestCode: returnRequestCode,
             });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -13846,7 +14818,7 @@
         { type: i0.Injectable }
     ];
     OccUserOrderAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -13859,7 +14831,7 @@
         }
         OccUserPaymentAdapter.prototype.loadAll = function (userId) {
             var url = this.occEndpoints.getUrl('paymentDetailsAll', { userId: userId }) + '?saved=true';
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -13871,7 +14843,7 @@
                 userId: userId,
                 paymentDetailId: paymentMethodID,
             });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -13883,7 +14855,7 @@
                 userId: userId,
                 paymentDetailId: paymentMethodID,
             });
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             return this.http
@@ -13898,7 +14870,7 @@
         { type: i0.Injectable }
     ];
     OccUserPaymentAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -13938,7 +14910,7 @@
                 .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
         };
         OccUserReplenishmentOrderAdapter.prototype.cancelReplenishmentOrder = function (userId, replenishmentOrderCode) {
-            var headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
+            var headers = new i1$4.HttpHeaders().set('Content-Type', 'application/json');
             return this.http
                 .patch(this.occEndpoints.getUrl('cancelReplenishmentOrder', {
                 userId: userId,
@@ -13968,7 +14940,7 @@
         { type: i0.Injectable }
     ];
     OccUserReplenishmentOrderAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -13997,7 +14969,7 @@
         };
         OccUserAdapter.prototype.register = function (user) {
             var url = this.occEndpoints.getUrl('userRegister');
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -14008,11 +14980,11 @@
         };
         OccUserAdapter.prototype.registerGuest = function (guid, password) {
             var url = this.occEndpoints.getUrl('userRegister');
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            var httpParams = new i1.HttpParams()
+            var httpParams = new i1$4.HttpParams()
                 .set('guid', guid)
                 .set('password', password);
             return this.http
@@ -14021,8 +14993,8 @@
         };
         OccUserAdapter.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
             var url = this.occEndpoints.getUrl('userForgotPassword');
-            var httpParams = new i1.HttpParams().set('userId', userEmailAddress);
-            var headers = new i1.HttpHeaders({
+            var httpParams = new i1$4.HttpParams().set('userId', userEmailAddress);
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -14030,7 +15002,7 @@
         };
         OccUserAdapter.prototype.resetPassword = function (token, newPassword) {
             var url = this.occEndpoints.getUrl('userResetPassword');
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/json',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -14038,20 +15010,20 @@
         };
         OccUserAdapter.prototype.updateEmail = function (userId, currentPassword, newUserId) {
             var url = this.occEndpoints.getUrl('userUpdateLoginId', { userId: userId });
-            var httpParams = new i1.HttpParams()
+            var httpParams = new i1$4.HttpParams()
                 .set('password', currentPassword)
                 .set('newLogin', newUserId);
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http.put(url, httpParams, { headers: headers });
         };
         OccUserAdapter.prototype.updatePassword = function (userId, oldPassword, newPassword) {
             var url = this.occEndpoints.getUrl('userUpdatePassword', { userId: userId });
-            var httpParams = new i1.HttpParams()
+            var httpParams = new i1$4.HttpParams()
                 .set('old', oldPassword)
                 .set('new', newPassword);
-            var headers = new i1.HttpHeaders({
+            var headers = new i1$4.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             return this.http.put(url, httpParams, { headers: headers });
@@ -14070,7 +15042,7 @@
         { type: i0.Injectable }
     ];
     OccUserAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -14237,7 +15209,7 @@
         { type: i0.Injectable }
     ];
     OccUserCostCenterAdapter.ctorParameters = function () { return [
-        { type: i1.HttpClient },
+        { type: i1$4.HttpClient },
         { type: OccEndpointsService },
         { type: ConverterService }
     ]; };
@@ -14249,7 +15221,7 @@
     }());
     UserOccModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule],
+                    imports: [i1.CommonModule],
                     providers: [
                         provideDefaultConfig(defaultOccUserConfig),
                         { provide: UserAdapter, useClass: OccUserAdapter },
@@ -14350,9 +15322,6 @@
     JavaRegExpConverter.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
-
-    var CONFIG_INITIALIZER = new i0.InjectionToken('ConfigInitializer');
-    var CONFIG_INITIALIZER_FORROOT_GUARD = new i0.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
 
     /**
      * The url of the server request when running SSR
@@ -14491,13 +15460,13 @@
         };
         return OccSitesConfigLoader;
     }());
-    OccSitesConfigLoader.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccSitesConfigLoader_Factory() { return new OccSitesConfigLoader(i0.ɵɵinject(OccConfig), i0.ɵɵinject(i1.HttpClient)); }, token: OccSitesConfigLoader, providedIn: "root" });
+    OccSitesConfigLoader.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccSitesConfigLoader_Factory() { return new OccSitesConfigLoader(i0.ɵɵinject(OccConfig), i0.ɵɵinject(i1$4.HttpClient)); }, token: OccSitesConfigLoader, providedIn: "root" });
     OccSitesConfigLoader.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
     OccSitesConfigLoader.ctorParameters = function () { return [
         { type: OccConfig },
-        { type: i1.HttpClient }
+        { type: i1$4.HttpClient }
     ]; };
 
     var EXTERNAL_CONFIG_TRANSFER_ID = i5.makeStateKey('cx-external-config');
@@ -14513,7 +15482,7 @@
         }
         Object.defineProperty(OccConfigLoaderService.prototype, "currentUrl", {
             get: function () {
-                if (i1$2.isPlatformBrowser(this.platform)) {
+                if (i1.isPlatformBrowser(this.platform)) {
                     return this.document.location.href;
                 }
                 if (this.serverRequestUrl) {
@@ -14557,7 +15526,7 @@
          * Tries to rehydrate external config in the browser from SSR
          */
         OccConfigLoaderService.prototype.rehydrate = function () {
-            if (this.transferState && i1$2.isPlatformBrowser(this.platform)) {
+            if (this.transferState && i1.isPlatformBrowser(this.platform)) {
                 return this.transferState.get(EXTERNAL_CONFIG_TRANSFER_ID, undefined);
             }
         };
@@ -14568,7 +15537,7 @@
          */
         OccConfigLoaderService.prototype.transfer = function (externalConfig) {
             if (this.transferState &&
-                i1$2.isPlatformServer(this.platform) &&
+                i1.isPlatformServer(this.platform) &&
                 externalConfig) {
                 this.transferState.set(EXTERNAL_CONFIG_TRANSFER_ID, externalConfig);
             }
@@ -14591,13 +15560,13 @@
         };
         return OccConfigLoaderService;
     }());
-    OccConfigLoaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(i0.ɵɵinject(i0.PLATFORM_ID), i0.ɵɵinject(i1$2.DOCUMENT), i0.ɵɵinject(Config), i0.ɵɵinject(OccSitesConfigLoader), i0.ɵɵinject(OccLoadedConfigConverter), i0.ɵɵinject(i5.TransferState, 8), i0.ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
+    OccConfigLoaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(i0.ɵɵinject(i0.PLATFORM_ID), i0.ɵɵinject(i1.DOCUMENT), i0.ɵɵinject(Config), i0.ɵɵinject(OccSitesConfigLoader), i0.ɵɵinject(OccLoadedConfigConverter), i0.ɵɵinject(i5.TransferState, 8), i0.ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
     OccConfigLoaderService.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
     OccConfigLoaderService.ctorParameters = function () { return [
         { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] },
-        { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] },
         { type: undefined, decorators: [{ type: i0.Inject, args: [Config,] }] },
         { type: OccSitesConfigLoader },
         { type: OccLoadedConfigConverter },
@@ -15881,7 +16850,7 @@
                 ngModule: OccModule,
                 providers: [
                     {
-                        provide: i1.HTTP_INTERCEPTORS,
+                        provide: i1$4.HTTP_INTERCEPTORS,
                         useExisting: WithCredentialsInterceptor,
                         multi: true,
                     },
@@ -16017,7 +16986,7 @@
                 }
                 var clonedRequest = _this.handleRequest(consents, request);
                 return next.handle(clonedRequest).pipe(operators.tap(function (event) {
-                    if (event instanceof i1.HttpResponse &&
+                    if (event instanceof i1$4.HttpResponse &&
                         event.url.startsWith(_this.occEndpoints.getUrl('anonymousConsentTemplates'))) {
                         _this.handleResponse(isUserLoggedIn, event.headers.get(ANONYMOUS_CONSENTS_HEADER), consents);
                     }
@@ -16085,233 +17054,177 @@
         { type: AnonymousConsentsConfig }
     ]; };
 
-    var interceptors$1 = [
+    var interceptors$2 = [
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: AnonymousConsentsInterceptor,
             multi: true,
         },
     ];
 
-    var StatePersistenceService = /** @class */ (function () {
-        function StatePersistenceService(winRef) {
-            this.winRef = winRef;
-        }
-        /**
-         * Helper to synchronize state to more persistent storage (localStorage, sessionStorage).
-         * It is context aware, so you can keep different state for te same feature based on specified context.
-         *
-         * Eg. cart is valid only under the same base site. So you want to synchronize cart only with the same base site.
-         * Usage for that case: `syncWithStorage({ key: 'cart', state$: activeCartSelector$, context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]), onRead: (state) => setCorrectStateInStore(state) })`.
-         * Active cart for the `electronics` base site will be stored under `spartacus⚿electronics⚿cart` and for apparel under `spartacus⚿apparel⚿cart`.
-         *
-         * On each context change onRead function will be executed with state from storage provided as a parameter.
-         *
-         * Omitting context$ will trigger onRead only once at initialization.
-         *
-         * @param key Key to use in storage for the synchronized state. Should be unique for each feature.
-         * @param state$ State to be saved and later restored.
-         * @param context$ Context for state
-         * @param storageType Storage type to be used to persist state
-         * @param onRead Function to be executed on each storage read after context change
-         *
-         * @returns Subscriptions for reading/writing in storage on context/state change
-         */
-        StatePersistenceService.prototype.syncWithStorage = function (_a) {
-            var _this = this;
-            var key = _a.key, state$ = _a.state$, _b = _a.context$, context$ = _b === void 0 ? rxjs.of('') : _b, _c = _a.storageType, storageType = _c === void 0 ? exports.StorageSyncType.LOCAL_STORAGE : _c, _d = _a.onRead, onRead = _d === void 0 ? function () { } : _d;
-            var storage = getStorage(storageType, this.winRef);
-            var subscriptions = new rxjs.Subscription();
-            // Do not change order of subscription! Read should happen before write on context change.
-            subscriptions.add(context$
-                .pipe(operators.map(function (context) {
-                return readFromStorage(storage, _this.generateKeyWithContext(context, key));
-            }), operators.tap(function (state) { return onRead(state); }))
-                .subscribe());
-            subscriptions.add(state$.pipe(operators.withLatestFrom(context$)).subscribe(function (_a) {
-                var _b = __read(_a, 2), state = _b[0], context = _b[1];
-                persistToStorage(_this.generateKeyWithContext(context, key), state, storage);
-            }));
-            return subscriptions;
-        };
-        StatePersistenceService.prototype.generateKeyWithContext = function (context, key) {
-            return "spartacus\u26BF" + [].concat(context).join('⚿') + "\u26BF" + key;
-        };
-        return StatePersistenceService;
-    }());
-    StatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StatePersistenceService_Factory() { return new StatePersistenceService(i0.ɵɵinject(WindowRef)); }, token: StatePersistenceService, providedIn: "root" });
-    StatePersistenceService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    StatePersistenceService.ctorParameters = function () { return [
-        { type: WindowRef }
-    ]; };
-
-    var getUserState = i1$1.createFeatureSelector(USER_FEATURE);
+    var getUserState = i1$2.createFeatureSelector(USER_FEATURE);
 
     var ɵ0$h = function (state) { return state.billingCountries; };
-    var getBillingCountriesState = i1$1.createSelector(getUserState, ɵ0$h);
-    var ɵ1$b = function (state) { return state.entities; };
-    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, ɵ1$b);
+    var getBillingCountriesState = i1$2.createSelector(getUserState, ɵ0$h);
+    var ɵ1$a = function (state) { return state.entities; };
+    var getBillingCountriesEntites = i1$2.createSelector(getBillingCountriesState, ɵ1$a);
     var ɵ2$5 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
-    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, ɵ2$5);
+    var getAllBillingCountries = i1$2.createSelector(getBillingCountriesEntites, ɵ2$5);
 
     var ɵ0$i = function (state) { return state.consignmentTracking; };
-    var getConsignmentTrackingState = i1$1.createSelector(getUserState, ɵ0$i);
-    var ɵ1$c = function (state) { return state.tracking; };
-    var getConsignmentTracking = i1$1.createSelector(getConsignmentTrackingState, ɵ1$c);
+    var getConsignmentTrackingState = i1$2.createSelector(getUserState, ɵ0$i);
+    var ɵ1$b = function (state) { return state.tracking; };
+    var getConsignmentTracking = i1$2.createSelector(getConsignmentTrackingState, ɵ1$b);
 
     var ɵ0$j = function (state) { return state.customerCoupons; };
-    var getCustomerCouponsState = i1$1.createSelector(getUserState, ɵ0$j);
-    var ɵ1$d = function (state) { return loaderSuccessSelector(state); };
-    var getCustomerCouponsLoaded = i1$1.createSelector(getCustomerCouponsState, ɵ1$d);
+    var getCustomerCouponsState = i1$2.createSelector(getUserState, ɵ0$j);
+    var ɵ1$c = function (state) { return loaderSuccessSelector(state); };
+    var getCustomerCouponsLoaded = i1$2.createSelector(getCustomerCouponsState, ɵ1$c);
     var ɵ2$6 = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerCouponsLoading = i1$1.createSelector(getCustomerCouponsState, ɵ2$6);
+    var getCustomerCouponsLoading = i1$2.createSelector(getCustomerCouponsState, ɵ2$6);
     var ɵ3$4 = function (state) { return loaderValueSelector(state); };
-    var getCustomerCoupons = i1$1.createSelector(getCustomerCouponsState, ɵ3$4);
+    var getCustomerCoupons = i1$2.createSelector(getCustomerCouponsState, ɵ3$4);
 
     var ɵ0$k = function (state) { return state.countries; };
-    var getDeliveryCountriesState = i1$1.createSelector(getUserState, ɵ0$k);
-    var ɵ1$e = function (state) { return state.entities; };
-    var getDeliveryCountriesEntites = i1$1.createSelector(getDeliveryCountriesState, ɵ1$e);
+    var getDeliveryCountriesState = i1$2.createSelector(getUserState, ɵ0$k);
+    var ɵ1$d = function (state) { return state.entities; };
+    var getDeliveryCountriesEntites = i1$2.createSelector(getDeliveryCountriesState, ɵ1$d);
     var ɵ2$7 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
-    var getAllDeliveryCountries = i1$1.createSelector(getDeliveryCountriesEntites, ɵ2$7);
-    var countrySelectorFactory = function (isocode) { return i1$1.createSelector(getDeliveryCountriesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[isocode] : null; }); };
+    var getAllDeliveryCountries = i1$2.createSelector(getDeliveryCountriesEntites, ɵ2$7);
+    var countrySelectorFactory = function (isocode) { return i1$2.createSelector(getDeliveryCountriesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[isocode] : null; }); };
 
     var ɵ0$l = function (state) { return state.notificationPreferences; };
-    var getPreferencesLoaderState = i1$1.createSelector(getUserState, ɵ0$l);
-    var ɵ1$f = function (state) { return loaderValueSelector(state); };
-    var getPreferences = i1$1.createSelector(getPreferencesLoaderState, ɵ1$f);
+    var getPreferencesLoaderState = i1$2.createSelector(getUserState, ɵ0$l);
+    var ɵ1$e = function (state) { return loaderValueSelector(state); };
+    var getPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ1$e);
     var ɵ2$8 = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
-    var getEnabledPreferences = i1$1.createSelector(getPreferencesLoaderState, ɵ2$8);
+    var getEnabledPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ2$8);
     var ɵ3$5 = function (state) { return loaderLoadingSelector(state); };
-    var getPreferencesLoading = i1$1.createSelector(getPreferencesLoaderState, ɵ3$5);
+    var getPreferencesLoading = i1$2.createSelector(getPreferencesLoaderState, ɵ3$5);
 
     var ɵ0$m = function (state) { return state.order; };
-    var getOrderState = i1$1.createSelector(getUserState, ɵ0$m);
-    var ɵ1$g = function (state) { return loaderValueSelector(state); };
-    var getOrderDetails = i1$1.createSelector(getOrderState, ɵ1$g);
+    var getOrderState = i1$2.createSelector(getUserState, ɵ0$m);
+    var ɵ1$f = function (state) { return loaderValueSelector(state); };
+    var getOrderDetails = i1$2.createSelector(getOrderState, ɵ1$f);
 
     var ɵ0$n = function (state) { return state.orderReturn; };
-    var getOrderReturnRequestState = i1$1.createSelector(getUserState, ɵ0$n);
-    var ɵ1$h = function (state) { return loaderValueSelector(state); };
-    var getOrderReturnRequest = i1$1.createSelector(getOrderReturnRequestState, ɵ1$h);
+    var getOrderReturnRequestState = i1$2.createSelector(getUserState, ɵ0$n);
+    var ɵ1$g = function (state) { return loaderValueSelector(state); };
+    var getOrderReturnRequest = i1$2.createSelector(getOrderReturnRequestState, ɵ1$g);
     var ɵ2$9 = function (state) { return loaderLoadingSelector(state); };
-    var getOrderReturnRequestLoading = i1$1.createSelector(getOrderReturnRequestState, ɵ2$9);
+    var getOrderReturnRequestLoading = i1$2.createSelector(getOrderReturnRequestState, ɵ2$9);
     var ɵ3$6 = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getOrderReturnRequestSuccess = i1$1.createSelector(getOrderReturnRequestState, ɵ3$6);
+    var getOrderReturnRequestSuccess = i1$2.createSelector(getOrderReturnRequestState, ɵ3$6);
     var ɵ4$2 = function (state) { return state.orderReturnList; };
-    var getOrderReturnRequestListState = i1$1.createSelector(getUserState, ɵ4$2);
+    var getOrderReturnRequestListState = i1$2.createSelector(getUserState, ɵ4$2);
     var ɵ5$1 = function (state) { return loaderValueSelector(state); };
-    var getOrderReturnRequestList = i1$1.createSelector(getOrderReturnRequestListState, ɵ5$1);
+    var getOrderReturnRequestList = i1$2.createSelector(getOrderReturnRequestListState, ɵ5$1);
 
     var ɵ0$o = function (state) { return state.payments; };
-    var getPaymentMethodsState = i1$1.createSelector(getUserState, ɵ0$o);
-    var ɵ1$i = function (state) { return loaderValueSelector(state); };
-    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, ɵ1$i);
+    var getPaymentMethodsState = i1$2.createSelector(getUserState, ɵ0$o);
+    var ɵ1$h = function (state) { return loaderValueSelector(state); };
+    var getPaymentMethods = i1$2.createSelector(getPaymentMethodsState, ɵ1$h);
     var ɵ2$a = function (state) { return loaderLoadingSelector(state); };
-    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, ɵ2$a);
+    var getPaymentMethodsLoading = i1$2.createSelector(getPaymentMethodsState, ɵ2$a);
     var ɵ3$7 = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getPaymentMethodsLoadedSuccess = i1$1.createSelector(getPaymentMethodsState, ɵ3$7);
+    var getPaymentMethodsLoadedSuccess = i1$2.createSelector(getPaymentMethodsState, ɵ3$7);
 
     var ɵ0$p = function (state) { return state.productInterests; };
-    var getInterestsState = i1$1.createSelector(getUserState, ɵ0$p);
-    var ɵ1$j = function (state) { return loaderValueSelector(state); };
-    var getInterests = i1$1.createSelector(getInterestsState, ɵ1$j);
+    var getInterestsState = i1$2.createSelector(getUserState, ɵ0$p);
+    var ɵ1$i = function (state) { return loaderValueSelector(state); };
+    var getInterests = i1$2.createSelector(getInterestsState, ɵ1$i);
     var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
-    var getInterestsLoading = i1$1.createSelector(getInterestsState, ɵ2$b);
+    var getInterestsLoading = i1$2.createSelector(getInterestsState, ɵ2$b);
 
     var ɵ0$q = function (state) { return state.regions; };
-    var getRegionsLoaderState = i1$1.createSelector(getUserState, ɵ0$q);
-    var ɵ1$k = function (state) {
+    var getRegionsLoaderState = i1$2.createSelector(getUserState, ɵ0$q);
+    var ɵ1$j = function (state) {
         return loaderValueSelector(state).entities;
     };
-    var getAllRegions = i1$1.createSelector(getRegionsLoaderState, ɵ1$k);
+    var getAllRegions = i1$2.createSelector(getRegionsLoaderState, ɵ1$j);
     var ɵ2$c = function (state) { return ({
         loaded: loaderSuccessSelector(state),
         loading: loaderLoadingSelector(state),
         regions: loaderValueSelector(state).entities,
         country: loaderValueSelector(state).country,
     }); };
-    var getRegionsDataAndLoading = i1$1.createSelector(getRegionsLoaderState, ɵ2$c);
+    var getRegionsDataAndLoading = i1$2.createSelector(getRegionsLoaderState, ɵ2$c);
     var ɵ3$8 = function (state) { return loaderValueSelector(state).country; };
-    var getRegionsCountry = i1$1.createSelector(getRegionsLoaderState, ɵ3$8);
+    var getRegionsCountry = i1$2.createSelector(getRegionsLoaderState, ɵ3$8);
     var ɵ4$3 = function (state) { return loaderLoadingSelector(state); };
-    var getRegionsLoading = i1$1.createSelector(getRegionsLoaderState, ɵ4$3);
+    var getRegionsLoading = i1$2.createSelector(getRegionsLoaderState, ɵ4$3);
     var ɵ5$2 = function (state) { return loaderSuccessSelector(state); };
-    var getRegionsLoaded = i1$1.createSelector(getRegionsLoaderState, ɵ5$2);
+    var getRegionsLoaded = i1$2.createSelector(getRegionsLoaderState, ɵ5$2);
 
     var ɵ0$r = function (state) { return state.replenishmentOrder; };
-    var getReplenishmentOrderState = i1$1.createSelector(getUserState, ɵ0$r);
-    var ɵ1$l = function (state) { return loaderValueSelector(state); };
-    var getReplenishmentOrderDetailsValue = i1$1.createSelector(getReplenishmentOrderState, ɵ1$l);
+    var getReplenishmentOrderState = i1$2.createSelector(getUserState, ɵ0$r);
+    var ɵ1$k = function (state) { return loaderValueSelector(state); };
+    var getReplenishmentOrderDetailsValue = i1$2.createSelector(getReplenishmentOrderState, ɵ1$k);
     var ɵ2$d = function (state) { return loaderLoadingSelector(state); };
-    var getReplenishmentOrderDetailsLoading = i1$1.createSelector(getReplenishmentOrderState, ɵ2$d);
+    var getReplenishmentOrderDetailsLoading = i1$2.createSelector(getReplenishmentOrderState, ɵ2$d);
     var ɵ3$9 = function (state) { return loaderSuccessSelector(state); };
-    var getReplenishmentOrderDetailsSuccess = i1$1.createSelector(getReplenishmentOrderState, ɵ3$9);
+    var getReplenishmentOrderDetailsSuccess = i1$2.createSelector(getReplenishmentOrderState, ɵ3$9);
     var ɵ4$4 = function (state) { return loaderErrorSelector(state); };
-    var getReplenishmentOrderDetailsError = i1$1.createSelector(getReplenishmentOrderState, ɵ4$4);
+    var getReplenishmentOrderDetailsError = i1$2.createSelector(getReplenishmentOrderState, ɵ4$4);
 
     var ɵ0$s = function (state) { return state.resetPassword; };
-    var getResetPassword = i1$1.createSelector(getUserState, ɵ0$s);
+    var getResetPassword = i1$2.createSelector(getUserState, ɵ0$s);
 
     var ɵ0$t = function (state) { return state.titles; };
-    var getTitlesState = i1$1.createSelector(getUserState, ɵ0$t);
-    var ɵ1$m = function (state) { return state.entities; };
-    var getTitlesEntites = i1$1.createSelector(getTitlesState, ɵ1$m);
+    var getTitlesState = i1$2.createSelector(getUserState, ɵ0$t);
+    var ɵ1$l = function (state) { return state.entities; };
+    var getTitlesEntites = i1$2.createSelector(getTitlesState, ɵ1$l);
     var ɵ2$e = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
-    var getAllTitles = i1$1.createSelector(getTitlesEntites, ɵ2$e);
-    var titleSelectorFactory = function (code) { return i1$1.createSelector(getTitlesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[code] : null; }); };
+    var getAllTitles = i1$2.createSelector(getTitlesEntites, ɵ2$e);
+    var titleSelectorFactory = function (code) { return i1$2.createSelector(getTitlesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[code] : null; }); };
 
     var ɵ0$u = function (state) { return state.addresses; };
-    var getAddressesLoaderState = i1$1.createSelector(getUserState, ɵ0$u);
-    var ɵ1$n = function (state) { return loaderValueSelector(state); };
-    var getAddresses = i1$1.createSelector(getAddressesLoaderState, ɵ1$n);
+    var getAddressesLoaderState = i1$2.createSelector(getUserState, ɵ0$u);
+    var ɵ1$m = function (state) { return loaderValueSelector(state); };
+    var getAddresses = i1$2.createSelector(getAddressesLoaderState, ɵ1$m);
     var ɵ2$f = function (state) { return loaderLoadingSelector(state); };
-    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, ɵ2$f);
+    var getAddressesLoading = i1$2.createSelector(getAddressesLoaderState, ɵ2$f);
     var ɵ3$a = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getAddressesLoadedSuccess = i1$1.createSelector(getAddressesLoaderState, ɵ3$a);
+    var getAddressesLoadedSuccess = i1$2.createSelector(getAddressesLoaderState, ɵ3$a);
 
     var ɵ0$v = function (state) { return state.consents; };
-    var getConsentsState = i1$1.createSelector(getUserState, ɵ0$v);
-    var getConsentsValue = i1$1.createSelector(getConsentsState, loaderValueSelector);
-    var getConsentByTemplateId = function (templateId) { return i1$1.createSelector(getConsentsValue, function (templates) { return templates.find(function (template) { return template.id === templateId; }); }); };
-    var getConsentsLoading = i1$1.createSelector(getConsentsState, loaderLoadingSelector);
-    var getConsentsSuccess = i1$1.createSelector(getConsentsState, loaderSuccessSelector);
-    var getConsentsError = i1$1.createSelector(getConsentsState, loaderErrorSelector);
+    var getConsentsState = i1$2.createSelector(getUserState, ɵ0$v);
+    var getConsentsValue = i1$2.createSelector(getConsentsState, loaderValueSelector);
+    var getConsentByTemplateId = function (templateId) { return i1$2.createSelector(getConsentsValue, function (templates) { return templates.find(function (template) { return template.id === templateId; }); }); };
+    var getConsentsLoading = i1$2.createSelector(getConsentsState, loaderLoadingSelector);
+    var getConsentsSuccess = i1$2.createSelector(getConsentsState, loaderSuccessSelector);
+    var getConsentsError = i1$2.createSelector(getConsentsState, loaderErrorSelector);
 
     var ɵ0$w = function (state) { return state.costCenters; };
-    var getCostCentersState = i1$1.createSelector(getUserState, ɵ0$w);
-    var ɵ1$o = function (state) { return loaderValueSelector(state); };
-    var getCostCenters = i1$1.createSelector(getCostCentersState, ɵ1$o);
+    var getCostCentersState = i1$2.createSelector(getUserState, ɵ0$w);
+    var ɵ1$n = function (state) { return loaderValueSelector(state); };
+    var getCostCenters = i1$2.createSelector(getCostCentersState, ɵ1$n);
 
     var ɵ0$x = function (state) { return state.account; };
-    var getDetailsState = i1$1.createSelector(getUserState, ɵ0$x);
-    var ɵ1$p = function (state) { return state.details; };
-    var getDetails = i1$1.createSelector(getDetailsState, ɵ1$p);
+    var getDetailsState = i1$2.createSelector(getUserState, ɵ0$x);
+    var ɵ1$o = function (state) { return state.details; };
+    var getDetails = i1$2.createSelector(getDetailsState, ɵ1$o);
 
     var ɵ0$y = function (state) { return state.orders; };
-    var getOrdersState = i1$1.createSelector(getUserState, ɵ0$y);
-    var ɵ1$q = function (state) { return loaderSuccessSelector(state); };
-    var getOrdersLoaded = i1$1.createSelector(getOrdersState, ɵ1$q);
+    var getOrdersState = i1$2.createSelector(getUserState, ɵ0$y);
+    var ɵ1$p = function (state) { return loaderSuccessSelector(state); };
+    var getOrdersLoaded = i1$2.createSelector(getOrdersState, ɵ1$p);
     var ɵ2$g = function (state) { return loaderValueSelector(state); };
-    var getOrders = i1$1.createSelector(getOrdersState, ɵ2$g);
+    var getOrders = i1$2.createSelector(getOrdersState, ɵ2$g);
 
     var ɵ0$z = function (state) { return state.replenishmentOrders; };
-    var getReplenishmentOrdersState = i1$1.createSelector(getUserState, ɵ0$z);
-    var ɵ1$r = function (state) { return loaderValueSelector(state); };
-    var getReplenishmentOrders = i1$1.createSelector(getReplenishmentOrdersState, ɵ1$r);
+    var getReplenishmentOrdersState = i1$2.createSelector(getUserState, ɵ0$z);
+    var ɵ1$q = function (state) { return loaderValueSelector(state); };
+    var getReplenishmentOrders = i1$2.createSelector(getReplenishmentOrdersState, ɵ1$q);
     var ɵ2$h = function (state) { return loaderLoadingSelector(state); };
-    var getReplenishmentOrdersLoading = i1$1.createSelector(getReplenishmentOrdersState, ɵ2$h);
+    var getReplenishmentOrdersLoading = i1$2.createSelector(getReplenishmentOrdersState, ɵ2$h);
     var ɵ3$b = function (state) { return loaderErrorSelector(state); };
-    var getReplenishmentOrdersError = i1$1.createSelector(getReplenishmentOrdersState, ɵ3$b);
+    var getReplenishmentOrdersError = i1$2.createSelector(getReplenishmentOrdersState, ɵ3$b);
     var ɵ4$5 = function (state) { return loaderSuccessSelector(state); };
-    var getReplenishmentOrdersSuccess = i1$1.createSelector(getReplenishmentOrdersState, ɵ4$5);
+    var getReplenishmentOrdersSuccess = i1$2.createSelector(getReplenishmentOrdersState, ɵ4$5);
 
     var usersGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -16319,7 +17232,7 @@
         getBillingCountriesEntites: getBillingCountriesEntites,
         getAllBillingCountries: getAllBillingCountries,
         ɵ0: ɵ0$h,
-        ɵ1: ɵ1$b,
+        ɵ1: ɵ1$a,
         ɵ2: ɵ2$5,
         getConsignmentTrackingState: getConsignmentTrackingState,
         getConsignmentTracking: getConsignmentTracking,
@@ -16395,8 +17308,9 @@
     });
 
     var UserConsentService = /** @class */ (function () {
-        function UserConsentService(store, authService) {
+        function UserConsentService(store, userIdService, authService) {
             this.store = store;
+            this.userIdService = userIdService;
             this.authService = authService;
         }
         /**
@@ -16404,7 +17318,7 @@
          */
         UserConsentService.prototype.loadConsents = function () {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadUserConsents(userId));
             });
         };
@@ -16415,7 +17329,7 @@
         UserConsentService.prototype.getConsents = function (loadIfMissing) {
             var _this = this;
             if (loadIfMissing === void 0) { loadIfMissing = false; }
-            return rxjs.iif(function () { return loadIfMissing; }, this.store.pipe(i1$1.select(getConsentsValue), operators.withLatestFrom(this.getConsentsResultLoading(), this.getConsentsResultSuccess()), operators.filter(function (_a) {
+            return rxjs.iif(function () { return loadIfMissing; }, this.store.pipe(i1$2.select(getConsentsValue), operators.withLatestFrom(this.getConsentsResultLoading(), this.getConsentsResultSuccess()), operators.filter(function (_a) {
                 var _b = __read(_a, 3), _templates = _b[0], loading = _b[1], _success = _b[2];
                 return !loading;
             }), operators.tap(function (_a) {
@@ -16432,25 +17346,25 @@
             }), operators.map(function (_a) {
                 var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
                 return templates;
-            })), this.store.pipe(i1$1.select(getConsentsValue)));
+            })), this.store.pipe(i1$2.select(getConsentsValue)));
         };
         /**
          * Returns the consents loading flag
          */
         UserConsentService.prototype.getConsentsResultLoading = function () {
-            return this.store.pipe(i1$1.select(getConsentsLoading));
+            return this.store.pipe(i1$2.select(getConsentsLoading));
         };
         /**
          * Returns the consents success flag
          */
         UserConsentService.prototype.getConsentsResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getConsentsSuccess));
+            return this.store.pipe(i1$2.select(getConsentsSuccess));
         };
         /**
          * Returns the consents error flag
          */
         UserConsentService.prototype.getConsentsResultError = function () {
-            return this.store.pipe(i1$1.select(getConsentsError));
+            return this.store.pipe(i1$2.select(getConsentsError));
         };
         /**
          * Resets the processing state for consent retrieval
@@ -16467,7 +17381,7 @@
          */
         UserConsentService.prototype.getConsent = function (templateId) {
             var _this = this;
-            return this.authService.isUserLoggedIn().pipe(operators.filter(Boolean), operators.tap(function () { return _this.getConsents(true); }), operators.switchMap(function () { return _this.store.pipe(i1$1.select(getConsentByTemplateId(templateId))); }), operators.filter(function (template) { return Boolean(template); }), operators.map(function (template) { return template.currentConsent; }));
+            return this.authService.isUserLoggedIn().pipe(operators.filter(Boolean), operators.tap(function () { return _this.getConsents(true); }), operators.switchMap(function () { return _this.store.pipe(i1$2.select(getConsentByTemplateId(templateId))); }), operators.filter(function (template) { return Boolean(template); }), operators.map(function (template) { return template.currentConsent; }));
         };
         /**
          * Returns `true` if the consent is truthy and if `consentWithdrawnDate` doesn't exist.
@@ -16499,7 +17413,7 @@
          */
         UserConsentService.prototype.giveConsent = function (consentTemplateId, consentTemplateVersion) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new GiveUserConsent({
                     userId: userId,
                     consentTemplateId: consentTemplateId,
@@ -16511,19 +17425,19 @@
          * Returns the give consent process loading flag
          */
         UserConsentService.prototype.getGiveConsentResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
         };
         /**
          * Returns the give consent process success flag
          */
         UserConsentService.prototype.getGiveConsentResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
         };
         /**
          * Returns the give consent process error flag
          */
         UserConsentService.prototype.getGiveConsentResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
         };
         /**
          * Resents the give consent process flags
@@ -16537,7 +17451,7 @@
          */
         UserConsentService.prototype.withdrawConsent = function (consentCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new WithdrawUserConsent({
                     userId: userId,
                     consentCode: consentCode,
@@ -16548,19 +17462,19 @@
          * Returns the withdraw consent process loading flag
          */
         UserConsentService.prototype.getWithdrawConsentResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
         };
         /**
          * Returns the withdraw consent process success flag
          */
         UserConsentService.prototype.getWithdrawConsentResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
         };
         /**
          * Returns the withdraw consent process error flag
          */
         UserConsentService.prototype.getWithdrawConsentResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
         };
         /**
          * Resets the process flags for withdraw consent
@@ -16602,14 +17516,15 @@
         };
         return UserConsentService;
     }());
-    UserConsentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
+    UserConsentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
     UserConsentService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     UserConsentService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
+        { type: UserIdService },
         { type: AuthService }
     ]; };
 
@@ -16639,7 +17554,7 @@
     ]; };
 
     var AnonymousConsentsEffects = /** @class */ (function () {
-        function AnonymousConsentsEffects(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService) {
+        function AnonymousConsentsEffects(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService, userIdService) {
             var _this = this;
             this.actions$ = actions$;
             this.anonymousConsentTemplatesConnector = anonymousConsentTemplatesConnector;
@@ -16647,6 +17562,7 @@
             this.anonymousConsentsConfig = anonymousConsentsConfig;
             this.anonymousConsentService = anonymousConsentService;
             this.userConsentService = userConsentService;
+            this.userIdService = userIdService;
             this.checkConsentVersions$ = this.actions$.pipe(i3.ofType(ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS), operators.withLatestFrom(this.anonymousConsentService.getConsents()), operators.concatMap(function (_a) {
                 var _b = __read(_a, 2), _ = _b[0], currentConsents = _b[1];
                 // TODO{#8158} - remove this if block
@@ -16685,10 +17601,11 @@
                     ];
                 }), operators.catchError(function (error) { return rxjs.of(new LoadAnonymousConsentTemplatesFail(normalizeHttpError(error))); }));
             }));
-            this.transferAnonymousConsentsToUser$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function () { return Boolean(_this.anonymousConsentsConfig.anonymousConsents); }), operators.withLatestFrom(this.actions$.pipe(i3.ofType(REGISTER_USER_SUCCESS))), operators.filter(function (_a) {
+            // TODO(#9416): This won't work with flow different than `Resource Owner Password Flow` which involves redirect (maybe in popup in will work)
+            this.transferAnonymousConsentsToUser$ = this.actions$.pipe(i3.ofType(LOGIN), operators.filter(function () { return Boolean(_this.anonymousConsentsConfig.anonymousConsents); }), operators.withLatestFrom(this.actions$.pipe(i3.ofType(REGISTER_USER_SUCCESS))), operators.filter(function (_a) {
                 var _b = __read(_a, 2), registerAction = _b[1];
                 return Boolean(registerAction);
-            }), operators.switchMap(function () { return _this.anonymousConsentService.getConsents().pipe(operators.withLatestFrom(_this.authService.getOccUserId(), _this.anonymousConsentService.getTemplates(), _this.authService.isUserLoggedIn()), operators.filter(function (_a) {
+            }), operators.switchMap(function () { return _this.anonymousConsentService.getConsents().pipe(operators.withLatestFrom(_this.userIdService.getUserId(), _this.anonymousConsentService.getTemplates(), _this.authService.isUserLoggedIn()), operators.filter(function (_a) {
                 var _b = __read(_a, 4), loggedIn = _b[3];
                 return loggedIn;
             }), operators.concatMap(function (_a) {
@@ -16737,9 +17654,9 @@
                 }
                 return rxjs.EMPTY;
             })); }));
-            this.giveRequiredConsentsToUser$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter(function (action) { return Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
+            this.giveRequiredConsentsToUser$ = this.actions$.pipe(i3.ofType(LOGIN), operators.filter(function (action) { return Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
                 Boolean(_this.anonymousConsentsConfig.anonymousConsents.requiredConsents) &&
-                Boolean(action); }), operators.concatMap(function () { return _this.userConsentService.getConsentsResultSuccess().pipe(operators.withLatestFrom(_this.authService.getOccUserId(), _this.userConsentService.getConsents(), _this.authService.isUserLoggedIn()), operators.filter(function (_a) {
+                Boolean(action); }), operators.concatMap(function () { return _this.userConsentService.getConsentsResultSuccess().pipe(operators.withLatestFrom(_this.userIdService.getUserId(), _this.userConsentService.getConsents(), _this.authService.isUserLoggedIn()), operators.filter(function (_a) {
                 var _b = __read(_a, 4), loggedIn = _b[3];
                 return loggedIn;
             }), operators.tap(function (_a) {
@@ -16809,7 +17726,8 @@
         { type: AuthService },
         { type: AnonymousConsentsConfig },
         { type: AnonymousConsentsService },
-        { type: UserConsentService }
+        { type: UserConsentService },
+        { type: UserIdService }
     ]; };
     __decorate([
         i3.Effect()
@@ -16929,225 +17847,6 @@
                 _a),
         };
     }
-
-    /**
-     * Provides support for CONFIG_INITIALIZERS
-     */
-    var ConfigInitializerService = /** @class */ (function () {
-        function ConfigInitializerService(config, initializerGuard, rootConfig) {
-            this.config = config;
-            this.initializerGuard = initializerGuard;
-            this.rootConfig = rootConfig;
-            this.ongoingScopes$ = new rxjs.BehaviorSubject(undefined);
-        }
-        Object.defineProperty(ConfigInitializerService.prototype, "isStable", {
-            /**
-             * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
-             */
-            get: function () {
-                return (!this.initializerGuard ||
-                    (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
-            },
-            enumerable: false,
-            configurable: true
-        });
-        /**
-         * Recommended way to get config for code that can run before app will finish
-         * initialization (APP_INITIALIZERS, selected service constructors)
-         *
-         * Used without parameters waits for the whole config to become stable
-         *
-         * Parameters allow to describe which part of the config should be stable using
-         * string describing config part, e.g.:
-         * 'siteContext', 'siteContext.language', etc.
-         *
-         * @param scopes String describing parts of the config we want to be sure are stable
-         */
-        ConfigInitializerService.prototype.getStableConfig = function () {
-            var scopes = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                scopes[_i] = arguments[_i];
-            }
-            return __awaiter(this, void 0, void 0, function () {
-                var _this = this;
-                return __generator(this, function (_a) {
-                    if (this.isStable) {
-                        return [2 /*return*/, this.config];
-                    }
-                    return [2 /*return*/, this.ongoingScopes$
-                            .pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config))
-                            .toPromise()];
-                });
-            });
-        };
-        /**
-         * Removes provided scopes from currently ongoingScopes
-         *
-         * @param scopes
-         */
-        ConfigInitializerService.prototype.finishScopes = function (scopes) {
-            var e_1, _a;
-            var newScopes = __spread(this.ongoingScopes$.value);
-            try {
-                for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
-                    var scope = scopes_1_1.value;
-                    newScopes.splice(newScopes.indexOf(scope), 1);
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
-            this.ongoingScopes$.next(newScopes);
-        };
-        /**
-         * Return true if provided scopes are not part of ongoingScopes
-         *
-         * @param scopes
-         * @param ongoingScopes
-         */
-        ConfigInitializerService.prototype.areReady = function (scopes, ongoingScopes) {
-            var e_2, _a, e_3, _b;
-            if (!scopes.length) {
-                return !ongoingScopes.length;
-            }
-            try {
-                for (var scopes_2 = __values(scopes), scopes_2_1 = scopes_2.next(); !scopes_2_1.done; scopes_2_1 = scopes_2.next()) {
-                    var scope = scopes_2_1.value;
-                    try {
-                        for (var ongoingScopes_1 = (e_3 = void 0, __values(ongoingScopes)), ongoingScopes_1_1 = ongoingScopes_1.next(); !ongoingScopes_1_1.done; ongoingScopes_1_1 = ongoingScopes_1.next()) {
-                            var ongoingScope = ongoingScopes_1_1.value;
-                            if (this.scopesOverlap(scope, ongoingScope)) {
-                                return false;
-                            }
-                        }
-                    }
-                    catch (e_3_1) { e_3 = { error: e_3_1 }; }
-                    finally {
-                        try {
-                            if (ongoingScopes_1_1 && !ongoingScopes_1_1.done && (_b = ongoingScopes_1.return)) _b.call(ongoingScopes_1);
-                        }
-                        finally { if (e_3) throw e_3.error; }
-                    }
-                }
-            }
-            catch (e_2_1) { e_2 = { error: e_2_1 }; }
-            finally {
-                try {
-                    if (scopes_2_1 && !scopes_2_1.done && (_a = scopes_2.return)) _a.call(scopes_2);
-                }
-                finally { if (e_2) throw e_2.error; }
-            }
-            return true;
-        };
-        /**
-         * Check if two scopes overlap.
-         *
-         * Example of scopes that overlap:
-         * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
-         *
-         * Example of scopes that do not overlap:
-         * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
-         *
-         * @param a ScopeA
-         * @param b ScopeB
-         */
-        ConfigInitializerService.prototype.scopesOverlap = function (a, b) {
-            var _a;
-            if (b.length > a.length) {
-                _a = __read([b, a], 2), a = _a[0], b = _a[1];
-            }
-            return a.startsWith(b) && (a[b.length] || '.') === '.';
-        };
-        /**
-         * @internal
-         *
-         * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
-         *
-         */
-        ConfigInitializerService.prototype.initialize = function (initializers) {
-            return __awaiter(this, void 0, void 0, function () {
-                var ongoingScopes, asyncConfigs, _loop_1, this_1, _a, _b, initializer;
-                var e_4, _c;
-                var _this = this;
-                return __generator(this, function (_d) {
-                    switch (_d.label) {
-                        case 0:
-                            if (this.ongoingScopes$.value) {
-                                // guard for double initialization
-                                return [2 /*return*/];
-                            }
-                            ongoingScopes = [];
-                            asyncConfigs = [];
-                            _loop_1 = function (initializer) {
-                                if (!initializer) {
-                                    return "continue";
-                                }
-                                if (!initializer.scopes || !initializer.scopes.length) {
-                                    throw new Error('CONFIG_INITIALIZER should provide scope!');
-                                }
-                                if (i0.isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
-                                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
-                                }
-                                ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
-                                asyncConfigs.push((function () { return __awaiter(_this, void 0, void 0, function () {
-                                    var initializerConfig;
-                                    return __generator(this, function (_a) {
-                                        switch (_a.label) {
-                                            case 0: return [4 /*yield*/, initializer.configFactory()];
-                                            case 1:
-                                                initializerConfig = _a.sent();
-                                                // contribute configuration to rootConfig
-                                                deepMerge(this.rootConfig, initializerConfig);
-                                                // contribute configuration to global config
-                                                deepMerge(this.config, initializerConfig);
-                                                this.finishScopes(initializer.scopes);
-                                                return [2 /*return*/];
-                                        }
-                                    });
-                                }); })());
-                            };
-                            this_1 = this;
-                            try {
-                                for (_a = __values(initializers || []), _b = _a.next(); !_b.done; _b = _a.next()) {
-                                    initializer = _b.value;
-                                    _loop_1(initializer);
-                                }
-                            }
-                            catch (e_4_1) { e_4 = { error: e_4_1 }; }
-                            finally {
-                                try {
-                                    if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
-                                }
-                                finally { if (e_4) throw e_4.error; }
-                            }
-                            this.ongoingScopes$.next(ongoingScopes);
-                            if (!asyncConfigs.length) return [3 /*break*/, 2];
-                            return [4 /*yield*/, Promise.all(asyncConfigs)];
-                        case 1:
-                            _d.sent();
-                            _d.label = 2;
-                        case 2: return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        return ConfigInitializerService;
-    }());
-    ConfigInitializerService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(i0.ɵɵinject(Config), i0.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8), i0.ɵɵinject(RootConfig)); }, token: ConfigInitializerService, providedIn: "root" });
-    ConfigInitializerService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    ConfigInitializerService.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: i0.Inject, args: [Config,] }] },
-        { type: undefined, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] },
-        { type: undefined, decorators: [{ type: i0.Inject, args: [RootConfig,] }] }
-    ]; };
 
     var SiteContextParamsService = /** @class */ (function () {
         function SiteContextParamsService(config, injector, serviceMap) {
@@ -17298,7 +17997,7 @@
             return contextRoutePart + url;
         };
         return SiteContextUrlSerializer;
-    }(i1$3.DefaultUrlSerializer));
+    }(i1$1.DefaultUrlSerializer));
     SiteContextUrlSerializer.decorators = [
         { type: i0.Injectable }
     ];
@@ -17328,8 +18027,8 @@
         SiteContextRoutesHandler.prototype.init = function () {
             var _this = this;
             return new Promise(function (resolve) {
-                _this.router = _this.injector.get(i1$3.Router);
-                _this.location = _this.injector.get(i1$2.Location);
+                _this.router = _this.injector.get(i1$1.Router);
+                _this.location = _this.injector.get(i1.Location);
                 var routingParams = _this.siteContextParams.getUrlEncodingParameters();
                 if (routingParams.length) {
                     _this.subscribeChanges(routingParams);
@@ -17375,12 +18074,12 @@
             var _this = this;
             var contextInitialized = false;
             this.subscription.add(this.router.events
-                .pipe(operators.filter(function (event) { return event instanceof i1$3.NavigationStart ||
-                event instanceof i1$3.NavigationEnd ||
-                event instanceof i1$3.NavigationError ||
-                event instanceof i1$3.NavigationCancel; }))
+                .pipe(operators.filter(function (event) { return event instanceof i1$1.NavigationStart ||
+                event instanceof i1$1.NavigationEnd ||
+                event instanceof i1$1.NavigationError ||
+                event instanceof i1$1.NavigationCancel; }))
                 .subscribe(function (event) {
-                _this.isNavigating = event instanceof i1$3.NavigationStart;
+                _this.isNavigating = event instanceof i1$1.NavigationStart;
                 if (_this.isNavigating) {
                     _this.setContextParamsFromRoute(event.url);
                     if (!contextInitialized) {
@@ -17450,7 +18149,7 @@
     var siteContextParamsProviders = [
         SiteContextParamsService,
         SiteContextUrlSerializer,
-        { provide: i1$3.UrlSerializer, useExisting: SiteContextUrlSerializer },
+        { provide: i1$1.UrlSerializer, useExisting: SiteContextUrlSerializer },
     ];
 
     var LanguagesEffects = /** @class */ (function () {
@@ -17487,7 +18186,7 @@
         { type: i3.Actions },
         { type: SiteConnector },
         { type: WindowRef },
-        { type: i1$1.Store }
+        { type: i1$2.Store }
     ]; };
     __decorate([
         i3.Effect()
@@ -17533,7 +18232,7 @@
         { type: i3.Actions },
         { type: SiteConnector },
         { type: WindowRef },
-        { type: i1$1.Store }
+        { type: i1$2.Store }
     ]; };
     __decorate([
         i3.Effect()
@@ -17573,12 +18272,12 @@
         BaseSiteEffects,
     ];
 
-    var initialState$6 = {
+    var initialState$5 = {
         details: {},
         activeSite: '',
     };
-    function reducer$6(state, action) {
-        if (state === void 0) { state = initialState$6; }
+    function reducer$5(state, action) {
+        if (state === void 0) { state = initialState$5; }
         switch (action.type) {
             case LOAD_BASE_SITE_SUCCESS: {
                 return Object.assign(Object.assign({}, state), { details: action.payload });
@@ -17590,12 +18289,12 @@
         return state;
     }
 
-    var initialState$7 = {
+    var initialState$6 = {
         entities: null,
         activeCurrency: null,
     };
-    function reducer$7(state, action) {
-        if (state === void 0) { state = initialState$7; }
+    function reducer$6(state, action) {
+        if (state === void 0) { state = initialState$6; }
         switch (action.type) {
             case LOAD_CURRENCIES_SUCCESS: {
                 var currencies = action.payload;
@@ -17613,12 +18312,12 @@
         return state;
     }
 
-    var initialState$8 = {
+    var initialState$7 = {
         entities: null,
         activeLanguage: null,
     };
-    function reducer$8(state, action) {
-        if (state === void 0) { state = initialState$8; }
+    function reducer$7(state, action) {
+        if (state === void 0) { state = initialState$7; }
         switch (action.type) {
             case LOAD_LANGUAGES_SUCCESS: {
                 var languages = action.payload;
@@ -17638,9 +18337,9 @@
 
     function getReducers$2() {
         return {
-            languages: reducer$8,
-            currencies: reducer$7,
-            baseSite: reducer$6,
+            languages: reducer$7,
+            currencies: reducer$6,
+            baseSite: reducer$5,
         };
     }
     var reducerToken$2 = new i0.InjectionToken('SiteContextReducers');
@@ -17669,8 +18368,8 @@
     SiteContextStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
-                        i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
+                        i1.CommonModule,
+                        i1$2.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
                         i3.EffectsModule.forFeature(effects$3),
                     ],
                     providers: [
@@ -17703,9 +18402,9 @@
                 },] }
     ];
 
-    var initialState$9 = false;
-    function reducer$9(state, action) {
-        if (state === void 0) { state = initialState$9; }
+    var initialState$8 = false;
+    function reducer$8(state, action) {
+        if (state === void 0) { state = initialState$8; }
         switch (action.type) {
             case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
                 return action.dismissed;
@@ -17714,9 +18413,9 @@
         return state;
     }
 
-    var initialState$a = false;
-    function reducer$a(state, action) {
-        if (state === void 0) { state = initialState$a; }
+    var initialState$9 = false;
+    function reducer$9(state, action) {
+        if (state === void 0) { state = initialState$9; }
         switch (action.type) {
             case TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: {
                 return action.updated;
@@ -17725,7 +18424,7 @@
         return state;
     }
 
-    var initialState$b = [];
+    var initialState$a = [];
     function toggleConsentStatus(consents, templateCode, status) {
         if (!consents) {
             return [];
@@ -17737,8 +18436,8 @@
             return consent;
         });
     }
-    function reducer$b(state, action) {
-        if (state === void 0) { state = initialState$b; }
+    function reducer$a(state, action) {
+        if (state === void 0) { state = initialState$a; }
         switch (action.type) {
             case GIVE_ANONYMOUS_CONSENT: {
                 return toggleConsentStatus(state, action.templateCode, exports.ANONYMOUS_CONSENT_STATUS.GIVEN);
@@ -17756,10 +18455,10 @@
     function getReducers$3() {
         return {
             templates: loaderReducer(ANONYMOUS_CONSENTS),
-            consents: reducer$b,
-            ui: i1$1.combineReducers({
-                bannerDismissed: reducer$9,
-                updated: reducer$a,
+            consents: reducer$a,
+            ui: i1$2.combineReducers({
+                bannerDismissed: reducer$8,
+                updated: reducer$9,
             }),
         };
     }
@@ -17777,7 +18476,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$1 = [
+    var metaReducers = [
         clearAnonymousConsentTemplates,
     ];
 
@@ -17802,10 +18501,10 @@
     AnonymousConsentsStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
+                        i1.CommonModule,
                         StateModule,
-                        i1$1.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$3, {
-                            metaReducers: metaReducers$1,
+                        i1$2.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$3, {
+                            metaReducers: metaReducers,
                         }),
                         i3.EffectsModule.forFeature(effects$2),
                     ],
@@ -17822,7 +18521,7 @@
         AnonymousConsentsModule.forRoot = function () {
             return {
                 ngModule: AnonymousConsentsModule,
-                providers: __spread(interceptors$1, [
+                providers: __spread(interceptors$2, [
                     AnonymousConsentsService,
                     provideDefaultConfig(defaultAnonymousConsentsConfig),
                 ]),
@@ -17847,27 +18546,345 @@
         },
     };
 
-    var ASM_FEATURE = 'asm';
-    var CUSTOMER_SEARCH_DATA = '[asm] Customer search data';
-    var CSAGENT_TOKEN_DATA = '[Auth] Customer Support Agent Token Data';
-
-    var AsmConnector = /** @class */ (function () {
-        function AsmConnector(asmAdapter) {
-            this.asmAdapter = asmAdapter;
+    (function (TokenTarget) {
+        TokenTarget["CSAgent"] = "CSAgent";
+        TokenTarget["User"] = "User";
+    })(exports.TokenTarget || (exports.TokenTarget = {}));
+    /**
+     * With AsmAuthStorageService apart from storing the token we also need to store
+     * information for which user is the token (regular user or CS Agent).
+     *
+     * Overrides `AuthStorageService`.
+     */
+    var AsmAuthStorageService = /** @class */ (function (_super) {
+        __extends(AsmAuthStorageService, _super);
+        function AsmAuthStorageService() {
+            var _this = _super.apply(this, __spread(arguments)) || this;
+            _this._tokenTarget$ = new rxjs.BehaviorSubject(exports.TokenTarget.User);
+            return _this;
         }
-        AsmConnector.prototype.customerSearch = function (options) {
-            return this.asmAdapter.customerSearch(options);
+        /**
+         * Get target user for current auth token.
+         *
+         * @return observable with TokenTarget
+         */
+        AsmAuthStorageService.prototype.getTokenTarget = function () {
+            return this._tokenTarget$;
         };
-        return AsmConnector;
-    }());
-    AsmConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(i0.ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
-    AsmConnector.decorators = [
+        /**
+         * Set new token target.
+         *
+         * @param tokenTarget
+         */
+        AsmAuthStorageService.prototype.setTokenTarget = function (tokenTarget) {
+            this._tokenTarget$.next(tokenTarget);
+        };
+        /**
+         * Get token for previously user session, when it was interrupted by CS agent login.
+         *
+         * @return previously logged in user token.
+         */
+        AsmAuthStorageService.prototype.getEmulatedUserToken = function () {
+            return this.emulatedUserToken;
+        };
+        /**
+         * Save user token on CS agent login.
+         *
+         * @param token
+         */
+        AsmAuthStorageService.prototype.setEmulatedUserToken = function (token) {
+            this.emulatedUserToken = token;
+        };
+        /**
+         * Change token target to CS Agent.
+         */
+        AsmAuthStorageService.prototype.switchTokenTargetToCSAgent = function () {
+            this._tokenTarget$.next(exports.TokenTarget.CSAgent);
+        };
+        /**
+         * Change token target to user.
+         */
+        AsmAuthStorageService.prototype.switchTokenTargetToUser = function () {
+            this._tokenTarget$.next(exports.TokenTarget.User);
+        };
+        /**
+         * When we start emulation from the UI (not by ASM login) we can't restore user session on cs agent logout.
+         * Only available solution is to drop session we could restore, to avoid account hijack.
+         */
+        AsmAuthStorageService.prototype.clearEmulatedUserToken = function () {
+            this.emulatedUserToken = undefined;
+        };
+        return AsmAuthStorageService;
+    }(AuthStorageService));
+    AsmAuthStorageService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthStorageService_Factory() { return new AsmAuthStorageService(); }, token: AsmAuthStorageService, providedIn: "root" });
+    AsmAuthStorageService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    AsmConnector.ctorParameters = function () { return [
-        { type: AsmAdapter }
+
+    var UserService = /** @class */ (function () {
+        function UserService(store, userIdService) {
+            this.store = store;
+            this.userIdService = userIdService;
+        }
+        /**
+         * Returns a user
+         */
+        UserService.prototype.get = function () {
+            var _this = this;
+            return this.store.pipe(i1$2.select(getDetails), operators.tap(function (details) {
+                if (Object.keys(details).length === 0) {
+                    _this.load();
+                }
+            }));
+        };
+        /**
+         * Loads the user's details
+         */
+        UserService.prototype.load = function () {
+            var _this = this;
+            this.userIdService.invokeWithUserId(function (userId) {
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new LoadUserDetails(userId));
+                }
+            });
+        };
+        /**
+         * Register a new user
+         *
+         * @param submitFormData as UserRegisterFormData
+         */
+        UserService.prototype.register = function (userRegisterFormData) {
+            this.store.dispatch(new RegisterUser(userRegisterFormData));
+        };
+        /**
+         * Register a new user from guest
+         *
+         * @param guid
+         * @param password
+         */
+        UserService.prototype.registerGuest = function (guid, password) {
+            this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
+        };
+        /**
+         * Returns the register user process loading flag
+         */
+        UserService.prototype.getRegisterUserResultLoading = function () {
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the register user process success flag
+         */
+        UserService.prototype.getRegisterUserResultSuccess = function () {
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the register user process error flag
+         */
+        UserService.prototype.getRegisterUserResultError = function () {
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Resets the register user process flags
+         */
+        UserService.prototype.resetRegisterUserProcessState = function () {
+            return this.store.dispatch(new ResetRegisterUserProcess());
+        };
+        /**
+         * Remove user account, that's also called close user's account
+         */
+        UserService.prototype.remove = function () {
+            var _this = this;
+            this.userIdService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new RemoveUser(userId));
+            });
+        };
+        /**
+         * Returns the remove user loading flag
+         */
+        UserService.prototype.getRemoveUserResultLoading = function () {
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the remove user failure outcome.
+         */
+        UserService.prototype.getRemoveUserResultError = function () {
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the remove user process success outcome.
+         */
+        UserService.prototype.getRemoveUserResultSuccess = function () {
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Resets the remove user process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         */
+        UserService.prototype.resetRemoveUserProcessState = function () {
+            this.store.dispatch(new RemoveUserReset());
+        };
+        /**
+         * Returns titles.
+         */
+        UserService.prototype.getTitles = function () {
+            var _this = this;
+            return this.store.pipe(i1$2.select(getAllTitles), operators.tap(function (titles) {
+                if (Object.keys(titles).length === 0) {
+                    _this.loadTitles();
+                }
+            }));
+        };
+        /**
+         * Retrieves titles
+         */
+        UserService.prototype.loadTitles = function () {
+            this.store.dispatch(new LoadTitles());
+        };
+        /**
+         * Return whether user's password is successfully reset
+         */
+        UserService.prototype.isPasswordReset = function () {
+            return this.store.pipe(i1$2.select(getResetPassword));
+        };
+        /**
+         * Updates the user's details
+         * @param userDetails to be updated
+         */
+        UserService.prototype.updatePersonalDetails = function (userDetails) {
+            var _this = this;
+            this.userIdService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdateUserDetails({
+                    username: userId,
+                    userDetails: userDetails,
+                }));
+            });
+        };
+        /**
+         * Returns the update user's personal details loading flag
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultLoading = function () {
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's personal details error flag
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultError = function () {
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's personal details success flag
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultSuccess = function () {
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Resets the update user details processing state
+         */
+        UserService.prototype.resetUpdatePersonalDetailsProcessingState = function () {
+            this.store.dispatch(new ResetUpdateUserDetails());
+        };
+        /**
+         * Reset new password.  Part of the forgot password flow.
+         * @param token
+         * @param password
+         */
+        UserService.prototype.resetPassword = function (token, password) {
+            this.store.dispatch(new ResetPassword({ token: token, password: password }));
+        };
+        /*
+         * Request an email to reset a forgotten password.
+         */
+        UserService.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
+            this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
+        };
+        /**
+         * Updates the user's email
+         */
+        UserService.prototype.updateEmail = function (password, newUid) {
+            var _this = this;
+            this.userIdService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdateEmailAction({
+                    uid: userId,
+                    password: password,
+                    newUid: newUid,
+                }));
+            });
+        };
+        /**
+         * Returns the update user's email success flag
+         */
+        UserService.prototype.getUpdateEmailResultSuccess = function () {
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's email error flag
+         */
+        UserService.prototype.getUpdateEmailResultError = function () {
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's email loading flag
+         */
+        UserService.prototype.getUpdateEmailResultLoading = function () {
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Resets the update user's email processing state
+         */
+        UserService.prototype.resetUpdateEmailResultState = function () {
+            this.store.dispatch(new ResetUpdateEmailAction());
+        };
+        /**
+         * Updates the password for the user
+         * @param oldPassword the current password that will be changed
+         * @param newPassword the new password
+         */
+        UserService.prototype.updatePassword = function (oldPassword, newPassword) {
+            var _this = this;
+            this.userIdService.invokeWithUserId(function (userId) {
+                _this.store.dispatch(new UpdatePassword({
+                    userId: userId,
+                    oldPassword: oldPassword,
+                    newPassword: newPassword,
+                }));
+            });
+        };
+        /**
+         * Returns the update password loading flag
+         */
+        UserService.prototype.getUpdatePasswordResultLoading = function () {
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Returns the update password failure outcome.
+         */
+        UserService.prototype.getUpdatePasswordResultError = function () {
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Returns the update password process success outcome.
+         */
+        UserService.prototype.getUpdatePasswordResultSuccess = function () {
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Resets the update password process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         */
+        UserService.prototype.resetUpdatePasswordProcessState = function () {
+            this.store.dispatch(new UpdatePasswordReset());
+        };
+        return UserService;
+    }());
+    UserService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: UserService, providedIn: "root" });
+    UserService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    UserService.ctorParameters = function () { return [
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
     var ASM_UI_UPDATE = '[Asm] UI Update';
@@ -17878,6 +18895,9 @@
         }
         return AsmUiUpdate;
     }());
+
+    var ASM_FEATURE = 'asm';
+    var CUSTOMER_SEARCH_DATA = '[asm] Customer search data';
 
     var CUSTOMER_SEARCH = '[Asm] Customer Search';
     var CUSTOMER_SEARCH_FAIL = '[Asm] Customer Search Fail';
@@ -17923,39 +18943,10 @@
         return CustomerSearchReset;
     }(LoaderResetAction));
 
-    var LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN = '[Auth] Load Customer Service Agent Token';
-    var LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL = '[Auth] Load Customer Service Agent Token Fail';
-    var LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS = '[Auth] Load Customer Service Agent Token Success';
-    var LoadCustomerSupportAgentToken = /** @class */ (function (_super) {
-        __extends(LoadCustomerSupportAgentToken, _super);
-        function LoadCustomerSupportAgentToken(payload) {
-            var _this = _super.call(this, CSAGENT_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN;
-            return _this;
-        }
-        return LoadCustomerSupportAgentToken;
-    }(LoaderLoadAction));
-    var LoadCustomerSupportAgentTokenFail = /** @class */ (function (_super) {
-        __extends(LoadCustomerSupportAgentTokenFail, _super);
-        function LoadCustomerSupportAgentTokenFail(payload) {
-            var _this = _super.call(this, CSAGENT_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL;
-            return _this;
-        }
-        return LoadCustomerSupportAgentTokenFail;
-    }(LoaderFailAction));
-    var LoadCustomerSupportAgentTokenSuccess = /** @class */ (function (_super) {
-        __extends(LoadCustomerSupportAgentTokenSuccess, _super);
-        function LoadCustomerSupportAgentTokenSuccess(payload) {
-            var _this = _super.call(this, CSAGENT_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS;
-            return _this;
-        }
-        return LoadCustomerSupportAgentTokenSuccess;
-    }(LoaderSuccessAction));
+    var LOGOUT_CUSTOMER_SUPPORT_AGENT = '[Auth] Logout Customer Support Agent';
+    /**
+     * Action dispatched after customer support agent logout. Used to clear store data (ui, search results)
+     */
     var LogoutCustomerSupportAgent = /** @class */ (function () {
         function LogoutCustomerSupportAgent() {
             this.type = LOGOUT_CUSTOMER_SUPPORT_AGENT;
@@ -17975,144 +18966,250 @@
         CustomerSearchFail: CustomerSearchFail,
         CustomerSearchSuccess: CustomerSearchSuccess,
         CustomerSearchReset: CustomerSearchReset,
-        LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN,
-        LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL,
-        LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS,
-        LoadCustomerSupportAgentToken: LoadCustomerSupportAgentToken,
-        LoadCustomerSupportAgentTokenFail: LoadCustomerSupportAgentTokenFail,
-        LoadCustomerSupportAgentTokenSuccess: LoadCustomerSupportAgentTokenSuccess,
+        LOGOUT_CUSTOMER_SUPPORT_AGENT: LOGOUT_CUSTOMER_SUPPORT_AGENT,
         LogoutCustomerSupportAgent: LogoutCustomerSupportAgent
     });
 
-    var CustomerEffects = /** @class */ (function () {
-        function CustomerEffects(actions$, asmConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.asmConnector = asmConnector;
-            this.customerSearch$ = this.actions$.pipe(i3.ofType(CUSTOMER_SEARCH), operators.map(function (action) { return action.payload; }), operators.switchMap(function (options) { return _this.asmConnector.customerSearch(options).pipe(operators.map(function (customerSearchResults) {
-                return new CustomerSearchSuccess(customerSearchResults);
-            }), operators.catchError(function (error) { return rxjs.of(new CustomerSearchFail(makeErrorSerializable(error))); })); }));
+    /**
+     * Auth service for CS agent. Useful to login/logout agent, start emulation
+     * or get information about the status of emulation.
+     */
+    var CsAgentAuthService = /** @class */ (function () {
+        function CsAgentAuthService(authService, authStorageService, userIdService, oAuthLibWrapperService, store, userService) {
+            this.authService = authService;
+            this.authStorageService = authStorageService;
+            this.userIdService = userIdService;
+            this.oAuthLibWrapperService = oAuthLibWrapperService;
+            this.store = store;
+            this.userService = userService;
         }
-        return CustomerEffects;
-    }());
-    CustomerEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    CustomerEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: AsmConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], CustomerEffects.prototype, "customerSearch$", void 0);
-
-    var CustomerSupportAgentTokenEffects = /** @class */ (function () {
-        function CustomerSupportAgentTokenEffects(actions$, userTokenService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userTokenService = userTokenService;
-            this.loadCustomerSupportAgentToken$ = this.actions$.pipe(i3.ofType(LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
-                var userId = _a.userId, password = _a.password;
-                return _this.userTokenService.loadToken(userId, password).pipe(operators.map(function (token) {
-                    var date = new Date();
-                    date.setSeconds(date.getSeconds() + token.expires_in);
-                    token.expiration_time = date.toJSON();
-                    return new LoadCustomerSupportAgentTokenSuccess(token);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error))); }));
+        /**
+         * Loads access token for a customer support agent.
+         * @param userId
+         * @param password
+         */
+        CsAgentAuthService.prototype.authorizeCustomerSupportAgent = function (userId, password) {
+            return __awaiter(this, void 0, void 0, function () {
+                var userToken, customerId_1, _a_1;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            this.authStorageService
+                                .getToken()
+                                .subscribe(function (token) { return (userToken = token); })
+                                .unsubscribe();
+                            this.authStorageService.switchTokenTargetToCSAgent();
+                            _b.label = 1;
+                        case 1:
+                            _b.trys.push([1, 3, , 4]);
+                            return [4 /*yield*/, this.oAuthLibWrapperService.authorizeWithPasswordFlow(userId, password)];
+                        case 2:
+                            _b.sent();
+                            this.userService
+                                .get()
+                                .subscribe(function (user) { return (customerId_1 = user === null || user === void 0 ? void 0 : user.customerId); })
+                                .unsubscribe();
+                            this.store.dispatch(new Logout());
+                            if (Boolean(customerId_1)) {
+                                // OCC specific user id handling. Customize when implementing different backend
+                                this.userIdService.setUserId(customerId_1);
+                                this.authStorageService.setEmulatedUserToken(userToken);
+                                this.store.dispatch(new Login());
+                            }
+                            else {
+                                // When we can't get the customerId just end all current sessions
+                                this.userIdService.setUserId(OCC_USER_ID_ANONYMOUS);
+                                this.authStorageService.clearEmulatedUserToken();
+                            }
+                            return [3 /*break*/, 4];
+                        case 3:
+                            _a_1 = _b.sent();
+                            this.authStorageService.switchTokenTargetToUser();
+                            return [3 /*break*/, 4];
+                        case 4: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        /**
+         * Starts an ASM customer emulation session.
+         * A customer emulation session is stopped by calling logout().
+         * @param customerId
+         */
+        CsAgentAuthService.prototype.startCustomerEmulationSession = function (customerId) {
+            this.authStorageService.clearEmulatedUserToken();
+            // OCC specific user id handling. Customize when implementing different backend
+            this.store.dispatch(new Logout());
+            this.userIdService.setUserId(customerId);
+            this.store.dispatch(new Login());
+        };
+        /**
+         * Check if CS agent is currently logged in.
+         *
+         * @returns observable emitting true when CS agent is logged in or false when not.
+         */
+        CsAgentAuthService.prototype.isCustomerSupportAgentLoggedIn = function () {
+            return rxjs.combineLatest([
+                this.authStorageService.getToken(),
+                this.authStorageService.getTokenTarget(),
+            ]).pipe(operators.map(function (_b) {
+                var _c = __read(_b, 2), token = _c[0], tokenTarget = _c[1];
+                return Boolean((token === null || token === void 0 ? void 0 : token.access_token) && tokenTarget === exports.TokenTarget.CSAgent);
             }));
-        }
-        return CustomerSupportAgentTokenEffects;
+        };
+        /**
+         * Utility function to determine if customer is emulated.
+         *
+         * @returns observable emitting true when there is active emulation session or false when not.
+         */
+        CsAgentAuthService.prototype.isCustomerEmulated = function () {
+            return this.userIdService.isEmulated();
+        };
+        /**
+         * Returns the customer support agent's token loading status
+         */
+        CsAgentAuthService.prototype.getCustomerSupportAgentTokenLoading = function () {
+            // TODO(#8248): Create new loading state outside of store
+            return rxjs.of(false);
+        };
+        /**
+         * Logout a customer support agent.
+         */
+        CsAgentAuthService.prototype.logoutCustomerSupportAgent = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var emulatedToken, isCustomerEmulated;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            emulatedToken = this.authStorageService.getEmulatedUserToken();
+                            this.userIdService
+                                .isEmulated()
+                                .subscribe(function (emulated) { return (isCustomerEmulated = emulated); })
+                                .unsubscribe();
+                            return [4 /*yield*/, this.oAuthLibWrapperService.revokeAndLogout()];
+                        case 1:
+                            _b.sent();
+                            this.store.dispatch(new LogoutCustomerSupportAgent());
+                            this.authStorageService.setTokenTarget(exports.TokenTarget.User);
+                            if (isCustomerEmulated && emulatedToken) {
+                                this.store.dispatch(new Logout());
+                                this.authStorageService.setToken(emulatedToken);
+                                this.userIdService.setUserId(OCC_USER_ID_CURRENT);
+                                this.authStorageService.clearEmulatedUserToken();
+                                this.store.dispatch(new Login());
+                            }
+                            else {
+                                this.authService.initLogout();
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        return CsAgentAuthService;
     }());
-    CustomerSupportAgentTokenEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    CustomerSupportAgentTokenEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: UserAuthenticationTokenService }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
-
-    var effects$4 = [
-        CustomerEffects,
-        CustomerSupportAgentTokenEffects,
-    ];
-
-    var initialState$c = { collapsed: false };
-    function reducer$c(state, action) {
-        if (state === void 0) { state = initialState$c; }
-        switch (action.type) {
-            case ASM_UI_UPDATE: {
-                return Object.assign(Object.assign({}, state), action.payload);
-            }
-            default: {
-                return state;
-            }
-        }
-    }
-
-    function getReducers$4() {
-        return {
-            customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
-            asmUi: reducer$c,
-            csagentToken: loaderReducer(CSAGENT_TOKEN_DATA),
-        };
-    }
-    var reducerToken$4 = new i0.InjectionToken('AsmReducers');
-    var reducerProvider$4 = {
-        provide: reducerToken$4,
-        useFactory: getReducers$4,
-    };
-    function clearCustomerSupportAgentAsmState(reducer) {
-        return function (state, action) {
-            if (action.type === LOGOUT_CUSTOMER_SUPPORT_AGENT) {
-                state = Object.assign(Object.assign({}, state), { customerSearchResult: undefined, csagentToken: undefined });
-            }
-            return reducer(state, action);
-        };
-    }
-    var metaReducers$2 = [
-        clearCustomerSupportAgentAsmState,
-    ];
-
-    function asmStoreConfigFactory() {
-        var config = {
-            state: {
-                storageSync: {
-                    keys: {
-                        'asm.asmUi': exports.StorageSyncType.LOCAL_STORAGE,
-                        'asm.csagentToken.value.access_token': exports.StorageSyncType.LOCAL_STORAGE,
-                        'asm.csagentToken.value.token_type': exports.StorageSyncType.LOCAL_STORAGE,
-                        'asm.csagentToken.value.expires_in': exports.StorageSyncType.LOCAL_STORAGE,
-                        'asm.csagentToken.value.expiration_time': exports.StorageSyncType.LOCAL_STORAGE,
-                        'asm.csagentToken.value.scope': exports.StorageSyncType.LOCAL_STORAGE,
-                        'asm.csagentToken.value.userId': exports.StorageSyncType.LOCAL_STORAGE,
-                    },
-                },
-            },
-        };
-        return config;
-    }
-    var AsmStoreModule = /** @class */ (function () {
-        function AsmStoreModule() {
-        }
-        return AsmStoreModule;
-    }());
-    AsmStoreModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [
-                        i1$2.CommonModule,
-                        StateModule,
-                        i1$1.StoreModule.forFeature(ASM_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
-                        i3.EffectsModule.forFeature(effects$4),
-                    ],
-                    providers: [
-                        provideDefaultConfigFactory(asmStoreConfigFactory),
-                        reducerProvider$4,
-                    ],
+    CsAgentAuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CsAgentAuthService_Factory() { return new CsAgentAuthService(i0.ɵɵinject(AuthService), i0.ɵɵinject(AsmAuthStorageService), i0.ɵɵinject(UserIdService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserService)); }, token: CsAgentAuthService, providedIn: "root" });
+    CsAgentAuthService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
                 },] }
     ];
+    CsAgentAuthService.ctorParameters = function () { return [
+        { type: AuthService },
+        { type: AsmAuthStorageService },
+        { type: UserIdService },
+        { type: OAuthLibWrapperService },
+        { type: i1$2.Store },
+        { type: UserService }
+    ]; };
+
+    /**
+     * Overrides `AuthHeaderService` to handle asm calls as well (not only OCC)
+     * in cases of normal user session and on customer emulation.
+     */
+    var AsmAuthHeaderService = /** @class */ (function (_super) {
+        __extends(AsmAuthHeaderService, _super);
+        function AsmAuthHeaderService(authService, authStorageService, csAgentAuthService, oAuthLibWrapperService, routingService, globalMessageService, occEndpointsService) {
+            var _this = _super.call(this, authService, authStorageService, oAuthLibWrapperService, routingService, occEndpointsService, globalMessageService) || this;
+            _this.authService = authService;
+            _this.authStorageService = authStorageService;
+            _this.csAgentAuthService = csAgentAuthService;
+            _this.oAuthLibWrapperService = oAuthLibWrapperService;
+            _this.routingService = routingService;
+            _this.globalMessageService = globalMessageService;
+            _this.occEndpointsService = occEndpointsService;
+            return _this;
+        }
+        /**
+         * @override
+         *
+         * Checks if particular request should be handled by this service.
+         */
+        AsmAuthHeaderService.prototype.shouldCatchError = function (request) {
+            return (_super.prototype.shouldCatchError.call(this, request) || this.isCSAgentTokenRequest(request));
+        };
+        /**
+         * @override
+         *
+         * Adds `Authorization` header to occ and CS agent requests.
+         * For CS agent requests also removes the `cx-use-csagent-token` header (to avoid problems with CORS).
+         */
+        AsmAuthHeaderService.prototype.alterRequest = function (request) {
+            var hasAuthorizationHeader = !!this.getAuthorizationHeader(request);
+            var isCSAgentRequest = this.isCSAgentTokenRequest(request);
+            var req = _super.prototype.alterRequest.call(this, request);
+            if (!hasAuthorizationHeader && isCSAgentRequest) {
+                req = request.clone({
+                    setHeaders: Object.assign({}, this.createAuthorizationHeader()),
+                });
+                return InterceptorUtil.removeHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, req);
+            }
+            return req;
+        };
+        AsmAuthHeaderService.prototype.isCSAgentTokenRequest = function (request) {
+            var isRequestWithCSAgentToken = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
+            return Boolean(isRequestWithCSAgentToken);
+        };
+        /**
+         * @override
+         *
+         * On backend errors indicating expired `refresh_token` we need to logout
+         * currently logged in user and CS agent.
+         */
+        AsmAuthHeaderService.prototype.handleExpiredRefreshToken = function () {
+            var _this = this;
+            this.csAgentAuthService
+                .isCustomerSupportAgentLoggedIn()
+                .pipe(operators.take(1))
+                .subscribe(function (csAgentLoggedIn) {
+                if (csAgentLoggedIn) {
+                    _this.csAgentAuthService.logoutCustomerSupportAgent();
+                    _this.globalMessageService.add({
+                        key: 'asm.csagentTokenExpired',
+                    }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+                }
+                else {
+                    _super.prototype.handleExpiredRefreshToken.call(_this);
+                }
+            });
+        };
+        return AsmAuthHeaderService;
+    }(AuthHeaderService));
+    AsmAuthHeaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthHeaderService_Factory() { return new AsmAuthHeaderService(i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(CsAgentAuthService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(RoutingService), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(OccEndpointsService)); }, token: AsmAuthHeaderService, providedIn: "root" });
+    AsmAuthHeaderService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AsmAuthHeaderService.ctorParameters = function () { return [
+        { type: AuthService },
+        { type: AuthStorageService },
+        { type: CsAgentAuthService },
+        { type: OAuthLibWrapperService },
+        { type: RoutingService },
+        { type: GlobalMessageService },
+        { type: OccEndpointsService }
+    ]; };
 
     var GlobalMessageConfig = /** @class */ (function () {
         function GlobalMessageConfig() {
@@ -18126,119 +19223,6 @@
                     useExisting: Config,
                 },] }
     ];
-
-    var ADD_MESSAGE = '[Global-message] Add a Message';
-    var REMOVE_MESSAGE = '[Global-message] Remove a Message';
-    var REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
-    var AddMessage = /** @class */ (function () {
-        function AddMessage(payload) {
-            this.payload = payload;
-            this.type = ADD_MESSAGE;
-        }
-        return AddMessage;
-    }());
-    var RemoveMessage = /** @class */ (function () {
-        function RemoveMessage(payload) {
-            this.payload = payload;
-            this.type = REMOVE_MESSAGE;
-        }
-        return RemoveMessage;
-    }());
-    var RemoveMessagesByType = /** @class */ (function () {
-        function RemoveMessagesByType(payload) {
-            this.payload = payload;
-            this.type = REMOVE_MESSAGES_BY_TYPE;
-        }
-        return RemoveMessagesByType;
-    }());
-
-    var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        ADD_MESSAGE: ADD_MESSAGE,
-        REMOVE_MESSAGE: REMOVE_MESSAGE,
-        REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
-        AddMessage: AddMessage,
-        RemoveMessage: RemoveMessage,
-        RemoveMessagesByType: RemoveMessagesByType
-    });
-
-    var GLOBAL_MESSAGE_FEATURE = 'global-message';
-
-    var getGlobalMessageState = i1$1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
-
-    var ɵ0$A = function (state) { return state.entities; };
-    var getGlobalMessageEntities = i1$1.createSelector(getGlobalMessageState, ɵ0$A);
-    var getGlobalMessageEntitiesByType = function (type) {
-        return i1$1.createSelector(getGlobalMessageEntities, function (entities) { return entities && entities[type]; });
-    };
-    var getGlobalMessageCountByType = function (type) {
-        return i1$1.createSelector(getGlobalMessageEntitiesByType(type), function (entities) { return entities && entities.length; });
-    };
-
-    var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getGlobalMessageState: getGlobalMessageState,
-        getGlobalMessageEntities: getGlobalMessageEntities,
-        getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
-        getGlobalMessageCountByType: getGlobalMessageCountByType,
-        ɵ0: ɵ0$A
-    });
-
-    var GlobalMessageService = /** @class */ (function () {
-        function GlobalMessageService(store) {
-            this.store = store;
-        }
-        /**
-         * Get all global messages
-         */
-        GlobalMessageService.prototype.get = function () {
-            return this.store.pipe(i1$1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
-        };
-        /**
-         * Add one message into store
-         * @param text: string | Translatable
-         * @param type: GlobalMessageType object
-         * @param timeout: number
-         */
-        GlobalMessageService.prototype.add = function (text, type, timeout) {
-            this.store.dispatch(new AddMessage({
-                text: typeof text === 'string' ? { raw: text } : text,
-                type: type,
-                timeout: timeout,
-            }));
-        };
-        /**
-         * Remove message(s) from store
-         * @param type: GlobalMessageType
-         * @param index:optional. Without it, messages will be removed by type; otherwise,
-         * message will be removed from list by index.
-         */
-        GlobalMessageService.prototype.remove = function (type, index) {
-            this.store.dispatch(index !== undefined
-                ? new RemoveMessage({
-                    type: type,
-                    index: index,
-                })
-                : new RemoveMessagesByType(type));
-        };
-        return GlobalMessageService;
-    }());
-    GlobalMessageService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobalMessageService_Factory() { return new GlobalMessageService(i0.ɵɵinject(i1$1.Store)); }, token: GlobalMessageService, providedIn: "root" });
-    GlobalMessageService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    GlobalMessageService.ctorParameters = function () { return [
-        { type: i1$1.Store }
-    ]; };
-
-    (function (GlobalMessageType) {
-        GlobalMessageType["MSG_TYPE_CONFIRMATION"] = "[GlobalMessage] Confirmation";
-        GlobalMessageType["MSG_TYPE_ERROR"] = "[GlobalMessage] Error";
-        GlobalMessageType["MSG_TYPE_INFO"] = "[GlobalMessage] Information";
-        GlobalMessageType["MSG_TYPE_WARNING"] = "[GlobalMessage] Warning";
-    })(exports.GlobalMessageType || (exports.GlobalMessageType = {}));
 
     var HttpResponseStatus;
     (function (HttpResponseStatus) {
@@ -18298,7 +19282,7 @@
                 },] }
     ];
 
-    var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
+    var OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
     var BadRequestHandler = /** @class */ (function (_super) {
         __extends(BadRequestHandler, _super);
         function BadRequestHandler() {
@@ -18315,7 +19299,7 @@
         };
         BadRequestHandler.prototype.handleBadPassword = function (request, response) {
             var _a, _b, _c;
-            if (((_a = response.url) === null || _a === void 0 ? void 0 : _a.includes(OAUTH_ENDPOINT$1)) &&
+            if (((_a = response.url) === null || _a === void 0 ? void 0 : _a.includes(OAUTH_ENDPOINT)) &&
                 ((_b = response.error) === null || _b === void 0 ? void 0 : _b.error) === 'invalid_grant' &&
                 ((_c = request.body) === null || _c === void 0 ? void 0 : _c.get('grant_type')) === 'password') {
                 this.globalMessageService.add({
@@ -18488,47 +19472,6 @@
     ];
 
     /**
-     * Handles Oauth client errors when a 401 is returned. This is the case for failing
-     * authenticaton requests to OCC.
-     */
-    var UnauthorizedErrorHandler = /** @class */ (function (_super) {
-        __extends(UnauthorizedErrorHandler, _super);
-        function UnauthorizedErrorHandler(globalMessageService) {
-            var _this = _super.call(this, globalMessageService) || this;
-            _this.globalMessageService = globalMessageService;
-            _this.responseStatus = HttpResponseStatus.UNAUTHORIZED;
-            return _this;
-        }
-        UnauthorizedErrorHandler.prototype.handleError = function (_request, response) {
-            var _a, _b;
-            if (i0.isDevMode()) {
-                console.warn("There's a problem with the \"Oauth client\" configuration. You must configure a matching Oauth client in the backend and Spartacus.");
-            }
-            if (((_a = response.error) === null || _a === void 0 ? void 0 : _a.error) === 'invalid_client') {
-                this.globalMessageService.add(((_b = response.error) === null || _b === void 0 ? void 0 : _b.error_description) || {
-                    key: 'httpHandlers.unauthorized.invalid_client',
-                }, exports.GlobalMessageType.MSG_TYPE_ERROR);
-            }
-            else {
-                this.globalMessageService.add({ key: 'httpHandlers.unauthorized.common' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
-            }
-        };
-        UnauthorizedErrorHandler.prototype.getPriority = function () {
-            return -10 /* LOW */;
-        };
-        return UnauthorizedErrorHandler;
-    }(HttpErrorHandler));
-    UnauthorizedErrorHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function UnauthorizedErrorHandler_Factory() { return new UnauthorizedErrorHandler(i0.ɵɵinject(GlobalMessageService)); }, token: UnauthorizedErrorHandler, providedIn: "root" });
-    UnauthorizedErrorHandler.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    UnauthorizedErrorHandler.ctorParameters = function () { return [
-        { type: GlobalMessageService }
-    ]; };
-
-    /**
      * Unknown Error Handler works as an fallback, to handle errors that were
      * not handled by any other error handlers
      */
@@ -18607,7 +19550,7 @@
         HttpErrorInterceptor.prototype.intercept = function (request, next) {
             var _this = this;
             return next.handle(request).pipe(operators.catchError(function (response) {
-                if (response instanceof i1.HttpErrorResponse) {
+                if (response instanceof i1$4.HttpErrorResponse) {
                     _this.handleErrorResponse(request, response);
                     return rxjs.throwError(response);
                 }
@@ -18677,26 +19620,21 @@
             useExisting: NotFoundHandler,
             multi: true,
         },
-        {
-            provide: HttpErrorHandler,
-            useExisting: UnauthorizedErrorHandler,
-            multi: true,
-        },
     ];
     var httpErrorInterceptors = [
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: HttpErrorInterceptor,
             multi: true,
         },
     ];
 
-    var initialState$d = {
+    var initialState$b = {
         entities: {},
     };
-    function reducer$d(state, action) {
+    function reducer$b(state, action) {
         var _a, _b, _c, _d;
-        if (state === void 0) { state = initialState$d; }
+        if (state === void 0) { state = initialState$b; }
         switch (action.type) {
             case ADD_MESSAGE: {
                 var message = action.payload;
@@ -18727,13 +19665,13 @@
         return state;
     }
 
-    function getReducers$5() {
-        return reducer$d;
+    function getReducers$4() {
+        return reducer$b;
     }
-    var reducerToken$5 = new i0.InjectionToken('GlobalMessageReducers');
-    var reducerProvider$5 = {
-        provide: reducerToken$5,
-        useFactory: getReducers$5,
+    var reducerToken$4 = new i0.InjectionToken('GlobalMessageReducers');
+    var reducerProvider$4 = {
+        provide: reducerToken$4,
+        useFactory: getReducers$4,
     };
 
     var GlobalMessageStoreModule = /** @class */ (function () {
@@ -18745,9 +19683,9 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         StateModule,
-                        i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
+                        i1$2.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
                     ],
-                    providers: [reducerProvider$5],
+                    providers: [reducerProvider$4],
                 },] }
     ];
 
@@ -18834,7 +19772,7 @@
             this.store = store;
             this.config = config;
             this.platformId = platformId;
-            this.removeDuplicated$ = this.actions$.pipe(i3.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap(function (message) { return rxjs.of(message.text).pipe(operators.withLatestFrom(_this.store.pipe(i1$1.select(getGlobalMessageEntitiesByType(message.type)))), operators.filter(function (_a) {
+            this.removeDuplicated$ = this.actions$.pipe(i3.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap(function (message) { return rxjs.of(message.text).pipe(operators.withLatestFrom(_this.store.pipe(i1$2.select(getGlobalMessageEntitiesByType(message.type)))), operators.filter(function (_a) {
                 var _b = __read(_a, 2), text = _b[0], messages = _b[1];
                 return countOfDeepEqualObjects(text, messages) > 1;
             }), operators.map(function (_a) {
@@ -18844,10 +19782,10 @@
                     index: indexOfFirstOccurrence(text, messages),
                 });
             })); }));
-            this.hideAfterDelay$ = i1$2.isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
+            this.hideAfterDelay$ = i1.isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
                 ? this.actions$.pipe(i3.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.concatMap(function (message) {
                     var config = _this.config.globalMessages[message.type];
-                    return _this.store.pipe(i1$1.select(getGlobalMessageCountByType(message.type)), operators.take(1), operators.filter(function (count) { return ((config && config.timeout !== undefined) || message.timeout) &&
+                    return _this.store.pipe(i1$2.select(getGlobalMessageCountByType(message.type)), operators.take(1), operators.filter(function (count) { return ((config && config.timeout !== undefined) || message.timeout) &&
                         count &&
                         count > 0; }), operators.delay(message.timeout || config.timeout), operators.switchMap(function () { return rxjs.of(new RemoveMessage({
                         type: message.type,
@@ -18863,7 +19801,7 @@
     ];
     GlobalMessageEffect.ctorParameters = function () { return [
         { type: i3.Actions },
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: GlobalMessageConfig },
         { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
     ]; };
@@ -18915,227 +19853,375 @@
                 },] }
     ];
 
-    var getAsmState = i1$1.createFeatureSelector(ASM_FEATURE);
-
-    var ɵ0$B = function (state) { return state.asmUi; };
-    var getAsmUi = i1$1.createSelector(getAsmState, ɵ0$B);
-
-    var ɵ0$C = function (state) { return state.customerSearchResult; };
-    var getCustomerSearchResultsLoaderState = i1$1.createSelector(getAsmState, ɵ0$C);
-    var ɵ1$s = function (state) { return loaderValueSelector(state); };
-    var getCustomerSearchResults = i1$1.createSelector(getCustomerSearchResultsLoaderState, ɵ1$s);
-    var ɵ2$i = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerSearchResultsLoading = i1$1.createSelector(getCustomerSearchResultsLoaderState, ɵ2$i);
-
-    var ɵ0$D = function (state) { return state.csagentToken; };
-    var getCustomerSupportAgentTokenState = i1$1.createSelector(getAsmState, ɵ0$D);
-    var ɵ1$t = function (state) { return loaderValueSelector(state); };
-    var getCustomerSupportAgentToken = i1$1.createSelector(getCustomerSupportAgentTokenState, ɵ1$t);
-    var ɵ2$j = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerSupportAgentTokenLoading = i1$1.createSelector(getCustomerSupportAgentTokenState, ɵ2$j);
-
-    var asmGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getAsmUi: getAsmUi,
-        ɵ0: ɵ0$B,
-        getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
-        getCustomerSearchResults: getCustomerSearchResults,
-        getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
-        ɵ1: ɵ1$s,
-        ɵ2: ɵ2$i,
-        getAsmState: getAsmState,
-        getCustomerSupportAgentTokenState: getCustomerSupportAgentTokenState,
-        getCustomerSupportAgentToken: getCustomerSupportAgentToken,
-        getCustomerSupportAgentTokenLoading: getCustomerSupportAgentTokenLoading
-    });
-
-    var AsmAuthService = /** @class */ (function () {
-        function AsmAuthService(store, authService) {
-            this.store = store;
-            this.authService = authService;
+    /**
+     * Version of BasicAuthService that is working for both user na CS agent.
+     * Overrides BasicAuthService when ASM module is enabled.
+     */
+    var AsmAuthService = /** @class */ (function (_super_1) {
+        __extends(AsmAuthService, _super_1);
+        function AsmAuthService(store, userIdService, oAuthLibWrapperService, authStorageService, authRedirectService, globalMessageService, routingService) {
+            var _this = _super_1.call(this, store, userIdService, oAuthLibWrapperService, authStorageService, authRedirectService, routingService) || this;
+            _this.store = store;
+            _this.userIdService = userIdService;
+            _this.oAuthLibWrapperService = oAuthLibWrapperService;
+            _this.authStorageService = authStorageService;
+            _this.authRedirectService = authRedirectService;
+            _this.globalMessageService = globalMessageService;
+            _this.routingService = routingService;
+            return _this;
         }
+        AsmAuthService.prototype.canUserLogin = function () {
+            var tokenTarget;
+            var token;
+            this.authStorageService
+                .getToken()
+                .subscribe(function (tok) { return (token = tok); })
+                .unsubscribe();
+            this.authStorageService
+                .getTokenTarget()
+                .subscribe(function (tokTarget) { return (tokenTarget = tokTarget); })
+                .unsubscribe();
+            return !(Boolean(token === null || token === void 0 ? void 0 : token.access_token) && tokenTarget === exports.TokenTarget.CSAgent);
+        };
+        AsmAuthService.prototype.warnAboutLoggedCSAgent = function () {
+            this.globalMessageService.add({
+                key: 'asm.auth.agentLoggedInError',
+            }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+        };
         /**
-         * Loads a user token for a customer support agent
+         * Loads a new user token with Resource Owner Password Flow when CS agent is not logged in.
          * @param userId
          * @param password
          */
-        AsmAuthService.prototype.authorizeCustomerSupportAgent = function (userId, password) {
-            this.store.dispatch(new LoadCustomerSupportAgentToken({
-                userId: userId,
-                password: password,
-            }));
-        };
-        /**
-         * Starts an ASM customer emulation session.
-         * A customer emulation session is stoped by calling logout().
-         * @param customerSupportAgentToken
-         * @param customerId
-         */
-        AsmAuthService.prototype.startCustomerEmulationSession = function (customerSupportAgentToken, customerId) {
-            this.authService.authorizeWithToken(Object.assign(Object.assign({}, customerSupportAgentToken), { userId: customerId }));
-        };
-        /**
-         * Utility function to determine if a given token is a customer emulation session token.
-         * @param userToken
-         */
-        AsmAuthService.prototype.isCustomerEmulationToken = function (userToken) {
-            return (Boolean(userToken) &&
-                Boolean(userToken.userId) &&
-                userToken.userId !== OCC_USER_ID_CURRENT);
-        };
-        /**
-         * Returns the customer support agent's token
-         */
-        AsmAuthService.prototype.getCustomerSupportAgentToken = function () {
-            return this.store.pipe(i1$1.select(getCustomerSupportAgentToken));
-        };
-        /**
-         * Returns the customer support agent's token loading status
-         */
-        AsmAuthService.prototype.getCustomerSupportAgentTokenLoading = function () {
-            return this.store.pipe(i1$1.select(getCustomerSupportAgentTokenLoading));
-        };
-        /**
-         * Logout a customer support agent
-         */
-        AsmAuthService.prototype.logoutCustomerSupportAgent = function () {
-            var _this = this;
-            this.getCustomerSupportAgentToken()
-                .pipe(operators.take(1))
-                .subscribe(function (userToken) {
-                _this.store.dispatch(new LogoutCustomerSupportAgent());
-                _this.store.dispatch(new RevokeUserToken(userToken));
+        AsmAuthService.prototype.authorize = function (userId, password) {
+            var _super = Object.create(null, {
+                authorize: { get: function () { return _super_1.prototype.authorize; } }
+            });
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!this.canUserLogin()) return [3 /*break*/, 2];
+                            return [4 /*yield*/, _super.authorize.call(this, userId, password)];
+                        case 1:
+                            _a.sent();
+                            return [3 /*break*/, 3];
+                        case 2:
+                            this.warnAboutLoggedCSAgent();
+                            _a.label = 3;
+                        case 3: return [2 /*return*/];
+                    }
+                });
             });
         };
+        /**
+         * Initialize Implicit/Authorization Code flow by redirecting to OAuth server when CS agent is not logged in.
+         */
+        AsmAuthService.prototype.loginWithRedirect = function () {
+            if (this.canUserLogin()) {
+                _super_1.prototype.loginWithRedirect.call(this);
+                return true;
+            }
+            else {
+                this.warnAboutLoggedCSAgent();
+                return false;
+            }
+        };
+        /**
+         * Logout a storefront customer.
+         */
+        AsmAuthService.prototype.logout = function () {
+            var _this = this;
+            return this.userIdService
+                .isEmulated()
+                .pipe(operators.take(1), operators.switchMap(function (isEmulated) {
+                if (isEmulated) {
+                    _this.authStorageService.clearEmulatedUserToken();
+                    _this.userIdService.clearUserId();
+                    _this.store.dispatch(new Logout());
+                    return rxjs.of(true);
+                }
+                else {
+                    return rxjs.from(_super_1.prototype.logout.call(_this));
+                }
+            }))
+                .toPromise();
+        };
+        /**
+         * Returns `true` if user is logged in or being emulated.
+         */
+        AsmAuthService.prototype.isUserLoggedIn = function () {
+            return rxjs.combineLatest([
+                this.authStorageService.getToken(),
+                this.userIdService.isEmulated(),
+                this.authStorageService.getTokenTarget(),
+            ]).pipe(operators.map(function (_a) {
+                var _b = __read(_a, 3), token = _b[0], isEmulated = _b[1], tokenTarget = _b[2];
+                return Boolean(token === null || token === void 0 ? void 0 : token.access_token) &&
+                    (tokenTarget === exports.TokenTarget.User ||
+                        (tokenTarget === exports.TokenTarget.CSAgent && isEmulated));
+            }));
+        };
         return AsmAuthService;
-    }());
-    AsmAuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: AsmAuthService, providedIn: "root" });
+    }(BasicAuthService));
+    AsmAuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(AsmAuthStorageService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(RoutingService)); }, token: AsmAuthService, providedIn: "root" });
     AsmAuthService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     AsmAuthService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService },
+        { type: OAuthLibWrapperService },
+        { type: AsmAuthStorageService },
+        { type: AuthRedirectService },
+        { type: GlobalMessageService },
+        { type: RoutingService }
     ]; };
 
-    var CustomerSupportAgentErrorHandlingService = /** @class */ (function () {
-        function CustomerSupportAgentErrorHandlingService(asmAuthService, globalMessageService) {
-            this.asmAuthService = asmAuthService;
-            this.globalMessageService = globalMessageService;
+    var AsmConnector = /** @class */ (function () {
+        function AsmConnector(asmAdapter) {
+            this.asmAdapter = asmAdapter;
         }
-        CustomerSupportAgentErrorHandlingService.prototype.terminateCustomerSupportAgentExpiredSession = function () {
-            this.asmAuthService.logoutCustomerSupportAgent();
-            this.globalMessageService.add({
-                key: 'asm.csagentTokenExpired',
-            }, exports.GlobalMessageType.MSG_TYPE_ERROR);
+        AsmConnector.prototype.customerSearch = function (options) {
+            return this.asmAdapter.customerSearch(options);
         };
-        return CustomerSupportAgentErrorHandlingService;
+        return AsmConnector;
     }());
-    CustomerSupportAgentErrorHandlingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerSupportAgentErrorHandlingService_Factory() { return new CustomerSupportAgentErrorHandlingService(i0.ɵɵinject(AsmAuthService), i0.ɵɵinject(GlobalMessageService)); }, token: CustomerSupportAgentErrorHandlingService, providedIn: "root" });
-    CustomerSupportAgentErrorHandlingService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    AsmConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(i0.ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
+    AsmConnector.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
-    CustomerSupportAgentErrorHandlingService.ctorParameters = function () { return [
-        { type: AsmAuthService },
-        { type: GlobalMessageService }
+    AsmConnector.ctorParameters = function () { return [
+        { type: AsmAdapter }
     ]; };
 
-    var CustomerSupportAgentAuthErrorInterceptor = /** @class */ (function () {
-        function CustomerSupportAgentAuthErrorInterceptor(csagentErrorHandlingService) {
-            this.csagentErrorHandlingService = csagentErrorHandlingService;
-        }
-        CustomerSupportAgentAuthErrorInterceptor.prototype.intercept = function (request, next) {
+    var CustomerEffects = /** @class */ (function () {
+        function CustomerEffects(actions$, asmConnector) {
             var _this = this;
-            var isCustomerSupportAgentRequest = this.isCustomerSupportAgentRequest(request);
-            if (isCustomerSupportAgentRequest) {
-                request = InterceptorUtil.removeHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request);
-            }
-            return next.handle(request).pipe(operators.catchError(function (errResponse) {
-                if (errResponse instanceof i1.HttpErrorResponse) {
-                    // Unauthorized
-                    if (isCustomerSupportAgentRequest && errResponse.status === 401) {
-                        _this.csagentErrorHandlingService.terminateCustomerSupportAgentExpiredSession();
-                        return rxjs.of(undefined);
-                    }
-                }
-                return rxjs.throwError(errResponse);
-            }));
-        };
-        CustomerSupportAgentAuthErrorInterceptor.prototype.isCustomerSupportAgentRequest = function (request) {
-            var isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
-            return Boolean(isRequestMapping);
-        };
-        return CustomerSupportAgentAuthErrorInterceptor;
-    }());
-    CustomerSupportAgentAuthErrorInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerSupportAgentAuthErrorInterceptor_Factory() { return new CustomerSupportAgentAuthErrorInterceptor(i0.ɵɵinject(CustomerSupportAgentErrorHandlingService)); }, token: CustomerSupportAgentAuthErrorInterceptor, providedIn: "root" });
-    CustomerSupportAgentAuthErrorInterceptor.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    CustomerSupportAgentAuthErrorInterceptor.ctorParameters = function () { return [
-        { type: CustomerSupportAgentErrorHandlingService }
-    ]; };
-
-    var CustomerSupportAgentTokenInterceptor = /** @class */ (function () {
-        function CustomerSupportAgentTokenInterceptor(asmAuthService) {
-            this.asmAuthService = asmAuthService;
+            this.actions$ = actions$;
+            this.asmConnector = asmConnector;
+            this.customerSearch$ = this.actions$.pipe(i3.ofType(CUSTOMER_SEARCH), operators.map(function (action) { return action.payload; }), operators.switchMap(function (options) { return _this.asmConnector.customerSearch(options).pipe(operators.map(function (customerSearchResults) {
+                return new CustomerSearchSuccess(customerSearchResults);
+            }), operators.catchError(function (error) { return rxjs.of(new CustomerSearchFail(normalizeHttpError(error))); })); }));
         }
-        CustomerSupportAgentTokenInterceptor.prototype.intercept = function (request, next) {
-            return this.getCustomerSupportAgentToken(request).pipe(operators.take(1), operators.switchMap(function (token) {
-                if (token) {
-                    request = request.clone({
-                        setHeaders: {
-                            Authorization: token.token_type + " " + token.access_token,
-                        },
-                    });
-                }
-                return next.handle(request);
+        return CustomerEffects;
+    }());
+    CustomerEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    CustomerEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: AsmConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], CustomerEffects.prototype, "customerSearch$", void 0);
+
+    var effects$4 = [CustomerEffects];
+
+    var initialState$c = { collapsed: false };
+    function reducer$c(state, action) {
+        if (state === void 0) { state = initialState$c; }
+        switch (action.type) {
+            case ASM_UI_UPDATE: {
+                return Object.assign(Object.assign({}, state), action.payload);
+            }
+            default: {
+                return state;
+            }
+        }
+    }
+
+    function getReducers$5() {
+        return {
+            customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
+            asmUi: reducer$c,
+        };
+    }
+    var reducerToken$5 = new i0.InjectionToken('AsmReducers');
+    var reducerProvider$5 = {
+        provide: reducerToken$5,
+        useFactory: getReducers$5,
+    };
+    function clearCustomerSupportAgentAsmState(reducer) {
+        return function (state, action) {
+            if (action.type === LOGOUT_CUSTOMER_SUPPORT_AGENT) {
+                state = Object.assign(Object.assign({}, state), { customerSearchResult: undefined });
+            }
+            return reducer(state, action);
+        };
+    }
+    var metaReducers$1 = [
+        clearCustomerSupportAgentAsmState,
+    ];
+
+    var getAsmState = i1$2.createFeatureSelector(ASM_FEATURE);
+
+    var ɵ0$A = function (state) { return state.asmUi; };
+    var getAsmUi = i1$2.createSelector(getAsmState, ɵ0$A);
+
+    var ɵ0$B = function (state) { return state.customerSearchResult; };
+    var getCustomerSearchResultsLoaderState = i1$2.createSelector(getAsmState, ɵ0$B);
+    var ɵ1$r = function (state) { return loaderValueSelector(state); };
+    var getCustomerSearchResults = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ1$r);
+    var ɵ2$i = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerSearchResultsLoading = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ2$i);
+
+    var asmGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getAsmUi: getAsmUi,
+        ɵ0: ɵ0$A,
+        getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
+        getCustomerSearchResults: getCustomerSearchResults,
+        getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
+        ɵ1: ɵ1$r,
+        ɵ2: ɵ2$i,
+        getAsmState: getAsmState
+    });
+
+    /**
+     * Responsible for storing ASM state in the browser storage.
+     * Uses `StatePersistenceService` mechanism.
+     */
+    var AsmStatePersistenceService = /** @class */ (function () {
+        function AsmStatePersistenceService(statePersistenceService, store, authStorageService) {
+            this.statePersistenceService = statePersistenceService;
+            this.store = store;
+            this.authStorageService = authStorageService;
+            this.subscription = new rxjs.Subscription();
+            /**
+             * Identifier used for storage key.
+             */
+            this.key = 'asm';
+        }
+        /**
+         * Initializes the synchronization between state and browser storage.
+         */
+        AsmStatePersistenceService.prototype.initSync = function () {
+            var _this = this;
+            this.subscription.add(this.statePersistenceService.syncWithStorage({
+                key: this.key,
+                state$: this.getAsmState(),
+                onRead: function (state) { return _this.onRead(state); },
             }));
         };
-        CustomerSupportAgentTokenInterceptor.prototype.getCustomerSupportAgentToken = function (request) {
-            if (InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers)) {
-                return this.asmAuthService.getCustomerSupportAgentToken();
-            }
-            return rxjs.of(null);
+        /**
+         * Gets and transforms state from different sources into the form that should
+         * be saved in storage.
+         */
+        AsmStatePersistenceService.prototype.getAsmState = function () {
+            return rxjs.combineLatest([
+                this.store.pipe(i1$2.select(getAsmUi)),
+                rxjs.of(this.authStorageService.getEmulatedUserToken()),
+                this.authStorageService.getTokenTarget(),
+            ]).pipe(operators.map(function (_a) {
+                var _b = __read(_a, 3), ui = _b[0], emulatedUserToken = _b[1], tokenTarget = _b[2];
+                var emulatedToken = emulatedUserToken;
+                if (emulatedToken) {
+                    emulatedToken = Object.assign({}, emulatedUserToken);
+                    // To minimize risk of user account hijacking we don't persist emulated user refresh_token
+                    delete emulatedToken.refresh_token;
+                }
+                return {
+                    ui: ui,
+                    emulatedUserToken: emulatedToken,
+                    tokenTarget: tokenTarget,
+                };
+            }));
         };
-        return CustomerSupportAgentTokenInterceptor;
+        /**
+         * Function called on each browser storage read.
+         * Used to update state from browser -> state.
+         */
+        AsmStatePersistenceService.prototype.onRead = function (state) {
+            if (state) {
+                if (state.ui) {
+                    this.store.dispatch(new AsmUiUpdate(state.ui));
+                }
+                if (state.emulatedUserToken) {
+                    this.authStorageService.setEmulatedUserToken(state.emulatedUserToken);
+                }
+                if (state.tokenTarget) {
+                    this.authStorageService.setTokenTarget(state.tokenTarget);
+                }
+            }
+        };
+        AsmStatePersistenceService.prototype.ngOnDestroy = function () {
+            this.subscription.unsubscribe();
+        };
+        return AsmStatePersistenceService;
     }());
-    CustomerSupportAgentTokenInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerSupportAgentTokenInterceptor_Factory() { return new CustomerSupportAgentTokenInterceptor(i0.ɵɵinject(AsmAuthService)); }, token: CustomerSupportAgentTokenInterceptor, providedIn: "root" });
-    CustomerSupportAgentTokenInterceptor.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    AsmStatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmStatePersistenceService_Factory() { return new AsmStatePersistenceService(i0.ɵɵinject(StatePersistenceService), i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(AsmAuthStorageService)); }, token: AsmStatePersistenceService, providedIn: "root" });
+    AsmStatePersistenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
-    CustomerSupportAgentTokenInterceptor.ctorParameters = function () { return [
-        { type: AsmAuthService }
+    AsmStatePersistenceService.ctorParameters = function () { return [
+        { type: StatePersistenceService },
+        { type: i1$2.Store },
+        { type: AsmAuthStorageService }
     ]; };
 
-    var interceptors$2 = [
-        {
-            provide: i1.HTTP_INTERCEPTORS,
-            useExisting: CustomerSupportAgentTokenInterceptor,
-            multi: true,
-        },
-        {
-            provide: i1.HTTP_INTERCEPTORS,
-            useExisting: CustomerSupportAgentAuthErrorInterceptor,
-            multi: true,
-        },
+    var AsmStoreModule = /** @class */ (function () {
+        function AsmStoreModule() {
+        }
+        return AsmStoreModule;
+    }());
+    AsmStoreModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1.CommonModule,
+                        StateModule,
+                        i1$2.StoreModule.forFeature(ASM_FEATURE, reducerToken$5, { metaReducers: metaReducers$1 }),
+                        i3.EffectsModule.forFeature(effects$4),
+                    ],
+                    providers: [reducerProvider$5],
+                },] }
     ];
 
+    function asmStatePersistenceFactory(asmStatePersistenceService) {
+        var result = function () { return asmStatePersistenceService.initSync(); };
+        return result;
+    }
     var AsmModule = /** @class */ (function () {
         function AsmModule() {
         }
         AsmModule.forRoot = function () {
             return {
                 ngModule: AsmModule,
-                providers: __spread(interceptors$2, [provideDefaultConfig(defaultAsmConfig)]),
+                providers: [
+                    provideDefaultConfig(defaultAsmConfig),
+                    {
+                        provide: AuthStorageService,
+                        useExisting: AsmAuthStorageService,
+                    },
+                    {
+                        provide: BasicAuthService,
+                        useExisting: AsmAuthService,
+                    },
+                    {
+                        provide: AuthHeaderService,
+                        useExisting: AsmAuthHeaderService,
+                    },
+                    {
+                        provide: i0.APP_INITIALIZER,
+                        useFactory: asmStatePersistenceFactory,
+                        deps: [AsmStatePersistenceService],
+                        multi: true,
+                    },
+                ],
             };
         };
         return AsmModule;
     }());
     AsmModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, AsmStoreModule],
+                    imports: [i1.CommonModule, AsmStoreModule],
                 },] }
     ];
 
@@ -19160,13 +20246,13 @@
          * Returns the customer search result data.
          */
         AsmService.prototype.getCustomerSearchResults = function () {
-            return this.store.pipe(i1$1.select(getCustomerSearchResults));
+            return this.store.pipe(i1$2.select(getCustomerSearchResults));
         };
         /**
          * Returns the customer search result loading status.
          */
         AsmService.prototype.getCustomerSearchResultsLoading = function () {
-            return this.store.pipe(i1$1.select(getCustomerSearchResultsLoading));
+            return this.store.pipe(i1$2.select(getCustomerSearchResultsLoading));
         };
         /**
          * Updates the state of the ASM UI
@@ -19178,18 +20264,18 @@
          * Get the state of the ASM UI
          */
         AsmService.prototype.getAsmUiState = function () {
-            return this.store.pipe(i1$1.select(getAsmUi));
+            return this.store.pipe(i1$2.select(getAsmUi));
         };
         return AsmService;
     }());
-    AsmService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(i0.ɵɵinject(i1$1.Store)); }, token: AsmService, providedIn: "root" });
+    AsmService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(i0.ɵɵinject(i1$2.Store)); }, token: AsmService, providedIn: "root" });
     AsmService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     AsmService.ctorParameters = function () { return [
-        { type: i1$1.Store }
+        { type: i1$2.Store }
     ]; };
 
     var CartEntryConnector = /** @class */ (function () {
@@ -19402,7 +20488,7 @@
             this.store = store;
             this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
             this.loadCart$ = this.actions$.pipe(i3.ofType(LOAD_CART), operators.map(function (action) { return action.payload; }), operators.groupBy(function (payload) { return payload.cartId; }), operators.mergeMap(function (group$) { return group$.pipe(operators.switchMap(function (payload) {
-                return rxjs.of(payload).pipe(operators.withLatestFrom(_this.store.pipe(i1$1.select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
+                return rxjs.of(payload).pipe(operators.withLatestFrom(_this.store.pipe(i1$2.select(getCartHasPendingProcessesSelectorFactory(payload.cartId)))));
             }), operators.filter(function (_b) {
                 var _c = __read(_b, 2), _ = _c[0], hasPendingProcesses = _c[1];
                 return !hasPendingProcesses;
@@ -19530,7 +20616,7 @@
     CartEffects.ctorParameters = function () { return [
         { type: i3.Actions },
         { type: CartConnector },
-        { type: i1$1.Store }
+        { type: i1$2.Store }
     ]; };
     __decorate([
         i3.Effect()
@@ -19577,12 +20663,12 @@
     ]; };
 
     var WishListEffects = /** @class */ (function () {
-        function WishListEffects(actions$, cartConnector, saveCartConnector, authService, store) {
+        function WishListEffects(actions$, cartConnector, saveCartConnector, userIdService, store) {
             var _this = this;
             this.actions$ = actions$;
             this.cartConnector = cartConnector;
             this.saveCartConnector = saveCartConnector;
-            this.authService = authService;
+            this.userIdService = userIdService;
             this.store = store;
             this.createWishList$ = this.actions$.pipe(i3.ofType(CREATE_WISH_LIST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.cartConnector.create(payload.userId).pipe(operators.switchMap(function (cart) {
@@ -19636,7 +20722,7 @@
                     }),
                 ]); }));
             }));
-            this.resetWishList$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(i1$1.select(getWishListId))), operators.switchMap(function (_a) {
+            this.resetWishList$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.userIdService.getUserId(), this.store.pipe(i1$2.select(getWishListId))), operators.switchMap(function (_a) {
                 var _b = __read(_a, 3), userId = _b[1], wishListId = _b[2];
                 if (Boolean(wishListId)) {
                     return _this.cartConnector.load(userId, wishListId).pipe(operators.switchMap(function (wishList) { return [
@@ -19665,8 +20751,8 @@
         { type: i3.Actions },
         { type: CartConnector },
         { type: SaveCartConnector },
-        { type: AuthService },
-        { type: i1$1.Store }
+        { type: UserIdService },
+        { type: i1$2.Store }
     ]; };
     __decorate([
         i3.Effect()
@@ -19753,6 +20839,107 @@
         provide: multiCartReducerToken,
         useFactory: getMultiCartReducers,
     };
+
+    var MultiCartStatePersistenceService = /** @class */ (function () {
+        function MultiCartStatePersistenceService(statePersistenceService, store, siteContextParamsService) {
+            this.statePersistenceService = statePersistenceService;
+            this.store = store;
+            this.siteContextParamsService = siteContextParamsService;
+            this.subscription = new rxjs.Subscription();
+        }
+        MultiCartStatePersistenceService.prototype.initSync = function () {
+            var _this = this;
+            this.subscription.add(this.statePersistenceService.syncWithStorage({
+                key: 'cart',
+                state$: this.getCartState(),
+                context$: this.siteContextParamsService.getValues([
+                    BASE_SITE_CONTEXT_ID,
+                ]),
+                onRead: function (state) { return _this.onRead(state); },
+            }));
+        };
+        MultiCartStatePersistenceService.prototype.getCartState = function () {
+            return this.store.pipe(i1$2.select(getMultiCartState), operators.filter(function (state) { return !!state; }), operators.distinctUntilKeyChanged('active'), operators.map(function (state) {
+                return {
+                    active: state.active,
+                };
+            }));
+        };
+        MultiCartStatePersistenceService.prototype.onRead = function (state) {
+            this.store.dispatch(new ClearCartState());
+            if (state) {
+                this.store.dispatch(new SetActiveCartId(state.active));
+            }
+        };
+        MultiCartStatePersistenceService.prototype.ngOnDestroy = function () {
+            this.subscription.unsubscribe();
+        };
+        return MultiCartStatePersistenceService;
+    }());
+    MultiCartStatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(i0.ɵɵinject(StatePersistenceService), i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
+    MultiCartStatePersistenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    MultiCartStatePersistenceService.ctorParameters = function () { return [
+        { type: StatePersistenceService },
+        { type: i1$2.Store },
+        { type: SiteContextParamsService }
+    ]; };
+
+    function cartStatePersistenceFactory(cartStatePersistenceService, configInit) {
+        var result = function () { return configInit.getStableConfig('context').then(function () {
+            cartStatePersistenceService.initSync();
+        }); };
+        return result;
+    }
+    /**
+     * Before `MultiCartStatePersistenceService` restores the active cart id `ActiveCartService`
+     * will use `current` cart instead of the one saved in browser. This meta reducer
+     * sets the value on store initialization to undefined cart which holds active cart loading
+     * until the data from storage is restored.
+     */
+    function uninitializeActiveCartMetaReducerFactory() {
+        var metaReducer = function (reducer) { return function (state, action) {
+            var newState = Object.assign({}, state);
+            if (action.type === '@ngrx/store/init') {
+                newState.cart = Object.assign(Object.assign({}, newState.cart), { active: undefined });
+            }
+            return reducer(newState, action);
+        }; };
+        return metaReducer;
+    }
+    /**
+     * Complimentary module for cart to store cart id in browser storage.
+     * This makes it possible to work on the same anonymous cart even after page refresh.
+     */
+    var CartPersistenceModule = /** @class */ (function () {
+        function CartPersistenceModule() {
+        }
+        CartPersistenceModule.forRoot = function () {
+            return {
+                ngModule: CartPersistenceModule,
+                providers: [
+                    {
+                        provide: i0.APP_INITIALIZER,
+                        useFactory: cartStatePersistenceFactory,
+                        deps: [MultiCartStatePersistenceService, ConfigInitializerService],
+                        multi: true,
+                    },
+                    {
+                        provide: i1$2.META_REDUCERS,
+                        useFactory: uninitializeActiveCartMetaReducerFactory,
+                        multi: true,
+                    },
+                ],
+            };
+        };
+        return CartPersistenceModule;
+    }());
+    CartPersistenceModule.decorators = [
+        { type: i0.NgModule }
+    ];
 
     // =====================================================================
     var CartAddEntryEvent = /** @class */ (function () {
@@ -19857,12 +21044,12 @@
         };
         return CartEventBuilder;
     }());
-    CartEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(i0.ɵɵinject(i1$1.ActionsSubject), i0.ɵɵinject(EventService), i0.ɵɵinject(ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
+    CartEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartEventBuilder_Factory() { return new CartEventBuilder(i0.ɵɵinject(i1$2.ActionsSubject), i0.ɵɵinject(EventService), i0.ɵɵinject(ActiveCartService)); }, token: CartEventBuilder, providedIn: "root" });
     CartEventBuilder.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
     CartEventBuilder.ctorParameters = function () { return [
-        { type: i1$1.ActionsSubject },
+        { type: i1$2.ActionsSubject },
         { type: EventService },
         { type: ActiveCartService }
     ]; };
@@ -20043,15 +21230,15 @@
         CmsSetPageFailIndex: CmsSetPageFailIndex
     });
 
-    var getCmsState = i1$1.createFeatureSelector(CMS_FEATURE);
+    var getCmsState = i1$2.createFeatureSelector(CMS_FEATURE);
 
-    var ɵ0$E = function (state) { return state.components; };
-    var getComponentsState = i1$1.createSelector(getCmsState, ɵ0$E);
+    var ɵ0$C = function (state) { return state.components; };
+    var getComponentsState = i1$2.createSelector(getCmsState, ɵ0$C);
     var componentsContextSelectorFactory = function (uid) {
-        return i1$1.createSelector(getComponentsState, function (componentsState) { return entitySelector(componentsState, uid); });
+        return i1$2.createSelector(getComponentsState, function (componentsState) { return entitySelector(componentsState, uid); });
     };
     var componentsLoaderStateSelectorFactory = function (uid, context) {
-        return i1$1.createSelector(componentsContextSelectorFactory(uid), function (componentsContext) { return (componentsContext &&
+        return i1$2.createSelector(componentsContextSelectorFactory(uid), function (componentsContext) { return (componentsContext &&
             componentsContext.pageContext &&
             componentsContext.pageContext[context]) ||
             initialLoaderState; });
@@ -20066,10 +21253,10 @@
      * @param context
      */
     var componentsContextExistsSelectorFactory = function (uid, context) {
-        return i1$1.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState); });
+        return i1$2.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState); });
     };
     var componentsDataSelectorFactory = function (uid) {
-        return i1$1.createSelector(componentsContextSelectorFactory(uid), function (state) { return state ? state.component : undefined; });
+        return i1$2.createSelector(componentsContextSelectorFactory(uid), function (state) { return state ? state.component : undefined; });
     };
     /**
      * This selector will return:
@@ -20081,7 +21268,7 @@
      * @param context
      */
     var componentsSelectorFactory = function (uid, context) {
-        return i1$1.createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), function (componentState, exists) {
+        return i1$2.createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), function (componentState, exists) {
             switch (exists) {
                 case true:
                     return componentState;
@@ -20093,17 +21280,17 @@
         });
     };
 
-    var ɵ0$F = function (state) { return state.navigation; };
-    var getNavigationEntryItemState = i1$1.createSelector(getCmsState, ɵ0$F);
+    var ɵ0$D = function (state) { return state.navigation; };
+    var getNavigationEntryItemState = i1$2.createSelector(getCmsState, ɵ0$D);
     var getSelectedNavigationEntryItemState = function (nodeId) {
-        return i1$1.createSelector(getNavigationEntryItemState, function (nodes) { return entityLoaderStateSelector(nodes, nodeId); });
+        return i1$2.createSelector(getNavigationEntryItemState, function (nodes) { return entityLoaderStateSelector(nodes, nodeId); });
     };
     var getNavigationEntryItems = function (nodeId) {
-        return i1$1.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
+        return i1$2.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
     };
 
     var getPageEntitiesSelector = function (state) { return state.pageData.entities; };
-    var ɵ0$G = getPageEntitiesSelector;
+    var ɵ0$E = getPageEntitiesSelector;
     var getIndexByType = function (index, type) {
         switch (type) {
             case exports.PageType.CONTENT_PAGE: {
@@ -20121,7 +21308,7 @@
         }
         return { entities: {} };
     };
-    var ɵ1$u = getIndexByType;
+    var ɵ1$s = getIndexByType;
     var getPageComponentTypesSelector = function (page) {
         var e_1, _a, e_2, _b;
         var componentTypes = new Set();
@@ -20154,19 +21341,19 @@
         }
         return Array.from(componentTypes);
     };
-    var ɵ2$k = getPageComponentTypesSelector;
+    var ɵ2$j = getPageComponentTypesSelector;
     var ɵ3$c = function (state) { return state.page; };
-    var getPageState = i1$1.createSelector(getCmsState, ɵ3$c);
+    var getPageState = i1$2.createSelector(getCmsState, ɵ3$c);
     var ɵ4$6 = function (page) { return page.index; };
-    var getPageStateIndex = i1$1.createSelector(getPageState, ɵ4$6);
-    var getPageStateIndexEntityLoaderState = function (pageContext) { return i1$1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); }); };
-    var getPageStateIndexLoaderState = function (pageContext) { return i1$1.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) { return entityLoaderStateSelector(indexState, pageContext.id); }); };
-    var getPageStateIndexValue = function (pageContext) { return i1$1.createSelector(getPageStateIndexLoaderState(pageContext), function (entity) { return loaderValueSelector(entity); }); };
-    var getPageEntities = i1$1.createSelector(getPageState, getPageEntitiesSelector);
-    var getPageData = function (pageContext) { return i1$1.createSelector(getPageEntities, getPageStateIndexValue(pageContext), function (entities, indexValue) { return entities[indexValue]; }); };
-    var getPageComponentTypes = function (pageContext) { return i1$1.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); }); };
+    var getPageStateIndex = i1$2.createSelector(getPageState, ɵ4$6);
+    var getPageStateIndexEntityLoaderState = function (pageContext) { return i1$2.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); }); };
+    var getPageStateIndexLoaderState = function (pageContext) { return i1$2.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) { return entityLoaderStateSelector(indexState, pageContext.id); }); };
+    var getPageStateIndexValue = function (pageContext) { return i1$2.createSelector(getPageStateIndexLoaderState(pageContext), function (entity) { return loaderValueSelector(entity); }); };
+    var getPageEntities = i1$2.createSelector(getPageState, getPageEntitiesSelector);
+    var getPageData = function (pageContext) { return i1$2.createSelector(getPageEntities, getPageStateIndexValue(pageContext), function (entities, indexValue) { return entities[indexValue]; }); };
+    var getPageComponentTypes = function (pageContext) { return i1$2.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); }); };
     var getCurrentSlotSelectorFactory = function (pageContext, position) {
-        return i1$1.createSelector(getPageData(pageContext), function (entity) {
+        return i1$2.createSelector(getPageData(pageContext), function (entity) {
             if (entity) {
                 return entity.slots[position] || { components: [] };
             }
@@ -20181,7 +21368,7 @@
         componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
         componentsDataSelectorFactory: componentsDataSelectorFactory,
         componentsSelectorFactory: componentsSelectorFactory,
-        ɵ0: ɵ0$E,
+        ɵ0: ɵ0$C,
         getCmsState: getCmsState,
         getNavigationEntryItemState: getNavigationEntryItemState,
         getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
@@ -20195,8 +21382,8 @@
         getPageData: getPageData,
         getPageComponentTypes: getPageComponentTypes,
         getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory,
-        ɵ1: ɵ1$u,
-        ɵ2: ɵ2$k,
+        ɵ1: ɵ1$s,
+        ɵ2: ɵ2$j,
         ɵ3: ɵ3$c,
         ɵ4: ɵ4$6
     });
@@ -20270,7 +21457,7 @@
             var context = serializePageContext(pageContext, true);
             var loading$ = rxjs.combineLatest([
                 this.routingService.getNextPageContext(),
-                this.store.pipe(i1$1.select(componentsLoaderStateSelectorFactory(uid, context))),
+                this.store.pipe(i1$2.select(componentsLoaderStateSelectorFactory(uid, context))),
             ]).pipe(operators.observeOn(rxjs.queueScheduler), operators.tap(function (_a) {
                 var _b = __read(_a, 2), nextContext = _b[0], loadingState = _b[1];
                 var attemptedLoad = loadingState.loading || loadingState.success || loadingState.error;
@@ -20284,7 +21471,7 @@
                     _this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
                 }
             }));
-            var component$ = this.store.pipe(i1$1.select(componentsSelectorFactory(uid, context)), operators.filter(function (component) { return component !== undefined; }));
+            var component$ = this.store.pipe(i1$2.select(componentsSelectorFactory(uid, context)), operators.filter(function (component) { return component !== undefined; }));
             return rxjs.using(function () { return loading$.subscribe(); }, function () { return component$; }).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
@@ -20295,14 +21482,14 @@
             var _this = this;
             return this.routingService
                 .getPageContext()
-                .pipe(operators.switchMap(function (pageContext) { return _this.store.pipe(i1$1.select(getCurrentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean)); }));
+                .pipe(operators.switchMap(function (pageContext) { return _this.store.pipe(i1$2.select(getCurrentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean)); }));
         };
         /**
          * Given navigation node uid, get items (with id and type) inside the navigation entries
          * @param navigationNodeUid : uid of the navigation node
          */
         CmsService.prototype.getNavigationEntryItems = function (navigationNodeUid) {
-            return this.store.pipe(i1$1.select(getNavigationEntryItems(navigationNodeUid)));
+            return this.store.pipe(i1$2.select(getNavigationEntryItems(navigationNodeUid)));
         };
         /**
          * Load navigation items data
@@ -20347,14 +21534,14 @@
          * @param pageContext
          */
         CmsService.prototype.getPageState = function (pageContext) {
-            return this.store.pipe(i1$1.select(getPageData(pageContext)));
+            return this.store.pipe(i1$2.select(getPageData(pageContext)));
         };
         /**
          * Given pageContext, return the CMS page data
          * @param pageContext
          */
         CmsService.prototype.getPageComponentTypes = function (pageContext) {
-            return this.store.pipe(i1$1.select(getPageComponentTypes(pageContext)));
+            return this.store.pipe(i1$2.select(getPageComponentTypes(pageContext)));
         };
         /**
          * Given pageContext, return whether the CMS page data exists or not
@@ -20363,7 +21550,7 @@
         CmsService.prototype.hasPage = function (pageContext, forceReload) {
             var _this = this;
             if (forceReload === void 0) { forceReload = false; }
-            return this.store.pipe(i1$1.select(getPageStateIndexLoaderState(pageContext)), operators.tap(function (entity) {
+            return this.store.pipe(i1$2.select(getPageStateIndexLoaderState(pageContext)), operators.tap(function (entity) {
                 var attemptedLoad = entity.loading || entity.success || entity.error;
                 var shouldReload = forceReload && !entity.loading;
                 if (!attemptedLoad || shouldReload) {
@@ -20388,21 +21575,21 @@
             return this.hasPage(pageContext, forceReload).pipe(operators.switchMap(function (hasPage) { return hasPage ? _this.getPageState(pageContext) : rxjs.of(null); }));
         };
         CmsService.prototype.getPageIndex = function (pageContext) {
-            return this.store.pipe(i1$1.select(getPageStateIndexValue(pageContext)));
+            return this.store.pipe(i1$2.select(getPageStateIndexValue(pageContext)));
         };
         CmsService.prototype.setPageFailIndex = function (pageContext, value) {
             this.store.dispatch(new CmsSetPageFailIndex(pageContext, value));
         };
         return CmsService;
     }());
-    CmsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
+    CmsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
     CmsService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     CmsService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: RoutingService }
     ]; };
 
@@ -20449,48 +21636,6 @@
         { type: CmsService }
     ]; };
 
-    var MultiCartStatePersistenceService = /** @class */ (function () {
-        function MultiCartStatePersistenceService(statePersistenceService, store, siteContextParamsService) {
-            this.statePersistenceService = statePersistenceService;
-            this.store = store;
-            this.siteContextParamsService = siteContextParamsService;
-        }
-        MultiCartStatePersistenceService.prototype.sync = function () {
-            var _this = this;
-            this.statePersistenceService.syncWithStorage({
-                key: 'cart',
-                state$: this.getCartState(),
-                context$: this.siteContextParamsService.getValues([BASE_SITE_CONTEXT_ID]),
-                onRead: function (state) { return _this.onRead(state); },
-            });
-        };
-        MultiCartStatePersistenceService.prototype.getCartState = function () {
-            return this.store.pipe(i1$1.select(getMultiCartState), operators.filter(function (state) { return !!state; }), operators.distinctUntilKeyChanged('active'), operators.map(function (state) {
-                return {
-                    active: state.active,
-                };
-            }));
-        };
-        MultiCartStatePersistenceService.prototype.onRead = function (state) {
-            this.store.dispatch(new ClearCartState());
-            if (state) {
-                this.store.dispatch(new SetActiveCartId(state.active));
-            }
-        };
-        return MultiCartStatePersistenceService;
-    }());
-    MultiCartStatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartStatePersistenceService_Factory() { return new MultiCartStatePersistenceService(i0.ɵɵinject(StatePersistenceService), i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(SiteContextParamsService)); }, token: MultiCartStatePersistenceService, providedIn: "root" });
-    MultiCartStatePersistenceService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    MultiCartStatePersistenceService.ctorParameters = function () { return [
-        { type: StatePersistenceService },
-        { type: i1$1.Store },
-        { type: SiteContextParamsService }
-    ]; };
-
     var MultiCartEffects = /** @class */ (function () {
         function MultiCartEffects(actions$) {
             this.actions$ = actions$;
@@ -20530,9 +21675,9 @@
     MultiCartStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
+                        i1.CommonModule,
                         StateModule,
-                        i1$1.StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
+                        i1$2.StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
                             metaReducers: multiCartMetaReducers,
                         }),
                         i3.EffectsModule.forFeature(effects$5),
@@ -20541,12 +21686,6 @@
                 },] }
     ];
 
-    function cartStatePersistenceFactory(cartStatePersistenceService, configInit) {
-        var result = function () { return configInit.getStableConfig('context').then(function () {
-            cartStatePersistenceService.sync();
-        }); };
-        return result;
-    }
     var CartModule = /** @class */ (function () {
         function CartModule() {
         }
@@ -20559,12 +21698,6 @@
                         useExisting: CartPageMetaResolver,
                         multi: true,
                     },
-                    {
-                        provide: i0.APP_INITIALIZER,
-                        useFactory: cartStatePersistenceFactory,
-                        deps: [MultiCartStatePersistenceService, ConfigInitializerService],
-                        multi: true,
-                    },
                 ],
             };
         };
@@ -20572,7 +21705,11 @@
     }());
     CartModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [MultiCartStoreModule, CartEventModule],
+                    imports: [
+                        MultiCartStoreModule,
+                        CartEventModule,
+                        CartPersistenceModule.forRoot(),
+                    ],
                 },] }
     ];
 
@@ -20590,10 +21727,10 @@
     ];
 
     var CartVoucherService = /** @class */ (function () {
-        function CartVoucherService(store, authService, activeCartService) {
+        function CartVoucherService(store, activeCartService, userIdService) {
             this.store = store;
-            this.authService = authService;
             this.activeCartService = activeCartService;
+            this.userIdService = userIdService;
         }
         CartVoucherService.prototype.addVoucher = function (voucherId, cartId) {
             var _this = this;
@@ -20623,7 +21760,7 @@
          * @deprecated since 2.0
          */
         CartVoucherService.prototype.getAddVoucherResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
         };
         // TODO(#7241): Remove when switching to event system for add voucher
         /**
@@ -20631,7 +21768,7 @@
          * @deprecated since 2.0
          */
         CartVoucherService.prototype.getAddVoucherResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
         };
         // TODO(#7241): Remove when switching to event system for add voucher
         /**
@@ -20639,7 +21776,7 @@
          * @deprecated since 2.0
          */
         CartVoucherService.prototype.getAddVoucherResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
         };
         // TODO(#7241): Remove when switching to event system for add voucher
         /**
@@ -20651,291 +21788,27 @@
         };
         CartVoucherService.prototype.combineUserAndCartId = function (cartId) {
             if (cartId) {
-                return this.authService.getOccUserId().pipe(operators.take(1), operators.map(function (userId) { return [userId, cartId]; }));
+                return this.userIdService.getUserId().pipe(operators.take(1), operators.map(function (userId) { return [userId, cartId]; }));
             }
             else {
                 return rxjs.combineLatest([
-                    this.authService.getOccUserId(),
+                    this.userIdService.getUserId(),
                     this.activeCartService.getActiveCartId(),
                 ]).pipe(operators.take(1));
             }
         };
         return CartVoucherService;
     }());
-    CartVoucherService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(ActiveCartService)); }, token: CartVoucherService, providedIn: "root" });
+    CartVoucherService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CartVoucherService_Factory() { return new CartVoucherService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(ActiveCartService), i0.ɵɵinject(UserIdService)); }, token: CartVoucherService, providedIn: "root" });
     CartVoucherService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     CartVoucherService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
-        { type: ActiveCartService }
-    ]; };
-
-    var UserService = /** @class */ (function () {
-        function UserService(store, authService) {
-            this.store = store;
-            this.authService = authService;
-        }
-        /**
-         * Returns a user
-         */
-        UserService.prototype.get = function () {
-            var _this = this;
-            return this.store.pipe(i1$1.select(getDetails), operators.tap(function (details) {
-                if (Object.keys(details).length === 0) {
-                    _this.load();
-                }
-            }));
-        };
-        /**
-         * Loads the user's details
-         */
-        UserService.prototype.load = function () {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                if (userId !== OCC_USER_ID_ANONYMOUS) {
-                    _this.store.dispatch(new LoadUserDetails(userId));
-                }
-            });
-        };
-        /**
-         * Register a new user
-         *
-         * @param submitFormData as UserRegisterFormData
-         */
-        UserService.prototype.register = function (userRegisterFormData) {
-            this.store.dispatch(new RegisterUser(userRegisterFormData));
-        };
-        /**
-         * Register a new user from guest
-         *
-         * @param guid
-         * @param password
-         */
-        UserService.prototype.registerGuest = function (guid, password) {
-            this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
-        };
-        /**
-         * Returns the register user process loading flag
-         */
-        UserService.prototype.getRegisterUserResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the register user process success flag
-         */
-        UserService.prototype.getRegisterUserResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the register user process error flag
-         */
-        UserService.prototype.getRegisterUserResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Resets the register user process flags
-         */
-        UserService.prototype.resetRegisterUserProcessState = function () {
-            return this.store.dispatch(new ResetRegisterUserProcess());
-        };
-        /**
-         * Remove user account, that's also called close user's account
-         */
-        UserService.prototype.remove = function () {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new RemoveUser(userId));
-            });
-        };
-        /**
-         * Returns the remove user loading flag
-         */
-        UserService.prototype.getRemoveUserResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the remove user failure outcome.
-         */
-        UserService.prototype.getRemoveUserResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the remove user process success outcome.
-         */
-        UserService.prototype.getRemoveUserResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Resets the remove user process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         */
-        UserService.prototype.resetRemoveUserProcessState = function () {
-            this.store.dispatch(new RemoveUserReset());
-        };
-        /**
-         * Returns titles.
-         */
-        UserService.prototype.getTitles = function () {
-            var _this = this;
-            return this.store.pipe(i1$1.select(getAllTitles), operators.tap(function (titles) {
-                if (Object.keys(titles).length === 0) {
-                    _this.loadTitles();
-                }
-            }));
-        };
-        /**
-         * Retrieves titles
-         */
-        UserService.prototype.loadTitles = function () {
-            this.store.dispatch(new LoadTitles());
-        };
-        /**
-         * Return whether user's password is successfully reset
-         */
-        UserService.prototype.isPasswordReset = function () {
-            return this.store.pipe(i1$1.select(getResetPassword));
-        };
-        /**
-         * Updates the user's details
-         * @param userDetails to be updated
-         */
-        UserService.prototype.updatePersonalDetails = function (userDetails) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdateUserDetails({
-                    username: userId,
-                    userDetails: userDetails,
-                }));
-            });
-        };
-        /**
-         * Returns the update user's personal details loading flag
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's personal details error flag
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's personal details success flag
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Resets the update user details processing state
-         */
-        UserService.prototype.resetUpdatePersonalDetailsProcessingState = function () {
-            this.store.dispatch(new ResetUpdateUserDetails());
-        };
-        /**
-         * Reset new password.  Part of the forgot password flow.
-         * @param token
-         * @param password
-         */
-        UserService.prototype.resetPassword = function (token, password) {
-            this.store.dispatch(new ResetPassword({ token: token, password: password }));
-        };
-        /*
-         * Request an email to reset a forgotten password.
-         */
-        UserService.prototype.requestForgotPasswordEmail = function (userEmailAddress) {
-            this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
-        };
-        /**
-         * Updates the user's email
-         */
-        UserService.prototype.updateEmail = function (password, newUid) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdateEmailAction({
-                    uid: userId,
-                    password: password,
-                    newUid: newUid,
-                }));
-            });
-        };
-        /**
-         * Returns the update user's email success flag
-         */
-        UserService.prototype.getUpdateEmailResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's email error flag
-         */
-        UserService.prototype.getUpdateEmailResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's email loading flag
-         */
-        UserService.prototype.getUpdateEmailResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Resets the update user's email processing state
-         */
-        UserService.prototype.resetUpdateEmailResultState = function () {
-            this.store.dispatch(new ResetUpdateEmailAction());
-        };
-        /**
-         * Updates the password for the user
-         * @param oldPassword the current password that will be changed
-         * @param newPassword the new password
-         */
-        UserService.prototype.updatePassword = function (oldPassword, newPassword) {
-            var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
-                _this.store.dispatch(new UpdatePassword({
-                    userId: userId,
-                    oldPassword: oldPassword,
-                    newPassword: newPassword,
-                }));
-            });
-        };
-        /**
-         * Returns the update password loading flag
-         */
-        UserService.prototype.getUpdatePasswordResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Returns the update password failure outcome.
-         */
-        UserService.prototype.getUpdatePasswordResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Returns the update password process success outcome.
-         */
-        UserService.prototype.getUpdatePasswordResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Resets the update password process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         */
-        UserService.prototype.resetUpdatePasswordProcessState = function () {
-            this.store.dispatch(new UpdatePasswordReset());
-        };
-        return UserService;
-    }());
-    UserService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserService_Factory() { return new UserService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserService, providedIn: "root" });
-    UserService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    UserService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: ActiveCartService },
+        { type: UserIdService }
     ]; };
 
     var CartConfigService = /** @class */ (function () {
@@ -20959,14 +21832,14 @@
     ]; };
 
     var SelectiveCartService = /** @class */ (function () {
-        function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService, cartConfigService) {
+        function SelectiveCartService(store, userService, multiCartService, baseSiteService, cartConfigService, userIdService) {
             var _this = this;
             this.store = store;
             this.userService = userService;
-            this.authService = authService;
             this.multiCartService = multiCartService;
             this.baseSiteService = baseSiteService;
             this.cartConfigService = cartConfigService;
+            this.userIdService = userIdService;
             this.cartId$ = new rxjs.BehaviorSubject(undefined);
             this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
             this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
@@ -20987,7 +21860,7 @@
                     _this.cartId$.next(undefined);
                 }
             });
-            this.authService.getOccUserId().subscribe(function (userId) {
+            this.userIdService.getUserId().subscribe(function (userId) {
                 _this.userId = userId;
                 if (_this.isJustLoggedIn(userId)) {
                     _this.load();
@@ -21074,27 +21947,27 @@
         };
         return SelectiveCartService;
     }());
-    SelectiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(UserService), i0.ɵɵinject(AuthService), i0.ɵɵinject(MultiCartService), i0.ɵɵinject(BaseSiteService), i0.ɵɵinject(CartConfigService)); }, token: SelectiveCartService, providedIn: "root" });
+    SelectiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SelectiveCartService_Factory() { return new SelectiveCartService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserService), i0.ɵɵinject(MultiCartService), i0.ɵɵinject(BaseSiteService), i0.ɵɵinject(CartConfigService), i0.ɵɵinject(UserIdService)); }, token: SelectiveCartService, providedIn: "root" });
     SelectiveCartService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     SelectiveCartService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: UserService },
-        { type: AuthService },
         { type: MultiCartService },
         { type: BaseSiteService },
-        { type: CartConfigService }
+        { type: CartConfigService },
+        { type: UserIdService }
     ]; };
 
     var WishListService = /** @class */ (function () {
-        function WishListService(store, authService, userService, multiCartService) {
+        function WishListService(store, userService, multiCartService, userIdService) {
             this.store = store;
-            this.authService = authService;
             this.userService = userService;
             this.multiCartService = multiCartService;
+            this.userIdService = userIdService;
         }
         WishListService.prototype.createWishList = function (userId, name, description) {
             this.store.dispatch(new CreateWishList({ userId: userId, name: name, description: description }));
@@ -21104,7 +21977,7 @@
             return rxjs.combineLatest([
                 this.getWishListId(),
                 this.userService.get(),
-                this.authService.getOccUserId(),
+                this.userIdService.getUserId(),
             ]).pipe(operators.distinctUntilChanged(), operators.tap(function (_a) {
                 var _b = __read(_a, 3), wishListId = _b[0], user = _b[1], userId = _b[2];
                 if (!Boolean(wishListId) &&
@@ -21131,7 +22004,7 @@
         WishListService.prototype.addEntry = function (productCode) {
             var _this = this;
             this.getWishListId()
-                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId(), this.userService.get()), operators.tap(function (_a) {
+                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.userIdService.getUserId(), this.userService.get()), operators.tap(function (_a) {
                 var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
                 if (!Boolean(wishListId) &&
                     Boolean(user) &&
@@ -21150,7 +22023,7 @@
         WishListService.prototype.removeEntry = function (entry) {
             var _this = this;
             this.getWishListId()
-                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId(), this.userService.get()), operators.tap(function (_a) {
+                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.userIdService.getUserId(), this.userService.get()), operators.tap(function (_a) {
                 var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
                 if (!Boolean(wishListId) &&
                     Boolean(user) &&
@@ -21173,21 +22046,21 @@
                 .pipe(operators.map(function (stable) { return !stable; })); }));
         };
         WishListService.prototype.getWishListId = function () {
-            return this.store.pipe(i1$1.select(getWishListId));
+            return this.store.pipe(i1$2.select(getWishListId));
         };
         return WishListService;
     }());
-    WishListService.ɵprov = i0.ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(UserService), i0.ɵɵinject(MultiCartService)); }, token: WishListService, providedIn: "root" });
+    WishListService.ɵprov = i0.ɵɵdefineInjectable({ factory: function WishListService_Factory() { return new WishListService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserService), i0.ɵɵinject(MultiCartService), i0.ɵɵinject(UserIdService)); }, token: WishListService, providedIn: "root" });
     WishListService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     WishListService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
+        { type: i1$2.Store },
         { type: UserService },
-        { type: MultiCartService }
+        { type: MultiCartService },
+        { type: UserIdService }
     ]; };
 
     var defaultCmsModuleConfig = {
@@ -22072,7 +22945,7 @@
          */
         ConfigurableRoutesService.prototype.configure = function () {
             // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
-            var router = this.injector.get(i1$3.Router);
+            var router = this.injector.get(i1$1.Router);
             router.resetConfig(this.configureRoutes(router.config));
         };
         /**
@@ -22234,7 +23107,7 @@
     }());
     UrlModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule],
+                    imports: [i1.CommonModule],
                     declarations: [UrlPipe, ProductURLPipe],
                     exports: [UrlPipe, ProductURLPipe],
                 },] }
@@ -22262,7 +23135,7 @@
          * Redirects to different storefront system for anticipated URL
          */
         ExternalRoutesGuard.prototype.canActivate = function (route, state) {
-            if (i1$2.isPlatformBrowser(this.platformId)) {
+            if (i1.isPlatformBrowser(this.platformId)) {
                 this.redirect(route, state);
             }
             return false;
@@ -22314,7 +23187,7 @@
          * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
          */
         ExternalRoutesService.prototype.addRoutes = function () {
-            var router = this.injector.get(i1$3.Router);
+            var router = this.injector.get(i1$1.Router);
             var newRoutes = this.getRoutes();
             if (newRoutes.length) {
                 router.resetConfig(__spread(newRoutes, router.config));
@@ -22533,8 +23406,8 @@
     ];
     RouterEffects.ctorParameters = function () { return [
         { type: i3.Actions },
-        { type: i1$3.Router },
-        { type: i1$2.Location }
+        { type: i1$1.Router },
+        { type: i1.Location }
     ]; };
     __decorate([
         i3.Effect({ dispatch: false })
@@ -22554,7 +23427,7 @@
 
     var effects$6 = [RouterEffects];
 
-    var initialState$e = {
+    var initialState$d = {
         navigationId: 0,
         state: {
             url: '',
@@ -22570,11 +23443,11 @@
     };
     function getReducers$6() {
         return {
-            router: reducer$e,
+            router: reducer$d,
         };
     }
-    function reducer$e(state, action) {
-        if (state === void 0) { state = initialState$e; }
+    function reducer$d(state, action) {
+        if (state === void 0) { state = initialState$d; }
         switch (action.type) {
             case fromNgrxRouter.ROUTER_NAVIGATION: {
                 return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -22741,7 +23614,7 @@
     RoutingModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$1.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
+                        i1$2.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
                         i3.EffectsModule.forFeature(effects$6),
                         fromNgrxRouter.StoreRouterConnectingModule.forRoot({
                             routerState: 1 /* Minimal */,
@@ -22859,7 +23732,7 @@
                 .pipe(operators.switchMap(function (loadFromConfig) {
                 if (!loadFromConfig) {
                     return _this.cmsPageAdapter.load(pageContext).pipe(operators.catchError(function (error) {
-                        if (error instanceof i1.HttpErrorResponse &&
+                        if (error instanceof i1$4.HttpErrorResponse &&
                             error.status === 400) {
                             return rxjs.of({});
                         }
@@ -22945,7 +23818,7 @@
         NavigationEntryItemEffects,
     ];
 
-    var initialState$f = {
+    var initialState$e = {
         component: undefined,
         pageContext: {},
     };
@@ -22959,9 +23832,9 @@
         }
         return state;
     }
-    function reducer$f(state, action) {
+    function reducer$e(state, action) {
         var _a, _b, _c, _d;
-        if (state === void 0) { state = initialState$f; }
+        if (state === void 0) { state = initialState$e; }
         switch (action.type) {
             case LOAD_CMS_COMPONENT: {
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
@@ -22989,9 +23862,9 @@
         return state;
     }
 
-    var initialState$g = undefined;
-    function reducer$g(state, action) {
-        if (state === void 0) { state = initialState$g; }
+    var initialState$f = undefined;
+    function reducer$f(state, action) {
+        if (state === void 0) { state = initialState$f; }
         switch (action.type) {
             case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
                 if (action.payload.components) {
@@ -23007,10 +23880,10 @@
         return state;
     }
 
-    var initialState$h = { entities: {} };
-    function reducer$h(state, action) {
+    var initialState$g = { entities: {} };
+    function reducer$g(state, action) {
         var _a;
-        if (state === void 0) { state = initialState$h; }
+        if (state === void 0) { state = initialState$g; }
         switch (action.type) {
             case LOAD_CMS_PAGE_DATA_SUCCESS: {
                 var page = action.payload;
@@ -23020,17 +23893,17 @@
         return state;
     }
 
-    var initialState$i = undefined;
-    function reducer$i(entityType) {
+    var initialState$h = undefined;
+    function reducer$h(entityType) {
         return function (state, action) {
-            if (state === void 0) { state = initialState$i; }
+            if (state === void 0) { state = initialState$h; }
             if (action.meta && action.meta.entityType === entityType) {
                 switch (action.type) {
                     case LOAD_CMS_PAGE_DATA_SUCCESS: {
                         return action.payload.pageId;
                     }
                     case LOAD_CMS_PAGE_DATA_FAIL: {
-                        return initialState$i;
+                        return initialState$h;
                     }
                     case CMS_SET_PAGE_FAIL_INDEX: {
                         return action.payload;
@@ -23046,17 +23919,17 @@
 
     function getReducers$7() {
         return {
-            page: i1$1.combineReducers({
-                pageData: reducer$h,
-                index: i1$1.combineReducers({
-                    content: entityLoaderReducer(exports.PageType.CONTENT_PAGE, reducer$i(exports.PageType.CONTENT_PAGE)),
-                    product: entityLoaderReducer(exports.PageType.PRODUCT_PAGE, reducer$i(exports.PageType.PRODUCT_PAGE)),
-                    category: entityLoaderReducer(exports.PageType.CATEGORY_PAGE, reducer$i(exports.PageType.CATEGORY_PAGE)),
-                    catalog: entityLoaderReducer(exports.PageType.CATALOG_PAGE, reducer$i(exports.PageType.CATALOG_PAGE)),
+            page: i1$2.combineReducers({
+                pageData: reducer$g,
+                index: i1$2.combineReducers({
+                    content: entityLoaderReducer(exports.PageType.CONTENT_PAGE, reducer$h(exports.PageType.CONTENT_PAGE)),
+                    product: entityLoaderReducer(exports.PageType.PRODUCT_PAGE, reducer$h(exports.PageType.PRODUCT_PAGE)),
+                    category: entityLoaderReducer(exports.PageType.CATEGORY_PAGE, reducer$h(exports.PageType.CATEGORY_PAGE)),
+                    catalog: entityLoaderReducer(exports.PageType.CATALOG_PAGE, reducer$h(exports.PageType.CATALOG_PAGE)),
                 }),
             }),
-            components: entityReducer(COMPONENT_ENTITY, reducer$f),
-            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$g),
+            components: entityReducer(COMPONENT_ENTITY, reducer$e),
+            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
         };
     }
     var reducerToken$7 = new i0.InjectionToken('CmsReducers');
@@ -23074,7 +23947,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$3 = [clearCmsState];
+    var metaReducers$2 = [clearCmsState];
 
     function cmsStoreConfigFactory() {
         var _a;
@@ -23096,9 +23969,9 @@
     CmsStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
+                        i1.CommonModule,
                         StateModule,
-                        i1$1.StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
+                        i1$2.StoreModule.forFeature(CMS_FEATURE, reducerToken$7, { metaReducers: metaReducers$2 }),
                         i3.EffectsModule.forFeature(effects$7),
                     ],
                     providers: [
@@ -23485,7 +24358,7 @@
         }
     }
     function configFromCookieFactory(cookieName, platform, document) {
-        if (i1$2.isPlatformBrowser(platform) && cookieName) {
+        if (i1.isPlatformBrowser(platform) && cookieName) {
             var config = getCookie(document.cookie, cookieName);
             return parseConfigJSON(config);
         }
@@ -23517,7 +24390,7 @@
                     provideConfigFactory(configFromCookieFactory, [
                         TEST_CONFIG_COOKIE_NAME,
                         i0.PLATFORM_ID,
-                        i1$2.DOCUMENT,
+                        i1.DOCUMENT,
                     ]),
                 ],
             };
@@ -23542,7 +24415,7 @@
         CxDatePipe.prototype.getLang = function () {
             var lang = this.getActiveLang();
             try {
-                i1$2.getLocaleId(lang);
+                i1.getLocaleId(lang);
                 return lang;
             }
             catch (_a) {
@@ -23564,7 +24437,7 @@
             }
         };
         return CxDatePipe;
-    }(i1$2.DatePipe));
+    }(i1.DatePipe));
     CxDatePipe.decorators = [
         { type: i0.Pipe, args: [{ name: 'cxDate' },] }
     ];
@@ -23775,15 +24648,15 @@
         return path;
     }
 
-    var ɵ0$H = i18nextInit;
+    var ɵ0$F = i18nextInit;
     var i18nextProviders = [
         {
             provide: i0.APP_INITIALIZER,
-            useFactory: ɵ0$H,
+            useFactory: ɵ0$F,
             deps: [
                 ConfigInitializerService,
                 LanguageService,
-                i1.HttpClient,
+                i1$4.HttpClient,
                 [new i0.Optional(), SERVER_REQUEST_ORIGIN],
             ],
             multi: true,
@@ -23945,7 +24818,7 @@
             return _super.prototype.transform.call(this, value, format, timezone, 'en');
         };
         return MockDatePipe;
-    }(i1$2.DatePipe));
+    }(i1.DatePipe));
     MockDatePipe.decorators = [
         { type: i0.Pipe, args: [{ name: 'cxDate' },] }
     ];
@@ -23962,263 +24835,6 @@
                     providers: [
                         { provide: TranslationService, useClass: MockTranslationService },
                     ],
-                },] }
-    ];
-
-    var KymaConfig = /** @class */ (function (_super) {
-        __extends(KymaConfig, _super);
-        function KymaConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return KymaConfig;
-    }(OccConfig));
-    KymaConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function KymaConfig_Factory() { return i0.ɵɵinject(Config); }, token: KymaConfig, providedIn: "root" });
-    KymaConfig.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                    useExisting: Config,
-                },] }
-    ];
-
-    var KYMA_FEATURE = 'kyma';
-    var OPEN_ID_TOKEN_DATA = '[Kyma Auth] Open ID Token Data';
-
-    var LOAD_OPEN_ID_TOKEN = '[Kyma] Load Open ID Token';
-    var LOAD_OPEN_ID_TOKEN_FAIL = '[Kyma] Load Open ID Token Fail';
-    var LOAD_OPEN_ID_TOKEN_SUCCESS = '[Kyma] Load Open ID Token Success';
-    var LoadOpenIdToken = /** @class */ (function (_super) {
-        __extends(LoadOpenIdToken, _super);
-        function LoadOpenIdToken(payload) {
-            var _this = _super.call(this, OPEN_ID_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_OPEN_ID_TOKEN;
-            return _this;
-        }
-        return LoadOpenIdToken;
-    }(LoaderLoadAction));
-    var LoadOpenIdTokenFail = /** @class */ (function (_super) {
-        __extends(LoadOpenIdTokenFail, _super);
-        function LoadOpenIdTokenFail(payload) {
-            var _this = _super.call(this, OPEN_ID_TOKEN_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_OPEN_ID_TOKEN_FAIL;
-            return _this;
-        }
-        return LoadOpenIdTokenFail;
-    }(LoaderFailAction));
-    var LoadOpenIdTokenSuccess = /** @class */ (function (_super) {
-        __extends(LoadOpenIdTokenSuccess, _super);
-        function LoadOpenIdTokenSuccess(payload) {
-            var _this = _super.call(this, OPEN_ID_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_OPEN_ID_TOKEN_SUCCESS;
-            return _this;
-        }
-        return LoadOpenIdTokenSuccess;
-    }(LoaderSuccessAction));
-
-    var kymaGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        LOAD_OPEN_ID_TOKEN: LOAD_OPEN_ID_TOKEN,
-        LOAD_OPEN_ID_TOKEN_FAIL: LOAD_OPEN_ID_TOKEN_FAIL,
-        LOAD_OPEN_ID_TOKEN_SUCCESS: LOAD_OPEN_ID_TOKEN_SUCCESS,
-        LoadOpenIdToken: LoadOpenIdToken,
-        LoadOpenIdTokenFail: LoadOpenIdTokenFail,
-        LoadOpenIdTokenSuccess: LoadOpenIdTokenSuccess
-    });
-
-    var getKymaState = i1$1.createFeatureSelector(KYMA_FEATURE);
-
-    var ɵ0$I = function (state) { return state.openIdToken; };
-    var getOpenIdTokenState = i1$1.createSelector(getKymaState, ɵ0$I);
-    var getOpenIdTokenValue = i1$1.createSelector(getOpenIdTokenState, loaderValueSelector);
-    var getOpenIdTokenLoading = i1$1.createSelector(getOpenIdTokenState, loaderLoadingSelector);
-    var getOpenIdTokenSuccess = i1$1.createSelector(getOpenIdTokenState, loaderSuccessSelector);
-    var getOpenIdTokenError = i1$1.createSelector(getOpenIdTokenState, loaderErrorSelector);
-
-    var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getKymaState: getKymaState,
-        getOpenIdTokenState: getOpenIdTokenState,
-        getOpenIdTokenValue: getOpenIdTokenValue,
-        getOpenIdTokenLoading: getOpenIdTokenLoading,
-        getOpenIdTokenSuccess: getOpenIdTokenSuccess,
-        getOpenIdTokenError: getOpenIdTokenError,
-        ɵ0: ɵ0$I
-    });
-
-    var KymaService = /** @class */ (function () {
-        function KymaService(store) {
-            this.store = store;
-        }
-        /**
-         * Authorizes using the Kyma OAuth client with scope `openid`.
-         *
-         * @param username a username
-         * @param password a password
-         */
-        KymaService.prototype.authorizeOpenId = function (username, password) {
-            this.store.dispatch(new LoadOpenIdToken({ username: username, password: password }));
-        };
-        /**
-         * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
-         */
-        KymaService.prototype.getOpenIdToken = function () {
-            return this.store.pipe(i1$1.select(getOpenIdTokenValue));
-        };
-        return KymaService;
-    }());
-    KymaService.ɵprov = i0.ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(i0.ɵɵinject(i1$1.Store)); }, token: KymaService, providedIn: "root" });
-    KymaService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    KymaService.ctorParameters = function () { return [
-        { type: i1$1.Store }
-    ]; };
-
-    var defaultKymaConfig = {
-        authentication: {
-            kyma_client_id: 'client4kyma',
-            kyma_client_secret: 'secret',
-        },
-    };
-
-    var OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
-    var OpenIdAuthenticationTokenService = /** @class */ (function () {
-        function OpenIdAuthenticationTokenService(config, http) {
-            this.config = config;
-            this.http = http;
-        }
-        OpenIdAuthenticationTokenService.prototype.loadOpenIdAuthenticationToken = function (username, password) {
-            var url = this.getOAuthEndpoint();
-            var params = new i1.HttpParams()
-                .set('client_id', encodeURIComponent(this.config.authentication.kyma_client_id))
-                .set('client_secret', encodeURIComponent(this.config.authentication.kyma_client_secret))
-                .set('grant_type', 'password') // authorization_code, client_credentials, password
-                .set('username', username)
-                .set('password', password)
-                .set('scope', 'openid');
-            var headers = new i1.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .post(url, params, { headers: headers })
-                .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-        };
-        OpenIdAuthenticationTokenService.prototype.getOAuthEndpoint = function () {
-            return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
-        };
-        return OpenIdAuthenticationTokenService;
-    }());
-    OpenIdAuthenticationTokenService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OpenIdAuthenticationTokenService_Factory() { return new OpenIdAuthenticationTokenService(i0.ɵɵinject(KymaConfig), i0.ɵɵinject(i1.HttpClient)); }, token: OpenIdAuthenticationTokenService, providedIn: "root" });
-    OpenIdAuthenticationTokenService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    OpenIdAuthenticationTokenService.ctorParameters = function () { return [
-        { type: KymaConfig },
-        { type: i1.HttpClient }
-    ]; };
-
-    var OpenIdTokenEffect = /** @class */ (function () {
-        function OpenIdTokenEffect(actions$, openIdTokenService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.openIdTokenService = openIdTokenService;
-            this.triggerOpenIdTokenLoading$ = this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(i3.ofType(LOAD_USER_TOKEN))), operators.map(function (_a) {
-                var _b = __read(_a, 2), loginAction = _b[1];
-                return new LoadOpenIdToken({
-                    username: loginAction.payload.userId,
-                    password: loginAction.payload.password,
-                });
-            }));
-            this.loadOpenIdToken$ = this.actions$.pipe(i3.ofType(LOAD_OPEN_ID_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) { return _this.openIdTokenService
-                .loadOpenIdAuthenticationToken(payload.username, payload.password)
-                .pipe(operators.map(function (token) { return new LoadOpenIdTokenSuccess(token); }), operators.catchError(function (error) { return rxjs.of(new LoadOpenIdTokenFail(makeErrorSerializable(error))); })); }));
-        }
-        return OpenIdTokenEffect;
-    }());
-    OpenIdTokenEffect.decorators = [
-        { type: i0.Injectable }
-    ];
-    OpenIdTokenEffect.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: OpenIdAuthenticationTokenService }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
-    __decorate([
-        i3.Effect()
-    ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
-
-    var effects$8 = [OpenIdTokenEffect];
-
-    function getReducers$8() {
-        return {
-            openIdToken: loaderReducer(OPEN_ID_TOKEN_DATA),
-        };
-    }
-    var reducerToken$8 = new i0.InjectionToken('KymaReducers');
-    var reducerProvider$8 = {
-        provide: reducerToken$8,
-        useFactory: getReducers$8,
-    };
-    function clearKymaState(reducer) {
-        return function (state, action) {
-            if (action.type === LOGOUT) {
-                state = Object.assign(Object.assign({}, state), { openIdToken: undefined });
-            }
-            return reducer(state, action);
-        };
-    }
-    var metaReducers$4 = [clearKymaState];
-
-    function kymaStoreConfigFactory() {
-        // if we want to reuse KYMA_FEATURE const in config, we have to use factory instead of plain object
-        var config = {
-            state: {
-                storageSync: {
-                    keys: {
-                        'kyma.openIdToken.value': exports.StorageSyncType.LOCAL_STORAGE,
-                    },
-                },
-            },
-        };
-        return config;
-    }
-    var KymaStoreModule = /** @class */ (function () {
-        function KymaStoreModule() {
-        }
-        return KymaStoreModule;
-    }());
-    KymaStoreModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [
-                        i1$2.CommonModule,
-                        StateModule,
-                        i1$1.StoreModule.forFeature(KYMA_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
-                        i3.EffectsModule.forFeature(effects$8),
-                    ],
-                    providers: [
-                        provideDefaultConfigFactory(kymaStoreConfigFactory),
-                        reducerProvider$8,
-                    ],
-                },] }
-    ];
-
-    var KymaModule = /** @class */ (function () {
-        function KymaModule() {
-        }
-        return KymaModule;
-    }());
-    KymaModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [i1$2.CommonModule, KymaStoreModule],
-                    providers: [provideDefaultConfig(defaultKymaConfig)],
                 },] }
     ];
 
@@ -24272,7 +24888,7 @@
             this.winRef = winRef;
             this.platform = platform;
             this.enabled = false;
-            if (i1$2.isPlatformBrowser(this.platform)) {
+            if (i1.isPlatformBrowser(this.platform)) {
                 this.enabled =
                     (this.winRef.localStorage && this.config.personalization.enabled) ||
                         false;
@@ -24300,7 +24916,7 @@
                 });
             }
             return next.handle(request).pipe(operators.tap(function (event) {
-                if (event instanceof i1.HttpResponse) {
+                if (event instanceof i1$4.HttpResponse) {
                     if (event.headers.keys().includes(_this.requestHeader)) {
                         var receivedId = event.headers.get(_this.requestHeader);
                         if (_this.personalizationId !== receivedId) {
@@ -24332,7 +24948,7 @@
             this.winRef = winRef;
             this.platform = platform;
             this.enabled = false;
-            if (i1$2.isPlatformBrowser(this.platform)) {
+            if (i1.isPlatformBrowser(this.platform)) {
                 this.enabled =
                     (this.winRef.localStorage && this.config.personalization.enabled) ||
                         false;
@@ -24360,7 +24976,7 @@
                 });
             }
             return next.handle(request).pipe(operators.tap(function (event) {
-                if (event instanceof i1.HttpResponse) {
+                if (event instanceof i1$4.HttpResponse) {
                     if (event.headers.keys().includes(_this.requestHeader)) {
                         var receivedTimestamp = event.headers.get(_this.requestHeader);
                         if (_this.timestamp !== receivedTimestamp) {
@@ -24386,12 +25002,12 @@
 
     var interceptors$3 = [
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: OccPersonalizationIdInterceptor,
             multi: true,
         },
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: OccPersonalizationTimeInterceptor,
             multi: true,
         },
@@ -24448,13 +25064,13 @@
         { type: CmsService }
     ]; };
 
-    function getReducers$9() {
+    function getReducers$8() {
         return entityLoaderReducer(PROCESS_FEATURE);
     }
-    var reducerToken$9 = new i0.InjectionToken('ProcessReducers');
-    var reducerProvider$9 = {
-        provide: reducerToken$9,
-        useFactory: getReducers$9,
+    var reducerToken$8 = new i0.InjectionToken('ProcessReducers');
+    var reducerProvider$8 = {
+        provide: reducerToken$8,
+        useFactory: getReducers$8,
     };
 
     var ProcessStoreModule = /** @class */ (function () {
@@ -24464,8 +25080,8 @@
     }());
     ProcessStoreModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [StateModule, i1$1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
-                    providers: [reducerProvider$9],
+                    imports: [StateModule, i1$2.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$8)],
+                    providers: [reducerProvider$8],
                 },] }
     ];
 
@@ -24858,12 +25474,12 @@
         LoadProductSuccess: LoadProductSuccess
     });
 
-    var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
+    var getProductsState = i1$2.createFeatureSelector(PRODUCT_FEATURE);
 
-    var ɵ0$J = function (state) { return state.references; };
-    var getProductReferencesState = i1$1.createSelector(getProductsState, ɵ0$J);
+    var ɵ0$G = function (state) { return state.references; };
+    var getProductReferencesState = i1$2.createSelector(getProductsState, ɵ0$G);
     var getSelectedProductReferencesFactory = function (productCode, referenceType) {
-        return i1$1.createSelector(getProductReferencesState, function (referenceTypeData) {
+        return i1$2.createSelector(getProductReferencesState, function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
                 if (!!referenceTypeData.list) {
                     if (referenceType) {
@@ -24878,23 +25494,23 @@
         });
     };
 
-    var ɵ0$K = function (state) { return state.reviews; };
-    var getProductReviewsState = i1$1.createSelector(getProductsState, ɵ0$K);
+    var ɵ0$H = function (state) { return state.reviews; };
+    var getProductReviewsState = i1$2.createSelector(getProductsState, ɵ0$H);
     var getSelectedProductReviewsFactory = function (productCode) {
-        return i1$1.createSelector(getProductReviewsState, function (reviewData) {
+        return i1$2.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
                 return reviewData.list;
             }
         });
     };
 
-    var initialState$j = {
+    var initialState$i = {
         results: {},
         suggestions: [],
         auxResults: {},
     };
-    function reducer$j(state, action) {
-        if (state === void 0) { state = initialState$j; }
+    function reducer$i(state, action) {
+        if (state === void 0) { state = initialState$i; }
         switch (action.type) {
             case SEARCH_PRODUCTS_SUCCESS: {
                 var results = action.payload;
@@ -24919,46 +25535,46 @@
     var getAuxSearchResults = function (state) { return state.auxResults; };
     var getProductSuggestions = function (state) { return state.suggestions; };
 
-    var ɵ0$L = function (state) { return state.search; };
-    var getProductsSearchState = i1$1.createSelector(getProductsState, ɵ0$L);
-    var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
-    var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
-    var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
+    var ɵ0$I = function (state) { return state.search; };
+    var getProductsSearchState = i1$2.createSelector(getProductsState, ɵ0$I);
+    var getSearchResults$1 = i1$2.createSelector(getProductsSearchState, getSearchResults);
+    var getAuxSearchResults$1 = i1$2.createSelector(getProductsSearchState, getAuxSearchResults);
+    var getProductSuggestions$1 = i1$2.createSelector(getProductsSearchState, getProductSuggestions);
 
-    var ɵ0$M = function (state) { return state.details; };
-    var getProductState = i1$1.createSelector(getProductsState, ɵ0$M);
+    var ɵ0$J = function (state) { return state.details; };
+    var getProductState = i1$2.createSelector(getProductsState, ɵ0$J);
     var getSelectedProductStateFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return i1$1.createSelector(getProductState, function (details) { return entityLoaderStateSelector(details, code)[scope] ||
+        return i1$2.createSelector(getProductState, function (details) { return entityLoaderStateSelector(details, code)[scope] ||
             initialLoaderState; });
     };
     var getSelectedProductFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderValueSelector(productState); });
+        return i1$2.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderValueSelector(productState); });
     };
     var getSelectedProductLoadingFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderLoadingSelector(productState); });
+        return i1$2.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderLoadingSelector(productState); });
     };
     var getSelectedProductSuccessFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderSuccessSelector(productState); });
+        return i1$2.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderSuccessSelector(productState); });
     };
     var getSelectedProductErrorFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
-        return i1$1.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderErrorSelector(productState); });
+        return i1$2.createSelector(getSelectedProductStateFactory(code, scope), function (productState) { return loaderErrorSelector(productState); });
     };
-    var ɵ1$v = function (details) {
+    var ɵ1$t = function (details) {
         return Object.keys(details.entities);
     };
-    var getAllProductCodes = i1$1.createSelector(getProductState, ɵ1$v);
+    var getAllProductCodes = i1$2.createSelector(getProductState, ɵ1$t);
 
     var productGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getProductsState: getProductsState,
         getProductReferencesState: getProductReferencesState,
         getSelectedProductReferencesFactory: getSelectedProductReferencesFactory,
-        ɵ0: ɵ0$J,
+        ɵ0: ɵ0$G,
         getProductReviewsState: getProductReviewsState,
         getSelectedProductReviewsFactory: getSelectedProductReviewsFactory,
         getProductsSearchState: getProductsSearchState,
@@ -24972,7 +25588,7 @@
         getSelectedProductSuccessFactory: getSelectedProductSuccessFactory,
         getSelectedProductErrorFactory: getSelectedProductErrorFactory,
         getAllProductCodes: getAllProductCodes,
-        ɵ1: ɵ1$v
+        ɵ1: ɵ1$t
     });
 
     var ProductReferenceService = /** @class */ (function () {
@@ -24981,7 +25597,7 @@
         }
         ProductReferenceService.prototype.get = function (productCode, referenceType, pageSize) {
             var _this = this;
-            return this.store.pipe(i1$1.select(getSelectedProductReferencesFactory(productCode, referenceType)), operators.tap(function (references) {
+            return this.store.pipe(i1$2.select(getSelectedProductReferencesFactory(productCode, referenceType)), operators.tap(function (references) {
                 if (references === undefined && productCode !== undefined) {
                     _this.store.dispatch(new LoadProductReferences({
                         productCode: productCode,
@@ -24996,14 +25612,14 @@
         };
         return ProductReferenceService;
     }());
-    ProductReferenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(i0.ɵɵinject(i1$1.Store)); }, token: ProductReferenceService, providedIn: "root" });
+    ProductReferenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductReferenceService_Factory() { return new ProductReferenceService(i0.ɵɵinject(i1$2.Store)); }, token: ProductReferenceService, providedIn: "root" });
     ProductReferenceService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ProductReferenceService.ctorParameters = function () { return [
-        { type: i1$1.Store }
+        { type: i1$2.Store }
     ]; };
 
     var ProductReviewService = /** @class */ (function () {
@@ -25012,7 +25628,7 @@
         }
         ProductReviewService.prototype.getByProductCode = function (productCode) {
             var _this = this;
-            return this.store.pipe(i1$1.select(getSelectedProductReviewsFactory(productCode)), operators.tap(function (reviews) {
+            return this.store.pipe(i1$2.select(getSelectedProductReviewsFactory(productCode)), operators.tap(function (reviews) {
                 if (reviews === undefined && productCode !== undefined) {
                     _this.store.dispatch(new LoadProductReviews(productCode));
                 }
@@ -25026,14 +25642,14 @@
         };
         return ProductReviewService;
     }());
-    ProductReviewService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductReviewService_Factory() { return new ProductReviewService(i0.ɵɵinject(i1$1.Store)); }, token: ProductReviewService, providedIn: "root" });
+    ProductReviewService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductReviewService_Factory() { return new ProductReviewService(i0.ɵɵinject(i1$2.Store)); }, token: ProductReviewService, providedIn: "root" });
     ProductReviewService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ProductReviewService.ctorParameters = function () { return [
-        { type: i1$1.Store }
+        { type: i1$2.Store }
     ]; };
 
     var ProductSearchService = /** @class */ (function () {
@@ -25047,7 +25663,7 @@
             }));
         };
         ProductSearchService.prototype.getResults = function () {
-            return this.store.pipe(i1$1.select(getSearchResults$1));
+            return this.store.pipe(i1$2.select(getSearchResults$1));
         };
         ProductSearchService.prototype.clearResults = function () {
             this.store.dispatch(new ClearProductSearchResult({
@@ -25056,14 +25672,14 @@
         };
         return ProductSearchService;
     }());
-    ProductSearchService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductSearchService_Factory() { return new ProductSearchService(i0.ɵɵinject(i1$1.Store)); }, token: ProductSearchService, providedIn: "root" });
+    ProductSearchService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductSearchService_Factory() { return new ProductSearchService(i0.ɵɵinject(i1$2.Store)); }, token: ProductSearchService, providedIn: "root" });
     ProductSearchService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ProductSearchService.ctorParameters = function () { return [
-        { type: i1$1.Store }
+        { type: i1$2.Store }
     ]; };
 
     var ProductLoadingService = /** @class */ (function () {
@@ -25116,15 +25732,15 @@
          */
         ProductLoadingService.prototype.getProductForScope = function (productCode, scope) {
             var _this = this;
-            var shouldLoad$ = this.store.pipe(i1$1.select(getSelectedProductStateFactory(productCode, scope)), operators.map(function (productState) { return !productState.loading && !productState.success && !productState.error; }), operators.distinctUntilChanged(), operators.filter(function (x) { return x; }));
-            var isLoading$ = this.store.pipe(i1$1.select(getSelectedProductLoadingFactory(productCode, scope)));
+            var shouldLoad$ = this.store.pipe(i1$2.select(getSelectedProductStateFactory(productCode, scope)), operators.map(function (productState) { return !productState.loading && !productState.success && !productState.error; }), operators.distinctUntilChanged(), operators.filter(function (x) { return x; }));
+            var isLoading$ = this.store.pipe(i1$2.select(getSelectedProductLoadingFactory(productCode, scope)));
             var productLoadLogic$ = rxjs.merge.apply(void 0, __spread([shouldLoad$], this.getProductReloadTriggers(productCode, scope))).pipe(operators.debounceTime(0), operators.withLatestFrom(isLoading$), operators.tap(function (_a) {
                 var _b = __read(_a, 2), isLoading = _b[1];
                 if (!isLoading) {
                     _this.store.dispatch(new LoadProduct(productCode, scope));
                 }
             }));
-            var productData$ = this.store.pipe(i1$1.select(getSelectedProductFactory(productCode, scope)));
+            var productData$ = this.store.pipe(i1$2.select(getSelectedProductFactory(productCode, scope)));
             return rxjs.using(function () { return productLoadLogic$.subscribe(); }, function () { return productData$; }).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
@@ -25137,7 +25753,7 @@
             var triggers = [];
             // max age trigger add
             var maxAge = this.loadingScopes.getMaxAge('product', scope);
-            if (maxAge && i1$2.isPlatformBrowser(this.platformId)) {
+            if (maxAge && i1.isPlatformBrowser(this.platformId)) {
                 // we want to grab load product success and load product fail for this product and scope
                 var loadFinish$ = this.actions$.pipe(operators.filter(function (action) { return (action.type === LOAD_PRODUCT_SUCCESS ||
                     action.type === LOAD_PRODUCT_FAIL) &&
@@ -25183,14 +25799,14 @@
         };
         return ProductLoadingService;
     }());
-    ProductLoadingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(LoadingScopesService), i0.ɵɵinject(i3.Actions), i0.ɵɵinject(i0.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
+    ProductLoadingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(LoadingScopesService), i0.ɵɵinject(i3.Actions), i0.ɵɵinject(i0.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
     ProductLoadingService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ProductLoadingService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: LoadingScopesService },
         { type: i3.Actions },
         { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
@@ -25225,21 +25841,21 @@
          */
         ProductService.prototype.isLoading = function (productCode, scope) {
             if (scope === void 0) { scope = ''; }
-            return this.store.pipe(i1$1.select(getSelectedProductLoadingFactory(productCode, scope)));
+            return this.store.pipe(i1$2.select(getSelectedProductLoadingFactory(productCode, scope)));
         };
         /**
          * Returns boolean observable for product's load success state
          */
         ProductService.prototype.isSuccess = function (productCode, scope) {
             if (scope === void 0) { scope = ''; }
-            return this.store.pipe(i1$1.select(getSelectedProductSuccessFactory(productCode, scope)));
+            return this.store.pipe(i1$2.select(getSelectedProductSuccessFactory(productCode, scope)));
         };
         /**
          * Returns boolean observable for product's load error state
          */
         ProductService.prototype.hasError = function (productCode, scope) {
             if (scope === void 0) { scope = ''; }
-            return this.store.pipe(i1$1.select(getSelectedProductErrorFactory(productCode, scope)));
+            return this.store.pipe(i1$2.select(getSelectedProductErrorFactory(productCode, scope)));
         };
         /**
          * Reloads the product. The product is loaded implicetly
@@ -25252,14 +25868,14 @@
         };
         return ProductService;
     }());
-    ProductService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductService_Factory() { return new ProductService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(ProductLoadingService)); }, token: ProductService, providedIn: "root" });
+    ProductService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProductService_Factory() { return new ProductService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(ProductLoadingService)); }, token: ProductService, providedIn: "root" });
     ProductService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ProductService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: ProductLoadingService }
     ]; };
 
@@ -25278,7 +25894,7 @@
             }, true));
         };
         SearchboxService.prototype.getResults = function () {
-            return this.store.pipe(i1$1.select(getAuxSearchResults$1));
+            return this.store.pipe(i1$2.select(getAuxSearchResults$1));
         };
         /**
          * clears the products and suggestions
@@ -25289,7 +25905,7 @@
             }));
         };
         SearchboxService.prototype.getSuggestionResults = function () {
-            return this.store.pipe(i1$1.select(getProductSuggestions$1));
+            return this.store.pipe(i1$2.select(getProductSuggestions$1));
         };
         SearchboxService.prototype.searchSuggestions = function (query, searchConfig) {
             this.store.dispatch(new GetProductSuggestions({
@@ -25299,7 +25915,7 @@
         };
         return SearchboxService;
     }(ProductSearchService));
-    SearchboxService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.ɵɵinject(i1$1.Store)); }, token: SearchboxService, providedIn: "root" });
+    SearchboxService.ɵprov = i0.ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.ɵɵinject(i1$2.Store)); }, token: SearchboxService, providedIn: "root" });
     SearchboxService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -25462,7 +26078,7 @@
         });
         return CouponSearchPageResolver;
     }(PageMetaResolver));
-    CouponSearchPageResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(i0.ɵɵinject(ProductSearchService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(AuthService), i0.ɵɵinject(i1$3.ActivatedRoute), i0.ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
+    CouponSearchPageResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CouponSearchPageResolver_Factory() { return new CouponSearchPageResolver(i0.ɵɵinject(ProductSearchService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(AuthService), i0.ɵɵinject(i1$1.ActivatedRoute), i0.ɵɵinject(SemanticPathService)); }, token: CouponSearchPageResolver, providedIn: "root" });
     CouponSearchPageResolver.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -25472,7 +26088,7 @@
         { type: ProductSearchService },
         { type: TranslationService },
         { type: AuthService },
-        { type: i1$3.ActivatedRoute },
+        { type: i1$1.ActivatedRoute },
         { type: SemanticPathService }
     ]; };
 
@@ -25808,19 +26424,19 @@
         { type: ProductConnector }
     ]; };
 
-    var effects$9 = [
+    var effects$8 = [
         ProductsSearchEffects,
         ProductEffects,
         ProductReviewsEffects,
         ProductReferencesEffects,
     ];
 
-    var initialState$k = {
+    var initialState$j = {
         productCode: '',
         list: [],
     };
-    function reducer$k(state, action) {
-        if (state === void 0) { state = initialState$k; }
+    function reducer$j(state, action) {
+        if (state === void 0) { state = initialState$j; }
         switch (action.type) {
             case LOAD_PRODUCT_REFERENCES_SUCCESS: {
                 var productCode = action.payload.productCode;
@@ -25834,7 +26450,7 @@
                     }, []), productCode: productCode });
             }
             case CLEAN_PRODUCT_REFERENCES: {
-                return initialState$k;
+                return initialState$j;
             }
         }
         return state;
@@ -25842,12 +26458,12 @@
     var getProductReferenceList = function (state) { return state.list; };
     var getProductReferenceProductCode = function (state) { return state.productCode; };
 
-    var initialState$l = {
+    var initialState$k = {
         productCode: '',
         list: [],
     };
-    function reducer$l(state, action) {
-        if (state === void 0) { state = initialState$l; }
+    function reducer$k(state, action) {
+        if (state === void 0) { state = initialState$k; }
         switch (action.type) {
             case LOAD_PRODUCT_REVIEWS_SUCCESS: {
                 var productCode = action.payload.productCode;
@@ -25889,18 +26505,18 @@
         return entityReducer(entityType, scopedLoaderReducer(entityType, reducer));
     }
 
-    function getReducers$a() {
+    function getReducers$9() {
         return {
-            search: reducer$j,
+            search: reducer$i,
             details: entityScopedLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$l,
-            references: reducer$k,
+            reviews: reducer$k,
+            references: reducer$j,
         };
     }
-    var reducerToken$a = new i0.InjectionToken('ProductReducers');
-    var reducerProvider$a = {
-        provide: reducerToken$a,
-        useFactory: getReducers$a,
+    var reducerToken$9 = new i0.InjectionToken('ProductReducers');
+    var reducerProvider$9 = {
+        provide: reducerToken$9,
+        useFactory: getReducers$9,
     };
     function clearProductsState(reducer) {
         return function (state, action) {
@@ -25911,7 +26527,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$5 = [clearProductsState];
+    var metaReducers$3 = [clearProductsState];
 
     function productStoreConfigFactory() {
         var _a;
@@ -25933,13 +26549,13 @@
     ProductStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
-                        i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
-                        i3.EffectsModule.forFeature(effects$9),
+                        i1.CommonModule,
+                        i1$2.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$9, { metaReducers: metaReducers$3 }),
+                        i3.EffectsModule.forFeature(effects$8),
                     ],
                     providers: [
                         provideDefaultConfigFactory(productStoreConfigFactory),
-                        reducerProvider$a,
+                        reducerProvider$9,
                     ],
                 },] }
     ];
@@ -26009,7 +26625,7 @@
 
     var interceptors$4 = [
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: CmsTicketInterceptor,
             multi: true,
         },
@@ -26227,30 +26843,30 @@
         ViewAllStoresSuccess: ViewAllStoresSuccess
     });
 
-    var getStoreFinderState = i1$1.createFeatureSelector(STORE_FINDER_FEATURE);
+    var getStoreFinderState = i1$2.createFeatureSelector(STORE_FINDER_FEATURE);
 
-    var ɵ0$N = function (storesState) { return storesState.findStores; };
-    var getFindStoresState = i1$1.createSelector(getStoreFinderState, ɵ0$N);
-    var ɵ1$w = function (state) { return loaderValueSelector(state); };
-    var getFindStoresEntities = i1$1.createSelector(getFindStoresState, ɵ1$w);
+    var ɵ0$K = function (storesState) { return storesState.findStores; };
+    var getFindStoresState = i1$2.createSelector(getStoreFinderState, ɵ0$K);
+    var ɵ1$u = function (state) { return loaderValueSelector(state); };
+    var getFindStoresEntities = i1$2.createSelector(getFindStoresState, ɵ1$u);
+    var ɵ2$k = function (state) { return loaderLoadingSelector(state); };
+    var getStoresLoading = i1$2.createSelector(getFindStoresState, ɵ2$k);
+
+    var ɵ0$L = function (storesState) { return storesState.viewAllStores; };
+    var getViewAllStoresState = i1$2.createSelector(getStoreFinderState, ɵ0$L);
+    var ɵ1$v = function (state) { return loaderValueSelector(state); };
+    var getViewAllStoresEntities = i1$2.createSelector(getViewAllStoresState, ɵ1$v);
     var ɵ2$l = function (state) { return loaderLoadingSelector(state); };
-    var getStoresLoading = i1$1.createSelector(getFindStoresState, ɵ2$l);
-
-    var ɵ0$O = function (storesState) { return storesState.viewAllStores; };
-    var getViewAllStoresState = i1$1.createSelector(getStoreFinderState, ɵ0$O);
-    var ɵ1$x = function (state) { return loaderValueSelector(state); };
-    var getViewAllStoresEntities = i1$1.createSelector(getViewAllStoresState, ɵ1$x);
-    var ɵ2$m = function (state) { return loaderLoadingSelector(state); };
-    var getViewAllStoresLoading = i1$1.createSelector(getViewAllStoresState, ɵ2$m);
+    var getViewAllStoresLoading = i1$2.createSelector(getViewAllStoresState, ɵ2$l);
 
     var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getFindStoresState: getFindStoresState,
         getFindStoresEntities: getFindStoresEntities,
         getStoresLoading: getStoresLoading,
-        ɵ0: ɵ0$N,
-        ɵ1: ɵ1$w,
-        ɵ2: ɵ2$l,
+        ɵ0: ɵ0$K,
+        ɵ1: ɵ1$u,
+        ɵ2: ɵ2$k,
         getViewAllStoresState: getViewAllStoresState,
         getViewAllStoresEntities: getViewAllStoresEntities,
         getViewAllStoresLoading: getViewAllStoresLoading
@@ -26268,25 +26884,25 @@
          * Returns boolean observable for store's loading state
          */
         StoreFinderService.prototype.getStoresLoading = function () {
-            return this.store.pipe(i1$1.select(getStoresLoading));
+            return this.store.pipe(i1$2.select(getStoresLoading));
         };
         /**
          * Returns observable for store's entities
          */
         StoreFinderService.prototype.getFindStoresEntities = function () {
-            return this.store.pipe(i1$1.select(getFindStoresEntities));
+            return this.store.pipe(i1$2.select(getFindStoresEntities));
         };
         /**
          * Returns boolean observable for view all store's loading state
          */
         StoreFinderService.prototype.getViewAllStoresLoading = function () {
-            return this.store.pipe(i1$1.select(getViewAllStoresLoading));
+            return this.store.pipe(i1$2.select(getViewAllStoresLoading));
         };
         /**
          * Returns observable for view all store's entities
          */
         StoreFinderService.prototype.getViewAllStoresEntities = function () {
-            return this.store.pipe(i1$1.select(getViewAllStoresEntities));
+            return this.store.pipe(i1$2.select(getViewAllStoresEntities));
         };
         /**
          * Store finding action functionality
@@ -26350,14 +26966,14 @@
         };
         return StoreFinderService;
     }());
-    StoreFinderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
+    StoreFinderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
     StoreFinderService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     StoreFinderService.ctorParameters = function () { return [
-        { type: i1$1.Store },
+        { type: i1$2.Store },
         { type: WindowRef },
         { type: GlobalMessageService },
         { type: RoutingService }
@@ -26489,14 +27105,14 @@
         };
         return ExternalJsFileLoader;
     }());
-    ExternalJsFileLoader.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(i0.ɵɵinject(i1$2.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
+    ExternalJsFileLoader.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(i0.ɵɵinject(i1.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
     ExternalJsFileLoader.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     ExternalJsFileLoader.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
     ]; };
 
     /// <reference types="@types/googlemaps" />
@@ -26618,18 +27234,18 @@
         },
     };
 
-    function getReducers$b() {
+    function getReducers$a() {
         return {
             findStores: loaderReducer(STORE_FINDER_DATA),
             viewAllStores: loaderReducer(STORE_FINDER_DATA),
         };
     }
-    var reducerToken$b = new i0.InjectionToken('StoreFinderReducers');
-    var reducerProvider$b = {
-        provide: reducerToken$b,
-        useFactory: getReducers$b,
+    var reducerToken$a = new i0.InjectionToken('StoreFinderReducers');
+    var reducerProvider$a = {
+        provide: reducerToken$a,
+        useFactory: getReducers$a,
     };
-    var metaReducers$6 = [];
+    var metaReducers$4 = [];
 
     var FindStoresEffect = /** @class */ (function () {
         function FindStoresEffect(actions$, storeFinderConnector) {
@@ -26688,7 +27304,7 @@
         i3.Effect()
     ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
 
-    var effects$a = [FindStoresEffect, ViewAllStoresEffect];
+    var effects$9 = [FindStoresEffect, ViewAllStoresEffect];
 
     var StoreFinderStoreModule = /** @class */ (function () {
         function StoreFinderStoreModule() {
@@ -26698,11 +27314,11 @@
     StoreFinderStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
-                        i1$1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
-                        i3.EffectsModule.forFeature(effects$a),
+                        i1.CommonModule,
+                        i1$2.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
+                        i3.EffectsModule.forFeature(effects$9),
                     ],
-                    providers: [reducerProvider$b],
+                    providers: [reducerProvider$a],
                 },] }
     ];
 
@@ -27027,9 +27643,9 @@
     ]; };
 
     var CustomerCouponService = /** @class */ (function () {
-        function CustomerCouponService(store, authService) {
+        function CustomerCouponService(store, userIdService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Retrieves customer's coupons
@@ -27039,7 +27655,7 @@
          */
         CustomerCouponService.prototype.loadCustomerCoupons = function (pageSize, currentPage, sort) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadCustomerCoupons({
                     userId: userId,
                     pageSize: pageSize,
@@ -27055,7 +27671,7 @@
         CustomerCouponService.prototype.getCustomerCoupons = function (pageSize) {
             var _this = this;
             return rxjs.combineLatest([
-                this.store.pipe(i1$1.select(getCustomerCouponsState)),
+                this.store.pipe(i1$2.select(getCustomerCouponsState)),
                 this.getClaimCustomerCouponResultLoading(),
             ]).pipe(operators.filter(function (_a) {
                 var _b = __read(_a, 2), loading = _b[1];
@@ -27077,13 +27693,13 @@
          * Returns a loaded flag for customer coupons
          */
         CustomerCouponService.prototype.getCustomerCouponsLoaded = function () {
-            return this.store.pipe(i1$1.select(getCustomerCouponsLoaded));
+            return this.store.pipe(i1$2.select(getCustomerCouponsLoaded));
         };
         /**
          * Returns a loading flag for customer coupons
          */
         CustomerCouponService.prototype.getCustomerCouponsLoading = function () {
-            return this.store.pipe(i1$1.select(getCustomerCouponsLoading));
+            return this.store.pipe(i1$2.select(getCustomerCouponsLoading));
         };
         /**
          * Subscribe a CustomerCoupon Notification
@@ -27091,7 +27707,7 @@
          */
         CustomerCouponService.prototype.subscribeCustomerCoupon = function (couponCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new SubscribeCustomerCoupon({
                     userId: userId,
                     couponCode: couponCode,
@@ -27102,19 +27718,19 @@
          * Returns the subscribe customer coupon notification process loading flag
          */
         CustomerCouponService.prototype.getSubscribeCustomerCouponResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the subscribe customer coupon notification process success flag
          */
         CustomerCouponService.prototype.getSubscribeCustomerCouponResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the subscribe customer coupon notification process error flag
          */
         CustomerCouponService.prototype.getSubscribeCustomerCouponResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Unsubscribe a CustomerCoupon Notification
@@ -27122,7 +27738,7 @@
          */
         CustomerCouponService.prototype.unsubscribeCustomerCoupon = function (couponCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new UnsubscribeCustomerCoupon({
                     userId: userId,
                     couponCode: couponCode,
@@ -27133,19 +27749,19 @@
          * Returns the unsubscribe customer coupon notification process loading flag
          */
         CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the unsubscribe customer coupon notification process success flag
          */
         CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the unsubscribe customer coupon notification process error flag
          */
         CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Claim a CustomerCoupon
@@ -27153,7 +27769,7 @@
          */
         CustomerCouponService.prototype.claimCustomerCoupon = function (couponCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new ClaimCustomerCoupon({
                     userId: userId,
                     couponCode: couponCode,
@@ -27164,31 +27780,31 @@
          * Returns the claim customer coupon notification process success flag
          */
         CustomerCouponService.prototype.getClaimCustomerCouponResultSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
         };
         /**
          * Returns the claim customer coupon notification process loading flag
          */
         CustomerCouponService.prototype.getClaimCustomerCouponResultLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
         };
         return CustomerCouponService;
     }());
-    CustomerCouponService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: CustomerCouponService, providedIn: "root" });
+    CustomerCouponService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: CustomerCouponService, providedIn: "root" });
     CustomerCouponService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     CustomerCouponService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
     var OrderReturnRequestService = /** @class */ (function () {
-        function OrderReturnRequestService(store, authService) {
+        function OrderReturnRequestService(store, userIdService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Create order return request
@@ -27197,7 +27813,7 @@
          */
         OrderReturnRequestService.prototype.createOrderReturnRequest = function (returnRequestInput) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new CreateOrderReturnRequest({
                     userId: userId,
                     returnRequestInput: returnRequestInput,
@@ -27208,14 +27824,14 @@
          * Return an order return request
          */
         OrderReturnRequestService.prototype.getOrderReturnRequest = function () {
-            return this.store.pipe(i1$1.select(getOrderReturnRequest));
+            return this.store.pipe(i1$2.select(getOrderReturnRequest));
         };
         /**
          * Gets order return request list
          */
         OrderReturnRequestService.prototype.getOrderReturnRequestList = function (pageSize) {
             var _this = this;
-            return this.store.pipe(i1$1.select(getOrderReturnRequestListState), operators.tap(function (returnListState) {
+            return this.store.pipe(i1$2.select(getOrderReturnRequestListState), operators.tap(function (returnListState) {
                 var attemptedLoad = returnListState.loading ||
                     returnListState.success ||
                     returnListState.error;
@@ -27230,7 +27846,7 @@
          */
         OrderReturnRequestService.prototype.loadOrderReturnRequestDetail = function (returnRequestCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadOrderReturnRequest({
                     userId: userId,
                     returnRequestCode: returnRequestCode,
@@ -27245,7 +27861,7 @@
          */
         OrderReturnRequestService.prototype.loadOrderReturnRequestList = function (pageSize, currentPage, sort) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (userId !== OCC_USER_ID_ANONYMOUS) {
                     _this.store.dispatch(new LoadOrderReturnRequestList({
                         userId: userId,
@@ -27266,13 +27882,13 @@
          * Get the order return request loading flag
          */
         OrderReturnRequestService.prototype.getReturnRequestLoading = function () {
-            return this.store.pipe(i1$1.select(getOrderReturnRequestLoading));
+            return this.store.pipe(i1$2.select(getOrderReturnRequestLoading));
         };
         /**
          * Get the order return request success flag
          */
         OrderReturnRequestService.prototype.getReturnRequestSuccess = function () {
-            return this.store.pipe(i1$1.select(getOrderReturnRequestSuccess));
+            return this.store.pipe(i1$2.select(getOrderReturnRequestSuccess));
         };
         /**
          * Cleaning order return request details
@@ -27285,7 +27901,7 @@
          */
         OrderReturnRequestService.prototype.cancelOrderReturnRequest = function (returnRequestCode, returnRequestModification) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new CancelOrderReturnRequest({
                     userId: userId,
                     returnRequestCode: returnRequestCode,
@@ -27297,13 +27913,13 @@
          * Returns the cancel return request loading flag
          */
         OrderReturnRequestService.prototype.getCancelReturnRequestLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CANCEL_RETURN_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(CANCEL_RETURN_PROCESS_ID)));
         };
         /**
          * Returns the cancel return request success flag
          */
         OrderReturnRequestService.prototype.getCancelReturnRequestSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CANCEL_RETURN_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(CANCEL_RETURN_PROCESS_ID)));
         };
         /**
          * Resets the cancel return request process flags
@@ -27313,28 +27929,28 @@
         };
         return OrderReturnRequestService;
     }());
-    OrderReturnRequestService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
+    OrderReturnRequestService.ɵprov = i0.ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: OrderReturnRequestService, providedIn: "root" });
     OrderReturnRequestService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     OrderReturnRequestService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
     var UserAddressService = /** @class */ (function () {
-        function UserAddressService(store, authService) {
+        function UserAddressService(store, userIdService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Retrieves user's addresses
          */
         UserAddressService.prototype.loadAddresses = function () {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadUserAddresses(userId));
             });
         };
@@ -27344,7 +27960,7 @@
          */
         UserAddressService.prototype.addUserAddress = function (address) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new AddUserAddress({
                     userId: userId,
                     address: address,
@@ -27357,7 +27973,7 @@
          */
         UserAddressService.prototype.setAddressAsDefault = function (addressId) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new UpdateUserAddress({
                     userId: userId,
                     addressId: addressId,
@@ -27372,7 +27988,7 @@
          */
         UserAddressService.prototype.updateUserAddress = function (addressId, address) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new UpdateUserAddress({
                     userId: userId,
                     addressId: addressId,
@@ -27386,7 +28002,7 @@
          */
         UserAddressService.prototype.deleteUserAddress = function (addressId) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new DeleteUserAddress({
                     userId: userId,
                     addressId: addressId,
@@ -27397,16 +28013,16 @@
          * Returns addresses
          */
         UserAddressService.prototype.getAddresses = function () {
-            return this.store.pipe(i1$1.select(getAddresses));
+            return this.store.pipe(i1$2.select(getAddresses));
         };
         /**
          * Returns a loading flag for addresses
          */
         UserAddressService.prototype.getAddressesLoading = function () {
-            return this.store.pipe(i1$1.select(getAddressesLoading));
+            return this.store.pipe(i1$2.select(getAddressesLoading));
         };
         UserAddressService.prototype.getAddressesLoadedSuccess = function () {
-            return this.store.pipe(i1$1.select(getAddressesLoadedSuccess));
+            return this.store.pipe(i1$2.select(getAddressesLoadedSuccess));
         };
         /**
          * Retrieves delivery countries
@@ -27418,14 +28034,14 @@
          * Returns all delivery countries
          */
         UserAddressService.prototype.getDeliveryCountries = function () {
-            return this.store.pipe(i1$1.select(getAllDeliveryCountries));
+            return this.store.pipe(i1$2.select(getAllDeliveryCountries));
         };
         /**
          * Returns a country based on the provided `isocode`
          * @param isocode an isocode for a country
          */
         UserAddressService.prototype.getCountry = function (isocode) {
-            return this.store.pipe(i1$1.select(countrySelectorFactory(isocode)));
+            return this.store.pipe(i1$2.select(countrySelectorFactory(isocode)));
         };
         /**
          * Retrieves regions for specified country by `countryIsoCode`
@@ -27445,7 +28061,7 @@
          */
         UserAddressService.prototype.getRegions = function (countryIsoCode) {
             var _this = this;
-            return this.store.pipe(i1$1.select(getRegionsDataAndLoading), operators.map(function (_a) {
+            return this.store.pipe(i1$2.select(getRegionsDataAndLoading), operators.map(function (_a) {
                 var regions = _a.regions, country = _a.country, loading = _a.loading, loaded = _a.loaded;
                 if (!countryIsoCode && (loading || loaded)) {
                     _this.clearRegions();
@@ -27468,28 +28084,28 @@
         };
         return UserAddressService;
     }());
-    UserAddressService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
+    UserAddressService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: UserAddressService, providedIn: "root" });
     UserAddressService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     UserAddressService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
     var UserCostCenterService = /** @class */ (function () {
-        function UserCostCenterService(store, authService) {
+        function UserCostCenterService(store, userIdService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Load all visible active cost centers for the currently login user
          */
         UserCostCenterService.prototype.loadActiveCostCenters = function () {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (userId && userId !== OCC_USER_ID_ANONYMOUS) {
                     _this.store.dispatch(new LoadActiveCostCenters(userId));
                 }
@@ -27526,21 +28142,21 @@
         };
         return UserCostCenterService;
     }());
-    UserCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserCostCenterService, providedIn: "root" });
+    UserCostCenterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserCostCenterService_Factory() { return new UserCostCenterService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: UserCostCenterService, providedIn: "root" });
     UserCostCenterService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     UserCostCenterService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
     var UserInterestsService = /** @class */ (function () {
-        function UserInterestsService(store, authService) {
+        function UserInterestsService(store, userIdService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Retrieves an product interest list
@@ -27550,7 +28166,7 @@
          */
         UserInterestsService.prototype.loadProductInterests = function (pageSize, currentPage, sort, productCode, notificationType) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadProductInterests({
                     userId: userId,
                     pageSize: pageSize,
@@ -27565,7 +28181,7 @@
          * Returns product interests
          */
         UserInterestsService.prototype.getProductInterests = function () {
-            return this.store.pipe(i1$1.select(getInterests));
+            return this.store.pipe(i1$2.select(getInterests));
         };
         /**
          * Returns product interests
@@ -27573,7 +28189,7 @@
          */
         UserInterestsService.prototype.getAndLoadProductInterests = function (pageSize) {
             var _this = this;
-            return this.store.pipe(i1$1.select(getInterestsState), operators.tap(function (interestListState) {
+            return this.store.pipe(i1$2.select(getInterestsState), operators.tap(function (interestListState) {
                 var attemptedLoad = interestListState.loading ||
                     interestListState.success ||
                     interestListState.error;
@@ -27586,7 +28202,7 @@
          * Returns a loading flag for product interests
          */
         UserInterestsService.prototype.getProdutInterestsLoading = function () {
-            return this.store.pipe(i1$1.select(getInterestsLoading));
+            return this.store.pipe(i1$2.select(getInterestsLoading));
         };
         /**
          * Removes a ProductInterestRelation
@@ -27595,7 +28211,7 @@
          */
         UserInterestsService.prototype.removeProdutInterest = function (item, singleDelete) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new RemoveProductInterest({
                     userId: userId,
                     item: item,
@@ -27607,13 +28223,13 @@
          * Returns a loading flag for removing product interests.
          */
         UserInterestsService.prototype.getRemoveProdutInterestLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(REMOVE_PRODUCT_INTERESTS_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(REMOVE_PRODUCT_INTERESTS_PROCESS_ID)));
         };
         /**
          * Returns a success flag for removing a product interests.
          */
         UserInterestsService.prototype.getRemoveProdutInterestSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(REMOVE_PRODUCT_INTERESTS_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(REMOVE_PRODUCT_INTERESTS_PROCESS_ID)));
         };
         /**
          * Add a new product interest.
@@ -27623,7 +28239,7 @@
          */
         UserInterestsService.prototype.addProductInterest = function (productCode, notificationType) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new AddProductInterest({
                     userId: userId,
                     productCode: productCode,
@@ -27635,13 +28251,13 @@
          * Returns a success flag for adding a product interest.
          */
         UserInterestsService.prototype.getAddProductInterestSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(ADD_PRODUCT_INTEREST_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(ADD_PRODUCT_INTEREST_PROCESS_ID)));
         };
         /**
          * Returns a error flag for adding a product interest.
          */
         UserInterestsService.prototype.getAddProductInterestError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(ADD_PRODUCT_INTEREST_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(ADD_PRODUCT_INTEREST_PROCESS_ID)));
         };
         /**
          * Reset product interest adding state.
@@ -27663,40 +28279,40 @@
         };
         return UserInterestsService;
     }());
-    UserInterestsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserInterestsService, providedIn: "root" });
+    UserInterestsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserInterestsService_Factory() { return new UserInterestsService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: UserInterestsService, providedIn: "root" });
     UserInterestsService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     UserInterestsService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
     var UserNotificationPreferenceService = /** @class */ (function () {
-        function UserNotificationPreferenceService(store, authService) {
+        function UserNotificationPreferenceService(store, userIdService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Returns all notification preferences.
          */
         UserNotificationPreferenceService.prototype.getPreferences = function () {
-            return this.store.pipe(i1$1.select(getPreferences));
+            return this.store.pipe(i1$2.select(getPreferences));
         };
         /**
          * Returns all enabled notification preferences.
          */
         UserNotificationPreferenceService.prototype.getEnabledPreferences = function () {
-            return this.store.pipe(i1$1.select(getEnabledPreferences));
+            return this.store.pipe(i1$2.select(getEnabledPreferences));
         };
         /**
          * Loads all notification preferences.
          */
         UserNotificationPreferenceService.prototype.loadPreferences = function () {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadNotificationPreferences(userId));
             });
         };
@@ -27710,7 +28326,7 @@
          * Returns a loading flag for notification preferences.
          */
         UserNotificationPreferenceService.prototype.getPreferencesLoading = function () {
-            return this.store.pipe(i1$1.select(getPreferencesLoading));
+            return this.store.pipe(i1$2.select(getPreferencesLoading));
         };
         /**
          * Updating notification preferences.
@@ -27718,7 +28334,7 @@
          */
         UserNotificationPreferenceService.prototype.updatePreferences = function (preferences) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new UpdateNotificationPreferences({
                     userId: userId,
                     preferences: preferences,
@@ -27740,28 +28356,28 @@
         };
         return UserNotificationPreferenceService;
     }());
-    UserNotificationPreferenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
+    UserNotificationPreferenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserNotificationPreferenceService_Factory() { return new UserNotificationPreferenceService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: UserNotificationPreferenceService, providedIn: "root" });
     UserNotificationPreferenceService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     UserNotificationPreferenceService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
     var UserOrderService = /** @class */ (function () {
-        function UserOrderService(store, authService, routingService) {
+        function UserOrderService(store, userIdService, routingService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
             this.routingService = routingService;
         }
         /**
          * Returns an order's detail
          */
         UserOrderService.prototype.getOrderDetails = function () {
-            return this.store.pipe(i1$1.select(getOrderDetails));
+            return this.store.pipe(i1$2.select(getOrderDetails));
         };
         /**
          * Retrieves order's details
@@ -27770,7 +28386,7 @@
          */
         UserOrderService.prototype.loadOrderDetails = function (orderCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadOrderDetails({
                     userId: userId,
                     orderCode: orderCode,
@@ -27788,7 +28404,7 @@
          */
         UserOrderService.prototype.getOrderHistoryList = function (pageSize) {
             var _this = this;
-            return this.store.pipe(i1$1.select(getOrdersState), operators.tap(function (orderListState) {
+            return this.store.pipe(i1$2.select(getOrdersState), operators.tap(function (orderListState) {
                 var attemptedLoad = orderListState.loading ||
                     orderListState.success ||
                     orderListState.error;
@@ -27801,7 +28417,7 @@
          * Returns a loaded flag for order history list
          */
         UserOrderService.prototype.getOrderHistoryListLoaded = function () {
-            return this.store.pipe(i1$1.select(getOrdersLoaded));
+            return this.store.pipe(i1$2.select(getOrdersLoaded));
         };
         /**
          * Retrieves an order list
@@ -27811,7 +28427,7 @@
          */
         UserOrderService.prototype.loadOrderList = function (pageSize, currentPage, sort) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (userId !== OCC_USER_ID_ANONYMOUS) {
                     var replenishmentOrderCode_1;
                     _this.routingService
@@ -27842,7 +28458,7 @@
          *  Returns a consignment tracking detail
          */
         UserOrderService.prototype.getConsignmentTracking = function () {
-            return this.store.pipe(i1$1.select(getConsignmentTracking));
+            return this.store.pipe(i1$2.select(getConsignmentTracking));
         };
         /**
          * Retrieves consignment tracking details
@@ -27851,7 +28467,7 @@
          */
         UserOrderService.prototype.loadConsignmentTracking = function (orderCode, consignmentCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadConsignmentTracking({
                     userId: userId,
                     orderCode: orderCode,
@@ -27870,7 +28486,7 @@
          */
         UserOrderService.prototype.cancelOrder = function (orderCode, cancelRequestInput) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new CancelOrder({
                     userId: userId,
                     orderCode: orderCode,
@@ -27882,13 +28498,13 @@
          * Returns the cancel order loading flag
          */
         UserOrderService.prototype.getCancelOrderLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
         };
         /**
          * Returns the cancel order success flag
          */
         UserOrderService.prototype.getCancelOrderSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
         };
         /**
          * Resets the cancel order process flags
@@ -27898,29 +28514,29 @@
         };
         return UserOrderService;
     }());
-    UserOrderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(RoutingService)); }, token: UserOrderService, providedIn: "root" });
+    UserOrderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(RoutingService)); }, token: UserOrderService, providedIn: "root" });
     UserOrderService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     UserOrderService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService },
+        { type: i1$2.Store },
+        { type: UserIdService },
         { type: RoutingService }
     ]; };
 
     var UserPaymentService = /** @class */ (function () {
-        function UserPaymentService(store, authService) {
+        function UserPaymentService(store, userIdService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Loads all user's payment methods.
          */
         UserPaymentService.prototype.loadPaymentMethods = function () {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new LoadUserPaymentMethods(userId));
             });
         };
@@ -27928,16 +28544,16 @@
          * Returns all user's payment methods
          */
         UserPaymentService.prototype.getPaymentMethods = function () {
-            return this.store.pipe(i1$1.select(getPaymentMethods));
+            return this.store.pipe(i1$2.select(getPaymentMethods));
         };
         /**
          * Returns a loading flag for payment methods
          */
         UserPaymentService.prototype.getPaymentMethodsLoading = function () {
-            return this.store.pipe(i1$1.select(getPaymentMethodsLoading));
+            return this.store.pipe(i1$2.select(getPaymentMethodsLoading));
         };
         UserPaymentService.prototype.getPaymentMethodsLoadedSuccess = function () {
-            return this.store.pipe(i1$1.select(getPaymentMethodsLoadedSuccess));
+            return this.store.pipe(i1$2.select(getPaymentMethodsLoadedSuccess));
         };
         /**
          * Sets the payment as a default one
@@ -27945,7 +28561,7 @@
          */
         UserPaymentService.prototype.setPaymentMethodAsDefault = function (paymentMethodId) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new SetDefaultUserPaymentMethod({
                     userId: userId,
                     paymentMethodId: paymentMethodId,
@@ -27959,7 +28575,7 @@
          */
         UserPaymentService.prototype.deletePaymentMethod = function (paymentMethodId) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 _this.store.dispatch(new DeleteUserPaymentMethod({
                     userId: userId,
                     paymentMethodId: paymentMethodId,
@@ -27970,7 +28586,7 @@
          * Returns all billing countries
          */
         UserPaymentService.prototype.getAllBillingCountries = function () {
-            return this.store.pipe(i1$1.select(getAllBillingCountries));
+            return this.store.pipe(i1$2.select(getAllBillingCountries));
         };
         /**
          * Retrieves billing countries
@@ -27980,21 +28596,21 @@
         };
         return UserPaymentService;
     }());
-    UserPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
+    UserPaymentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: UserPaymentService, providedIn: "root" });
     UserPaymentService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     UserPaymentService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
     var UserReplenishmentOrderService = /** @class */ (function () {
-        function UserReplenishmentOrderService(store, authService) {
+        function UserReplenishmentOrderService(store, userIdService) {
             this.store = store;
-            this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Returns replenishment order details for a given 'current' user
@@ -28003,7 +28619,7 @@
          */
         UserReplenishmentOrderService.prototype.loadReplenishmentOrderDetails = function (replenishmentOrderCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (userId !== OCC_USER_ID_ANONYMOUS) {
                     _this.store.dispatch(new LoadReplenishmentOrderDetails({
                         userId: userId,
@@ -28016,25 +28632,25 @@
          * Returns a replenishment order details
          */
         UserReplenishmentOrderService.prototype.getReplenishmentOrderDetails = function () {
-            return this.store.pipe(i1$1.select(getReplenishmentOrderDetailsValue));
+            return this.store.pipe(i1$2.select(getReplenishmentOrderDetailsValue));
         };
         /**
          * Returns a replenishment order details loading flag
          */
         UserReplenishmentOrderService.prototype.getReplenishmentOrderDetailsLoading = function () {
-            return this.store.pipe(i1$1.select(getReplenishmentOrderDetailsLoading));
+            return this.store.pipe(i1$2.select(getReplenishmentOrderDetailsLoading));
         };
         /**
          * Returns a replenishment order details success flag
          */
         UserReplenishmentOrderService.prototype.getReplenishmentOrderDetailsSuccess = function () {
-            return this.store.pipe(i1$1.select(getReplenishmentOrderDetailsSuccess));
+            return this.store.pipe(i1$2.select(getReplenishmentOrderDetailsSuccess));
         };
         /**
          * Returns a replenishment order details error flag
          */
         UserReplenishmentOrderService.prototype.getReplenishmentOrderDetailsError = function () {
-            return this.store.pipe(i1$1.select(getReplenishmentOrderDetailsError));
+            return this.store.pipe(i1$2.select(getReplenishmentOrderDetailsError));
         };
         /**
          * Clears the replenishment orders details state
@@ -28049,7 +28665,7 @@
          */
         UserReplenishmentOrderService.prototype.cancelReplenishmentOrder = function (replenishmentOrderCode) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (userId !== OCC_USER_ID_ANONYMOUS) {
                     _this.store.dispatch(new CancelReplenishmentOrder({
                         userId: userId,
@@ -28062,19 +28678,19 @@
          * Returns the cancel replenishment order loading flag
          */
         UserReplenishmentOrderService.prototype.getCancelReplenishmentOrderLoading = function () {
-            return this.store.pipe(i1$1.select(getProcessLoadingFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessLoadingFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
         };
         /**
          * Returns the cancel replenishment order success flag
          */
         UserReplenishmentOrderService.prototype.getCancelReplenishmentOrderSuccess = function () {
-            return this.store.pipe(i1$1.select(getProcessSuccessFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessSuccessFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
         };
         /**
          * Returns the cancel replenishment order error flag
          */
         UserReplenishmentOrderService.prototype.getCancelReplenishmentOrderError = function () {
-            return this.store.pipe(i1$1.select(getProcessErrorFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
+            return this.store.pipe(i1$2.select(getProcessErrorFactory(CANCEL_REPLENISHMENT_ORDER_PROCESS_ID)));
         };
         /**
          * Clears the cancel replenishment order processing state
@@ -28087,7 +28703,7 @@
          */
         UserReplenishmentOrderService.prototype.getReplenishmentOrderHistoryList = function (pageSize) {
             var _this = this;
-            return this.store.pipe(i1$1.select(getReplenishmentOrdersState), operators.tap(function (replenishmentOrderListState) {
+            return this.store.pipe(i1$2.select(getReplenishmentOrdersState), operators.tap(function (replenishmentOrderListState) {
                 var attemptedLoad = replenishmentOrderListState.loading ||
                     replenishmentOrderListState.success ||
                     replenishmentOrderListState.error;
@@ -28100,19 +28716,19 @@
          * Returns a loading flag for replenishment order history list
          */
         UserReplenishmentOrderService.prototype.getReplenishmentOrderHistoryListLoading = function () {
-            return this.store.pipe(i1$1.select(getReplenishmentOrdersLoading));
+            return this.store.pipe(i1$2.select(getReplenishmentOrdersLoading));
         };
         /**
          * Returns a error flag for replenishment order history list
          */
         UserReplenishmentOrderService.prototype.getReplenishmentOrderHistoryListError = function () {
-            return this.store.pipe(i1$1.select(getReplenishmentOrdersError));
+            return this.store.pipe(i1$2.select(getReplenishmentOrdersError));
         };
         /**
          * Returns a success flag for replenishment order history list
          */
         UserReplenishmentOrderService.prototype.getReplenishmentOrderHistoryListSuccess = function () {
-            return this.store.pipe(i1$1.select(getReplenishmentOrdersSuccess));
+            return this.store.pipe(i1$2.select(getReplenishmentOrdersSuccess));
         };
         /**
          * Retrieves a replenishment order list
@@ -28122,7 +28738,7 @@
          */
         UserReplenishmentOrderService.prototype.loadReplenishmentOrderList = function (pageSize, currentPage, sort) {
             var _this = this;
-            this.authService.invokeWithUserId(function (userId) {
+            this.userIdService.invokeWithUserId(function (userId) {
                 if (userId !== OCC_USER_ID_ANONYMOUS) {
                     _this.store.dispatch(new LoadUserReplenishmentOrders({
                         userId: userId,
@@ -28141,22 +28757,22 @@
         };
         return UserReplenishmentOrderService;
     }());
-    UserReplenishmentOrderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserReplenishmentOrderService_Factory() { return new UserReplenishmentOrderService(i0.ɵɵinject(i1$1.Store), i0.ɵɵinject(AuthService)); }, token: UserReplenishmentOrderService, providedIn: "root" });
+    UserReplenishmentOrderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserReplenishmentOrderService_Factory() { return new UserReplenishmentOrderService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: UserReplenishmentOrderService, providedIn: "root" });
     UserReplenishmentOrderService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     UserReplenishmentOrderService.ctorParameters = function () { return [
-        { type: i1$1.Store },
-        { type: AuthService }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
 
-    var initialState$m = {
+    var initialState$l = {
         entities: {},
     };
-    function reducer$m(state, action) {
-        if (state === void 0) { state = initialState$m; }
+    function reducer$l(state, action) {
+        if (state === void 0) { state = initialState$l; }
         switch (action.type) {
             case LOAD_BILLING_COUNTRIES_SUCCESS: {
                 var billingCountries = action.payload;
@@ -28167,15 +28783,15 @@
                 return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$m;
+                return initialState$l;
             }
         }
         return state;
     }
 
-    var initialState$n = {};
-    function reducer$n(state, action) {
-        if (state === void 0) { state = initialState$n; }
+    var initialState$m = {};
+    function reducer$m(state, action) {
+        if (state === void 0) { state = initialState$m; }
         switch (action.type) {
             case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
                 var tracking = action.payload;
@@ -28184,19 +28800,19 @@
                 };
             }
             case CLEAR_CONSIGNMENT_TRACKING: {
-                return initialState$n;
+                return initialState$m;
             }
         }
         return state;
     }
 
-    var initialState$o = {
+    var initialState$n = {
         coupons: [],
         sorts: [],
         pagination: {},
     };
-    function reducer$o(state, action) {
-        if (state === void 0) { state = initialState$o; }
+    function reducer$n(state, action) {
+        if (state === void 0) { state = initialState$n; }
         switch (action.type) {
             case LOAD_CUSTOMER_COUPONS_SUCCESS: {
                 return action.payload;
@@ -28221,11 +28837,11 @@
         return state;
     }
 
-    var initialState$p = {
+    var initialState$o = {
         entities: {},
     };
-    function reducer$p(state, action) {
-        if (state === void 0) { state = initialState$p; }
+    function reducer$o(state, action) {
+        if (state === void 0) { state = initialState$o; }
         switch (action.type) {
             case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
                 var deliveryCountries = action.payload;
@@ -28236,30 +28852,30 @@
                 return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$p;
+                return initialState$o;
             }
         }
         return state;
     }
 
-    var initialState$q = [];
-    function reducer$q(state, action) {
-        if (state === void 0) { state = initialState$q; }
+    var initialState$p = [];
+    function reducer$p(state, action) {
+        if (state === void 0) { state = initialState$p; }
         switch (action.type) {
             case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
-                return initialState$q;
+                return initialState$p;
             }
             case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
             case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
-                return action.payload ? action.payload : initialState$q;
+                return action.payload ? action.payload : initialState$p;
             }
         }
         return state;
     }
 
-    var initialState$r = {};
-    function reducer$r(state, action) {
-        if (state === void 0) { state = initialState$r; }
+    var initialState$q = {};
+    function reducer$q(state, action) {
+        if (state === void 0) { state = initialState$q; }
         switch (action.type) {
             case LOAD_ORDER_DETAILS_SUCCESS: {
                 var order = action.payload;
@@ -28269,29 +28885,47 @@
         return state;
     }
 
-    var initialState$s = {
+    var initialState$r = {
         returnRequests: [],
         pagination: {},
         sorts: [],
     };
-    function reducer$s(state, action) {
-        if (state === void 0) { state = initialState$s; }
+    function reducer$r(state, action) {
+        if (state === void 0) { state = initialState$r; }
         switch (action.type) {
             case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
-                return action.payload ? action.payload : initialState$s;
+                return action.payload ? action.payload : initialState$r;
             }
         }
         return state;
     }
 
-    var initialState$t = [];
+    var initialState$s = [];
+    function reducer$s(state, action) {
+        if (state === void 0) { state = initialState$s; }
+        switch (action.type) {
+            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+                return action.payload ? action.payload : initialState$s;
+            }
+            case LOAD_USER_PAYMENT_METHODS_FAIL: {
+                return initialState$s;
+            }
+        }
+        return state;
+    }
+
+    var initialState$t = {
+        results: [],
+        pagination: {},
+        sorts: [],
+    };
     function reducer$t(state, action) {
         if (state === void 0) { state = initialState$t; }
         switch (action.type) {
-            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
                 return action.payload ? action.payload : initialState$t;
             }
-            case LOAD_USER_PAYMENT_METHODS_FAIL: {
+            case LOAD_PRODUCT_INTERESTS_FAIL: {
                 return initialState$t;
             }
         }
@@ -28299,29 +28933,11 @@
     }
 
     var initialState$u = {
-        results: [],
-        pagination: {},
-        sorts: [],
-    };
-    function reducer$u(state, action) {
-        if (state === void 0) { state = initialState$u; }
-        switch (action.type) {
-            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
-                return action.payload ? action.payload : initialState$u;
-            }
-            case LOAD_PRODUCT_INTERESTS_FAIL: {
-                return initialState$u;
-            }
-        }
-        return state;
-    }
-
-    var initialState$v = {
         entities: [],
         country: null,
     };
-    function reducer$v(state, action) {
-        if (state === void 0) { state = initialState$v; }
+    function reducer$u(state, action) {
+        if (state === void 0) { state = initialState$u; }
         switch (action.type) {
             case LOAD_REGIONS_SUCCESS: {
                 var entities = action.payload.entities;
@@ -28330,19 +28946,19 @@
                     return Object.assign(Object.assign({}, state), { entities: entities,
                         country: country });
                 }
-                return initialState$v;
+                return initialState$u;
             }
         }
         return state;
     }
 
-    var initialState$w = {};
-    function reducer$w(state, action) {
-        if (state === void 0) { state = initialState$w; }
+    var initialState$v = {};
+    function reducer$v(state, action) {
+        if (state === void 0) { state = initialState$v; }
         switch (action.type) {
             case LOAD_REPLENISHMENT_ORDER_DETAILS_SUCCESS:
             case CANCEL_REPLENISHMENT_ORDER_SUCCESS: {
-                return action.payload ? action.payload : initialState$w;
+                return action.payload ? action.payload : initialState$v;
             }
             default: {
                 return state;
@@ -28350,9 +28966,9 @@
         }
     }
 
-    var initialState$x = false;
-    function reducer$x(state, action) {
-        if (state === void 0) { state = initialState$x; }
+    var initialState$w = false;
+    function reducer$w(state, action) {
+        if (state === void 0) { state = initialState$w; }
         switch (action.type) {
             case RESET_PASSWORD_SUCCESS: {
                 return true;
@@ -28361,11 +28977,11 @@
         return state;
     }
 
-    var initialState$y = {
+    var initialState$x = {
         entities: {},
     };
-    function reducer$y(state, action) {
-        if (state === void 0) { state = initialState$y; }
+    function reducer$x(state, action) {
+        if (state === void 0) { state = initialState$x; }
         switch (action.type) {
             case LOAD_TITLES_SUCCESS: {
                 var titles = action.payload;
@@ -28376,7 +28992,21 @@
                 return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
+                return initialState$x;
+            }
+        }
+        return state;
+    }
+
+    var initialState$y = [];
+    function reducer$y(state, action) {
+        if (state === void 0) { state = initialState$y; }
+        switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
                 return initialState$y;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$y;
             }
         }
         return state;
@@ -28386,23 +29016,9 @@
     function reducer$z(state, action) {
         if (state === void 0) { state = initialState$z; }
         switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
-                return initialState$z;
-            }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$z;
-            }
-        }
-        return state;
-    }
-
-    var initialState$A = [];
-    function reducer$A(state, action) {
-        if (state === void 0) { state = initialState$A; }
-        switch (action.type) {
             case LOAD_USER_CONSENTS_SUCCESS: {
                 var consents = action.payload;
-                return consents ? consents : initialState$A;
+                return consents ? consents : initialState$z;
             }
             case GIVE_USER_CONSENT_SUCCESS: {
                 var updatedConsentTemplate_1 = action.consentTemplate;
@@ -28414,23 +29030,23 @@
         return state;
     }
 
-    var initialState$B = [];
-    function reducer$B(state, action) {
-        if (state === void 0) { state = initialState$B; }
+    var initialState$A = [];
+    function reducer$A(state, action) {
+        if (state === void 0) { state = initialState$A; }
         switch (action.type) {
             case LOAD_ACTIVE_COST_CENTERS_FAIL: {
-                return initialState$B;
+                return initialState$A;
             }
             case LOAD_ACTIVE_COST_CENTERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$B;
+                return action.payload ? action.payload : initialState$A;
             }
         }
         return state;
     }
 
-    var initialState$C = {};
-    function reducer$C(state, action) {
-        if (state === void 0) { state = initialState$C; }
+    var initialState$B = {};
+    function reducer$B(state, action) {
+        if (state === void 0) { state = initialState$B; }
         switch (action.type) {
             case LOAD_USER_DETAILS_SUCCESS: {
                 return action.payload;
@@ -28443,34 +29059,34 @@
         return state;
     }
 
-    var initialState$D = {
+    var initialState$C = {
         orders: [],
+        pagination: {},
+        sorts: [],
+    };
+    function reducer$C(state, action) {
+        if (state === void 0) { state = initialState$C; }
+        switch (action.type) {
+            case LOAD_USER_ORDERS_SUCCESS: {
+                return action.payload ? action.payload : initialState$C;
+            }
+            case LOAD_USER_ORDERS_FAIL: {
+                return initialState$C;
+            }
+        }
+        return state;
+    }
+
+    var initialState$D = {
+        replenishmentOrders: [],
         pagination: {},
         sorts: [],
     };
     function reducer$D(state, action) {
         if (state === void 0) { state = initialState$D; }
         switch (action.type) {
-            case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$D;
-            }
-            case LOAD_USER_ORDERS_FAIL: {
-                return initialState$D;
-            }
-        }
-        return state;
-    }
-
-    var initialState$E = {
-        replenishmentOrders: [],
-        pagination: {},
-        sorts: [],
-    };
-    function reducer$E(state, action) {
-        if (state === void 0) { state = initialState$E; }
-        switch (action.type) {
             case LOAD_USER_REPLENISHMENT_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$E;
+                return action.payload ? action.payload : initialState$D;
             }
             case CANCEL_REPLENISHMENT_ORDER_SUCCESS: {
                 var cancelledReplenishmentOrder_1 = action.payload;
@@ -28478,7 +29094,7 @@
                 var index = userReplenishmentOrders.findIndex(function (replenishmentOrder) { return replenishmentOrder.replenishmentOrderCode ===
                     cancelledReplenishmentOrder_1.replenishmentOrderCode; });
                 if (index === -1) {
-                    return initialState$E;
+                    return initialState$D;
                 }
                 else {
                     userReplenishmentOrders[index] = Object.assign({}, cancelledReplenishmentOrder_1);
@@ -28489,36 +29105,36 @@
         return state;
     }
 
-    function getReducers$c() {
+    function getReducers$b() {
         return {
-            account: i1$1.combineReducers({
-                details: reducer$C,
+            account: i1$2.combineReducers({
+                details: reducer$B,
             }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$z),
-            billingCountries: reducer$m,
-            consents: loaderReducer(USER_CONSENTS, reducer$A),
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$t),
-            orders: loaderReducer(USER_ORDERS, reducer$D),
-            order: loaderReducer(USER_ORDER_DETAILS, reducer$r),
-            replenishmentOrders: loaderReducer(USER_REPLENISHMENT_ORDERS, reducer$E),
+            addresses: loaderReducer(USER_ADDRESSES, reducer$y),
+            billingCountries: reducer$l,
+            consents: loaderReducer(USER_CONSENTS, reducer$z),
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$s),
+            orders: loaderReducer(USER_ORDERS, reducer$C),
+            order: loaderReducer(USER_ORDER_DETAILS, reducer$q),
+            replenishmentOrders: loaderReducer(USER_REPLENISHMENT_ORDERS, reducer$D),
             orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
-            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$s),
-            countries: reducer$p,
-            titles: reducer$y,
-            regions: loaderReducer(REGIONS, reducer$v),
-            resetPassword: reducer$x,
-            consignmentTracking: reducer$n,
-            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$o),
-            notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$q),
-            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$u),
-            costCenters: loaderReducer(USER_COST_CENTERS, reducer$B),
-            replenishmentOrder: loaderReducer(USER_REPLENISHMENT_ORDER_DETAILS, reducer$w),
+            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$r),
+            countries: reducer$o,
+            titles: reducer$x,
+            regions: loaderReducer(REGIONS, reducer$u),
+            resetPassword: reducer$w,
+            consignmentTracking: reducer$m,
+            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$n),
+            notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$p),
+            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$t),
+            costCenters: loaderReducer(USER_COST_CENTERS, reducer$A),
+            replenishmentOrder: loaderReducer(USER_REPLENISHMENT_ORDER_DETAILS, reducer$v),
         };
     }
-    var reducerToken$c = new i0.InjectionToken('UserReducers');
-    var reducerProvider$c = {
-        provide: reducerToken$c,
-        useFactory: getReducers$c,
+    var reducerToken$b = new i0.InjectionToken('UserReducers');
+    var reducerProvider$b = {
+        provide: reducerToken$b,
+        useFactory: getReducers$b,
     };
     function clearUserState(reducer) {
         return function (state, action) {
@@ -28528,7 +29144,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$7 = [clearUserState];
+    var metaReducers$5 = [clearUserState];
 
     var BillingCountriesEffect = /** @class */ (function () {
         function BillingCountriesEffect(actions$, siteConnector) {
@@ -29335,26 +29951,24 @@
     ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
 
     var UserRegisterEffects = /** @class */ (function () {
-        function UserRegisterEffects(actions$, userConnector) {
+        function UserRegisterEffects(actions$, userConnector, authService) {
             var _this = this;
             this.actions$ = actions$;
             this.userConnector = userConnector;
+            this.authService = authService;
             this.registerUser$ = this.actions$.pipe(i3.ofType(REGISTER_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (user) { return _this.userConnector.register(user).pipe(operators.map(function () { return new RegisterUserSuccess(); }), operators.catchError(function (error) { return rxjs.of(new RegisterUserFail(makeErrorSerializable(error))); })); }));
             this.registerGuest$ = this.actions$.pipe(i3.ofType(REGISTER_GUEST), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
                 var guid = _a.guid, password = _a.password;
-                return _this.userConnector.registerGuest(guid, password).pipe(operators.switchMap(function (user) { return [
-                    new LoadUserToken({
-                        userId: user.uid,
-                        password: password,
-                    }),
-                    new RegisterGuestSuccess(),
-                ]; }), operators.catchError(function (error) { return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error))); }));
+                return _this.userConnector.registerGuest(guid, password).pipe(operators.switchMap(function (user) {
+                    _this.authService.authorize(user.uid, password);
+                    return [new RegisterGuestSuccess()];
+                }), operators.catchError(function (error) { return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error))); }));
             }));
             this.removeUser$ = this.actions$.pipe(i3.ofType(REMOVE_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
-                return _this.userConnector.remove(userId).pipe(operators.switchMap(function () { return [
-                    new RemoveUserSuccess(),
-                    new Logout(),
-                ]; }), operators.catchError(function (error) { return rxjs.of(new RemoveUserFail(makeErrorSerializable(error))); }));
+                return _this.userConnector.remove(userId).pipe(operators.switchMap(function () {
+                    _this.authService.initLogout();
+                    return [new RemoveUserSuccess()];
+                }), operators.catchError(function (error) { return rxjs.of(new RemoveUserFail(makeErrorSerializable(error))); }));
             }));
         }
         return UserRegisterEffects;
@@ -29364,7 +29978,8 @@
     ];
     UserRegisterEffects.ctorParameters = function () { return [
         { type: i3.Actions },
-        { type: UserConnector }
+        { type: UserConnector },
+        { type: AuthService }
     ]; };
     __decorate([
         i3.Effect()
@@ -29402,7 +30017,7 @@
         i3.Effect()
     ], UserReplenishmentOrdersEffect.prototype, "loadUserReplenishmentOrders$", void 0);
 
-    var effects$b = [
+    var effects$a = [
         ClearMiscsDataEffect,
         DeliveryCountriesEffects,
         RegionsEffects,
@@ -29437,13 +30052,13 @@
     UserStoreModule.decorators = [
         { type: i0.NgModule, args: [{
                     imports: [
-                        i1$2.CommonModule,
+                        i1.CommonModule,
                         StateModule,
-                        i1$1.StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$7 }),
-                        i3.EffectsModule.forFeature(effects$b),
-                        i1$3.RouterModule,
+                        i1$2.StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$5 }),
+                        i3.EffectsModule.forFeature(effects$a),
+                        i1$1.RouterModule,
                     ],
-                    providers: [reducerProvider$c],
+                    providers: [reducerProvider$b],
                 },] }
     ];
 
@@ -29483,7 +30098,6 @@
     exports.ANONYMOUS_CONSENTS_STORE_FEATURE = ANONYMOUS_CONSENTS_STORE_FEATURE;
     exports.ANONYMOUS_CONSENT_NORMALIZER = ANONYMOUS_CONSENT_NORMALIZER;
     exports.ASM_FEATURE = ASM_FEATURE;
-    exports.AUTH_FEATURE = AUTH_FEATURE;
     exports.ActivatedRoutesService = ActivatedRoutesService;
     exports.ActiveCartService = ActiveCartService;
     exports.AnonymousConsentNormalizer = AnonymousConsentNormalizer;
@@ -29496,24 +30110,33 @@
     exports.AnonymousConsentsService = AnonymousConsentsService;
     exports.AsmActions = customerGroup_actions;
     exports.AsmAdapter = AsmAdapter;
+    exports.AsmAuthHeaderService = AsmAuthHeaderService;
     exports.AsmAuthService = AsmAuthService;
+    exports.AsmAuthStorageService = AsmAuthStorageService;
     exports.AsmConfig = AsmConfig;
     exports.AsmConnector = AsmConnector;
     exports.AsmModule = AsmModule;
     exports.AsmOccModule = AsmOccModule;
     exports.AsmSelectors = asmGroup_selectors;
     exports.AsmService = AsmService;
+    exports.AsmStatePersistenceService = AsmStatePersistenceService;
     exports.AuthActions = authGroup_actions;
     exports.AuthConfig = AuthConfig;
+    exports.AuthConfigService = AuthConfigService;
     exports.AuthGuard = AuthGuard;
+    exports.AuthHeaderService = AuthHeaderService;
+    exports.AuthInterceptor = AuthInterceptor;
     exports.AuthModule = AuthModule;
     exports.AuthRedirectService = AuthRedirectService;
-    exports.AuthSelectors = authGroup_selectors;
+    exports.AuthRedirectStorageService = AuthRedirectStorageService;
     exports.AuthService = AuthService;
+    exports.AuthStatePersistenceService = AuthStatePersistenceService;
+    exports.AuthStorageService = AuthStorageService;
     exports.BASE_SITE_CONTEXT_ID = BASE_SITE_CONTEXT_ID;
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
     exports.BaseSiteService = BaseSiteService;
+    exports.BasicAuthService = BasicAuthService;
     exports.CANCEL_ORDER_PROCESS_ID = CANCEL_ORDER_PROCESS_ID;
     exports.CANCEL_REPLENISHMENT_ORDER_PROCESS_ID = CANCEL_REPLENISHMENT_ORDER_PROCESS_ID;
     exports.CANCEL_RETURN_PROCESS_ID = CANCEL_RETURN_PROCESS_ID;
@@ -29524,6 +30147,7 @@
     exports.CHECKOUT_DETAILS = CHECKOUT_DETAILS;
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;
     exports.CLAIM_CUSTOMER_COUPON_PROCESS_ID = CLAIM_CUSTOMER_COUPON_PROCESS_ID;
+    exports.CLIENT_AUTH_FEATURE = CLIENT_AUTH_FEATURE;
     exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
     exports.CMS_COMPONENT_NORMALIZER = CMS_COMPONENT_NORMALIZER;
     exports.CMS_FEATURE = CMS_FEATURE;
@@ -29537,7 +30161,6 @@
     exports.COST_CENTER_NORMALIZER = COST_CENTER_NORMALIZER;
     exports.COST_CENTER_SERIALIZER = COST_CENTER_SERIALIZER;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
-    exports.CSAGENT_TOKEN_DATA = CSAGENT_TOKEN_DATA;
     exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
     exports.CURRENCY_NORMALIZER = CURRENCY_NORMALIZER;
     exports.CUSTOMER_COUPONS = CUSTOMER_COUPONS;
@@ -29558,6 +30181,7 @@
     exports.CartEventModule = CartEventModule;
     exports.CartModule = CartModule;
     exports.CartOccModule = CartOccModule;
+    exports.CartPersistenceModule = CartPersistenceModule;
     exports.CartRemoveEntrySuccessEvent = CartRemoveEntrySuccessEvent;
     exports.CartUpdateEntrySuccessEvent = CartUpdateEntrySuccessEvent;
     exports.CartVoucherAdapter = CartVoucherAdapter;
@@ -29585,6 +30209,13 @@
     exports.CheckoutReplenishmentOrderConnector = CheckoutReplenishmentOrderConnector;
     exports.CheckoutSelectors = checkoutGroup_selectors;
     exports.CheckoutService = CheckoutService;
+    exports.ClientAuthActions = clientTokenGroup_actions;
+    exports.ClientAuthModule = ClientAuthModule;
+    exports.ClientAuthSelectors = clientTokenGroup_selectors;
+    exports.ClientAuthenticationTokenService = ClientAuthenticationTokenService;
+    exports.ClientErrorHandlingService = ClientErrorHandlingService;
+    exports.ClientTokenInterceptor = ClientTokenInterceptor;
+    exports.ClientTokenService = ClientTokenService;
     exports.CmsActions = cmsGroup_actions;
     exports.CmsComponentAdapter = CmsComponentAdapter;
     exports.CmsComponentConnector = CmsComponentConnector;
@@ -29614,11 +30245,11 @@
     exports.ConverterService = ConverterService;
     exports.CostCenterModule = CostCenterModule;
     exports.CostCenterOccModule = CostCenterOccModule;
+    exports.CsAgentAuthService = CsAgentAuthService;
     exports.CurrencyService = CurrencyService;
     exports.CustomerCouponAdapter = CustomerCouponAdapter;
     exports.CustomerCouponConnector = CustomerCouponConnector;
     exports.CustomerCouponService = CustomerCouponService;
-    exports.CustomerSupportAgentTokenInterceptor = CustomerSupportAgentTokenInterceptor;
     exports.CxDatePipe = CxDatePipe;
     exports.DEFAULT_LOCAL_STORAGE_KEY = DEFAULT_LOCAL_STORAGE_KEY;
     exports.DEFAULT_SCOPE = DEFAULT_SCOPE;
@@ -29664,12 +30295,6 @@
     exports.InternalServerErrorHandler = InternalServerErrorHandler;
     exports.JSP_INCLUDE_CMS_COMPONENT_TYPE = JSP_INCLUDE_CMS_COMPONENT_TYPE;
     exports.JavaRegExpConverter = JavaRegExpConverter;
-    exports.KYMA_FEATURE = KYMA_FEATURE;
-    exports.KymaActions = kymaGroup_actions;
-    exports.KymaConfig = KymaConfig;
-    exports.KymaModule = KymaModule;
-    exports.KymaSelectors = kymaGroup_selectors;
-    exports.KymaService = KymaService;
     exports.LANGUAGE_CONTEXT_ID = LANGUAGE_CONTEXT_ID;
     exports.LANGUAGE_NORMALIZER = LANGUAGE_NORMALIZER;
     exports.LanguageService = LanguageService;
@@ -29690,13 +30315,13 @@
     exports.NgExpressEngineDecorator = NgExpressEngineDecorator;
     exports.NotAuthGuard = NotAuthGuard;
     exports.NotFoundHandler = NotFoundHandler;
+    exports.OAuthLibWrapperService = OAuthLibWrapperService;
     exports.OCC_BASE_URL_META_TAG_NAME = OCC_BASE_URL_META_TAG_NAME;
     exports.OCC_BASE_URL_META_TAG_PLACEHOLDER = OCC_BASE_URL_META_TAG_PLACEHOLDER;
     exports.OCC_CART_ID_CURRENT = OCC_CART_ID_CURRENT;
     exports.OCC_USER_ID_ANONYMOUS = OCC_USER_ID_ANONYMOUS;
     exports.OCC_USER_ID_CURRENT = OCC_USER_ID_CURRENT;
     exports.OCC_USER_ID_GUEST = OCC_USER_ID_GUEST;
-    exports.OPEN_ID_TOKEN_DATA = OPEN_ID_TOKEN_DATA;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
     exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
     exports.ORDER_RETURNS_NORMALIZER = ORDER_RETURNS_NORMALIZER;
@@ -29751,7 +30376,6 @@
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
     exports.OccUserReplenishmentOrderAdapter = OccUserReplenishmentOrderAdapter;
-    exports.OpenIdAuthenticationTokenService = OpenIdAuthenticationTokenService;
     exports.OrderPlacedEvent = OrderPlacedEvent;
     exports.OrderReturnRequestService = OrderReturnRequestService;
     exports.PASSWORD_PATTERN = PASSWORD_PATTERN;
@@ -29865,8 +30489,8 @@
     exports.StoreFinderSelectors = storeFinderGroup_selectors;
     exports.StoreFinderService = StoreFinderService;
     exports.TITLE_NORMALIZER = TITLE_NORMALIZER;
-    exports.TOKEN_REVOCATION_HEADER = TOKEN_REVOCATION_HEADER;
     exports.TestConfigModule = TestConfigModule;
+    exports.TokenRevocationInterceptor = TokenRevocationInterceptor;
     exports.TranslatePipe = TranslatePipe;
     exports.TranslationChunkService = TranslationChunkService;
     exports.TranslationService = TranslationService;
@@ -29891,7 +30515,6 @@
     exports.USER_SIGN_UP_SERIALIZER = USER_SIGN_UP_SERIALIZER;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.USE_CUSTOMER_SUPPORT_AGENT_TOKEN = USE_CUSTOMER_SUPPORT_AGENT_TOKEN;
-    exports.UnauthorizedErrorHandler = UnauthorizedErrorHandler;
     exports.UnifiedInjector = UnifiedInjector;
     exports.UnknownErrorHandler = UnknownErrorHandler;
     exports.UrlMatcherService = UrlMatcherService;
@@ -29902,6 +30525,7 @@
     exports.UserAddressAdapter = UserAddressAdapter;
     exports.UserAddressConnector = UserAddressConnector;
     exports.UserAddressService = UserAddressService;
+    exports.UserAuthModule = UserAuthModule;
     exports.UserConnector = UserConnector;
     exports.UserConsentAdapter = UserConsentAdapter;
     exports.UserConsentConnector = UserConsentConnector;
@@ -29909,6 +30533,7 @@
     exports.UserCostCenterAdapter = UserCostCenterAdapter;
     exports.UserCostCenterConnector = UserCostCenterConnector;
     exports.UserCostCenterService = UserCostCenterService;
+    exports.UserIdService = UserIdService;
     exports.UserInterestsAdapter = UserInterestsAdapter;
     exports.UserInterestsConnector = UserInterestsConnector;
     exports.UserInterestsService = UserInterestsService;
@@ -29962,272 +30587,249 @@
     exports.serviceMapFactory = serviceMapFactory;
     exports.validateConfig = validateConfig;
     exports.withdrawOn = withdrawOn;
-    exports.ɵa = cartStatePersistenceFactory;
-    exports.ɵb = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵba = AsmStoreModule;
-    exports.ɵbb = getReducers$4;
-    exports.ɵbc = reducerToken$4;
-    exports.ɵbd = reducerProvider$4;
-    exports.ɵbe = clearCustomerSupportAgentAsmState;
-    exports.ɵbf = metaReducers$2;
-    exports.ɵbg = effects$4;
-    exports.ɵbh = CustomerEffects;
-    exports.ɵbi = CustomerSupportAgentTokenEffects;
-    exports.ɵbj = UserAuthenticationTokenService;
-    exports.ɵbk = reducer$c;
-    exports.ɵbl = interceptors$2;
-    exports.ɵbm = CustomerSupportAgentAuthErrorInterceptor;
-    exports.ɵbn = CustomerSupportAgentErrorHandlingService;
+    exports.ɵa = asmStatePersistenceFactory;
+    exports.ɵb = checkOAuthParamsInUrl;
+    exports.ɵba = reducer$a;
+    exports.ɵbb = reducer$8;
+    exports.ɵbc = reducer$9;
+    exports.ɵbd = interceptors$2;
+    exports.ɵbe = AnonymousConsentsInterceptor;
+    exports.ɵbf = AsmStoreModule;
+    exports.ɵbg = getReducers$5;
+    exports.ɵbh = reducerToken$5;
+    exports.ɵbi = reducerProvider$5;
+    exports.ɵbj = clearCustomerSupportAgentAsmState;
+    exports.ɵbk = metaReducers$1;
+    exports.ɵbl = effects$4;
+    exports.ɵbm = CustomerEffects;
+    exports.ɵbn = reducer$c;
     exports.ɵbo = defaultAsmConfig;
-    exports.ɵbp = authStoreConfigFactory;
-    exports.ɵbq = AuthStoreModule;
+    exports.ɵbq = ClientAuthStoreModule;
     exports.ɵbr = getReducers;
     exports.ɵbs = reducerToken;
     exports.ɵbt = reducerProvider;
-    exports.ɵbu = clearAuthState;
-    exports.ɵbv = metaReducers;
-    exports.ɵbw = effects;
-    exports.ɵbx = ClientTokenEffect;
-    exports.ɵby = UserTokenEffects;
-    exports.ɵbz = ClientAuthenticationTokenService;
-    exports.ɵc = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵca = reducer;
-    exports.ɵcb = defaultAuthConfig;
-    exports.ɵcc = interceptors;
-    exports.ɵcd = ClientTokenInterceptor;
-    exports.ɵce = UserTokenInterceptor;
-    exports.ɵcf = AuthErrorInterceptor;
-    exports.ɵcg = UserErrorHandlingService;
-    exports.ɵch = UrlParsingService;
-    exports.ɵci = RoutingParamsService;
-    exports.ɵcj = ClientErrorHandlingService;
-    exports.ɵck = TokenRevocationInterceptor;
-    exports.ɵcl = MultiCartStoreModule;
-    exports.ɵcm = clearMultiCartState;
-    exports.ɵcn = multiCartMetaReducers;
-    exports.ɵco = multiCartReducerToken;
-    exports.ɵcp = getMultiCartReducers;
-    exports.ɵcq = multiCartReducerProvider;
-    exports.ɵcr = CartEffects;
-    exports.ɵcs = CartEntryEffects;
-    exports.ɵct = CartVoucherEffects;
-    exports.ɵcu = WishListEffects;
-    exports.ɵcv = SaveCartConnector;
-    exports.ɵcw = SaveCartAdapter;
-    exports.ɵcx = MultiCartEffects;
-    exports.ɵcy = entityProcessesLoaderReducer;
-    exports.ɵcz = entityReducer;
-    exports.ɵd = configFromCookieFactory;
-    exports.ɵda = processesLoaderReducer;
-    exports.ɵdb = activeCartReducer;
-    exports.ɵdc = cartEntitiesReducer;
-    exports.ɵdd = wishListReducer;
-    exports.ɵde = CartPageMetaResolver;
-    exports.ɵdf = SiteContextParamsService;
-    exports.ɵdg = CheckoutStoreModule;
-    exports.ɵdh = getReducers$1;
-    exports.ɵdi = reducerToken$1;
-    exports.ɵdj = reducerProvider$1;
-    exports.ɵdk = effects$1;
-    exports.ɵdl = AddressVerificationEffect;
-    exports.ɵdm = CardTypesEffects;
-    exports.ɵdn = CheckoutEffects;
-    exports.ɵdo = PaymentTypesEffects;
-    exports.ɵdp = ReplenishmentOrderEffects;
-    exports.ɵdq = reducer$3;
-    exports.ɵdr = reducer$2;
-    exports.ɵds = reducer$1;
-    exports.ɵdt = reducer$5;
-    exports.ɵdu = reducer$4;
-    exports.ɵdv = cmsStoreConfigFactory;
-    exports.ɵdw = CmsStoreModule;
-    exports.ɵdx = getReducers$7;
-    exports.ɵdy = reducerToken$7;
-    exports.ɵdz = reducerProvider$7;
-    exports.ɵe = initConfig;
-    exports.ɵea = clearCmsState;
-    exports.ɵeb = metaReducers$3;
-    exports.ɵec = effects$7;
-    exports.ɵed = ComponentsEffects;
-    exports.ɵee = NavigationEntryItemEffects;
-    exports.ɵef = PageEffects;
-    exports.ɵeg = reducer$h;
-    exports.ɵeh = entityLoaderReducer;
-    exports.ɵei = reducer$i;
-    exports.ɵej = reducer$f;
-    exports.ɵek = reducer$g;
-    exports.ɵel = GlobalMessageStoreModule;
-    exports.ɵem = getReducers$5;
-    exports.ɵen = reducerToken$5;
-    exports.ɵeo = reducerProvider$5;
-    exports.ɵep = reducer$d;
-    exports.ɵeq = GlobalMessageEffect;
-    exports.ɵer = defaultGlobalMessageConfigFactory;
-    exports.ɵes = HttpErrorInterceptor;
-    exports.ɵet = defaultI18nConfig;
-    exports.ɵeu = i18nextProviders;
-    exports.ɵev = i18nextInit;
-    exports.ɵew = MockTranslationService;
-    exports.ɵex = kymaStoreConfigFactory;
-    exports.ɵey = KymaStoreModule;
-    exports.ɵez = getReducers$8;
-    exports.ɵf = anonymousConsentsStoreConfigFactory;
-    exports.ɵfa = reducerToken$8;
-    exports.ɵfb = reducerProvider$8;
-    exports.ɵfc = clearKymaState;
-    exports.ɵfd = metaReducers$4;
-    exports.ɵfe = effects$8;
-    exports.ɵff = OpenIdTokenEffect;
-    exports.ɵfg = defaultKymaConfig;
-    exports.ɵfh = defaultOccAsmConfig;
-    exports.ɵfi = defaultOccCartConfig;
-    exports.ɵfj = OccSaveCartAdapter;
-    exports.ɵfk = defaultOccCheckoutConfig;
-    exports.ɵfl = defaultOccCostCentersConfig;
-    exports.ɵfm = defaultOccProductConfig;
-    exports.ɵfn = defaultOccSiteContextConfig;
-    exports.ɵfo = defaultOccStoreFinderConfig;
-    exports.ɵfp = defaultOccUserConfig;
-    exports.ɵfq = UserNotificationPreferenceAdapter;
-    exports.ɵfr = OccUserCostCenterAdapter;
-    exports.ɵfs = OccAddressListNormalizer;
-    exports.ɵft = UserReplenishmentOrderAdapter;
-    exports.ɵfu = defaultPersonalizationConfig;
-    exports.ɵfv = interceptors$3;
-    exports.ɵfw = OccPersonalizationIdInterceptor;
-    exports.ɵfx = OccPersonalizationTimeInterceptor;
-    exports.ɵfy = ProcessStoreModule;
-    exports.ɵfz = getReducers$9;
-    exports.ɵg = AnonymousConsentsStoreModule;
-    exports.ɵga = reducerToken$9;
-    exports.ɵgb = reducerProvider$9;
-    exports.ɵgc = productStoreConfigFactory;
-    exports.ɵgd = ProductStoreModule;
-    exports.ɵge = getReducers$a;
-    exports.ɵgf = reducerToken$a;
-    exports.ɵgg = reducerProvider$a;
-    exports.ɵgh = clearProductsState;
-    exports.ɵgi = metaReducers$5;
-    exports.ɵgj = effects$9;
-    exports.ɵgk = ProductReferencesEffects;
-    exports.ɵgl = ProductReviewsEffects;
-    exports.ɵgm = ProductsSearchEffects;
-    exports.ɵgn = ProductEffects;
-    exports.ɵgo = reducer$j;
-    exports.ɵgp = entityScopedLoaderReducer;
-    exports.ɵgq = scopedLoaderReducer;
-    exports.ɵgr = reducer$l;
-    exports.ɵgs = reducer$k;
-    exports.ɵgt = PageMetaResolver;
-    exports.ɵgu = CouponSearchPageResolver;
-    exports.ɵgv = PageMetaResolver;
-    exports.ɵgw = addExternalRoutesFactory;
-    exports.ɵgx = getReducers$6;
-    exports.ɵgy = reducer$e;
-    exports.ɵgz = reducerToken$6;
-    exports.ɵh = TRANSFER_STATE_META_REDUCER;
-    exports.ɵha = reducerProvider$6;
-    exports.ɵhb = CustomSerializer;
-    exports.ɵhc = effects$6;
-    exports.ɵhd = RouterEffects;
-    exports.ɵhe = siteContextStoreConfigFactory;
-    exports.ɵhf = SiteContextStoreModule;
-    exports.ɵhg = getReducers$2;
-    exports.ɵhh = reducerToken$2;
-    exports.ɵhi = reducerProvider$2;
-    exports.ɵhj = effects$3;
-    exports.ɵhk = LanguagesEffects;
-    exports.ɵhl = CurrenciesEffects;
-    exports.ɵhm = BaseSiteEffects;
-    exports.ɵhn = reducer$8;
-    exports.ɵho = reducer$7;
-    exports.ɵhp = reducer$6;
-    exports.ɵhq = defaultSiteContextConfigFactory;
-    exports.ɵhr = initializeContext;
-    exports.ɵhs = contextServiceProviders;
-    exports.ɵht = SiteContextRoutesHandler;
-    exports.ɵhu = SiteContextUrlSerializer;
-    exports.ɵhv = siteContextParamsProviders;
-    exports.ɵhw = baseSiteConfigValidator;
-    exports.ɵhx = interceptors$4;
-    exports.ɵhy = CmsTicketInterceptor;
-    exports.ɵhz = StoreFinderStoreModule;
-    exports.ɵi = STORAGE_SYNC_META_REDUCER;
-    exports.ɵia = getReducers$b;
-    exports.ɵib = reducerToken$b;
-    exports.ɵic = reducerProvider$b;
-    exports.ɵid = effects$a;
-    exports.ɵie = FindStoresEffect;
-    exports.ɵif = ViewAllStoresEffect;
-    exports.ɵig = defaultStoreFinderConfig;
-    exports.ɵih = UserStoreModule;
-    exports.ɵii = getReducers$c;
-    exports.ɵij = reducerToken$c;
-    exports.ɵik = reducerProvider$c;
-    exports.ɵil = clearUserState;
-    exports.ɵim = metaReducers$7;
-    exports.ɵin = effects$b;
-    exports.ɵio = BillingCountriesEffect;
-    exports.ɵip = ClearMiscsDataEffect;
-    exports.ɵiq = ConsignmentTrackingEffects;
-    exports.ɵir = CustomerCouponEffects;
-    exports.ɵis = DeliveryCountriesEffects;
-    exports.ɵit = NotificationPreferenceEffects;
-    exports.ɵiu = OrderDetailsEffect;
-    exports.ɵiv = OrderReturnRequestEffect;
-    exports.ɵiw = UserPaymentMethodsEffects;
-    exports.ɵix = ProductInterestsEffect;
-    exports.ɵiy = RegionsEffects;
-    exports.ɵiz = ReplenishmentOrderDetailsEffect;
-    exports.ɵj = stateMetaReducers;
-    exports.ɵja = ResetPasswordEffects;
-    exports.ɵjb = TitlesEffects;
-    exports.ɵjc = UserAddressesEffects;
-    exports.ɵjd = UserConsentsEffect;
-    exports.ɵje = UserDetailsEffects;
-    exports.ɵjf = UserOrdersEffect;
-    exports.ɵjg = UserRegisterEffects;
-    exports.ɵjh = UserReplenishmentOrdersEffect;
-    exports.ɵji = ForgotPasswordEffects;
-    exports.ɵjj = UpdateEmailEffects;
-    exports.ɵjk = UpdatePasswordEffects;
-    exports.ɵjl = UserNotificationPreferenceConnector;
-    exports.ɵjm = UserCostCenterEffects;
-    exports.ɵjn = reducer$C;
-    exports.ɵjo = reducer$z;
-    exports.ɵjp = reducer$m;
-    exports.ɵjq = reducer$A;
-    exports.ɵjr = reducer$t;
-    exports.ɵjs = reducer$D;
-    exports.ɵjt = reducer$r;
-    exports.ɵju = reducer$E;
-    exports.ɵjv = reducer$s;
-    exports.ɵjw = reducer$p;
-    exports.ɵjx = reducer$y;
-    exports.ɵjy = reducer$v;
-    exports.ɵjz = reducer$x;
-    exports.ɵk = getStorageSyncReducer;
-    exports.ɵka = reducer$n;
-    exports.ɵkb = reducer$o;
-    exports.ɵkc = reducer$q;
-    exports.ɵkd = reducer$u;
-    exports.ɵke = reducer$B;
-    exports.ɵkf = reducer$w;
-    exports.ɵl = getTransferStateReducer;
-    exports.ɵm = getReducers$3;
-    exports.ɵn = reducerToken$3;
-    exports.ɵo = reducerProvider$3;
-    exports.ɵp = clearAnonymousConsentTemplates;
-    exports.ɵq = metaReducers$1;
-    exports.ɵr = effects$2;
-    exports.ɵs = AnonymousConsentsEffects;
-    exports.ɵt = loaderReducer;
-    exports.ɵu = reducer$b;
-    exports.ɵv = reducer$9;
-    exports.ɵw = reducer$a;
-    exports.ɵx = interceptors$1;
-    exports.ɵy = AnonymousConsentsInterceptor;
-    exports.ɵz = asmStoreConfigFactory;
+    exports.ɵbu = effects;
+    exports.ɵbv = ClientTokenEffect;
+    exports.ɵbw = interceptors;
+    exports.ɵbx = defaultAuthConfig;
+    exports.ɵby = interceptors$1;
+    exports.ɵbz = SiteContextParamsService;
+    exports.ɵc = authStatePersistenceFactory;
+    exports.ɵca = MultiCartStoreModule;
+    exports.ɵcb = clearMultiCartState;
+    exports.ɵcc = multiCartMetaReducers;
+    exports.ɵcd = multiCartReducerToken;
+    exports.ɵce = getMultiCartReducers;
+    exports.ɵcf = multiCartReducerProvider;
+    exports.ɵcg = CartEffects;
+    exports.ɵch = CartEntryEffects;
+    exports.ɵci = CartVoucherEffects;
+    exports.ɵcj = WishListEffects;
+    exports.ɵck = SaveCartConnector;
+    exports.ɵcl = SaveCartAdapter;
+    exports.ɵcm = MultiCartEffects;
+    exports.ɵcn = entityProcessesLoaderReducer;
+    exports.ɵco = entityReducer;
+    exports.ɵcp = processesLoaderReducer;
+    exports.ɵcq = activeCartReducer;
+    exports.ɵcr = cartEntitiesReducer;
+    exports.ɵcs = wishListReducer;
+    exports.ɵct = CartPageMetaResolver;
+    exports.ɵcu = CheckoutStoreModule;
+    exports.ɵcv = getReducers$1;
+    exports.ɵcw = reducerToken$1;
+    exports.ɵcx = reducerProvider$1;
+    exports.ɵcy = effects$1;
+    exports.ɵcz = AddressVerificationEffect;
+    exports.ɵd = cartStatePersistenceFactory;
+    exports.ɵda = CardTypesEffects;
+    exports.ɵdb = CheckoutEffects;
+    exports.ɵdc = PaymentTypesEffects;
+    exports.ɵdd = ReplenishmentOrderEffects;
+    exports.ɵde = reducer$2;
+    exports.ɵdf = reducer$1;
+    exports.ɵdg = reducer;
+    exports.ɵdh = reducer$4;
+    exports.ɵdi = reducer$3;
+    exports.ɵdj = cmsStoreConfigFactory;
+    exports.ɵdk = CmsStoreModule;
+    exports.ɵdl = getReducers$7;
+    exports.ɵdm = reducerToken$7;
+    exports.ɵdn = reducerProvider$7;
+    exports.ɵdo = clearCmsState;
+    exports.ɵdp = metaReducers$2;
+    exports.ɵdq = effects$7;
+    exports.ɵdr = ComponentsEffects;
+    exports.ɵds = NavigationEntryItemEffects;
+    exports.ɵdt = PageEffects;
+    exports.ɵdu = reducer$g;
+    exports.ɵdv = entityLoaderReducer;
+    exports.ɵdw = reducer$h;
+    exports.ɵdx = reducer$e;
+    exports.ɵdy = reducer$f;
+    exports.ɵdz = GlobalMessageStoreModule;
+    exports.ɵe = uninitializeActiveCartMetaReducerFactory;
+    exports.ɵea = getReducers$4;
+    exports.ɵeb = reducerToken$4;
+    exports.ɵec = reducerProvider$4;
+    exports.ɵed = reducer$b;
+    exports.ɵee = GlobalMessageEffect;
+    exports.ɵef = defaultGlobalMessageConfigFactory;
+    exports.ɵeg = HttpErrorInterceptor;
+    exports.ɵeh = defaultI18nConfig;
+    exports.ɵei = i18nextProviders;
+    exports.ɵej = i18nextInit;
+    exports.ɵek = MockTranslationService;
+    exports.ɵel = defaultOccAsmConfig;
+    exports.ɵem = defaultOccCartConfig;
+    exports.ɵen = OccSaveCartAdapter;
+    exports.ɵeo = defaultOccCheckoutConfig;
+    exports.ɵep = defaultOccCostCentersConfig;
+    exports.ɵeq = defaultOccProductConfig;
+    exports.ɵer = defaultOccSiteContextConfig;
+    exports.ɵes = defaultOccStoreFinderConfig;
+    exports.ɵet = defaultOccUserConfig;
+    exports.ɵeu = UserNotificationPreferenceAdapter;
+    exports.ɵev = OccUserCostCenterAdapter;
+    exports.ɵew = OccAddressListNormalizer;
+    exports.ɵex = UserReplenishmentOrderAdapter;
+    exports.ɵey = defaultPersonalizationConfig;
+    exports.ɵez = interceptors$3;
+    exports.ɵf = CONFIG_INITIALIZER_FORROOT_GUARD;
+    exports.ɵfa = OccPersonalizationIdInterceptor;
+    exports.ɵfb = OccPersonalizationTimeInterceptor;
+    exports.ɵfc = ProcessStoreModule;
+    exports.ɵfd = getReducers$8;
+    exports.ɵfe = reducerToken$8;
+    exports.ɵff = reducerProvider$8;
+    exports.ɵfg = productStoreConfigFactory;
+    exports.ɵfh = ProductStoreModule;
+    exports.ɵfi = getReducers$9;
+    exports.ɵfj = reducerToken$9;
+    exports.ɵfk = reducerProvider$9;
+    exports.ɵfl = clearProductsState;
+    exports.ɵfm = metaReducers$3;
+    exports.ɵfn = effects$8;
+    exports.ɵfo = ProductReferencesEffects;
+    exports.ɵfp = ProductReviewsEffects;
+    exports.ɵfq = ProductsSearchEffects;
+    exports.ɵfr = ProductEffects;
+    exports.ɵfs = reducer$i;
+    exports.ɵft = entityScopedLoaderReducer;
+    exports.ɵfu = scopedLoaderReducer;
+    exports.ɵfv = reducer$k;
+    exports.ɵfw = reducer$j;
+    exports.ɵfx = PageMetaResolver;
+    exports.ɵfy = CouponSearchPageResolver;
+    exports.ɵfz = PageMetaResolver;
+    exports.ɵg = TEST_CONFIG_COOKIE_NAME;
+    exports.ɵga = addExternalRoutesFactory;
+    exports.ɵgb = getReducers$6;
+    exports.ɵgc = reducer$d;
+    exports.ɵgd = reducerToken$6;
+    exports.ɵge = reducerProvider$6;
+    exports.ɵgf = CustomSerializer;
+    exports.ɵgg = effects$6;
+    exports.ɵgh = RouterEffects;
+    exports.ɵgi = siteContextStoreConfigFactory;
+    exports.ɵgj = SiteContextStoreModule;
+    exports.ɵgk = getReducers$2;
+    exports.ɵgl = reducerToken$2;
+    exports.ɵgm = reducerProvider$2;
+    exports.ɵgn = effects$3;
+    exports.ɵgo = LanguagesEffects;
+    exports.ɵgp = CurrenciesEffects;
+    exports.ɵgq = BaseSiteEffects;
+    exports.ɵgr = reducer$7;
+    exports.ɵgs = reducer$6;
+    exports.ɵgt = reducer$5;
+    exports.ɵgu = defaultSiteContextConfigFactory;
+    exports.ɵgv = initializeContext;
+    exports.ɵgw = contextServiceProviders;
+    exports.ɵgx = SiteContextRoutesHandler;
+    exports.ɵgy = SiteContextUrlSerializer;
+    exports.ɵgz = siteContextParamsProviders;
+    exports.ɵh = configFromCookieFactory;
+    exports.ɵha = baseSiteConfigValidator;
+    exports.ɵhb = interceptors$4;
+    exports.ɵhc = CmsTicketInterceptor;
+    exports.ɵhd = StoreFinderStoreModule;
+    exports.ɵhe = getReducers$a;
+    exports.ɵhf = reducerToken$a;
+    exports.ɵhg = reducerProvider$a;
+    exports.ɵhh = effects$9;
+    exports.ɵhi = FindStoresEffect;
+    exports.ɵhj = ViewAllStoresEffect;
+    exports.ɵhk = defaultStoreFinderConfig;
+    exports.ɵhl = UserStoreModule;
+    exports.ɵhm = getReducers$b;
+    exports.ɵhn = reducerToken$b;
+    exports.ɵho = reducerProvider$b;
+    exports.ɵhp = clearUserState;
+    exports.ɵhq = metaReducers$5;
+    exports.ɵhr = effects$a;
+    exports.ɵhs = BillingCountriesEffect;
+    exports.ɵht = ClearMiscsDataEffect;
+    exports.ɵhu = ConsignmentTrackingEffects;
+    exports.ɵhv = CustomerCouponEffects;
+    exports.ɵhw = DeliveryCountriesEffects;
+    exports.ɵhx = NotificationPreferenceEffects;
+    exports.ɵhy = OrderDetailsEffect;
+    exports.ɵhz = OrderReturnRequestEffect;
+    exports.ɵi = initConfig;
+    exports.ɵia = UserPaymentMethodsEffects;
+    exports.ɵib = ProductInterestsEffect;
+    exports.ɵic = RegionsEffects;
+    exports.ɵid = ReplenishmentOrderDetailsEffect;
+    exports.ɵie = ResetPasswordEffects;
+    exports.ɵif = TitlesEffects;
+    exports.ɵig = UserAddressesEffects;
+    exports.ɵih = UserConsentsEffect;
+    exports.ɵii = UserDetailsEffects;
+    exports.ɵij = UserOrdersEffect;
+    exports.ɵik = UserRegisterEffects;
+    exports.ɵil = UserReplenishmentOrdersEffect;
+    exports.ɵim = ForgotPasswordEffects;
+    exports.ɵin = UpdateEmailEffects;
+    exports.ɵio = UpdatePasswordEffects;
+    exports.ɵip = UserNotificationPreferenceConnector;
+    exports.ɵiq = UserCostCenterEffects;
+    exports.ɵir = reducer$B;
+    exports.ɵis = reducer$y;
+    exports.ɵit = reducer$l;
+    exports.ɵiu = reducer$z;
+    exports.ɵiv = reducer$s;
+    exports.ɵiw = reducer$C;
+    exports.ɵix = reducer$q;
+    exports.ɵiy = reducer$D;
+    exports.ɵiz = reducer$r;
+    exports.ɵj = anonymousConsentsStoreConfigFactory;
+    exports.ɵja = reducer$o;
+    exports.ɵjb = reducer$x;
+    exports.ɵjc = reducer$u;
+    exports.ɵjd = reducer$w;
+    exports.ɵje = reducer$m;
+    exports.ɵjf = reducer$n;
+    exports.ɵjg = reducer$p;
+    exports.ɵjh = reducer$t;
+    exports.ɵji = reducer$A;
+    exports.ɵjj = reducer$v;
+    exports.ɵk = AnonymousConsentsStoreModule;
+    exports.ɵl = TRANSFER_STATE_META_REDUCER;
+    exports.ɵm = STORAGE_SYNC_META_REDUCER;
+    exports.ɵn = stateMetaReducers;
+    exports.ɵo = getStorageSyncReducer;
+    exports.ɵp = getTransferStateReducer;
+    exports.ɵq = getReducers$3;
+    exports.ɵr = reducerToken$3;
+    exports.ɵs = reducerProvider$3;
+    exports.ɵt = clearAnonymousConsentTemplates;
+    exports.ɵu = metaReducers;
+    exports.ɵv = effects$2;
+    exports.ɵw = AnonymousConsentsEffects;
+    exports.ɵx = UrlParsingService;
+    exports.ɵy = RoutingParamsService;
+    exports.ɵz = loaderReducer;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
