@@ -10,7 +10,6 @@ import { OAuthLibWrapperService } from './oauth-lib-wrapper.service';
 /**
  * Extendable service for `AuthInterceptor`.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class AuthHeaderService {
     protected authService: AuthService;
     protected authStorageService: AuthStorageService;
@@ -48,7 +47,4 @@ export declare class AuthHeaderService {
      */
     protected handleExpiredToken(): Observable<AuthToken>;
     protected createNewRequestWithNewToken(request: HttpRequest<any>, token: AuthToken): HttpRequest<any>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthHeaderService, never>;
 }
-
-//# sourceMappingURL=auth-header.service.d.ts.map
