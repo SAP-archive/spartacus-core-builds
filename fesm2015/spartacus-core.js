@@ -17294,22 +17294,33 @@ ConflictHandler.decorators = [
 ];
 
 class ForbiddenHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
+    constructor(globalMessageService, authService, occEndpoints) {
+        super(globalMessageService);
+        this.globalMessageService = globalMessageService;
+        this.authService = authService;
+        this.occEndpoints = occEndpoints;
         this.responseStatus = HttpResponseStatus.FORBIDDEN;
     }
-    handleError() {
+    handleError(request) {
+        if (request.url.endsWith(this.occEndpoints.getUrl('user', { userId: 'current' }))) {
+            this.authService.logout();
+        }
         this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
     }
     getPriority() {
         return -10 /* LOW */;
     }
 }
-ForbiddenHandler.ɵprov = ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+ForbiddenHandler.ɵprov = ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(ɵɵinject(GlobalMessageService), ɵɵinject(AuthService), ɵɵinject(OccEndpointsService)); }, token: ForbiddenHandler, providedIn: "root" });
 ForbiddenHandler.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
+];
+ForbiddenHandler.ctorParameters = () => [
+    { type: GlobalMessageService },
+    { type: AuthService },
+    { type: OccEndpointsService }
 ];
 
 class GatewayTimeoutHandler extends HttpErrorHandler {

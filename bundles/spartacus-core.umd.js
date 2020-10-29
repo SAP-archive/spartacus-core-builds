@@ -19432,12 +19432,18 @@
 
     var ForbiddenHandler = /** @class */ (function (_super) {
         __extends(ForbiddenHandler, _super);
-        function ForbiddenHandler() {
-            var _this = _super.apply(this, __spread(arguments)) || this;
+        function ForbiddenHandler(globalMessageService, authService, occEndpoints) {
+            var _this = _super.call(this, globalMessageService) || this;
+            _this.globalMessageService = globalMessageService;
+            _this.authService = authService;
+            _this.occEndpoints = occEndpoints;
             _this.responseStatus = HttpResponseStatus.FORBIDDEN;
             return _this;
         }
-        ForbiddenHandler.prototype.handleError = function () {
+        ForbiddenHandler.prototype.handleError = function (request) {
+            if (request.url.endsWith(this.occEndpoints.getUrl('user', { userId: 'current' }))) {
+                this.authService.logout();
+            }
             this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
         };
         ForbiddenHandler.prototype.getPriority = function () {
@@ -19445,12 +19451,17 @@
         };
         return ForbiddenHandler;
     }(HttpErrorHandler));
-    ForbiddenHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(i0.ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+    ForbiddenHandler.ɵprov = i0.ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(AuthService), i0.ɵɵinject(OccEndpointsService)); }, token: ForbiddenHandler, providedIn: "root" });
     ForbiddenHandler.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
+    ForbiddenHandler.ctorParameters = function () { return [
+        { type: GlobalMessageService },
+        { type: AuthService },
+        { type: OccEndpointsService }
+    ]; };
 
     var GatewayTimeoutHandler = /** @class */ (function (_super) {
         __extends(GatewayTimeoutHandler, _super);
