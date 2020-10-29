@@ -4,6 +4,7 @@ import { Cart } from '../../model/cart.model';
 import { OrderEntry } from '../../model/order.model';
 import { ProcessesLoaderState } from '../../state/utils/processes-loader/processes-loader-state';
 import { StateWithMultiCart } from '../store/multi-cart-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class MultiCartService {
     protected store: Store<StateWithMultiCart>;
     constructor(store: Store<StateWithMultiCart>);
@@ -137,4 +138,7 @@ export declare class MultiCartService {
      * @param userId
      */
     deleteCart(cartId: string, userId: string): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<MultiCartService, never>;
 }
+
+//# sourceMappingURL=multi-cart.service.d.ts.map
