@@ -9,6 +9,7 @@ import { ProductSearchService } from '../facade/product-search.service';
  *
  * Only the page title is resolved in the standard implemenation.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class SearchPageMetaResolver extends PageMetaResolver implements PageMetaResolver {
     protected routingService: RoutingService;
     protected productSearchService: ProductSearchService;
@@ -17,4 +18,7 @@ export declare class SearchPageMetaResolver extends PageMetaResolver implements 
     protected query$: Observable<string>;
     constructor(routingService: RoutingService, productSearchService: ProductSearchService, translation: TranslationService);
     resolveTitle(): Observable<string>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SearchPageMetaResolver, never>;
 }
+
+//# sourceMappingURL=search-page-meta.resolver.d.ts.map
