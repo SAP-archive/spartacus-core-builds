@@ -9,7 +9,6 @@ import { UnifiedInjector } from '../lazy-loading/unified-injector';
  *
  * Converters can be stacked together to to apply decoupled customizations
  */
-import * as ɵngcc0 from '@angular/core';
 export interface Converter<S, T> {
     /**
      * Convert converts source model to target model. Can use optional target parameter,
@@ -48,7 +47,4 @@ export declare class ConverterService implements OnDestroy {
     convertMany<S, T>(sources: S[], injectionToken: InjectionToken<Converter<S, T>>): T[];
     private convertSource;
     ngOnDestroy(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConverterService, never>;
 }
-
-//# sourceMappingURL=converter.service.d.ts.map
