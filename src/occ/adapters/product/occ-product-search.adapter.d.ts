@@ -5,6 +5,7 @@ import { ProductSearchAdapter } from '../../../product/connectors/search/product
 import { SearchConfig } from '../../../product/model/search-config';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccProductSearchAdapter implements ProductSearchAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -14,4 +15,8 @@ export declare class OccProductSearchAdapter implements ProductSearchAdapter {
     loadSuggestions(term: string, pageSize?: number): Observable<Suggestion[]>;
     protected getSearchEndpoint(query: string, searchConfig: SearchConfig): string;
     protected getSuggestionEndpoint(term: string, max: string): string;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductSearchAdapter, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccProductSearchAdapter>;
 }
+
+//# sourceMappingURL=occ-product-search.adapter.d.ts.map

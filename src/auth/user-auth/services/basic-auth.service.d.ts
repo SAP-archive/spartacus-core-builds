@@ -10,6 +10,7 @@ import { OAuthLibWrapperService } from './oauth-lib-wrapper.service';
  * Auth service for normal user authentication.
  * Use to check auth status, login/logout with different OAuth flows.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class BasicAuthService {
     protected store: Store<StateWithClientAuth>;
     protected userIdService: UserIdService;
@@ -44,4 +45,7 @@ export declare class BasicAuthService {
      * Initialize logout procedure by redirecting to the `logout` endpoint.
      */
     initLogout(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<BasicAuthService, never>;
 }
+
+//# sourceMappingURL=basic-auth.service.d.ts.map
