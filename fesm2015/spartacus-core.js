@@ -1959,6 +1959,47 @@ function filterKeysByType(keys, type) {
     return Object.keys(keys).filter((key) => keys[key] === type);
 }
 
+const ALL = 'all';
+function serializeSearchConfig(config, id) {
+    var _a, _b, _c;
+    return `${id !== null && id !== void 0 ? id : ''}?pageSize=${(_a = config.pageSize) !== null && _a !== void 0 ? _a : ''}&currentPage=${(_b = config.currentPage) !== null && _b !== void 0 ? _b : ''}&sort=${(_c = config.sort) !== null && _c !== void 0 ? _c : ''}`;
+}
+function denormalizeSearch(state, params) {
+    return denormalizeCustomB2BSearch(state.list, state.entities, params);
+}
+function denormalizeCustomB2BSearch(list, entities, params, id) {
+    const serializedList = entityLoaderStateSelector(list, params ? serializeSearchConfig(params, id) : id !== null && id !== void 0 ? id : ALL);
+    if (!serializedList.value || !serializedList.value.ids) {
+        return serializedList;
+    }
+    const res = Object.assign({}, serializedList, {
+        value: {
+            values: serializedList.value.ids.map((code) => entityLoaderStateSelector(entities, code).value),
+        },
+    });
+    if (params) {
+        res.value.pagination = serializedList.value.pagination;
+        res.value.sorts = serializedList.value.sorts;
+    }
+    return res;
+}
+function normalizeListPage(list, id) {
+    const values = (list === null || list === void 0 ? void 0 : list.values) || [];
+    const page = {
+        ids: values.map((data) => data[id]),
+    };
+    if (list.pagination) {
+        page.pagination = list.pagination;
+    }
+    if (list.sorts) {
+        page.sorts = list.sorts;
+    }
+    return { values, page };
+}
+function serializeParams(params, searchConfig) {
+    return [params, serializeSearchConfig(searchConfig)].toString();
+}
+
 var utilsGroup = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStateSlice: getStateSlice,
@@ -2033,7 +2074,12 @@ var utilsGroup = /*#__PURE__*/Object.freeze({
     isStableSelector: isStableSelector,
     hasPendingProcessesSelector: hasPendingProcessesSelector,
     initialProcessesState: initialProcessesState,
-    processesLoaderReducer: processesLoaderReducer
+    processesLoaderReducer: processesLoaderReducer,
+    serializeSearchConfig: serializeSearchConfig,
+    denormalizeSearch: denormalizeSearch,
+    denormalizeCustomB2BSearch: denormalizeCustomB2BSearch,
+    normalizeListPage: normalizeListPage,
+    serializeParams: serializeParams
 });
 
 const ANONYMOUS_CONSENTS_STORE_FEATURE = 'anonymous-consents';

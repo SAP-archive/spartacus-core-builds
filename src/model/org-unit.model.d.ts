@@ -41,3 +41,7 @@ export interface B2BApprovalProcess {
     code?: string;
     name?: string;
 }
+export interface OrderApprovalPermissionType {
+    code?: string;
+    name?: string;
+}
