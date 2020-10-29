@@ -5,7 +5,6 @@ import { AuthConfigService } from './auth-config.service';
  * Wrapper service on the library OAuthService. Normalizes the lib API for services.
  * Use this service when you want to access low level OAuth library methods.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class OAuthLibWrapperService {
     protected oAuthService: OAuthService;
     protected authConfigService: AuthConfigService;
@@ -48,7 +47,4 @@ export declare class OAuthLibWrapperService {
      * Tries to login user based on `code` or `token` present in the url.
      */
     tryLogin(): Promise<boolean>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OAuthLibWrapperService, never>;
 }
-
-//# sourceMappingURL=oauth-lib-wrapper.service.d.ts.map
