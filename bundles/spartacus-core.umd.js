@@ -6131,8 +6131,79 @@
         { type: ConverterService }
     ]; };
 
+    /**
+     * Service responsible for converting date-like strings to/from formats compatible with the `<input type="datetime-local">`
+     * HTML element and valid strings compatible with the `Date` object.
+     *
+     * Date values used are relative to the local timezone of the user.
+     */
+    var DateTimePickerFormatterService = /** @class */ (function () {
+        function DateTimePickerFormatterService() {
+        }
+        /**
+         * Convert date string into a string format compatable with the browser's native `<input type="datetime-local">` HTML element.
+         * @param value: date string to convert
+         *
+         * @example
+         * With UTC-0 local offset, `toNative('2010-01-01T00:00+0000')` returns `'2010-01-01T00:00'`.
+         */
+        DateTimePickerFormatterService.prototype.toNative = function (value) {
+            return value
+                ? this.formatDateStringWithTimezone(value, this.getLocalTimezoneOffset(true))
+                : null;
+        };
+        /**
+         * Convert datetime-local native string into a valid datetime string.
+         * @param value: datetime-local string to convert
+         *
+         * @example
+         * With UTC-0 locale offset, `toModel('2010-01-01T00:00')` returns `'2010-01-01T00:00:00+00:00'`.
+         */
+        DateTimePickerFormatterService.prototype.toModel = function (value) {
+            return value ? value + ":00" + this.getLocalTimezoneOffset() : null;
+        };
+        /**
+         * Returns the local timezone in a format that can be appended to a date-like string.
+         * @param invert (default: false): returns the opposite operator relative to the local timezone
+         *
+         * @example
+         * When locale is set to a CEST timezone, `getLocalTimezoneOffset()` returns '+02:00'
+         * and `getLocalTimezoneOffset(true)` returns '-02:00'
+         */
+        DateTimePickerFormatterService.prototype.getLocalTimezoneOffset = function (invert) {
+            var offset = new Date().getTimezoneOffset() * -1;
+            var hours = Math.abs(Math.floor(offset / 60))
+                .toString()
+                .padStart(2, '0');
+            var minutes = (offset % 60).toString().padStart(2, '0');
+            var sign = offset >= 0 ? (invert ? "-" : "+") : invert ? "+" : "-";
+            return "" + sign + hours + ":" + minutes;
+        };
+        /**
+         * Format date string into a format compatible with the browser's native `<input type="datetime-local">` HTML element.
+         * @param dateString: date string to convert
+         * @param offset: offset to append to date string
+         *
+         * @example
+         * With UTC-0 local offset, `formatDateStringWithTimezone('2010-01-01T00:00+0000', '+00:00')` returns `'2010-01-01T00:00+00:00'`.
+         */
+        DateTimePickerFormatterService.prototype.formatDateStringWithTimezone = function (dateString, offset) {
+            return new Date(dateString.replace('+0000', offset))
+                .toISOString()
+                .substring(0, 16);
+        };
+        return DateTimePickerFormatterService;
+    }());
+    DateTimePickerFormatterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function DateTimePickerFormatterService_Factory() { return new DateTimePickerFormatterService(); }, token: DateTimePickerFormatterService, providedIn: "root" });
+    DateTimePickerFormatterService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+
     var OccReplenishmentOrderFormSerializer = /** @class */ (function () {
-        function OccReplenishmentOrderFormSerializer() {
+        function OccReplenishmentOrderFormSerializer(dateTimePickerFormatterService) {
+            this.dateTimePickerFormatterService = dateTimePickerFormatterService;
         }
         OccReplenishmentOrderFormSerializer.prototype.convert = function (source, target) {
             if (target === undefined) {
@@ -6144,19 +6215,28 @@
             return target;
         };
         /**
-         * Converts the date string to the Standard ISO 8601 format
+         * Adds the current timestamp (including timezone offset) to a date string in the format YYYY-mm-dd
+         * @Example
+         * Converts 2021-10-15 to 2021-10-15T15:38:05-05:00
          */
         OccReplenishmentOrderFormSerializer.prototype.convertDate = function (date) {
-            var dateTime = '00:00:00';
-            return new Date(date).toISOString().split('T')[0] + 'T' + dateTime + 'Z';
+            var localTime = new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+            });
+            var modelDate = date + "T" + localTime;
+            return this.dateTimePickerFormatterService.toModel(modelDate);
         };
         return OccReplenishmentOrderFormSerializer;
     }());
-    OccReplenishmentOrderFormSerializer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReplenishmentOrderFormSerializer_Factory() { return new OccReplenishmentOrderFormSerializer(); }, token: OccReplenishmentOrderFormSerializer, providedIn: "root" });
+    OccReplenishmentOrderFormSerializer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReplenishmentOrderFormSerializer_Factory() { return new OccReplenishmentOrderFormSerializer(i0.ɵɵinject(DateTimePickerFormatterService)); }, token: OccReplenishmentOrderFormSerializer, providedIn: "root" });
     OccReplenishmentOrderFormSerializer.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
-    OccReplenishmentOrderFormSerializer.ctorParameters = function () { return []; };
+    OccReplenishmentOrderFormSerializer.ctorParameters = function () { return [
+        { type: DateTimePickerFormatterService }
+    ]; };
 
     var OccReplenishmentOrderNormalizer = /** @class */ (function () {
         function OccReplenishmentOrderNormalizer(converter) {
@@ -30137,6 +30217,34 @@
                 },] }
     ];
 
+    var DatePickerFormatterService = /** @class */ (function () {
+        function DatePickerFormatterService() {
+        }
+        DatePickerFormatterService.prototype.toNative = function (value) {
+            return value ? new Date(value).toISOString().split('T')[0] : null;
+        };
+        DatePickerFormatterService.prototype.toModel = function (value, endOfDay) {
+            if (value) {
+                var date = new Date(value)
+                    .toISOString()
+                    .replace('.', '+')
+                    .replace('Z', '0');
+                if (endOfDay) {
+                    date = date.replace('00:00:00', '23:59:59');
+                }
+                return date;
+            }
+        };
+        return DatePickerFormatterService;
+    }());
+    DatePickerFormatterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function DatePickerFormatterService_Factory() { return new DatePickerFormatterService(); }, token: DatePickerFormatterService, providedIn: "root" });
+    DatePickerFormatterService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    DatePickerFormatterService.ctorParameters = function () { return []; };
+
     /*
      * Public API Surface of core
      */
@@ -30315,6 +30423,8 @@
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
     exports.DEFAULT_URL_MATCHER = DEFAULT_URL_MATCHER;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
+    exports.DatePickerFormatterService = DatePickerFormatterService;
+    exports.DateTimePickerFormatterService = DateTimePickerFormatterService;
     exports.DefaultConfig = DefaultConfig;
     exports.DefaultConfigChunk = DefaultConfigChunk;
     exports.DefaultRoutePageMetaResolver = DefaultRoutePageMetaResolver;
