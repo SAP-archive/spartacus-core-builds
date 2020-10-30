@@ -4,6 +4,7 @@ import { BasicAuthService } from '../services/basic-auth.service';
  * Auth facade on BasicAuthService and AsmAuthService.
  * This service should be used in components, other core features.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class AuthService {
     protected basicAuthService: BasicAuthService;
     constructor(basicAuthService: BasicAuthService);
@@ -33,4 +34,7 @@ export declare class AuthService {
      * Initialize logout procedure by redirecting to the `logout` endpoint.
      */
     initLogout(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthService, never>;
 }
+
+//# sourceMappingURL=auth.service.d.ts.map
