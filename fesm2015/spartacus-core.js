@@ -15703,10 +15703,7 @@ class AnonymousConsentTemplatesConnector {
         return this.adapter.loadAnonymousConsentTemplates();
     }
     loadAnonymousConsents() {
-        // TODO{#8158} - remove the conditional check, and just `return this.adapter.loadAnonymousConsents()`
-        return this.adapter.loadAnonymousConsents
-            ? this.adapter.loadAnonymousConsents()
-            : null;
+        return this.adapter.loadAnonymousConsents();
     }
 }
 AnonymousConsentTemplatesConnector.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentTemplatesConnector_Factory() { return new AnonymousConsentTemplatesConnector(ɵɵinject(AnonymousConsentTemplatesAdapter)); }, token: AnonymousConsentTemplatesConnector, providedIn: "root" });
@@ -15729,10 +15726,6 @@ class AnonymousConsentsEffects {
         this.userConsentService = userConsentService;
         this.userIdService = userIdService;
         this.checkConsentVersions$ = this.actions$.pipe(ofType(ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS), withLatestFrom(this.anonymousConsentService.getConsents()), concatMap(([_, currentConsents]) => {
-            // TODO{#8158} - remove this if block
-            if (!this.anonymousConsentTemplatesConnector.loadAnonymousConsents()) {
-                return of(new LoadAnonymousConsentTemplates());
-            }
             return this.anonymousConsentTemplatesConnector
                 .loadAnonymousConsents()
                 .pipe(map((newConsents) => {

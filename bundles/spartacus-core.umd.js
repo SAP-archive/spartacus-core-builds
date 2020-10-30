@@ -17664,10 +17664,7 @@
             return this.adapter.loadAnonymousConsentTemplates();
         };
         AnonymousConsentTemplatesConnector.prototype.loadAnonymousConsents = function () {
-            // TODO{#8158} - remove the conditional check, and just `return this.adapter.loadAnonymousConsents()`
-            return this.adapter.loadAnonymousConsents
-                ? this.adapter.loadAnonymousConsents()
-                : null;
+            return this.adapter.loadAnonymousConsents();
         };
         return AnonymousConsentTemplatesConnector;
     }());
@@ -17693,10 +17690,6 @@
             this.userIdService = userIdService;
             this.checkConsentVersions$ = this.actions$.pipe(i3.ofType(ANONYMOUS_CONSENT_CHECK_UPDATED_VERSIONS), operators.withLatestFrom(this.anonymousConsentService.getConsents()), operators.concatMap(function (_a) {
                 var _b = __read(_a, 2), _ = _b[0], currentConsents = _b[1];
-                // TODO{#8158} - remove this if block
-                if (!_this.anonymousConsentTemplatesConnector.loadAnonymousConsents()) {
-                    return rxjs.of(new LoadAnonymousConsentTemplates());
-                }
                 return _this.anonymousConsentTemplatesConnector
                     .loadAnonymousConsents()
                     .pipe(operators.map(function (newConsents) {

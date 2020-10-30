@@ -8,5 +8,5 @@ export declare abstract class AnonymousConsentTemplatesAdapter {
     /**
      * Loads anonymous consents in an optimal way.
      */
-    abstract loadAnonymousConsents?(): Observable<AnonymousConsent[]>;
+    abstract loadAnonymousConsents(): Observable<AnonymousConsent[]>;
 }
