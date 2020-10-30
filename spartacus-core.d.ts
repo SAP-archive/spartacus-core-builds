@@ -5,7 +5,9 @@
 export { Product } from './src/model/product.model';
 export { ProductSearchPage, Facet } from './src/model/product-search.model';
 export { Cart } from './src/model/cart.model';
+export { CostCenter, B2BUnit, B2BUser } from './src/model/org-unit.model';
 export { AuthToken } from './src/auth/user-auth/models/auth-token.model';
+export { Order } from './src/model/order.model';
 /** AUGMENTABLE_TYPES_END */
 export * from './public_api';
 export { AnonymousConsentsInterceptor as ɵbe } from './src/anonymous-consents/http-interceptors/anonymous-consents-interceptor';
@@ -200,3 +202,5 @@ export { reducer as ɵir } from './src/user/store/reducers/user-details.reducer'
 export { reducer as ɵiw } from './src/user/store/reducers/user-orders.reducer';
 export { reducer as ɵiy } from './src/user/store/reducers/user-replenishment-orders.reducer';
 export { UserStoreModule as ɵhl } from './src/user/store/user-store.module';
+
+//# sourceMappingURL=spartacus-core.d.ts.map
