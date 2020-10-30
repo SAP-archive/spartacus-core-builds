@@ -25606,6 +25606,294 @@
         LoadProductSuccess: LoadProductSuccess
     });
 
+    var ProductReferencesEffects = /** @class */ (function () {
+        function ProductReferencesEffects(actions$, productReferencesConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productReferencesConnector = productReferencesConnector;
+            this.loadProductReferences$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_REFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.productReferencesConnector
+                    .get(payload.productCode, payload.referenceType, payload.pageSize)
+                    .pipe(operators.map(function (data) {
+                    return new LoadProductReferencesSuccess({
+                        productCode: payload.productCode,
+                        list: data,
+                    });
+                }), operators.catchError(function (_error) { return rxjs.of(new LoadProductReferencesFail({
+                    message: payload.productCode,
+                })); }));
+            }));
+        }
+        return ProductReferencesEffects;
+    }());
+    ProductReferencesEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductReferencesEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ProductReferencesConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
+
+    var ProductReviewsEffects = /** @class */ (function () {
+        function ProductReviewsEffects(actions$, productReviewsConnector, globalMessageService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productReviewsConnector = productReviewsConnector;
+            this.globalMessageService = globalMessageService;
+            this.loadProductReviews$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_REVIEWS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (productCode) {
+                return _this.productReviewsConnector.get(productCode).pipe(operators.map(function (data) {
+                    return new LoadProductReviewsSuccess({
+                        productCode: productCode,
+                        list: data,
+                    });
+                }), operators.catchError(function (_error) { return rxjs.of(new LoadProductReviewsFail({
+                    message: productCode,
+                })); }));
+            }));
+            this.postProductReview = this.actions$.pipe(i3.ofType(POST_PRODUCT_REVIEW), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.productReviewsConnector
+                    .add(payload.productCode, payload.review)
+                    .pipe(operators.map(function (reviewResponse) {
+                    return new PostProductReviewSuccess(reviewResponse);
+                }), operators.catchError(function (_error) { return rxjs.of(new PostProductReviewFail(payload.productCode)); }));
+            }));
+            this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(i3.ofType(POST_PRODUCT_REVIEW_SUCCESS), operators.tap(function () {
+                _this.globalMessageService.add({ key: 'productReview.thankYouForReview' }, exports.GlobalMessageType.MSG_TYPE_CONFIRMATION);
+            }));
+        }
+        return ProductReviewsEffects;
+    }());
+    ProductReviewsEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductReviewsEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ProductReviewsConnector },
+        { type: GlobalMessageService }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ProductReviewsEffects.prototype, "postProductReview", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], ProductReviewsEffects.prototype, "showGlobalMessageOnPostProductReviewSuccess$", void 0);
+
+    var ProductsSearchEffects = /** @class */ (function () {
+        function ProductsSearchEffects(actions$, productSearchConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productSearchConnector = productSearchConnector;
+            this.searchProducts$ = this.actions$.pipe(i3.ofType(SEARCH_PRODUCTS), operators.groupBy(function (action) { return action.auxiliary; }), operators.mergeMap(function (group) { return group.pipe(operators.switchMap(function (action) {
+                return _this.productSearchConnector
+                    .search(action.payload.queryText, action.payload.searchConfig)
+                    .pipe(operators.map(function (data) {
+                    return new SearchProductsSuccess(data, action.auxiliary);
+                }), operators.catchError(function (error) { return rxjs.of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary)); }));
+            })); }));
+            this.getProductSuggestions$ = this.actions$.pipe(i3.ofType(GET_PRODUCT_SUGGESTIONS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.productSearchConnector
+                    .getSuggestions(payload.term, payload.searchConfig.pageSize)
+                    .pipe(operators.map(function (suggestions) {
+                    if (suggestions === undefined) {
+                        return new GetProductSuggestionsSuccess([]);
+                    }
+                    return new GetProductSuggestionsSuccess(suggestions);
+                }), operators.catchError(function (error) { return rxjs.of(new GetProductSuggestionsFail(makeErrorSerializable(error))); }));
+            }));
+        }
+        return ProductsSearchEffects;
+    }());
+    ProductsSearchEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductsSearchEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ProductSearchConnector }
+    ]; };
+    __decorate([
+        i3.Effect()
+    ], ProductsSearchEffects.prototype, "searchProducts$", void 0);
+    __decorate([
+        i3.Effect()
+    ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
+
+    var ProductEffects = /** @class */ (function () {
+        function ProductEffects(actions$, productConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productConnector = productConnector;
+            // we want to cancel all ongoing requests when currency or language changes,
+            this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.loadProduct$ = i3.createEffect(function () { return function (_a) {
+                var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
+                return _this.actions$.pipe(i3.ofType(LOAD_PRODUCT), operators.map(function (action) { return ({
+                    code: action.payload,
+                    scope: action.meta.scope,
+                }); }), 
+                // we are grouping all load actions that happens at the same time
+                // to optimize loading and pass them all to productConnector.getMany
+                bufferDebounceTime(debounce, scheduler), operators.mergeMap(function (products) { return rxjs.merge.apply(void 0, __spread(_this.productConnector
+                    .getMany(products)
+                    .map(_this.productLoadEffect))); }), withdrawOn(_this.contextChange$));
+            }; });
+        }
+        ProductEffects.prototype.productLoadEffect = function (productLoad) {
+            return productLoad.data$.pipe(operators.map(function (data) { return new LoadProductSuccess(Object.assign({ code: productLoad.code }, data), productLoad.scope); }), operators.catchError(function (error) {
+                return rxjs.of(new LoadProductFail(productLoad.code, makeErrorSerializable(error), productLoad.scope));
+            }));
+        };
+        return ProductEffects;
+    }());
+    ProductEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    ProductEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: ProductConnector }
+    ]; };
+
+    var effects$8 = [
+        ProductsSearchEffects,
+        ProductEffects,
+        ProductReviewsEffects,
+        ProductReferencesEffects,
+    ];
+
+    var initialState$i = {
+        productCode: '',
+        list: [],
+    };
+    function reducer$i(state, action) {
+        if (state === void 0) { state = initialState$i; }
+        switch (action.type) {
+            case LOAD_PRODUCT_REFERENCES_SUCCESS: {
+                var productCode = action.payload.productCode;
+                var list = action.payload.list;
+                return Object.assign(Object.assign({}, state), { list: __spread(state.list, (list ? list : [])).reduce(function (productReferences, productReference) {
+                        if (!productReferences.some(function (obj) { return obj.referenceType === productReference.referenceType &&
+                            obj.target.code === productReference.target.code; })) {
+                            productReferences.push(productReference);
+                        }
+                        return productReferences;
+                    }, []), productCode: productCode });
+            }
+            case CLEAN_PRODUCT_REFERENCES: {
+                return initialState$i;
+            }
+        }
+        return state;
+    }
+    var getProductReferenceList = function (state) { return state.list; };
+    var getProductReferenceProductCode = function (state) { return state.productCode; };
+
+    var initialState$j = {
+        productCode: '',
+        list: [],
+    };
+    function reducer$j(state, action) {
+        if (state === void 0) { state = initialState$j; }
+        switch (action.type) {
+            case LOAD_PRODUCT_REVIEWS_SUCCESS: {
+                var productCode = action.payload.productCode;
+                var list = action.payload.list;
+                return Object.assign(Object.assign({}, state), { productCode: productCode,
+                    list: list });
+            }
+        }
+        return state;
+    }
+    var getReviewList = function (state) { return state.list; };
+    var getReviewProductCode = function (state) { return state.productCode; };
+
+    var initialState$k = {
+        results: {},
+        suggestions: [],
+        auxResults: {},
+    };
+    function reducer$k(state, action) {
+        if (state === void 0) { state = initialState$k; }
+        switch (action.type) {
+            case SEARCH_PRODUCTS_SUCCESS: {
+                var results = action.payload;
+                var res = action.auxiliary ? { auxResults: results } : { results: results };
+                return Object.assign(Object.assign({}, state), res);
+            }
+            case GET_PRODUCT_SUGGESTIONS_SUCCESS: {
+                var suggestions = action.payload;
+                return Object.assign(Object.assign({}, state), { suggestions: suggestions });
+            }
+            case CLEAR_PRODUCT_SEARCH_RESULT: {
+                return Object.assign(Object.assign({}, state), { results: action.payload.clearPageResults ? {} : state.results, suggestions: action.payload.clearSearchboxResults
+                        ? []
+                        : state.suggestions, auxResults: action.payload.clearSearchboxResults
+                        ? {}
+                        : state.auxResults });
+            }
+        }
+        return state;
+    }
+    var getSearchResults = function (state) { return state.results; };
+    var getAuxSearchResults = function (state) { return state.auxResults; };
+    var getProductSuggestions = function (state) { return state.suggestions; };
+
+    var initialScopedLoaderState = {};
+    /**
+     * Higher order reducer designed to add scope support for loader reducer
+     *
+     * @param entityType
+     * @param reducer
+     */
+    function scopedLoaderReducer(entityType, reducer) {
+        var loader = loaderReducer(entityType, reducer);
+        return function (state, action) {
+            var _b;
+            if (state === void 0) { state = initialScopedLoaderState; }
+            var _a;
+            if (action && action.meta && action.meta.entityType === entityType) {
+                return Object.assign(Object.assign({}, state), (_b = {}, _b[(_a = action.meta.scope) !== null && _a !== void 0 ? _a : ''] = loader(state[action.meta.scope], action), _b));
+            }
+            return state;
+        };
+    }
+
+    /**
+     * Higher order reducer that wraps scopedLoaderReducer and EntityReducer enhancing
+     * single state reducer to support multiple entities with generic loading flags and scopes
+     */
+    function entityScopedLoaderReducer(entityType, reducer) {
+        return entityReducer(entityType, scopedLoaderReducer(entityType, reducer));
+    }
+
+    function getReducers$9() {
+        return {
+            search: reducer$k,
+            details: entityScopedLoaderReducer(PRODUCT_DETAIL_ENTITY),
+            reviews: reducer$j,
+            references: reducer$i,
+        };
+    }
+    var reducerToken$9 = new i0.InjectionToken('ProductReducers');
+    var reducerProvider$9 = {
+        provide: reducerToken$9,
+        useFactory: getReducers$9,
+    };
+    function clearProductsState(reducer) {
+        return function (state, action) {
+            if (action.type === CURRENCY_CHANGE ||
+                action.type === LANGUAGE_CHANGE) {
+                state = undefined;
+            }
+            return reducer(state, action);
+        };
+    }
+    var metaReducers$3 = [clearProductsState];
+
     var getProductsState = i1$2.createFeatureSelector(PRODUCT_FEATURE);
 
     var ɵ0$G = function (state) { return state.references; };
@@ -25635,37 +25923,6 @@
             }
         });
     };
-
-    var initialState$i = {
-        results: {},
-        suggestions: [],
-        auxResults: {},
-    };
-    function reducer$i(state, action) {
-        if (state === void 0) { state = initialState$i; }
-        switch (action.type) {
-            case SEARCH_PRODUCTS_SUCCESS: {
-                var results = action.payload;
-                var res = action.auxiliary ? { auxResults: results } : { results: results };
-                return Object.assign(Object.assign({}, state), res);
-            }
-            case GET_PRODUCT_SUGGESTIONS_SUCCESS: {
-                var suggestions = action.payload;
-                return Object.assign(Object.assign({}, state), { suggestions: suggestions });
-            }
-            case CLEAR_PRODUCT_SEARCH_RESULT: {
-                return Object.assign(Object.assign({}, state), { results: action.payload.clearPageResults ? {} : state.results, suggestions: action.payload.clearSearchboxResults
-                        ? []
-                        : state.suggestions, auxResults: action.payload.clearSearchboxResults
-                        ? {}
-                        : state.auxResults });
-            }
-        }
-        return state;
-    }
-    var getSearchResults = function (state) { return state.results; };
-    var getAuxSearchResults = function (state) { return state.auxResults; };
-    var getProductSuggestions = function (state) { return state.suggestions; };
 
     var ɵ0$I = function (state) { return state.search; };
     var getProductsSearchState = i1$2.createSelector(getProductsState, ɵ0$I);
@@ -25727,17 +25984,15 @@
         function ProductReferenceService(store) {
             this.store = store;
         }
-        ProductReferenceService.prototype.get = function (productCode, referenceType, pageSize) {
-            var _this = this;
-            return this.store.pipe(i1$2.select(getSelectedProductReferencesFactory(productCode, referenceType)), operators.tap(function (references) {
-                if (references === undefined && productCode !== undefined) {
-                    _this.store.dispatch(new LoadProductReferences({
-                        productCode: productCode,
-                        referenceType: referenceType,
-                        pageSize: pageSize,
-                    }));
-                }
+        ProductReferenceService.prototype.loadProductReferences = function (productCode, referenceType, pageSize) {
+            this.store.dispatch(new LoadProductReferences({
+                productCode: productCode,
+                referenceType: referenceType,
+                pageSize: pageSize,
             }));
+        };
+        ProductReferenceService.prototype.getProductReferences = function (productCode, referenceType) {
+            return this.store.pipe(i1$2.select(getSelectedProductReferencesFactory(productCode, referenceType)));
         };
         ProductReferenceService.prototype.cleanReferences = function () {
             this.store.dispatch(new CleanProductReferences());
@@ -26403,263 +26658,6 @@
         { type: ProductSearchService },
         { type: TranslationService }
     ]; };
-
-    var ProductReferencesEffects = /** @class */ (function () {
-        function ProductReferencesEffects(actions$, productReferencesConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productReferencesConnector = productReferencesConnector;
-            this.loadProductReferences$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_REFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.productReferencesConnector
-                    .get(payload.productCode, payload.referenceType, payload.pageSize)
-                    .pipe(operators.map(function (data) {
-                    return new LoadProductReferencesSuccess({
-                        productCode: payload.productCode,
-                        list: data,
-                    });
-                }), operators.catchError(function (_error) { return rxjs.of(new LoadProductReferencesFail({
-                    message: payload.productCode,
-                })); }));
-            }));
-        }
-        return ProductReferencesEffects;
-    }());
-    ProductReferencesEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    ProductReferencesEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: ProductReferencesConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
-
-    var ProductReviewsEffects = /** @class */ (function () {
-        function ProductReviewsEffects(actions$, productReviewsConnector, globalMessageService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productReviewsConnector = productReviewsConnector;
-            this.globalMessageService = globalMessageService;
-            this.loadProductReviews$ = this.actions$.pipe(i3.ofType(LOAD_PRODUCT_REVIEWS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (productCode) {
-                return _this.productReviewsConnector.get(productCode).pipe(operators.map(function (data) {
-                    return new LoadProductReviewsSuccess({
-                        productCode: productCode,
-                        list: data,
-                    });
-                }), operators.catchError(function (_error) { return rxjs.of(new LoadProductReviewsFail({
-                    message: productCode,
-                })); }));
-            }));
-            this.postProductReview = this.actions$.pipe(i3.ofType(POST_PRODUCT_REVIEW), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.productReviewsConnector
-                    .add(payload.productCode, payload.review)
-                    .pipe(operators.map(function (reviewResponse) {
-                    return new PostProductReviewSuccess(reviewResponse);
-                }), operators.catchError(function (_error) { return rxjs.of(new PostProductReviewFail(payload.productCode)); }));
-            }));
-            this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(i3.ofType(POST_PRODUCT_REVIEW_SUCCESS), operators.tap(function () {
-                _this.globalMessageService.add({ key: 'productReview.thankYouForReview' }, exports.GlobalMessageType.MSG_TYPE_CONFIRMATION);
-            }));
-        }
-        return ProductReviewsEffects;
-    }());
-    ProductReviewsEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    ProductReviewsEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: ProductReviewsConnector },
-        { type: GlobalMessageService }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
-    __decorate([
-        i3.Effect()
-    ], ProductReviewsEffects.prototype, "postProductReview", void 0);
-    __decorate([
-        i3.Effect({ dispatch: false })
-    ], ProductReviewsEffects.prototype, "showGlobalMessageOnPostProductReviewSuccess$", void 0);
-
-    var ProductsSearchEffects = /** @class */ (function () {
-        function ProductsSearchEffects(actions$, productSearchConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productSearchConnector = productSearchConnector;
-            this.searchProducts$ = this.actions$.pipe(i3.ofType(SEARCH_PRODUCTS), operators.groupBy(function (action) { return action.auxiliary; }), operators.mergeMap(function (group) { return group.pipe(operators.switchMap(function (action) {
-                return _this.productSearchConnector
-                    .search(action.payload.queryText, action.payload.searchConfig)
-                    .pipe(operators.map(function (data) {
-                    return new SearchProductsSuccess(data, action.auxiliary);
-                }), operators.catchError(function (error) { return rxjs.of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary)); }));
-            })); }));
-            this.getProductSuggestions$ = this.actions$.pipe(i3.ofType(GET_PRODUCT_SUGGESTIONS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.productSearchConnector
-                    .getSuggestions(payload.term, payload.searchConfig.pageSize)
-                    .pipe(operators.map(function (suggestions) {
-                    if (suggestions === undefined) {
-                        return new GetProductSuggestionsSuccess([]);
-                    }
-                    return new GetProductSuggestionsSuccess(suggestions);
-                }), operators.catchError(function (error) { return rxjs.of(new GetProductSuggestionsFail(makeErrorSerializable(error))); }));
-            }));
-        }
-        return ProductsSearchEffects;
-    }());
-    ProductsSearchEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    ProductsSearchEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: ProductSearchConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], ProductsSearchEffects.prototype, "searchProducts$", void 0);
-    __decorate([
-        i3.Effect()
-    ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
-
-    var ProductEffects = /** @class */ (function () {
-        function ProductEffects(actions$, productConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productConnector = productConnector;
-            // we want to cancel all ongoing requests when currency or language changes,
-            this.contextChange$ = this.actions$.pipe(i3.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.loadProduct$ = i3.createEffect(function () { return function (_a) {
-                var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-                return _this.actions$.pipe(i3.ofType(LOAD_PRODUCT), operators.map(function (action) { return ({
-                    code: action.payload,
-                    scope: action.meta.scope,
-                }); }), 
-                // we are grouping all load actions that happens at the same time
-                // to optimize loading and pass them all to productConnector.getMany
-                bufferDebounceTime(debounce, scheduler), operators.mergeMap(function (products) { return rxjs.merge.apply(void 0, __spread(_this.productConnector
-                    .getMany(products)
-                    .map(_this.productLoadEffect))); }), withdrawOn(_this.contextChange$));
-            }; });
-        }
-        ProductEffects.prototype.productLoadEffect = function (productLoad) {
-            return productLoad.data$.pipe(operators.map(function (data) { return new LoadProductSuccess(Object.assign({ code: productLoad.code }, data), productLoad.scope); }), operators.catchError(function (error) {
-                return rxjs.of(new LoadProductFail(productLoad.code, makeErrorSerializable(error), productLoad.scope));
-            }));
-        };
-        return ProductEffects;
-    }());
-    ProductEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    ProductEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: ProductConnector }
-    ]; };
-
-    var effects$8 = [
-        ProductsSearchEffects,
-        ProductEffects,
-        ProductReviewsEffects,
-        ProductReferencesEffects,
-    ];
-
-    var initialState$j = {
-        productCode: '',
-        list: [],
-    };
-    function reducer$j(state, action) {
-        if (state === void 0) { state = initialState$j; }
-        switch (action.type) {
-            case LOAD_PRODUCT_REFERENCES_SUCCESS: {
-                var productCode = action.payload.productCode;
-                var list = action.payload.list;
-                return Object.assign(Object.assign({}, state), { list: __spread(state.list, (list ? list : [])).reduce(function (productReferences, productReference) {
-                        if (!productReferences.some(function (obj) { return obj.referenceType === productReference.referenceType &&
-                            obj.target.code === productReference.target.code; })) {
-                            productReferences.push(productReference);
-                        }
-                        return productReferences;
-                    }, []), productCode: productCode });
-            }
-            case CLEAN_PRODUCT_REFERENCES: {
-                return initialState$j;
-            }
-        }
-        return state;
-    }
-    var getProductReferenceList = function (state) { return state.list; };
-    var getProductReferenceProductCode = function (state) { return state.productCode; };
-
-    var initialState$k = {
-        productCode: '',
-        list: [],
-    };
-    function reducer$k(state, action) {
-        if (state === void 0) { state = initialState$k; }
-        switch (action.type) {
-            case LOAD_PRODUCT_REVIEWS_SUCCESS: {
-                var productCode = action.payload.productCode;
-                var list = action.payload.list;
-                return Object.assign(Object.assign({}, state), { productCode: productCode,
-                    list: list });
-            }
-        }
-        return state;
-    }
-    var getReviewList = function (state) { return state.list; };
-    var getReviewProductCode = function (state) { return state.productCode; };
-
-    var initialScopedLoaderState = {};
-    /**
-     * Higher order reducer designed to add scope support for loader reducer
-     *
-     * @param entityType
-     * @param reducer
-     */
-    function scopedLoaderReducer(entityType, reducer) {
-        var loader = loaderReducer(entityType, reducer);
-        return function (state, action) {
-            var _b;
-            if (state === void 0) { state = initialScopedLoaderState; }
-            var _a;
-            if (action && action.meta && action.meta.entityType === entityType) {
-                return Object.assign(Object.assign({}, state), (_b = {}, _b[(_a = action.meta.scope) !== null && _a !== void 0 ? _a : ''] = loader(state[action.meta.scope], action), _b));
-            }
-            return state;
-        };
-    }
-
-    /**
-     * Higher order reducer that wraps scopedLoaderReducer and EntityReducer enhancing
-     * single state reducer to support multiple entities with generic loading flags and scopes
-     */
-    function entityScopedLoaderReducer(entityType, reducer) {
-        return entityReducer(entityType, scopedLoaderReducer(entityType, reducer));
-    }
-
-    function getReducers$9() {
-        return {
-            search: reducer$i,
-            details: entityScopedLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$k,
-            references: reducer$j,
-        };
-    }
-    var reducerToken$9 = new i0.InjectionToken('ProductReducers');
-    var reducerProvider$9 = {
-        provide: reducerToken$9,
-        useFactory: getReducers$9,
-    };
-    function clearProductsState(reducer) {
-        return function (state, action) {
-            if (action.type === CURRENCY_CHANGE ||
-                action.type === LANGUAGE_CHANGE) {
-                state = undefined;
-            }
-            return reducer(state, action);
-        };
-    }
-    var metaReducers$3 = [clearProductsState];
 
     function productStoreConfigFactory() {
         var _a;
@@ -30876,11 +30874,11 @@
     exports.ɵfp = ProductReviewsEffects;
     exports.ɵfq = ProductsSearchEffects;
     exports.ɵfr = ProductEffects;
-    exports.ɵfs = reducer$i;
+    exports.ɵfs = reducer$k;
     exports.ɵft = entityScopedLoaderReducer;
     exports.ɵfu = scopedLoaderReducer;
-    exports.ɵfv = reducer$k;
-    exports.ɵfw = reducer$j;
+    exports.ɵfv = reducer$j;
+    exports.ɵfw = reducer$i;
     exports.ɵfx = PageMetaResolver;
     exports.ɵfy = CouponSearchPageResolver;
     exports.ɵfz = PageMetaResolver;
