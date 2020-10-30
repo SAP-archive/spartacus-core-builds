@@ -1,1 +1,0 @@
-{"version":3,"file":"state.module.d.ts","sources":["state.module.d.ts"],"names":[],"mappings":"AAAA;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class StateModule {\n    static forRoot(): ModuleWithProviders<StateModule>;\n}\n"]}
