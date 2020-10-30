@@ -4,7 +4,6 @@ import { AuthStorageService } from '../../auth/user-auth/services/auth-storage.s
 /**
  * Indicates if auth token is for regular user or CS Agent.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare enum TokenTarget {
     CSAgent = "CSAgent",
     User = "User"
@@ -62,7 +61,4 @@ export declare class AsmAuthStorageService extends AuthStorageService {
      * Only available solution is to drop session we could restore, to avoid account hijack.
      */
     clearEmulatedUserToken(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AsmAuthStorageService, never>;
 }
-
-//# sourceMappingURL=asm-auth-storage.service.d.ts.map

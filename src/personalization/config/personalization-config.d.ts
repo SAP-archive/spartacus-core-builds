@@ -1,4 +1,3 @@
-import * as ɵngcc0 from '@angular/core';
 export declare abstract class PersonalizationConfig {
     personalization: {
         enabled?: boolean;
@@ -11,7 +10,4 @@ export declare abstract class PersonalizationConfig {
             componentId?: string;
         };
     };
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<PersonalizationConfig, never>;
 }
-
-//# sourceMappingURL=personalization-config.d.ts.map
