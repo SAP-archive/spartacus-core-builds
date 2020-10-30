@@ -5673,7 +5673,9 @@
             var url = this.occEndpointsService.getUrl('addEntries', {
                 userId: userId,
                 cartId: cartId,
-            }, { code: productCode, qty: quantity });
+                quantity: quantity,
+            }, { code: productCode, qty: quantity } // The "qty" parameter is used for the base b2c add to cart endpoint.
+            );
             return this.http
                 .post(url, toAdd, { headers: headers })
                 .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));

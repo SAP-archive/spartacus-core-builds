@@ -4942,7 +4942,9 @@ class OccCartEntryAdapter {
         const url = this.occEndpointsService.getUrl('addEntries', {
             userId,
             cartId,
-        }, { code: productCode, qty: quantity });
+            quantity,
+        }, { code: productCode, qty: quantity } // The "qty" parameter is used for the base b2c add to cart endpoint.
+        );
         return this.http
             .post(url, toAdd, { headers })
             .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
