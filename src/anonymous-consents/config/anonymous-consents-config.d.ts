@@ -1,5 +1,4 @@
 import { OccConfig } from '../../occ/config/occ-config';
-import * as ɵngcc0 from '@angular/core';
 export declare abstract class AnonymousConsentsConfig extends OccConfig {
     anonymousConsents?: {
         /**
@@ -28,7 +27,4 @@ export declare abstract class AnonymousConsentsConfig extends OccConfig {
             hideConsents?: string[];
         };
     };
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AnonymousConsentsConfig, never>;
 }
-
-//# sourceMappingURL=anonymous-consents-config.d.ts.map
