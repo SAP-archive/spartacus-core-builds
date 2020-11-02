@@ -21018,7 +21018,7 @@ class RouterEffects {
         this.navigate$ = this.actions$.pipe(ofType(ROUTER_GO), map((action) => action.payload), tap(({ path, query: queryParams, extras }) => {
             this.router.navigate(path, Object.assign({ queryParams }, extras));
         }));
-        this.navigateBuUrl$ = this.actions$.pipe(ofType(ROUTER_GO_BY_URL), map((action) => action.payload), tap((url) => {
+        this.navigateByUrl$ = this.actions$.pipe(ofType(ROUTER_GO_BY_URL), map((action) => action.payload), tap((url) => {
             this.router.navigateByUrl(url);
         }));
         this.clearCmsRoutes$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), tap(() => {
@@ -21044,7 +21044,7 @@ __decorate([
 ], RouterEffects.prototype, "navigate$", void 0);
 __decorate([
     Effect({ dispatch: false })
-], RouterEffects.prototype, "navigateBuUrl$", void 0);
+], RouterEffects.prototype, "navigateByUrl$", void 0);
 __decorate([
     Effect({ dispatch: false })
 ], RouterEffects.prototype, "clearCmsRoutes$", void 0);

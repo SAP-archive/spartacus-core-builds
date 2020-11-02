@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
  * It might not need user id at all and work based on access_token.
  * To implement custom solution provide your own implementation and customize services that use UserIdService
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class UserIdService {
     private _userId;
     /**
@@ -38,4 +39,7 @@ export declare class UserIdService {
      * Checks if the userId is of emulated user type.
      */
     isEmulated(): Observable<boolean>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserIdService, never>;
 }
+
+//# sourceMappingURL=user-id.service.d.ts.map

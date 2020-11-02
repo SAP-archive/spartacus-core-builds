@@ -23519,7 +23519,7 @@
                 var path = _a.path, queryParams = _a.query, extras = _a.extras;
                 _this.router.navigate(path, Object.assign({ queryParams: queryParams }, extras));
             }));
-            this.navigateBuUrl$ = this.actions$.pipe(i3.ofType(ROUTER_GO_BY_URL), operators.map(function (action) { return action.payload; }), operators.tap(function (url) {
+            this.navigateByUrl$ = this.actions$.pipe(i3.ofType(ROUTER_GO_BY_URL), operators.map(function (action) { return action.payload; }), operators.tap(function (url) {
                 _this.router.navigateByUrl(url);
             }));
             this.clearCmsRoutes$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap(function () {
@@ -23546,7 +23546,7 @@
     ], RouterEffects.prototype, "navigate$", void 0);
     __decorate([
         i3.Effect({ dispatch: false })
-    ], RouterEffects.prototype, "navigateBuUrl$", void 0);
+    ], RouterEffects.prototype, "navigateByUrl$", void 0);
     __decorate([
         i3.Effect({ dispatch: false })
     ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
