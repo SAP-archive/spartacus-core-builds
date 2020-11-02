@@ -21160,7 +21160,7 @@
             } // assuming that action's payload contains the cart id
             ), operators.map(function (_a) {
                 var _b = __read(_a, 2), action = _b[0], activeCart = _b[1];
-                return createFrom(mapping.event, Object.assign(Object.assign({}, action.payload), { entry: action.payload.entry
+                return createFrom(mapping.event, Object.assign(Object.assign({}, action.payload), { cartCode: activeCart.code, entry: action.payload.entry
                         ? action.payload.entry
                         : activeCart.entries[Number(action.payload.entryNumber)] }));
             }));

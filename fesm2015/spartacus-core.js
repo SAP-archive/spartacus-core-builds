@@ -18911,7 +18911,7 @@ class CartEventBuilder {
      */
     registerMapped(mapping) {
         const eventStream$ = this.getAction(mapping.action).pipe(withLatestFrom(this.activeCartService.getActive()), filter(([action, activeCart]) => action.payload['cartId'] === activeCart.guid // assuming that action's payload contains the cart id
-        ), map(([action, activeCart]) => createFrom(mapping.event, Object.assign(Object.assign({}, action.payload), { entry: action.payload.entry
+        ), map(([action, activeCart]) => createFrom(mapping.event, Object.assign(Object.assign({}, action.payload), { cartCode: activeCart.code, entry: action.payload.entry
                 ? action.payload.entry
                 : activeCart.entries[Number(action.payload.entryNumber)] }))));
         return this.event.register(mapping.event, eventStream$);
