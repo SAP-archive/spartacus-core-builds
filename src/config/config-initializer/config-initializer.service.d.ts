@@ -2,7 +2,6 @@ import { BehaviorSubject } from 'rxjs';
 /**
  * Provides support for CONFIG_INITIALIZERS
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class ConfigInitializerService {
     protected config: any;
     protected initializerGuard: any;
@@ -52,7 +51,4 @@ export declare class ConfigInitializerService {
      * @param b ScopeB
      */
     protected scopesOverlap(a: string, b: string): boolean;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConfigInitializerService, [null, { optional: true; }, null]>;
 }
-
-//# sourceMappingURL=config-initializer.service.d.ts.map
