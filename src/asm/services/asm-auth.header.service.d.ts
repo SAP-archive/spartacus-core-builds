@@ -11,7 +11,6 @@ import { CsAgentAuthService } from '../facade/csagent-auth.service';
  * Overrides `AuthHeaderService` to handle asm calls as well (not only OCC)
  * in cases of normal user session and on customer emulation.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class AsmAuthHeaderService extends AuthHeaderService {
     protected authService: AuthService;
     protected authStorageService: AuthStorageService;
@@ -42,7 +41,4 @@ export declare class AsmAuthHeaderService extends AuthHeaderService {
      * currently logged in user and CS agent.
      */
     handleExpiredRefreshToken(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AsmAuthHeaderService, never>;
 }
-
-//# sourceMappingURL=asm-auth.header.service.d.ts.map
