@@ -1,1 +1,0 @@
-{"version":3,"file":"anonymous-consents-store.module.d.ts","sources":["anonymous-consents-store.module.d.ts"],"names":[],"mappings":"AAAA;;;;;;AACA;AACA;;;AACA","sourcesContent":["import { StateConfig } from '../../state/index';\nexport declare function anonymousConsentsStoreConfigFactory(): StateConfig;\nexport declare class AnonymousConsentsStoreModule {\n}\n"]}
