@@ -18084,23 +18084,16 @@
         }
         /**
          * Initializes the two-way synchronization between the site context state and the URL.
-         *
-         * @returns Promise that is resolved when the site context state is initialized (updated for the first time) based on the URL.
          */
         SiteContextRoutesHandler.prototype.init = function () {
-            var _this = this;
-            return new Promise(function (resolve) {
-                _this.router = _this.injector.get(i1$1.Router);
-                _this.location = _this.injector.get(i1.Location);
-                var routingParams = _this.siteContextParams.getUrlEncodingParameters();
-                if (routingParams.length) {
-                    _this.subscribeChanges(routingParams);
-                    _this.subscribeRouting(resolve);
-                }
-                else {
-                    resolve();
-                }
-            });
+            this.router = this.injector.get(i1$1.Router);
+            this.location = this.injector.get(i1.Location);
+            var routingParams = this.siteContextParams.getUrlEncodingParameters();
+            if (routingParams.length) {
+                this.setContextParamsFromRoute(this.location.path(true));
+                this.subscribeChanges(routingParams);
+                this.subscribeRouting();
+            }
         };
         /**
          * After each change of the site context state, it modifies the current URL in place.
@@ -18127,15 +18120,9 @@
         /**
          * After each Angular NavigationStart event it updates the site context state based on
          * site context params encoded in the anticipated URL.
-         *
-         * In particular, it's responsible for initializing the state of the context params
-         * on page start, reading the values from the URL.
-         *
-         * @param onContextInitialized notify that the initialization of the context was done based on the URL
          */
-        SiteContextRoutesHandler.prototype.subscribeRouting = function (onContextInitialized) {
+        SiteContextRoutesHandler.prototype.subscribeRouting = function () {
             var _this = this;
-            var contextInitialized = false;
             this.subscription.add(this.router.events
                 .pipe(operators.filter(function (event) { return event instanceof i1$1.NavigationStart ||
                 event instanceof i1$1.NavigationEnd ||
@@ -18145,10 +18132,6 @@
                 _this.isNavigating = event instanceof i1$1.NavigationStart;
                 if (_this.isNavigating) {
                     _this.setContextParamsFromRoute(event.url);
-                    if (!contextInitialized) {
-                        contextInitialized = true;
-                        onContextInitialized();
-                    }
                 }
             }));
         };
@@ -18180,15 +18163,21 @@
     ]; };
 
     function initializeContext(baseSiteService, langService, currService, configInit, siteContextRoutesHandler) {
-        return function () {
-            configInit.getStableConfig('context').then(function () {
-                siteContextRoutesHandler.init().then(function () {
-                    baseSiteService.initialize();
-                    langService.initialize();
-                    currService.initialize();
-                });
+        var _this = this;
+        return function () { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, configInit.getStableConfig('context')];
+                    case 1:
+                        _a.sent();
+                        siteContextRoutesHandler.init();
+                        baseSiteService.initialize();
+                        langService.initialize();
+                        currService.initialize();
+                        return [2 /*return*/];
+                }
             });
-        };
+        }); };
     }
     var contextServiceProviders = [
         BaseSiteService,
@@ -24346,6 +24335,9 @@
         var isReady = function () { return configInitializer.initialize(initializers); };
         return isReady;
     }
+    function locationInitializedFactory(configInitializer) {
+        return configInitializer.getStableConfig();
+    }
     var ConfigInitializerModule = /** @class */ (function () {
         function ConfigInitializerModule() {
         }
@@ -24365,6 +24357,12 @@
                             ConfigInitializerService,
                             [new i0.Optional(), CONFIG_INITIALIZER],
                         ],
+                    },
+                    {
+                        // Hold on the initial navigation until the Spartacus configuration is stable
+                        provide: i1.LOCATION_INITIALIZED,
+                        useFactory: locationInitializedFactory,
+                        deps: [ConfigInitializerService],
                     },
                 ],
             };
@@ -30673,6 +30671,7 @@
     exports.isFeatureEnabled = isFeatureEnabled;
     exports.isFeatureLevel = isFeatureLevel;
     exports.isObject = isObject;
+    exports.locationInitializedFactory = locationInitializedFactory;
     exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
     exports.normalizeHttpError = normalizeHttpError;
     exports.occConfigValidator = occConfigValidator;
