@@ -10,6 +10,7 @@ import { UserIdService } from './user-id.service';
  * Auth service for normal user authentication.
  * Use to check auth status, login/logout with different OAuth flows.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class AuthService {
     protected store: Store<StateWithClientAuth>;
     protected userIdService: UserIdService;
@@ -44,4 +45,7 @@ export declare class AuthService {
      * Initialize logout procedure by redirecting to the `logout` endpoint.
      */
     initLogout(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthService, never>;
 }
+
+//# sourceMappingURL=auth.service.d.ts.map
