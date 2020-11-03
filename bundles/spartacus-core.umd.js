@@ -1033,91 +1033,6 @@
     ]; };
 
     /**
-     * This implementation is OCC specific.
-     * Different backend might have completely different need regarding user id.
-     * It might not need user id at all and work based on access_token.
-     * To implement custom solution provide your own implementation and customize services that use UserIdService
-     */
-    var UserIdService = /** @class */ (function () {
-        function UserIdService() {
-            this._userId = new rxjs.BehaviorSubject(OCC_USER_ID_ANONYMOUS);
-        }
-        /**
-         * Sets current user id.
-         *
-         * @param userId
-         */
-        UserIdService.prototype.setUserId = function (userId) {
-            this._userId.next(userId);
-        };
-        /**
-         * This function provides the userId the OCC calls should use, depending
-         * on whether there is an active storefront session or not.
-         *
-         * It returns the userId of the current storefront user or 'anonymous'
-         * in the case there are no signed in user in the storefront.
-         *
-         * The user id of a regular customer session is 'current'. In the case of an
-         * asm customer emulation session, the userId will be the customerId.
-         */
-        UserIdService.prototype.getUserId = function () {
-            return this._userId;
-        };
-        /**
-         * Calls provided callback with current user id.
-         *
-         * @param cb callback function to invoke
-         */
-        UserIdService.prototype.invokeWithUserId = function (cb) {
-            return this.getUserId()
-                .pipe(operators.take(1))
-                .subscribe(function (id) { return cb(id); });
-        };
-        /**
-         * Sets user id to the default value for logged out user.
-         */
-        UserIdService.prototype.clearUserId = function () {
-            this.setUserId(OCC_USER_ID_ANONYMOUS);
-        };
-        /**
-         * Checks if the userId is of emulated user type.
-         */
-        UserIdService.prototype.isEmulated = function () {
-            return this.getUserId().pipe(operators.map(function (userId) { return userId !== OCC_USER_ID_ANONYMOUS && userId !== OCC_USER_ID_CURRENT; }));
-        };
-        return UserIdService;
-    }());
-    UserIdService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserIdService_Factory() { return new UserIdService(); }, token: UserIdService, providedIn: "root" });
-    UserIdService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-
-    var LOGIN = '[Auth] Login';
-    var LOGOUT = '[Auth] Logout';
-    var Login = /** @class */ (function () {
-        function Login() {
-            this.type = LOGIN;
-        }
-        return Login;
-    }());
-    var Logout = /** @class */ (function () {
-        function Logout() {
-            this.type = LOGOUT;
-        }
-        return Logout;
-    }());
-
-    var authGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        LOGIN: LOGIN,
-        LOGOUT: LOGOUT,
-        Login: Login,
-        Logout: Logout
-    });
-
-    /**
      * Service serves storage role for AuthRedirectService.
      * Used by AuthStatePersistenceService to store redirect url for OAuth flows that rely on redirects.
      */
@@ -1623,12 +1538,97 @@
         { type: WindowRef }
     ]; };
 
+    var LOGIN = '[Auth] Login';
+    var LOGOUT = '[Auth] Logout';
+    var Login = /** @class */ (function () {
+        function Login() {
+            this.type = LOGIN;
+        }
+        return Login;
+    }());
+    var Logout = /** @class */ (function () {
+        function Logout() {
+            this.type = LOGOUT;
+        }
+        return Logout;
+    }());
+
+    var authGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        LOGIN: LOGIN,
+        LOGOUT: LOGOUT,
+        Login: Login,
+        Logout: Logout
+    });
+
+    /**
+     * This implementation is OCC specific.
+     * Different backend might have completely different need regarding user id.
+     * It might not need user id at all and work based on access_token.
+     * To implement custom solution provide your own implementation and customize services that use UserIdService
+     */
+    var UserIdService = /** @class */ (function () {
+        function UserIdService() {
+            this._userId = new rxjs.BehaviorSubject(OCC_USER_ID_ANONYMOUS);
+        }
+        /**
+         * Sets current user id.
+         *
+         * @param userId
+         */
+        UserIdService.prototype.setUserId = function (userId) {
+            this._userId.next(userId);
+        };
+        /**
+         * This function provides the userId the OCC calls should use, depending
+         * on whether there is an active storefront session or not.
+         *
+         * It returns the userId of the current storefront user or 'anonymous'
+         * in the case there are no signed in user in the storefront.
+         *
+         * The user id of a regular customer session is 'current'. In the case of an
+         * asm customer emulation session, the userId will be the customerId.
+         */
+        UserIdService.prototype.getUserId = function () {
+            return this._userId;
+        };
+        /**
+         * Calls provided callback with current user id.
+         *
+         * @param cb callback function to invoke
+         */
+        UserIdService.prototype.invokeWithUserId = function (cb) {
+            return this.getUserId()
+                .pipe(operators.take(1))
+                .subscribe(function (id) { return cb(id); });
+        };
+        /**
+         * Sets user id to the default value for logged out user.
+         */
+        UserIdService.prototype.clearUserId = function () {
+            this.setUserId(OCC_USER_ID_ANONYMOUS);
+        };
+        /**
+         * Checks if the userId is of emulated user type.
+         */
+        UserIdService.prototype.isEmulated = function () {
+            return this.getUserId().pipe(operators.map(function (userId) { return userId !== OCC_USER_ID_ANONYMOUS && userId !== OCC_USER_ID_CURRENT; }));
+        };
+        return UserIdService;
+    }());
+    UserIdService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserIdService_Factory() { return new UserIdService(); }, token: UserIdService, providedIn: "root" });
+    UserIdService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+
     /**
      * Auth service for normal user authentication.
      * Use to check auth status, login/logout with different OAuth flows.
      */
-    var BasicAuthService = /** @class */ (function () {
-        function BasicAuthService(store, userIdService, oAuthLibWrapperService, authStorageService, authRedirectService, routingService) {
+    var AuthService = /** @class */ (function () {
+        function AuthService(store, userIdService, oAuthLibWrapperService, authStorageService, authRedirectService, routingService) {
             this.store = store;
             this.userIdService = userIdService;
             this.oAuthLibWrapperService = oAuthLibWrapperService;
@@ -1639,7 +1639,7 @@
         /**
          * Check params in url and if there is an code/token then try to login with those.
          */
-        BasicAuthService.prototype.checkOAuthParamsInUrl = function () {
+        AuthService.prototype.checkOAuthParamsInUrl = function () {
             return __awaiter(this, void 0, void 0, function () {
                 var result, token, _a_1;
                 return __generator(this, function (_b) {
@@ -1668,7 +1668,7 @@
         /**
          * Initialize Implicit/Authorization Code flow by redirecting to OAuth server.
          */
-        BasicAuthService.prototype.loginWithRedirect = function () {
+        AuthService.prototype.loginWithRedirect = function () {
             this.oAuthLibWrapperService.initLoginFlow();
             return true;
         };
@@ -1677,7 +1677,7 @@
          * @param userId
          * @param password
          */
-        BasicAuthService.prototype.authorize = function (userId, password) {
+        AuthService.prototype.authorize = function (userId, password) {
             return __awaiter(this, void 0, void 0, function () {
                 var _a_2;
                 return __generator(this, function (_b) {
@@ -1703,7 +1703,7 @@
         /**
          * Logout a storefront customer.
          */
-        BasicAuthService.prototype.logout = function () {
+        AuthService.prototype.logout = function () {
             var _this = this;
             this.userIdService.clearUserId();
             return new Promise(function (resolve) {
@@ -1716,88 +1716,30 @@
         /**
          * Returns `true` if the user is logged in; and `false` if the user is anonymous.
          */
-        BasicAuthService.prototype.isUserLoggedIn = function () {
+        AuthService.prototype.isUserLoggedIn = function () {
             return this.authStorageService.getToken().pipe(operators.map(function (userToken) { return Boolean(userToken === null || userToken === void 0 ? void 0 : userToken.access_token); }), operators.distinctUntilChanged());
         };
         /**
          * Initialize logout procedure by redirecting to the `logout` endpoint.
          */
-        BasicAuthService.prototype.initLogout = function () {
-            this.routingService.go({ cxRoute: 'logout' });
-        };
-        return BasicAuthService;
-    }());
-    BasicAuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function BasicAuthService_Factory() { return new BasicAuthService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(RoutingService)); }, token: BasicAuthService, providedIn: "root" });
-    BasicAuthService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    BasicAuthService.ctorParameters = function () { return [
-        { type: i1$2.Store },
-        { type: UserIdService },
-        { type: OAuthLibWrapperService },
-        { type: AuthStorageService },
-        { type: AuthRedirectService },
-        { type: RoutingService }
-    ]; };
-
-    /**
-     * Auth facade on BasicAuthService and AsmAuthService.
-     * This service should be used in components, other core features.
-     */
-    var AuthService = /** @class */ (function () {
-        function AuthService(basicAuthService) {
-            this.basicAuthService = basicAuthService;
-        }
-        /**
-         * Check params in url and if there is an code/token then try to login with those.
-         */
-        AuthService.prototype.checkOAuthParamsInUrl = function () {
-            this.basicAuthService.checkOAuthParamsInUrl();
-        };
-        /**
-         * Initialize Implicit/Authorization Code flow by redirecting to OAuth server.
-         */
-        AuthService.prototype.loginWithRedirect = function () {
-            return this.basicAuthService.loginWithRedirect();
-        };
-        /**
-         * Loads a new user token with Resource Owner Password Flow.
-         * @param userId
-         * @param password
-         */
-        AuthService.prototype.authorize = function (userId, password) {
-            this.basicAuthService.authorize(userId, password);
-        };
-        /**
-         * Logout a storefront customer.
-         */
-        AuthService.prototype.logout = function () {
-            return this.basicAuthService.logout();
-        };
-        /**
-         * Returns `true` if the user is logged in; and `false` if the user is anonymous.
-         */
-        AuthService.prototype.isUserLoggedIn = function () {
-            return this.basicAuthService.isUserLoggedIn();
-        };
-        /**
-         * Initialize logout procedure by redirecting to the `logout` endpoint.
-         */
         AuthService.prototype.initLogout = function () {
-            this.basicAuthService.initLogout();
+            this.routingService.go({ cxRoute: 'logout' });
         };
         return AuthService;
     }());
-    AuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.ɵɵinject(BasicAuthService)); }, token: AuthService, providedIn: "root" });
+    AuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(RoutingService)); }, token: AuthService, providedIn: "root" });
     AuthService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     AuthService.ctorParameters = function () { return [
-        { type: BasicAuthService }
+        { type: i1$2.Store },
+        { type: UserIdService },
+        { type: OAuthLibWrapperService },
+        { type: AuthStorageService },
+        { type: AuthRedirectService },
+        { type: RoutingService }
     ]; };
 
     (function (CountryType) {
@@ -19986,8 +19928,8 @@
     ];
 
     /**
-     * Version of BasicAuthService that is working for both user na CS agent.
-     * Overrides BasicAuthService when ASM module is enabled.
+     * Version of AuthService that is working for both user na CS agent.
+     * Overrides AuthService when ASM module is enabled.
      */
     var AsmAuthService = /** @class */ (function (_super_1) {
         __extends(AsmAuthService, _super_1);
@@ -20095,7 +20037,7 @@
             }));
         };
         return AsmAuthService;
-    }(BasicAuthService));
+    }(AuthService));
     AsmAuthService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthService_Factory() { return new AsmAuthService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(AsmAuthStorageService), i0.ɵɵinject(AuthRedirectService), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(RoutingService)); }, token: AsmAuthService, providedIn: "root" });
     AsmAuthService.decorators = [
         { type: i0.Injectable, args: [{
@@ -20333,7 +20275,7 @@
                         useExisting: AsmAuthStorageService,
                     },
                     {
-                        provide: BasicAuthService,
+                        provide: AuthService,
                         useExisting: AsmAuthService,
                     },
                     {
@@ -30294,7 +30236,6 @@
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
     exports.BaseSiteService = BaseSiteService;
-    exports.BasicAuthService = BasicAuthService;
     exports.CANCEL_ORDER_PROCESS_ID = CANCEL_ORDER_PROCESS_ID;
     exports.CANCEL_REPLENISHMENT_ORDER_PROCESS_ID = CANCEL_REPLENISHMENT_ORDER_PROCESS_ID;
     exports.CANCEL_RETURN_PROCESS_ID = CANCEL_RETURN_PROCESS_ID;

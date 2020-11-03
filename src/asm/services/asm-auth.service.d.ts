@@ -1,18 +1,19 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { StateWithClientAuth } from '../../auth/client-auth/store/client-auth-state';
+import { AuthService } from '../../auth/user-auth/facade/auth.service';
 import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { AuthRedirectService } from '../../auth/user-auth/services/auth-redirect.service';
-import { BasicAuthService } from '../../auth/user-auth/services/basic-auth.service';
 import { OAuthLibWrapperService } from '../../auth/user-auth/services/oauth-lib-wrapper.service';
 import { GlobalMessageService } from '../../global-message/index';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { AsmAuthStorageService } from './asm-auth-storage.service';
 /**
- * Version of BasicAuthService that is working for both user na CS agent.
- * Overrides BasicAuthService when ASM module is enabled.
+ * Version of AuthService that is working for both user na CS agent.
+ * Overrides AuthService when ASM module is enabled.
  */
-export declare class AsmAuthService extends BasicAuthService {
+import * as ɵngcc0 from '@angular/core';
+export declare class AsmAuthService extends AuthService {
     protected store: Store<StateWithClientAuth>;
     protected userIdService: UserIdService;
     protected oAuthLibWrapperService: OAuthLibWrapperService;
@@ -41,4 +42,7 @@ export declare class AsmAuthService extends BasicAuthService {
      * Returns `true` if user is logged in or being emulated.
      */
     isUserLoggedIn(): Observable<boolean>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AsmAuthService, never>;
 }
+
+//# sourceMappingURL=asm-auth.service.d.ts.map

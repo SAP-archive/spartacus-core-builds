@@ -1,16 +1,28 @@
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { BasicAuthService } from '../services/basic-auth.service';
+import { RoutingService } from '../../../routing/facade/routing.service';
+import { StateWithClientAuth } from '../../client-auth/store/client-auth-state';
+import { AuthRedirectService } from '../services/auth-redirect.service';
+import { AuthStorageService } from '../services/auth-storage.service';
+import { OAuthLibWrapperService } from '../services/oauth-lib-wrapper.service';
+import { UserIdService } from './user-id.service';
 /**
- * Auth facade on BasicAuthService and AsmAuthService.
- * This service should be used in components, other core features.
+ * Auth service for normal user authentication.
+ * Use to check auth status, login/logout with different OAuth flows.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class AuthService {
-    protected basicAuthService: BasicAuthService;
-    constructor(basicAuthService: BasicAuthService);
+    protected store: Store<StateWithClientAuth>;
+    protected userIdService: UserIdService;
+    protected oAuthLibWrapperService: OAuthLibWrapperService;
+    protected authStorageService: AuthStorageService;
+    protected authRedirectService: AuthRedirectService;
+    protected routingService: RoutingService;
+    constructor(store: Store<StateWithClientAuth>, userIdService: UserIdService, oAuthLibWrapperService: OAuthLibWrapperService, authStorageService: AuthStorageService, authRedirectService: AuthRedirectService, routingService: RoutingService);
     /**
      * Check params in url and if there is an code/token then try to login with those.
      */
-    checkOAuthParamsInUrl(): void;
+    checkOAuthParamsInUrl(): Promise<void>;
     /**
      * Initialize Implicit/Authorization Code flow by redirecting to OAuth server.
      */
@@ -20,7 +32,7 @@ export declare class AuthService {
      * @param userId
      * @param password
      */
-    authorize(userId: string, password: string): void;
+    authorize(userId: string, password: string): Promise<void>;
     /**
      * Logout a storefront customer.
      */
@@ -33,4 +45,7 @@ export declare class AuthService {
      * Initialize logout procedure by redirecting to the `logout` endpoint.
      */
     initLogout(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthService, never>;
 }
+
+//# sourceMappingURL=auth.service.d.ts.map
