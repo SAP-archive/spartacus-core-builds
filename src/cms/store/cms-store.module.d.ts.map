@@ -1,1 +1,0 @@
-{"version":3,"file":"cms-store.module.d.ts","sources":["cms-store.module.d.ts"],"names":[],"mappings":"AAAA;;;;;;AACA;AACA;;;AACA","sourcesContent":["import { StateConfig } from '../../state/config/state-config';\nexport declare function cmsStoreConfigFactory(): StateConfig;\nexport declare class CmsStoreModule {\n}\n"]}
