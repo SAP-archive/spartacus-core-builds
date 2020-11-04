@@ -4,6 +4,7 @@ import { OccConfig } from '../config/occ-config';
 /**
  * Http interceptor to add cookies to all cross-site requests.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class WithCredentialsInterceptor implements HttpInterceptor {
     protected config: OccConfig;
     constructor(config: OccConfig);
@@ -17,4 +18,7 @@ export declare class WithCredentialsInterceptor implements HttpInterceptor {
      */
     protected requiresWithCredentials(request: HttpRequest<any>): boolean;
     private get occConfig();
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<WithCredentialsInterceptor, never>;
 }
+
+//# sourceMappingURL=with-credentials.interceptor.d.ts.map
