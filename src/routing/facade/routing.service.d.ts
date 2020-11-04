@@ -11,8 +11,8 @@ export declare class RoutingService {
     protected store: Store<RouterState>;
     protected winRef: WindowRef;
     protected semanticPathService: SemanticPathService;
-    protected routingParamsService?: RoutingParamsService;
-    constructor(store: Store<RouterState>, winRef: WindowRef, semanticPathService: SemanticPathService, routingParamsService?: RoutingParamsService);
+    protected routingParamsService: RoutingParamsService;
+    constructor(store: Store<RouterState>, winRef: WindowRef, semanticPathService: SemanticPathService, routingParamsService: RoutingParamsService);
     /**
      * Get the list of all parameters of the full route. This includes
      * active child routes.
