@@ -4,6 +4,7 @@ import { AuthToken } from '../models/auth-token.model';
 /**
  * Storage service for AuthToken. Used as a storage for angular-oauth2-oidc library.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class AuthStorageService extends OAuthStorage {
     /**
      * Extracted keys that are not `JSON.stringify` from reading the angular-oauth2-oidc source code
@@ -42,4 +43,7 @@ export declare class AuthStorageService extends OAuthStorage {
      * @param key
      */
     setItem(key: string, data: any): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthStorageService, never>;
 }
+
+//# sourceMappingURL=auth-storage.service.d.ts.map

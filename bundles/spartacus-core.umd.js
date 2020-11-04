@@ -1677,7 +1677,7 @@
          * @param userId
          * @param password
          */
-        AuthService.prototype.authorize = function (userId, password) {
+        AuthService.prototype.loginWithCredentials = function (userId, password) {
             return __awaiter(this, void 0, void 0, function () {
                 var _a_2;
                 return __generator(this, function (_b) {
@@ -1701,9 +1701,10 @@
             });
         };
         /**
-         * Logout a storefront customer.
+         * Revokes tokens and clears state for logged user (tokens, userId).
+         * To perform logout it is best to use `logout` method. Use this method with caution.
          */
-        AuthService.prototype.logout = function () {
+        AuthService.prototype.coreLogout = function () {
             var _this = this;
             this.userIdService.clearUserId();
             return new Promise(function (resolve) {
@@ -1720,9 +1721,9 @@
             return this.authStorageService.getToken().pipe(operators.map(function (userToken) { return Boolean(userToken === null || userToken === void 0 ? void 0 : userToken.access_token); }), operators.distinctUntilChanged());
         };
         /**
-         * Initialize logout procedure by redirecting to the `logout` endpoint.
+         * Logout a storefront customer. It will initialize logout procedure by redirecting to the `logout` endpoint.
          */
-        AuthService.prototype.initLogout = function () {
+        AuthService.prototype.logout = function () {
             this.routingService.go({ cxRoute: 'logout' });
         };
         return AuthService;
@@ -4532,8 +4533,8 @@
     /**
      * Extendable service for `AuthInterceptor`.
      */
-    var AuthHeaderService = /** @class */ (function () {
-        function AuthHeaderService(authService, authStorageService, oAuthLibWrapperService, routingService, occEndpoints, globalMessageService) {
+    var AuthHttpHeaderService = /** @class */ (function () {
+        function AuthHttpHeaderService(authService, authStorageService, oAuthLibWrapperService, routingService, occEndpoints, globalMessageService) {
             this.authService = authService;
             this.authStorageService = authStorageService;
             this.oAuthLibWrapperService = oAuthLibWrapperService;
@@ -4544,13 +4545,13 @@
         /**
          * Checks if request should be handled by this service (if it's OCC call).
          */
-        AuthHeaderService.prototype.shouldCatchError = function (request) {
+        AuthHttpHeaderService.prototype.shouldCatchError = function (request) {
             return this.isOccUrl(request.url);
         };
         /**
          * Adds `Authorization` header for OCC calls.
          */
-        AuthHeaderService.prototype.alterRequest = function (request) {
+        AuthHttpHeaderService.prototype.alterRequest = function (request) {
             var hasAuthorizationHeader = !!this.getAuthorizationHeader(request);
             var isOccUrl = this.isOccUrl(request.url);
             if (!hasAuthorizationHeader && isOccUrl) {
@@ -4560,14 +4561,14 @@
             }
             return request;
         };
-        AuthHeaderService.prototype.isOccUrl = function (url) {
+        AuthHttpHeaderService.prototype.isOccUrl = function (url) {
             return url.includes(this.occEndpoints.getBaseEndpoint());
         };
-        AuthHeaderService.prototype.getAuthorizationHeader = function (request) {
+        AuthHttpHeaderService.prototype.getAuthorizationHeader = function (request) {
             var rawValue = request.headers.get('Authorization');
             return rawValue;
         };
-        AuthHeaderService.prototype.createAuthorizationHeader = function () {
+        AuthHttpHeaderService.prototype.createAuthorizationHeader = function () {
             var token;
             this.authStorageService
                 .getToken()
@@ -4583,7 +4584,7 @@
         /**
          * Refreshes access_token and then retries the call with the new token.
          */
-        AuthHeaderService.prototype.handleExpiredAccessToken = function (request, next) {
+        AuthHttpHeaderService.prototype.handleExpiredAccessToken = function (request, next) {
             var _this = this;
             return this.handleExpiredToken().pipe(operators.switchMap(function (token) {
                 return next.handle(_this.createNewRequestWithNewToken(request, token));
@@ -4592,9 +4593,10 @@
         /**
          * Logout user, redirected to login page and informs about expired session.
          */
-        AuthHeaderService.prototype.handleExpiredRefreshToken = function () {
+        AuthHttpHeaderService.prototype.handleExpiredRefreshToken = function () {
             // Logout user
-            this.authService.logout();
+            // TODO(#9638): Use logout route when it will support passing redirect url
+            this.authService.coreLogout();
             this.routingService.go({ cxRoute: 'login' });
             this.globalMessageService.add({
                 key: 'httpHandlers.sessionExpired',
@@ -4606,7 +4608,7 @@
          *
          * @return observable which omits new access_token. (Warn: might never emit!).
          */
-        AuthHeaderService.prototype.handleExpiredToken = function () {
+        AuthHttpHeaderService.prototype.handleExpiredToken = function () {
             var _this = this;
             var stream = this.authStorageService.getToken();
             var oldToken;
@@ -4620,7 +4622,7 @@
                 oldToken = oldToken || token;
             }), operators.filter(function (token) { return oldToken.access_token !== token.access_token; }), operators.take(1));
         };
-        AuthHeaderService.prototype.createNewRequestWithNewToken = function (request, token) {
+        AuthHttpHeaderService.prototype.createNewRequestWithNewToken = function (request, token) {
             request = request.clone({
                 setHeaders: {
                     Authorization: (token.token_type || 'Bearer') + " " + token.access_token,
@@ -4628,15 +4630,15 @@
             });
             return request;
         };
-        return AuthHeaderService;
+        return AuthHttpHeaderService;
     }());
-    AuthHeaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthHeaderService_Factory() { return new AuthHeaderService(i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(RoutingService), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(GlobalMessageService)); }, token: AuthHeaderService, providedIn: "root" });
-    AuthHeaderService.decorators = [
+    AuthHttpHeaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthHttpHeaderService_Factory() { return new AuthHttpHeaderService(i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(RoutingService), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(GlobalMessageService)); }, token: AuthHttpHeaderService, providedIn: "root" });
+    AuthHttpHeaderService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    AuthHeaderService.ctorParameters = function () { return [
+    AuthHttpHeaderService.ctorParameters = function () { return [
         { type: AuthService },
         { type: AuthStorageService },
         { type: OAuthLibWrapperService },
@@ -4647,30 +4649,30 @@
 
     /**
      * Responsible for catching auth errors and providing `Authorization` header for API calls.
-     * Uses AuthHeaderService for request manipulation and error handling. Interceptor only hooks into request send/received events.
+     * Uses AuthHttpHeaderService for request manipulation and error handling. Interceptor only hooks into request send/received events.
      */
     var AuthInterceptor = /** @class */ (function () {
-        function AuthInterceptor(authHeaderService, authConfigService) {
-            this.authHeaderService = authHeaderService;
+        function AuthInterceptor(authHttpHeaderService, authConfigService) {
+            this.authHttpHeaderService = authHttpHeaderService;
             this.authConfigService = authConfigService;
         }
         AuthInterceptor.prototype.intercept = function (request, next) {
             var _this = this;
-            var shouldCatchError = this.authHeaderService.shouldCatchError(request);
-            request = this.authHeaderService.alterRequest(request);
+            var shouldCatchError = this.authHttpHeaderService.shouldCatchError(request);
+            request = this.authHttpHeaderService.alterRequest(request);
             return next.handle(request).pipe(operators.catchError(function (errResponse) {
                 if (errResponse instanceof i1$4.HttpErrorResponse) {
                     switch (errResponse.status) {
                         case 401: // Unauthorized
                             if (_this.isExpiredToken(errResponse) && shouldCatchError) {
-                                return _this.authHeaderService.handleExpiredAccessToken(request, next);
+                                return _this.authHttpHeaderService.handleExpiredAccessToken(request, next);
                             }
                             else if (
                             // Refresh expired token
                             // Check that the OAUTH endpoint was called and the error is for refresh token is expired
                             errResponse.url.includes(_this.authConfigService.getTokenEndpoint()) &&
                                 errResponse.error.error === 'invalid_token') {
-                                _this.authHeaderService.handleExpiredRefreshToken();
+                                _this.authHttpHeaderService.handleExpiredRefreshToken();
                                 return rxjs.of();
                             }
                             break;
@@ -4678,7 +4680,7 @@
                             if (errResponse.url.includes(_this.authConfigService.getTokenEndpoint()) &&
                                 errResponse.error.error === 'invalid_grant') {
                                 if (request.body.get('grant_type') === 'refresh_token') {
-                                    _this.authHeaderService.handleExpiredRefreshToken();
+                                    _this.authHttpHeaderService.handleExpiredRefreshToken();
                                 }
                             }
                             break;
@@ -4693,12 +4695,12 @@
         };
         return AuthInterceptor;
     }());
-    AuthInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthInterceptor_Factory() { return new AuthInterceptor(i0.ɵɵinject(AuthHeaderService), i0.ɵɵinject(AuthConfigService)); }, token: AuthInterceptor, providedIn: "root" });
+    AuthInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function AuthInterceptor_Factory() { return new AuthInterceptor(i0.ɵɵinject(AuthHttpHeaderService), i0.ɵɵinject(AuthConfigService)); }, token: AuthInterceptor, providedIn: "root" });
     AuthInterceptor.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
     AuthInterceptor.ctorParameters = function () { return [
-        { type: AuthHeaderService },
+        { type: AuthHttpHeaderService },
         { type: AuthConfigService }
     ]; };
 
@@ -18598,83 +18600,6 @@
         },
     };
 
-    (function (TokenTarget) {
-        TokenTarget["CSAgent"] = "CSAgent";
-        TokenTarget["User"] = "User";
-    })(exports.TokenTarget || (exports.TokenTarget = {}));
-    /**
-     * With AsmAuthStorageService apart from storing the token we also need to store
-     * information for which user is the token (regular user or CS Agent).
-     *
-     * Overrides `AuthStorageService`.
-     */
-    var AsmAuthStorageService = /** @class */ (function (_super) {
-        __extends(AsmAuthStorageService, _super);
-        function AsmAuthStorageService() {
-            var _this = _super.apply(this, __spread(arguments)) || this;
-            _this._tokenTarget$ = new rxjs.BehaviorSubject(exports.TokenTarget.User);
-            return _this;
-        }
-        /**
-         * Get target user for current auth token.
-         *
-         * @return observable with TokenTarget
-         */
-        AsmAuthStorageService.prototype.getTokenTarget = function () {
-            return this._tokenTarget$;
-        };
-        /**
-         * Set new token target.
-         *
-         * @param tokenTarget
-         */
-        AsmAuthStorageService.prototype.setTokenTarget = function (tokenTarget) {
-            this._tokenTarget$.next(tokenTarget);
-        };
-        /**
-         * Get token for previously user session, when it was interrupted by CS agent login.
-         *
-         * @return previously logged in user token.
-         */
-        AsmAuthStorageService.prototype.getEmulatedUserToken = function () {
-            return this.emulatedUserToken;
-        };
-        /**
-         * Save user token on CS agent login.
-         *
-         * @param token
-         */
-        AsmAuthStorageService.prototype.setEmulatedUserToken = function (token) {
-            this.emulatedUserToken = token;
-        };
-        /**
-         * Change token target to CS Agent.
-         */
-        AsmAuthStorageService.prototype.switchTokenTargetToCSAgent = function () {
-            this._tokenTarget$.next(exports.TokenTarget.CSAgent);
-        };
-        /**
-         * Change token target to user.
-         */
-        AsmAuthStorageService.prototype.switchTokenTargetToUser = function () {
-            this._tokenTarget$.next(exports.TokenTarget.User);
-        };
-        /**
-         * When we start emulation from the UI (not by ASM login) we can't restore user session on cs agent logout.
-         * Only available solution is to drop session we could restore, to avoid account hijack.
-         */
-        AsmAuthStorageService.prototype.clearEmulatedUserToken = function () {
-            this.emulatedUserToken = undefined;
-        };
-        return AsmAuthStorageService;
-    }(AuthStorageService));
-    AsmAuthStorageService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthStorageService_Factory() { return new AsmAuthStorageService(); }, token: AsmAuthStorageService, providedIn: "root" });
-    AsmAuthStorageService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-
     var UserService = /** @class */ (function () {
         function UserService(store, userIdService) {
             this.store = store;
@@ -18939,6 +18864,83 @@
         { type: UserIdService }
     ]; };
 
+    (function (TokenTarget) {
+        TokenTarget["CSAgent"] = "CSAgent";
+        TokenTarget["User"] = "User";
+    })(exports.TokenTarget || (exports.TokenTarget = {}));
+    /**
+     * With AsmAuthStorageService apart from storing the token we also need to store
+     * information for which user is the token (regular user or CS Agent).
+     *
+     * Overrides `AuthStorageService`.
+     */
+    var AsmAuthStorageService = /** @class */ (function (_super) {
+        __extends(AsmAuthStorageService, _super);
+        function AsmAuthStorageService() {
+            var _this = _super.apply(this, __spread(arguments)) || this;
+            _this._tokenTarget$ = new rxjs.BehaviorSubject(exports.TokenTarget.User);
+            return _this;
+        }
+        /**
+         * Get target user for current auth token.
+         *
+         * @return observable with TokenTarget
+         */
+        AsmAuthStorageService.prototype.getTokenTarget = function () {
+            return this._tokenTarget$;
+        };
+        /**
+         * Set new token target.
+         *
+         * @param tokenTarget
+         */
+        AsmAuthStorageService.prototype.setTokenTarget = function (tokenTarget) {
+            this._tokenTarget$.next(tokenTarget);
+        };
+        /**
+         * Get token for previously user session, when it was interrupted by CS agent login.
+         *
+         * @return previously logged in user token.
+         */
+        AsmAuthStorageService.prototype.getEmulatedUserToken = function () {
+            return this.emulatedUserToken;
+        };
+        /**
+         * Save user token on CS agent login.
+         *
+         * @param token
+         */
+        AsmAuthStorageService.prototype.setEmulatedUserToken = function (token) {
+            this.emulatedUserToken = token;
+        };
+        /**
+         * Change token target to CS Agent.
+         */
+        AsmAuthStorageService.prototype.switchTokenTargetToCSAgent = function () {
+            this._tokenTarget$.next(exports.TokenTarget.CSAgent);
+        };
+        /**
+         * Change token target to user.
+         */
+        AsmAuthStorageService.prototype.switchTokenTargetToUser = function () {
+            this._tokenTarget$.next(exports.TokenTarget.User);
+        };
+        /**
+         * When we start emulation from the UI (not by ASM login) we can't restore user session on cs agent logout.
+         * Only available solution is to drop session we could restore, to avoid account hijack.
+         */
+        AsmAuthStorageService.prototype.clearEmulatedUserToken = function () {
+            this.emulatedUserToken = undefined;
+        };
+        return AsmAuthStorageService;
+    }(AuthStorageService));
+    AsmAuthStorageService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthStorageService_Factory() { return new AsmAuthStorageService(); }, token: AsmAuthStorageService, providedIn: "root" });
+    AsmAuthStorageService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+
     var ASM_UI_UPDATE = '[Asm] UI Update';
     var AsmUiUpdate = /** @class */ (function () {
         function AsmUiUpdate(payload) {
@@ -19151,7 +19153,7 @@
                                 this.store.dispatch(new Login());
                             }
                             else {
-                                this.authService.initLogout();
+                                this.authService.logout();
                             }
                             return [2 /*return*/];
                     }
@@ -19176,12 +19178,12 @@
     ]; };
 
     /**
-     * Overrides `AuthHeaderService` to handle asm calls as well (not only OCC)
+     * Overrides `AuthHttpHeaderService` to handle asm calls as well (not only OCC)
      * in cases of normal user session and on customer emulation.
      */
-    var AsmAuthHeaderService = /** @class */ (function (_super) {
-        __extends(AsmAuthHeaderService, _super);
-        function AsmAuthHeaderService(authService, authStorageService, csAgentAuthService, oAuthLibWrapperService, routingService, globalMessageService, occEndpointsService) {
+    var AsmAuthHttpHeaderService = /** @class */ (function (_super) {
+        __extends(AsmAuthHttpHeaderService, _super);
+        function AsmAuthHttpHeaderService(authService, authStorageService, csAgentAuthService, oAuthLibWrapperService, routingService, globalMessageService, occEndpointsService) {
             var _this = _super.call(this, authService, authStorageService, oAuthLibWrapperService, routingService, occEndpointsService, globalMessageService) || this;
             _this.authService = authService;
             _this.authStorageService = authStorageService;
@@ -19197,7 +19199,7 @@
          *
          * Checks if particular request should be handled by this service.
          */
-        AsmAuthHeaderService.prototype.shouldCatchError = function (request) {
+        AsmAuthHttpHeaderService.prototype.shouldCatchError = function (request) {
             return (_super.prototype.shouldCatchError.call(this, request) || this.isCSAgentTokenRequest(request));
         };
         /**
@@ -19206,7 +19208,7 @@
          * Adds `Authorization` header to occ and CS agent requests.
          * For CS agent requests also removes the `cx-use-csagent-token` header (to avoid problems with CORS).
          */
-        AsmAuthHeaderService.prototype.alterRequest = function (request) {
+        AsmAuthHttpHeaderService.prototype.alterRequest = function (request) {
             var hasAuthorizationHeader = !!this.getAuthorizationHeader(request);
             var isCSAgentRequest = this.isCSAgentTokenRequest(request);
             var req = _super.prototype.alterRequest.call(this, request);
@@ -19218,7 +19220,7 @@
             }
             return req;
         };
-        AsmAuthHeaderService.prototype.isCSAgentTokenRequest = function (request) {
+        AsmAuthHttpHeaderService.prototype.isCSAgentTokenRequest = function (request) {
             var isRequestWithCSAgentToken = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
             return Boolean(isRequestWithCSAgentToken);
         };
@@ -19228,7 +19230,7 @@
          * On backend errors indicating expired `refresh_token` we need to logout
          * currently logged in user and CS agent.
          */
-        AsmAuthHeaderService.prototype.handleExpiredRefreshToken = function () {
+        AsmAuthHttpHeaderService.prototype.handleExpiredRefreshToken = function () {
             var _this = this;
             this.csAgentAuthService
                 .isCustomerSupportAgentLoggedIn()
@@ -19245,15 +19247,15 @@
                 }
             });
         };
-        return AsmAuthHeaderService;
-    }(AuthHeaderService));
-    AsmAuthHeaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthHeaderService_Factory() { return new AsmAuthHeaderService(i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(CsAgentAuthService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(RoutingService), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(OccEndpointsService)); }, token: AsmAuthHeaderService, providedIn: "root" });
-    AsmAuthHeaderService.decorators = [
+        return AsmAuthHttpHeaderService;
+    }(AuthHttpHeaderService));
+    AsmAuthHttpHeaderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AsmAuthHttpHeaderService_Factory() { return new AsmAuthHttpHeaderService(i0.ɵɵinject(AuthService), i0.ɵɵinject(AuthStorageService), i0.ɵɵinject(CsAgentAuthService), i0.ɵɵinject(OAuthLibWrapperService), i0.ɵɵinject(RoutingService), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(OccEndpointsService)); }, token: AsmAuthHttpHeaderService, providedIn: "root" });
+    AsmAuthHttpHeaderService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    AsmAuthHeaderService.ctorParameters = function () { return [
+    AsmAuthHttpHeaderService.ctorParameters = function () { return [
         { type: AuthService },
         { type: AuthStorageService },
         { type: CsAgentAuthService },
@@ -19956,16 +19958,16 @@
          * @param userId
          * @param password
          */
-        AsmAuthService.prototype.authorize = function (userId, password) {
+        AsmAuthService.prototype.loginWithCredentials = function (userId, password) {
             var _super = Object.create(null, {
-                authorize: { get: function () { return _super_1.prototype.authorize; } }
+                loginWithCredentials: { get: function () { return _super_1.prototype.loginWithCredentials; } }
             });
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             if (!this.canUserLogin()) return [3 /*break*/, 2];
-                            return [4 /*yield*/, _super.authorize.call(this, userId, password)];
+                            return [4 /*yield*/, _super.loginWithCredentials.call(this, userId, password)];
                         case 1:
                             _a.sent();
                             return [3 /*break*/, 3];
@@ -19991,9 +19993,10 @@
             }
         };
         /**
-         * Logout a storefront customer.
+         * Revokes tokens and clears state for logged user (tokens, userId).
+         * To perform logout it is best to use `logout` method. Use this method with caution.
          */
-        AsmAuthService.prototype.logout = function () {
+        AsmAuthService.prototype.coreLogout = function () {
             var _this = this;
             return this.userIdService
                 .isEmulated()
@@ -20005,7 +20008,7 @@
                     return rxjs.of(true);
                 }
                 else {
-                    return rxjs.from(_super_1.prototype.logout.call(_this));
+                    return rxjs.from(_super_1.prototype.coreLogout.call(_this));
                 }
             }))
                 .toPromise();
@@ -20268,8 +20271,8 @@
                         useExisting: AsmAuthService,
                     },
                     {
-                        provide: AuthHeaderService,
-                        useExisting: AsmAuthHeaderService,
+                        provide: AuthHttpHeaderService,
+                        useExisting: AsmAuthHttpHeaderService,
                     },
                     {
                         provide: i0.APP_INITIALIZER,
@@ -30030,13 +30033,13 @@
             this.registerGuest$ = this.actions$.pipe(i3.ofType(REGISTER_GUEST), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
                 var guid = _a.guid, password = _a.password;
                 return _this.userConnector.registerGuest(guid, password).pipe(operators.switchMap(function (user) {
-                    _this.authService.authorize(user.uid, password);
+                    _this.authService.loginWithCredentials(user.uid, password);
                     return [new RegisterGuestSuccess()];
                 }), operators.catchError(function (error) { return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error))); }));
             }));
             this.removeUser$ = this.actions$.pipe(i3.ofType(REMOVE_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
                 return _this.userConnector.remove(userId).pipe(operators.switchMap(function () {
-                    _this.authService.initLogout();
+                    _this.authService.logout();
                     return [new RemoveUserSuccess()];
                 }), operators.catchError(function (error) { return rxjs.of(new RemoveUserFail(makeErrorSerializable(error))); }));
             }));
@@ -30208,7 +30211,7 @@
     exports.AnonymousConsentsService = AnonymousConsentsService;
     exports.AsmActions = customerGroup_actions;
     exports.AsmAdapter = AsmAdapter;
-    exports.AsmAuthHeaderService = AsmAuthHeaderService;
+    exports.AsmAuthHttpHeaderService = AsmAuthHttpHeaderService;
     exports.AsmAuthService = AsmAuthService;
     exports.AsmAuthStorageService = AsmAuthStorageService;
     exports.AsmConfig = AsmConfig;
@@ -30222,7 +30225,7 @@
     exports.AuthConfig = AuthConfig;
     exports.AuthConfigService = AuthConfigService;
     exports.AuthGuard = AuthGuard;
-    exports.AuthHeaderService = AuthHeaderService;
+    exports.AuthHttpHeaderService = AuthHttpHeaderService;
     exports.AuthInterceptor = AuthInterceptor;
     exports.AuthModule = AuthModule;
     exports.AuthRedirectService = AuthRedirectService;

@@ -10,6 +10,7 @@ import { UserIdService } from './user-id.service';
  * Auth service for normal user authentication.
  * Use to check auth status, login/logout with different OAuth flows.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class AuthService {
     protected store: Store<StateWithClientAuth>;
     protected userIdService: UserIdService;
@@ -31,17 +32,21 @@ export declare class AuthService {
      * @param userId
      * @param password
      */
-    authorize(userId: string, password: string): Promise<void>;
+    loginWithCredentials(userId: string, password: string): Promise<void>;
     /**
-     * Logout a storefront customer.
+     * Revokes tokens and clears state for logged user (tokens, userId).
+     * To perform logout it is best to use `logout` method. Use this method with caution.
      */
-    logout(): Promise<any>;
+    coreLogout(): Promise<any>;
     /**
      * Returns `true` if the user is logged in; and `false` if the user is anonymous.
      */
     isUserLoggedIn(): Observable<boolean>;
     /**
-     * Initialize logout procedure by redirecting to the `logout` endpoint.
+     * Logout a storefront customer. It will initialize logout procedure by redirecting to the `logout` endpoint.
      */
-    initLogout(): void;
+    logout(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthService, never>;
 }
+
+//# sourceMappingURL=auth.service.d.ts.map
