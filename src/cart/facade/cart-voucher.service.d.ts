@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { UserIdService } from '../../auth/index';
 import * as fromProcessStore from '../../process/store/process-state';
 import { ActiveCartService } from './active-cart.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class CartVoucherService {
     protected store: Store<fromProcessStore.StateWithProcess<void>>;
     protected activeCartService: ActiveCartService;
@@ -31,4 +32,7 @@ export declare class CartVoucherService {
      */
     resetAddVoucherProcessingState(): void;
     private combineUserAndCartId;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartVoucherService, never>;
 }
+
+//# sourceMappingURL=cart-voucher.service.d.ts.map

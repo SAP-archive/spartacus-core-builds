@@ -7495,116 +7495,6 @@
         { type: CheckoutEventBuilder }
     ]; };
 
-    // Email Standard RFC 5322:
-    var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
-    var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
-
-    var getMultiCartState = i1$2.createFeatureSelector(MULTI_CART_FEATURE);
-    var ɵ0$a = function (state) { return state.carts; };
-    var getMultiCartEntities = i1$2.createSelector(getMultiCartState, ɵ0$a);
-    var getCartEntitySelectorFactory = function (cartId) {
-        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityProcessesLoaderStateSelector(state, cartId); });
-    };
-    var getCartSelectorFactory = function (cartId) {
-        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityValueSelector(state, cartId); });
-    };
-    var getCartIsStableSelectorFactory = function (cartId) {
-        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityIsStableSelector(state, cartId); });
-    };
-    var getCartHasPendingProcessesSelectorFactory = function (cartId) {
-        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityHasPendingProcessesSelector(state, cartId); });
-    };
-    var getCartEntriesSelectorFactory = function (cartId) {
-        return i1$2.createSelector(getCartSelectorFactory(cartId), function (state) {
-            return state && state.entries ? state.entries : [];
-        });
-    };
-    var getCartEntrySelectorFactory = function (cartId, productCode) {
-        return i1$2.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
-            return state
-                ? state.find(function (entry) { return entry.product.code === productCode; })
-                : undefined;
-        });
-    };
-    var ɵ1$6 = function (state) { return state.active; };
-    var getActiveCartId = i1$2.createSelector(getMultiCartState, ɵ1$6);
-    var ɵ2$4 = function (state) { return state.wishList; };
-    var getWishListId = i1$2.createSelector(getMultiCartState, ɵ2$4);
-
-    var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getMultiCartState: getMultiCartState,
-        getMultiCartEntities: getMultiCartEntities,
-        getCartEntitySelectorFactory: getCartEntitySelectorFactory,
-        getCartSelectorFactory: getCartSelectorFactory,
-        getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
-        getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
-        getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
-        getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-        getActiveCartId: getActiveCartId,
-        getWishListId: getWishListId,
-        ɵ0: ɵ0$a,
-        ɵ1: ɵ1$6,
-        ɵ2: ɵ2$4
-    });
-
-    /**
-     * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
-     */
-    function getCartIdByUserId(cart, userId) {
-        if (userId === OCC_USER_ID_ANONYMOUS) {
-            return cart.guid;
-        }
-        return cart.code;
-    }
-    /**
-     * Check if cart is selective (save for later) based on id.
-     */
-    function isSelectiveCart(cartId) {
-        if (cartId === void 0) { cartId = ''; }
-        return cartId.startsWith('selectivecart');
-    }
-    /**
-     * Check if the returned error is of type notFound.
-     *
-     * We additionally check if the cart is not a selective cart.
-     * For selective cart this error can happen only when extension is disabled.
-     * It should never happen, because in that case, selective cart should also be disabled in our configuration.
-     * However if that happens we want to handle these errors silently.
-     */
-    function isCartNotFoundError(error) {
-        return (error.reason === 'notFound' &&
-            error.subjectType === 'cart' &&
-            !isSelectiveCart(error.subject));
-    }
-    /**
-     * Compute wishlist cart name for customer.
-     */
-    function getWishlistName(customerId) {
-        return "wishlist" + customerId;
-    }
-    /**
-     * What is a temporary cart?
-     * - frontend only cart entity!
-     * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
-     *
-     * Why we need temporary carts?
-     * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
-     * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
-     * - cart identifiers are created in the backend, so those are only known after cart is created
-     *
-     * Temporary cart life cycle
-     * - create cart method invoked
-     * - new `temp-${uuid}` cart is created with `loading=true` state
-     * - backend returns created cart
-     * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
-     * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
-     * - in next tick temporary cart is removed
-     */
-    function isTempCartId(cartId) {
-        return cartId.startsWith('temp-');
-    }
-
     var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
     var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
     var CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
@@ -8040,6 +7930,63 @@
         return ClearCartState;
     }(EntityRemoveAllAction));
 
+    /**
+     * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
+     */
+    function getCartIdByUserId(cart, userId) {
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            return cart.guid;
+        }
+        return cart.code;
+    }
+    /**
+     * Check if cart is selective (save for later) based on id.
+     */
+    function isSelectiveCart(cartId) {
+        if (cartId === void 0) { cartId = ''; }
+        return cartId.startsWith('selectivecart');
+    }
+    /**
+     * Check if the returned error is of type notFound.
+     *
+     * We additionally check if the cart is not a selective cart.
+     * For selective cart this error can happen only when extension is disabled.
+     * It should never happen, because in that case, selective cart should also be disabled in our configuration.
+     * However if that happens we want to handle these errors silently.
+     */
+    function isCartNotFoundError(error) {
+        return (error.reason === 'notFound' &&
+            error.subjectType === 'cart' &&
+            !isSelectiveCart(error.subject));
+    }
+    /**
+     * Compute wishlist cart name for customer.
+     */
+    function getWishlistName(customerId) {
+        return "wishlist" + customerId;
+    }
+    /**
+     * What is a temporary cart?
+     * - frontend only cart entity!
+     * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
+     *
+     * Why we need temporary carts?
+     * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
+     * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
+     * - cart identifiers are created in the backend, so those are only known after cart is created
+     *
+     * Temporary cart life cycle
+     * - create cart method invoked
+     * - new `temp-${uuid}` cart is created with `loading=true` state
+     * - backend returns created cart
+     * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
+     * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
+     * - in next tick temporary cart is removed
+     */
+    function isTempCartId(cartId) {
+        return cartId.startsWith('temp-');
+    }
+
     var CREATE_WISH_LIST = '[Wish List] Create Wish List';
     var CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
     var CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
@@ -8196,9 +8143,59 @@
         LoadWishListFail: LoadWishListFail
     });
 
+    var getMultiCartState = i1$2.createFeatureSelector(MULTI_CART_FEATURE);
+    var ɵ0$a = function (state) { return state.carts; };
+    var getMultiCartEntities = i1$2.createSelector(getMultiCartState, ɵ0$a);
+    var getCartEntitySelectorFactory = function (cartId) {
+        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityProcessesLoaderStateSelector(state, cartId); });
+    };
+    var getCartSelectorFactory = function (cartId) {
+        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityValueSelector(state, cartId); });
+    };
+    var getCartIsStableSelectorFactory = function (cartId) {
+        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityIsStableSelector(state, cartId); });
+    };
+    var getCartHasPendingProcessesSelectorFactory = function (cartId) {
+        return i1$2.createSelector(getMultiCartEntities, function (state) { return entityHasPendingProcessesSelector(state, cartId); });
+    };
+    var getCartEntriesSelectorFactory = function (cartId) {
+        return i1$2.createSelector(getCartSelectorFactory(cartId), function (state) {
+            return state && state.entries ? state.entries : [];
+        });
+    };
+    var getCartEntrySelectorFactory = function (cartId, productCode) {
+        return i1$2.createSelector(getCartEntriesSelectorFactory(cartId), function (state) {
+            return state
+                ? state.find(function (entry) { return entry.product.code === productCode; })
+                : undefined;
+        });
+    };
+    var ɵ1$6 = function (state) { return state.active; };
+    var getActiveCartId = i1$2.createSelector(getMultiCartState, ɵ1$6);
+    var ɵ2$4 = function (state) { return state.wishList; };
+    var getWishListId = i1$2.createSelector(getMultiCartState, ɵ2$4);
+
+    var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getMultiCartState: getMultiCartState,
+        getMultiCartEntities: getMultiCartEntities,
+        getCartEntitySelectorFactory: getCartEntitySelectorFactory,
+        getCartSelectorFactory: getCartSelectorFactory,
+        getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
+        getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
+        getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
+        getCartEntrySelectorFactory: getCartEntrySelectorFactory,
+        getActiveCartId: getActiveCartId,
+        getWishListId: getWishListId,
+        ɵ0: ɵ0$a,
+        ɵ1: ɵ1$6,
+        ɵ2: ɵ2$4
+    });
+
     var MultiCartService = /** @class */ (function () {
-        function MultiCartService(store) {
+        function MultiCartService(store, userIdService) {
             this.store = store;
+            this.userIdService = userIdService;
         }
         /**
          * Returns cart from store as an observable
@@ -8410,17 +8407,1096 @@
                 cartId: cartId,
             }));
         };
+        /**
+         * Reloads the cart with specified id.
+         *
+         * @param cartId
+         * @param extraData
+         */
+        MultiCartService.prototype.reloadCart = function (cartId, extraData) {
+            var _this = this;
+            this.userIdService.invokeWithUserId(function (userId) { return _this.store.dispatch(new LoadCart({
+                userId: userId,
+                cartId: cartId,
+                extraData: extraData,
+            })); });
+        };
         return MultiCartService;
     }());
-    MultiCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(i0.ɵɵinject(i1$2.Store)); }, token: MultiCartService, providedIn: "root" });
+    MultiCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService)); }, token: MultiCartService, providedIn: "root" });
     MultiCartService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     MultiCartService.ctorParameters = function () { return [
-        { type: i1$2.Store }
+        { type: i1$2.Store },
+        { type: UserIdService }
     ]; };
+
+    /**
+     * @license
+     * The MIT License
+     * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
+     *
+     * See:
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
+     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
+     */
+    var QUESTION_MARK = '[^/]';
+    var WILD_SINGLE = '[^/]*';
+    var WILD_OPEN = '(?:.+\\/)?';
+    var TO_ESCAPE_BASE = [
+        { replace: /\./g, with: '\\.' },
+        { replace: /\+/g, with: '\\+' },
+        { replace: /\*/g, with: WILD_SINGLE },
+    ];
+    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: QUESTION_MARK },
+    ]);
+    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: '\\?' },
+    ]);
+    /**
+     * Converts the glob-like pattern into regex string.
+     *
+     * Patterns use a limited glob format:
+     * `**` matches 0 or more path segments
+     * `*` matches 0 or more characters excluding `/`
+     * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
+     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+     *
+     * @param glob glob-like pattern
+     * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
+     */
+    function globToRegex(glob, literalQuestionMark) {
+        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
+        var toEscape = literalQuestionMark
+            ? TO_ESCAPE_LITERAL_QM
+            : TO_ESCAPE_WILDCARD_QM;
+        var segments = glob.split('/').reverse();
+        var regex = '';
+        while (segments.length > 0) {
+            var segment = segments.pop();
+            if (segment === '**') {
+                if (segments.length > 0) {
+                    regex += WILD_OPEN;
+                }
+                else {
+                    regex += '.*';
+                }
+            }
+            else {
+                var processed = toEscape.reduce(function (seg, escape) { return seg.replace(escape.replace, escape.with); }, segment);
+                regex += processed;
+                if (segments.length > 0) {
+                    regex += '\\/';
+                }
+            }
+        }
+        return regex;
+    }
+    /**
+     * For given list of glob-like patterns, returns a matcher function.
+     *
+     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     */
+    function getGlobMatcher(patterns) {
+        var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
+            var positive = _a.positive, regex = _a.regex;
+            return ({
+                positive: positive,
+                regex: new RegExp(regex),
+            });
+        });
+        var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
+        var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
+        return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+            !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
+    }
+    /**
+     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+     */
+    function processGlobPatterns(urls) {
+        return urls.map(function (url) {
+            var positive = !url.startsWith('!');
+            url = positive ? url : url.substr(1);
+            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
+        });
+    }
+
+    var GlobService = /** @class */ (function () {
+        function GlobService() {
+        }
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         */
+        GlobService.prototype.getValidator = function (patterns) {
+            var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
+                var positive = _a.positive, regex = _a.regex;
+                return ({
+                    positive: positive,
+                    regex: new RegExp(regex),
+                });
+            });
+            var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
+            var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
+            return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
+                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
+        };
+        return GlobService;
+    }());
+    GlobService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+    GlobService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+
+    var UrlMatcherService = /** @class */ (function () {
+        function UrlMatcherService(globService) {
+            this.globService = globService;
+        }
+        /**
+         * Returns a matcher that is always fails
+         */
+        UrlMatcherService.prototype.getFalsy = function () {
+            return function falsyUrlMatcher() {
+                return null;
+            };
+        };
+        /**
+         * Returns a matcher for given list of paths
+         */
+        UrlMatcherService.prototype.getFromPaths = function (paths) {
+            var _this = this;
+            var matchers = paths.map(function (path) { return _this.getFromPath(path); });
+            var matcher = this.getCombined(matchers);
+            if (i0.isDevMode()) {
+                matcher['_paths'] = paths; // property added for easier debugging of routes
+            }
+            return matcher;
+        };
+        /**
+         * Returns a matcher that combines the given matchers
+         * */
+        UrlMatcherService.prototype.getCombined = function (matchers) {
+            var matcher = function combinedUrlMatchers(segments, segmentGroup, route) {
+                for (var i = 0; i < matchers.length; i++) {
+                    var result = matchers[i](segments, segmentGroup, route);
+                    if (result) {
+                        return result;
+                    }
+                }
+                return null;
+            };
+            if (i0.isDevMode()) {
+                matcher['_matchers'] = matchers; // property added for easier debugging of routes
+            }
+            return matcher;
+        };
+        /**
+         * Similar to Angular's defaultUrlMatcher. Differences:
+         * - the `path` comes from function's argument, not from `route.path`
+         * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
+         */
+        UrlMatcherService.prototype.getFromPath = function (path) {
+            if (path === void 0) { path = ''; }
+            var matcher = function pathUrlMatcher(segments, segmentGroup, route) {
+                /**
+                 * @license
+                 * The MIT License
+                 * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
+                 *
+                 * See:
+                 * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/router/src/shared.ts#L121
+                 */
+                // use function's argument, not the `route.path`
+                if (path === '') {
+                    if (route.pathMatch === 'full' &&
+                        (segmentGroup.hasChildren() || segments.length > 0)) {
+                        return null;
+                    }
+                    return { consumed: [], posParams: {} };
+                }
+                var parts = path.split('/'); // use function's argument, not the `route.path`
+                if (parts.length > segments.length) {
+                    // The actual URL is shorter than the config, no match
+                    return null;
+                }
+                if (route.pathMatch === 'full' &&
+                    (segmentGroup.hasChildren() || parts.length < segments.length)) {
+                    // The config is longer than the actual URL but we are looking for a full match, return null
+                    return null;
+                }
+                var posParams = {};
+                // Check each config part against the actual URL
+                for (var index = 0; index < parts.length; index++) {
+                    var part = parts[index];
+                    var segment = segments[index];
+                    var isParameter = part.startsWith(':');
+                    if (isParameter) {
+                        posParams[part.substring(1)] = segment;
+                    }
+                    else if (part !== segment.path) {
+                        // The actual URL part does not match the config, no match
+                        return null;
+                    }
+                }
+                return { consumed: segments.slice(0, parts.length), posParams: posParams };
+            };
+            if (i0.isDevMode()) {
+                matcher['_path'] = path; // property added for easier debugging of routes
+            }
+            return matcher;
+        };
+        /**
+         * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
+         */
+        UrlMatcherService.prototype.getOpposite = function (originalMatcher) {
+            var matcher = function oppositeUrlMatcher(segments, group, route) {
+                return originalMatcher(segments, group, route)
+                    ? null
+                    : { consumed: segments, posParams: {} };
+            };
+            if (i0.isDevMode()) {
+                matcher['_originalMatcher'] = originalMatcher; // property added for easier debugging of routes
+            }
+            return matcher;
+        };
+        /**
+         * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
+         */
+        UrlMatcherService.prototype.getFromGlob = function (globPatterns) {
+            var globValidator = this.globService.getValidator(globPatterns);
+            var matcher = function globUrlMatcher(segments) {
+                var fullPath = "/" + segments.map(function (s) { return s.path; }).join('/');
+                return globValidator(fullPath)
+                    ? { consumed: segments, posParams: {} }
+                    : null;
+            };
+            if (i0.isDevMode()) {
+                matcher['_globPatterns'] = globPatterns; // property added for easier debugging of routes
+            }
+            return matcher;
+        };
+        return UrlMatcherService;
+    }());
+    UrlMatcherService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(i0.ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
+    UrlMatcherService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    UrlMatcherService.ctorParameters = function () { return [
+        { type: GlobService }
+    ]; };
+
+    var ConfigurableRoutesService = /** @class */ (function () {
+        function ConfigurableRoutesService(injector, routingConfigService, urlMatcherService) {
+            this.injector = injector;
+            this.routingConfigService = routingConfigService;
+            this.urlMatcherService = urlMatcherService;
+            this.initCalled = false; // guard not to call init() more than once
+        }
+        /**
+         * Enhances existing Angular routes using the routing config of Spartacus.
+         * Can be called only once.
+         */
+        ConfigurableRoutesService.prototype.init = function () {
+            if (!this.initCalled) {
+                this.initCalled = true;
+                this.configure();
+            }
+        };
+        /**
+         * Enhances existing Angular routes using the routing config of Spartacus.
+         */
+        ConfigurableRoutesService.prototype.configure = function () {
+            // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
+            var router = this.injector.get(i1$1.Router);
+            router.resetConfig(this.configureRoutes(router.config));
+        };
+        /**
+         * Sets the property `path` or `matcher` for the given routes, based on the Spartacus' routing configuration.
+         *
+         * @param routes list of Angular `Route` objects
+         */
+        ConfigurableRoutesService.prototype.configureRoutes = function (routes) {
+            var _this = this;
+            return routes.map(function (route) {
+                var configuredRoute = _this.configureRoute(route);
+                if (route.children && route.children.length) {
+                    configuredRoute.children = _this.configureRoutes(route.children);
+                }
+                return configuredRoute;
+            });
+        };
+        /**
+         * Sets the property `path` or `matcher` of the `Route`, based on the Spartacus' routing configuration.
+         * Uses the property `data.cxRoute` to determine the name of the route.
+         * It's the same name used as a key in the routing configuration: `routing.routes[ROUTE NAME]`.
+         *
+         * @param route Angular `Route` object
+         */
+        ConfigurableRoutesService.prototype.configureRoute = function (route) {
+            var _a;
+            var routeName = this.getRouteName(route);
+            if (routeName) {
+                var routeConfig = this.routingConfigService.getRouteConfig(routeName);
+                this.validateRouteConfig(routeConfig, routeName, route);
+                if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.disabled) {
+                    delete route.path;
+                    return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
+                }
+                else if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) {
+                    delete route.path;
+                    return Object.assign(Object.assign({}, route), { matcher: this.resolveUrlMatchers(route, routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) });
+                }
+                else if (((_a = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _a === void 0 ? void 0 : _a.length) === 1) {
+                    delete route.matcher;
+                    return Object.assign(Object.assign({}, route), { path: routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths[0] });
+                }
+                else {
+                    delete route.path;
+                    return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFromPaths((routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) || []) });
+                }
+            }
+            return route; // if route doesn't have a name, just pass the original route
+        };
+        /**
+         * Creates a single `UrlMatcher` based on given matchers and factories of matchers.
+         *
+         * @param route Route object
+         * @param matchersOrFactories `UrlMatcher`s or injection tokens with a factory functions
+         *  that create UrlMatchers based on the given route.
+         */
+        ConfigurableRoutesService.prototype.resolveUrlMatchers = function (route, matchersOrFactories) {
+            var _this = this;
+            var matchers = matchersOrFactories.map(function (matcherOrFactory) {
+                return typeof matcherOrFactory === 'function'
+                    ? matcherOrFactory // matcher
+                    : _this.resolveUrlMatcherFactory(route, matcherOrFactory); // factory injection token
+            });
+            return this.urlMatcherService.getCombined(matchers);
+        };
+        /**
+         * Creates an `UrlMatcher` based on the given route, using the factory function coming from the given injection token.
+         *
+         * @param route Route object
+         * @param factoryToken injection token with a factory function that will create an UrlMatcher using given route
+         */
+        ConfigurableRoutesService.prototype.resolveUrlMatcherFactory = function (route, factoryToken) {
+            var factory = this.injector.get(factoryToken);
+            return factory(route);
+        };
+        /**
+         * Returns the name of the Route stored in its property `data.cxRoute`
+         * @param route
+         */
+        ConfigurableRoutesService.prototype.getRouteName = function (route) {
+            return route.data && route.data.cxRoute;
+        };
+        ConfigurableRoutesService.prototype.validateRouteConfig = function (routeConfig, routeName, route) {
+            if (i0.isDevMode()) {
+                // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
+                // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
+                if (routeConfig === null ||
+                    (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers)) {
+                    return;
+                }
+                // undefined value of routeConfig or routeConfig.paths is a misconfiguration
+                if (!(routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths)) {
+                    this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined config or undefined 'paths' property for this route");
+                    return;
+                }
+            }
+        };
+        ConfigurableRoutesService.prototype.warn = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            if (i0.isDevMode()) {
+                console.warn.apply(console, __spread(args));
+            }
+        };
+        return ConfigurableRoutesService;
+    }());
+    ConfigurableRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(RoutingConfigService), i0.ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+    ConfigurableRoutesService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ConfigurableRoutesService.ctorParameters = function () { return [
+        { type: i0.Injector },
+        { type: RoutingConfigService },
+        { type: UrlMatcherService }
+    ]; };
+
+    var ProductURLPipe = /** @class */ (function () {
+        function ProductURLPipe(semanticPath) {
+            this.semanticPath = semanticPath;
+        }
+        ProductURLPipe.prototype.transform = function (product) {
+            return this.semanticPath.transform({ cxRoute: 'product', params: product });
+        };
+        return ProductURLPipe;
+    }());
+    ProductURLPipe.decorators = [
+        { type: i0.Pipe, args: [{
+                    name: 'cxProductUrl',
+                },] }
+    ];
+    ProductURLPipe.ctorParameters = function () { return [
+        { type: SemanticPathService }
+    ]; };
+
+    var UrlPipe = /** @class */ (function () {
+        function UrlPipe(urlService) {
+            this.urlService = urlService;
+        }
+        UrlPipe.prototype.transform = function (commands) {
+            return this.urlService.transform(commands);
+        };
+        return UrlPipe;
+    }());
+    UrlPipe.decorators = [
+        { type: i0.Pipe, args: [{
+                    name: 'cxUrl',
+                },] }
+    ];
+    UrlPipe.ctorParameters = function () { return [
+        { type: SemanticPathService }
+    ]; };
+
+    var UrlModule = /** @class */ (function () {
+        function UrlModule() {
+        }
+        return UrlModule;
+    }());
+    UrlModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [i1.CommonModule],
+                    declarations: [UrlPipe, ProductURLPipe],
+                    exports: [UrlPipe, ProductURLPipe],
+                },] }
+    ];
+
+    var ExternalRoutesConfig = /** @class */ (function () {
+        function ExternalRoutesConfig() {
+        }
+        return ExternalRoutesConfig;
+    }());
+    ExternalRoutesConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesConfig_Factory() { return i0.ɵɵinject(Config); }, token: ExternalRoutesConfig, providedIn: "root" });
+    ExternalRoutesConfig.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                    useExisting: Config,
+                },] }
+    ];
+
+    var ExternalRoutesGuard = /** @class */ (function () {
+        function ExternalRoutesGuard(winRef, platformId) {
+            this.winRef = winRef;
+            this.platformId = platformId;
+        }
+        /**
+         * Redirects to different storefront system for anticipated URL
+         */
+        ExternalRoutesGuard.prototype.canActivate = function (route, state) {
+            if (i1.isPlatformBrowser(this.platformId)) {
+                this.redirect(route, state);
+            }
+            return false;
+        };
+        /**
+         * Redirects to anticipated URL using full page reload, not Angular routing
+         */
+        ExternalRoutesGuard.prototype.redirect = function (_, state) {
+            var window = this.winRef.nativeWindow;
+            if (window && window.location) {
+                window.location.href = state.url;
+            }
+        };
+        return ExternalRoutesGuard;
+    }());
+    ExternalRoutesGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(i0.ɵɵinject(WindowRef), i0.ɵɵinject(i0.PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
+    ExternalRoutesGuard.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ExternalRoutesGuard.ctorParameters = function () { return [
+        { type: WindowRef },
+        { type: Object, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+    ]; };
+
+    function addExternalRoutesFactory(service) {
+        var result = function () {
+            service.addRoutes();
+        };
+        return result;
+    }
+
+    /**
+     * Service that helps redirecting to different storefront systems for configured URLs
+     */
+    var ExternalRoutesService = /** @class */ (function () {
+        function ExternalRoutesService(config, urlMatcherService, injector) {
+            this.config = config;
+            this.urlMatcherService = urlMatcherService;
+            this.injector = injector;
+        }
+        Object.defineProperty(ExternalRoutesService.prototype, "internalUrlPatterns", {
+            get: function () {
+                return ((this.config && this.config.routing && this.config.routing.internal) || []);
+            },
+            enumerable: false,
+            configurable: true
+        });
+        /**
+         * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
+         */
+        ExternalRoutesService.prototype.addRoutes = function () {
+            var router = this.injector.get(i1$1.Router);
+            var newRoutes = this.getRoutes();
+            if (newRoutes.length) {
+                router.resetConfig(__spread(newRoutes, router.config));
+            }
+        };
+        /**
+         * Returns routes that are responsible for redirection to different storefront systems
+         */
+        ExternalRoutesService.prototype.getRoutes = function () {
+            if (!this.internalUrlPatterns.length) {
+                return [];
+            }
+            var routes = [];
+            routes.push({
+                pathMatch: 'full',
+                matcher: this.getUrlMatcher(),
+                canActivate: [ExternalRoutesGuard],
+                component: {},
+            });
+            return routes;
+        };
+        /**
+         * Returns the URL matcher for the external route
+         */
+        ExternalRoutesService.prototype.getUrlMatcher = function () {
+            var matcher = this.urlMatcherService.getFromGlob(this.internalUrlPatterns);
+            return this.urlMatcherService.getOpposite(matcher); // the external route should be activated only when it's NOT an internal route
+        };
+        return ExternalRoutesService;
+    }());
+    ExternalRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(i0.ɵɵinject(ExternalRoutesConfig), i0.ɵɵinject(UrlMatcherService), i0.ɵɵinject(i0.INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
+    ExternalRoutesService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ExternalRoutesService.ctorParameters = function () { return [
+        { type: ExternalRoutesConfig },
+        { type: UrlMatcherService },
+        { type: i0.Injector }
+    ]; };
+
+    /**
+     * Prepends the external route that redirects to a different storefront system for configured URLs
+     */
+    var ExternalRoutesModule = /** @class */ (function () {
+        function ExternalRoutesModule() {
+        }
+        ExternalRoutesModule.forRoot = function () {
+            return {
+                ngModule: ExternalRoutesModule,
+                providers: [
+                    {
+                        provide: i0.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: addExternalRoutesFactory,
+                        deps: [ExternalRoutesService],
+                    },
+                ],
+            };
+        };
+        return ExternalRoutesModule;
+    }());
+    ExternalRoutesModule.decorators = [
+        { type: i0.NgModule }
+    ];
+
+    var PageContext = /** @class */ (function () {
+        function PageContext(id, type) {
+            this.id = id;
+            this.type = type;
+        }
+        return PageContext;
+    }());
+
+    var ProtectedRoutesService = /** @class */ (function () {
+        function ProtectedRoutesService(config) {
+            var _this = this;
+            this.config = config;
+            this.nonProtectedPaths = []; // arrays of paths' segments list
+            if (this.shouldProtect) {
+                // pre-process config for performance:
+                this.nonProtectedPaths = this.getNonProtectedPaths().map(function (path) { return _this.getSegments(path); });
+            }
+        }
+        Object.defineProperty(ProtectedRoutesService.prototype, "routingConfig", {
+            get: function () {
+                return this.config && this.config.routing;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(ProtectedRoutesService.prototype, "shouldProtect", {
+            /**
+             * Returns 'protected' property (boolean) from routing config
+             *
+             * @returns boolean
+             */
+            get: function () {
+                return this.routingConfig.protected;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        /**
+         * Tells if the url is protected
+         */
+        ProtectedRoutesService.prototype.isUrlProtected = function (urlSegments) {
+            return (this.shouldProtect &&
+                !this.matchAnyPath(urlSegments, this.nonProtectedPaths));
+        };
+        /**
+         * Tells whether the url matches at least one of the paths
+         */
+        ProtectedRoutesService.prototype.matchAnyPath = function (urlSegments, pathsSegments) {
+            var _this = this;
+            return pathsSegments.some(function (pathSegments) { return _this.matchPath(urlSegments, pathSegments); });
+        };
+        /**
+         * Tells whether the url matches the path
+         */
+        ProtectedRoutesService.prototype.matchPath = function (urlSegments, pathSegments) {
+            if (urlSegments.length !== pathSegments.length) {
+                return false;
+            }
+            for (var i = 0; i < pathSegments.length; i++) {
+                var pathSeg = pathSegments[i];
+                var urlSeg = urlSegments[i];
+                // compare only static segments:
+                if (!pathSeg.startsWith(':') && pathSeg !== urlSeg) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        /**
+         * Returns a list of paths that are not protected
+         */
+        ProtectedRoutesService.prototype.getNonProtectedPaths = function () {
+            return Object.values(this.routingConfig.routes).reduce(function (acc, routeConfig) { return routeConfig.protected === false && // must be explicitly false, ignore undefined
+                routeConfig.paths &&
+                routeConfig.paths.length
+                ? acc.concat(routeConfig.paths)
+                : acc; }, []);
+        };
+        /**
+         * Splits the url by slashes
+         */
+        ProtectedRoutesService.prototype.getSegments = function (url) {
+            return (url || '').split('/');
+        };
+        return ProtectedRoutesService;
+    }());
+    ProtectedRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(i0.ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
+    ProtectedRoutesService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ProtectedRoutesService.ctorParameters = function () { return [
+        { type: RoutingConfig }
+    ]; };
+
+    var ProtectedRoutesGuard = /** @class */ (function () {
+        function ProtectedRoutesGuard(service, authGuard) {
+            this.service = service;
+            this.authGuard = authGuard;
+        }
+        /**
+         * When the anticipated url is protected, it switches to the AuthGuard. Otherwise emits true.
+         */
+        ProtectedRoutesGuard.prototype.canActivate = function (route) {
+            var urlSegments = route.url.map(function (seg) { return seg.path; });
+            // For the root path `/` ActivatedRoute contains an empty array of segments:
+            urlSegments = urlSegments.length ? urlSegments : [''];
+            if (this.service.isUrlProtected(urlSegments)) {
+                return this.authGuard.canActivate();
+            }
+            return rxjs.of(true);
+        };
+        return ProtectedRoutesGuard;
+    }());
+    ProtectedRoutesGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(i0.ɵɵinject(ProtectedRoutesService), i0.ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
+    ProtectedRoutesGuard.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    ProtectedRoutesGuard.ctorParameters = function () { return [
+        { type: ProtectedRoutesService },
+        { type: AuthGuard }
+    ]; };
+
+    var RouterEffects = /** @class */ (function () {
+        function RouterEffects(actions$, router, location) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.router = router;
+            this.location = location;
+            this.navigate$ = this.actions$.pipe(i3.ofType(ROUTER_GO), operators.map(function (action) { return action.payload; }), operators.tap(function (_a) {
+                var path = _a.path, queryParams = _a.query, extras = _a.extras;
+                _this.router.navigate(path, Object.assign({ queryParams: queryParams }, extras));
+            }));
+            this.navigateByUrl$ = this.actions$.pipe(i3.ofType(ROUTER_GO_BY_URL), operators.map(function (action) { return action.payload; }), operators.tap(function (url) {
+                _this.router.navigateByUrl(url);
+            }));
+            this.clearCmsRoutes$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap(function () {
+                var filteredConfig = _this.router.config.filter(function (route) { return !(route.data && route.data.cxCmsRouteContext); });
+                if (filteredConfig.length !== _this.router.config.length) {
+                    _this.router.resetConfig(filteredConfig);
+                }
+            }));
+            this.navigateBack$ = this.actions$.pipe(i3.ofType(ROUTER_BACK), operators.tap(function () { return _this.location.back(); }));
+            this.navigateForward$ = this.actions$.pipe(i3.ofType(ROUTER_FORWARD), operators.tap(function () { return _this.location.forward(); }));
+        }
+        return RouterEffects;
+    }());
+    RouterEffects.decorators = [
+        { type: i0.Injectable }
+    ];
+    RouterEffects.ctorParameters = function () { return [
+        { type: i3.Actions },
+        { type: i1$1.Router },
+        { type: i1.Location }
+    ]; };
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "navigate$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "navigateByUrl$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "navigateBack$", void 0);
+    __decorate([
+        i3.Effect({ dispatch: false })
+    ], RouterEffects.prototype, "navigateForward$", void 0);
+
+    var effects$1 = [RouterEffects];
+
+    var initialState = {
+        navigationId: 0,
+        state: {
+            url: '',
+            queryParams: {},
+            params: {},
+            context: {
+                id: '',
+            },
+            cmsRequired: false,
+            semanticRoute: undefined,
+        },
+        nextState: undefined,
+    };
+    function getReducers$1() {
+        return {
+            router: reducer,
+        };
+    }
+    function reducer(state, action) {
+        if (state === void 0) { state = initialState; }
+        switch (action.type) {
+            case fromNgrxRouter.ROUTER_NAVIGATION: {
+                return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
+            }
+            case fromNgrxRouter.ROUTER_ERROR:
+            case fromNgrxRouter.ROUTER_CANCEL: {
+                return Object.assign(Object.assign({}, state), { nextState: undefined });
+            }
+            case fromNgrxRouter.ROUTER_NAVIGATED: {
+                return {
+                    state: action.payload.routerState,
+                    navigationId: action.payload.event.id,
+                    nextState: undefined,
+                };
+            }
+            default: {
+                return state;
+            }
+        }
+    }
+    var reducerToken$1 = new i0.InjectionToken('RouterReducers');
+    var reducerProvider$1 = {
+        provide: reducerToken$1,
+        useFactory: getReducers$1,
+    };
+    /* The serializer is there to parse the RouterStateSnapshot,
+    and to reduce the amount of properties to be passed to the reducer.
+     */
+    var CustomSerializer = /** @class */ (function () {
+        function CustomSerializer(routingConfig) {
+            this.routingConfig = routingConfig;
+        }
+        CustomSerializer.prototype.serialize = function (routerState) {
+            var _a, _b;
+            var state = routerState.root;
+            var cmsRequired = false;
+            var context;
+            var semanticRoute;
+            var urlString = '';
+            while (state.firstChild) {
+                state = state.firstChild;
+                urlString +=
+                    '/' + state.url.map(function (urlSegment) { return urlSegment.path; }).join('/');
+                // we use semantic route information embedded from any parent route
+                if ((_a = state.data) === null || _a === void 0 ? void 0 : _a.cxRoute) {
+                    semanticRoute = (_b = state.data) === null || _b === void 0 ? void 0 : _b.cxRoute;
+                }
+                // we use context information embedded in Cms driven routes from any parent route
+                if (state.data && state.data.cxCmsRouteContext) {
+                    context = state.data.cxCmsRouteContext;
+                }
+                // we assume, that any route that has CmsPageGuard or it's child
+                // is cmsRequired
+                if (!cmsRequired &&
+                    (context ||
+                        (state.routeConfig &&
+                            state.routeConfig.canActivate &&
+                            state.routeConfig.canActivate.find(function (x) { return x && x.guardName === 'CmsPageGuard'; })))) {
+                    cmsRequired = true;
+                }
+            }
+            // If `semanticRoute` couldn't be already recognized using `data.cxRoute` property
+            // let's lookup the routing configuration to find the semantic route that has exactly the same configured path as the current URL.
+            // This will work only for simple URLs without any dynamic routing parameters.
+            semanticRoute = semanticRoute || this.lookupSemanticRoute(urlString);
+            var params = state.params;
+            // we give smartedit preview page a PageContext
+            if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
+                context = {
+                    id: 'smartedit-preview',
+                    type: exports.PageType.CONTENT_PAGE,
+                };
+            }
+            else {
+                if (params['productCode']) {
+                    context = { id: params['productCode'], type: exports.PageType.PRODUCT_PAGE };
+                }
+                else if (params['categoryCode']) {
+                    context = { id: params['categoryCode'], type: exports.PageType.CATEGORY_PAGE };
+                }
+                else if (params['brandCode']) {
+                    context = { id: params['brandCode'], type: exports.PageType.CATEGORY_PAGE };
+                }
+                else if (state.data.pageLabel !== undefined) {
+                    context = { id: state.data.pageLabel, type: exports.PageType.CONTENT_PAGE };
+                }
+                else if (!context) {
+                    if (state.url.length > 0) {
+                        var pageLabel = '/' + state.url.map(function (urlSegment) { return urlSegment.path; }).join('/');
+                        context = {
+                            id: pageLabel,
+                            type: exports.PageType.CONTENT_PAGE,
+                        };
+                    }
+                    else {
+                        context = {
+                            id: 'homepage',
+                            type: exports.PageType.CONTENT_PAGE,
+                        };
+                    }
+                }
+            }
+            return {
+                url: routerState.url,
+                queryParams: routerState.root.queryParams,
+                params: params,
+                context: context,
+                cmsRequired: cmsRequired,
+                semanticRoute: semanticRoute,
+            };
+        };
+        /**
+         * Returns the semantic route name for given page label.
+         *
+         * *NOTE*: It works only for simple static urls that are equal to the page label
+         * of cms-driven content page. For example: `/my-account/address-book`.
+         *
+         * It doesn't work for URLs with dynamic parameters. But such case can be handled
+         * by reading the defined `data.cxRoute` from the Angular Routes.
+         *
+         * @param path path to be found in the routing config
+         */
+        CustomSerializer.prototype.lookupSemanticRoute = function (path) {
+            // Page label is assumed to start with `/`, but Spartacus configured paths
+            // don't start with slash. So we remove the leading slash:
+            return this.routingConfig.getRouteName(path.substr(1));
+        };
+        return CustomSerializer;
+    }());
+    CustomSerializer.decorators = [
+        { type: i0.Injectable }
+    ];
+    CustomSerializer.ctorParameters = function () { return [
+        { type: RoutingConfigService }
+    ]; };
+
+    function initConfigurableRoutes(service) {
+        var result = function () { return service.init(); }; // workaround for AOT compilation (see https://stackoverflow.com/a/51977115)
+        return result;
+    }
+    var RoutingModule = /** @class */ (function () {
+        function RoutingModule() {
+        }
+        RoutingModule.forRoot = function () {
+            return {
+                ngModule: RoutingModule,
+                providers: [
+                    reducerProvider$1,
+                    {
+                        provide: fromNgrxRouter.RouterStateSerializer,
+                        useClass: CustomSerializer,
+                    },
+                    {
+                        provide: i0.APP_INITIALIZER,
+                        useFactory: initConfigurableRoutes,
+                        deps: [ConfigurableRoutesService],
+                        multi: true,
+                    },
+                ],
+            };
+        };
+        return RoutingModule;
+    }());
+    RoutingModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        i1$2.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$1),
+                        i3.EffectsModule.forFeature(effects$1),
+                        fromNgrxRouter.StoreRouterConnectingModule.forRoot({
+                            routerState: 1 /* Minimal */,
+                            stateKey: ROUTING_FEATURE,
+                        }),
+                    ],
+                },] }
+    ];
+
+    function getDefaultUrlMatcherFactory(routingConfigService, urlMatcherService) {
+        var factory = function (route) {
+            var routeName = route.data && route.data['cxRoute'];
+            var routeConfig = routingConfigService.getRouteConfig(routeName);
+            var paths = (routeConfig && routeConfig.paths) || [];
+            return urlMatcherService.getFromPaths(paths);
+        };
+        return factory;
+    }
+    /**
+     * Injection token with url matcher factory for spartacus routes containing property `data.cxRoute`.
+     * The provided url matcher matches the configured `paths` from routing config.
+     *
+     * If this matcher doesn't fit the requirements, it can be replaced with custom matcher
+     * or additional matchers can be added for a specific route. See for example PRODUCT_DETAILS_URL_MATCHER.
+     *
+     * Note: Matchers will "match" a route, but do not contribute to the creation of the route, nor do they guard routes.
+     */
+    var DEFAULT_URL_MATCHER = new i0.InjectionToken('DEFAULT_URL_MATCHER', {
+        providedIn: 'root',
+        factory: function () { return getDefaultUrlMatcherFactory(i0.inject(RoutingConfigService), i0.inject(UrlMatcherService)); },
+    });
+
+    /**
+     * Interceptor that handles "Cart not found" errors while a user is in a checkout step.
+     *
+     * When a user doing a checkout has a "Cart not found" error, he is redirected to checkout and the cart is reloaded.
+     * If a "Cart not found" error happens and the user is not on checkout, this interceptor does not perform any actions.
+     */
+    var CheckoutCartInterceptor = /** @class */ (function () {
+        function CheckoutCartInterceptor(routingService, multiCartService) {
+            this.routingService = routingService;
+            this.multiCartService = multiCartService;
+        }
+        CheckoutCartInterceptor.prototype.intercept = function (request, next) {
+            var _this = this;
+            return this.routingService.getRouterState().pipe(operators.take(1), operators.switchMap(function (state) {
+                return next.handle(request).pipe(operators.catchError(function (response) {
+                    var _a;
+                    if (response instanceof i1$4.HttpErrorResponse &&
+                        _this.isUserInCheckoutRoute((_a = state.state) === null || _a === void 0 ? void 0 : _a.semanticRoute)) {
+                        if (_this.isCartNotFoundError(response)) {
+                            _this.routingService.go({ cxRoute: 'cart' });
+                            var cartCode = _this.getCartIdFromError(response);
+                            if (cartCode) {
+                                _this.multiCartService.reloadCart(cartCode);
+                            }
+                        }
+                    }
+                    return rxjs.throwError(response);
+                }));
+            }));
+        };
+        /**
+         * Returns true if the parameter semantic route is part of "checkout"
+         * Checkout semantic routes:
+         * checkout
+         * checkoutPaymentType
+         * CheckoutShippingAddress
+         * checkoutDeliveryMode
+         * checkoutPaymentDetails
+         * checkoutReviewOrder
+         * checkoutLogin
+         * @param semanticRoute
+         */
+        CheckoutCartInterceptor.prototype.isUserInCheckoutRoute = function (semanticRoute) {
+            return semanticRoute.toLowerCase().startsWith('checkout');
+        };
+        /**
+         * Checks of the error is for a cart not found, i.e. the cart doesn't exist anymore
+         *
+         * @param response
+         */
+        CheckoutCartInterceptor.prototype.isCartNotFoundError = function (response) {
+            var _a, _b, _c, _d, _e, _f;
+            return (response.status === 400 &&
+                ((_c = (_b = (_a = response.error) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.type) === 'CartError' &&
+                ((_f = (_e = (_d = response.error) === null || _d === void 0 ? void 0 : _d.errors) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.reason) === 'notFound');
+        };
+        CheckoutCartInterceptor.prototype.getCartIdFromError = function (response) {
+            var _a, _b, _c;
+            return (_c = (_b = (_a = response.error) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.subject;
+        };
+        return CheckoutCartInterceptor;
+    }());
+    CheckoutCartInterceptor.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutCartInterceptor_Factory() { return new CheckoutCartInterceptor(i0.ɵɵinject(RoutingService), i0.ɵɵinject(MultiCartService)); }, token: CheckoutCartInterceptor, providedIn: "root" });
+    CheckoutCartInterceptor.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    CheckoutCartInterceptor.ctorParameters = function () { return [
+        { type: RoutingService },
+        { type: MultiCartService }
+    ]; };
+
+    var interceptors$2 = [
+        {
+            provide: i1$4.HTTP_INTERCEPTORS,
+            useExisting: CheckoutCartInterceptor,
+            multi: true,
+        },
+    ];
+
+    // Email Standard RFC 5322:
+    var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
+    var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
     var ActiveCartService = /** @class */ (function () {
         function ActiveCartService(store, userIdService, multiCartService) {
@@ -11305,7 +12381,7 @@
         i3.Effect()
     ], ReplenishmentOrderEffects.prototype, "scheduleReplenishmentOrder$", void 0);
 
-    var effects$1 = [
+    var effects$2 = [
         CheckoutEffects,
         AddressVerificationEffect,
         CardTypesEffects,
@@ -11313,11 +12389,11 @@
         ReplenishmentOrderEffects,
     ];
 
-    var initialState = {
+    var initialState$1 = {
         results: {},
     };
-    function reducer(state, action) {
-        if (state === void 0) { state = initialState; }
+    function reducer$1(state, action) {
+        if (state === void 0) { state = initialState$1; }
         switch (action.type) {
             case VERIFY_ADDRESS_SUCCESS: {
                 var results = action.payload;
@@ -11334,11 +12410,11 @@
     }
     var getAddressVerificationResults = function (state) { return state.results; };
 
-    var initialState$1 = {
+    var initialState$2 = {
         entities: {},
     };
-    function reducer$1(state, action) {
-        if (state === void 0) { state = initialState$1; }
+    function reducer$2(state, action) {
+        if (state === void 0) { state = initialState$2; }
         switch (action.type) {
             case LOAD_CARD_TYPES_SUCCESS: {
                 var cardTypes = action.payload;
@@ -11349,14 +12425,14 @@
                 return Object.assign(Object.assign({}, state), { entities: entities });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$1;
+                return initialState$2;
             }
         }
         return state;
     }
     var getCardTypesEntites = function (state) { return state.entities; };
 
-    var initialState$2 = {
+    var initialState$3 = {
         poNumber: { po: undefined, costCenter: undefined },
         address: {},
         deliveryMode: {
@@ -11366,8 +12442,8 @@
         paymentDetails: {},
         orderDetails: {},
     };
-    function reducer$2(state, action) {
-        if (state === void 0) { state = initialState$2; }
+    function reducer$3(state, action) {
+        if (state === void 0) { state = initialState$3; }
         switch (action.type) {
             case SET_PAYMENT_TYPE_SUCCESS: {
                 var cart = action.payload;
@@ -11413,7 +12489,7 @@
                 return Object.assign(Object.assign({}, state), { orderDetails: orderDetails });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return initialState$2;
+                return initialState$3;
             }
             case CLEAR_CHECKOUT_STEP: {
                 var stepNumber = action.payload;
@@ -11447,17 +12523,17 @@
         return state;
     }
 
-    var initialState$3 = {
+    var initialState$4 = {
         selected: exports.ORDER_TYPE.PLACE_ORDER,
     };
-    function reducer$3(state, action) {
-        if (state === void 0) { state = initialState$3; }
+    function reducer$4(state, action) {
+        if (state === void 0) { state = initialState$4; }
         switch (action.type) {
             case SET_ORDER_TYPE: {
                 return Object.assign(Object.assign({}, state), { selected: action.payload });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return initialState$3;
+                return initialState$4;
             }
             default: {
                 return state;
@@ -11465,12 +12541,12 @@
         }
     }
 
-    var initialState$4 = {
+    var initialState$5 = {
         entities: {},
         selected: undefined,
     };
-    function reducer$4(state, action) {
-        if (state === void 0) { state = initialState$4; }
+    function reducer$5(state, action) {
+        if (state === void 0) { state = initialState$5; }
         switch (action.type) {
             case LOAD_PAYMENT_TYPES_SUCCESS: {
                 var paymentTypes = action.payload;
@@ -11487,7 +12563,7 @@
                 return Object.assign(Object.assign({}, state), { selected: undefined });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$4;
+                return initialState$5;
             }
         }
         return state;
@@ -11495,19 +12571,19 @@
     var getPaymentTypesEntites = function (state) { return state.entities; };
     var getSelectedPaymentType = function (state) { return state.selected; };
 
-    function getReducers$1() {
+    function getReducers$2() {
         return {
-            steps: loaderReducer(CHECKOUT_DETAILS, reducer$2),
-            cardTypes: reducer$1,
-            addressVerification: reducer,
-            paymentTypes: reducer$4,
-            orderType: reducer$3,
+            steps: loaderReducer(CHECKOUT_DETAILS, reducer$3),
+            cardTypes: reducer$2,
+            addressVerification: reducer$1,
+            paymentTypes: reducer$5,
+            orderType: reducer$4,
         };
     }
-    var reducerToken$1 = new i0.InjectionToken('CheckoutReducers');
-    var reducerProvider$1 = {
-        provide: reducerToken$1,
-        useFactory: getReducers$1,
+    var reducerToken$2 = new i0.InjectionToken('CheckoutReducers');
+    var reducerProvider$2 = {
+        provide: reducerToken$2,
+        useFactory: getReducers$2,
     };
 
     var CheckoutStoreModule = /** @class */ (function () {
@@ -11519,10 +12595,10 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1.CommonModule,
-                        i1$2.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$1),
-                        i3.EffectsModule.forFeature(effects$1),
+                        i1$2.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$2),
+                        i3.EffectsModule.forFeature(effects$2),
                     ],
-                    providers: [reducerProvider$1],
+                    providers: [reducerProvider$2],
                 },] }
     ];
 
@@ -11532,13 +12608,13 @@
         CheckoutModule.forRoot = function () {
             return {
                 ngModule: CheckoutModule,
-                providers: [
+                providers: __spread(interceptors$2, [
                     {
                         provide: PageMetaResolver,
                         useExisting: CheckoutPageMetaResolver,
                         multi: true,
                     },
-                ],
+                ]),
             };
         };
         return CheckoutModule;
@@ -17217,7 +18293,7 @@
         { type: AnonymousConsentsConfig }
     ]; };
 
-    var interceptors$2 = [
+    var interceptors$3 = [
         {
             provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: AnonymousConsentsInterceptor,
@@ -17898,7 +18974,7 @@
         i3.Effect()
     ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
 
-    var effects$2 = [AnonymousConsentsEffects];
+    var effects$3 = [AnonymousConsentsEffects];
 
     var SiteConnector = /** @class */ (function () {
         function SiteConnector(adapter) {
@@ -18420,19 +19496,19 @@
         i3.Effect()
     ], LanguagesEffects.prototype, "activateLanguage$", void 0);
 
-    var effects$3 = [
+    var effects$4 = [
         LanguagesEffects,
         CurrenciesEffects,
         BaseSiteEffects,
     ];
 
-    var initialState$5 = {
+    var initialState$6 = {
         entities: null,
         details: {},
         activeSite: '',
     };
-    function reducer$5(state, action) {
-        if (state === void 0) { state = initialState$5; }
+    function reducer$6(state, action) {
+        if (state === void 0) { state = initialState$6; }
         switch (action.type) {
             case LOAD_BASE_SITE_SUCCESS: {
                 return Object.assign(Object.assign({}, state), { details: action.payload });
@@ -18462,12 +19538,12 @@
         return state;
     }
 
-    var initialState$6 = {
+    var initialState$7 = {
         entities: null,
         activeCurrency: null,
     };
-    function reducer$6(state, action) {
-        if (state === void 0) { state = initialState$6; }
+    function reducer$7(state, action) {
+        if (state === void 0) { state = initialState$7; }
         switch (action.type) {
             case LOAD_CURRENCIES_SUCCESS: {
                 var currencies = action.payload;
@@ -18485,12 +19561,12 @@
         return state;
     }
 
-    var initialState$7 = {
+    var initialState$8 = {
         entities: null,
         activeLanguage: null,
     };
-    function reducer$7(state, action) {
-        if (state === void 0) { state = initialState$7; }
+    function reducer$8(state, action) {
+        if (state === void 0) { state = initialState$8; }
         switch (action.type) {
             case LOAD_LANGUAGES_SUCCESS: {
                 var languages = action.payload;
@@ -18508,17 +19584,17 @@
         return state;
     }
 
-    function getReducers$2() {
+    function getReducers$3() {
         return {
-            languages: reducer$7,
-            currencies: reducer$6,
-            baseSite: reducer$5,
+            languages: reducer$8,
+            currencies: reducer$7,
+            baseSite: reducer$6,
         };
     }
-    var reducerToken$2 = new i0.InjectionToken('SiteContextReducers');
-    var reducerProvider$2 = {
-        provide: reducerToken$2,
-        useFactory: getReducers$2,
+    var reducerToken$3 = new i0.InjectionToken('SiteContextReducers');
+    var reducerProvider$3 = {
+        provide: reducerToken$3,
+        useFactory: getReducers$3,
     };
 
     function siteContextStoreConfigFactory() {
@@ -18542,12 +19618,12 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         i1.CommonModule,
-                        i1$2.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
-                        i3.EffectsModule.forFeature(effects$3),
+                        i1$2.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
+                        i3.EffectsModule.forFeature(effects$4),
                     ],
                     providers: [
                         provideDefaultConfigFactory(siteContextStoreConfigFactory),
-                        reducerProvider$2,
+                        reducerProvider$3,
                     ],
                 },] }
     ];
@@ -18575,9 +19651,9 @@
                 },] }
     ];
 
-    var initialState$8 = false;
-    function reducer$8(state, action) {
-        if (state === void 0) { state = initialState$8; }
+    var initialState$9 = false;
+    function reducer$9(state, action) {
+        if (state === void 0) { state = initialState$9; }
         switch (action.type) {
             case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
                 return action.dismissed;
@@ -18586,9 +19662,9 @@
         return state;
     }
 
-    var initialState$9 = false;
-    function reducer$9(state, action) {
-        if (state === void 0) { state = initialState$9; }
+    var initialState$a = false;
+    function reducer$a(state, action) {
+        if (state === void 0) { state = initialState$a; }
         switch (action.type) {
             case TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: {
                 return action.updated;
@@ -18597,7 +19673,7 @@
         return state;
     }
 
-    var initialState$a = [];
+    var initialState$b = [];
     function toggleConsentStatus(consents, templateCode, status) {
         if (!consents) {
             return [];
@@ -18609,8 +19685,8 @@
             return consent;
         });
     }
-    function reducer$a(state, action) {
-        if (state === void 0) { state = initialState$a; }
+    function reducer$b(state, action) {
+        if (state === void 0) { state = initialState$b; }
         switch (action.type) {
             case GIVE_ANONYMOUS_CONSENT: {
                 return toggleConsentStatus(state, action.templateCode, exports.ANONYMOUS_CONSENT_STATUS.GIVEN);
@@ -18625,20 +19701,20 @@
         return state;
     }
 
-    function getReducers$3() {
+    function getReducers$4() {
         return {
             templates: loaderReducer(ANONYMOUS_CONSENTS),
-            consents: reducer$a,
+            consents: reducer$b,
             ui: i1$2.combineReducers({
-                bannerDismissed: reducer$8,
-                updated: reducer$9,
+                bannerDismissed: reducer$9,
+                updated: reducer$a,
             }),
         };
     }
-    var reducerToken$3 = new i0.InjectionToken('AnonymousConsentsReducers');
-    var reducerProvider$3 = {
-        provide: reducerToken$3,
-        useFactory: getReducers$3,
+    var reducerToken$4 = new i0.InjectionToken('AnonymousConsentsReducers');
+    var reducerProvider$4 = {
+        provide: reducerToken$4,
+        useFactory: getReducers$4,
     };
     function clearAnonymousConsentTemplates(reducer) {
         return function (state, action) {
@@ -18676,14 +19752,14 @@
                     imports: [
                         i1.CommonModule,
                         StateModule,
-                        i1$2.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$3, {
+                        i1$2.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$4, {
                             metaReducers: metaReducers,
                         }),
-                        i3.EffectsModule.forFeature(effects$2),
+                        i3.EffectsModule.forFeature(effects$3),
                     ],
                     providers: [
                         provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
-                        reducerProvider$3,
+                        reducerProvider$4,
                     ],
                 },] }
     ];
@@ -18694,7 +19770,7 @@
         AnonymousConsentsModule.forRoot = function () {
             return {
                 ngModule: AnonymousConsentsModule,
-                providers: __spread(interceptors$2, [
+                providers: __spread(interceptors$3, [
                     AnonymousConsentsService,
                     provideDefaultConfig(defaultAnonymousConsentsConfig),
                 ]),
@@ -19813,12 +20889,12 @@
         },
     ];
 
-    var initialState$b = {
+    var initialState$c = {
         entities: {},
     };
-    function reducer$b(state, action) {
+    function reducer$c(state, action) {
         var _a, _b, _c, _d;
-        if (state === void 0) { state = initialState$b; }
+        if (state === void 0) { state = initialState$c; }
         switch (action.type) {
             case ADD_MESSAGE: {
                 var message = action.payload;
@@ -19849,13 +20925,13 @@
         return state;
     }
 
-    function getReducers$4() {
-        return reducer$b;
+    function getReducers$5() {
+        return reducer$c;
     }
-    var reducerToken$4 = new i0.InjectionToken('GlobalMessageReducers');
-    var reducerProvider$4 = {
-        provide: reducerToken$4,
-        useFactory: getReducers$4,
+    var reducerToken$5 = new i0.InjectionToken('GlobalMessageReducers');
+    var reducerProvider$5 = {
+        provide: reducerToken$5,
+        useFactory: getReducers$5,
     };
 
     var GlobalMessageStoreModule = /** @class */ (function () {
@@ -19867,9 +20943,9 @@
         { type: i0.NgModule, args: [{
                     imports: [
                         StateModule,
-                        i1$2.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                        i1$2.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
                     ],
-                    providers: [reducerProvider$4],
+                    providers: [reducerProvider$5],
                 },] }
     ];
 
@@ -20206,11 +21282,11 @@
         i3.Effect()
     ], CustomerEffects.prototype, "customerSearch$", void 0);
 
-    var effects$4 = [CustomerEffects];
+    var effects$5 = [CustomerEffects];
 
-    var initialState$c = { collapsed: false };
-    function reducer$c(state, action) {
-        if (state === void 0) { state = initialState$c; }
+    var initialState$d = { collapsed: false };
+    function reducer$d(state, action) {
+        if (state === void 0) { state = initialState$d; }
         switch (action.type) {
             case ASM_UI_UPDATE: {
                 return Object.assign(Object.assign({}, state), action.payload);
@@ -20221,16 +21297,16 @@
         }
     }
 
-    function getReducers$5() {
+    function getReducers$6() {
         return {
             customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
-            asmUi: reducer$c,
+            asmUi: reducer$d,
         };
     }
-    var reducerToken$5 = new i0.InjectionToken('AsmReducers');
-    var reducerProvider$5 = {
-        provide: reducerToken$5,
-        useFactory: getReducers$5,
+    var reducerToken$6 = new i0.InjectionToken('AsmReducers');
+    var reducerProvider$6 = {
+        provide: reducerToken$6,
+        useFactory: getReducers$6,
     };
     function clearCustomerSupportAgentAsmState(reducer) {
         return function (state, action) {
@@ -20362,10 +21438,10 @@
                     imports: [
                         i1.CommonModule,
                         StateModule,
-                        i1$2.StoreModule.forFeature(ASM_FEATURE, reducerToken$5, { metaReducers: metaReducers$1 }),
-                        i3.EffectsModule.forFeature(effects$4),
+                        i1$2.StoreModule.forFeature(ASM_FEATURE, reducerToken$6, { metaReducers: metaReducers$1 }),
+                        i3.EffectsModule.forFeature(effects$5),
                     ],
-                    providers: [reducerProvider$5],
+                    providers: [reducerProvider$6],
                 },] }
     ];
 
@@ -21845,7 +22921,7 @@
         i3.Effect()
     ], MultiCartEffects.prototype, "processesIncrement$", void 0);
 
-    var effects$5 = [
+    var effects$6 = [
         CartEffects,
         CartEntryEffects,
         CartVoucherEffects,
@@ -21865,7 +22941,7 @@
                         i1$2.StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
                             metaReducers: multiCartMetaReducers,
                         }),
-                        i3.EffectsModule.forFeature(effects$5),
+                        i3.EffectsModule.forFeature(effects$6),
                     ],
                     providers: [multiCartReducerProvider],
                 },] }
@@ -22850,987 +23926,6 @@
         { type: i3.Actions },
         { type: CmsComponentConnector }
     ]; };
-
-    /**
-     * @license
-     * The MIT License
-     * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
-     *
-     * See:
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
-     * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
-     */
-    var QUESTION_MARK = '[^/]';
-    var WILD_SINGLE = '[^/]*';
-    var WILD_OPEN = '(?:.+\\/)?';
-    var TO_ESCAPE_BASE = [
-        { replace: /\./g, with: '\\.' },
-        { replace: /\+/g, with: '\\+' },
-        { replace: /\*/g, with: WILD_SINGLE },
-    ];
-    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: QUESTION_MARK },
-    ]);
-    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: '\\?' },
-    ]);
-    /**
-     * Converts the glob-like pattern into regex string.
-     *
-     * Patterns use a limited glob format:
-     * `**` matches 0 or more path segments
-     * `*` matches 0 or more characters excluding `/`
-     * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
-     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
-     *
-     * @param glob glob-like pattern
-     * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
-     */
-    function globToRegex(glob, literalQuestionMark) {
-        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
-        var toEscape = literalQuestionMark
-            ? TO_ESCAPE_LITERAL_QM
-            : TO_ESCAPE_WILDCARD_QM;
-        var segments = glob.split('/').reverse();
-        var regex = '';
-        while (segments.length > 0) {
-            var segment = segments.pop();
-            if (segment === '**') {
-                if (segments.length > 0) {
-                    regex += WILD_OPEN;
-                }
-                else {
-                    regex += '.*';
-                }
-            }
-            else {
-                var processed = toEscape.reduce(function (seg, escape) { return seg.replace(escape.replace, escape.with); }, segment);
-                regex += processed;
-                if (segments.length > 0) {
-                    regex += '\\/';
-                }
-            }
-        }
-        return regex;
-    }
-    /**
-     * For given list of glob-like patterns, returns a matcher function.
-     *
-     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     */
-    function getGlobMatcher(patterns) {
-        var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
-            var positive = _a.positive, regex = _a.regex;
-            return ({
-                positive: positive,
-                regex: new RegExp(regex),
-            });
-        });
-        var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
-        var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-        return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-            !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
-    }
-    /**
-     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
-     */
-    function processGlobPatterns(urls) {
-        return urls.map(function (url) {
-            var positive = !url.startsWith('!');
-            url = positive ? url : url.substr(1);
-            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
-        });
-    }
-
-    var GlobService = /** @class */ (function () {
-        function GlobService() {
-        }
-        /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         */
-        GlobService.prototype.getValidator = function (patterns) {
-            var processedPatterns = processGlobPatterns(patterns).map(function (_a) {
-                var positive = _a.positive, regex = _a.regex;
-                return ({
-                    positive: positive,
-                    regex: new RegExp(regex),
-                });
-            });
-            var includePatterns = processedPatterns.filter(function (spec) { return spec.positive; });
-            var excludePatterns = processedPatterns.filter(function (spec) { return !spec.positive; });
-            return function (url) { return includePatterns.some(function (pattern) { return pattern.regex.test(url); }) &&
-                !excludePatterns.some(function (pattern) { return pattern.regex.test(url); }); };
-        };
-        return GlobService;
-    }());
-    GlobService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-    GlobService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-
-    var UrlMatcherService = /** @class */ (function () {
-        function UrlMatcherService(globService) {
-            this.globService = globService;
-        }
-        /**
-         * Returns a matcher that is always fails
-         */
-        UrlMatcherService.prototype.getFalsy = function () {
-            return function falsyUrlMatcher() {
-                return null;
-            };
-        };
-        /**
-         * Returns a matcher for given list of paths
-         */
-        UrlMatcherService.prototype.getFromPaths = function (paths) {
-            var _this = this;
-            var matchers = paths.map(function (path) { return _this.getFromPath(path); });
-            var matcher = this.getCombined(matchers);
-            if (i0.isDevMode()) {
-                matcher['_paths'] = paths; // property added for easier debugging of routes
-            }
-            return matcher;
-        };
-        /**
-         * Returns a matcher that combines the given matchers
-         * */
-        UrlMatcherService.prototype.getCombined = function (matchers) {
-            var matcher = function combinedUrlMatchers(segments, segmentGroup, route) {
-                for (var i = 0; i < matchers.length; i++) {
-                    var result = matchers[i](segments, segmentGroup, route);
-                    if (result) {
-                        return result;
-                    }
-                }
-                return null;
-            };
-            if (i0.isDevMode()) {
-                matcher['_matchers'] = matchers; // property added for easier debugging of routes
-            }
-            return matcher;
-        };
-        /**
-         * Similar to Angular's defaultUrlMatcher. Differences:
-         * - the `path` comes from function's argument, not from `route.path`
-         * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
-         */
-        UrlMatcherService.prototype.getFromPath = function (path) {
-            if (path === void 0) { path = ''; }
-            var matcher = function pathUrlMatcher(segments, segmentGroup, route) {
-                /**
-                 * @license
-                 * The MIT License
-                 * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
-                 *
-                 * See:
-                 * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/router/src/shared.ts#L121
-                 */
-                // use function's argument, not the `route.path`
-                if (path === '') {
-                    if (route.pathMatch === 'full' &&
-                        (segmentGroup.hasChildren() || segments.length > 0)) {
-                        return null;
-                    }
-                    return { consumed: [], posParams: {} };
-                }
-                var parts = path.split('/'); // use function's argument, not the `route.path`
-                if (parts.length > segments.length) {
-                    // The actual URL is shorter than the config, no match
-                    return null;
-                }
-                if (route.pathMatch === 'full' &&
-                    (segmentGroup.hasChildren() || parts.length < segments.length)) {
-                    // The config is longer than the actual URL but we are looking for a full match, return null
-                    return null;
-                }
-                var posParams = {};
-                // Check each config part against the actual URL
-                for (var index = 0; index < parts.length; index++) {
-                    var part = parts[index];
-                    var segment = segments[index];
-                    var isParameter = part.startsWith(':');
-                    if (isParameter) {
-                        posParams[part.substring(1)] = segment;
-                    }
-                    else if (part !== segment.path) {
-                        // The actual URL part does not match the config, no match
-                        return null;
-                    }
-                }
-                return { consumed: segments.slice(0, parts.length), posParams: posParams };
-            };
-            if (i0.isDevMode()) {
-                matcher['_path'] = path; // property added for easier debugging of routes
-            }
-            return matcher;
-        };
-        /**
-         * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
-         */
-        UrlMatcherService.prototype.getOpposite = function (originalMatcher) {
-            var matcher = function oppositeUrlMatcher(segments, group, route) {
-                return originalMatcher(segments, group, route)
-                    ? null
-                    : { consumed: segments, posParams: {} };
-            };
-            if (i0.isDevMode()) {
-                matcher['_originalMatcher'] = originalMatcher; // property added for easier debugging of routes
-            }
-            return matcher;
-        };
-        /**
-         * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
-         */
-        UrlMatcherService.prototype.getFromGlob = function (globPatterns) {
-            var globValidator = this.globService.getValidator(globPatterns);
-            var matcher = function globUrlMatcher(segments) {
-                var fullPath = "/" + segments.map(function (s) { return s.path; }).join('/');
-                return globValidator(fullPath)
-                    ? { consumed: segments, posParams: {} }
-                    : null;
-            };
-            if (i0.isDevMode()) {
-                matcher['_globPatterns'] = globPatterns; // property added for easier debugging of routes
-            }
-            return matcher;
-        };
-        return UrlMatcherService;
-    }());
-    UrlMatcherService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(i0.ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
-    UrlMatcherService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    UrlMatcherService.ctorParameters = function () { return [
-        { type: GlobService }
-    ]; };
-
-    var ConfigurableRoutesService = /** @class */ (function () {
-        function ConfigurableRoutesService(injector, routingConfigService, urlMatcherService) {
-            this.injector = injector;
-            this.routingConfigService = routingConfigService;
-            this.urlMatcherService = urlMatcherService;
-            this.initCalled = false; // guard not to call init() more than once
-        }
-        /**
-         * Enhances existing Angular routes using the routing config of Spartacus.
-         * Can be called only once.
-         */
-        ConfigurableRoutesService.prototype.init = function () {
-            if (!this.initCalled) {
-                this.initCalled = true;
-                this.configure();
-            }
-        };
-        /**
-         * Enhances existing Angular routes using the routing config of Spartacus.
-         */
-        ConfigurableRoutesService.prototype.configure = function () {
-            // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
-            var router = this.injector.get(i1$1.Router);
-            router.resetConfig(this.configureRoutes(router.config));
-        };
-        /**
-         * Sets the property `path` or `matcher` for the given routes, based on the Spartacus' routing configuration.
-         *
-         * @param routes list of Angular `Route` objects
-         */
-        ConfigurableRoutesService.prototype.configureRoutes = function (routes) {
-            var _this = this;
-            return routes.map(function (route) {
-                var configuredRoute = _this.configureRoute(route);
-                if (route.children && route.children.length) {
-                    configuredRoute.children = _this.configureRoutes(route.children);
-                }
-                return configuredRoute;
-            });
-        };
-        /**
-         * Sets the property `path` or `matcher` of the `Route`, based on the Spartacus' routing configuration.
-         * Uses the property `data.cxRoute` to determine the name of the route.
-         * It's the same name used as a key in the routing configuration: `routing.routes[ROUTE NAME]`.
-         *
-         * @param route Angular `Route` object
-         */
-        ConfigurableRoutesService.prototype.configureRoute = function (route) {
-            var _a;
-            var routeName = this.getRouteName(route);
-            if (routeName) {
-                var routeConfig = this.routingConfigService.getRouteConfig(routeName);
-                this.validateRouteConfig(routeConfig, routeName, route);
-                if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.disabled) {
-                    delete route.path;
-                    return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
-                }
-                else if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) {
-                    delete route.path;
-                    return Object.assign(Object.assign({}, route), { matcher: this.resolveUrlMatchers(route, routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) });
-                }
-                else if (((_a = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _a === void 0 ? void 0 : _a.length) === 1) {
-                    delete route.matcher;
-                    return Object.assign(Object.assign({}, route), { path: routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths[0] });
-                }
-                else {
-                    delete route.path;
-                    return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFromPaths((routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) || []) });
-                }
-            }
-            return route; // if route doesn't have a name, just pass the original route
-        };
-        /**
-         * Creates a single `UrlMatcher` based on given matchers and factories of matchers.
-         *
-         * @param route Route object
-         * @param matchersOrFactories `UrlMatcher`s or injection tokens with a factory functions
-         *  that create UrlMatchers based on the given route.
-         */
-        ConfigurableRoutesService.prototype.resolveUrlMatchers = function (route, matchersOrFactories) {
-            var _this = this;
-            var matchers = matchersOrFactories.map(function (matcherOrFactory) {
-                return typeof matcherOrFactory === 'function'
-                    ? matcherOrFactory // matcher
-                    : _this.resolveUrlMatcherFactory(route, matcherOrFactory); // factory injection token
-            });
-            return this.urlMatcherService.getCombined(matchers);
-        };
-        /**
-         * Creates an `UrlMatcher` based on the given route, using the factory function coming from the given injection token.
-         *
-         * @param route Route object
-         * @param factoryToken injection token with a factory function that will create an UrlMatcher using given route
-         */
-        ConfigurableRoutesService.prototype.resolveUrlMatcherFactory = function (route, factoryToken) {
-            var factory = this.injector.get(factoryToken);
-            return factory(route);
-        };
-        /**
-         * Returns the name of the Route stored in its property `data.cxRoute`
-         * @param route
-         */
-        ConfigurableRoutesService.prototype.getRouteName = function (route) {
-            return route.data && route.data.cxRoute;
-        };
-        ConfigurableRoutesService.prototype.validateRouteConfig = function (routeConfig, routeName, route) {
-            if (i0.isDevMode()) {
-                // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
-                // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
-                if (routeConfig === null ||
-                    (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers)) {
-                    return;
-                }
-                // undefined value of routeConfig or routeConfig.paths is a misconfiguration
-                if (!(routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths)) {
-                    this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined config or undefined 'paths' property for this route");
-                    return;
-                }
-            }
-        };
-        ConfigurableRoutesService.prototype.warn = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (i0.isDevMode()) {
-                console.warn.apply(console, __spread(args));
-            }
-        };
-        return ConfigurableRoutesService;
-    }());
-    ConfigurableRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(i0.ɵɵinject(i0.INJECTOR), i0.ɵɵinject(RoutingConfigService), i0.ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
-    ConfigurableRoutesService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    ConfigurableRoutesService.ctorParameters = function () { return [
-        { type: i0.Injector },
-        { type: RoutingConfigService },
-        { type: UrlMatcherService }
-    ]; };
-
-    var ProductURLPipe = /** @class */ (function () {
-        function ProductURLPipe(semanticPath) {
-            this.semanticPath = semanticPath;
-        }
-        ProductURLPipe.prototype.transform = function (product) {
-            return this.semanticPath.transform({ cxRoute: 'product', params: product });
-        };
-        return ProductURLPipe;
-    }());
-    ProductURLPipe.decorators = [
-        { type: i0.Pipe, args: [{
-                    name: 'cxProductUrl',
-                },] }
-    ];
-    ProductURLPipe.ctorParameters = function () { return [
-        { type: SemanticPathService }
-    ]; };
-
-    var UrlPipe = /** @class */ (function () {
-        function UrlPipe(urlService) {
-            this.urlService = urlService;
-        }
-        UrlPipe.prototype.transform = function (commands) {
-            return this.urlService.transform(commands);
-        };
-        return UrlPipe;
-    }());
-    UrlPipe.decorators = [
-        { type: i0.Pipe, args: [{
-                    name: 'cxUrl',
-                },] }
-    ];
-    UrlPipe.ctorParameters = function () { return [
-        { type: SemanticPathService }
-    ]; };
-
-    var UrlModule = /** @class */ (function () {
-        function UrlModule() {
-        }
-        return UrlModule;
-    }());
-    UrlModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [i1.CommonModule],
-                    declarations: [UrlPipe, ProductURLPipe],
-                    exports: [UrlPipe, ProductURLPipe],
-                },] }
-    ];
-
-    var ExternalRoutesConfig = /** @class */ (function () {
-        function ExternalRoutesConfig() {
-        }
-        return ExternalRoutesConfig;
-    }());
-    ExternalRoutesConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesConfig_Factory() { return i0.ɵɵinject(Config); }, token: ExternalRoutesConfig, providedIn: "root" });
-    ExternalRoutesConfig.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                    useExisting: Config,
-                },] }
-    ];
-
-    var ExternalRoutesGuard = /** @class */ (function () {
-        function ExternalRoutesGuard(winRef, platformId) {
-            this.winRef = winRef;
-            this.platformId = platformId;
-        }
-        /**
-         * Redirects to different storefront system for anticipated URL
-         */
-        ExternalRoutesGuard.prototype.canActivate = function (route, state) {
-            if (i1.isPlatformBrowser(this.platformId)) {
-                this.redirect(route, state);
-            }
-            return false;
-        };
-        /**
-         * Redirects to anticipated URL using full page reload, not Angular routing
-         */
-        ExternalRoutesGuard.prototype.redirect = function (_, state) {
-            var window = this.winRef.nativeWindow;
-            if (window && window.location) {
-                window.location.href = state.url;
-            }
-        };
-        return ExternalRoutesGuard;
-    }());
-    ExternalRoutesGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(i0.ɵɵinject(WindowRef), i0.ɵɵinject(i0.PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
-    ExternalRoutesGuard.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    ExternalRoutesGuard.ctorParameters = function () { return [
-        { type: WindowRef },
-        { type: Object, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
-    ]; };
-
-    function addExternalRoutesFactory(service) {
-        var result = function () {
-            service.addRoutes();
-        };
-        return result;
-    }
-
-    /**
-     * Service that helps redirecting to different storefront systems for configured URLs
-     */
-    var ExternalRoutesService = /** @class */ (function () {
-        function ExternalRoutesService(config, urlMatcherService, injector) {
-            this.config = config;
-            this.urlMatcherService = urlMatcherService;
-            this.injector = injector;
-        }
-        Object.defineProperty(ExternalRoutesService.prototype, "internalUrlPatterns", {
-            get: function () {
-                return ((this.config && this.config.routing && this.config.routing.internal) || []);
-            },
-            enumerable: false,
-            configurable: true
-        });
-        /**
-         * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
-         */
-        ExternalRoutesService.prototype.addRoutes = function () {
-            var router = this.injector.get(i1$1.Router);
-            var newRoutes = this.getRoutes();
-            if (newRoutes.length) {
-                router.resetConfig(__spread(newRoutes, router.config));
-            }
-        };
-        /**
-         * Returns routes that are responsible for redirection to different storefront systems
-         */
-        ExternalRoutesService.prototype.getRoutes = function () {
-            if (!this.internalUrlPatterns.length) {
-                return [];
-            }
-            var routes = [];
-            routes.push({
-                pathMatch: 'full',
-                matcher: this.getUrlMatcher(),
-                canActivate: [ExternalRoutesGuard],
-                component: {},
-            });
-            return routes;
-        };
-        /**
-         * Returns the URL matcher for the external route
-         */
-        ExternalRoutesService.prototype.getUrlMatcher = function () {
-            var matcher = this.urlMatcherService.getFromGlob(this.internalUrlPatterns);
-            return this.urlMatcherService.getOpposite(matcher); // the external route should be activated only when it's NOT an internal route
-        };
-        return ExternalRoutesService;
-    }());
-    ExternalRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(i0.ɵɵinject(ExternalRoutesConfig), i0.ɵɵinject(UrlMatcherService), i0.ɵɵinject(i0.INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
-    ExternalRoutesService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    ExternalRoutesService.ctorParameters = function () { return [
-        { type: ExternalRoutesConfig },
-        { type: UrlMatcherService },
-        { type: i0.Injector }
-    ]; };
-
-    /**
-     * Prepends the external route that redirects to a different storefront system for configured URLs
-     */
-    var ExternalRoutesModule = /** @class */ (function () {
-        function ExternalRoutesModule() {
-        }
-        ExternalRoutesModule.forRoot = function () {
-            return {
-                ngModule: ExternalRoutesModule,
-                providers: [
-                    {
-                        provide: i0.APP_INITIALIZER,
-                        multi: true,
-                        useFactory: addExternalRoutesFactory,
-                        deps: [ExternalRoutesService],
-                    },
-                ],
-            };
-        };
-        return ExternalRoutesModule;
-    }());
-    ExternalRoutesModule.decorators = [
-        { type: i0.NgModule }
-    ];
-
-    var PageContext = /** @class */ (function () {
-        function PageContext(id, type) {
-            this.id = id;
-            this.type = type;
-        }
-        return PageContext;
-    }());
-
-    var ProtectedRoutesService = /** @class */ (function () {
-        function ProtectedRoutesService(config) {
-            var _this = this;
-            this.config = config;
-            this.nonProtectedPaths = []; // arrays of paths' segments list
-            if (this.shouldProtect) {
-                // pre-process config for performance:
-                this.nonProtectedPaths = this.getNonProtectedPaths().map(function (path) { return _this.getSegments(path); });
-            }
-        }
-        Object.defineProperty(ProtectedRoutesService.prototype, "routingConfig", {
-            get: function () {
-                return this.config && this.config.routing;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        Object.defineProperty(ProtectedRoutesService.prototype, "shouldProtect", {
-            /**
-             * Returns 'protected' property (boolean) from routing config
-             *
-             * @returns boolean
-             */
-            get: function () {
-                return this.routingConfig.protected;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        /**
-         * Tells if the url is protected
-         */
-        ProtectedRoutesService.prototype.isUrlProtected = function (urlSegments) {
-            return (this.shouldProtect &&
-                !this.matchAnyPath(urlSegments, this.nonProtectedPaths));
-        };
-        /**
-         * Tells whether the url matches at least one of the paths
-         */
-        ProtectedRoutesService.prototype.matchAnyPath = function (urlSegments, pathsSegments) {
-            var _this = this;
-            return pathsSegments.some(function (pathSegments) { return _this.matchPath(urlSegments, pathSegments); });
-        };
-        /**
-         * Tells whether the url matches the path
-         */
-        ProtectedRoutesService.prototype.matchPath = function (urlSegments, pathSegments) {
-            if (urlSegments.length !== pathSegments.length) {
-                return false;
-            }
-            for (var i = 0; i < pathSegments.length; i++) {
-                var pathSeg = pathSegments[i];
-                var urlSeg = urlSegments[i];
-                // compare only static segments:
-                if (!pathSeg.startsWith(':') && pathSeg !== urlSeg) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        /**
-         * Returns a list of paths that are not protected
-         */
-        ProtectedRoutesService.prototype.getNonProtectedPaths = function () {
-            return Object.values(this.routingConfig.routes).reduce(function (acc, routeConfig) { return routeConfig.protected === false && // must be explicitly false, ignore undefined
-                routeConfig.paths &&
-                routeConfig.paths.length
-                ? acc.concat(routeConfig.paths)
-                : acc; }, []);
-        };
-        /**
-         * Splits the url by slashes
-         */
-        ProtectedRoutesService.prototype.getSegments = function (url) {
-            return (url || '').split('/');
-        };
-        return ProtectedRoutesService;
-    }());
-    ProtectedRoutesService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(i0.ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
-    ProtectedRoutesService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    ProtectedRoutesService.ctorParameters = function () { return [
-        { type: RoutingConfig }
-    ]; };
-
-    var ProtectedRoutesGuard = /** @class */ (function () {
-        function ProtectedRoutesGuard(service, authGuard) {
-            this.service = service;
-            this.authGuard = authGuard;
-        }
-        /**
-         * When the anticipated url is protected, it switches to the AuthGuard. Otherwise emits true.
-         */
-        ProtectedRoutesGuard.prototype.canActivate = function (route) {
-            var urlSegments = route.url.map(function (seg) { return seg.path; });
-            // For the root path `/` ActivatedRoute contains an empty array of segments:
-            urlSegments = urlSegments.length ? urlSegments : [''];
-            if (this.service.isUrlProtected(urlSegments)) {
-                return this.authGuard.canActivate();
-            }
-            return rxjs.of(true);
-        };
-        return ProtectedRoutesGuard;
-    }());
-    ProtectedRoutesGuard.ɵprov = i0.ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(i0.ɵɵinject(ProtectedRoutesService), i0.ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
-    ProtectedRoutesGuard.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    ProtectedRoutesGuard.ctorParameters = function () { return [
-        { type: ProtectedRoutesService },
-        { type: AuthGuard }
-    ]; };
-
-    var RouterEffects = /** @class */ (function () {
-        function RouterEffects(actions$, router, location) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.router = router;
-            this.location = location;
-            this.navigate$ = this.actions$.pipe(i3.ofType(ROUTER_GO), operators.map(function (action) { return action.payload; }), operators.tap(function (_a) {
-                var path = _a.path, queryParams = _a.query, extras = _a.extras;
-                _this.router.navigate(path, Object.assign({ queryParams: queryParams }, extras));
-            }));
-            this.navigateByUrl$ = this.actions$.pipe(i3.ofType(ROUTER_GO_BY_URL), operators.map(function (action) { return action.payload; }), operators.tap(function (url) {
-                _this.router.navigateByUrl(url);
-            }));
-            this.clearCmsRoutes$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap(function () {
-                var filteredConfig = _this.router.config.filter(function (route) { return !(route.data && route.data.cxCmsRouteContext); });
-                if (filteredConfig.length !== _this.router.config.length) {
-                    _this.router.resetConfig(filteredConfig);
-                }
-            }));
-            this.navigateBack$ = this.actions$.pipe(i3.ofType(ROUTER_BACK), operators.tap(function () { return _this.location.back(); }));
-            this.navigateForward$ = this.actions$.pipe(i3.ofType(ROUTER_FORWARD), operators.tap(function () { return _this.location.forward(); }));
-        }
-        return RouterEffects;
-    }());
-    RouterEffects.decorators = [
-        { type: i0.Injectable }
-    ];
-    RouterEffects.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: i1$1.Router },
-        { type: i1.Location }
-    ]; };
-    __decorate([
-        i3.Effect({ dispatch: false })
-    ], RouterEffects.prototype, "navigate$", void 0);
-    __decorate([
-        i3.Effect({ dispatch: false })
-    ], RouterEffects.prototype, "navigateByUrl$", void 0);
-    __decorate([
-        i3.Effect({ dispatch: false })
-    ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
-    __decorate([
-        i3.Effect({ dispatch: false })
-    ], RouterEffects.prototype, "navigateBack$", void 0);
-    __decorate([
-        i3.Effect({ dispatch: false })
-    ], RouterEffects.prototype, "navigateForward$", void 0);
-
-    var effects$6 = [RouterEffects];
-
-    var initialState$d = {
-        navigationId: 0,
-        state: {
-            url: '',
-            queryParams: {},
-            params: {},
-            context: {
-                id: '',
-            },
-            cmsRequired: false,
-            semanticRoute: undefined,
-        },
-        nextState: undefined,
-    };
-    function getReducers$6() {
-        return {
-            router: reducer$d,
-        };
-    }
-    function reducer$d(state, action) {
-        if (state === void 0) { state = initialState$d; }
-        switch (action.type) {
-            case fromNgrxRouter.ROUTER_NAVIGATION: {
-                return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
-            }
-            case fromNgrxRouter.ROUTER_ERROR:
-            case fromNgrxRouter.ROUTER_CANCEL: {
-                return Object.assign(Object.assign({}, state), { nextState: undefined });
-            }
-            case fromNgrxRouter.ROUTER_NAVIGATED: {
-                return {
-                    state: action.payload.routerState,
-                    navigationId: action.payload.event.id,
-                    nextState: undefined,
-                };
-            }
-            default: {
-                return state;
-            }
-        }
-    }
-    var reducerToken$6 = new i0.InjectionToken('RouterReducers');
-    var reducerProvider$6 = {
-        provide: reducerToken$6,
-        useFactory: getReducers$6,
-    };
-    /* The serializer is there to parse the RouterStateSnapshot,
-    and to reduce the amount of properties to be passed to the reducer.
-     */
-    var CustomSerializer = /** @class */ (function () {
-        function CustomSerializer(routingConfig) {
-            this.routingConfig = routingConfig;
-        }
-        CustomSerializer.prototype.serialize = function (routerState) {
-            var _a, _b;
-            var state = routerState.root;
-            var cmsRequired = false;
-            var context;
-            var semanticRoute;
-            var urlString = '';
-            while (state.firstChild) {
-                state = state.firstChild;
-                urlString +=
-                    '/' + state.url.map(function (urlSegment) { return urlSegment.path; }).join('/');
-                // we use semantic route information embedded from any parent route
-                if ((_a = state.data) === null || _a === void 0 ? void 0 : _a.cxRoute) {
-                    semanticRoute = (_b = state.data) === null || _b === void 0 ? void 0 : _b.cxRoute;
-                }
-                // we use context information embedded in Cms driven routes from any parent route
-                if (state.data && state.data.cxCmsRouteContext) {
-                    context = state.data.cxCmsRouteContext;
-                }
-                // we assume, that any route that has CmsPageGuard or it's child
-                // is cmsRequired
-                if (!cmsRequired &&
-                    (context ||
-                        (state.routeConfig &&
-                            state.routeConfig.canActivate &&
-                            state.routeConfig.canActivate.find(function (x) { return x && x.guardName === 'CmsPageGuard'; })))) {
-                    cmsRequired = true;
-                }
-            }
-            // If `semanticRoute` couldn't be already recognized using `data.cxRoute` property
-            // let's lookup the routing configuration to find the semantic route that has exactly the same configured path as the current URL.
-            // This will work only for simple URLs without any dynamic routing parameters.
-            semanticRoute = semanticRoute || this.lookupSemanticRoute(urlString);
-            var params = state.params;
-            // we give smartedit preview page a PageContext
-            if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
-                context = {
-                    id: 'smartedit-preview',
-                    type: exports.PageType.CONTENT_PAGE,
-                };
-            }
-            else {
-                if (params['productCode']) {
-                    context = { id: params['productCode'], type: exports.PageType.PRODUCT_PAGE };
-                }
-                else if (params['categoryCode']) {
-                    context = { id: params['categoryCode'], type: exports.PageType.CATEGORY_PAGE };
-                }
-                else if (params['brandCode']) {
-                    context = { id: params['brandCode'], type: exports.PageType.CATEGORY_PAGE };
-                }
-                else if (state.data.pageLabel !== undefined) {
-                    context = { id: state.data.pageLabel, type: exports.PageType.CONTENT_PAGE };
-                }
-                else if (!context) {
-                    if (state.url.length > 0) {
-                        var pageLabel = '/' + state.url.map(function (urlSegment) { return urlSegment.path; }).join('/');
-                        context = {
-                            id: pageLabel,
-                            type: exports.PageType.CONTENT_PAGE,
-                        };
-                    }
-                    else {
-                        context = {
-                            id: 'homepage',
-                            type: exports.PageType.CONTENT_PAGE,
-                        };
-                    }
-                }
-            }
-            return {
-                url: routerState.url,
-                queryParams: routerState.root.queryParams,
-                params: params,
-                context: context,
-                cmsRequired: cmsRequired,
-                semanticRoute: semanticRoute,
-            };
-        };
-        /**
-         * Returns the semantic route name for given page label.
-         *
-         * *NOTE*: It works only for simple static urls that are equal to the page label
-         * of cms-driven content page. For example: `/my-account/address-book`.
-         *
-         * It doesn't work for URLs with dynamic parameters. But such case can be handled
-         * by reading the defined `data.cxRoute` from the Angular Routes.
-         *
-         * @param path path to be found in the routing config
-         */
-        CustomSerializer.prototype.lookupSemanticRoute = function (path) {
-            // Page label is assumed to start with `/`, but Spartacus configured paths
-            // don't start with slash. So we remove the leading slash:
-            return this.routingConfig.getRouteName(path.substr(1));
-        };
-        return CustomSerializer;
-    }());
-    CustomSerializer.decorators = [
-        { type: i0.Injectable }
-    ];
-    CustomSerializer.ctorParameters = function () { return [
-        { type: RoutingConfigService }
-    ]; };
-
-    function initConfigurableRoutes(service) {
-        var result = function () { return service.init(); }; // workaround for AOT compilation (see https://stackoverflow.com/a/51977115)
-        return result;
-    }
-    var RoutingModule = /** @class */ (function () {
-        function RoutingModule() {
-        }
-        RoutingModule.forRoot = function () {
-            return {
-                ngModule: RoutingModule,
-                providers: [
-                    reducerProvider$6,
-                    {
-                        provide: fromNgrxRouter.RouterStateSerializer,
-                        useClass: CustomSerializer,
-                    },
-                    {
-                        provide: i0.APP_INITIALIZER,
-                        useFactory: initConfigurableRoutes,
-                        deps: [ConfigurableRoutesService],
-                        multi: true,
-                    },
-                ],
-            };
-        };
-        return RoutingModule;
-    }());
-    RoutingModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [
-                        i1$2.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
-                        i3.EffectsModule.forFeature(effects$6),
-                        fromNgrxRouter.StoreRouterConnectingModule.forRoot({
-                            routerState: 1 /* Minimal */,
-                            stateKey: ROUTING_FEATURE,
-                        }),
-                    ],
-                },] }
-    ];
-
-    function getDefaultUrlMatcherFactory(routingConfigService, urlMatcherService) {
-        var factory = function (route) {
-            var routeName = route.data && route.data['cxRoute'];
-            var routeConfig = routingConfigService.getRouteConfig(routeName);
-            var paths = (routeConfig && routeConfig.paths) || [];
-            return urlMatcherService.getFromPaths(paths);
-        };
-        return factory;
-    }
-    /**
-     * Injection token with url matcher factory for spartacus routes containing property `data.cxRoute`.
-     * The provided url matcher matches the configured `paths` from routing config.
-     *
-     * If this matcher doesn't fit the requirements, it can be replaced with custom matcher
-     * or additional matchers can be added for a specific route. See for example PRODUCT_DETAILS_URL_MATCHER.
-     *
-     * Note: Matchers will "match" a route, but do not contribute to the creation of the route, nor do they guard routes.
-     */
-    var DEFAULT_URL_MATCHER = new i0.InjectionToken('DEFAULT_URL_MATCHER', {
-        providedIn: 'root',
-        factory: function () { return getDefaultUrlMatcherFactory(i0.inject(RoutingConfigService), i0.inject(UrlMatcherService)); },
-    });
 
     var NavigationEntryItemEffects = /** @class */ (function () {
         function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
@@ -25194,7 +25289,7 @@
         { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
     ]; };
 
-    var interceptors$3 = [
+    var interceptors$4 = [
         {
             provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: OccPersonalizationIdInterceptor,
@@ -25215,7 +25310,7 @@
                 ngModule: PersonalizationModule,
                 providers: __spread([
                     provideDefaultConfig(defaultPersonalizationConfig)
-                ], interceptors$3),
+                ], interceptors$4),
             };
         };
         return PersonalizationModule;
@@ -26815,7 +26910,7 @@
         { type: SmartEditService }
     ]; };
 
-    var interceptors$4 = [
+    var interceptors$5 = [
         {
             provide: i1$4.HTTP_INTERCEPTORS,
             useExisting: CmsTicketInterceptor,
@@ -26829,7 +26924,7 @@
         SmartEditModule.forRoot = function () {
             return {
                 ngModule: SmartEditModule,
-                providers: __spread(interceptors$4),
+                providers: __spread(interceptors$5),
             };
         };
         return SmartEditModule;
@@ -30812,20 +30907,20 @@
     exports.withdrawOn = withdrawOn;
     exports.ɵa = asmStatePersistenceFactory;
     exports.ɵb = checkOAuthParamsInUrl;
-    exports.ɵba = reducer$a;
-    exports.ɵbb = reducer$8;
-    exports.ɵbc = reducer$9;
-    exports.ɵbd = interceptors$2;
+    exports.ɵba = reducer$b;
+    exports.ɵbb = reducer$9;
+    exports.ɵbc = reducer$a;
+    exports.ɵbd = interceptors$3;
     exports.ɵbe = AnonymousConsentsInterceptor;
     exports.ɵbf = AsmStoreModule;
-    exports.ɵbg = getReducers$5;
-    exports.ɵbh = reducerToken$5;
-    exports.ɵbi = reducerProvider$5;
+    exports.ɵbg = getReducers$6;
+    exports.ɵbh = reducerToken$6;
+    exports.ɵbi = reducerProvider$6;
     exports.ɵbj = clearCustomerSupportAgentAsmState;
     exports.ɵbk = metaReducers$1;
-    exports.ɵbl = effects$4;
+    exports.ɵbl = effects$5;
     exports.ɵbm = CustomerEffects;
-    exports.ɵbn = reducer$c;
+    exports.ɵbn = reducer$d;
     exports.ɵbo = defaultAsmConfig;
     exports.ɵbq = ClientAuthStoreModule;
     exports.ɵbr = getReducers;
@@ -30857,198 +30952,201 @@
     exports.ɵcq = activeCartReducer;
     exports.ɵcr = cartEntitiesReducer;
     exports.ɵcs = wishListReducer;
-    exports.ɵct = CartPageMetaResolver;
-    exports.ɵcu = CheckoutStoreModule;
-    exports.ɵcv = getReducers$1;
-    exports.ɵcw = reducerToken$1;
-    exports.ɵcx = reducerProvider$1;
-    exports.ɵcy = effects$1;
-    exports.ɵcz = AddressVerificationEffect;
+    exports.ɵct = UserIdService;
+    exports.ɵcu = CartPageMetaResolver;
+    exports.ɵcv = CheckoutStoreModule;
+    exports.ɵcw = getReducers$2;
+    exports.ɵcx = reducerToken$2;
+    exports.ɵcy = reducerProvider$2;
+    exports.ɵcz = effects$2;
     exports.ɵd = cartStatePersistenceFactory;
-    exports.ɵda = CardTypesEffects;
-    exports.ɵdb = CheckoutEffects;
-    exports.ɵdc = PaymentTypesEffects;
-    exports.ɵdd = ReplenishmentOrderEffects;
-    exports.ɵde = reducer$2;
-    exports.ɵdf = reducer$1;
-    exports.ɵdg = reducer;
-    exports.ɵdh = reducer$4;
-    exports.ɵdi = reducer$3;
-    exports.ɵdj = cmsStoreConfigFactory;
-    exports.ɵdk = CmsStoreModule;
-    exports.ɵdl = getReducers$7;
-    exports.ɵdm = reducerToken$7;
-    exports.ɵdn = reducerProvider$7;
-    exports.ɵdo = clearCmsState;
-    exports.ɵdp = metaReducers$2;
-    exports.ɵdq = effects$7;
-    exports.ɵdr = ComponentsEffects;
-    exports.ɵds = NavigationEntryItemEffects;
-    exports.ɵdt = PageEffects;
-    exports.ɵdu = reducer$g;
-    exports.ɵdv = entityLoaderReducer;
-    exports.ɵdw = reducer$h;
-    exports.ɵdx = reducer$e;
-    exports.ɵdy = reducer$f;
-    exports.ɵdz = GlobalMessageStoreModule;
+    exports.ɵda = AddressVerificationEffect;
+    exports.ɵdb = CardTypesEffects;
+    exports.ɵdc = CheckoutEffects;
+    exports.ɵdd = PaymentTypesEffects;
+    exports.ɵde = ReplenishmentOrderEffects;
+    exports.ɵdf = reducer$3;
+    exports.ɵdg = reducer$2;
+    exports.ɵdh = reducer$1;
+    exports.ɵdi = reducer$5;
+    exports.ɵdj = reducer$4;
+    exports.ɵdk = interceptors$2;
+    exports.ɵdl = CheckoutCartInterceptor;
+    exports.ɵdm = cmsStoreConfigFactory;
+    exports.ɵdn = CmsStoreModule;
+    exports.ɵdo = getReducers$7;
+    exports.ɵdp = reducerToken$7;
+    exports.ɵdq = reducerProvider$7;
+    exports.ɵdr = clearCmsState;
+    exports.ɵds = metaReducers$2;
+    exports.ɵdt = effects$7;
+    exports.ɵdu = ComponentsEffects;
+    exports.ɵdv = NavigationEntryItemEffects;
+    exports.ɵdw = PageEffects;
+    exports.ɵdx = reducer$g;
+    exports.ɵdy = entityLoaderReducer;
+    exports.ɵdz = reducer$h;
     exports.ɵe = uninitializeActiveCartMetaReducerFactory;
-    exports.ɵea = getReducers$4;
-    exports.ɵeb = reducerToken$4;
-    exports.ɵec = reducerProvider$4;
-    exports.ɵed = reducer$b;
-    exports.ɵee = GlobalMessageEffect;
-    exports.ɵef = defaultGlobalMessageConfigFactory;
-    exports.ɵeg = HttpErrorInterceptor;
-    exports.ɵeh = defaultI18nConfig;
-    exports.ɵei = i18nextProviders;
-    exports.ɵej = i18nextInit;
-    exports.ɵek = MockTranslationService;
-    exports.ɵel = defaultOccAsmConfig;
-    exports.ɵem = defaultOccCartConfig;
-    exports.ɵen = OccSaveCartAdapter;
-    exports.ɵeo = defaultOccCheckoutConfig;
-    exports.ɵep = defaultOccCostCentersConfig;
-    exports.ɵeq = defaultOccProductConfig;
-    exports.ɵer = defaultOccSiteContextConfig;
-    exports.ɵes = defaultOccStoreFinderConfig;
-    exports.ɵet = defaultOccUserConfig;
-    exports.ɵeu = UserNotificationPreferenceAdapter;
-    exports.ɵev = OccUserCostCenterAdapter;
-    exports.ɵew = OccAddressListNormalizer;
-    exports.ɵex = UserReplenishmentOrderAdapter;
-    exports.ɵey = defaultPersonalizationConfig;
-    exports.ɵez = interceptors$3;
+    exports.ɵea = reducer$e;
+    exports.ɵeb = reducer$f;
+    exports.ɵec = GlobalMessageStoreModule;
+    exports.ɵed = getReducers$5;
+    exports.ɵee = reducerToken$5;
+    exports.ɵef = reducerProvider$5;
+    exports.ɵeg = reducer$c;
+    exports.ɵeh = GlobalMessageEffect;
+    exports.ɵei = defaultGlobalMessageConfigFactory;
+    exports.ɵej = HttpErrorInterceptor;
+    exports.ɵek = defaultI18nConfig;
+    exports.ɵel = i18nextProviders;
+    exports.ɵem = i18nextInit;
+    exports.ɵen = MockTranslationService;
+    exports.ɵeo = defaultOccAsmConfig;
+    exports.ɵep = defaultOccCartConfig;
+    exports.ɵeq = OccSaveCartAdapter;
+    exports.ɵer = defaultOccCheckoutConfig;
+    exports.ɵes = defaultOccCostCentersConfig;
+    exports.ɵet = defaultOccProductConfig;
+    exports.ɵeu = defaultOccSiteContextConfig;
+    exports.ɵev = defaultOccStoreFinderConfig;
+    exports.ɵew = defaultOccUserConfig;
+    exports.ɵex = UserNotificationPreferenceAdapter;
+    exports.ɵey = OccUserCostCenterAdapter;
+    exports.ɵez = OccAddressListNormalizer;
     exports.ɵf = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵfa = OccPersonalizationIdInterceptor;
-    exports.ɵfb = OccPersonalizationTimeInterceptor;
-    exports.ɵfc = ProcessStoreModule;
-    exports.ɵfd = getReducers$8;
-    exports.ɵfe = reducerToken$8;
-    exports.ɵff = reducerProvider$8;
-    exports.ɵfg = productStoreConfigFactory;
-    exports.ɵfh = ProductStoreModule;
-    exports.ɵfi = getReducers$9;
-    exports.ɵfj = reducerToken$9;
-    exports.ɵfk = reducerProvider$9;
-    exports.ɵfl = clearProductsState;
-    exports.ɵfm = metaReducers$3;
-    exports.ɵfn = effects$8;
-    exports.ɵfo = ProductReferencesEffects;
-    exports.ɵfp = ProductReviewsEffects;
-    exports.ɵfq = ProductsSearchEffects;
-    exports.ɵfr = ProductEffects;
-    exports.ɵfs = reducer$k;
-    exports.ɵft = entityScopedLoaderReducer;
-    exports.ɵfu = scopedLoaderReducer;
-    exports.ɵfv = reducer$j;
-    exports.ɵfw = reducer$i;
-    exports.ɵfx = PageMetaResolver;
-    exports.ɵfy = CouponSearchPageResolver;
-    exports.ɵfz = PageMetaResolver;
+    exports.ɵfa = UserReplenishmentOrderAdapter;
+    exports.ɵfb = defaultPersonalizationConfig;
+    exports.ɵfc = interceptors$4;
+    exports.ɵfd = OccPersonalizationIdInterceptor;
+    exports.ɵfe = OccPersonalizationTimeInterceptor;
+    exports.ɵff = ProcessStoreModule;
+    exports.ɵfg = getReducers$8;
+    exports.ɵfh = reducerToken$8;
+    exports.ɵfi = reducerProvider$8;
+    exports.ɵfj = productStoreConfigFactory;
+    exports.ɵfk = ProductStoreModule;
+    exports.ɵfl = getReducers$9;
+    exports.ɵfm = reducerToken$9;
+    exports.ɵfn = reducerProvider$9;
+    exports.ɵfo = clearProductsState;
+    exports.ɵfp = metaReducers$3;
+    exports.ɵfq = effects$8;
+    exports.ɵfr = ProductReferencesEffects;
+    exports.ɵfs = ProductReviewsEffects;
+    exports.ɵft = ProductsSearchEffects;
+    exports.ɵfu = ProductEffects;
+    exports.ɵfv = reducer$k;
+    exports.ɵfw = entityScopedLoaderReducer;
+    exports.ɵfx = scopedLoaderReducer;
+    exports.ɵfy = reducer$j;
+    exports.ɵfz = reducer$i;
     exports.ɵg = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵga = addExternalRoutesFactory;
-    exports.ɵgb = getReducers$6;
-    exports.ɵgc = reducer$d;
-    exports.ɵgd = reducerToken$6;
-    exports.ɵge = reducerProvider$6;
-    exports.ɵgf = CustomSerializer;
-    exports.ɵgg = effects$6;
-    exports.ɵgh = RouterEffects;
-    exports.ɵgi = siteContextStoreConfigFactory;
-    exports.ɵgj = SiteContextStoreModule;
-    exports.ɵgk = getReducers$2;
-    exports.ɵgl = reducerToken$2;
-    exports.ɵgm = reducerProvider$2;
-    exports.ɵgn = effects$3;
-    exports.ɵgo = BaseSiteEffects;
-    exports.ɵgp = CurrenciesEffects;
-    exports.ɵgq = LanguagesEffects;
-    exports.ɵgr = reducer$7;
-    exports.ɵgs = reducer$6;
-    exports.ɵgt = reducer$5;
-    exports.ɵgu = defaultSiteContextConfigFactory;
-    exports.ɵgv = initializeContext;
-    exports.ɵgw = contextServiceProviders;
-    exports.ɵgx = SiteContextRoutesHandler;
-    exports.ɵgy = SiteContextUrlSerializer;
-    exports.ɵgz = siteContextParamsProviders;
+    exports.ɵga = PageMetaResolver;
+    exports.ɵgb = CouponSearchPageResolver;
+    exports.ɵgc = PageMetaResolver;
+    exports.ɵgd = addExternalRoutesFactory;
+    exports.ɵge = getReducers$1;
+    exports.ɵgf = reducer;
+    exports.ɵgg = reducerToken$1;
+    exports.ɵgh = reducerProvider$1;
+    exports.ɵgi = CustomSerializer;
+    exports.ɵgj = effects$1;
+    exports.ɵgk = RouterEffects;
+    exports.ɵgl = siteContextStoreConfigFactory;
+    exports.ɵgm = SiteContextStoreModule;
+    exports.ɵgn = getReducers$3;
+    exports.ɵgo = reducerToken$3;
+    exports.ɵgp = reducerProvider$3;
+    exports.ɵgq = effects$4;
+    exports.ɵgr = BaseSiteEffects;
+    exports.ɵgs = CurrenciesEffects;
+    exports.ɵgt = LanguagesEffects;
+    exports.ɵgu = reducer$8;
+    exports.ɵgv = reducer$7;
+    exports.ɵgw = reducer$6;
+    exports.ɵgx = defaultSiteContextConfigFactory;
+    exports.ɵgy = initializeContext;
+    exports.ɵgz = contextServiceProviders;
     exports.ɵh = configFromCookieFactory;
-    exports.ɵha = baseSiteConfigValidator;
-    exports.ɵhb = interceptors$4;
-    exports.ɵhc = CmsTicketInterceptor;
-    exports.ɵhd = StoreFinderStoreModule;
-    exports.ɵhe = getReducers$a;
-    exports.ɵhf = reducerToken$a;
-    exports.ɵhg = reducerProvider$a;
-    exports.ɵhh = effects$9;
-    exports.ɵhi = FindStoresEffect;
-    exports.ɵhj = ViewAllStoresEffect;
-    exports.ɵhk = defaultStoreFinderConfig;
-    exports.ɵhl = UserStoreModule;
-    exports.ɵhm = getReducers$b;
-    exports.ɵhn = reducerToken$b;
-    exports.ɵho = reducerProvider$b;
-    exports.ɵhp = clearUserState;
-    exports.ɵhq = metaReducers$5;
-    exports.ɵhr = effects$a;
-    exports.ɵhs = BillingCountriesEffect;
-    exports.ɵht = ClearMiscsDataEffect;
-    exports.ɵhu = ConsignmentTrackingEffects;
-    exports.ɵhv = CustomerCouponEffects;
-    exports.ɵhw = DeliveryCountriesEffects;
-    exports.ɵhx = NotificationPreferenceEffects;
-    exports.ɵhy = OrderDetailsEffect;
-    exports.ɵhz = OrderReturnRequestEffect;
+    exports.ɵha = SiteContextRoutesHandler;
+    exports.ɵhb = SiteContextUrlSerializer;
+    exports.ɵhc = siteContextParamsProviders;
+    exports.ɵhd = baseSiteConfigValidator;
+    exports.ɵhe = interceptors$5;
+    exports.ɵhf = CmsTicketInterceptor;
+    exports.ɵhg = StoreFinderStoreModule;
+    exports.ɵhh = getReducers$a;
+    exports.ɵhi = reducerToken$a;
+    exports.ɵhj = reducerProvider$a;
+    exports.ɵhk = effects$9;
+    exports.ɵhl = FindStoresEffect;
+    exports.ɵhm = ViewAllStoresEffect;
+    exports.ɵhn = defaultStoreFinderConfig;
+    exports.ɵho = UserStoreModule;
+    exports.ɵhp = getReducers$b;
+    exports.ɵhq = reducerToken$b;
+    exports.ɵhr = reducerProvider$b;
+    exports.ɵhs = clearUserState;
+    exports.ɵht = metaReducers$5;
+    exports.ɵhu = effects$a;
+    exports.ɵhv = BillingCountriesEffect;
+    exports.ɵhw = ClearMiscsDataEffect;
+    exports.ɵhx = ConsignmentTrackingEffects;
+    exports.ɵhy = CustomerCouponEffects;
+    exports.ɵhz = DeliveryCountriesEffects;
     exports.ɵi = initConfig;
-    exports.ɵia = UserPaymentMethodsEffects;
-    exports.ɵib = ProductInterestsEffect;
-    exports.ɵic = RegionsEffects;
-    exports.ɵid = ReplenishmentOrderDetailsEffect;
-    exports.ɵie = ResetPasswordEffects;
-    exports.ɵif = TitlesEffects;
-    exports.ɵig = UserAddressesEffects;
-    exports.ɵih = UserConsentsEffect;
-    exports.ɵii = UserDetailsEffects;
-    exports.ɵij = UserOrdersEffect;
-    exports.ɵik = UserRegisterEffects;
-    exports.ɵil = UserReplenishmentOrdersEffect;
-    exports.ɵim = ForgotPasswordEffects;
-    exports.ɵin = UpdateEmailEffects;
-    exports.ɵio = UpdatePasswordEffects;
-    exports.ɵip = UserNotificationPreferenceConnector;
-    exports.ɵiq = UserCostCenterEffects;
-    exports.ɵir = reducer$B;
-    exports.ɵis = reducer$y;
-    exports.ɵit = reducer$l;
-    exports.ɵiu = reducer$z;
-    exports.ɵiv = reducer$s;
-    exports.ɵiw = reducer$C;
-    exports.ɵix = reducer$q;
-    exports.ɵiy = reducer$D;
-    exports.ɵiz = reducer$r;
+    exports.ɵia = NotificationPreferenceEffects;
+    exports.ɵib = OrderDetailsEffect;
+    exports.ɵic = OrderReturnRequestEffect;
+    exports.ɵid = UserPaymentMethodsEffects;
+    exports.ɵie = ProductInterestsEffect;
+    exports.ɵif = RegionsEffects;
+    exports.ɵig = ReplenishmentOrderDetailsEffect;
+    exports.ɵih = ResetPasswordEffects;
+    exports.ɵii = TitlesEffects;
+    exports.ɵij = UserAddressesEffects;
+    exports.ɵik = UserConsentsEffect;
+    exports.ɵil = UserDetailsEffects;
+    exports.ɵim = UserOrdersEffect;
+    exports.ɵin = UserRegisterEffects;
+    exports.ɵio = UserReplenishmentOrdersEffect;
+    exports.ɵip = ForgotPasswordEffects;
+    exports.ɵiq = UpdateEmailEffects;
+    exports.ɵir = UpdatePasswordEffects;
+    exports.ɵis = UserNotificationPreferenceConnector;
+    exports.ɵit = UserCostCenterEffects;
+    exports.ɵiu = reducer$B;
+    exports.ɵiv = reducer$y;
+    exports.ɵiw = reducer$l;
+    exports.ɵix = reducer$z;
+    exports.ɵiy = reducer$s;
+    exports.ɵiz = reducer$C;
     exports.ɵj = anonymousConsentsStoreConfigFactory;
-    exports.ɵja = reducer$o;
-    exports.ɵjb = reducer$x;
-    exports.ɵjc = reducer$u;
-    exports.ɵjd = reducer$w;
-    exports.ɵje = reducer$m;
-    exports.ɵjf = reducer$n;
-    exports.ɵjg = reducer$p;
-    exports.ɵjh = reducer$t;
-    exports.ɵji = reducer$A;
-    exports.ɵjj = reducer$v;
+    exports.ɵja = reducer$q;
+    exports.ɵjb = reducer$D;
+    exports.ɵjc = reducer$r;
+    exports.ɵjd = reducer$o;
+    exports.ɵje = reducer$x;
+    exports.ɵjf = reducer$u;
+    exports.ɵjg = reducer$w;
+    exports.ɵjh = reducer$m;
+    exports.ɵji = reducer$n;
+    exports.ɵjj = reducer$p;
+    exports.ɵjk = reducer$t;
+    exports.ɵjl = reducer$A;
+    exports.ɵjm = reducer$v;
     exports.ɵk = AnonymousConsentsStoreModule;
     exports.ɵl = TRANSFER_STATE_META_REDUCER;
     exports.ɵm = STORAGE_SYNC_META_REDUCER;
     exports.ɵn = stateMetaReducers;
     exports.ɵo = getStorageSyncReducer;
     exports.ɵp = getTransferStateReducer;
-    exports.ɵq = getReducers$3;
-    exports.ɵr = reducerToken$3;
-    exports.ɵs = reducerProvider$3;
+    exports.ɵq = getReducers$4;
+    exports.ɵr = reducerToken$4;
+    exports.ɵs = reducerProvider$4;
     exports.ɵt = clearAnonymousConsentTemplates;
     exports.ɵu = metaReducers;
-    exports.ɵv = effects$2;
+    exports.ɵv = effects$3;
     exports.ɵw = AnonymousConsentsEffects;
     exports.ɵx = UrlParsingService;
     exports.ɵy = RoutingParamsService;

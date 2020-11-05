@@ -1,4 +1,4 @@
-import { InjectionToken, inject, InjectFlags, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, isDevMode, PLATFORM_ID, Optional, NgModule, APP_INITIALIZER, NgModuleFactory, Compiler, INJECTOR, Injector, Directive, TemplateRef, ViewContainerRef, Input, Pipe, NgZone, ChangeDetectorRef } from '@angular/core';
+import { InjectionToken, inject, InjectFlags, ɵɵdefineInjectable, ɵɵinject, Injectable, Inject, isDevMode, PLATFORM_ID, Optional, NgModule, APP_INITIALIZER, NgModuleFactory, Compiler, INJECTOR, Injector, Pipe, Directive, TemplateRef, ViewContainerRef, Input, NgZone, ChangeDetectorRef } from '@angular/core';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, StoreModule, ActionsSubject, combineReducers } from '@ngrx/store';
 import { of, fromEvent, BehaviorSubject, iif, combineLatest, queueScheduler, throwError, Subscription, Observable, Subject, from, timer, EMPTY, zip, forkJoin, NEVER, using, defer, merge } from 'rxjs';
 import { debounceTime, startWith, distinctUntilChanged, filter, map, shareReplay, take, withLatestFrom, tap, switchMap, observeOn, catchError, exhaustMap, mapTo, share, publishReplay, scan, pluck, mergeMap, debounce, auditTime, switchMapTo, concatMap, skip, bufferCount, delay, groupBy, distinctUntilKeyChanged, takeWhile } from 'rxjs/operators';
@@ -6560,115 +6560,6 @@ CheckoutEventModule.ctorParameters = () => [
     { type: CheckoutEventBuilder }
 ];
 
-// Email Standard RFC 5322:
-const EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
-const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
-
-const getMultiCartState = createFeatureSelector(MULTI_CART_FEATURE);
-const ɵ0$a = (state) => state.carts;
-const getMultiCartEntities = createSelector(getMultiCartState, ɵ0$a);
-const getCartEntitySelectorFactory = (cartId) => {
-    return createSelector(getMultiCartEntities, (state) => entityProcessesLoaderStateSelector(state, cartId));
-};
-const getCartSelectorFactory = (cartId) => {
-    return createSelector(getMultiCartEntities, (state) => entityValueSelector(state, cartId));
-};
-const getCartIsStableSelectorFactory = (cartId) => {
-    return createSelector(getMultiCartEntities, (state) => entityIsStableSelector(state, cartId));
-};
-const getCartHasPendingProcessesSelectorFactory = (cartId) => {
-    return createSelector(getMultiCartEntities, (state) => entityHasPendingProcessesSelector(state, cartId));
-};
-const getCartEntriesSelectorFactory = (cartId) => {
-    return createSelector(getCartSelectorFactory(cartId), (state) => {
-        return state && state.entries ? state.entries : [];
-    });
-};
-const getCartEntrySelectorFactory = (cartId, productCode) => {
-    return createSelector(getCartEntriesSelectorFactory(cartId), (state) => {
-        return state
-            ? state.find((entry) => entry.product.code === productCode)
-            : undefined;
-    });
-};
-const ɵ1$6 = (state) => state.active;
-const getActiveCartId = createSelector(getMultiCartState, ɵ1$6);
-const ɵ2$4 = (state) => state.wishList;
-const getWishListId = createSelector(getMultiCartState, ɵ2$4);
-
-var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    getMultiCartState: getMultiCartState,
-    getMultiCartEntities: getMultiCartEntities,
-    getCartEntitySelectorFactory: getCartEntitySelectorFactory,
-    getCartSelectorFactory: getCartSelectorFactory,
-    getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
-    getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
-    getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
-    getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-    getActiveCartId: getActiveCartId,
-    getWishListId: getWishListId,
-    ɵ0: ɵ0$a,
-    ɵ1: ɵ1$6,
-    ɵ2: ɵ2$4
-});
-
-/**
- * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
- */
-function getCartIdByUserId(cart, userId) {
-    if (userId === OCC_USER_ID_ANONYMOUS) {
-        return cart.guid;
-    }
-    return cart.code;
-}
-/**
- * Check if cart is selective (save for later) based on id.
- */
-function isSelectiveCart(cartId = '') {
-    return cartId.startsWith('selectivecart');
-}
-/**
- * Check if the returned error is of type notFound.
- *
- * We additionally check if the cart is not a selective cart.
- * For selective cart this error can happen only when extension is disabled.
- * It should never happen, because in that case, selective cart should also be disabled in our configuration.
- * However if that happens we want to handle these errors silently.
- */
-function isCartNotFoundError(error) {
-    return (error.reason === 'notFound' &&
-        error.subjectType === 'cart' &&
-        !isSelectiveCart(error.subject));
-}
-/**
- * Compute wishlist cart name for customer.
- */
-function getWishlistName(customerId) {
-    return `wishlist${customerId}`;
-}
-/**
- * What is a temporary cart?
- * - frontend only cart entity!
- * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
- *
- * Why we need temporary carts?
- * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
- * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
- * - cart identifiers are created in the backend, so those are only known after cart is created
- *
- * Temporary cart life cycle
- * - create cart method invoked
- * - new `temp-${uuid}` cart is created with `loading=true` state
- * - backend returns created cart
- * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
- * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
- * - in next tick temporary cart is removed
- */
-function isTempCartId(cartId) {
-    return cartId.startsWith('temp-');
-}
-
 const CART_ADD_ENTRY = '[Cart-entry] Add Entry';
 const CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
 const CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
@@ -7001,6 +6892,62 @@ class ClearCartState extends EntityRemoveAllAction {
     }
 }
 
+/**
+ * Extract cart identifier for current user. Anonymous calls use `guid` and for logged users `code` is used.
+ */
+function getCartIdByUserId(cart, userId) {
+    if (userId === OCC_USER_ID_ANONYMOUS) {
+        return cart.guid;
+    }
+    return cart.code;
+}
+/**
+ * Check if cart is selective (save for later) based on id.
+ */
+function isSelectiveCart(cartId = '') {
+    return cartId.startsWith('selectivecart');
+}
+/**
+ * Check if the returned error is of type notFound.
+ *
+ * We additionally check if the cart is not a selective cart.
+ * For selective cart this error can happen only when extension is disabled.
+ * It should never happen, because in that case, selective cart should also be disabled in our configuration.
+ * However if that happens we want to handle these errors silently.
+ */
+function isCartNotFoundError(error) {
+    return (error.reason === 'notFound' &&
+        error.subjectType === 'cart' &&
+        !isSelectiveCart(error.subject));
+}
+/**
+ * Compute wishlist cart name for customer.
+ */
+function getWishlistName(customerId) {
+    return `wishlist${customerId}`;
+}
+/**
+ * What is a temporary cart?
+ * - frontend only cart entity!
+ * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
+ *
+ * Why we need temporary carts?
+ * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
+ * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
+ * - cart identifiers are created in the backend, so those are only known after cart is created
+ *
+ * Temporary cart life cycle
+ * - create cart method invoked
+ * - new `temp-${uuid}` cart is created with `loading=true` state
+ * - backend returns created cart
+ * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
+ * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
+ * - in next tick temporary cart is removed
+ */
+function isTempCartId(cartId) {
+    return cartId.startsWith('temp-');
+}
+
 const CREATE_WISH_LIST = '[Wish List] Create Wish List';
 const CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
 const CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
@@ -7141,9 +7088,59 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     LoadWishListFail: LoadWishListFail
 });
 
+const getMultiCartState = createFeatureSelector(MULTI_CART_FEATURE);
+const ɵ0$a = (state) => state.carts;
+const getMultiCartEntities = createSelector(getMultiCartState, ɵ0$a);
+const getCartEntitySelectorFactory = (cartId) => {
+    return createSelector(getMultiCartEntities, (state) => entityProcessesLoaderStateSelector(state, cartId));
+};
+const getCartSelectorFactory = (cartId) => {
+    return createSelector(getMultiCartEntities, (state) => entityValueSelector(state, cartId));
+};
+const getCartIsStableSelectorFactory = (cartId) => {
+    return createSelector(getMultiCartEntities, (state) => entityIsStableSelector(state, cartId));
+};
+const getCartHasPendingProcessesSelectorFactory = (cartId) => {
+    return createSelector(getMultiCartEntities, (state) => entityHasPendingProcessesSelector(state, cartId));
+};
+const getCartEntriesSelectorFactory = (cartId) => {
+    return createSelector(getCartSelectorFactory(cartId), (state) => {
+        return state && state.entries ? state.entries : [];
+    });
+};
+const getCartEntrySelectorFactory = (cartId, productCode) => {
+    return createSelector(getCartEntriesSelectorFactory(cartId), (state) => {
+        return state
+            ? state.find((entry) => entry.product.code === productCode)
+            : undefined;
+    });
+};
+const ɵ1$6 = (state) => state.active;
+const getActiveCartId = createSelector(getMultiCartState, ɵ1$6);
+const ɵ2$4 = (state) => state.wishList;
+const getWishListId = createSelector(getMultiCartState, ɵ2$4);
+
+var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getMultiCartState: getMultiCartState,
+    getMultiCartEntities: getMultiCartEntities,
+    getCartEntitySelectorFactory: getCartEntitySelectorFactory,
+    getCartSelectorFactory: getCartSelectorFactory,
+    getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
+    getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
+    getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
+    getCartEntrySelectorFactory: getCartEntrySelectorFactory,
+    getActiveCartId: getActiveCartId,
+    getWishListId: getWishListId,
+    ɵ0: ɵ0$a,
+    ɵ1: ɵ1$6,
+    ɵ2: ɵ2$4
+});
+
 class MultiCartService {
-    constructor(store) {
+    constructor(store, userIdService) {
         this.store = store;
+        this.userIdService = userIdService;
     }
     /**
      * Returns cart from store as an observable
@@ -7351,16 +7348,1036 @@ class MultiCartService {
             cartId,
         }));
     }
+    /**
+     * Reloads the cart with specified id.
+     *
+     * @param cartId
+     * @param extraData
+     */
+    reloadCart(cartId, extraData) {
+        this.userIdService.invokeWithUserId((userId) => this.store.dispatch(new LoadCart({
+            userId,
+            cartId,
+            extraData,
+        })));
+    }
 }
-MultiCartService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(ɵɵinject(Store)); }, token: MultiCartService, providedIn: "root" });
+MultiCartService.ɵprov = ɵɵdefineInjectable({ factory: function MultiCartService_Factory() { return new MultiCartService(ɵɵinject(Store), ɵɵinject(UserIdService)); }, token: MultiCartService, providedIn: "root" });
 MultiCartService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
 ];
 MultiCartService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: UserIdService }
 ];
+
+/**
+ * @license
+ * The MIT License
+ * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
+ *
+ * See:
+ * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
+ * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
+ * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
+ */
+const QUESTION_MARK = '[^/]';
+const WILD_SINGLE = '[^/]*';
+const WILD_OPEN = '(?:.+\\/)?';
+const TO_ESCAPE_BASE = [
+    { replace: /\./g, with: '\\.' },
+    { replace: /\+/g, with: '\\+' },
+    { replace: /\*/g, with: WILD_SINGLE },
+];
+const TO_ESCAPE_WILDCARD_QM = [
+    ...TO_ESCAPE_BASE,
+    { replace: /\?/g, with: QUESTION_MARK },
+];
+const TO_ESCAPE_LITERAL_QM = [
+    ...TO_ESCAPE_BASE,
+    { replace: /\?/g, with: '\\?' },
+];
+/**
+ * Converts the glob-like pattern into regex string.
+ *
+ * Patterns use a limited glob format:
+ * `**` matches 0 or more path segments
+ * `*` matches 0 or more characters excluding `/`
+ * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
+ * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+ *
+ * @param glob glob-like pattern
+ * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
+ */
+function globToRegex(glob, literalQuestionMark = false) {
+    const toEscape = literalQuestionMark
+        ? TO_ESCAPE_LITERAL_QM
+        : TO_ESCAPE_WILDCARD_QM;
+    const segments = glob.split('/').reverse();
+    let regex = '';
+    while (segments.length > 0) {
+        const segment = segments.pop();
+        if (segment === '**') {
+            if (segments.length > 0) {
+                regex += WILD_OPEN;
+            }
+            else {
+                regex += '.*';
+            }
+        }
+        else {
+            const processed = toEscape.reduce((seg, escape) => seg.replace(escape.replace, escape.with), segment);
+            regex += processed;
+            if (segments.length > 0) {
+                regex += '\\/';
+            }
+        }
+    }
+    return regex;
+}
+/**
+ * For given list of glob-like patterns, returns a matcher function.
+ *
+ * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+ */
+function getGlobMatcher(patterns) {
+    const processedPatterns = processGlobPatterns(patterns).map(({ positive, regex }) => ({
+        positive,
+        regex: new RegExp(regex),
+    }));
+    const includePatterns = processedPatterns.filter((spec) => spec.positive);
+    const excludePatterns = processedPatterns.filter((spec) => !spec.positive);
+    return (url) => includePatterns.some((pattern) => pattern.regex.test(url)) &&
+        !excludePatterns.some((pattern) => pattern.regex.test(url));
+}
+/**
+ * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+ */
+function processGlobPatterns(urls) {
+    return urls.map((url) => {
+        const positive = !url.startsWith('!');
+        url = positive ? url : url.substr(1);
+        return { positive, regex: `^${globToRegex(url)}$` };
+    });
+}
+
+class GlobService {
+    /**
+     * For given list of glob-like patterns, returns a validator function.
+     *
+     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     */
+    getValidator(patterns) {
+        const processedPatterns = processGlobPatterns(patterns).map(({ positive, regex }) => ({
+            positive,
+            regex: new RegExp(regex),
+        }));
+        const includePatterns = processedPatterns.filter((spec) => spec.positive);
+        const excludePatterns = processedPatterns.filter((spec) => !spec.positive);
+        return (url) => includePatterns.some((pattern) => pattern.regex.test(url)) &&
+            !excludePatterns.some((pattern) => pattern.regex.test(url));
+    }
+}
+GlobService.ɵprov = ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+GlobService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+
+class UrlMatcherService {
+    constructor(globService) {
+        this.globService = globService;
+    }
+    /**
+     * Returns a matcher that is always fails
+     */
+    getFalsy() {
+        return function falsyUrlMatcher() {
+            return null;
+        };
+    }
+    /**
+     * Returns a matcher for given list of paths
+     */
+    getFromPaths(paths) {
+        const matchers = paths.map((path) => this.getFromPath(path));
+        const matcher = this.getCombined(matchers);
+        if (isDevMode()) {
+            matcher['_paths'] = paths; // property added for easier debugging of routes
+        }
+        return matcher;
+    }
+    /**
+     * Returns a matcher that combines the given matchers
+     * */
+    getCombined(matchers) {
+        const matcher = function combinedUrlMatchers(segments, segmentGroup, route) {
+            for (let i = 0; i < matchers.length; i++) {
+                const result = matchers[i](segments, segmentGroup, route);
+                if (result) {
+                    return result;
+                }
+            }
+            return null;
+        };
+        if (isDevMode()) {
+            matcher['_matchers'] = matchers; // property added for easier debugging of routes
+        }
+        return matcher;
+    }
+    /**
+     * Similar to Angular's defaultUrlMatcher. Differences:
+     * - the `path` comes from function's argument, not from `route.path`
+     * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
+     */
+    getFromPath(path = '') {
+        const matcher = function pathUrlMatcher(segments, segmentGroup, route) {
+            /**
+             * @license
+             * The MIT License
+             * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
+             *
+             * See:
+             * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/router/src/shared.ts#L121
+             */
+            // use function's argument, not the `route.path`
+            if (path === '') {
+                if (route.pathMatch === 'full' &&
+                    (segmentGroup.hasChildren() || segments.length > 0)) {
+                    return null;
+                }
+                return { consumed: [], posParams: {} };
+            }
+            const parts = path.split('/'); // use function's argument, not the `route.path`
+            if (parts.length > segments.length) {
+                // The actual URL is shorter than the config, no match
+                return null;
+            }
+            if (route.pathMatch === 'full' &&
+                (segmentGroup.hasChildren() || parts.length < segments.length)) {
+                // The config is longer than the actual URL but we are looking for a full match, return null
+                return null;
+            }
+            const posParams = {};
+            // Check each config part against the actual URL
+            for (let index = 0; index < parts.length; index++) {
+                const part = parts[index];
+                const segment = segments[index];
+                const isParameter = part.startsWith(':');
+                if (isParameter) {
+                    posParams[part.substring(1)] = segment;
+                }
+                else if (part !== segment.path) {
+                    // The actual URL part does not match the config, no match
+                    return null;
+                }
+            }
+            return { consumed: segments.slice(0, parts.length), posParams };
+        };
+        if (isDevMode()) {
+            matcher['_path'] = path; // property added for easier debugging of routes
+        }
+        return matcher;
+    }
+    /**
+     * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
+     */
+    getOpposite(originalMatcher) {
+        const matcher = function oppositeUrlMatcher(segments, group, route) {
+            return originalMatcher(segments, group, route)
+                ? null
+                : { consumed: segments, posParams: {} };
+        };
+        if (isDevMode()) {
+            matcher['_originalMatcher'] = originalMatcher; // property added for easier debugging of routes
+        }
+        return matcher;
+    }
+    /**
+     * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
+     */
+    getFromGlob(globPatterns) {
+        const globValidator = this.globService.getValidator(globPatterns);
+        const matcher = function globUrlMatcher(segments) {
+            const fullPath = `/${segments.map((s) => s.path).join('/')}`;
+            return globValidator(fullPath)
+                ? { consumed: segments, posParams: {} }
+                : null;
+        };
+        if (isDevMode()) {
+            matcher['_globPatterns'] = globPatterns; // property added for easier debugging of routes
+        }
+        return matcher;
+    }
+}
+UrlMatcherService.ɵprov = ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
+UrlMatcherService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+UrlMatcherService.ctorParameters = () => [
+    { type: GlobService }
+];
+
+class ConfigurableRoutesService {
+    constructor(injector, routingConfigService, urlMatcherService) {
+        this.injector = injector;
+        this.routingConfigService = routingConfigService;
+        this.urlMatcherService = urlMatcherService;
+        this.initCalled = false; // guard not to call init() more than once
+    }
+    /**
+     * Enhances existing Angular routes using the routing config of Spartacus.
+     * Can be called only once.
+     */
+    init() {
+        if (!this.initCalled) {
+            this.initCalled = true;
+            this.configure();
+        }
+    }
+    /**
+     * Enhances existing Angular routes using the routing config of Spartacus.
+     */
+    configure() {
+        // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
+        const router = this.injector.get(Router);
+        router.resetConfig(this.configureRoutes(router.config));
+    }
+    /**
+     * Sets the property `path` or `matcher` for the given routes, based on the Spartacus' routing configuration.
+     *
+     * @param routes list of Angular `Route` objects
+     */
+    configureRoutes(routes) {
+        return routes.map((route) => {
+            const configuredRoute = this.configureRoute(route);
+            if (route.children && route.children.length) {
+                configuredRoute.children = this.configureRoutes(route.children);
+            }
+            return configuredRoute;
+        });
+    }
+    /**
+     * Sets the property `path` or `matcher` of the `Route`, based on the Spartacus' routing configuration.
+     * Uses the property `data.cxRoute` to determine the name of the route.
+     * It's the same name used as a key in the routing configuration: `routing.routes[ROUTE NAME]`.
+     *
+     * @param route Angular `Route` object
+     */
+    configureRoute(route) {
+        var _a;
+        const routeName = this.getRouteName(route);
+        if (routeName) {
+            const routeConfig = this.routingConfigService.getRouteConfig(routeName);
+            this.validateRouteConfig(routeConfig, routeName, route);
+            if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.disabled) {
+                delete route.path;
+                return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
+            }
+            else if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) {
+                delete route.path;
+                return Object.assign(Object.assign({}, route), { matcher: this.resolveUrlMatchers(route, routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) });
+            }
+            else if (((_a = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _a === void 0 ? void 0 : _a.length) === 1) {
+                delete route.matcher;
+                return Object.assign(Object.assign({}, route), { path: routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths[0] });
+            }
+            else {
+                delete route.path;
+                return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFromPaths((routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) || []) });
+            }
+        }
+        return route; // if route doesn't have a name, just pass the original route
+    }
+    /**
+     * Creates a single `UrlMatcher` based on given matchers and factories of matchers.
+     *
+     * @param route Route object
+     * @param matchersOrFactories `UrlMatcher`s or injection tokens with a factory functions
+     *  that create UrlMatchers based on the given route.
+     */
+    resolveUrlMatchers(route, matchersOrFactories) {
+        const matchers = matchersOrFactories.map((matcherOrFactory) => {
+            return typeof matcherOrFactory === 'function'
+                ? matcherOrFactory // matcher
+                : this.resolveUrlMatcherFactory(route, matcherOrFactory); // factory injection token
+        });
+        return this.urlMatcherService.getCombined(matchers);
+    }
+    /**
+     * Creates an `UrlMatcher` based on the given route, using the factory function coming from the given injection token.
+     *
+     * @param route Route object
+     * @param factoryToken injection token with a factory function that will create an UrlMatcher using given route
+     */
+    resolveUrlMatcherFactory(route, factoryToken) {
+        const factory = this.injector.get(factoryToken);
+        return factory(route);
+    }
+    /**
+     * Returns the name of the Route stored in its property `data.cxRoute`
+     * @param route
+     */
+    getRouteName(route) {
+        return route.data && route.data.cxRoute;
+    }
+    validateRouteConfig(routeConfig, routeName, route) {
+        if (isDevMode()) {
+            // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
+            // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
+            if (routeConfig === null ||
+                (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers)) {
+                return;
+            }
+            // undefined value of routeConfig or routeConfig.paths is a misconfiguration
+            if (!(routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths)) {
+                this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined config or undefined 'paths' property for this route`);
+                return;
+            }
+        }
+    }
+    warn(...args) {
+        if (isDevMode()) {
+            console.warn(...args);
+        }
+    }
+}
+ConfigurableRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+ConfigurableRoutesService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+ConfigurableRoutesService.ctorParameters = () => [
+    { type: Injector },
+    { type: RoutingConfigService },
+    { type: UrlMatcherService }
+];
+
+class ProductURLPipe {
+    constructor(semanticPath) {
+        this.semanticPath = semanticPath;
+    }
+    transform(product) {
+        return this.semanticPath.transform({ cxRoute: 'product', params: product });
+    }
+}
+ProductURLPipe.decorators = [
+    { type: Pipe, args: [{
+                name: 'cxProductUrl',
+            },] }
+];
+ProductURLPipe.ctorParameters = () => [
+    { type: SemanticPathService }
+];
+
+class UrlPipe {
+    constructor(urlService) {
+        this.urlService = urlService;
+    }
+    transform(commands) {
+        return this.urlService.transform(commands);
+    }
+}
+UrlPipe.decorators = [
+    { type: Pipe, args: [{
+                name: 'cxUrl',
+            },] }
+];
+UrlPipe.ctorParameters = () => [
+    { type: SemanticPathService }
+];
+
+class UrlModule {
+}
+UrlModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule],
+                declarations: [UrlPipe, ProductURLPipe],
+                exports: [UrlPipe, ProductURLPipe],
+            },] }
+];
+
+class ExternalRoutesConfig {
+}
+ExternalRoutesConfig.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesConfig_Factory() { return ɵɵinject(Config); }, token: ExternalRoutesConfig, providedIn: "root" });
+ExternalRoutesConfig.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+                useExisting: Config,
+            },] }
+];
+
+class ExternalRoutesGuard {
+    constructor(winRef, platformId) {
+        this.winRef = winRef;
+        this.platformId = platformId;
+    }
+    /**
+     * Redirects to different storefront system for anticipated URL
+     */
+    canActivate(route, state) {
+        if (isPlatformBrowser(this.platformId)) {
+            this.redirect(route, state);
+        }
+        return false;
+    }
+    /**
+     * Redirects to anticipated URL using full page reload, not Angular routing
+     */
+    redirect(_, state) {
+        const window = this.winRef.nativeWindow;
+        if (window && window.location) {
+            window.location.href = state.url;
+        }
+    }
+}
+ExternalRoutesGuard.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
+ExternalRoutesGuard.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+ExternalRoutesGuard.ctorParameters = () => [
+    { type: WindowRef },
+    { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
+];
+
+function addExternalRoutesFactory(service) {
+    const result = () => {
+        service.addRoutes();
+    };
+    return result;
+}
+
+/**
+ * Service that helps redirecting to different storefront systems for configured URLs
+ */
+class ExternalRoutesService {
+    constructor(config, urlMatcherService, injector) {
+        this.config = config;
+        this.urlMatcherService = urlMatcherService;
+        this.injector = injector;
+    }
+    get internalUrlPatterns() {
+        return ((this.config && this.config.routing && this.config.routing.internal) || []);
+    }
+    /**
+     * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
+     */
+    addRoutes() {
+        const router = this.injector.get(Router);
+        const newRoutes = this.getRoutes();
+        if (newRoutes.length) {
+            router.resetConfig([...newRoutes, ...router.config]);
+        }
+    }
+    /**
+     * Returns routes that are responsible for redirection to different storefront systems
+     */
+    getRoutes() {
+        if (!this.internalUrlPatterns.length) {
+            return [];
+        }
+        const routes = [];
+        routes.push({
+            pathMatch: 'full',
+            matcher: this.getUrlMatcher(),
+            canActivate: [ExternalRoutesGuard],
+            component: {},
+        });
+        return routes;
+    }
+    /**
+     * Returns the URL matcher for the external route
+     */
+    getUrlMatcher() {
+        const matcher = this.urlMatcherService.getFromGlob(this.internalUrlPatterns);
+        return this.urlMatcherService.getOpposite(matcher); // the external route should be activated only when it's NOT an internal route
+    }
+}
+ExternalRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(ɵɵinject(ExternalRoutesConfig), ɵɵinject(UrlMatcherService), ɵɵinject(INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
+ExternalRoutesService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+ExternalRoutesService.ctorParameters = () => [
+    { type: ExternalRoutesConfig },
+    { type: UrlMatcherService },
+    { type: Injector }
+];
+
+/**
+ * Prepends the external route that redirects to a different storefront system for configured URLs
+ */
+class ExternalRoutesModule {
+    static forRoot() {
+        return {
+            ngModule: ExternalRoutesModule,
+            providers: [
+                {
+                    provide: APP_INITIALIZER,
+                    multi: true,
+                    useFactory: addExternalRoutesFactory,
+                    deps: [ExternalRoutesService],
+                },
+            ],
+        };
+    }
+}
+ExternalRoutesModule.decorators = [
+    { type: NgModule }
+];
+
+class PageContext {
+    constructor(id, type) {
+        this.id = id;
+        this.type = type;
+    }
+}
+
+class ProtectedRoutesService {
+    constructor(config) {
+        this.config = config;
+        this.nonProtectedPaths = []; // arrays of paths' segments list
+        if (this.shouldProtect) {
+            // pre-process config for performance:
+            this.nonProtectedPaths = this.getNonProtectedPaths().map((path) => this.getSegments(path));
+        }
+    }
+    get routingConfig() {
+        return this.config && this.config.routing;
+    }
+    /**
+     * Returns 'protected' property (boolean) from routing config
+     *
+     * @returns boolean
+     */
+    get shouldProtect() {
+        return this.routingConfig.protected;
+    }
+    /**
+     * Tells if the url is protected
+     */
+    isUrlProtected(urlSegments) {
+        return (this.shouldProtect &&
+            !this.matchAnyPath(urlSegments, this.nonProtectedPaths));
+    }
+    /**
+     * Tells whether the url matches at least one of the paths
+     */
+    matchAnyPath(urlSegments, pathsSegments) {
+        return pathsSegments.some((pathSegments) => this.matchPath(urlSegments, pathSegments));
+    }
+    /**
+     * Tells whether the url matches the path
+     */
+    matchPath(urlSegments, pathSegments) {
+        if (urlSegments.length !== pathSegments.length) {
+            return false;
+        }
+        for (let i = 0; i < pathSegments.length; i++) {
+            const pathSeg = pathSegments[i];
+            const urlSeg = urlSegments[i];
+            // compare only static segments:
+            if (!pathSeg.startsWith(':') && pathSeg !== urlSeg) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Returns a list of paths that are not protected
+     */
+    getNonProtectedPaths() {
+        return Object.values(this.routingConfig.routes).reduce((acc, routeConfig) => routeConfig.protected === false && // must be explicitly false, ignore undefined
+            routeConfig.paths &&
+            routeConfig.paths.length
+            ? acc.concat(routeConfig.paths)
+            : acc, []);
+    }
+    /**
+     * Splits the url by slashes
+     */
+    getSegments(url) {
+        return (url || '').split('/');
+    }
+}
+ProtectedRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
+ProtectedRoutesService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+ProtectedRoutesService.ctorParameters = () => [
+    { type: RoutingConfig }
+];
+
+class ProtectedRoutesGuard {
+    constructor(service, authGuard) {
+        this.service = service;
+        this.authGuard = authGuard;
+    }
+    /**
+     * When the anticipated url is protected, it switches to the AuthGuard. Otherwise emits true.
+     */
+    canActivate(route) {
+        let urlSegments = route.url.map((seg) => seg.path);
+        // For the root path `/` ActivatedRoute contains an empty array of segments:
+        urlSegments = urlSegments.length ? urlSegments : [''];
+        if (this.service.isUrlProtected(urlSegments)) {
+            return this.authGuard.canActivate();
+        }
+        return of(true);
+    }
+}
+ProtectedRoutesGuard.ɵprov = ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(ɵɵinject(ProtectedRoutesService), ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
+ProtectedRoutesGuard.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+ProtectedRoutesGuard.ctorParameters = () => [
+    { type: ProtectedRoutesService },
+    { type: AuthGuard }
+];
+
+class RouterEffects {
+    constructor(actions$, router, location) {
+        this.actions$ = actions$;
+        this.router = router;
+        this.location = location;
+        this.navigate$ = this.actions$.pipe(ofType(ROUTER_GO), map((action) => action.payload), tap(({ path, query: queryParams, extras }) => {
+            this.router.navigate(path, Object.assign({ queryParams }, extras));
+        }));
+        this.navigateByUrl$ = this.actions$.pipe(ofType(ROUTER_GO_BY_URL), map((action) => action.payload), tap((url) => {
+            this.router.navigateByUrl(url);
+        }));
+        this.clearCmsRoutes$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), tap(() => {
+            const filteredConfig = this.router.config.filter((route) => !(route.data && route.data.cxCmsRouteContext));
+            if (filteredConfig.length !== this.router.config.length) {
+                this.router.resetConfig(filteredConfig);
+            }
+        }));
+        this.navigateBack$ = this.actions$.pipe(ofType(ROUTER_BACK), tap(() => this.location.back()));
+        this.navigateForward$ = this.actions$.pipe(ofType(ROUTER_FORWARD), tap(() => this.location.forward()));
+    }
+}
+RouterEffects.decorators = [
+    { type: Injectable }
+];
+RouterEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: Router },
+    { type: Location }
+];
+__decorate([
+    Effect({ dispatch: false })
+], RouterEffects.prototype, "navigate$", void 0);
+__decorate([
+    Effect({ dispatch: false })
+], RouterEffects.prototype, "navigateByUrl$", void 0);
+__decorate([
+    Effect({ dispatch: false })
+], RouterEffects.prototype, "clearCmsRoutes$", void 0);
+__decorate([
+    Effect({ dispatch: false })
+], RouterEffects.prototype, "navigateBack$", void 0);
+__decorate([
+    Effect({ dispatch: false })
+], RouterEffects.prototype, "navigateForward$", void 0);
+
+const effects$1 = [RouterEffects];
+
+const initialState = {
+    navigationId: 0,
+    state: {
+        url: '',
+        queryParams: {},
+        params: {},
+        context: {
+            id: '',
+        },
+        cmsRequired: false,
+        semanticRoute: undefined,
+    },
+    nextState: undefined,
+};
+function getReducers$1() {
+    return {
+        router: reducer,
+    };
+}
+function reducer(state = initialState, action) {
+    switch (action.type) {
+        case ROUTER_NAVIGATION: {
+            return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
+        }
+        case ROUTER_ERROR:
+        case ROUTER_CANCEL: {
+            return Object.assign(Object.assign({}, state), { nextState: undefined });
+        }
+        case ROUTER_NAVIGATED: {
+            return {
+                state: action.payload.routerState,
+                navigationId: action.payload.event.id,
+                nextState: undefined,
+            };
+        }
+        default: {
+            return state;
+        }
+    }
+}
+const reducerToken$1 = new InjectionToken('RouterReducers');
+const reducerProvider$1 = {
+    provide: reducerToken$1,
+    useFactory: getReducers$1,
+};
+/* The serializer is there to parse the RouterStateSnapshot,
+and to reduce the amount of properties to be passed to the reducer.
+ */
+class CustomSerializer {
+    constructor(routingConfig) {
+        this.routingConfig = routingConfig;
+    }
+    serialize(routerState) {
+        var _a, _b;
+        let state = routerState.root;
+        let cmsRequired = false;
+        let context;
+        let semanticRoute;
+        let urlString = '';
+        while (state.firstChild) {
+            state = state.firstChild;
+            urlString +=
+                '/' + state.url.map((urlSegment) => urlSegment.path).join('/');
+            // we use semantic route information embedded from any parent route
+            if ((_a = state.data) === null || _a === void 0 ? void 0 : _a.cxRoute) {
+                semanticRoute = (_b = state.data) === null || _b === void 0 ? void 0 : _b.cxRoute;
+            }
+            // we use context information embedded in Cms driven routes from any parent route
+            if (state.data && state.data.cxCmsRouteContext) {
+                context = state.data.cxCmsRouteContext;
+            }
+            // we assume, that any route that has CmsPageGuard or it's child
+            // is cmsRequired
+            if (!cmsRequired &&
+                (context ||
+                    (state.routeConfig &&
+                        state.routeConfig.canActivate &&
+                        state.routeConfig.canActivate.find((x) => x && x.guardName === 'CmsPageGuard')))) {
+                cmsRequired = true;
+            }
+        }
+        // If `semanticRoute` couldn't be already recognized using `data.cxRoute` property
+        // let's lookup the routing configuration to find the semantic route that has exactly the same configured path as the current URL.
+        // This will work only for simple URLs without any dynamic routing parameters.
+        semanticRoute = semanticRoute || this.lookupSemanticRoute(urlString);
+        const { params } = state;
+        // we give smartedit preview page a PageContext
+        if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
+            context = {
+                id: 'smartedit-preview',
+                type: PageType.CONTENT_PAGE,
+            };
+        }
+        else {
+            if (params['productCode']) {
+                context = { id: params['productCode'], type: PageType.PRODUCT_PAGE };
+            }
+            else if (params['categoryCode']) {
+                context = { id: params['categoryCode'], type: PageType.CATEGORY_PAGE };
+            }
+            else if (params['brandCode']) {
+                context = { id: params['brandCode'], type: PageType.CATEGORY_PAGE };
+            }
+            else if (state.data.pageLabel !== undefined) {
+                context = { id: state.data.pageLabel, type: PageType.CONTENT_PAGE };
+            }
+            else if (!context) {
+                if (state.url.length > 0) {
+                    const pageLabel = '/' + state.url.map((urlSegment) => urlSegment.path).join('/');
+                    context = {
+                        id: pageLabel,
+                        type: PageType.CONTENT_PAGE,
+                    };
+                }
+                else {
+                    context = {
+                        id: 'homepage',
+                        type: PageType.CONTENT_PAGE,
+                    };
+                }
+            }
+        }
+        return {
+            url: routerState.url,
+            queryParams: routerState.root.queryParams,
+            params,
+            context,
+            cmsRequired,
+            semanticRoute,
+        };
+    }
+    /**
+     * Returns the semantic route name for given page label.
+     *
+     * *NOTE*: It works only for simple static urls that are equal to the page label
+     * of cms-driven content page. For example: `/my-account/address-book`.
+     *
+     * It doesn't work for URLs with dynamic parameters. But such case can be handled
+     * by reading the defined `data.cxRoute` from the Angular Routes.
+     *
+     * @param path path to be found in the routing config
+     */
+    lookupSemanticRoute(path) {
+        // Page label is assumed to start with `/`, but Spartacus configured paths
+        // don't start with slash. So we remove the leading slash:
+        return this.routingConfig.getRouteName(path.substr(1));
+    }
+}
+CustomSerializer.decorators = [
+    { type: Injectable }
+];
+CustomSerializer.ctorParameters = () => [
+    { type: RoutingConfigService }
+];
+
+function initConfigurableRoutes(service) {
+    const result = () => service.init(); // workaround for AOT compilation (see https://stackoverflow.com/a/51977115)
+    return result;
+}
+class RoutingModule {
+    static forRoot() {
+        return {
+            ngModule: RoutingModule,
+            providers: [
+                reducerProvider$1,
+                {
+                    provide: RouterStateSerializer,
+                    useClass: CustomSerializer,
+                },
+                {
+                    provide: APP_INITIALIZER,
+                    useFactory: initConfigurableRoutes,
+                    deps: [ConfigurableRoutesService],
+                    multi: true,
+                },
+            ],
+        };
+    }
+}
+RoutingModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    StoreModule.forFeature(ROUTING_FEATURE, reducerToken$1),
+                    EffectsModule.forFeature(effects$1),
+                    StoreRouterConnectingModule.forRoot({
+                        routerState: 1 /* Minimal */,
+                        stateKey: ROUTING_FEATURE,
+                    }),
+                ],
+            },] }
+];
+
+function getDefaultUrlMatcherFactory(routingConfigService, urlMatcherService) {
+    const factory = (route) => {
+        const routeName = route.data && route.data['cxRoute'];
+        const routeConfig = routingConfigService.getRouteConfig(routeName);
+        const paths = (routeConfig && routeConfig.paths) || [];
+        return urlMatcherService.getFromPaths(paths);
+    };
+    return factory;
+}
+/**
+ * Injection token with url matcher factory for spartacus routes containing property `data.cxRoute`.
+ * The provided url matcher matches the configured `paths` from routing config.
+ *
+ * If this matcher doesn't fit the requirements, it can be replaced with custom matcher
+ * or additional matchers can be added for a specific route. See for example PRODUCT_DETAILS_URL_MATCHER.
+ *
+ * Note: Matchers will "match" a route, but do not contribute to the creation of the route, nor do they guard routes.
+ */
+const DEFAULT_URL_MATCHER = new InjectionToken('DEFAULT_URL_MATCHER', {
+    providedIn: 'root',
+    factory: () => getDefaultUrlMatcherFactory(inject(RoutingConfigService), inject(UrlMatcherService)),
+});
+
+/**
+ * Interceptor that handles "Cart not found" errors while a user is in a checkout step.
+ *
+ * When a user doing a checkout has a "Cart not found" error, he is redirected to checkout and the cart is reloaded.
+ * If a "Cart not found" error happens and the user is not on checkout, this interceptor does not perform any actions.
+ */
+class CheckoutCartInterceptor {
+    constructor(routingService, multiCartService) {
+        this.routingService = routingService;
+        this.multiCartService = multiCartService;
+    }
+    intercept(request, next) {
+        return this.routingService.getRouterState().pipe(take(1), switchMap((state) => {
+            return next.handle(request).pipe(catchError((response) => {
+                var _a;
+                if (response instanceof HttpErrorResponse &&
+                    this.isUserInCheckoutRoute((_a = state.state) === null || _a === void 0 ? void 0 : _a.semanticRoute)) {
+                    if (this.isCartNotFoundError(response)) {
+                        this.routingService.go({ cxRoute: 'cart' });
+                        const cartCode = this.getCartIdFromError(response);
+                        if (cartCode) {
+                            this.multiCartService.reloadCart(cartCode);
+                        }
+                    }
+                }
+                return throwError(response);
+            }));
+        }));
+    }
+    /**
+     * Returns true if the parameter semantic route is part of "checkout"
+     * Checkout semantic routes:
+     * checkout
+     * checkoutPaymentType
+     * CheckoutShippingAddress
+     * checkoutDeliveryMode
+     * checkoutPaymentDetails
+     * checkoutReviewOrder
+     * checkoutLogin
+     * @param semanticRoute
+     */
+    isUserInCheckoutRoute(semanticRoute) {
+        return semanticRoute.toLowerCase().startsWith('checkout');
+    }
+    /**
+     * Checks of the error is for a cart not found, i.e. the cart doesn't exist anymore
+     *
+     * @param response
+     */
+    isCartNotFoundError(response) {
+        var _a, _b, _c, _d, _e, _f;
+        return (response.status === 400 &&
+            ((_c = (_b = (_a = response.error) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.type) === 'CartError' &&
+            ((_f = (_e = (_d = response.error) === null || _d === void 0 ? void 0 : _d.errors) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.reason) === 'notFound');
+    }
+    getCartIdFromError(response) {
+        var _a, _b, _c;
+        return (_c = (_b = (_a = response.error) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.subject;
+    }
+}
+CheckoutCartInterceptor.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutCartInterceptor_Factory() { return new CheckoutCartInterceptor(ɵɵinject(RoutingService), ɵɵinject(MultiCartService)); }, token: CheckoutCartInterceptor, providedIn: "root" });
+CheckoutCartInterceptor.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+CheckoutCartInterceptor.ctorParameters = () => [
+    { type: RoutingService },
+    { type: MultiCartService }
+];
+
+const interceptors$2 = [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useExisting: CheckoutCartInterceptor,
+        multi: true,
+    },
+];
+
+// Email Standard RFC 5322:
+const EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
+const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
 class ActiveCartService {
     constructor(store, userIdService, multiCartService) {
@@ -9773,7 +10790,7 @@ __decorate([
     Effect()
 ], ReplenishmentOrderEffects.prototype, "scheduleReplenishmentOrder$", void 0);
 
-const effects$1 = [
+const effects$2 = [
     CheckoutEffects,
     AddressVerificationEffect,
     CardTypesEffects,
@@ -9781,10 +10798,10 @@ const effects$1 = [
     ReplenishmentOrderEffects,
 ];
 
-const initialState = {
+const initialState$1 = {
     results: {},
 };
-function reducer(state = initialState, action) {
+function reducer$1(state = initialState$1, action) {
     switch (action.type) {
         case VERIFY_ADDRESS_SUCCESS: {
             const results = action.payload;
@@ -9801,10 +10818,10 @@ function reducer(state = initialState, action) {
 }
 const getAddressVerificationResults = (state) => state.results;
 
-const initialState$1 = {
+const initialState$2 = {
     entities: {},
 };
-function reducer$1(state = initialState$1, action) {
+function reducer$2(state = initialState$2, action) {
     switch (action.type) {
         case LOAD_CARD_TYPES_SUCCESS: {
             const cardTypes = action.payload;
@@ -9814,14 +10831,14 @@ function reducer$1(state = initialState$1, action) {
             return Object.assign(Object.assign({}, state), { entities });
         }
         case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$1;
+            return initialState$2;
         }
     }
     return state;
 }
 const getCardTypesEntites = (state) => state.entities;
 
-const initialState$2 = {
+const initialState$3 = {
     poNumber: { po: undefined, costCenter: undefined },
     address: {},
     deliveryMode: {
@@ -9831,7 +10848,7 @@ const initialState$2 = {
     paymentDetails: {},
     orderDetails: {},
 };
-function reducer$2(state = initialState$2, action) {
+function reducer$3(state = initialState$3, action) {
     switch (action.type) {
         case SET_PAYMENT_TYPE_SUCCESS: {
             const cart = action.payload;
@@ -9876,7 +10893,7 @@ function reducer$2(state = initialState$2, action) {
             return Object.assign(Object.assign({}, state), { orderDetails });
         }
         case CLEAR_CHECKOUT_DATA: {
-            return initialState$2;
+            return initialState$3;
         }
         case CLEAR_CHECKOUT_STEP: {
             const stepNumber = action.payload;
@@ -9910,16 +10927,16 @@ function reducer$2(state = initialState$2, action) {
     return state;
 }
 
-const initialState$3 = {
+const initialState$4 = {
     selected: ORDER_TYPE.PLACE_ORDER,
 };
-function reducer$3(state = initialState$3, action) {
+function reducer$4(state = initialState$4, action) {
     switch (action.type) {
         case SET_ORDER_TYPE: {
             return Object.assign(Object.assign({}, state), { selected: action.payload });
         }
         case CLEAR_CHECKOUT_DATA: {
-            return initialState$3;
+            return initialState$4;
         }
         default: {
             return state;
@@ -9927,11 +10944,11 @@ function reducer$3(state = initialState$3, action) {
     }
 }
 
-const initialState$4 = {
+const initialState$5 = {
     entities: {},
     selected: undefined,
 };
-function reducer$4(state = initialState$4, action) {
+function reducer$5(state = initialState$5, action) {
     switch (action.type) {
         case LOAD_PAYMENT_TYPES_SUCCESS: {
             const paymentTypes = action.payload;
@@ -9947,7 +10964,7 @@ function reducer$4(state = initialState$4, action) {
             return Object.assign(Object.assign({}, state), { selected: undefined });
         }
         case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$4;
+            return initialState$5;
         }
     }
     return state;
@@ -9955,19 +10972,19 @@ function reducer$4(state = initialState$4, action) {
 const getPaymentTypesEntites = (state) => state.entities;
 const getSelectedPaymentType = (state) => state.selected;
 
-function getReducers$1() {
+function getReducers$2() {
     return {
-        steps: loaderReducer(CHECKOUT_DETAILS, reducer$2),
-        cardTypes: reducer$1,
-        addressVerification: reducer,
-        paymentTypes: reducer$4,
-        orderType: reducer$3,
+        steps: loaderReducer(CHECKOUT_DETAILS, reducer$3),
+        cardTypes: reducer$2,
+        addressVerification: reducer$1,
+        paymentTypes: reducer$5,
+        orderType: reducer$4,
     };
 }
-const reducerToken$1 = new InjectionToken('CheckoutReducers');
-const reducerProvider$1 = {
-    provide: reducerToken$1,
-    useFactory: getReducers$1,
+const reducerToken$2 = new InjectionToken('CheckoutReducers');
+const reducerProvider$2 = {
+    provide: reducerToken$2,
+    useFactory: getReducers$2,
 };
 
 class CheckoutStoreModule {
@@ -9976,10 +10993,10 @@ CheckoutStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$1),
-                    EffectsModule.forFeature(effects$1),
+                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$2),
+                    EffectsModule.forFeature(effects$2),
                 ],
-                providers: [reducerProvider$1],
+                providers: [reducerProvider$2],
             },] }
 ];
 
@@ -9988,6 +11005,7 @@ class CheckoutModule {
         return {
             ngModule: CheckoutModule,
             providers: [
+                ...interceptors$2,
                 {
                     provide: PageMetaResolver,
                     useExisting: CheckoutPageMetaResolver,
@@ -15281,7 +16299,7 @@ AnonymousConsentsInterceptor.ctorParameters = () => [
     { type: AnonymousConsentsConfig }
 ];
 
-const interceptors$2 = [
+const interceptors$3 = [
     {
         provide: HTTP_INTERCEPTORS,
         useExisting: AnonymousConsentsInterceptor,
@@ -15881,7 +16899,7 @@ __decorate([
     Effect()
 ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
 
-const effects$2 = [AnonymousConsentsEffects];
+const effects$3 = [AnonymousConsentsEffects];
 
 class SiteConnector {
     constructor(adapter) {
@@ -16353,18 +17371,18 @@ __decorate([
     Effect()
 ], LanguagesEffects.prototype, "activateLanguage$", void 0);
 
-const effects$3 = [
+const effects$4 = [
     LanguagesEffects,
     CurrenciesEffects,
     BaseSiteEffects,
 ];
 
-const initialState$5 = {
+const initialState$6 = {
     entities: null,
     details: {},
     activeSite: '',
 };
-function reducer$5(state = initialState$5, action) {
+function reducer$6(state = initialState$6, action) {
     switch (action.type) {
         case LOAD_BASE_SITE_SUCCESS: {
             return Object.assign(Object.assign({}, state), { details: action.payload });
@@ -16393,11 +17411,11 @@ function reducer$5(state = initialState$5, action) {
     return state;
 }
 
-const initialState$6 = {
+const initialState$7 = {
     entities: null,
     activeCurrency: null,
 };
-function reducer$6(state = initialState$6, action) {
+function reducer$7(state = initialState$7, action) {
     switch (action.type) {
         case LOAD_CURRENCIES_SUCCESS: {
             const currencies = action.payload;
@@ -16414,11 +17432,11 @@ function reducer$6(state = initialState$6, action) {
     return state;
 }
 
-const initialState$7 = {
+const initialState$8 = {
     entities: null,
     activeLanguage: null,
 };
-function reducer$7(state = initialState$7, action) {
+function reducer$8(state = initialState$8, action) {
     switch (action.type) {
         case LOAD_LANGUAGES_SUCCESS: {
             const languages = action.payload;
@@ -16435,17 +17453,17 @@ function reducer$7(state = initialState$7, action) {
     return state;
 }
 
-function getReducers$2() {
+function getReducers$3() {
     return {
-        languages: reducer$7,
-        currencies: reducer$6,
-        baseSite: reducer$5,
+        languages: reducer$8,
+        currencies: reducer$7,
+        baseSite: reducer$6,
     };
 }
-const reducerToken$2 = new InjectionToken('SiteContextReducers');
-const reducerProvider$2 = {
-    provide: reducerToken$2,
-    useFactory: getReducers$2,
+const reducerToken$3 = new InjectionToken('SiteContextReducers');
+const reducerProvider$3 = {
+    provide: reducerToken$3,
+    useFactory: getReducers$3,
 };
 
 function siteContextStoreConfigFactory() {
@@ -16465,12 +17483,12 @@ SiteContextStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
-                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
-                    EffectsModule.forFeature(effects$3),
+                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
+                    EffectsModule.forFeature(effects$4),
                 ],
                 providers: [
                     provideDefaultConfigFactory(siteContextStoreConfigFactory),
-                    reducerProvider$2,
+                    reducerProvider$3,
                 ],
             },] }
 ];
@@ -16496,8 +17514,8 @@ SiteContextModule.decorators = [
             },] }
 ];
 
-const initialState$8 = false;
-function reducer$8(state = initialState$8, action) {
+const initialState$9 = false;
+function reducer$9(state = initialState$9, action) {
     switch (action.type) {
         case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
             return action.dismissed;
@@ -16506,8 +17524,8 @@ function reducer$8(state = initialState$8, action) {
     return state;
 }
 
-const initialState$9 = false;
-function reducer$9(state = initialState$9, action) {
+const initialState$a = false;
+function reducer$a(state = initialState$a, action) {
     switch (action.type) {
         case TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: {
             return action.updated;
@@ -16516,7 +17534,7 @@ function reducer$9(state = initialState$9, action) {
     return state;
 }
 
-const initialState$a = [];
+const initialState$b = [];
 function toggleConsentStatus(consents, templateCode, status) {
     if (!consents) {
         return [];
@@ -16528,7 +17546,7 @@ function toggleConsentStatus(consents, templateCode, status) {
         return consent;
     });
 }
-function reducer$a(state = initialState$a, action) {
+function reducer$b(state = initialState$b, action) {
     switch (action.type) {
         case GIVE_ANONYMOUS_CONSENT: {
             return toggleConsentStatus(state, action.templateCode, ANONYMOUS_CONSENT_STATUS.GIVEN);
@@ -16543,20 +17561,20 @@ function reducer$a(state = initialState$a, action) {
     return state;
 }
 
-function getReducers$3() {
+function getReducers$4() {
     return {
         templates: loaderReducer(ANONYMOUS_CONSENTS),
-        consents: reducer$a,
+        consents: reducer$b,
         ui: combineReducers({
-            bannerDismissed: reducer$8,
-            updated: reducer$9,
+            bannerDismissed: reducer$9,
+            updated: reducer$a,
         }),
     };
 }
-const reducerToken$3 = new InjectionToken('AnonymousConsentsReducers');
-const reducerProvider$3 = {
-    provide: reducerToken$3,
-    useFactory: getReducers$3,
+const reducerToken$4 = new InjectionToken('AnonymousConsentsReducers');
+const reducerProvider$4 = {
+    provide: reducerToken$4,
+    useFactory: getReducers$4,
 };
 function clearAnonymousConsentTemplates(reducer) {
     return function (state, action) {
@@ -16590,14 +17608,14 @@ AnonymousConsentsStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     StateModule,
-                    StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$3, {
+                    StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$4, {
                         metaReducers,
                     }),
-                    EffectsModule.forFeature(effects$2),
+                    EffectsModule.forFeature(effects$3),
                 ],
                 providers: [
                     provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
-                    reducerProvider$3,
+                    reducerProvider$4,
                 ],
             },] }
 ];
@@ -16607,7 +17625,7 @@ class AnonymousConsentsModule {
         return {
             ngModule: AnonymousConsentsModule,
             providers: [
-                ...interceptors$2,
+                ...interceptors$3,
                 AnonymousConsentsService,
                 provideDefaultConfig(defaultAnonymousConsentsConfig),
             ],
@@ -17644,10 +18662,10 @@ const httpErrorInterceptors = [
     },
 ];
 
-const initialState$b = {
+const initialState$c = {
     entities: {},
 };
-function reducer$b(state = initialState$b, action) {
+function reducer$c(state = initialState$c, action) {
     switch (action.type) {
         case ADD_MESSAGE: {
             const message = action.payload;
@@ -17678,13 +18696,13 @@ function reducer$b(state = initialState$b, action) {
     return state;
 }
 
-function getReducers$4() {
-    return reducer$b;
+function getReducers$5() {
+    return reducer$c;
 }
-const reducerToken$4 = new InjectionToken('GlobalMessageReducers');
-const reducerProvider$4 = {
-    provide: reducerToken$4,
-    useFactory: getReducers$4,
+const reducerToken$5 = new InjectionToken('GlobalMessageReducers');
+const reducerProvider$5 = {
+    provide: reducerToken$5,
+    useFactory: getReducers$5,
 };
 
 class GlobalMessageStoreModule {
@@ -17693,9 +18711,9 @@ GlobalMessageStoreModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     StateModule,
-                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
                 ],
-                providers: [reducerProvider$4],
+                providers: [reducerProvider$5],
             },] }
 ];
 
@@ -18002,10 +19020,10 @@ __decorate([
     Effect()
 ], CustomerEffects.prototype, "customerSearch$", void 0);
 
-const effects$4 = [CustomerEffects];
+const effects$5 = [CustomerEffects];
 
-const initialState$c = { collapsed: false };
-function reducer$c(state = initialState$c, action) {
+const initialState$d = { collapsed: false };
+function reducer$d(state = initialState$d, action) {
     switch (action.type) {
         case ASM_UI_UPDATE: {
             return Object.assign(Object.assign({}, state), action.payload);
@@ -18016,16 +19034,16 @@ function reducer$c(state = initialState$c, action) {
     }
 }
 
-function getReducers$5() {
+function getReducers$6() {
     return {
         customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
-        asmUi: reducer$c,
+        asmUi: reducer$d,
     };
 }
-const reducerToken$5 = new InjectionToken('AsmReducers');
-const reducerProvider$5 = {
-    provide: reducerToken$5,
-    useFactory: getReducers$5,
+const reducerToken$6 = new InjectionToken('AsmReducers');
+const reducerProvider$6 = {
+    provide: reducerToken$6,
+    useFactory: getReducers$6,
 };
 function clearCustomerSupportAgentAsmState(reducer) {
     return function (state, action) {
@@ -18151,10 +19169,10 @@ AsmStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     StateModule,
-                    StoreModule.forFeature(ASM_FEATURE, reducerToken$5, { metaReducers: metaReducers$1 }),
-                    EffectsModule.forFeature(effects$4),
+                    StoreModule.forFeature(ASM_FEATURE, reducerToken$6, { metaReducers: metaReducers$1 }),
+                    EffectsModule.forFeature(effects$5),
                 ],
-                providers: [reducerProvider$5],
+                providers: [reducerProvider$6],
             },] }
 ];
 
@@ -19509,7 +20527,7 @@ __decorate([
     Effect()
 ], MultiCartEffects.prototype, "processesIncrement$", void 0);
 
-const effects$5 = [
+const effects$6 = [
     CartEffects,
     CartEntryEffects,
     CartVoucherEffects,
@@ -19526,7 +20544,7 @@ MultiCartStoreModule.decorators = [
                     StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
                         metaReducers: multiCartMetaReducers,
                     }),
-                    EffectsModule.forFeature(effects$5),
+                    EffectsModule.forFeature(effects$6),
                 ],
                 providers: [multiCartReducerProvider],
             },] }
@@ -20387,931 +21405,6 @@ ComponentsEffects.ctorParameters = () => [
     { type: Actions },
     { type: CmsComponentConnector }
 ];
-
-/**
- * @license
- * The MIT License
- * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
- *
- * See:
- * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/glob.ts
- * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/aio/tests/deployment/shared/helpers.ts#L17
- * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/service-worker/config/src/generator.ts#L86
- */
-const QUESTION_MARK = '[^/]';
-const WILD_SINGLE = '[^/]*';
-const WILD_OPEN = '(?:.+\\/)?';
-const TO_ESCAPE_BASE = [
-    { replace: /\./g, with: '\\.' },
-    { replace: /\+/g, with: '\\+' },
-    { replace: /\*/g, with: WILD_SINGLE },
-];
-const TO_ESCAPE_WILDCARD_QM = [
-    ...TO_ESCAPE_BASE,
-    { replace: /\?/g, with: QUESTION_MARK },
-];
-const TO_ESCAPE_LITERAL_QM = [
-    ...TO_ESCAPE_BASE,
-    { replace: /\?/g, with: '\\?' },
-];
-/**
- * Converts the glob-like pattern into regex string.
- *
- * Patterns use a limited glob format:
- * `**` matches 0 or more path segments
- * `*` matches 0 or more characters excluding `/`
- * `?` matches exactly one character excluding `/` (but when @param literalQuestionMark is true, `?` is treated as normal character)
- * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
- *
- * @param glob glob-like pattern
- * @param literalQuestionMark when true, it tells that `?` is treated as a normal character
- */
-function globToRegex(glob, literalQuestionMark = false) {
-    const toEscape = literalQuestionMark
-        ? TO_ESCAPE_LITERAL_QM
-        : TO_ESCAPE_WILDCARD_QM;
-    const segments = glob.split('/').reverse();
-    let regex = '';
-    while (segments.length > 0) {
-        const segment = segments.pop();
-        if (segment === '**') {
-            if (segments.length > 0) {
-                regex += WILD_OPEN;
-            }
-            else {
-                regex += '.*';
-            }
-        }
-        else {
-            const processed = toEscape.reduce((seg, escape) => seg.replace(escape.replace, escape.with), segment);
-            regex += processed;
-            if (segments.length > 0) {
-                regex += '\\/';
-            }
-        }
-    }
-    return regex;
-}
-/**
- * For given list of glob-like patterns, returns a matcher function.
- *
- * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
- */
-function getGlobMatcher(patterns) {
-    const processedPatterns = processGlobPatterns(patterns).map(({ positive, regex }) => ({
-        positive,
-        regex: new RegExp(regex),
-    }));
-    const includePatterns = processedPatterns.filter((spec) => spec.positive);
-    const excludePatterns = processedPatterns.filter((spec) => !spec.positive);
-    return (url) => includePatterns.some((pattern) => pattern.regex.test(url)) &&
-        !excludePatterns.some((pattern) => pattern.regex.test(url));
-}
-/**
- * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
- */
-function processGlobPatterns(urls) {
-    return urls.map((url) => {
-        const positive = !url.startsWith('!');
-        url = positive ? url : url.substr(1);
-        return { positive, regex: `^${globToRegex(url)}$` };
-    });
-}
-
-class GlobService {
-    /**
-     * For given list of glob-like patterns, returns a validator function.
-     *
-     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     */
-    getValidator(patterns) {
-        const processedPatterns = processGlobPatterns(patterns).map(({ positive, regex }) => ({
-            positive,
-            regex: new RegExp(regex),
-        }));
-        const includePatterns = processedPatterns.filter((spec) => spec.positive);
-        const excludePatterns = processedPatterns.filter((spec) => !spec.positive);
-        return (url) => includePatterns.some((pattern) => pattern.regex.test(url)) &&
-            !excludePatterns.some((pattern) => pattern.regex.test(url));
-    }
-}
-GlobService.ɵprov = ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-GlobService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-
-class UrlMatcherService {
-    constructor(globService) {
-        this.globService = globService;
-    }
-    /**
-     * Returns a matcher that is always fails
-     */
-    getFalsy() {
-        return function falsyUrlMatcher() {
-            return null;
-        };
-    }
-    /**
-     * Returns a matcher for given list of paths
-     */
-    getFromPaths(paths) {
-        const matchers = paths.map((path) => this.getFromPath(path));
-        const matcher = this.getCombined(matchers);
-        if (isDevMode()) {
-            matcher['_paths'] = paths; // property added for easier debugging of routes
-        }
-        return matcher;
-    }
-    /**
-     * Returns a matcher that combines the given matchers
-     * */
-    getCombined(matchers) {
-        const matcher = function combinedUrlMatchers(segments, segmentGroup, route) {
-            for (let i = 0; i < matchers.length; i++) {
-                const result = matchers[i](segments, segmentGroup, route);
-                if (result) {
-                    return result;
-                }
-            }
-            return null;
-        };
-        if (isDevMode()) {
-            matcher['_matchers'] = matchers; // property added for easier debugging of routes
-        }
-        return matcher;
-    }
-    /**
-     * Similar to Angular's defaultUrlMatcher. Differences:
-     * - the `path` comes from function's argument, not from `route.path`
-     * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
-     */
-    getFromPath(path = '') {
-        const matcher = function pathUrlMatcher(segments, segmentGroup, route) {
-            /**
-             * @license
-             * The MIT License
-             * Copyright (c) 2010-2019 Google LLC. http://angular.io/license
-             *
-             * See:
-             * - https://github.com/angular/angular/blob/6f5f481fdae03f1d8db36284b64c7b82d9519d85/packages/router/src/shared.ts#L121
-             */
-            // use function's argument, not the `route.path`
-            if (path === '') {
-                if (route.pathMatch === 'full' &&
-                    (segmentGroup.hasChildren() || segments.length > 0)) {
-                    return null;
-                }
-                return { consumed: [], posParams: {} };
-            }
-            const parts = path.split('/'); // use function's argument, not the `route.path`
-            if (parts.length > segments.length) {
-                // The actual URL is shorter than the config, no match
-                return null;
-            }
-            if (route.pathMatch === 'full' &&
-                (segmentGroup.hasChildren() || parts.length < segments.length)) {
-                // The config is longer than the actual URL but we are looking for a full match, return null
-                return null;
-            }
-            const posParams = {};
-            // Check each config part against the actual URL
-            for (let index = 0; index < parts.length; index++) {
-                const part = parts[index];
-                const segment = segments[index];
-                const isParameter = part.startsWith(':');
-                if (isParameter) {
-                    posParams[part.substring(1)] = segment;
-                }
-                else if (part !== segment.path) {
-                    // The actual URL part does not match the config, no match
-                    return null;
-                }
-            }
-            return { consumed: segments.slice(0, parts.length), posParams };
-        };
-        if (isDevMode()) {
-            matcher['_path'] = path; // property added for easier debugging of routes
-        }
-        return matcher;
-    }
-    /**
-     * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
-     */
-    getOpposite(originalMatcher) {
-        const matcher = function oppositeUrlMatcher(segments, group, route) {
-            return originalMatcher(segments, group, route)
-                ? null
-                : { consumed: segments, posParams: {} };
-        };
-        if (isDevMode()) {
-            matcher['_originalMatcher'] = originalMatcher; // property added for easier debugging of routes
-        }
-        return matcher;
-    }
-    /**
-     * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
-     */
-    getFromGlob(globPatterns) {
-        const globValidator = this.globService.getValidator(globPatterns);
-        const matcher = function globUrlMatcher(segments) {
-            const fullPath = `/${segments.map((s) => s.path).join('/')}`;
-            return globValidator(fullPath)
-                ? { consumed: segments, posParams: {} }
-                : null;
-        };
-        if (isDevMode()) {
-            matcher['_globPatterns'] = globPatterns; // property added for easier debugging of routes
-        }
-        return matcher;
-    }
-}
-UrlMatcherService.ɵprov = ɵɵdefineInjectable({ factory: function UrlMatcherService_Factory() { return new UrlMatcherService(ɵɵinject(GlobService)); }, token: UrlMatcherService, providedIn: "root" });
-UrlMatcherService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-UrlMatcherService.ctorParameters = () => [
-    { type: GlobService }
-];
-
-class ConfigurableRoutesService {
-    constructor(injector, routingConfigService, urlMatcherService) {
-        this.injector = injector;
-        this.routingConfigService = routingConfigService;
-        this.urlMatcherService = urlMatcherService;
-        this.initCalled = false; // guard not to call init() more than once
-    }
-    /**
-     * Enhances existing Angular routes using the routing config of Spartacus.
-     * Can be called only once.
-     */
-    init() {
-        if (!this.initCalled) {
-            this.initCalled = true;
-            this.configure();
-        }
-    }
-    /**
-     * Enhances existing Angular routes using the routing config of Spartacus.
-     */
-    configure() {
-        // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
-        const router = this.injector.get(Router);
-        router.resetConfig(this.configureRoutes(router.config));
-    }
-    /**
-     * Sets the property `path` or `matcher` for the given routes, based on the Spartacus' routing configuration.
-     *
-     * @param routes list of Angular `Route` objects
-     */
-    configureRoutes(routes) {
-        return routes.map((route) => {
-            const configuredRoute = this.configureRoute(route);
-            if (route.children && route.children.length) {
-                configuredRoute.children = this.configureRoutes(route.children);
-            }
-            return configuredRoute;
-        });
-    }
-    /**
-     * Sets the property `path` or `matcher` of the `Route`, based on the Spartacus' routing configuration.
-     * Uses the property `data.cxRoute` to determine the name of the route.
-     * It's the same name used as a key in the routing configuration: `routing.routes[ROUTE NAME]`.
-     *
-     * @param route Angular `Route` object
-     */
-    configureRoute(route) {
-        var _a;
-        const routeName = this.getRouteName(route);
-        if (routeName) {
-            const routeConfig = this.routingConfigService.getRouteConfig(routeName);
-            this.validateRouteConfig(routeConfig, routeName, route);
-            if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.disabled) {
-                delete route.path;
-                return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFalsy() });
-            }
-            else if (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) {
-                delete route.path;
-                return Object.assign(Object.assign({}, route), { matcher: this.resolveUrlMatchers(route, routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers) });
-            }
-            else if (((_a = routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || _a === void 0 ? void 0 : _a.length) === 1) {
-                delete route.matcher;
-                return Object.assign(Object.assign({}, route), { path: routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths[0] });
-            }
-            else {
-                delete route.path;
-                return Object.assign(Object.assign({}, route), { matcher: this.urlMatcherService.getFromPaths((routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) || []) });
-            }
-        }
-        return route; // if route doesn't have a name, just pass the original route
-    }
-    /**
-     * Creates a single `UrlMatcher` based on given matchers and factories of matchers.
-     *
-     * @param route Route object
-     * @param matchersOrFactories `UrlMatcher`s or injection tokens with a factory functions
-     *  that create UrlMatchers based on the given route.
-     */
-    resolveUrlMatchers(route, matchersOrFactories) {
-        const matchers = matchersOrFactories.map((matcherOrFactory) => {
-            return typeof matcherOrFactory === 'function'
-                ? matcherOrFactory // matcher
-                : this.resolveUrlMatcherFactory(route, matcherOrFactory); // factory injection token
-        });
-        return this.urlMatcherService.getCombined(matchers);
-    }
-    /**
-     * Creates an `UrlMatcher` based on the given route, using the factory function coming from the given injection token.
-     *
-     * @param route Route object
-     * @param factoryToken injection token with a factory function that will create an UrlMatcher using given route
-     */
-    resolveUrlMatcherFactory(route, factoryToken) {
-        const factory = this.injector.get(factoryToken);
-        return factory(route);
-    }
-    /**
-     * Returns the name of the Route stored in its property `data.cxRoute`
-     * @param route
-     */
-    getRouteName(route) {
-        return route.data && route.data.cxRoute;
-    }
-    validateRouteConfig(routeConfig, routeName, route) {
-        if (isDevMode()) {
-            // - null value of routeConfig or routeConfig.paths means explicit switching off the route - it's valid config
-            // - routeConfig with defined `matchers` is valid, even if `paths` are undefined
-            if (routeConfig === null ||
-                (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths) === null || (routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.matchers)) {
-                return;
-            }
-            // undefined value of routeConfig or routeConfig.paths is a misconfiguration
-            if (!(routeConfig === null || routeConfig === void 0 ? void 0 : routeConfig.paths)) {
-                this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined config or undefined 'paths' property for this route`);
-                return;
-            }
-        }
-    }
-    warn(...args) {
-        if (isDevMode()) {
-            console.warn(...args);
-        }
-    }
-}
-ConfigurableRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherService)); }, token: ConfigurableRoutesService, providedIn: "root" });
-ConfigurableRoutesService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-ConfigurableRoutesService.ctorParameters = () => [
-    { type: Injector },
-    { type: RoutingConfigService },
-    { type: UrlMatcherService }
-];
-
-class ProductURLPipe {
-    constructor(semanticPath) {
-        this.semanticPath = semanticPath;
-    }
-    transform(product) {
-        return this.semanticPath.transform({ cxRoute: 'product', params: product });
-    }
-}
-ProductURLPipe.decorators = [
-    { type: Pipe, args: [{
-                name: 'cxProductUrl',
-            },] }
-];
-ProductURLPipe.ctorParameters = () => [
-    { type: SemanticPathService }
-];
-
-class UrlPipe {
-    constructor(urlService) {
-        this.urlService = urlService;
-    }
-    transform(commands) {
-        return this.urlService.transform(commands);
-    }
-}
-UrlPipe.decorators = [
-    { type: Pipe, args: [{
-                name: 'cxUrl',
-            },] }
-];
-UrlPipe.ctorParameters = () => [
-    { type: SemanticPathService }
-];
-
-class UrlModule {
-}
-UrlModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule],
-                declarations: [UrlPipe, ProductURLPipe],
-                exports: [UrlPipe, ProductURLPipe],
-            },] }
-];
-
-class ExternalRoutesConfig {
-}
-ExternalRoutesConfig.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesConfig_Factory() { return ɵɵinject(Config); }, token: ExternalRoutesConfig, providedIn: "root" });
-ExternalRoutesConfig.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-                useExisting: Config,
-            },] }
-];
-
-class ExternalRoutesGuard {
-    constructor(winRef, platformId) {
-        this.winRef = winRef;
-        this.platformId = platformId;
-    }
-    /**
-     * Redirects to different storefront system for anticipated URL
-     */
-    canActivate(route, state) {
-        if (isPlatformBrowser(this.platformId)) {
-            this.redirect(route, state);
-        }
-        return false;
-    }
-    /**
-     * Redirects to anticipated URL using full page reload, not Angular routing
-     */
-    redirect(_, state) {
-        const window = this.winRef.nativeWindow;
-        if (window && window.location) {
-            window.location.href = state.url;
-        }
-    }
-}
-ExternalRoutesGuard.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
-ExternalRoutesGuard.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-ExternalRoutesGuard.ctorParameters = () => [
-    { type: WindowRef },
-    { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
-];
-
-function addExternalRoutesFactory(service) {
-    const result = () => {
-        service.addRoutes();
-    };
-    return result;
-}
-
-/**
- * Service that helps redirecting to different storefront systems for configured URLs
- */
-class ExternalRoutesService {
-    constructor(config, urlMatcherService, injector) {
-        this.config = config;
-        this.urlMatcherService = urlMatcherService;
-        this.injector = injector;
-    }
-    get internalUrlPatterns() {
-        return ((this.config && this.config.routing && this.config.routing.internal) || []);
-    }
-    /**
-     * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
-     */
-    addRoutes() {
-        const router = this.injector.get(Router);
-        const newRoutes = this.getRoutes();
-        if (newRoutes.length) {
-            router.resetConfig([...newRoutes, ...router.config]);
-        }
-    }
-    /**
-     * Returns routes that are responsible for redirection to different storefront systems
-     */
-    getRoutes() {
-        if (!this.internalUrlPatterns.length) {
-            return [];
-        }
-        const routes = [];
-        routes.push({
-            pathMatch: 'full',
-            matcher: this.getUrlMatcher(),
-            canActivate: [ExternalRoutesGuard],
-            component: {},
-        });
-        return routes;
-    }
-    /**
-     * Returns the URL matcher for the external route
-     */
-    getUrlMatcher() {
-        const matcher = this.urlMatcherService.getFromGlob(this.internalUrlPatterns);
-        return this.urlMatcherService.getOpposite(matcher); // the external route should be activated only when it's NOT an internal route
-    }
-}
-ExternalRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ExternalRoutesService_Factory() { return new ExternalRoutesService(ɵɵinject(ExternalRoutesConfig), ɵɵinject(UrlMatcherService), ɵɵinject(INJECTOR)); }, token: ExternalRoutesService, providedIn: "root" });
-ExternalRoutesService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-ExternalRoutesService.ctorParameters = () => [
-    { type: ExternalRoutesConfig },
-    { type: UrlMatcherService },
-    { type: Injector }
-];
-
-/**
- * Prepends the external route that redirects to a different storefront system for configured URLs
- */
-class ExternalRoutesModule {
-    static forRoot() {
-        return {
-            ngModule: ExternalRoutesModule,
-            providers: [
-                {
-                    provide: APP_INITIALIZER,
-                    multi: true,
-                    useFactory: addExternalRoutesFactory,
-                    deps: [ExternalRoutesService],
-                },
-            ],
-        };
-    }
-}
-ExternalRoutesModule.decorators = [
-    { type: NgModule }
-];
-
-class PageContext {
-    constructor(id, type) {
-        this.id = id;
-        this.type = type;
-    }
-}
-
-class ProtectedRoutesService {
-    constructor(config) {
-        this.config = config;
-        this.nonProtectedPaths = []; // arrays of paths' segments list
-        if (this.shouldProtect) {
-            // pre-process config for performance:
-            this.nonProtectedPaths = this.getNonProtectedPaths().map((path) => this.getSegments(path));
-        }
-    }
-    get routingConfig() {
-        return this.config && this.config.routing;
-    }
-    /**
-     * Returns 'protected' property (boolean) from routing config
-     *
-     * @returns boolean
-     */
-    get shouldProtect() {
-        return this.routingConfig.protected;
-    }
-    /**
-     * Tells if the url is protected
-     */
-    isUrlProtected(urlSegments) {
-        return (this.shouldProtect &&
-            !this.matchAnyPath(urlSegments, this.nonProtectedPaths));
-    }
-    /**
-     * Tells whether the url matches at least one of the paths
-     */
-    matchAnyPath(urlSegments, pathsSegments) {
-        return pathsSegments.some((pathSegments) => this.matchPath(urlSegments, pathSegments));
-    }
-    /**
-     * Tells whether the url matches the path
-     */
-    matchPath(urlSegments, pathSegments) {
-        if (urlSegments.length !== pathSegments.length) {
-            return false;
-        }
-        for (let i = 0; i < pathSegments.length; i++) {
-            const pathSeg = pathSegments[i];
-            const urlSeg = urlSegments[i];
-            // compare only static segments:
-            if (!pathSeg.startsWith(':') && pathSeg !== urlSeg) {
-                return false;
-            }
-        }
-        return true;
-    }
-    /**
-     * Returns a list of paths that are not protected
-     */
-    getNonProtectedPaths() {
-        return Object.values(this.routingConfig.routes).reduce((acc, routeConfig) => routeConfig.protected === false && // must be explicitly false, ignore undefined
-            routeConfig.paths &&
-            routeConfig.paths.length
-            ? acc.concat(routeConfig.paths)
-            : acc, []);
-    }
-    /**
-     * Splits the url by slashes
-     */
-    getSegments(url) {
-        return (url || '').split('/');
-    }
-}
-ProtectedRoutesService.ɵprov = ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
-ProtectedRoutesService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-ProtectedRoutesService.ctorParameters = () => [
-    { type: RoutingConfig }
-];
-
-class ProtectedRoutesGuard {
-    constructor(service, authGuard) {
-        this.service = service;
-        this.authGuard = authGuard;
-    }
-    /**
-     * When the anticipated url is protected, it switches to the AuthGuard. Otherwise emits true.
-     */
-    canActivate(route) {
-        let urlSegments = route.url.map((seg) => seg.path);
-        // For the root path `/` ActivatedRoute contains an empty array of segments:
-        urlSegments = urlSegments.length ? urlSegments : [''];
-        if (this.service.isUrlProtected(urlSegments)) {
-            return this.authGuard.canActivate();
-        }
-        return of(true);
-    }
-}
-ProtectedRoutesGuard.ɵprov = ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(ɵɵinject(ProtectedRoutesService), ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
-ProtectedRoutesGuard.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-ProtectedRoutesGuard.ctorParameters = () => [
-    { type: ProtectedRoutesService },
-    { type: AuthGuard }
-];
-
-class RouterEffects {
-    constructor(actions$, router, location) {
-        this.actions$ = actions$;
-        this.router = router;
-        this.location = location;
-        this.navigate$ = this.actions$.pipe(ofType(ROUTER_GO), map((action) => action.payload), tap(({ path, query: queryParams, extras }) => {
-            this.router.navigate(path, Object.assign({ queryParams }, extras));
-        }));
-        this.navigateByUrl$ = this.actions$.pipe(ofType(ROUTER_GO_BY_URL), map((action) => action.payload), tap((url) => {
-            this.router.navigateByUrl(url);
-        }));
-        this.clearCmsRoutes$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), tap(() => {
-            const filteredConfig = this.router.config.filter((route) => !(route.data && route.data.cxCmsRouteContext));
-            if (filteredConfig.length !== this.router.config.length) {
-                this.router.resetConfig(filteredConfig);
-            }
-        }));
-        this.navigateBack$ = this.actions$.pipe(ofType(ROUTER_BACK), tap(() => this.location.back()));
-        this.navigateForward$ = this.actions$.pipe(ofType(ROUTER_FORWARD), tap(() => this.location.forward()));
-    }
-}
-RouterEffects.decorators = [
-    { type: Injectable }
-];
-RouterEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: Router },
-    { type: Location }
-];
-__decorate([
-    Effect({ dispatch: false })
-], RouterEffects.prototype, "navigate$", void 0);
-__decorate([
-    Effect({ dispatch: false })
-], RouterEffects.prototype, "navigateByUrl$", void 0);
-__decorate([
-    Effect({ dispatch: false })
-], RouterEffects.prototype, "clearCmsRoutes$", void 0);
-__decorate([
-    Effect({ dispatch: false })
-], RouterEffects.prototype, "navigateBack$", void 0);
-__decorate([
-    Effect({ dispatch: false })
-], RouterEffects.prototype, "navigateForward$", void 0);
-
-const effects$6 = [RouterEffects];
-
-const initialState$d = {
-    navigationId: 0,
-    state: {
-        url: '',
-        queryParams: {},
-        params: {},
-        context: {
-            id: '',
-        },
-        cmsRequired: false,
-        semanticRoute: undefined,
-    },
-    nextState: undefined,
-};
-function getReducers$6() {
-    return {
-        router: reducer$d,
-    };
-}
-function reducer$d(state = initialState$d, action) {
-    switch (action.type) {
-        case ROUTER_NAVIGATION: {
-            return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
-        }
-        case ROUTER_ERROR:
-        case ROUTER_CANCEL: {
-            return Object.assign(Object.assign({}, state), { nextState: undefined });
-        }
-        case ROUTER_NAVIGATED: {
-            return {
-                state: action.payload.routerState,
-                navigationId: action.payload.event.id,
-                nextState: undefined,
-            };
-        }
-        default: {
-            return state;
-        }
-    }
-}
-const reducerToken$6 = new InjectionToken('RouterReducers');
-const reducerProvider$6 = {
-    provide: reducerToken$6,
-    useFactory: getReducers$6,
-};
-/* The serializer is there to parse the RouterStateSnapshot,
-and to reduce the amount of properties to be passed to the reducer.
- */
-class CustomSerializer {
-    constructor(routingConfig) {
-        this.routingConfig = routingConfig;
-    }
-    serialize(routerState) {
-        var _a, _b;
-        let state = routerState.root;
-        let cmsRequired = false;
-        let context;
-        let semanticRoute;
-        let urlString = '';
-        while (state.firstChild) {
-            state = state.firstChild;
-            urlString +=
-                '/' + state.url.map((urlSegment) => urlSegment.path).join('/');
-            // we use semantic route information embedded from any parent route
-            if ((_a = state.data) === null || _a === void 0 ? void 0 : _a.cxRoute) {
-                semanticRoute = (_b = state.data) === null || _b === void 0 ? void 0 : _b.cxRoute;
-            }
-            // we use context information embedded in Cms driven routes from any parent route
-            if (state.data && state.data.cxCmsRouteContext) {
-                context = state.data.cxCmsRouteContext;
-            }
-            // we assume, that any route that has CmsPageGuard or it's child
-            // is cmsRequired
-            if (!cmsRequired &&
-                (context ||
-                    (state.routeConfig &&
-                        state.routeConfig.canActivate &&
-                        state.routeConfig.canActivate.find((x) => x && x.guardName === 'CmsPageGuard')))) {
-                cmsRequired = true;
-            }
-        }
-        // If `semanticRoute` couldn't be already recognized using `data.cxRoute` property
-        // let's lookup the routing configuration to find the semantic route that has exactly the same configured path as the current URL.
-        // This will work only for simple URLs without any dynamic routing parameters.
-        semanticRoute = semanticRoute || this.lookupSemanticRoute(urlString);
-        const { params } = state;
-        // we give smartedit preview page a PageContext
-        if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
-            context = {
-                id: 'smartedit-preview',
-                type: PageType.CONTENT_PAGE,
-            };
-        }
-        else {
-            if (params['productCode']) {
-                context = { id: params['productCode'], type: PageType.PRODUCT_PAGE };
-            }
-            else if (params['categoryCode']) {
-                context = { id: params['categoryCode'], type: PageType.CATEGORY_PAGE };
-            }
-            else if (params['brandCode']) {
-                context = { id: params['brandCode'], type: PageType.CATEGORY_PAGE };
-            }
-            else if (state.data.pageLabel !== undefined) {
-                context = { id: state.data.pageLabel, type: PageType.CONTENT_PAGE };
-            }
-            else if (!context) {
-                if (state.url.length > 0) {
-                    const pageLabel = '/' + state.url.map((urlSegment) => urlSegment.path).join('/');
-                    context = {
-                        id: pageLabel,
-                        type: PageType.CONTENT_PAGE,
-                    };
-                }
-                else {
-                    context = {
-                        id: 'homepage',
-                        type: PageType.CONTENT_PAGE,
-                    };
-                }
-            }
-        }
-        return {
-            url: routerState.url,
-            queryParams: routerState.root.queryParams,
-            params,
-            context,
-            cmsRequired,
-            semanticRoute,
-        };
-    }
-    /**
-     * Returns the semantic route name for given page label.
-     *
-     * *NOTE*: It works only for simple static urls that are equal to the page label
-     * of cms-driven content page. For example: `/my-account/address-book`.
-     *
-     * It doesn't work for URLs with dynamic parameters. But such case can be handled
-     * by reading the defined `data.cxRoute` from the Angular Routes.
-     *
-     * @param path path to be found in the routing config
-     */
-    lookupSemanticRoute(path) {
-        // Page label is assumed to start with `/`, but Spartacus configured paths
-        // don't start with slash. So we remove the leading slash:
-        return this.routingConfig.getRouteName(path.substr(1));
-    }
-}
-CustomSerializer.decorators = [
-    { type: Injectable }
-];
-CustomSerializer.ctorParameters = () => [
-    { type: RoutingConfigService }
-];
-
-function initConfigurableRoutes(service) {
-    const result = () => service.init(); // workaround for AOT compilation (see https://stackoverflow.com/a/51977115)
-    return result;
-}
-class RoutingModule {
-    static forRoot() {
-        return {
-            ngModule: RoutingModule,
-            providers: [
-                reducerProvider$6,
-                {
-                    provide: RouterStateSerializer,
-                    useClass: CustomSerializer,
-                },
-                {
-                    provide: APP_INITIALIZER,
-                    useFactory: initConfigurableRoutes,
-                    deps: [ConfigurableRoutesService],
-                    multi: true,
-                },
-            ],
-        };
-    }
-}
-RoutingModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    StoreModule.forFeature(ROUTING_FEATURE, reducerToken$6),
-                    EffectsModule.forFeature(effects$6),
-                    StoreRouterConnectingModule.forRoot({
-                        routerState: 1 /* Minimal */,
-                        stateKey: ROUTING_FEATURE,
-                    }),
-                ],
-            },] }
-];
-
-function getDefaultUrlMatcherFactory(routingConfigService, urlMatcherService) {
-    const factory = (route) => {
-        const routeName = route.data && route.data['cxRoute'];
-        const routeConfig = routingConfigService.getRouteConfig(routeName);
-        const paths = (routeConfig && routeConfig.paths) || [];
-        return urlMatcherService.getFromPaths(paths);
-    };
-    return factory;
-}
-/**
- * Injection token with url matcher factory for spartacus routes containing property `data.cxRoute`.
- * The provided url matcher matches the configured `paths` from routing config.
- *
- * If this matcher doesn't fit the requirements, it can be replaced with custom matcher
- * or additional matchers can be added for a specific route. See for example PRODUCT_DETAILS_URL_MATCHER.
- *
- * Note: Matchers will "match" a route, but do not contribute to the creation of the route, nor do they guard routes.
- */
-const DEFAULT_URL_MATCHER = new InjectionToken('DEFAULT_URL_MATCHER', {
-    providedIn: 'root',
-    factory: () => getDefaultUrlMatcherFactory(inject(RoutingConfigService), inject(UrlMatcherService)),
-});
 
 class NavigationEntryItemEffects {
     constructor(actions$, cmsComponentConnector, routingService) {
@@ -22575,7 +22668,7 @@ OccPersonalizationTimeInterceptor.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
 
-const interceptors$3 = [
+const interceptors$4 = [
     {
         provide: HTTP_INTERCEPTORS,
         useExisting: OccPersonalizationIdInterceptor,
@@ -22594,7 +22687,7 @@ class PersonalizationModule {
             ngModule: PersonalizationModule,
             providers: [
                 provideDefaultConfig(defaultPersonalizationConfig),
-                ...interceptors$3,
+                ...interceptors$4,
             ],
         };
     }
@@ -24033,7 +24126,7 @@ CmsTicketInterceptor.ctorParameters = () => [
     { type: SmartEditService }
 ];
 
-const interceptors$4 = [
+const interceptors$5 = [
     {
         provide: HTTP_INTERCEPTORS,
         useExisting: CmsTicketInterceptor,
@@ -24045,7 +24138,7 @@ class SmartEditModule {
     static forRoot() {
         return {
             ngModule: SmartEditModule,
-            providers: [...interceptors$4],
+            providers: [...interceptors$5],
         };
     }
 }
@@ -27325,5 +27418,5 @@ DatePickerFormatterService.ctorParameters = () => [];
  * Generated bundle index. Do not edit.
  */
 
-export { ADDRESS_LIST_NORMALIZER, ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_HEADER, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_NORMALIZER, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, ActivatedRoutesService, ActiveCartService, AnonymousConsentNormalizer, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthHttpHeaderService, AsmAuthService, AsmAuthStorageService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, AsmStatePersistenceService, authGroup_actions as AuthActions, AuthConfig, AuthConfigService, AuthGuard, AuthHttpHeaderService, AuthInterceptor, AuthModule, AuthRedirectService, AuthRedirectStorageService, AuthService, AuthStatePersistenceService, AuthStorageService, B2BPaymentTypeEnum, B2BUserGroup, BASE_SITE_CONTEXT_ID, BASE_SITE_NORMALIZER, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_AUTH_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COST_CENTERS_NORMALIZER, COST_CENTER_NORMALIZER, COST_CENTER_SERIALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartPersistenceModule, CartRemoveEntrySuccessEvent, CartUpdateEntrySuccessEvent, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutCostCenterAdapter, CheckoutCostCenterConnector, CheckoutCostCenterService, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutEventBuilder, CheckoutEventModule, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutReplenishmentOrderAdapter, CheckoutReplenishmentOrderConnector, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, clientTokenGroup_actions as ClientAuthActions, ClientAuthModule, clientTokenGroup_selectors as ClientAuthSelectors, ClientAuthenticationTokenService, ClientErrorHandlingService, ClientTokenInterceptor, ClientTokenService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConfigurationService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CostCenterModule, CostCenterOccModule, CountryType, CsAgentAuthService, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DatePickerFormatterService, DateTimePickerFormatterService, DaysOfWeek, DefaultConfig, DefaultConfigChunk, DefaultRoutePageMetaResolver, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GET_PAYMENT_TYPES_PROCESS_ID, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, HttpParamsURIEncoder, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LazyModulesService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, ModuleInitializedEvent, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OAuthFlow, OAuthLibWrapperService, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, ORDER_TYPE, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutCostCenterAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCheckoutPaymentTypeAdapter, OccCheckoutReplenishmentOrderAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCostCenterListNormalizer, OccCostCenterNormalizer, OccCostCenterSerializer, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccReplenishmentOrderFormSerializer, OccReplenishmentOrderNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OccUserReplenishmentOrderAdapter, OrderPlacedEvent, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PAYMENT_TYPE_NORMALIZER, PLACED_ORDER_PROCESS_ID, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PaymentTypeAdapter, PaymentTypeConnector, PaymentTypeService, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, REPLENISHMENT_ORDER_FORM_SERIALIZER, REPLENISHMENT_ORDER_HISTORY_NORMALIZER, REPLENISHMENT_ORDER_NORMALIZER, ROUTING_FEATURE, RootConfig, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, RoutingPageMetaResolver, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_COST_CENTER_PROCESS_ID, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TokenRevocationInterceptor, TokenTarget, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_COST_CENTERS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_REPLENISHMENT_ORDERS, USER_REPLENISHMENT_ORDER_DETAILS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnifiedInjector, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserAuthModule, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserCostCenterAdapter, UserCostCenterConnector, UserCostCenterService, UserIdService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserReplenishmentOrderAdapter, UserReplenishmentOrderConnector, UserReplenishmentOrderService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, contextServiceMapProvider, createFrom, deepMerge, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getLastValueSync, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, isObject, locationInitializedFactory, mediaServerConfigFromMetaTagFactory, normalizeHttpError, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, recurrencePeriod, resolveApplicable, serviceMapFactory, validateConfig, withdrawOn, asmStatePersistenceFactory as ɵa, checkOAuthParamsInUrl as ɵb, reducer$a as ɵba, reducer$8 as ɵbb, reducer$9 as ɵbc, interceptors$2 as ɵbd, AnonymousConsentsInterceptor as ɵbe, AsmStoreModule as ɵbf, getReducers$5 as ɵbg, reducerToken$5 as ɵbh, reducerProvider$5 as ɵbi, clearCustomerSupportAgentAsmState as ɵbj, metaReducers$1 as ɵbk, effects$4 as ɵbl, CustomerEffects as ɵbm, reducer$c as ɵbn, defaultAsmConfig as ɵbo, ClientAuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, effects as ɵbu, ClientTokenEffect as ɵbv, interceptors as ɵbw, defaultAuthConfig as ɵbx, interceptors$1 as ɵby, SiteContextParamsService as ɵbz, authStatePersistenceFactory as ɵc, MultiCartStoreModule as ɵca, clearMultiCartState as ɵcb, multiCartMetaReducers as ɵcc, multiCartReducerToken as ɵcd, getMultiCartReducers as ɵce, multiCartReducerProvider as ɵcf, CartEffects as ɵcg, CartEntryEffects as ɵch, CartVoucherEffects as ɵci, WishListEffects as ɵcj, SaveCartConnector as ɵck, SaveCartAdapter as ɵcl, MultiCartEffects as ɵcm, entityProcessesLoaderReducer as ɵcn, entityReducer as ɵco, processesLoaderReducer as ɵcp, activeCartReducer as ɵcq, cartEntitiesReducer as ɵcr, wishListReducer as ɵcs, CartPageMetaResolver as ɵct, CheckoutStoreModule as ɵcu, getReducers$1 as ɵcv, reducerToken$1 as ɵcw, reducerProvider$1 as ɵcx, effects$1 as ɵcy, AddressVerificationEffect as ɵcz, cartStatePersistenceFactory as ɵd, CardTypesEffects as ɵda, CheckoutEffects as ɵdb, PaymentTypesEffects as ɵdc, ReplenishmentOrderEffects as ɵdd, reducer$2 as ɵde, reducer$1 as ɵdf, reducer as ɵdg, reducer$4 as ɵdh, reducer$3 as ɵdi, cmsStoreConfigFactory as ɵdj, CmsStoreModule as ɵdk, getReducers$7 as ɵdl, reducerToken$7 as ɵdm, reducerProvider$7 as ɵdn, clearCmsState as ɵdo, metaReducers$2 as ɵdp, effects$7 as ɵdq, ComponentsEffects as ɵdr, NavigationEntryItemEffects as ɵds, PageEffects as ɵdt, reducer$g as ɵdu, entityLoaderReducer as ɵdv, reducer$h as ɵdw, reducer$e as ɵdx, reducer$f as ɵdy, GlobalMessageStoreModule as ɵdz, uninitializeActiveCartMetaReducerFactory as ɵe, getReducers$4 as ɵea, reducerToken$4 as ɵeb, reducerProvider$4 as ɵec, reducer$b as ɵed, GlobalMessageEffect as ɵee, defaultGlobalMessageConfigFactory as ɵef, HttpErrorInterceptor as ɵeg, defaultI18nConfig as ɵeh, i18nextProviders as ɵei, i18nextInit as ɵej, MockTranslationService as ɵek, defaultOccAsmConfig as ɵel, defaultOccCartConfig as ɵem, OccSaveCartAdapter as ɵen, defaultOccCheckoutConfig as ɵeo, defaultOccCostCentersConfig as ɵep, defaultOccProductConfig as ɵeq, defaultOccSiteContextConfig as ɵer, defaultOccStoreFinderConfig as ɵes, defaultOccUserConfig as ɵet, UserNotificationPreferenceAdapter as ɵeu, OccUserCostCenterAdapter as ɵev, OccAddressListNormalizer as ɵew, UserReplenishmentOrderAdapter as ɵex, defaultPersonalizationConfig as ɵey, interceptors$3 as ɵez, CONFIG_INITIALIZER_FORROOT_GUARD as ɵf, OccPersonalizationIdInterceptor as ɵfa, OccPersonalizationTimeInterceptor as ɵfb, ProcessStoreModule as ɵfc, getReducers$8 as ɵfd, reducerToken$8 as ɵfe, reducerProvider$8 as ɵff, productStoreConfigFactory as ɵfg, ProductStoreModule as ɵfh, getReducers$9 as ɵfi, reducerToken$9 as ɵfj, reducerProvider$9 as ɵfk, clearProductsState as ɵfl, metaReducers$3 as ɵfm, effects$8 as ɵfn, ProductReferencesEffects as ɵfo, ProductReviewsEffects as ɵfp, ProductsSearchEffects as ɵfq, ProductEffects as ɵfr, reducer$k as ɵfs, entityScopedLoaderReducer as ɵft, scopedLoaderReducer as ɵfu, reducer$j as ɵfv, reducer$i as ɵfw, PageMetaResolver as ɵfx, CouponSearchPageResolver as ɵfy, PageMetaResolver as ɵfz, TEST_CONFIG_COOKIE_NAME as ɵg, addExternalRoutesFactory as ɵga, getReducers$6 as ɵgb, reducer$d as ɵgc, reducerToken$6 as ɵgd, reducerProvider$6 as ɵge, CustomSerializer as ɵgf, effects$6 as ɵgg, RouterEffects as ɵgh, siteContextStoreConfigFactory as ɵgi, SiteContextStoreModule as ɵgj, getReducers$2 as ɵgk, reducerToken$2 as ɵgl, reducerProvider$2 as ɵgm, effects$3 as ɵgn, BaseSiteEffects as ɵgo, CurrenciesEffects as ɵgp, LanguagesEffects as ɵgq, reducer$7 as ɵgr, reducer$6 as ɵgs, reducer$5 as ɵgt, defaultSiteContextConfigFactory as ɵgu, initializeContext as ɵgv, contextServiceProviders as ɵgw, SiteContextRoutesHandler as ɵgx, SiteContextUrlSerializer as ɵgy, siteContextParamsProviders as ɵgz, configFromCookieFactory as ɵh, baseSiteConfigValidator as ɵha, interceptors$4 as ɵhb, CmsTicketInterceptor as ɵhc, StoreFinderStoreModule as ɵhd, getReducers$a as ɵhe, reducerToken$a as ɵhf, reducerProvider$a as ɵhg, effects$9 as ɵhh, FindStoresEffect as ɵhi, ViewAllStoresEffect as ɵhj, defaultStoreFinderConfig as ɵhk, UserStoreModule as ɵhl, getReducers$b as ɵhm, reducerToken$b as ɵhn, reducerProvider$b as ɵho, clearUserState as ɵhp, metaReducers$5 as ɵhq, effects$a as ɵhr, BillingCountriesEffect as ɵhs, ClearMiscsDataEffect as ɵht, ConsignmentTrackingEffects as ɵhu, CustomerCouponEffects as ɵhv, DeliveryCountriesEffects as ɵhw, NotificationPreferenceEffects as ɵhx, OrderDetailsEffect as ɵhy, OrderReturnRequestEffect as ɵhz, initConfig as ɵi, UserPaymentMethodsEffects as ɵia, ProductInterestsEffect as ɵib, RegionsEffects as ɵic, ReplenishmentOrderDetailsEffect as ɵid, ResetPasswordEffects as ɵie, TitlesEffects as ɵif, UserAddressesEffects as ɵig, UserConsentsEffect as ɵih, UserDetailsEffects as ɵii, UserOrdersEffect as ɵij, UserRegisterEffects as ɵik, UserReplenishmentOrdersEffect as ɵil, ForgotPasswordEffects as ɵim, UpdateEmailEffects as ɵin, UpdatePasswordEffects as ɵio, UserNotificationPreferenceConnector as ɵip, UserCostCenterEffects as ɵiq, reducer$B as ɵir, reducer$y as ɵis, reducer$l as ɵit, reducer$z as ɵiu, reducer$s as ɵiv, reducer$C as ɵiw, reducer$q as ɵix, reducer$D as ɵiy, reducer$r as ɵiz, anonymousConsentsStoreConfigFactory as ɵj, reducer$o as ɵja, reducer$x as ɵjb, reducer$u as ɵjc, reducer$w as ɵjd, reducer$m as ɵje, reducer$n as ɵjf, reducer$p as ɵjg, reducer$t as ɵjh, reducer$A as ɵji, reducer$v as ɵjj, AnonymousConsentsStoreModule as ɵk, TRANSFER_STATE_META_REDUCER as ɵl, STORAGE_SYNC_META_REDUCER as ɵm, stateMetaReducers as ɵn, getStorageSyncReducer as ɵo, getTransferStateReducer as ɵp, getReducers$3 as ɵq, reducerToken$3 as ɵr, reducerProvider$3 as ɵs, clearAnonymousConsentTemplates as ɵt, metaReducers as ɵu, effects$2 as ɵv, AnonymousConsentsEffects as ɵw, UrlParsingService as ɵx, RoutingParamsService as ɵy, loaderReducer as ɵz };
+export { ADDRESS_LIST_NORMALIZER, ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_HEADER, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_NORMALIZER, ANONYMOUS_CONSENT_STATUS, ASM_FEATURE, ActivatedRoutesService, ActiveCartService, AnonymousConsentNormalizer, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthHttpHeaderService, AsmAuthService, AsmAuthStorageService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, AsmStatePersistenceService, authGroup_actions as AuthActions, AuthConfig, AuthConfigService, AuthGuard, AuthHttpHeaderService, AuthInterceptor, AuthModule, AuthRedirectService, AuthRedirectStorageService, AuthService, AuthStatePersistenceService, AuthStorageService, B2BPaymentTypeEnum, B2BUserGroup, BASE_SITE_CONTEXT_ID, BASE_SITE_NORMALIZER, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_REPLENISHMENT_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_AUTH_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COST_CENTERS_NORMALIZER, COST_CENTER_NORMALIZER, COST_CENTER_SERIALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartAddEntryEvent, CartAddEntryFailEvent, CartAddEntrySuccessEvent, CartConfig, CartConfigService, CartConnector, CartEntryAdapter, CartEntryConnector, CartEventBuilder, CartEventModule, CartModule, CartOccModule, CartPersistenceModule, CartRemoveEntrySuccessEvent, CartUpdateEntrySuccessEvent, CartVoucherAdapter, CartVoucherConnector, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutCostCenterAdapter, CheckoutCostCenterConnector, CheckoutCostCenterService, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutEventBuilder, CheckoutEventModule, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutReplenishmentOrderAdapter, CheckoutReplenishmentOrderConnector, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, clientTokenGroup_actions as ClientAuthActions, ClientAuthModule, clientTokenGroup_selectors as ClientAuthSelectors, ClientAuthenticationTokenService, ClientErrorHandlingService, ClientTokenInterceptor, ClientTokenService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorModule, ConfigValidatorToken, ConfigurableRoutesService, ConfigurationService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CostCenterModule, CostCenterOccModule, CountryType, CsAgentAuthService, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SCOPE, DEFAULT_SESSION_STORAGE_KEY, DEFAULT_URL_MATCHER, DELIVERY_MODE_NORMALIZER, DatePickerFormatterService, DateTimePickerFormatterService, DaysOfWeek, DefaultConfig, DefaultConfigChunk, DefaultRoutePageMetaResolver, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, EventService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GET_PAYMENT_TYPES_PROCESS_ID, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, HttpParamsURIEncoder, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, InternalServerErrorHandler, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LazyModulesService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, ModuleInitializedEvent, multiCartGroup_selectors as MultiCartSelectors, MultiCartService, MultiCartStatePersistenceService, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OAuthFlow, OAuthLibWrapperService, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, ORDER_TYPE, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutCostCenterAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCheckoutPaymentTypeAdapter, OccCheckoutReplenishmentOrderAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCostCenterListNormalizer, OccCostCenterNormalizer, OccCostCenterSerializer, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccReplenishmentOrderFormSerializer, OccReplenishmentOrderNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OccUserReplenishmentOrderAdapter, OrderPlacedEvent, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PAYMENT_TYPE_NORMALIZER, PLACED_ORDER_PROCESS_ID, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PaymentTypeAdapter, PaymentTypeConnector, PaymentTypeService, PersonalizationConfig, PersonalizationContextService, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProductURLPipe, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, REPLENISHMENT_ORDER_FORM_SERIALIZER, REPLENISHMENT_ORDER_HISTORY_NORMALIZER, REPLENISHMENT_ORDER_NORMALIZER, ROUTING_FEATURE, RootConfig, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, RoutingPageMetaResolver, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_ORIGIN, SERVER_REQUEST_URL, SET_COST_CENTER_PROCESS_ID, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, StateEventService, StateModule, StatePersistenceService, StateTransferType, utilsGroup as StateUtils, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TokenRevocationInterceptor, TokenTarget, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_COST_CENTERS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_REPLENISHMENT_ORDERS, USER_REPLENISHMENT_ORDER_DETAILS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnifiedInjector, UnknownErrorHandler, UrlMatcherService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserAuthModule, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserCostCenterAdapter, UserCostCenterConnector, UserCostCenterService, UserIdService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserReplenishmentOrderAdapter, UserReplenishmentOrderConnector, UserReplenishmentOrderService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListService, WithCredentialsInterceptor, configInitializerFactory, configValidatorFactory, contextServiceMapProvider, createFrom, deepMerge, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, errorHandlers, getLastValueSync, getServerRequestProviders, httpErrorInterceptors, initConfigurableRoutes, isFeatureEnabled, isFeatureLevel, isObject, locationInitializedFactory, mediaServerConfigFromMetaTagFactory, normalizeHttpError, occConfigValidator, occServerConfigFromMetaTagFactory, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, provideDefaultConfig, provideDefaultConfigFactory, recurrencePeriod, resolveApplicable, serviceMapFactory, validateConfig, withdrawOn, asmStatePersistenceFactory as ɵa, checkOAuthParamsInUrl as ɵb, reducer$b as ɵba, reducer$9 as ɵbb, reducer$a as ɵbc, interceptors$3 as ɵbd, AnonymousConsentsInterceptor as ɵbe, AsmStoreModule as ɵbf, getReducers$6 as ɵbg, reducerToken$6 as ɵbh, reducerProvider$6 as ɵbi, clearCustomerSupportAgentAsmState as ɵbj, metaReducers$1 as ɵbk, effects$5 as ɵbl, CustomerEffects as ɵbm, reducer$d as ɵbn, defaultAsmConfig as ɵbo, ClientAuthStoreModule as ɵbq, getReducers as ɵbr, reducerToken as ɵbs, reducerProvider as ɵbt, effects as ɵbu, ClientTokenEffect as ɵbv, interceptors as ɵbw, defaultAuthConfig as ɵbx, interceptors$1 as ɵby, SiteContextParamsService as ɵbz, authStatePersistenceFactory as ɵc, MultiCartStoreModule as ɵca, clearMultiCartState as ɵcb, multiCartMetaReducers as ɵcc, multiCartReducerToken as ɵcd, getMultiCartReducers as ɵce, multiCartReducerProvider as ɵcf, CartEffects as ɵcg, CartEntryEffects as ɵch, CartVoucherEffects as ɵci, WishListEffects as ɵcj, SaveCartConnector as ɵck, SaveCartAdapter as ɵcl, MultiCartEffects as ɵcm, entityProcessesLoaderReducer as ɵcn, entityReducer as ɵco, processesLoaderReducer as ɵcp, activeCartReducer as ɵcq, cartEntitiesReducer as ɵcr, wishListReducer as ɵcs, UserIdService as ɵct, CartPageMetaResolver as ɵcu, CheckoutStoreModule as ɵcv, getReducers$2 as ɵcw, reducerToken$2 as ɵcx, reducerProvider$2 as ɵcy, effects$2 as ɵcz, cartStatePersistenceFactory as ɵd, AddressVerificationEffect as ɵda, CardTypesEffects as ɵdb, CheckoutEffects as ɵdc, PaymentTypesEffects as ɵdd, ReplenishmentOrderEffects as ɵde, reducer$3 as ɵdf, reducer$2 as ɵdg, reducer$1 as ɵdh, reducer$5 as ɵdi, reducer$4 as ɵdj, interceptors$2 as ɵdk, CheckoutCartInterceptor as ɵdl, cmsStoreConfigFactory as ɵdm, CmsStoreModule as ɵdn, getReducers$7 as ɵdo, reducerToken$7 as ɵdp, reducerProvider$7 as ɵdq, clearCmsState as ɵdr, metaReducers$2 as ɵds, effects$7 as ɵdt, ComponentsEffects as ɵdu, NavigationEntryItemEffects as ɵdv, PageEffects as ɵdw, reducer$g as ɵdx, entityLoaderReducer as ɵdy, reducer$h as ɵdz, uninitializeActiveCartMetaReducerFactory as ɵe, reducer$e as ɵea, reducer$f as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$5 as ɵed, reducerToken$5 as ɵee, reducerProvider$5 as ɵef, reducer$c as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, HttpErrorInterceptor as ɵej, defaultI18nConfig as ɵek, i18nextProviders as ɵel, i18nextInit as ɵem, MockTranslationService as ɵen, defaultOccAsmConfig as ɵeo, defaultOccCartConfig as ɵep, OccSaveCartAdapter as ɵeq, defaultOccCheckoutConfig as ɵer, defaultOccCostCentersConfig as ɵes, defaultOccProductConfig as ɵet, defaultOccSiteContextConfig as ɵeu, defaultOccStoreFinderConfig as ɵev, defaultOccUserConfig as ɵew, UserNotificationPreferenceAdapter as ɵex, OccUserCostCenterAdapter as ɵey, OccAddressListNormalizer as ɵez, CONFIG_INITIALIZER_FORROOT_GUARD as ɵf, UserReplenishmentOrderAdapter as ɵfa, defaultPersonalizationConfig as ɵfb, interceptors$4 as ɵfc, OccPersonalizationIdInterceptor as ɵfd, OccPersonalizationTimeInterceptor as ɵfe, ProcessStoreModule as ɵff, getReducers$8 as ɵfg, reducerToken$8 as ɵfh, reducerProvider$8 as ɵfi, productStoreConfigFactory as ɵfj, ProductStoreModule as ɵfk, getReducers$9 as ɵfl, reducerToken$9 as ɵfm, reducerProvider$9 as ɵfn, clearProductsState as ɵfo, metaReducers$3 as ɵfp, effects$8 as ɵfq, ProductReferencesEffects as ɵfr, ProductReviewsEffects as ɵfs, ProductsSearchEffects as ɵft, ProductEffects as ɵfu, reducer$k as ɵfv, entityScopedLoaderReducer as ɵfw, scopedLoaderReducer as ɵfx, reducer$j as ɵfy, reducer$i as ɵfz, TEST_CONFIG_COOKIE_NAME as ɵg, PageMetaResolver as ɵga, CouponSearchPageResolver as ɵgb, PageMetaResolver as ɵgc, addExternalRoutesFactory as ɵgd, getReducers$1 as ɵge, reducer as ɵgf, reducerToken$1 as ɵgg, reducerProvider$1 as ɵgh, CustomSerializer as ɵgi, effects$1 as ɵgj, RouterEffects as ɵgk, siteContextStoreConfigFactory as ɵgl, SiteContextStoreModule as ɵgm, getReducers$3 as ɵgn, reducerToken$3 as ɵgo, reducerProvider$3 as ɵgp, effects$4 as ɵgq, BaseSiteEffects as ɵgr, CurrenciesEffects as ɵgs, LanguagesEffects as ɵgt, reducer$8 as ɵgu, reducer$7 as ɵgv, reducer$6 as ɵgw, defaultSiteContextConfigFactory as ɵgx, initializeContext as ɵgy, contextServiceProviders as ɵgz, configFromCookieFactory as ɵh, SiteContextRoutesHandler as ɵha, SiteContextUrlSerializer as ɵhb, siteContextParamsProviders as ɵhc, baseSiteConfigValidator as ɵhd, interceptors$5 as ɵhe, CmsTicketInterceptor as ɵhf, StoreFinderStoreModule as ɵhg, getReducers$a as ɵhh, reducerToken$a as ɵhi, reducerProvider$a as ɵhj, effects$9 as ɵhk, FindStoresEffect as ɵhl, ViewAllStoresEffect as ɵhm, defaultStoreFinderConfig as ɵhn, UserStoreModule as ɵho, getReducers$b as ɵhp, reducerToken$b as ɵhq, reducerProvider$b as ɵhr, clearUserState as ɵhs, metaReducers$5 as ɵht, effects$a as ɵhu, BillingCountriesEffect as ɵhv, ClearMiscsDataEffect as ɵhw, ConsignmentTrackingEffects as ɵhx, CustomerCouponEffects as ɵhy, DeliveryCountriesEffects as ɵhz, initConfig as ɵi, NotificationPreferenceEffects as ɵia, OrderDetailsEffect as ɵib, OrderReturnRequestEffect as ɵic, UserPaymentMethodsEffects as ɵid, ProductInterestsEffect as ɵie, RegionsEffects as ɵif, ReplenishmentOrderDetailsEffect as ɵig, ResetPasswordEffects as ɵih, TitlesEffects as ɵii, UserAddressesEffects as ɵij, UserConsentsEffect as ɵik, UserDetailsEffects as ɵil, UserOrdersEffect as ɵim, UserRegisterEffects as ɵin, UserReplenishmentOrdersEffect as ɵio, ForgotPasswordEffects as ɵip, UpdateEmailEffects as ɵiq, UpdatePasswordEffects as ɵir, UserNotificationPreferenceConnector as ɵis, UserCostCenterEffects as ɵit, reducer$B as ɵiu, reducer$y as ɵiv, reducer$l as ɵiw, reducer$z as ɵix, reducer$s as ɵiy, reducer$C as ɵiz, anonymousConsentsStoreConfigFactory as ɵj, reducer$q as ɵja, reducer$D as ɵjb, reducer$r as ɵjc, reducer$o as ɵjd, reducer$x as ɵje, reducer$u as ɵjf, reducer$w as ɵjg, reducer$m as ɵjh, reducer$n as ɵji, reducer$p as ɵjj, reducer$t as ɵjk, reducer$A as ɵjl, reducer$v as ɵjm, AnonymousConsentsStoreModule as ɵk, TRANSFER_STATE_META_REDUCER as ɵl, STORAGE_SYNC_META_REDUCER as ɵm, stateMetaReducers as ɵn, getStorageSyncReducer as ɵo, getTransferStateReducer as ɵp, getReducers$4 as ɵq, reducerToken$4 as ɵr, reducerProvider$4 as ɵs, clearAnonymousConsentTemplates as ɵt, metaReducers as ɵu, effects$3 as ɵv, AnonymousConsentsEffects as ɵw, UrlParsingService as ɵx, RoutingParamsService as ɵy, loaderReducer as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

@@ -1,12 +1,15 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { UserIdService } from '../../auth';
 import { Cart } from '../../model/cart.model';
 import { OrderEntry } from '../../model/order.model';
 import { ProcessesLoaderState } from '../../state/utils/processes-loader/processes-loader-state';
 import { StateWithMultiCart } from '../store/multi-cart-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class MultiCartService {
     protected store: Store<StateWithMultiCart>;
-    constructor(store: Store<StateWithMultiCart>);
+    protected userIdService: UserIdService;
+    constructor(store: Store<StateWithMultiCart>, userIdService: UserIdService);
     /**
      * Returns cart from store as an observable
      *
@@ -137,4 +140,16 @@ export declare class MultiCartService {
      * @param userId
      */
     deleteCart(cartId: string, userId: string): void;
+    /**
+     * Reloads the cart with specified id.
+     *
+     * @param cartId
+     * @param extraData
+     */
+    reloadCart(cartId: string, extraData?: {
+        active: boolean;
+    }): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<MultiCartService, never>;
 }
+
+//# sourceMappingURL=multi-cart.service.d.ts.map
