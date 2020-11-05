@@ -1,3 +1,4 @@
+import * as ɵngcc0 from '@angular/core';
 export declare class ExternalJsFileLoader {
     protected document: any;
     constructor(document: any);
@@ -14,4 +15,7 @@ export declare class ExternalJsFileLoader {
      * @param params object containing parameters
      */
     private parseParams;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ExternalJsFileLoader, never>;
 }
+
+//# sourceMappingURL=external-js-file-loader.service.d.ts.map
