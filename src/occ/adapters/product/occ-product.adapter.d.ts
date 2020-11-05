@@ -6,7 +6,6 @@ import { ConverterService } from '../../../util/converter.service';
 import { Product } from '../../../model/product.model';
 import { ScopedProductData } from '../../../product/connectors/product/scoped-product-data';
 import { OccRequestsOptimizerService } from '../../services/occ-requests-optimizer.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class OccProductAdapter implements ProductAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -16,8 +15,4 @@ export declare class OccProductAdapter implements ProductAdapter {
     load(productCode: string, scope?: string): Observable<Product>;
     loadMany(products: ScopedProductData[]): ScopedProductData[];
     protected getEndpoint(code: string, scope?: string): string;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductAdapter, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccProductAdapter>;
 }
-
-//# sourceMappingURL=occ-product.adapter.d.ts.map
