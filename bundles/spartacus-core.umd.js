@@ -2965,6 +2965,9 @@
     var LOAD_BASE_SITE = '[Site-context] Load BaseSite';
     var LOAD_BASE_SITE_FAIL = '[Site-context] Load BaseSite Fail';
     var LOAD_BASE_SITE_SUCCESS = '[Site-context] Load BaseSite Success';
+    var LOAD_BASE_SITES = '[Site-context] Load BaseSites';
+    var LOAD_BASE_SITES_FAIL = '[Site-context] Load BaseSites Fail';
+    var LOAD_BASE_SITES_SUCCESS = '[Site-context] Load BaseSites Success';
     var SET_ACTIVE_BASE_SITE = '[Site-context] Set Active BaseSite';
     var BASE_SITE_CHANGE = '[Site-context] BaseSite Change';
     var LoadBaseSite = /** @class */ (function () {
@@ -2986,6 +2989,26 @@
             this.type = LOAD_BASE_SITE_SUCCESS;
         }
         return LoadBaseSiteSuccess;
+    }());
+    var LoadBaseSites = /** @class */ (function () {
+        function LoadBaseSites() {
+            this.type = LOAD_BASE_SITES;
+        }
+        return LoadBaseSites;
+    }());
+    var LoadBaseSitesFail = /** @class */ (function () {
+        function LoadBaseSitesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_BASE_SITES_FAIL;
+        }
+        return LoadBaseSitesFail;
+    }());
+    var LoadBaseSitesSuccess = /** @class */ (function () {
+        function LoadBaseSitesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_BASE_SITES_SUCCESS;
+        }
+        return LoadBaseSitesSuccess;
     }());
     var SetActiveBaseSite = /** @class */ (function () {
         function SetActiveBaseSite(payload) {
@@ -3086,11 +3109,17 @@
         LOAD_BASE_SITE: LOAD_BASE_SITE,
         LOAD_BASE_SITE_FAIL: LOAD_BASE_SITE_FAIL,
         LOAD_BASE_SITE_SUCCESS: LOAD_BASE_SITE_SUCCESS,
+        LOAD_BASE_SITES: LOAD_BASE_SITES,
+        LOAD_BASE_SITES_FAIL: LOAD_BASE_SITES_FAIL,
+        LOAD_BASE_SITES_SUCCESS: LOAD_BASE_SITES_SUCCESS,
         SET_ACTIVE_BASE_SITE: SET_ACTIVE_BASE_SITE,
         BASE_SITE_CHANGE: BASE_SITE_CHANGE,
         LoadBaseSite: LoadBaseSite,
         LoadBaseSiteFail: LoadBaseSiteFail,
         LoadBaseSiteSuccess: LoadBaseSiteSuccess,
+        LoadBaseSites: LoadBaseSites,
+        LoadBaseSitesFail: LoadBaseSitesFail,
+        LoadBaseSitesSuccess: LoadBaseSitesSuccess,
         SetActiveBaseSite: SetActiveBaseSite,
         BaseSiteChange: BaseSiteChange,
         LOAD_CURRENCIES: LOAD_CURRENCIES,
@@ -3119,53 +3148,66 @@
 
     var getSiteContextState = i1$2.createFeatureSelector(SITE_CONTEXT_FEATURE);
 
-    var ɵ0$4 = function (state) { return state && state.baseSite && state.baseSite.activeSite; };
-    var getActiveBaseSite = i1$2.createSelector(getSiteContextState, ɵ0$4);
-    var ɵ1$2 = function (state) { return state && state.baseSite && state.baseSite.details; };
-    var getBaseSiteData = i1$2.createSelector(getSiteContextState, ɵ1$2);
+    var sitesEntitiesSelector = function (state) { return state.entities; };
+    var ɵ0$4 = sitesEntitiesSelector;
+    var ɵ1$2 = function (state) { return state.baseSite; };
+    var getBaseSiteState = i1$2.createSelector(getSiteContextState, ɵ1$2);
+    var ɵ2$1 = function (state) { return state && state.baseSite && state.baseSite.activeSite; };
+    var getActiveBaseSite = i1$2.createSelector(getSiteContextState, ɵ2$1);
+    var ɵ3$1 = function (state) { return state && state.baseSite && state.baseSite.details; };
+    var getBaseSiteData = i1$2.createSelector(getSiteContextState, ɵ3$1);
+    var getBaseSitesEntities = i1$2.createSelector(getBaseSiteState, sitesEntitiesSelector);
+    var ɵ4$1 = function (entities) {
+        return entities ? Object.keys(entities).map(function (uid) { return entities[uid]; }) : null;
+    };
+    var getAllBaseSites = i1$2.createSelector(getBaseSitesEntities, ɵ4$1);
 
     var currenciesEntitiesSelector = function (state) { return state.entities; };
     var ɵ0$5 = currenciesEntitiesSelector;
     var activeCurrencySelector = function (state) { return state.activeCurrency; };
     var ɵ1$3 = activeCurrencySelector;
-    var ɵ2$1 = function (state) { return state.currencies; };
-    var getCurrenciesState = i1$2.createSelector(getSiteContextState, ɵ2$1);
+    var ɵ2$2 = function (state) { return state.currencies; };
+    var getCurrenciesState = i1$2.createSelector(getSiteContextState, ɵ2$2);
     var getCurrenciesEntities = i1$2.createSelector(getCurrenciesState, currenciesEntitiesSelector);
     var getActiveCurrency = i1$2.createSelector(getCurrenciesState, activeCurrencySelector);
-    var ɵ3$1 = function (entities) {
-        return entities
-            ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
-            : null;
-    };
-    var getAllCurrencies = i1$2.createSelector(getCurrenciesEntities, ɵ3$1);
-
-    var activeLanguageSelector = function (state) { return state.activeLanguage; };
-    var ɵ0$6 = activeLanguageSelector;
-    var languagesEntitiesSelector = function (state) { return state.entities; };
-    var ɵ1$4 = languagesEntitiesSelector;
-    var ɵ2$2 = function (state) { return state.languages; };
-    var getLanguagesState = i1$2.createSelector(getSiteContextState, ɵ2$2);
-    var getLanguagesEntities = i1$2.createSelector(getLanguagesState, languagesEntitiesSelector);
-    var getActiveLanguage = i1$2.createSelector(getLanguagesState, activeLanguageSelector);
     var ɵ3$2 = function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
     };
-    var getAllLanguages = i1$2.createSelector(getLanguagesEntities, ɵ3$2);
+    var getAllCurrencies = i1$2.createSelector(getCurrenciesEntities, ɵ3$2);
+
+    var activeLanguageSelector = function (state) { return state.activeLanguage; };
+    var ɵ0$6 = activeLanguageSelector;
+    var languagesEntitiesSelector = function (state) { return state.entities; };
+    var ɵ1$4 = languagesEntitiesSelector;
+    var ɵ2$3 = function (state) { return state.languages; };
+    var getLanguagesState = i1$2.createSelector(getSiteContextState, ɵ2$3);
+    var getLanguagesEntities = i1$2.createSelector(getLanguagesState, languagesEntitiesSelector);
+    var getActiveLanguage = i1$2.createSelector(getLanguagesState, activeLanguageSelector);
+    var ɵ3$3 = function (entities) {
+        return entities
+            ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
+            : null;
+    };
+    var getAllLanguages = i1$2.createSelector(getLanguagesEntities, ɵ3$3);
 
     var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
+        getBaseSiteState: getBaseSiteState,
         getActiveBaseSite: getActiveBaseSite,
         getBaseSiteData: getBaseSiteData,
+        getBaseSitesEntities: getBaseSitesEntities,
+        getAllBaseSites: getAllBaseSites,
         ɵ0: ɵ0$4,
         ɵ1: ɵ1$2,
+        ɵ2: ɵ2$1,
+        ɵ3: ɵ3$1,
+        ɵ4: ɵ4$1,
         getCurrenciesState: getCurrenciesState,
         getCurrenciesEntities: getCurrenciesEntities,
         getActiveCurrency: getActiveCurrency,
         getAllCurrencies: getAllCurrencies,
-        ɵ2: ɵ2$1,
-        ɵ3: ɵ3$1,
         getLanguagesState: getLanguagesState,
         getLanguagesEntities: getLanguagesEntities,
         getActiveLanguage: getActiveLanguage,
@@ -3173,6 +3215,7 @@
         getSiteContextState: getSiteContextState
     });
 
+    // handle breaking change in #9601
     var BaseSiteService = /** @class */ (function () {
         function BaseSiteService(store, config) {
             this.store = store;
@@ -3185,10 +3228,26 @@
             return this.store.pipe(i1$2.select(getActiveBaseSite), operators.filter(function (active) { return Boolean(active); }));
         };
         /**
-         * We currently don't support switching baseSite at run time
+         * Get all base sites data
          */
+        // handle breaking change in #9601
         BaseSiteService.prototype.getAll = function () {
-            return this.getActive().pipe(operators.map(function (baseSite) { return [baseSite]; }));
+            var _this = this;
+            return this.store.pipe(i1$2.select(getAllBaseSites), operators.tap(function (sites) {
+                if (!sites) {
+                    _this.store.dispatch(new LoadBaseSites());
+                }
+            }), operators.filter(function (sites) { return Boolean(sites); }));
+        };
+        /**
+         * Get base site data based on site uid
+         */
+        BaseSiteService.prototype.get = function (siteUid) {
+            var _this = this;
+            if (siteUid) {
+                return this.getAll().pipe(operators.map(function (sites) { return sites.find(function (site) { return site.uid === siteUid; }); }));
+            }
+            return this.getActive().pipe(operators.switchMap(function (activeSiteUid) { return _this.getAll().pipe(operators.map(function (sites) { return sites.find(function (site) { return site.uid === activeSiteUid; }); })); }));
         };
         BaseSiteService.prototype.setActive = function (baseSite) {
             var _this = this;
@@ -3215,7 +3274,8 @@
             this.setActive(getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
         };
         /**
-         * Get the base site details data
+         * @deprecated since 3.0, use function get() instead
+         * handle breaking change in #9601
          */
         BaseSiteService.prototype.getBaseSiteData = function () {
             var _this = this;
@@ -3275,7 +3335,7 @@
             configurable: true
         });
         /**
-         * Returns and endpoint starting from the OCC baseUrl (no baseSite)
+         * Returns an endpoint starting from the OCC baseUrl (no baseSite)
          * @param endpoint Endpoint suffix
          */
         OccEndpointsService.prototype.getRawEndpoint = function (endpoint) {
@@ -3288,6 +3348,28 @@
                 endpoint = '/' + endpoint;
             }
             return this.config.backend.occ.baseUrl + endpoint;
+        };
+        /**
+         * Returns an endpoint starting from the OCC prefix (no baseSite), i.e. /occ/v2/{endpoint}
+         * Most OCC endpoints are related to a baseSite context and are therefor prefixed
+         * with the baseSite. The `/basesites` endpoint does not relate to a specific baseSite
+         * as it will load all baseSites.
+         *
+         * @param endpoint Endpoint suffix
+         */
+        OccEndpointsService.prototype.getOccEndpoint = function (endpoint) {
+            var _a, _b, _c;
+            if (!((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.backend) === null || _b === void 0 ? void 0 : _b.occ)) {
+                return '';
+            }
+            endpoint = (_c = this.config.backend.occ.endpoints) === null || _c === void 0 ? void 0 : _c[endpoint];
+            if (!endpoint.startsWith('/') &&
+                !this.config.backend.occ.prefix.endsWith('/')) {
+                endpoint = '/' + endpoint;
+            }
+            return (this.config.backend.occ.baseUrl +
+                this.config.backend.occ.prefix +
+                endpoint);
         };
         /**
          * Returns base OCC endpoint (baseUrl + prefix + baseSite)
@@ -7446,8 +7528,8 @@
     };
     var ɵ1$6 = function (state) { return state.active; };
     var getActiveCartId = i1$2.createSelector(getMultiCartState, ɵ1$6);
-    var ɵ2$3 = function (state) { return state.wishList; };
-    var getWishListId = i1$2.createSelector(getMultiCartState, ɵ2$3);
+    var ɵ2$4 = function (state) { return state.wishList; };
+    var getWishListId = i1$2.createSelector(getMultiCartState, ɵ2$4);
 
     var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -7463,7 +7545,7 @@
         getWishListId: getWishListId,
         ɵ0: ɵ0$a,
         ɵ1: ɵ1$6,
-        ɵ2: ɵ2$3
+        ɵ2: ɵ2$4
     });
 
     /**
@@ -11472,12 +11554,12 @@
     var getDeliveryModeSelector = function (state) { return state.deliveryMode; };
     var ɵ1$7 = getDeliveryModeSelector;
     var getPaymentDetailsSelector = function (state) { return state.paymentDetails; };
-    var ɵ2$4 = getPaymentDetailsSelector;
+    var ɵ2$5 = getPaymentDetailsSelector;
     var getOrderDetailsSelector = function (state) { return state.orderDetails; };
-    var ɵ3$3 = getOrderDetailsSelector;
+    var ɵ3$4 = getOrderDetailsSelector;
     var getCheckoutState = i1$2.createFeatureSelector(CHECKOUT_FEATURE);
-    var ɵ4$1 = function (checkoutState) { return checkoutState.steps; };
-    var getCheckoutStepsState = i1$2.createSelector(getCheckoutState, ɵ4$1);
+    var ɵ4$2 = function (checkoutState) { return checkoutState.steps; };
+    var getCheckoutStepsState = i1$2.createSelector(getCheckoutState, ɵ4$2);
     var ɵ5 = function (state) { return loaderValueSelector(state); };
     var getCheckoutSteps = i1$2.createSelector(getCheckoutStepsState, ɵ5);
     var getDeliveryAddress = i1$2.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
@@ -11558,9 +11640,9 @@
         getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
         getPoNumer: getPoNumer,
         getCostCenter: getCostCenter,
-        ɵ2: ɵ2$4,
-        ɵ3: ɵ3$3,
-        ɵ4: ɵ4$1,
+        ɵ2: ɵ2$5,
+        ɵ3: ɵ3$4,
+        ɵ4: ɵ4$2,
         ɵ5: ɵ5,
         ɵ6: ɵ6,
         ɵ7: ɵ7,
@@ -13956,6 +14038,7 @@
     var CURRENCY_NORMALIZER = new i0.InjectionToken('CurrencyNormalizer');
     var COUNTRY_NORMALIZER = new i0.InjectionToken('CountryNormalizer');
     var REGION_NORMALIZER = new i0.InjectionToken('RegionNormalizer');
+    var BASE_SITE_NORMALIZER = new i0.InjectionToken('BaseSiteNormalizer');
 
     var OccSiteAdapter = /** @class */ (function () {
         function OccSiteAdapter(http, occEndpointsService, converterService) {
@@ -13983,19 +14066,26 @@
                 .get(this.occEndpointsService.getUrl('regions', { isoCode: countryIsoCode }))
                 .pipe(operators.map(function (regionList) { return regionList.regions; }), this.converterService.pipeableMany(REGION_NORMALIZER));
         };
-        OccSiteAdapter.prototype.loadBaseSite = function () {
-            var baseUrl = this.occEndpointsService.getBaseEndpoint();
-            var urlSplits = baseUrl.split('/');
-            var activeSite = urlSplits.pop();
-            var url = urlSplits.join('/') + '/basesites';
-            var params = new i1$4.HttpParams({
-                fromString: 'fields=FULL',
-            });
+        /**
+         * There is no OCC API to load one site based on Uid.
+         * So, we have to load all sites, and find the one from the list.
+         */
+        OccSiteAdapter.prototype.loadBaseSite = function (siteUid) {
+            if (!siteUid) {
+                var baseUrl = this.occEndpointsService.getBaseEndpoint();
+                var urlSplits = baseUrl.split('/');
+                siteUid = urlSplits.pop();
+            }
             return this.http
-                .get(url, { params: params })
+                .get(this.occEndpointsService.getOccEndpoint('baseSites'))
                 .pipe(operators.map(function (siteList) {
-                return siteList.baseSites.find(function (site) { return site.uid === activeSite; });
+                return siteList.baseSites.find(function (site) { return site.uid === siteUid; });
             }));
+        };
+        OccSiteAdapter.prototype.loadBaseSites = function () {
+            return this.http
+                .get(this.occEndpointsService.getOccEndpoint('baseSites'))
+                .pipe(operators.map(function (baseSiteList) { return baseSiteList.baseSites; }), this.converterService.pipeableMany(BASE_SITE_NORMALIZER));
         };
         return OccSiteAdapter;
     }());
@@ -14022,6 +14112,7 @@
                     currencies: 'currencies',
                     countries: 'countries',
                     regions: 'countries/${isoCode}/regions?fields=regions(name,isocode,isocodeShort)',
+                    baseSites: 'basesites?fields=DEFAULT,baseSites(defaultPreviewCatalogId,defaultPreviewCategoryCode,defaultPreviewProductCode,urlEncodingAttributes)',
                 },
             },
         },
@@ -17140,8 +17231,8 @@
     var getBillingCountriesState = i1$2.createSelector(getUserState, ɵ0$h);
     var ɵ1$a = function (state) { return state.entities; };
     var getBillingCountriesEntites = i1$2.createSelector(getBillingCountriesState, ɵ1$a);
-    var ɵ2$5 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
-    var getAllBillingCountries = i1$2.createSelector(getBillingCountriesEntites, ɵ2$5);
+    var ɵ2$6 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+    var getAllBillingCountries = i1$2.createSelector(getBillingCountriesEntites, ɵ2$6);
 
     var ɵ0$i = function (state) { return state.consignmentTracking; };
     var getConsignmentTrackingState = i1$2.createSelector(getUserState, ɵ0$i);
@@ -17152,27 +17243,27 @@
     var getCustomerCouponsState = i1$2.createSelector(getUserState, ɵ0$j);
     var ɵ1$c = function (state) { return loaderSuccessSelector(state); };
     var getCustomerCouponsLoaded = i1$2.createSelector(getCustomerCouponsState, ɵ1$c);
-    var ɵ2$6 = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerCouponsLoading = i1$2.createSelector(getCustomerCouponsState, ɵ2$6);
-    var ɵ3$4 = function (state) { return loaderValueSelector(state); };
-    var getCustomerCoupons = i1$2.createSelector(getCustomerCouponsState, ɵ3$4);
+    var ɵ2$7 = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerCouponsLoading = i1$2.createSelector(getCustomerCouponsState, ɵ2$7);
+    var ɵ3$5 = function (state) { return loaderValueSelector(state); };
+    var getCustomerCoupons = i1$2.createSelector(getCustomerCouponsState, ɵ3$5);
 
     var ɵ0$k = function (state) { return state.countries; };
     var getDeliveryCountriesState = i1$2.createSelector(getUserState, ɵ0$k);
     var ɵ1$d = function (state) { return state.entities; };
     var getDeliveryCountriesEntites = i1$2.createSelector(getDeliveryCountriesState, ɵ1$d);
-    var ɵ2$7 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
-    var getAllDeliveryCountries = i1$2.createSelector(getDeliveryCountriesEntites, ɵ2$7);
+    var ɵ2$8 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+    var getAllDeliveryCountries = i1$2.createSelector(getDeliveryCountriesEntites, ɵ2$8);
     var countrySelectorFactory = function (isocode) { return i1$2.createSelector(getDeliveryCountriesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[isocode] : null; }); };
 
     var ɵ0$l = function (state) { return state.notificationPreferences; };
     var getPreferencesLoaderState = i1$2.createSelector(getUserState, ɵ0$l);
     var ɵ1$e = function (state) { return loaderValueSelector(state); };
     var getPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ1$e);
-    var ɵ2$8 = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
-    var getEnabledPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ2$8);
-    var ɵ3$5 = function (state) { return loaderLoadingSelector(state); };
-    var getPreferencesLoading = i1$2.createSelector(getPreferencesLoaderState, ɵ3$5);
+    var ɵ2$9 = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
+    var getEnabledPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ2$9);
+    var ɵ3$6 = function (state) { return loaderLoadingSelector(state); };
+    var getPreferencesLoading = i1$2.createSelector(getPreferencesLoaderState, ɵ3$6);
 
     var ɵ0$m = function (state) { return state.order; };
     var getOrderState = i1$2.createSelector(getUserState, ɵ0$m);
@@ -17183,13 +17274,13 @@
     var getOrderReturnRequestState = i1$2.createSelector(getUserState, ɵ0$n);
     var ɵ1$g = function (state) { return loaderValueSelector(state); };
     var getOrderReturnRequest = i1$2.createSelector(getOrderReturnRequestState, ɵ1$g);
-    var ɵ2$9 = function (state) { return loaderLoadingSelector(state); };
-    var getOrderReturnRequestLoading = i1$2.createSelector(getOrderReturnRequestState, ɵ2$9);
-    var ɵ3$6 = function (state) { return loaderSuccessSelector(state) &&
+    var ɵ2$a = function (state) { return loaderLoadingSelector(state); };
+    var getOrderReturnRequestLoading = i1$2.createSelector(getOrderReturnRequestState, ɵ2$a);
+    var ɵ3$7 = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getOrderReturnRequestSuccess = i1$2.createSelector(getOrderReturnRequestState, ɵ3$6);
-    var ɵ4$2 = function (state) { return state.orderReturnList; };
-    var getOrderReturnRequestListState = i1$2.createSelector(getUserState, ɵ4$2);
+    var getOrderReturnRequestSuccess = i1$2.createSelector(getOrderReturnRequestState, ɵ3$7);
+    var ɵ4$3 = function (state) { return state.orderReturnList; };
+    var getOrderReturnRequestListState = i1$2.createSelector(getUserState, ɵ4$3);
     var ɵ5$1 = function (state) { return loaderValueSelector(state); };
     var getOrderReturnRequestList = i1$2.createSelector(getOrderReturnRequestListState, ɵ5$1);
 
@@ -17197,18 +17288,18 @@
     var getPaymentMethodsState = i1$2.createSelector(getUserState, ɵ0$o);
     var ɵ1$h = function (state) { return loaderValueSelector(state); };
     var getPaymentMethods = i1$2.createSelector(getPaymentMethodsState, ɵ1$h);
-    var ɵ2$a = function (state) { return loaderLoadingSelector(state); };
-    var getPaymentMethodsLoading = i1$2.createSelector(getPaymentMethodsState, ɵ2$a);
-    var ɵ3$7 = function (state) { return loaderSuccessSelector(state) &&
+    var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
+    var getPaymentMethodsLoading = i1$2.createSelector(getPaymentMethodsState, ɵ2$b);
+    var ɵ3$8 = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getPaymentMethodsLoadedSuccess = i1$2.createSelector(getPaymentMethodsState, ɵ3$7);
+    var getPaymentMethodsLoadedSuccess = i1$2.createSelector(getPaymentMethodsState, ɵ3$8);
 
     var ɵ0$p = function (state) { return state.productInterests; };
     var getInterestsState = i1$2.createSelector(getUserState, ɵ0$p);
     var ɵ1$i = function (state) { return loaderValueSelector(state); };
     var getInterests = i1$2.createSelector(getInterestsState, ɵ1$i);
-    var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
-    var getInterestsLoading = i1$2.createSelector(getInterestsState, ɵ2$b);
+    var ɵ2$c = function (state) { return loaderLoadingSelector(state); };
+    var getInterestsLoading = i1$2.createSelector(getInterestsState, ɵ2$c);
 
     var ɵ0$q = function (state) { return state.regions; };
     var getRegionsLoaderState = i1$2.createSelector(getUserState, ɵ0$q);
@@ -17216,17 +17307,17 @@
         return loaderValueSelector(state).entities;
     };
     var getAllRegions = i1$2.createSelector(getRegionsLoaderState, ɵ1$j);
-    var ɵ2$c = function (state) { return ({
+    var ɵ2$d = function (state) { return ({
         loaded: loaderSuccessSelector(state),
         loading: loaderLoadingSelector(state),
         regions: loaderValueSelector(state).entities,
         country: loaderValueSelector(state).country,
     }); };
-    var getRegionsDataAndLoading = i1$2.createSelector(getRegionsLoaderState, ɵ2$c);
-    var ɵ3$8 = function (state) { return loaderValueSelector(state).country; };
-    var getRegionsCountry = i1$2.createSelector(getRegionsLoaderState, ɵ3$8);
-    var ɵ4$3 = function (state) { return loaderLoadingSelector(state); };
-    var getRegionsLoading = i1$2.createSelector(getRegionsLoaderState, ɵ4$3);
+    var getRegionsDataAndLoading = i1$2.createSelector(getRegionsLoaderState, ɵ2$d);
+    var ɵ3$9 = function (state) { return loaderValueSelector(state).country; };
+    var getRegionsCountry = i1$2.createSelector(getRegionsLoaderState, ɵ3$9);
+    var ɵ4$4 = function (state) { return loaderLoadingSelector(state); };
+    var getRegionsLoading = i1$2.createSelector(getRegionsLoaderState, ɵ4$4);
     var ɵ5$2 = function (state) { return loaderSuccessSelector(state); };
     var getRegionsLoaded = i1$2.createSelector(getRegionsLoaderState, ɵ5$2);
 
@@ -17234,12 +17325,12 @@
     var getReplenishmentOrderState = i1$2.createSelector(getUserState, ɵ0$r);
     var ɵ1$k = function (state) { return loaderValueSelector(state); };
     var getReplenishmentOrderDetailsValue = i1$2.createSelector(getReplenishmentOrderState, ɵ1$k);
-    var ɵ2$d = function (state) { return loaderLoadingSelector(state); };
-    var getReplenishmentOrderDetailsLoading = i1$2.createSelector(getReplenishmentOrderState, ɵ2$d);
-    var ɵ3$9 = function (state) { return loaderSuccessSelector(state); };
-    var getReplenishmentOrderDetailsSuccess = i1$2.createSelector(getReplenishmentOrderState, ɵ3$9);
-    var ɵ4$4 = function (state) { return loaderErrorSelector(state); };
-    var getReplenishmentOrderDetailsError = i1$2.createSelector(getReplenishmentOrderState, ɵ4$4);
+    var ɵ2$e = function (state) { return loaderLoadingSelector(state); };
+    var getReplenishmentOrderDetailsLoading = i1$2.createSelector(getReplenishmentOrderState, ɵ2$e);
+    var ɵ3$a = function (state) { return loaderSuccessSelector(state); };
+    var getReplenishmentOrderDetailsSuccess = i1$2.createSelector(getReplenishmentOrderState, ɵ3$a);
+    var ɵ4$5 = function (state) { return loaderErrorSelector(state); };
+    var getReplenishmentOrderDetailsError = i1$2.createSelector(getReplenishmentOrderState, ɵ4$5);
 
     var ɵ0$s = function (state) { return state.resetPassword; };
     var getResetPassword = i1$2.createSelector(getUserState, ɵ0$s);
@@ -17248,19 +17339,19 @@
     var getTitlesState = i1$2.createSelector(getUserState, ɵ0$t);
     var ɵ1$l = function (state) { return state.entities; };
     var getTitlesEntites = i1$2.createSelector(getTitlesState, ɵ1$l);
-    var ɵ2$e = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
-    var getAllTitles = i1$2.createSelector(getTitlesEntites, ɵ2$e);
+    var ɵ2$f = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
+    var getAllTitles = i1$2.createSelector(getTitlesEntites, ɵ2$f);
     var titleSelectorFactory = function (code) { return i1$2.createSelector(getTitlesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[code] : null; }); };
 
     var ɵ0$u = function (state) { return state.addresses; };
     var getAddressesLoaderState = i1$2.createSelector(getUserState, ɵ0$u);
     var ɵ1$m = function (state) { return loaderValueSelector(state); };
     var getAddresses = i1$2.createSelector(getAddressesLoaderState, ɵ1$m);
-    var ɵ2$f = function (state) { return loaderLoadingSelector(state); };
-    var getAddressesLoading = i1$2.createSelector(getAddressesLoaderState, ɵ2$f);
-    var ɵ3$a = function (state) { return loaderSuccessSelector(state) &&
+    var ɵ2$g = function (state) { return loaderLoadingSelector(state); };
+    var getAddressesLoading = i1$2.createSelector(getAddressesLoaderState, ɵ2$g);
+    var ɵ3$b = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getAddressesLoadedSuccess = i1$2.createSelector(getAddressesLoaderState, ɵ3$a);
+    var getAddressesLoadedSuccess = i1$2.createSelector(getAddressesLoaderState, ɵ3$b);
 
     var ɵ0$v = function (state) { return state.consents; };
     var getConsentsState = i1$2.createSelector(getUserState, ɵ0$v);
@@ -17284,19 +17375,19 @@
     var getOrdersState = i1$2.createSelector(getUserState, ɵ0$y);
     var ɵ1$p = function (state) { return loaderSuccessSelector(state); };
     var getOrdersLoaded = i1$2.createSelector(getOrdersState, ɵ1$p);
-    var ɵ2$g = function (state) { return loaderValueSelector(state); };
-    var getOrders = i1$2.createSelector(getOrdersState, ɵ2$g);
+    var ɵ2$h = function (state) { return loaderValueSelector(state); };
+    var getOrders = i1$2.createSelector(getOrdersState, ɵ2$h);
 
     var ɵ0$z = function (state) { return state.replenishmentOrders; };
     var getReplenishmentOrdersState = i1$2.createSelector(getUserState, ɵ0$z);
     var ɵ1$q = function (state) { return loaderValueSelector(state); };
     var getReplenishmentOrders = i1$2.createSelector(getReplenishmentOrdersState, ɵ1$q);
-    var ɵ2$h = function (state) { return loaderLoadingSelector(state); };
-    var getReplenishmentOrdersLoading = i1$2.createSelector(getReplenishmentOrdersState, ɵ2$h);
-    var ɵ3$b = function (state) { return loaderErrorSelector(state); };
-    var getReplenishmentOrdersError = i1$2.createSelector(getReplenishmentOrdersState, ɵ3$b);
-    var ɵ4$5 = function (state) { return loaderSuccessSelector(state); };
-    var getReplenishmentOrdersSuccess = i1$2.createSelector(getReplenishmentOrdersState, ɵ4$5);
+    var ɵ2$i = function (state) { return loaderLoadingSelector(state); };
+    var getReplenishmentOrdersLoading = i1$2.createSelector(getReplenishmentOrdersState, ɵ2$i);
+    var ɵ3$c = function (state) { return loaderErrorSelector(state); };
+    var getReplenishmentOrdersError = i1$2.createSelector(getReplenishmentOrdersState, ɵ3$c);
+    var ɵ4$6 = function (state) { return loaderSuccessSelector(state); };
+    var getReplenishmentOrdersSuccess = i1$2.createSelector(getReplenishmentOrdersState, ɵ4$6);
 
     var usersGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -17305,14 +17396,14 @@
         getAllBillingCountries: getAllBillingCountries,
         ɵ0: ɵ0$h,
         ɵ1: ɵ1$a,
-        ɵ2: ɵ2$5,
+        ɵ2: ɵ2$6,
         getConsignmentTrackingState: getConsignmentTrackingState,
         getConsignmentTracking: getConsignmentTracking,
         getCustomerCouponsState: getCustomerCouponsState,
         getCustomerCouponsLoaded: getCustomerCouponsLoaded,
         getCustomerCouponsLoading: getCustomerCouponsLoading,
         getCustomerCoupons: getCustomerCoupons,
-        ɵ3: ɵ3$4,
+        ɵ3: ɵ3$5,
         getDeliveryCountriesState: getDeliveryCountriesState,
         getDeliveryCountriesEntites: getDeliveryCountriesEntites,
         getAllDeliveryCountries: getAllDeliveryCountries,
@@ -17330,7 +17421,7 @@
         getOrderReturnRequestSuccess: getOrderReturnRequestSuccess,
         getOrderReturnRequestListState: getOrderReturnRequestListState,
         getOrderReturnRequestList: getOrderReturnRequestList,
-        ɵ4: ɵ4$2,
+        ɵ4: ɵ4$3,
         ɵ5: ɵ5$1,
         getPaymentMethodsState: getPaymentMethodsState,
         getPaymentMethods: getPaymentMethods,
@@ -17825,8 +17916,11 @@
         SiteConnector.prototype.getRegions = function (countryIsoCode) {
             return this.adapter.loadRegions(countryIsoCode);
         };
-        SiteConnector.prototype.getBaseSite = function () {
-            return this.adapter.loadBaseSite();
+        SiteConnector.prototype.getBaseSite = function (siteUid) {
+            return this.adapter.loadBaseSite(siteUid);
+        };
+        SiteConnector.prototype.getBaseSites = function () {
+            return this.adapter.loadBaseSites();
         };
         return SiteConnector;
     }());
@@ -18206,51 +18300,33 @@
         { provide: i1$1.UrlSerializer, useExisting: SiteContextUrlSerializer },
     ];
 
-    var LanguagesEffects = /** @class */ (function () {
-        function LanguagesEffects(actions$, siteConnector, winRef, state) {
+    var BaseSiteEffects = /** @class */ (function () {
+        function BaseSiteEffects(actions$, siteConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.winRef = winRef;
-            this.state = state;
-            this.loadLanguages$ = this.actions$.pipe(i3.ofType(LOAD_LANGUAGES), operators.exhaustMap(function () {
-                return _this.siteConnector.getLanguages().pipe(operators.map(function (languages) { return new LoadLanguagesSuccess(languages); }), operators.catchError(function (error) { return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error))); }));
+            this.loadBaseSite$ = this.actions$.pipe(i3.ofType(LOAD_BASE_SITE), operators.exhaustMap(function () {
+                return _this.siteConnector.getBaseSite().pipe(operators.map(function (baseSite) { return new LoadBaseSiteSuccess(baseSite); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSiteFail(makeErrorSerializable(error))); }));
             }));
-            this.persist$ = this.actions$.pipe(i3.ofType(SET_ACTIVE_LANGUAGE), operators.tap(function (action) {
-                if (_this.winRef.sessionStorage) {
-                    _this.winRef.sessionStorage.setItem('language', action.payload);
-                }
-            }), operators.switchMapTo(rxjs.NEVER));
-            this.activateLanguage$ = this.state.select(getActiveLanguage).pipe(operators.bufferCount(2, 1), 
-            // avoid dispatching `change` action when we're just setting the initial value:
-            operators.filter(function (_a) {
-                var _b = __read(_a, 1), previous = _b[0];
-                return !!previous;
-            }), operators.map(function (_a) {
-                var _b = __read(_a, 2), previous = _b[0], current = _b[1];
-                return new LanguageChange({ previous: previous, current: current });
+            this.loadBaseSites$ = this.actions$.pipe(i3.ofType(LOAD_BASE_SITES), operators.exhaustMap(function () {
+                return _this.siteConnector.getBaseSites().pipe(operators.map(function (baseSites) { return new LoadBaseSitesSuccess(baseSites); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSitesFail(makeErrorSerializable(error))); }));
             }));
         }
-        return LanguagesEffects;
+        return BaseSiteEffects;
     }());
-    LanguagesEffects.decorators = [
+    BaseSiteEffects.decorators = [
         { type: i0.Injectable }
     ];
-    LanguagesEffects.ctorParameters = function () { return [
+    BaseSiteEffects.ctorParameters = function () { return [
         { type: i3.Actions },
-        { type: SiteConnector },
-        { type: WindowRef },
-        { type: i1$2.Store }
+        { type: SiteConnector }
     ]; };
     __decorate([
         i3.Effect()
-    ], LanguagesEffects.prototype, "loadLanguages$", void 0);
+    ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
     __decorate([
         i3.Effect()
-    ], LanguagesEffects.prototype, "persist$", void 0);
-    __decorate([
-        i3.Effect()
-    ], LanguagesEffects.prototype, "activateLanguage$", void 0);
+    ], BaseSiteEffects.prototype, "loadBaseSites$", void 0);
 
     var CurrenciesEffects = /** @class */ (function () {
         function CurrenciesEffects(actions$, siteConnector, winRef, state) {
@@ -18298,27 +18374,51 @@
         i3.Effect()
     ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
 
-    var BaseSiteEffects = /** @class */ (function () {
-        function BaseSiteEffects(actions$, siteConnector) {
+    var LanguagesEffects = /** @class */ (function () {
+        function LanguagesEffects(actions$, siteConnector, winRef, state) {
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadBaseSite$ = this.actions$.pipe(i3.ofType(LOAD_BASE_SITE), operators.exhaustMap(function () {
-                return _this.siteConnector.getBaseSite().pipe(operators.map(function (baseSite) { return new LoadBaseSiteSuccess(baseSite); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSiteFail(makeErrorSerializable(error))); }));
+            this.winRef = winRef;
+            this.state = state;
+            this.loadLanguages$ = this.actions$.pipe(i3.ofType(LOAD_LANGUAGES), operators.exhaustMap(function () {
+                return _this.siteConnector.getLanguages().pipe(operators.map(function (languages) { return new LoadLanguagesSuccess(languages); }), operators.catchError(function (error) { return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error))); }));
+            }));
+            this.persist$ = this.actions$.pipe(i3.ofType(SET_ACTIVE_LANGUAGE), operators.tap(function (action) {
+                if (_this.winRef.sessionStorage) {
+                    _this.winRef.sessionStorage.setItem('language', action.payload);
+                }
+            }), operators.switchMapTo(rxjs.NEVER));
+            this.activateLanguage$ = this.state.select(getActiveLanguage).pipe(operators.bufferCount(2, 1), 
+            // avoid dispatching `change` action when we're just setting the initial value:
+            operators.filter(function (_a) {
+                var _b = __read(_a, 1), previous = _b[0];
+                return !!previous;
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 2), previous = _b[0], current = _b[1];
+                return new LanguageChange({ previous: previous, current: current });
             }));
         }
-        return BaseSiteEffects;
+        return LanguagesEffects;
     }());
-    BaseSiteEffects.decorators = [
+    LanguagesEffects.decorators = [
         { type: i0.Injectable }
     ];
-    BaseSiteEffects.ctorParameters = function () { return [
+    LanguagesEffects.ctorParameters = function () { return [
         { type: i3.Actions },
-        { type: SiteConnector }
+        { type: SiteConnector },
+        { type: WindowRef },
+        { type: i1$2.Store }
     ]; };
     __decorate([
         i3.Effect()
-    ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
+    ], LanguagesEffects.prototype, "loadLanguages$", void 0);
+    __decorate([
+        i3.Effect()
+    ], LanguagesEffects.prototype, "persist$", void 0);
+    __decorate([
+        i3.Effect()
+    ], LanguagesEffects.prototype, "activateLanguage$", void 0);
 
     var effects$3 = [
         LanguagesEffects,
@@ -18327,6 +18427,7 @@
     ];
 
     var initialState$5 = {
+        entities: null,
         details: {},
         activeSite: '',
     };
@@ -18337,7 +18438,25 @@
                 return Object.assign(Object.assign({}, state), { details: action.payload });
             }
             case SET_ACTIVE_BASE_SITE: {
-                return Object.assign(Object.assign({}, state), { activeSite: action.payload });
+                // if active base site is updated,
+                // the active base site details data should also be updated
+                var details = {};
+                if (state.entities) {
+                    details = state.entities[action.payload];
+                }
+                return Object.assign(Object.assign({}, state), { details: details, activeSite: action.payload });
+            }
+            case LOAD_BASE_SITES_SUCCESS: {
+                var sites = action.payload;
+                var entities = sites.reduce(function (siteEntities, site) {
+                    var _a;
+                    return Object.assign(Object.assign({}, siteEntities), (_a = {}, _a[site.uid] = site, _a));
+                }, Object.assign({}, state.entities));
+                // after base sites entities are populated,
+                // the active base site details data is also populated
+                var details = entities[state.activeSite];
+                return Object.assign(Object.assign({}, state), { details: details,
+                    entities: entities });
             }
         }
         return state;
@@ -20134,8 +20253,8 @@
     var getCustomerSearchResultsLoaderState = i1$2.createSelector(getAsmState, ɵ0$B);
     var ɵ1$r = function (state) { return loaderValueSelector(state); };
     var getCustomerSearchResults = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ1$r);
-    var ɵ2$i = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerSearchResultsLoading = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ2$i);
+    var ɵ2$j = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerSearchResultsLoading = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ2$j);
 
     var asmGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -20145,7 +20264,7 @@
         getCustomerSearchResults: getCustomerSearchResults,
         getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
         ɵ1: ɵ1$r,
-        ɵ2: ɵ2$i,
+        ɵ2: ɵ2$j,
         getAsmState: getAsmState
     });
 
@@ -21407,11 +21526,11 @@
         }
         return Array.from(componentTypes);
     };
-    var ɵ2$j = getPageComponentTypesSelector;
-    var ɵ3$c = function (state) { return state.page; };
-    var getPageState = i1$2.createSelector(getCmsState, ɵ3$c);
-    var ɵ4$6 = function (page) { return page.index; };
-    var getPageStateIndex = i1$2.createSelector(getPageState, ɵ4$6);
+    var ɵ2$k = getPageComponentTypesSelector;
+    var ɵ3$d = function (state) { return state.page; };
+    var getPageState = i1$2.createSelector(getCmsState, ɵ3$d);
+    var ɵ4$7 = function (page) { return page.index; };
+    var getPageStateIndex = i1$2.createSelector(getPageState, ɵ4$7);
     var getPageStateIndexEntityLoaderState = function (pageContext) { return i1$2.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); }); };
     var getPageStateIndexLoaderState = function (pageContext) { return i1$2.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) { return entityLoaderStateSelector(indexState, pageContext.id); }); };
     var getPageStateIndexValue = function (pageContext) { return i1$2.createSelector(getPageStateIndexLoaderState(pageContext), function (entity) { return loaderValueSelector(entity); }); };
@@ -21449,9 +21568,9 @@
         getPageComponentTypes: getPageComponentTypes,
         getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory,
         ɵ1: ɵ1$s,
-        ɵ2: ɵ2$j,
-        ɵ3: ɵ3$c,
-        ɵ4: ɵ4$6
+        ɵ2: ɵ2$k,
+        ɵ3: ɵ3$d,
+        ɵ4: ɵ4$7
     });
 
     var CURRENT_CONTEXT_KEY = 'current';
@@ -24188,8 +24307,8 @@
         SmartEditService.prototype.getDefaultPreviewCode = function () {
             var _this = this;
             this.baseSiteService
-                .getBaseSiteData()
-                .pipe(operators.filter(function (site) { return Object.keys(site).length !== 0; }), operators.take(1))
+                .get()
+                .pipe(operators.filter(Boolean), operators.take(1))
                 .subscribe(function (site) {
                 _this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
                 _this.defaultPreviewProductCode = site.defaultPreviewProductCode;
@@ -26922,15 +27041,15 @@
     var getFindStoresState = i1$2.createSelector(getStoreFinderState, ɵ0$K);
     var ɵ1$u = function (state) { return loaderValueSelector(state); };
     var getFindStoresEntities = i1$2.createSelector(getFindStoresState, ɵ1$u);
-    var ɵ2$k = function (state) { return loaderLoadingSelector(state); };
-    var getStoresLoading = i1$2.createSelector(getFindStoresState, ɵ2$k);
+    var ɵ2$l = function (state) { return loaderLoadingSelector(state); };
+    var getStoresLoading = i1$2.createSelector(getFindStoresState, ɵ2$l);
 
     var ɵ0$L = function (storesState) { return storesState.viewAllStores; };
     var getViewAllStoresState = i1$2.createSelector(getStoreFinderState, ɵ0$L);
     var ɵ1$v = function (state) { return loaderValueSelector(state); };
     var getViewAllStoresEntities = i1$2.createSelector(getViewAllStoresState, ɵ1$v);
-    var ɵ2$l = function (state) { return loaderLoadingSelector(state); };
-    var getViewAllStoresLoading = i1$2.createSelector(getViewAllStoresState, ɵ2$l);
+    var ɵ2$m = function (state) { return loaderLoadingSelector(state); };
+    var getViewAllStoresLoading = i1$2.createSelector(getViewAllStoresState, ɵ2$m);
 
     var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -26939,7 +27058,7 @@
         getStoresLoading: getStoresLoading,
         ɵ0: ɵ0$K,
         ɵ1: ɵ1$u,
-        ɵ2: ɵ2$k,
+        ɵ2: ɵ2$l,
         getViewAllStoresState: getViewAllStoresState,
         getViewAllStoresEntities: getViewAllStoresEntities,
         getViewAllStoresLoading: getViewAllStoresLoading
@@ -30234,6 +30353,7 @@
     exports.AuthStatePersistenceService = AuthStatePersistenceService;
     exports.AuthStorageService = AuthStorageService;
     exports.BASE_SITE_CONTEXT_ID = BASE_SITE_CONTEXT_ID;
+    exports.BASE_SITE_NORMALIZER = BASE_SITE_NORMALIZER;
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
     exports.BaseSiteService = BaseSiteService;
@@ -30840,9 +30960,9 @@
     exports.ɵgl = reducerToken$2;
     exports.ɵgm = reducerProvider$2;
     exports.ɵgn = effects$3;
-    exports.ɵgo = LanguagesEffects;
+    exports.ɵgo = BaseSiteEffects;
     exports.ɵgp = CurrenciesEffects;
-    exports.ɵgq = BaseSiteEffects;
+    exports.ɵgq = LanguagesEffects;
     exports.ɵgr = reducer$7;
     exports.ɵgs = reducer$6;
     exports.ɵgt = reducer$5;

@@ -1,4 +1,4 @@
-import { Currency, Language, BaseSite } from '../../model/misc.model';
+import { BaseSite, Currency, Language } from '../../model/misc.model';
 export declare const SITE_CONTEXT_FEATURE = "siteContext";
 export interface StateWithSiteContext {
     [SITE_CONTEXT_FEATURE]: SiteContextState;
@@ -23,6 +23,10 @@ export interface LanguagesState {
     activeLanguage: string;
 }
 export interface BaseSiteState {
+    entities: BaseSiteEntities;
     activeSite: string;
     details: BaseSite;
+}
+export interface BaseSiteEntities {
+    [uid: string]: BaseSite;
 }

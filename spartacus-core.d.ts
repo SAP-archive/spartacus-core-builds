@@ -126,10 +126,10 @@ export { siteContextParamsProviders as ɵgz } from './src/site-context/providers
 export { SiteContextParamsService as ɵbz } from './src/site-context/services/site-context-params.service';
 export { SiteContextRoutesHandler as ɵgx } from './src/site-context/services/site-context-routes-handler';
 export { SiteContextUrlSerializer as ɵgy } from './src/site-context/services/site-context-url-serializer';
-export { BaseSiteEffects as ɵgq } from './src/site-context/store/effects/base-site.effect';
+export { BaseSiteEffects as ɵgo } from './src/site-context/store/effects/base-site.effect';
 export { CurrenciesEffects as ɵgp } from './src/site-context/store/effects/currencies.effect';
 export { effects as ɵgn } from './src/site-context/store/effects/index';
-export { LanguagesEffects as ɵgo } from './src/site-context/store/effects/languages.effect';
+export { LanguagesEffects as ɵgq } from './src/site-context/store/effects/languages.effect';
 export { reducer as ɵgt } from './src/site-context/store/reducers/base-site.reducer';
 export { reducer as ɵgs } from './src/site-context/store/reducers/currencies.reducer';
 export { getReducers as ɵgk, reducerProvider as ɵgm, reducerToken as ɵgl } from './src/site-context/store/reducers/index';
@@ -202,3 +202,5 @@ export { reducer as ɵir } from './src/user/store/reducers/user-details.reducer'
 export { reducer as ɵiw } from './src/user/store/reducers/user-orders.reducer';
 export { reducer as ɵiy } from './src/user/store/reducers/user-replenishment-orders.reducer';
 export { UserStoreModule as ɵhl } from './src/user/store/user-store.module';
+
+//# sourceMappingURL=spartacus-core.d.ts.map
