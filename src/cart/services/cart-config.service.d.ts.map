@@ -1,0 +1,1 @@
+{"version":3,"file":"cart-config.service.d.ts","sources":["cart-config.service.d.ts"],"names":[],"mappings":"AAAA;;AACA;AACA;AACA;AACA;;AACA","sourcesContent":["import { CartConfig } from '../config/cart-config';\nexport declare class CartConfigService {\n    protected config: CartConfig;\n    constructor(config: CartConfig);\n    isSelectiveCartEnabled(): boolean;\n}\n"]}
