@@ -4,7 +4,6 @@ import { EventService } from '../event/event.service';
 /**
  * Utility service for managing dynamic imports of Angular services
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class LazyModulesService implements OnDestroy {
     protected compiler: Compiler;
     protected injector: Injector;
@@ -36,7 +35,4 @@ export declare class LazyModulesService implements OnDestroy {
      */
     private resolveModuleFactory;
     ngOnDestroy(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<LazyModulesService, never>;
 }
-
-//# sourceMappingURL=lazy-modules.service.d.ts.map
