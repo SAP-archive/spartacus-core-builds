@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { SiteContextConfig } from '../config/site-context-config';
 import { SiteContext } from '../facade/site-context.interface';
 import { ContextServiceMap } from '../providers/context-service-map';
+import * as ɵngcc0 from '@angular/core';
 export declare class SiteContextParamsService {
     private config;
     private injector;
@@ -23,4 +24,8 @@ export declare class SiteContextParamsService {
      * @returns Observable emitting array of all passed active context values
      */
     getValues(params: string[]): Observable<Array<string>>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SiteContextParamsService, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<SiteContextParamsService>;
 }
+
+//# sourceMappingURL=site-context-params.service.d.ts.map
