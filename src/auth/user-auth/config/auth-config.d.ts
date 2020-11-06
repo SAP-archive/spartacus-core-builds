@@ -1,5 +1,4 @@
 import { AuthConfig as LibConfig } from 'angular-oauth2-oidc';
-import * as ɵngcc0 from '@angular/core';
 export declare type AuthLibConfig = Omit<LibConfig, 'clientId' | 'dummyClientSecret' | 'siletRefreshTimeout' | 'loginUrl' | 'logoutUrl' | 'tokenEndpoint' | 'revocationEndpoint' | 'userinfoEndpoint'>;
 export declare abstract class AuthConfig {
     authentication?: {
@@ -40,7 +39,4 @@ export declare abstract class AuthConfig {
          */
         OAuthLibConfig?: AuthLibConfig;
     };
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthConfig, never>;
 }
-
-//# sourceMappingURL=auth-config.d.ts.map
