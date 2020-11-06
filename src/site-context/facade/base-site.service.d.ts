@@ -4,7 +4,6 @@ import { BaseSite } from '../../model/misc.model';
 import { SiteContextConfig } from '../config/site-context-config';
 import { StateWithSiteContext } from '../store/state';
 import { SiteContext } from './site-context.interface';
-import * as ɵngcc0 from '@angular/core';
 export declare class BaseSiteService implements SiteContext<BaseSite> {
     protected store: Store<StateWithSiteContext>;
     protected config: SiteContextConfig;
@@ -31,8 +30,4 @@ export declare class BaseSiteService implements SiteContext<BaseSite> {
      * handle breaking change in #9601
      */
     getBaseSiteData(): Observable<BaseSite>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<BaseSiteService, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<BaseSiteService>;
 }
-
-//# sourceMappingURL=base-site.service.d.ts.map
