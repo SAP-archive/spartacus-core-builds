@@ -2681,7 +2681,6 @@ var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
     getSiteContextState: getSiteContextState
 });
 
-// handle breaking change in #9601
 class BaseSiteService {
     constructor(store, config) {
         this.store = store;
@@ -2696,7 +2695,6 @@ class BaseSiteService {
     /**
      * Get all base sites data
      */
-    // handle breaking change in #9601
     getAll() {
         return this.store.pipe(select(getAllBaseSites), tap((sites) => {
             if (!sites) {
@@ -2735,17 +2733,6 @@ class BaseSiteService {
             return;
         }
         this.setActive(getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
-    }
-    /**
-     * @deprecated since 3.0, use function get() instead
-     * handle breaking change in #9601
-     */
-    getBaseSiteData() {
-        return this.store.pipe(select(getBaseSiteData), tap((baseSite) => {
-            if (Object.keys(baseSite).length === 0) {
-                this.store.dispatch(new LoadBaseSite());
-            }
-        }));
     }
 }
 BaseSiteService.decorators = [

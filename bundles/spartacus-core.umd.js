@@ -3215,7 +3215,6 @@
         getSiteContextState: getSiteContextState
     });
 
-    // handle breaking change in #9601
     var BaseSiteService = /** @class */ (function () {
         function BaseSiteService(store, config) {
             this.store = store;
@@ -3230,7 +3229,6 @@
         /**
          * Get all base sites data
          */
-        // handle breaking change in #9601
         BaseSiteService.prototype.getAll = function () {
             var _this = this;
             return this.store.pipe(i1$2.select(getAllBaseSites), operators.tap(function (sites) {
@@ -3272,18 +3270,6 @@
                 return;
             }
             this.setActive(getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
-        };
-        /**
-         * @deprecated since 3.0, use function get() instead
-         * handle breaking change in #9601
-         */
-        BaseSiteService.prototype.getBaseSiteData = function () {
-            var _this = this;
-            return this.store.pipe(i1$2.select(getBaseSiteData), operators.tap(function (baseSite) {
-                if (Object.keys(baseSite).length === 0) {
-                    _this.store.dispatch(new LoadBaseSite());
-                }
-            }));
         };
         return BaseSiteService;
     }());
