@@ -1,0 +1,1 @@
+{"version":3,"file":"cart.module.d.ts","sources":["cart.module.d.ts"],"names":[],"mappings":"AAAA;;;;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class CartModule {\n    static forRoot(): ModuleWithProviders<CartModule>;\n}\n"]}
