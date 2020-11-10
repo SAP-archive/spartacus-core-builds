@@ -1,0 +1,1 @@
+{"version":3,"file":"cart-config.d.ts","sources":["cart-config.d.ts"],"names":[],"mappings":";AAAA;AACA;AACA;AACA;AACA;AACA;;AACA","sourcesContent":["export declare abstract class CartConfig {\n    cart?: {\n        selectiveCart?: {\n            enabled?: boolean;\n        };\n    };\n}\n"]}
