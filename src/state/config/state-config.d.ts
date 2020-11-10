@@ -1,3 +1,4 @@
+import * as ɵngcc0 from '@angular/core';
 export declare enum StorageSyncType {
     NO_STORAGE = "NO_STORAGE",
     LOCAL_STORAGE = "LOCAL_STORAGE",
@@ -8,6 +9,9 @@ export declare enum StateTransferType {
 }
 export declare abstract class StateConfig {
     state?: {
+        /**
+         * @deprecated Since 3.0, to synchronize state from the browser storage, use StatePersistentService
+         */
         storageSync?: {
             /**
              * A key name for the data stored in `localStorage`.
@@ -41,4 +45,7 @@ export declare abstract class StateConfig {
             };
         };
     };
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<StateConfig, never>;
 }
+
+//# sourceMappingURL=state-config.d.ts.map
