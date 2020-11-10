@@ -9444,7 +9444,7 @@
          * @param semanticRoute
          */
         CheckoutCartInterceptor.prototype.isUserInCheckoutRoute = function (semanticRoute) {
-            return semanticRoute.toLowerCase().startsWith('checkout');
+            return semanticRoute === null || semanticRoute === void 0 ? void 0 : semanticRoute.toLowerCase().startsWith('checkout');
         };
         /**
          * Checks of the error is for a cart not found, i.e. the cart doesn't exist anymore
