@@ -5,9 +5,10 @@ import { CmsComponent } from '../../../model/cms.model';
 import { PageContext } from '../../../routing';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccCmsComponentAdapter implements CmsComponentAdapter {
-    private http;
-    private occEndpoints;
+    protected http: HttpClient;
+    protected occEndpoints: OccEndpointsService;
     protected converter: ConverterService;
     protected headers: HttpHeaders;
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
@@ -16,6 +17,13 @@ export declare class OccCmsComponentAdapter implements CmsComponentAdapter {
     findComponentsByIdsLegacy(ids: string[], pageContext: PageContext, fields?: string, currentPage?: number, pageSize?: number, sort?: string): Observable<CmsComponent[]>;
     protected getComponentEndPoint(id: string, pageContext: PageContext): string;
     protected getComponentsEndpoint(requestParams: any, fields: string): string;
-    private getPaginationParams;
-    private getContextParams;
+    protected getPaginationParams(currentPage?: number, pageSize?: number, sort?: string): {
+        [key: string]: string;
+    };
+    protected getContextParams(pageContext: PageContext): {
+        [key: string]: string;
+    };
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsComponentAdapter, never>;
 }
+
+//# sourceMappingURL=occ-cms-component.adapter.d.ts.map

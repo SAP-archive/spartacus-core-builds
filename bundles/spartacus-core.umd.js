@@ -13569,62 +13569,15 @@
                 },] }
     ];
 
-    var CMS_PAGE_NORMALIZER = new i0.InjectionToken('CmsPageNormalizer');
-
-    var OccCmsPageAdapter = /** @class */ (function () {
-        function OccCmsPageAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-            this.headers = new i1$4.HttpHeaders().set('Content-Type', 'application/json');
+    /**
+     * Abstract class that can be used to implement custom loader logic
+     * in order to load CMS structure from third-party CMS system.
+     */
+    var CmsPageAdapter = /** @class */ (function () {
+        function CmsPageAdapter() {
         }
-        OccCmsPageAdapter.prototype.load = function (pageContext, fields) {
-            // load page by Id
-            if (pageContext.type === undefined) {
-                return this.http
-                    .get(this.occEndpoints.getUrl('page', {
-                    id: pageContext.id,
-                }, { fields: fields ? fields : 'DEFAULT' }), {
-                    headers: this.headers,
-                })
-                    .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
-            }
-            // load page by PageContext
-            var httpParams = this.getPagesRequestParams(pageContext);
-            return this.http
-                .get(this.getPagesEndpoint(httpParams, fields), {
-                headers: this.headers,
-            })
-                .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
-        };
-        OccCmsPageAdapter.prototype.getPagesEndpoint = function (params, fields) {
-            fields = fields ? fields : 'DEFAULT';
-            return this.occEndpoints.getUrl('pages', {}, Object.assign({ fields: fields }, params));
-        };
-        OccCmsPageAdapter.prototype.getPagesRequestParams = function (pageContext) {
-            var httpParams = {};
-            // smartedit preview page is loaded by previewToken which added by interceptor
-            if (pageContext.id !== 'smartedit-preview') {
-                httpParams = { pageType: pageContext.type };
-                if (pageContext.type === exports.PageType.CONTENT_PAGE) {
-                    httpParams['pageLabelOrId'] = pageContext.id;
-                }
-                else {
-                    httpParams['code'] = pageContext.id;
-                }
-            }
-            return httpParams;
-        };
-        return OccCmsPageAdapter;
+        return CmsPageAdapter;
     }());
-    OccCmsPageAdapter.decorators = [
-        { type: i0.Injectable }
-    ];
-    OccCmsPageAdapter.ctorParameters = function () { return [
-        { type: i1$4.HttpClient },
-        { type: OccEndpointsService },
-        { type: ConverterService }
-    ]; };
 
     var CMS_COMPONENT_NORMALIZER = new i0.InjectionToken('CmsComponentNormalizer');
 
@@ -13705,8 +13658,11 @@
         };
         return OccCmsComponentAdapter;
     }());
+    OccCmsComponentAdapter.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccCmsComponentAdapter_Factory() { return new OccCmsComponentAdapter(i0.ɵɵinject(i1$4.HttpClient), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(ConverterService)); }, token: OccCmsComponentAdapter, providedIn: "root" });
     OccCmsComponentAdapter.decorators = [
-        { type: i0.Injectable }
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
     OccCmsComponentAdapter.ctorParameters = function () { return [
         { type: i1$4.HttpClient },
@@ -13839,7 +13795,7 @@
                         try {
                             for (var _e = (e_5 = void 0, __values(slot.components.component)), _f = _e.next(); !_f.done; _f = _e.next()) {
                                 var component = _f.value;
-                                // we dont put properties into component state
+                                // we don't put properties into component state
                                 if (component.properties) {
                                     component.properties = undefined;
                                 }
@@ -13871,15 +13827,65 @@
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
 
-    /**
-     * Abstract class that can be used to implement custom loader logic
-     * in order to load CMS structure from third-party CMS system.
-     */
-    var CmsPageAdapter = /** @class */ (function () {
-        function CmsPageAdapter() {
+    var CMS_PAGE_NORMALIZER = new i0.InjectionToken('CmsPageNormalizer');
+
+    var OccCmsPageAdapter = /** @class */ (function () {
+        function OccCmsPageAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+            this.headers = new i1$4.HttpHeaders().set('Content-Type', 'application/json');
         }
-        return CmsPageAdapter;
+        OccCmsPageAdapter.prototype.load = function (pageContext, fields) {
+            // load page by Id
+            if (pageContext.type === undefined) {
+                return this.http
+                    .get(this.occEndpoints.getUrl('page', {
+                    id: pageContext.id,
+                }, { fields: fields ? fields : 'DEFAULT' }), {
+                    headers: this.headers,
+                })
+                    .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
+            }
+            // load page by PageContext
+            var httpParams = this.getPagesRequestParams(pageContext);
+            return this.http
+                .get(this.getPagesEndpoint(httpParams, fields), {
+                headers: this.headers,
+            })
+                .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
+        };
+        OccCmsPageAdapter.prototype.getPagesEndpoint = function (params, fields) {
+            fields = fields ? fields : 'DEFAULT';
+            return this.occEndpoints.getUrl('pages', {}, Object.assign({ fields: fields }, params));
+        };
+        OccCmsPageAdapter.prototype.getPagesRequestParams = function (pageContext) {
+            var httpParams = {};
+            // smartedit preview page is loaded by previewToken which added by interceptor
+            if (pageContext.id !== 'smartedit-preview') {
+                httpParams = { pageType: pageContext.type };
+                if (pageContext.type === exports.PageType.CONTENT_PAGE) {
+                    httpParams['pageLabelOrId'] = pageContext.id;
+                }
+                else {
+                    httpParams['code'] = pageContext.id;
+                }
+            }
+            return httpParams;
+        };
+        return OccCmsPageAdapter;
     }());
+    OccCmsPageAdapter.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccCmsPageAdapter_Factory() { return new OccCmsPageAdapter(i0.ɵɵinject(i1$4.HttpClient), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(ConverterService)); }, token: OccCmsPageAdapter, providedIn: "root" });
+    OccCmsPageAdapter.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    OccCmsPageAdapter.ctorParameters = function () { return [
+        { type: i1$4.HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
 
     var CmsComponentAdapter = /** @class */ (function () {
         function CmsComponentAdapter() {
@@ -13910,6 +13916,42 @@
                             useClass: OccCmsComponentAdapter,
                         },
                     ],
+                },] }
+    ];
+
+    /**
+     * Before 1905, the OCC CMS component API required was using POST method
+     * to load a (potentially large) number of components. With 1905, the endpoint
+     * evaluated to use GET. Switching from POST to GET has been initially implemented
+     * with the `legacy` flag, but from version 3.0 onwards, we're moving the
+     * implementation to this optional Adapter.
+     *
+     * If you like to connect to a pre 1905 version, you can provide this adapter for the
+     * `CmsComponentAdapter` injection token.
+     */
+    var LegacyOccCmsComponentAdapter = /** @class */ (function (_super) {
+        __extends(LegacyOccCmsComponentAdapter, _super);
+        function LegacyOccCmsComponentAdapter() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        LegacyOccCmsComponentAdapter.prototype.findComponentsByIds = function (ids, pageContext, fields, currentPage, pageSize, sort) {
+            if (fields === void 0) { fields = 'DEFAULT'; }
+            if (currentPage === void 0) { currentPage = 0; }
+            if (pageSize === void 0) { pageSize = ids.length; }
+            var idList = { idList: ids };
+            var requestParams = Object.assign(Object.assign({}, this.getContextParams(pageContext)), this.getPaginationParams(currentPage, pageSize, sort));
+            return this.http
+                .post(this.getComponentsEndpoint(requestParams, fields), idList, {
+                headers: this.headers,
+            })
+                .pipe(operators.pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER));
+        };
+        return LegacyOccCmsComponentAdapter;
+    }(OccCmsComponentAdapter));
+    LegacyOccCmsComponentAdapter.ɵprov = i0.ɵɵdefineInjectable({ factory: function LegacyOccCmsComponentAdapter_Factory() { return new LegacyOccCmsComponentAdapter(i0.ɵɵinject(i1$4.HttpClient), i0.ɵɵinject(OccEndpointsService), i0.ɵɵinject(ConverterService)); }, token: LegacyOccCmsComponentAdapter, providedIn: "root" });
+    LegacyOccCmsComponentAdapter.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
                 },] }
     ];
 
@@ -23319,7 +23361,6 @@
                     pages: 'cms/pages',
                     page: 'cms/pages/${id}',
                 },
-                legacy: false,
             },
         },
         cmsComponents: {},
@@ -23807,9 +23848,9 @@
     ]; };
 
     var CmsComponentConnector = /** @class */ (function () {
-        function CmsComponentConnector(cmsStructureConfigService, adapter, config) {
+        function CmsComponentConnector(cmsStructureConfigService, cmsComponentAdapter, config) {
             this.cmsStructureConfigService = cmsStructureConfigService;
-            this.adapter = adapter;
+            this.cmsComponentAdapter = cmsComponentAdapter;
             this.config = config;
         }
         CmsComponentConnector.prototype.get = function (id, pageContext) {
@@ -23818,7 +23859,7 @@
                 .getComponentFromConfig(id)
                 .pipe(operators.switchMap(function (configuredComponent) { return configuredComponent
                 ? rxjs.of(configuredComponent)
-                : _this.adapter.load(id, pageContext); }));
+                : _this.cmsComponentAdapter.load(id, pageContext); }));
         };
         CmsComponentConnector.prototype.getList = function (ids, pageContext) {
             var _this = this;
@@ -23831,9 +23872,9 @@
                     return acc;
                 }, []);
                 if (missingIds.length > 0) {
-                    return (_this.config.backend.occ.legacy
-                        ? _this.adapter.findComponentsByIdsLegacy(missingIds, pageContext)
-                        : _this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(operators.map(function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); }));
+                    return _this.cmsComponentAdapter
+                        .findComponentsByIds(missingIds, pageContext)
+                        .pipe(operators.map(function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); }));
                 }
                 else {
                     return rxjs.of(configuredComponents);
@@ -30602,6 +30643,7 @@
     exports.LANGUAGE_NORMALIZER = LANGUAGE_NORMALIZER;
     exports.LanguageService = LanguageService;
     exports.LazyModulesService = LazyModulesService;
+    exports.LegacyOccCmsComponentAdapter = LegacyOccCmsComponentAdapter;
     exports.LoadingScopesService = LoadingScopesService;
     exports.MEDIA_BASE_URL_META_TAG_NAME = MEDIA_BASE_URL_META_TAG_NAME;
     exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;

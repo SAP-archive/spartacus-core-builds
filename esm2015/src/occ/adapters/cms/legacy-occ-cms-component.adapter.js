@@ -1,0 +1,36 @@
+import { Injectable } from '@angular/core';
+import { pluck } from 'rxjs/operators';
+import { CMS_COMPONENT_NORMALIZER } from '../../../cms/connectors/component/converters';
+import { OccCmsComponentAdapter } from './occ-cms-component.adapter';
+import * as i0 from "@angular/core";
+import * as i1 from "@angular/common/http";
+import * as i2 from "../../services/occ-endpoints.service";
+import * as i3 from "../../../util/converter.service";
+/**
+ * Before 1905, the OCC CMS component API required was using POST method
+ * to load a (potentially large) number of components. With 1905, the endpoint
+ * evaluated to use GET. Switching from POST to GET has been initially implemented
+ * with the `legacy` flag, but from version 3.0 onwards, we're moving the
+ * implementation to this optional Adapter.
+ *
+ * If you like to connect to a pre 1905 version, you can provide this adapter for the
+ * `CmsComponentAdapter` injection token.
+ */
+export class LegacyOccCmsComponentAdapter extends OccCmsComponentAdapter {
+    findComponentsByIds(ids, pageContext, fields = 'DEFAULT', currentPage = 0, pageSize = ids.length, sort) {
+        const idList = { idList: ids };
+        const requestParams = Object.assign(Object.assign({}, this.getContextParams(pageContext)), this.getPaginationParams(currentPage, pageSize, sort));
+        return this.http
+            .post(this.getComponentsEndpoint(requestParams, fields), idList, {
+            headers: this.headers,
+        })
+            .pipe(pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER));
+    }
+}
+LegacyOccCmsComponentAdapter.ɵprov = i0.ɵɵdefineInjectable({ factory: function LegacyOccCmsComponentAdapter_Factory() { return new LegacyOccCmsComponentAdapter(i0.ɵɵinject(i1.HttpClient), i0.ɵɵinject(i2.OccEndpointsService), i0.ɵɵinject(i3.ConverterService)); }, token: LegacyOccCmsComponentAdapter, providedIn: "root" });
+LegacyOccCmsComponentAdapter.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibGVnYWN5LW9jYy1jbXMtY29tcG9uZW50LmFkYXB0ZXIuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi8uLi9wcm9qZWN0cy9jb3JlL3NyYy9vY2MvYWRhcHRlcnMvY21zL2xlZ2FjeS1vY2MtY21zLWNvbXBvbmVudC5hZGFwdGVyLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFFM0MsT0FBTyxFQUFFLEtBQUssRUFBRSxNQUFNLGdCQUFnQixDQUFDO0FBQ3ZDLE9BQU8sRUFBRSx3QkFBd0IsRUFBRSxNQUFNLDhDQUE4QyxDQUFDO0FBSXhGLE9BQU8sRUFBRSxzQkFBc0IsRUFBRSxNQUFNLDZCQUE2QixDQUFDOzs7OztBQUVyRTs7Ozs7Ozs7O0dBU0c7QUFJSCxNQUFNLE9BQU8sNEJBQTZCLFNBQVEsc0JBQXNCO0lBQ3RFLG1CQUFtQixDQUNqQixHQUFhLEVBQ2IsV0FBd0IsRUFDeEIsTUFBTSxHQUFHLFNBQVMsRUFDbEIsV0FBVyxHQUFHLENBQUMsRUFDZixRQUFRLEdBQUcsR0FBRyxDQUFDLE1BQU0sRUFDckIsSUFBYTtRQUViLE1BQU0sTUFBTSxHQUF3QixFQUFFLE1BQU0sRUFBRSxHQUFHLEVBQUUsQ0FBQztRQUVwRCxNQUFNLGFBQWEsbUNBQ2QsSUFBSSxDQUFDLGdCQUFnQixDQUFDLFdBQVcsQ0FBQyxHQUNsQyxJQUFJLENBQUMsbUJBQW1CLENBQUMsV0FBVyxFQUFFLFFBQVEsRUFBRSxJQUFJLENBQUMsQ0FDekQsQ0FBQztRQUVGLE9BQU8sSUFBSSxDQUFDLElBQUk7YUFDYixJQUFJLENBQ0gsSUFBSSxDQUFDLHFCQUFxQixDQUFDLGFBQWEsRUFBRSxNQUFNLENBQUMsRUFDakQsTUFBTSxFQUNOO1lBQ0UsT0FBTyxFQUFFLElBQUksQ0FBQyxPQUFPO1NBQ3RCLENBQ0Y7YUFDQSxJQUFJLENBQ0gsS0FBSyxDQUFDLFdBQVcsQ0FBQyxFQUNsQixJQUFJLENBQUMsU0FBUyxDQUFDLFlBQVksQ0FBQyx3QkFBd0IsQ0FBQyxDQUN0RCxDQUFDO0lBQ04sQ0FBQzs7OztZQS9CRixVQUFVLFNBQUM7Z0JBQ1YsVUFBVSxFQUFFLE1BQU07YUFDbkIiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBJbmplY3RhYmxlIH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5pbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7XG5pbXBvcnQgeyBwbHVjayB9IGZyb20gJ3J4anMvb3BlcmF0b3JzJztcbmltcG9ydCB7IENNU19DT01QT05FTlRfTk9STUFMSVpFUiB9IGZyb20gJy4uLy4uLy4uL2Ntcy9jb25uZWN0b3JzL2NvbXBvbmVudC9jb252ZXJ0ZXJzJztcbmltcG9ydCB7IENtc0NvbXBvbmVudCB9IGZyb20gJy4uLy4uLy4uL21vZGVsL2Ntcy5tb2RlbCc7XG5pbXBvcnQgeyBQYWdlQ29udGV4dCB9IGZyb20gJy4uLy4uLy4uL3JvdXRpbmcnO1xuaW1wb3J0IHsgT2NjIH0gZnJvbSAnLi4vLi4vb2NjLW1vZGVscy9vY2MubW9kZWxzJztcbmltcG9ydCB7IE9jY0Ntc0NvbXBvbmVudEFkYXB0ZXIgfSBmcm9tICcuL29jYy1jbXMtY29tcG9uZW50LmFkYXB0ZXInO1xuXG4vKipcbiAqIEJlZm9yZSAxOTA1LCB0aGUgT0NDIENNUyBjb21wb25lbnQgQVBJIHJlcXVpcmVkIHdhcyB1c2luZyBQT1NUIG1ldGhvZFxuICogdG8gbG9hZCBhIChwb3RlbnRpYWxseSBsYXJnZSkgbnVtYmVyIG9mIGNvbXBvbmVudHMuIFdpdGggMTkwNSwgdGhlIGVuZHBvaW50XG4gKiBldmFsdWF0ZWQgdG8gdXNlIEdFVC4gU3dpdGNoaW5nIGZyb20gUE9TVCB0byBHRVQgaGFzIGJlZW4gaW5pdGlhbGx5IGltcGxlbWVudGVkXG4gKiB3aXRoIHRoZSBgbGVnYWN5YCBmbGFnLCBidXQgZnJvbSB2ZXJzaW9uIDMuMCBvbndhcmRzLCB3ZSdyZSBtb3ZpbmcgdGhlXG4gKiBpbXBsZW1lbnRhdGlvbiB0byB0aGlzIG9wdGlvbmFsIEFkYXB0ZXIuXG4gKlxuICogSWYgeW91IGxpa2UgdG8gY29ubmVjdCB0byBhIHByZSAxOTA1IHZlcnNpb24sIHlvdSBjYW4gcHJvdmlkZSB0aGlzIGFkYXB0ZXIgZm9yIHRoZVxuICogYENtc0NvbXBvbmVudEFkYXB0ZXJgIGluamVjdGlvbiB0b2tlbi5cbiAqL1xuQEluamVjdGFibGUoe1xuICBwcm92aWRlZEluOiAncm9vdCcsXG59KVxuZXhwb3J0IGNsYXNzIExlZ2FjeU9jY0Ntc0NvbXBvbmVudEFkYXB0ZXIgZXh0ZW5kcyBPY2NDbXNDb21wb25lbnRBZGFwdGVyIHtcbiAgZmluZENvbXBvbmVudHNCeUlkcyhcbiAgICBpZHM6IHN0cmluZ1tdLFxuICAgIHBhZ2VDb250ZXh0OiBQYWdlQ29udGV4dCxcbiAgICBmaWVsZHMgPSAnREVGQVVMVCcsXG4gICAgY3VycmVudFBhZ2UgPSAwLFxuICAgIHBhZ2VTaXplID0gaWRzLmxlbmd0aCxcbiAgICBzb3J0Pzogc3RyaW5nXG4gICk6IE9ic2VydmFibGU8Q21zQ29tcG9uZW50W10+IHtcbiAgICBjb25zdCBpZExpc3Q6IE9jYy5Db21wb25lbnRJRExpc3QgPSB7IGlkTGlzdDogaWRzIH07XG5cbiAgICBjb25zdCByZXF1ZXN0UGFyYW1zID0ge1xuICAgICAgLi4udGhpcy5nZXRDb250ZXh0UGFyYW1zKHBhZ2VDb250ZXh0KSxcbiAgICAgIC4uLnRoaXMuZ2V0UGFnaW5hdGlvblBhcmFtcyhjdXJyZW50UGFnZSwgcGFnZVNpemUsIHNvcnQpLFxuICAgIH07XG5cbiAgICByZXR1cm4gdGhpcy5odHRwXG4gICAgICAucG9zdDxPY2MuQ29tcG9uZW50TGlzdD4oXG4gICAgICAgIHRoaXMuZ2V0Q29tcG9uZW50c0VuZHBvaW50KHJlcXVlc3RQYXJhbXMsIGZpZWxkcyksXG4gICAgICAgIGlkTGlzdCxcbiAgICAgICAge1xuICAgICAgICAgIGhlYWRlcnM6IHRoaXMuaGVhZGVycyxcbiAgICAgICAgfVxuICAgICAgKVxuICAgICAgLnBpcGUoXG4gICAgICAgIHBsdWNrKCdjb21wb25lbnQnKSxcbiAgICAgICAgdGhpcy5jb252ZXJ0ZXIucGlwZWFibGVNYW55KENNU19DT01QT05FTlRfTk9STUFMSVpFUilcbiAgICAgICk7XG4gIH1cbn1cbiJdfQ==

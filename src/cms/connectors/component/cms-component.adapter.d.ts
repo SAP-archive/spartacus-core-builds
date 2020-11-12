@@ -11,5 +11,4 @@ export declare abstract class CmsComponentAdapter {
      */
     abstract load<T extends CmsComponent>(id: string, pageContext: PageContext, fields?: string): Observable<T>;
     abstract findComponentsByIds(ids: string[], pageContext: PageContext): Observable<CmsComponent[]>;
-    abstract findComponentsByIdsLegacy(ids: string[], pageContext: PageContext): Observable<CmsComponent[]>;
 }
