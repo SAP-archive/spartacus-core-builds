@@ -9485,11 +9485,11 @@
     var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
     var ActiveCartService = /** @class */ (function () {
-        function ActiveCartService(store, userIdService, multiCartService) {
+        function ActiveCartService(store, multiCartService, userIdService) {
             var _this = this;
             this.store = store;
-            this.userIdService = userIdService;
             this.multiCartService = multiCartService;
+            this.userIdService = userIdService;
             this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
             this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
             this.subscription = new rxjs.Subscription();
@@ -9825,7 +9825,7 @@
         };
         return ActiveCartService;
     }());
-    ActiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+    ActiveCartService.ɵprov = i0.ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(MultiCartService), i0.ɵɵinject(UserIdService)); }, token: ActiveCartService, providedIn: "root" });
     ActiveCartService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -9833,8 +9833,8 @@
     ];
     ActiveCartService.ctorParameters = function () { return [
         { type: i1$2.Store },
-        { type: UserIdService },
-        { type: MultiCartService }
+        { type: MultiCartService },
+        { type: UserIdService }
     ]; };
 
     (function (PageRobotsMeta) {

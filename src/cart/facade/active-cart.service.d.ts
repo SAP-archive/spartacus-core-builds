@@ -7,10 +7,11 @@ import { User } from '../../model/misc.model';
 import { OrderEntry } from '../../model/order.model';
 import { StateWithMultiCart } from '../store/multi-cart-state';
 import { MultiCartService } from './multi-cart.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class ActiveCartService implements OnDestroy {
     protected store: Store<StateWithMultiCart>;
-    protected userIdService: UserIdService;
     protected multiCartService: MultiCartService;
+    protected userIdService: UserIdService;
     private readonly PREVIOUS_USER_ID_INITIAL_VALUE;
     private previousUserId;
     private activeCart$;
@@ -20,7 +21,7 @@ export declare class ActiveCartService implements OnDestroy {
     private cartUser;
     private activeCartId$;
     private cartSelector$;
-    constructor(store: Store<StateWithMultiCart>, userIdService: UserIdService, multiCartService: MultiCartService);
+    constructor(store: Store<StateWithMultiCart>, multiCartService: MultiCartService, userIdService: UserIdService);
     ngOnDestroy(): void;
     protected initActiveCart(): void;
     /**
@@ -111,4 +112,7 @@ export declare class ActiveCartService implements OnDestroy {
     private guestCartMerge;
     private isEmpty;
     private isJustLoggedIn;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ActiveCartService, never>;
 }
+
+//# sourceMappingURL=active-cart.service.d.ts.map

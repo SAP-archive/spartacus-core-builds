@@ -8367,10 +8367,10 @@ const EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".
 const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
 class ActiveCartService {
-    constructor(store, userIdService, multiCartService) {
+    constructor(store, multiCartService, userIdService) {
         this.store = store;
-        this.userIdService = userIdService;
         this.multiCartService = multiCartService;
+        this.userIdService = userIdService;
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
         this.subscription = new Subscription();
@@ -8682,7 +8682,7 @@ class ActiveCartService {
         );
     }
 }
-ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(MultiCartService)); }, token: ActiveCartService, providedIn: "root" });
+ActiveCartService.ɵprov = ɵɵdefineInjectable({ factory: function ActiveCartService_Factory() { return new ActiveCartService(ɵɵinject(Store), ɵɵinject(MultiCartService), ɵɵinject(UserIdService)); }, token: ActiveCartService, providedIn: "root" });
 ActiveCartService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -8690,8 +8690,8 @@ ActiveCartService.decorators = [
 ];
 ActiveCartService.ctorParameters = () => [
     { type: Store },
-    { type: UserIdService },
-    { type: MultiCartService }
+    { type: MultiCartService },
+    { type: UserIdService }
 ];
 
 var PageRobotsMeta;
