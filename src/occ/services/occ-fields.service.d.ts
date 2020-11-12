@@ -1,6 +1,5 @@
 import { ScopedData } from '../../model/scoped-data';
 import { HttpClient } from '@angular/common/http';
-import * as ɵngcc0 from '@angular/core';
 export interface ScopedDataWithUrl {
     /** Url (with fields) to load scoped data */
     url?: string;
@@ -55,7 +54,4 @@ export declare class OccFieldsService {
      * @param fields
      */
     private getUrlWithFields;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccFieldsService, never>;
 }
-
-//# sourceMappingURL=occ-fields.service.d.ts.map
