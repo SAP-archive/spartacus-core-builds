@@ -5,6 +5,7 @@ import { SiteContextConfig } from '../../site-context/config/site-context-config
 import { OccLoadedConfig } from './occ-loaded-config';
 import { OccLoadedConfigConverter } from './occ-loaded-config-converter';
 import { OccSitesConfigLoader } from './occ-sites-config-loader';
+import * as ɵngcc0 from '@angular/core';
 export declare const EXTERNAL_CONFIG_TRANSFER_ID: StateKey<string>;
 export declare class OccConfigLoaderService {
     protected platform: any;
@@ -40,4 +41,7 @@ export declare class OccConfigLoaderService {
     protected transfer(externalConfig: OccLoadedConfig): void;
     protected getConfigChunks(externalConfig: OccLoadedConfig): (I18nConfig | SiteContextConfig)[];
     private shouldReturnI18nChunk;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccConfigLoaderService, [null, null, null, null, null, { optional: true; }, { optional: true; }]>;
 }
+
+//# sourceMappingURL=occ-config-loader.service.d.ts.map
