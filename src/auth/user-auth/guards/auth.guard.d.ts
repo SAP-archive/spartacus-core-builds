@@ -7,7 +7,6 @@ import { AuthRedirectService } from '../services/auth-redirect.service';
  * Checks if there is currently logged in user.
  * Use to protect pages dedicated only for logged in users.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class AuthGuard implements CanActivate {
     protected authService: AuthService;
     protected authRedirectService: AuthRedirectService;
@@ -15,7 +14,4 @@ export declare class AuthGuard implements CanActivate {
     protected semanticPathService: SemanticPathService;
     constructor(authService: AuthService, authRedirectService: AuthRedirectService, router: Router, semanticPathService: SemanticPathService);
     canActivate(): Observable<boolean | UrlTree>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthGuard, never>;
 }
-
-//# sourceMappingURL=auth.guard.d.ts.map
