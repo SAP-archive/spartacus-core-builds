@@ -11564,10 +11564,10 @@ CheckoutPaymentService.ctorParameters = () => [
 ];
 
 class CheckoutService {
-    constructor(checkoutStore, userIdService, activeCartService) {
+    constructor(checkoutStore, activeCartService, userIdService) {
         this.checkoutStore = checkoutStore;
-        this.userIdService = userIdService;
         this.activeCartService = activeCartService;
+        this.userIdService = userIdService;
     }
     /**
      * Places an order
@@ -11704,7 +11704,7 @@ class CheckoutService {
             this.activeCartService.isGuestCart());
     }
 }
-CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+CheckoutService.ɵprov = ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(ɵɵinject(Store), ɵɵinject(ActiveCartService), ɵɵinject(UserIdService)); }, token: CheckoutService, providedIn: "root" });
 CheckoutService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -11712,8 +11712,8 @@ CheckoutService.decorators = [
 ];
 CheckoutService.ctorParameters = () => [
     { type: Store },
-    { type: UserIdService },
-    { type: ActiveCartService }
+    { type: ActiveCartService },
+    { type: UserIdService }
 ];
 
 class PaymentTypeService {
@@ -16574,10 +16574,10 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
 });
 
 class UserConsentService {
-    constructor(store, userIdService, authService) {
+    constructor(store, authService, userIdService) {
         this.store = store;
-        this.userIdService = userIdService;
         this.authService = authService;
+        this.userIdService = userIdService;
     }
     /**
      * Retrieves all consents.
@@ -16753,7 +16753,7 @@ class UserConsentService {
         return updatedTemplateList;
     }
 }
-UserConsentService.ɵprov = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store), ɵɵinject(UserIdService), ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
+UserConsentService.ɵprov = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store), ɵɵinject(AuthService), ɵɵinject(UserIdService)); }, token: UserConsentService, providedIn: "root" });
 UserConsentService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
@@ -16761,8 +16761,8 @@ UserConsentService.decorators = [
 ];
 UserConsentService.ctorParameters = () => [
     { type: Store },
-    { type: UserIdService },
-    { type: AuthService }
+    { type: AuthService },
+    { type: UserIdService }
 ];
 
 class AnonymousConsentTemplatesConnector {

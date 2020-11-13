@@ -13178,10 +13178,10 @@
     ]; };
 
     var CheckoutService = /** @class */ (function () {
-        function CheckoutService(checkoutStore, userIdService, activeCartService) {
+        function CheckoutService(checkoutStore, activeCartService, userIdService) {
             this.checkoutStore = checkoutStore;
-            this.userIdService = userIdService;
             this.activeCartService = activeCartService;
+            this.userIdService = userIdService;
         }
         /**
          * Places an order
@@ -13320,7 +13320,7 @@
         };
         return CheckoutService;
     }());
-    CheckoutService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(ActiveCartService)); }, token: CheckoutService, providedIn: "root" });
+    CheckoutService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CheckoutService_Factory() { return new CheckoutService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(ActiveCartService), i0.ɵɵinject(UserIdService)); }, token: CheckoutService, providedIn: "root" });
     CheckoutService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -13328,8 +13328,8 @@
     ];
     CheckoutService.ctorParameters = function () { return [
         { type: i1$2.Store },
-        { type: UserIdService },
-        { type: ActiveCartService }
+        { type: ActiveCartService },
+        { type: UserIdService }
     ]; };
 
     var PaymentTypeService = /** @class */ (function () {
@@ -18575,10 +18575,10 @@
     });
 
     var UserConsentService = /** @class */ (function () {
-        function UserConsentService(store, userIdService, authService) {
+        function UserConsentService(store, authService, userIdService) {
             this.store = store;
-            this.userIdService = userIdService;
             this.authService = authService;
+            this.userIdService = userIdService;
         }
         /**
          * Retrieves all consents.
@@ -18783,7 +18783,7 @@
         };
         return UserConsentService;
     }());
-    UserConsentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(UserIdService), i0.ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
+    UserConsentService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(AuthService), i0.ɵɵinject(UserIdService)); }, token: UserConsentService, providedIn: "root" });
     UserConsentService.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -18791,8 +18791,8 @@
     ];
     UserConsentService.ctorParameters = function () { return [
         { type: i1$2.Store },
-        { type: UserIdService },
-        { type: AuthService }
+        { type: AuthService },
+        { type: UserIdService }
     ]; };
 
     var AnonymousConsentTemplatesConnector = /** @class */ (function () {

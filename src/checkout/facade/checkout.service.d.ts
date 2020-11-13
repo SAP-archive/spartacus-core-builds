@@ -6,11 +6,12 @@ import { Order } from '../../model/order.model';
 import { ORDER_TYPE, ReplenishmentOrder, ScheduleReplenishmentForm } from '../../model/replenishment-order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithCheckout } from '../store/checkout-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutService {
     protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
-    protected userIdService: UserIdService;
     protected activeCartService: ActiveCartService;
-    constructor(checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>, userIdService: UserIdService, activeCartService: ActiveCartService);
+    protected userIdService: UserIdService;
+    constructor(checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>, activeCartService: ActiveCartService, userIdService: UserIdService);
     /**
      * Places an order
      */
@@ -67,4 +68,7 @@ export declare class CheckoutService {
      */
     getCurrentOrderType(): Observable<ORDER_TYPE>;
     protected actionAllowed(): boolean;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutService, never>;
 }
+
+//# sourceMappingURL=checkout.service.d.ts.map
