@@ -2712,7 +2712,7 @@ class BaseSiteService {
         return this.getActive().pipe(switchMap((activeSiteUid) => this.getAll().pipe(map((sites) => sites.find((site) => site.uid === activeSiteUid)))));
     }
     setActive(baseSite) {
-        return this.store
+        this.store
             .pipe(select(getActiveBaseSite), take(1))
             .subscribe((activeBaseSite) => {
             if (baseSite && activeBaseSite !== baseSite) {
@@ -13408,7 +13408,7 @@ class CurrencyService {
      * Sets the active language.
      */
     setActive(isocode) {
-        return this.store
+        this.store
             .pipe(select(getActiveCurrency), take(1))
             .subscribe((activeCurrency) => {
             if (activeCurrency !== isocode) {
@@ -13478,7 +13478,7 @@ class LanguageService {
      * Sets the active language.
      */
     setActive(isocode) {
-        return this.store
+        this.store
             .pipe(select(getActiveLanguage), take(1))
             .subscribe((activeLanguage) => {
             if (activeLanguage !== isocode) {

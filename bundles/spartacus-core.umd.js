@@ -3249,7 +3249,7 @@
         };
         BaseSiteService.prototype.setActive = function (baseSite) {
             var _this = this;
-            return this.store
+            this.store
                 .pipe(i1$2.select(getActiveBaseSite), operators.take(1))
                 .subscribe(function (activeBaseSite) {
                 if (baseSite && activeBaseSite !== baseSite) {
@@ -15253,7 +15253,7 @@
          */
         CurrencyService.prototype.setActive = function (isocode) {
             var _this = this;
-            return this.store
+            this.store
                 .pipe(i1$2.select(getActiveCurrency), operators.take(1))
                 .subscribe(function (activeCurrency) {
                 if (activeCurrency !== isocode) {
@@ -15326,7 +15326,7 @@
          */
         LanguageService.prototype.setActive = function (isocode) {
             var _this = this;
-            return this.store
+            this.store
                 .pipe(i1$2.select(getActiveLanguage), operators.take(1))
                 .subscribe(function (activeLanguage) {
                 if (activeLanguage !== isocode) {

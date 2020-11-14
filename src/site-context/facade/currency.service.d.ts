@@ -8,6 +8,7 @@ import { SiteContext } from './site-context.interface';
 /**
  * Facade that provides easy access to curreny state, actions and selectors.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CurrencyService implements SiteContext<Currency> {
     protected store: Store<StateWithSiteContext>;
     protected config: SiteContextConfig;
@@ -24,11 +25,15 @@ export declare class CurrencyService implements SiteContext<Currency> {
     /**
      * Sets the active language.
      */
-    setActive(isocode: string): import("rxjs").Subscription;
+    setActive(isocode: string): void;
     /**
      * Initials the active currency. The active currency is either given
      * by the last visit (stored in session storage) or by the
      * default session currency of the store.
      */
     initialize(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CurrencyService, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CurrencyService>;
 }
+
+//# sourceMappingURL=currency.service.d.ts.map
