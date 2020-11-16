@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { CartConnector } from '../../connectors/cart/cart.connector';
 import { CartActions } from '../actions/index';
 import { StateWithMultiCart } from '../multi-cart-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class CartEffects {
     private actions$;
     private cartConnector;
@@ -18,4 +19,8 @@ export declare class CartEffects {
     addEmail$: Observable<CartActions.AddEmailToCartSuccess | CartActions.AddEmailToCartFail | CartActions.LoadCart>;
     deleteCart$: Observable<CartActions.DeleteCartSuccess | CartActions.DeleteCartFail | CartActions.LoadCart>;
     constructor(actions$: Actions, cartConnector: CartConnector, store: Store<StateWithMultiCart>);
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartEffects, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CartEffects>;
 }
+
+//# sourceMappingURL=cart.effect.d.ts.map
