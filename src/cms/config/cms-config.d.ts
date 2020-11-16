@@ -1,7 +1,6 @@
 import { StaticProvider } from '@angular/core';
 import { Route } from '@angular/router';
 import { OccConfig } from '../../occ/config/occ-config';
-import * as ɵngcc0 from '@angular/core';
 export interface StandardCmsComponentConfig {
     CMSSiteContextComponent?: CmsComponentMapping;
     CMSLinkComponent?: CmsComponentMapping;
@@ -87,7 +86,4 @@ export declare abstract class CmsConfig extends OccConfig {
         [featureName: string]: FeatureModuleConfig;
     };
     cmsComponents?: CMSComponentConfig;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CmsConfig, never>;
 }
-
-//# sourceMappingURL=cms-config.d.ts.map
