@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/user-auth/facade/auth.service';
 import { AnonymousConsent, ConsentTemplate } from '../../model/index';
 import { StateWithAnonymousConsents } from '../store/anonymous-consents-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class AnonymousConsentsService {
     protected store: Store<StateWithAnonymousConsents>;
     protected authService: AuthService;
@@ -16,7 +17,7 @@ export declare class AnonymousConsentsService {
      *   - `loadIfMissing` parameter is set to `true`
      *   - the `templates` in the store are `undefined`
      *
-     * Othewise it just returns the value from the store.
+     * Otherwise it just returns the value from the store.
      *
      * @param loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
      */
@@ -116,7 +117,7 @@ export declare class AnonymousConsentsService {
      */
     private checkConsentVersions;
     /**
-     * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
+     * Returns `true` if there's a mismatch in template versions between the provided `currentTemplates` and `newTemplates`
      * @param currentTemplates current templates to check
      * @param newTemplates new templates to check
      */
@@ -140,4 +141,7 @@ export declare class AnonymousConsentsService {
      * @param previousConsents old consents to compare
      */
     consentsUpdated(newConsents: AnonymousConsent[], previousConsents: AnonymousConsent[]): boolean;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AnonymousConsentsService, never>;
 }
+
+//# sourceMappingURL=anonymous-consents.service.d.ts.map

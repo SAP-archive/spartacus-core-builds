@@ -2680,7 +2680,7 @@
          *   - `loadIfMissing` parameter is set to `true`
          *   - the `templates` in the store are `undefined`
          *
-         * Othewise it just returns the value from the store.
+         * Otherwise it just returns the value from the store.
          *
          * @param loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
          */
@@ -2852,7 +2852,7 @@
             this.store.dispatch(new AnonymousConsentCheckUpdatedVersions());
         };
         /**
-         * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
+         * Returns `true` if there's a mismatch in template versions between the provided `currentTemplates` and `newTemplates`
          * @param currentTemplates current templates to check
          * @param newTemplates new templates to check
          */
@@ -19757,18 +19757,80 @@
         clearAnonymousConsentTemplates,
     ];
 
-    function anonymousConsentsStoreConfigFactory() {
-        var _a;
-        var config = {
-            state: {
-                storageSync: {
-                    keys: (_a = {},
-                        _a[ANONYMOUS_CONSENTS_STORE_FEATURE] = exports.StorageSyncType.LOCAL_STORAGE,
-                        _a),
-                },
-            },
+    /**
+     * Responsible for saving the anonymous consents data in browser storage.
+     */
+    var AnonymousConsentsStatePersistenceService = /** @class */ (function () {
+        function AnonymousConsentsStatePersistenceService(statePersistenceService, store, anonymousConsentsService) {
+            this.statePersistenceService = statePersistenceService;
+            this.store = store;
+            this.anonymousConsentsService = anonymousConsentsService;
+            this.subscription = new rxjs.Subscription();
+            /**
+             * Identifier used for storage key.
+             */
+            this.key = 'anonymous-consents';
+        }
+        /**
+         * Initializes the synchronization between state and browser storage.
+         */
+        AnonymousConsentsStatePersistenceService.prototype.initSync = function () {
+            var _this = this;
+            this.subscription.add(this.statePersistenceService.syncWithStorage({
+                key: this.key,
+                state$: this.getAuthState(),
+                onRead: function (state) { return _this.onRead(state); },
+            }));
         };
-        return config;
+        /**
+         * Gets and transforms state from different sources into the form that should
+         * be saved in storage.
+         */
+        AnonymousConsentsStatePersistenceService.prototype.getAuthState = function () {
+            return this.store.select(getAnonymousConsentState);
+        };
+        /**
+         * Function called on each browser storage read.
+         * Used to update state from browser -> state.
+         */
+        AnonymousConsentsStatePersistenceService.prototype.onRead = function (state) {
+            var templates = state === null || state === void 0 ? void 0 : state.templates;
+            var consents = state === null || state === void 0 ? void 0 : state.consents;
+            var ui = state === null || state === void 0 ? void 0 : state.ui;
+            // templates
+            if (templates === null || templates === void 0 ? void 0 : templates.success) {
+                this.store.dispatch(new LoadAnonymousConsentTemplatesSuccess(templates.value));
+            }
+            // consents
+            if (consents) {
+                this.anonymousConsentsService.setConsents(consents);
+            }
+            // ui
+            if (ui) {
+                this.anonymousConsentsService.toggleBannerDismissed(ui === null || ui === void 0 ? void 0 : ui.bannerDismissed);
+                this.anonymousConsentsService.toggleTemplatesUpdated(ui === null || ui === void 0 ? void 0 : ui.updated);
+            }
+        };
+        AnonymousConsentsStatePersistenceService.prototype.ngOnDestroy = function () {
+            this.subscription.unsubscribe();
+        };
+        return AnonymousConsentsStatePersistenceService;
+    }());
+    AnonymousConsentsStatePersistenceService.ɵprov = i0.ɵɵdefineInjectable({ factory: function AnonymousConsentsStatePersistenceService_Factory() { return new AnonymousConsentsStatePersistenceService(i0.ɵɵinject(StatePersistenceService), i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentsStatePersistenceService, providedIn: "root" });
+    AnonymousConsentsStatePersistenceService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    AnonymousConsentsStatePersistenceService.ctorParameters = function () { return [
+        { type: StatePersistenceService },
+        { type: i1$2.Store },
+        { type: AnonymousConsentsService }
+    ]; };
+
+    function anonymousConsentsStatePersistenceFactory(anonymousConsentsStatePersistenceService) {
+        var result = function () { return anonymousConsentsStatePersistenceService.initSync(); };
+        return result;
     }
     var AnonymousConsentsStoreModule = /** @class */ (function () {
         function AnonymousConsentsStoreModule() {
@@ -19786,8 +19848,13 @@
                         i3.EffectsModule.forFeature(effects$3),
                     ],
                     providers: [
-                        provideDefaultConfigFactory(anonymousConsentsStoreConfigFactory),
                         reducerProvider$4,
+                        {
+                            provide: i0.APP_INITIALIZER,
+                            useFactory: anonymousConsentsStatePersistenceFactory,
+                            deps: [AnonymousConsentsStatePersistenceService],
+                            multi: true,
+                        },
                     ],
                 },] }
     ];
@@ -30450,6 +30517,7 @@
     exports.AnonymousConsentsModule = AnonymousConsentsModule;
     exports.AnonymousConsentsSelectors = anonymousConsentsGroup_selectors;
     exports.AnonymousConsentsService = AnonymousConsentsService;
+    exports.AnonymousConsentsStatePersistenceService = AnonymousConsentsStatePersistenceService;
     exports.AsmActions = customerGroup_actions;
     exports.AsmAdapter = AsmAdapter;
     exports.AsmAuthHttpHeaderService = AsmAuthHttpHeaderService;
@@ -31149,7 +31217,7 @@
     exports.ɵix = reducer$s;
     exports.ɵiy = reducer$C;
     exports.ɵiz = reducer$q;
-    exports.ɵj = anonymousConsentsStoreConfigFactory;
+    exports.ɵj = anonymousConsentsStatePersistenceFactory;
     exports.ɵja = reducer$D;
     exports.ɵjb = reducer$r;
     exports.ɵjc = reducer$o;

@@ -12,7 +12,7 @@ export { Order } from './src/model/order.model';
 export * from './public_api';
 export { AnonymousConsentsInterceptor as ɵbe } from './src/anonymous-consents/http-interceptors/anonymous-consents-interceptor';
 export { interceptors as ɵbd } from './src/anonymous-consents/http-interceptors/index';
-export { AnonymousConsentsStoreModule as ɵk, anonymousConsentsStoreConfigFactory as ɵj } from './src/anonymous-consents/store/anonymous-consents-store.module';
+export { AnonymousConsentsStoreModule as ɵk, anonymousConsentsStatePersistenceFactory as ɵj } from './src/anonymous-consents/store/anonymous-consents-store.module';
 export { AnonymousConsentsEffects as ɵw } from './src/anonymous-consents/store/effects/anonymous-consents.effect';
 export { effects as ɵv } from './src/anonymous-consents/store/effects/index';
 export { reducer as ɵbb } from './src/anonymous-consents/store/reducers/anonymous-consents-banner.reducer';
@@ -204,3 +204,5 @@ export { reducer as ɵit } from './src/user/store/reducers/user-details.reducer'
 export { reducer as ɵiy } from './src/user/store/reducers/user-orders.reducer';
 export { reducer as ɵja } from './src/user/store/reducers/user-replenishment-orders.reducer';
 export { UserStoreModule as ɵhn } from './src/user/store/user-store.module';
+
+//# sourceMappingURL=spartacus-core.d.ts.map
