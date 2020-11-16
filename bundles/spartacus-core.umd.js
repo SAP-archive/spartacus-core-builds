@@ -1782,12 +1782,12 @@
         ImageType["GALLERY"] = "GALLERY";
     })(exports.ImageType || (exports.ImageType = {}));
 
-    (function (B2BUserGroup) {
-        B2BUserGroup["B2B_ADMIN_GROUP"] = "b2badmingroup";
-        B2BUserGroup["B2B_CUSTOMER_GROUP"] = "b2bcustomergroup";
-        B2BUserGroup["B2B_MANAGER_GROUP"] = "b2bmanagergroup";
-        B2BUserGroup["B2B_APPROVER_GROUP"] = "b2bapprovergroup";
-    })(exports.B2BUserGroup || (exports.B2BUserGroup = {}));
+    (function (B2BUserRole) {
+        B2BUserRole["ADMIN"] = "b2badmingroup";
+        B2BUserRole["CUSTOMER"] = "b2bcustomergroup";
+        B2BUserRole["MANAGER"] = "b2bmanagergroup";
+        B2BUserRole["APPROVER"] = "b2bapprovergroup";
+    })(exports.B2BUserRole || (exports.B2BUserRole = {}));
 
     (function (NotificationType) {
         NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
