@@ -6143,37 +6143,9 @@
         { type: ConverterService }
     ]; };
 
-    /**
-     * Service responsible for converting date-like strings to/from formats compatible with the `<input type="datetime-local">`
-     * HTML element and valid strings compatible with the `Date` object.
-     *
-     * Date values used are relative to the local timezone of the user.
-     */
-    var DateTimePickerFormatterService = /** @class */ (function () {
-        function DateTimePickerFormatterService() {
+    var TimeUtils = /** @class */ (function () {
+        function TimeUtils() {
         }
-        /**
-         * Convert date string into a string format compatable with the browser's native `<input type="datetime-local">` HTML element.
-         * @param value: date string to convert
-         *
-         * @example
-         * With UTC-0 local offset, `toNative('2010-01-01T00:00+0000')` returns `'2010-01-01T00:00'`.
-         */
-        DateTimePickerFormatterService.prototype.toNative = function (value) {
-            return value
-                ? this.formatDateStringWithTimezone(value, this.getLocalTimezoneOffset(true))
-                : null;
-        };
-        /**
-         * Convert datetime-local native string into a valid datetime string.
-         * @param value: datetime-local string to convert
-         *
-         * @example
-         * With UTC-0 locale offset, `toModel('2010-01-01T00:00')` returns `'2010-01-01T00:00:00+00:00'`.
-         */
-        DateTimePickerFormatterService.prototype.toModel = function (value) {
-            return value ? value + ":00" + this.getLocalTimezoneOffset() : null;
-        };
         /**
          * Returns the local timezone in a format that can be appended to a date-like string.
          * @param invert (default: false): returns the opposite operator relative to the local timezone
@@ -6182,7 +6154,7 @@
          * When locale is set to a CEST timezone, `getLocalTimezoneOffset()` returns '+02:00'
          * and `getLocalTimezoneOffset(true)` returns '-02:00'
          */
-        DateTimePickerFormatterService.prototype.getLocalTimezoneOffset = function (invert) {
+        TimeUtils.getLocalTimezoneOffset = function (invert) {
             var offset = new Date().getTimezoneOffset() * -1;
             var hours = Math.abs(Math.floor(offset / 60))
                 .toString()
@@ -6191,31 +6163,19 @@
             var sign = offset >= 0 ? (invert ? "-" : "+") : invert ? "+" : "-";
             return "" + sign + hours + ":" + minutes;
         };
-        /**
-         * Format date string into a format compatible with the browser's native `<input type="datetime-local">` HTML element.
-         * @param dateString: date string to convert
-         * @param offset: offset to append to date string
-         *
-         * @example
-         * With UTC-0 local offset, `formatDateStringWithTimezone('2010-01-01T00:00+0000', '+00:00')` returns `'2010-01-01T00:00+00:00'`.
-         */
-        DateTimePickerFormatterService.prototype.formatDateStringWithTimezone = function (dateString, offset) {
-            return new Date(dateString.replace('+0000', offset))
-                .toISOString()
-                .substring(0, 16);
+        TimeUtils.convertDateToDatetime = function (date, endOfDay) {
+            return date + "T" + (!endOfDay ? '00:00:00' : '23:59:59') + TimeUtils.getLocalTimezoneOffset();
         };
-        return DateTimePickerFormatterService;
+        TimeUtils.convertDatetimeToDate = function (datetime) {
+            return new Date("" + datetime.substring(0, 19) + TimeUtils.getLocalTimezoneOffset(true))
+                .toISOString()
+                .substring(0, 10);
+        };
+        return TimeUtils;
     }());
-    DateTimePickerFormatterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function DateTimePickerFormatterService_Factory() { return new DateTimePickerFormatterService(); }, token: DateTimePickerFormatterService, providedIn: "root" });
-    DateTimePickerFormatterService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
 
     var OccReplenishmentOrderFormSerializer = /** @class */ (function () {
-        function OccReplenishmentOrderFormSerializer(dateTimePickerFormatterService) {
-            this.dateTimePickerFormatterService = dateTimePickerFormatterService;
+        function OccReplenishmentOrderFormSerializer() {
         }
         OccReplenishmentOrderFormSerializer.prototype.convert = function (source, target) {
             if (target === undefined) {
@@ -6237,18 +6197,14 @@
                 minute: '2-digit',
                 hour12: false,
             });
-            var modelDate = date + "T" + localTime;
-            return this.dateTimePickerFormatterService.toModel(modelDate);
+            return date + "T" + localTime + ":00" + TimeUtils.getLocalTimezoneOffset();
         };
         return OccReplenishmentOrderFormSerializer;
     }());
-    OccReplenishmentOrderFormSerializer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReplenishmentOrderFormSerializer_Factory() { return new OccReplenishmentOrderFormSerializer(i0.ɵɵinject(DateTimePickerFormatterService)); }, token: OccReplenishmentOrderFormSerializer, providedIn: "root" });
+    OccReplenishmentOrderFormSerializer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccReplenishmentOrderFormSerializer_Factory() { return new OccReplenishmentOrderFormSerializer(); }, token: OccReplenishmentOrderFormSerializer, providedIn: "root" });
     OccReplenishmentOrderFormSerializer.decorators = [
         { type: i0.Injectable, args: [{ providedIn: 'root' },] }
     ];
-    OccReplenishmentOrderFormSerializer.ctorParameters = function () { return [
-        { type: DateTimePickerFormatterService }
-    ]; };
 
     var OccReplenishmentOrderNormalizer = /** @class */ (function () {
         function OccReplenishmentOrderNormalizer(converter) {
@@ -30512,34 +30468,6 @@
                 },] }
     ];
 
-    var DatePickerFormatterService = /** @class */ (function () {
-        function DatePickerFormatterService() {
-        }
-        DatePickerFormatterService.prototype.toNative = function (value) {
-            return value ? new Date(value).toISOString().split('T')[0] : null;
-        };
-        DatePickerFormatterService.prototype.toModel = function (value, endOfDay) {
-            if (value) {
-                var date = new Date(value)
-                    .toISOString()
-                    .replace('.', '+')
-                    .replace('Z', '0');
-                if (endOfDay) {
-                    date = date.replace('00:00:00', '23:59:59');
-                }
-                return date;
-            }
-        };
-        return DatePickerFormatterService;
-    }());
-    DatePickerFormatterService.ɵprov = i0.ɵɵdefineInjectable({ factory: function DatePickerFormatterService_Factory() { return new DatePickerFormatterService(); }, token: DatePickerFormatterService, providedIn: "root" });
-    DatePickerFormatterService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    DatePickerFormatterService.ctorParameters = function () { return []; };
-
     /*
      * Public API Surface of core
      */
@@ -30719,8 +30647,6 @@
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
     exports.DEFAULT_URL_MATCHER = DEFAULT_URL_MATCHER;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
-    exports.DatePickerFormatterService = DatePickerFormatterService;
-    exports.DateTimePickerFormatterService = DateTimePickerFormatterService;
     exports.DefaultConfig = DefaultConfig;
     exports.DefaultConfigChunk = DefaultConfigChunk;
     exports.DefaultRoutePageMetaResolver = DefaultRoutePageMetaResolver;
@@ -30956,6 +30882,7 @@
     exports.StoreFinderService = StoreFinderService;
     exports.TITLE_NORMALIZER = TITLE_NORMALIZER;
     exports.TestConfigModule = TestConfigModule;
+    exports.TimeUtils = TimeUtils;
     exports.TokenRevocationInterceptor = TokenRevocationInterceptor;
     exports.TranslatePipe = TranslatePipe;
     exports.TranslationChunkService = TranslationChunkService;
