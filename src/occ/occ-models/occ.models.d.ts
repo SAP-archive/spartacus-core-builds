@@ -460,6 +460,10 @@ export declare namespace Occ {
          * @member {string} [slotStatus]
          */
         slotStatus?: string;
+        /**
+         * @member {any} [properties]
+         */
+        properties?: any;
     }
     /**
      *
@@ -504,6 +508,14 @@ export declare namespace Occ {
          * @member {string} [uid]
          */
         uid?: string;
+        /**
+         * @member {string} [label]
+         */
+        label?: string;
+        /**
+         * @member {any} [properties]
+         */
+        properties?: any;
     }
     /**
      *

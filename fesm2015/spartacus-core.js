@@ -12053,40 +12053,73 @@ class OccCmsPageNormalizer {
         this.normalizeComponentData(source, target);
         return target;
     }
+    /**
+     * Converts the OCC cms page model to the `Page` in the `CmsStructureModel`.
+     */
     normalizePageData(source, target) {
-        target.page = {
-            loadTime: Date.now(),
-            name: source.name,
-            type: source.typeCode,
-            title: source.title,
-            pageId: source.uid,
-            template: source.template,
-            slots: {},
-            properties: source.properties,
-            label: source.label,
-        };
+        if (!source) {
+            return;
+        }
+        const page = {};
+        if (source.name) {
+            page.name = source.name;
+        }
+        if (source.typeCode) {
+            page.type = source.typeCode;
+        }
+        if (source.label) {
+            page.label = source.label;
+        }
+        if (source.template) {
+            page.template = source.template;
+        }
+        if (source.uid) {
+            page.pageId = source.uid;
+        }
+        if (source.title) {
+            page.title = source.title;
+        }
+        if (source.properties) {
+            page.properties = source.properties;
+        }
+        target.page = page;
     }
+    /**
+     * Adds a ContentSlotData for each page slot in the `CmsStructureModel`.
+     */
     normalizePageSlotData(source, target) {
+        if (!(source === null || source === void 0 ? void 0 : source.contentSlots)) {
+            return;
+        }
         if (!Array.isArray(source.contentSlots.contentSlot)) {
             source.contentSlots.contentSlot = [source.contentSlots.contentSlot];
         }
+        target.page.slots = {};
         for (const slot of source.contentSlots.contentSlot) {
-            target.page.slots[slot.position] = {
-                components: [],
-                properties: slot.properties,
-            };
+            target.page.slots[slot.position] = {};
+            if (slot.properties) {
+                target.page.slots[slot.position].properties = slot.properties;
+            }
         }
     }
+    /**
+     * Registers the `ContentSlotComponentData` for each component.
+     */
     normalizePageComponentData(source, target) {
+        var _a, _b;
+        if (!((_a = source === null || source === void 0 ? void 0 : source.contentSlots) === null || _a === void 0 ? void 0 : _a.contentSlot)) {
+            return;
+        }
         for (const slot of source.contentSlots.contentSlot) {
-            if (slot.components.component &&
-                Array.isArray(slot.components.component)) {
+            if (Array.isArray((_b = slot.components) === null || _b === void 0 ? void 0 : _b.component)) {
                 for (const component of slot.components.component) {
                     const comp = {
                         uid: component.uid,
                         typeCode: component.typeCode,
-                        properties: component.properties,
                     };
+                    if (component.properties) {
+                        comp.properties = component.properties;
+                    }
                     if (component.typeCode === CMS_FLEX_COMPONENT_TYPE) {
                         comp.flexType = component.flexType;
                     }
@@ -12096,20 +12129,40 @@ class OccCmsPageNormalizer {
                     else {
                         comp.flexType = component.typeCode;
                     }
+                    if (!target.page.slots[slot.position].components) {
+                        target.page.slots[slot.position].components = [];
+                    }
                     target.page.slots[slot.position].components.push(comp);
                 }
             }
         }
     }
+    /**
+     * Adds the actual component data whenever available in the CMS page data.
+     *
+     * If the data is not populated in this payload, it is loaded separately
+     * (`OccCmsComponentAdapter`).
+     */
     normalizeComponentData(source, target) {
-        target.components = [];
+        var _a, _b;
+        if (!((_a = source === null || source === void 0 ? void 0 : source.contentSlots) === null || _a === void 0 ? void 0 : _a.contentSlot)) {
+            return;
+        }
         for (const slot of source.contentSlots.contentSlot) {
-            if (slot.components.component &&
-                Array.isArray(slot.components.component)) {
+            if (Array.isArray((_b = slot.components) === null || _b === void 0 ? void 0 : _b.component)) {
                 for (const component of slot.components.component) {
+                    // while we're hoping to get this right from the backend api,
+                    // the OCC api stills seems out of sync with the right model.
+                    if (component.modifiedtime) {
+                        component.modifiedTime = component.modifiedtime;
+                        delete component.modifiedtime;
+                    }
                     // we don't put properties into component state
                     if (component.properties) {
                         component.properties = undefined;
+                    }
+                    if (!target.components) {
+                        target.components = [];
                     }
                     target.components.push(component);
                 }
@@ -21589,9 +21642,9 @@ class CmsPageConnector {
     }
     /**
      *
-     * Merge default page structure inot the given `CmsStructureModel`.
-     * This is benefitial for a fast setup of the UI without necessary
-     * finegrained CMS setup.
+     * Merge default page structure to the given `CmsStructureModel`.
+     * This is beneficial for a fast setup of the UI without necessary
+     * fine-grained CMS setup.
      */
     mergeDefaultPageStructure(pageContext, pageStructure) {
         return this.cmsStructureConfigService.mergePageStructure(pageContext.id, pageStructure);

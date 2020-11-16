@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs';
-import { CmsPageAdapter } from './cms-page.adapter';
-import { CmsStructureConfigService } from '../../services/cms-structure-config.service';
 import { PageContext } from '../../../routing/models/page-context.model';
 import { CmsStructureModel } from '../../model/page.model';
+import { CmsStructureConfigService } from '../../services/cms-structure-config.service';
+import { CmsPageAdapter } from './cms-page.adapter';
+import * as ɵngcc0 from '@angular/core';
 export declare class CmsPageConnector {
     protected cmsPageAdapter: CmsPageAdapter;
     protected cmsStructureConfigService: CmsStructureConfigService;
@@ -15,9 +16,12 @@ export declare class CmsPageConnector {
     get(pageContext: PageContext): Observable<CmsStructureModel>;
     /**
      *
-     * Merge default page structure inot the given `CmsStructureModel`.
-     * This is benefitial for a fast setup of the UI without necessary
-     * finegrained CMS setup.
+     * Merge default page structure to the given `CmsStructureModel`.
+     * This is beneficial for a fast setup of the UI without necessary
+     * fine-grained CMS setup.
      */
     private mergeDefaultPageStructure;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CmsPageConnector, never>;
 }
+
+//# sourceMappingURL=cms-page.connector.d.ts.map

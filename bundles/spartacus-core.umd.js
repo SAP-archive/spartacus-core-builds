@@ -13704,56 +13704,89 @@
             this.normalizeComponentData(source, target);
             return target;
         };
+        /**
+         * Converts the OCC cms page model to the `Page` in the `CmsStructureModel`.
+         */
         OccCmsPageNormalizer.prototype.normalizePageData = function (source, target) {
-            target.page = {
-                loadTime: Date.now(),
-                name: source.name,
-                type: source.typeCode,
-                title: source.title,
-                pageId: source.uid,
-                template: source.template,
-                slots: {},
-                properties: source.properties,
-                label: source.label,
-            };
+            if (!source) {
+                return;
+            }
+            var page = {};
+            if (source.name) {
+                page.name = source.name;
+            }
+            if (source.typeCode) {
+                page.type = source.typeCode;
+            }
+            if (source.label) {
+                page.label = source.label;
+            }
+            if (source.template) {
+                page.template = source.template;
+            }
+            if (source.uid) {
+                page.pageId = source.uid;
+            }
+            if (source.title) {
+                page.title = source.title;
+            }
+            if (source.properties) {
+                page.properties = source.properties;
+            }
+            target.page = page;
         };
+        /**
+         * Adds a ContentSlotData for each page slot in the `CmsStructureModel`.
+         */
         OccCmsPageNormalizer.prototype.normalizePageSlotData = function (source, target) {
-            var e_1, _a;
+            var e_1, _c;
+            if (!(source === null || source === void 0 ? void 0 : source.contentSlots)) {
+                return;
+            }
             if (!Array.isArray(source.contentSlots.contentSlot)) {
                 source.contentSlots.contentSlot = [source.contentSlots.contentSlot];
             }
+            target.page.slots = {};
             try {
-                for (var _b = __values(source.contentSlots.contentSlot), _c = _b.next(); !_c.done; _c = _b.next()) {
-                    var slot = _c.value;
-                    target.page.slots[slot.position] = {
-                        components: [],
-                        properties: slot.properties,
-                    };
+                for (var _d = __values(source.contentSlots.contentSlot), _e = _d.next(); !_e.done; _e = _d.next()) {
+                    var slot = _e.value;
+                    target.page.slots[slot.position] = {};
+                    if (slot.properties) {
+                        target.page.slots[slot.position].properties = slot.properties;
+                    }
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                    if (_e && !_e.done && (_c = _d.return)) _c.call(_d);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
         };
+        /**
+         * Registers the `ContentSlotComponentData` for each component.
+         */
         OccCmsPageNormalizer.prototype.normalizePageComponentData = function (source, target) {
-            var e_2, _a, e_3, _b;
+            var e_2, _c, e_3, _d;
+            var _a, _b;
+            if (!((_a = source === null || source === void 0 ? void 0 : source.contentSlots) === null || _a === void 0 ? void 0 : _a.contentSlot)) {
+                return;
+            }
             try {
-                for (var _c = __values(source.contentSlots.contentSlot), _d = _c.next(); !_d.done; _d = _c.next()) {
-                    var slot = _d.value;
-                    if (slot.components.component &&
-                        Array.isArray(slot.components.component)) {
+                for (var _e = __values(source.contentSlots.contentSlot), _f = _e.next(); !_f.done; _f = _e.next()) {
+                    var slot = _f.value;
+                    if (Array.isArray((_b = slot.components) === null || _b === void 0 ? void 0 : _b.component)) {
                         try {
-                            for (var _e = (e_3 = void 0, __values(slot.components.component)), _f = _e.next(); !_f.done; _f = _e.next()) {
-                                var component = _f.value;
+                            for (var _g = (e_3 = void 0, __values(slot.components.component)), _h = _g.next(); !_h.done; _h = _g.next()) {
+                                var component = _h.value;
                                 var comp = {
                                     uid: component.uid,
                                     typeCode: component.typeCode,
-                                    properties: component.properties,
                                 };
+                                if (component.properties) {
+                                    comp.properties = component.properties;
+                                }
                                 if (component.typeCode === CMS_FLEX_COMPONENT_TYPE) {
                                     comp.flexType = component.flexType;
                                 }
@@ -13763,13 +13796,16 @@
                                 else {
                                     comp.flexType = component.typeCode;
                                 }
+                                if (!target.page.slots[slot.position].components) {
+                                    target.page.slots[slot.position].components = [];
+                                }
                                 target.page.slots[slot.position].components.push(comp);
                             }
                         }
                         catch (e_3_1) { e_3 = { error: e_3_1 }; }
                         finally {
                             try {
-                                if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
+                                if (_h && !_h.done && (_d = _g.return)) _d.call(_g);
                             }
                             finally { if (e_3) throw e_3.error; }
                         }
@@ -13779,25 +13815,42 @@
             catch (e_2_1) { e_2 = { error: e_2_1 }; }
             finally {
                 try {
-                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+                    if (_f && !_f.done && (_c = _e.return)) _c.call(_e);
                 }
                 finally { if (e_2) throw e_2.error; }
             }
         };
+        /**
+         * Adds the actual component data whenever available in the CMS page data.
+         *
+         * If the data is not populated in this payload, it is loaded separately
+         * (`OccCmsComponentAdapter`).
+         */
         OccCmsPageNormalizer.prototype.normalizeComponentData = function (source, target) {
-            var e_4, _a, e_5, _b;
-            target.components = [];
+            var e_4, _c, e_5, _d;
+            var _a, _b;
+            if (!((_a = source === null || source === void 0 ? void 0 : source.contentSlots) === null || _a === void 0 ? void 0 : _a.contentSlot)) {
+                return;
+            }
             try {
-                for (var _c = __values(source.contentSlots.contentSlot), _d = _c.next(); !_d.done; _d = _c.next()) {
-                    var slot = _d.value;
-                    if (slot.components.component &&
-                        Array.isArray(slot.components.component)) {
+                for (var _e = __values(source.contentSlots.contentSlot), _f = _e.next(); !_f.done; _f = _e.next()) {
+                    var slot = _f.value;
+                    if (Array.isArray((_b = slot.components) === null || _b === void 0 ? void 0 : _b.component)) {
                         try {
-                            for (var _e = (e_5 = void 0, __values(slot.components.component)), _f = _e.next(); !_f.done; _f = _e.next()) {
-                                var component = _f.value;
+                            for (var _g = (e_5 = void 0, __values(slot.components.component)), _h = _g.next(); !_h.done; _h = _g.next()) {
+                                var component = _h.value;
+                                // while we're hoping to get this right from the backend api,
+                                // the OCC api stills seems out of sync with the right model.
+                                if (component.modifiedtime) {
+                                    component.modifiedTime = component.modifiedtime;
+                                    delete component.modifiedtime;
+                                }
                                 // we don't put properties into component state
                                 if (component.properties) {
                                     component.properties = undefined;
+                                }
+                                if (!target.components) {
+                                    target.components = [];
                                 }
                                 target.components.push(component);
                             }
@@ -13805,7 +13858,7 @@
                         catch (e_5_1) { e_5 = { error: e_5_1 }; }
                         finally {
                             try {
-                                if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
+                                if (_h && !_h.done && (_d = _g.return)) _d.call(_g);
                             }
                             finally { if (e_5) throw e_5.error; }
                         }
@@ -13815,7 +13868,7 @@
             catch (e_4_1) { e_4 = { error: e_4_1 }; }
             finally {
                 try {
-                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+                    if (_f && !_f.done && (_c = _e.return)) _c.call(_e);
                 }
                 finally { if (e_4) throw e_4.error; }
             }
@@ -24122,9 +24175,9 @@
         };
         /**
          *
-         * Merge default page structure inot the given `CmsStructureModel`.
-         * This is benefitial for a fast setup of the UI without necessary
-         * finegrained CMS setup.
+         * Merge default page structure to the given `CmsStructureModel`.
+         * This is beneficial for a fast setup of the UI without necessary
+         * fine-grained CMS setup.
          */
         CmsPageConnector.prototype.mergeDefaultPageStructure = function (pageContext, pageStructure) {
             return this.cmsStructureConfigService.mergePageStructure(pageContext.id, pageStructure);
