@@ -204,3 +204,5 @@ export { reducer as ɵit } from './src/user/store/reducers/user-details.reducer'
 export { reducer as ɵiy } from './src/user/store/reducers/user-orders.reducer';
 export { reducer as ɵja } from './src/user/store/reducers/user-replenishment-orders.reducer';
 export { UserStoreModule as ɵhn } from './src/user/store/user-store.module';
+
+//# sourceMappingURL=spartacus-core.d.ts.map

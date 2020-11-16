@@ -4,6 +4,7 @@ import { UserIdService } from '../../auth/user-auth/facade/user-id.service';
 import { Address, Country, Region } from '../../model/address.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class UserAddressService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
     protected userIdService: UserIdService;
@@ -68,4 +69,7 @@ export declare class UserAddressService {
      * Returns all regions
      */
     getRegions(countryIsoCode: string): Observable<Region[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserAddressService, never>;
 }
+
+//# sourceMappingURL=user-address.service.d.ts.map
