@@ -22387,11 +22387,10 @@
          *   (an with optional `factory` function - by default `action.payload` will be assigned to the properties of the event instance).
          */
         CartEventBuilder.prototype.registerMapped = function (mapping) {
-            var eventStream$ = this.getAction(mapping.action).pipe(operators.withLatestFrom(this.activeCartService.getActive()), operators.filter(function (_a) {
-                var _b = __read(_a, 2), action = _b[0], activeCart = _b[1];
-                return action.payload['cartId'] === activeCart.guid;
-            } // assuming that action's payload contains the cart id
-            ), operators.map(function (_a) {
+            var eventStream$ = this.getAction(mapping.action).pipe(operators.withLatestFrom(this.activeCartService.getActive(), this.activeCartService.getActiveCartId()), operators.filter(function (_a) {
+                var _b = __read(_a, 3), action = _b[0], _activeCart = _b[1], activeCartId = _b[2];
+                return action.payload['cartId'] === activeCartId;
+            }), operators.map(function (_a) {
                 var _b = __read(_a, 2), action = _b[0], activeCart = _b[1];
                 return createFrom(mapping.event, Object.assign(Object.assign({}, action.payload), { cartCode: activeCart.code, entry: action.payload.entry
                         ? action.payload.entry
