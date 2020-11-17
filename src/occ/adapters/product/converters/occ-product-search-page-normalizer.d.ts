@@ -1,6 +1,7 @@
 import { ProductSearchPage } from '../../../../model/product-search.model';
 import { Converter, ConverterService } from '../../../../util/converter.service';
 import { Occ } from '../../../occ-models/occ.models';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccProductSearchPageNormalizer implements Converter<Occ.ProductSearchPage, ProductSearchPage> {
     private converterService;
     constructor(converterService: ConverterService);
@@ -22,4 +23,7 @@ export declare class OccProductSearchPageNormalizer implements Converter<Occ.Pro
      */
     private normalizeUselessFacets;
     private normalizeFacetValues;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductSearchPageNormalizer, never>;
 }
+
+//# sourceMappingURL=occ-product-search-page-normalizer.d.ts.map

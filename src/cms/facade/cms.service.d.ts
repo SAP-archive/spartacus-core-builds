@@ -7,6 +7,7 @@ import { ContentSlotData } from '../model/content-slot-data.model';
 import { NodeItem } from '../model/node-item.model';
 import { Page } from '../model/page.model';
 import { StateWithCms } from '../store/cms-state';
+import * as ɵngcc0 from '@angular/core';
 export declare class CmsService {
     protected store: Store<StateWithCms>;
     protected routingService: RoutingService;
@@ -87,4 +88,7 @@ export declare class CmsService {
     getPage(pageContext: PageContext, forceReload?: boolean): Observable<Page>;
     getPageIndex(pageContext: PageContext): Observable<string>;
     setPageFailIndex(pageContext: PageContext, value: string): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CmsService, never>;
 }
+
+//# sourceMappingURL=cms.service.d.ts.map
