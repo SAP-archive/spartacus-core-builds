@@ -23895,8 +23895,11 @@ class CategoryPageMetaResolver extends PageMetaResolver {
         return breadcrumbs;
     }
     hasProductListComponent(page) {
-        return !!Object.keys(page.slots).find((key) => !!page.slots[key].components.find((comp) => comp.typeCode === 'CMSProductListComponent' ||
-            comp.typeCode === 'ProductGridComponent'));
+        return !!Object.keys(page.slots).find((key) => {
+            var _a;
+            return !!((_a = page.slots[key].components) === null || _a === void 0 ? void 0 : _a.find((comp) => comp.typeCode === 'CMSProductListComponent' ||
+                comp.typeCode === 'ProductGridComponent'));
+        });
     }
 }
 CategoryPageMetaResolver.ɵprov = ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(ɵɵinject(ProductSearchService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });

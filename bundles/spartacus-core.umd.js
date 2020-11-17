@@ -26645,8 +26645,11 @@
             return breadcrumbs;
         };
         CategoryPageMetaResolver.prototype.hasProductListComponent = function (page) {
-            return !!Object.keys(page.slots).find(function (key) { return !!page.slots[key].components.find(function (comp) { return comp.typeCode === 'CMSProductListComponent' ||
-                comp.typeCode === 'ProductGridComponent'; }); });
+            return !!Object.keys(page.slots).find(function (key) {
+                var _a;
+                return !!((_a = page.slots[key].components) === null || _a === void 0 ? void 0 : _a.find(function (comp) { return comp.typeCode === 'CMSProductListComponent' ||
+                    comp.typeCode === 'ProductGridComponent'; }));
+            });
         };
         return CategoryPageMetaResolver;
     }(PageMetaResolver));

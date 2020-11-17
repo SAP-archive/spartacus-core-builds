@@ -4,6 +4,7 @@ import { Title, User, UserSignUp } from '../../../model/misc.model';
 import { UserAdapter } from '../../../user/connectors/user/user.adapter';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccUserAdapter implements UserAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -19,4 +20,8 @@ export declare class OccUserAdapter implements UserAdapter {
     updatePassword(userId: string, oldPassword: string, newPassword: string): Observable<{}>;
     remove(userId: string): Observable<{}>;
     loadTitles(): Observable<Title[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserAdapter, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserAdapter>;
 }
+
+//# sourceMappingURL=occ-user.adapter.d.ts.map
