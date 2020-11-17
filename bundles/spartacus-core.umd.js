@@ -27035,53 +27035,6 @@
         { type: i0.NgModule, args: [{},] }
     ];
 
-    /**
-     * The wrapper over the standard ngExpressEngine, that provides tokens for Spartacus
-     * @param ngExpressEngine
-     */
-    var NgExpressEngineDecorator = /** @class */ (function () {
-        function NgExpressEngineDecorator() {
-        }
-        /**
-         * Returns the higher order ngExpressEngine with provided tokens for Spartacus
-         *
-         * @param ngExpressEngine
-         */
-        NgExpressEngineDecorator.get = function (ngExpressEngine) {
-            var result = function cxNgExpressEngine(setupOptions) {
-                return function (filePath, options, callback) {
-                    var engineInstance = ngExpressEngine(Object.assign(Object.assign({}, setupOptions), { providers: __spread(getServerRequestProviders(options), (setupOptions.providers || [])) }));
-                    return engineInstance(filePath, options, callback);
-                };
-            };
-            return result;
-        };
-        return NgExpressEngineDecorator;
-    }());
-    /**
-     * Returns Spartacus' providers to be passed to the Angular express engine (in SSR)
-     *
-     * @param options
-     */
-    function getServerRequestProviders(options) {
-        return [
-            {
-                provide: SERVER_REQUEST_URL,
-                useValue: getRequestUrl(options.req),
-            },
-            {
-                provide: SERVER_REQUEST_ORIGIN,
-                useValue: getRequestOrigin(options.req),
-            },
-        ];
-    }
-    function getRequestUrl(req) {
-        return getRequestOrigin(req) + req.originalUrl;
-    }
-    function getRequestOrigin(req) {
-        return req.protocol + '://' + req.get('host');
-    }
-
     var StoreFinderConfig = /** @class */ (function () {
         function StoreFinderConfig() {
         }
@@ -30703,7 +30656,6 @@
     exports.MultiCartStatePersistenceService = MultiCartStatePersistenceService;
     exports.NAVIGATION_DETAIL_ENTITY = NAVIGATION_DETAIL_ENTITY;
     exports.NOTIFICATION_PREFERENCES = NOTIFICATION_PREFERENCES;
-    exports.NgExpressEngineDecorator = NgExpressEngineDecorator;
     exports.NotAuthGuard = NotAuthGuard;
     exports.NotFoundHandler = NotFoundHandler;
     exports.OAuthLibWrapperService = OAuthLibWrapperService;
@@ -30958,7 +30910,6 @@
     exports.defaultStateConfig = defaultStateConfig;
     exports.errorHandlers = errorHandlers;
     exports.getLastValueSync = getLastValueSync;
-    exports.getServerRequestProviders = getServerRequestProviders;
     exports.httpErrorInterceptors = httpErrorInterceptors;
     exports.initConfigurableRoutes = initConfigurableRoutes;
     exports.isFeatureEnabled = isFeatureEnabled;
