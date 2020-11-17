@@ -6,7 +6,6 @@ import { CardType, PaymentDetails } from '../../model/cart.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { LoaderState } from '../../state/utils/loader/loader-state';
 import { StateWithCheckout } from '../store/checkout-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutPaymentService {
     protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
     protected activeCartService: ActiveCartService;
@@ -47,7 +46,4 @@ export declare class CheckoutPaymentService {
      */
     paymentProcessSuccess(): void;
     protected actionAllowed(): boolean;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutPaymentService, never>;
 }
-
-//# sourceMappingURL=checkout-payment.service.d.ts.map
