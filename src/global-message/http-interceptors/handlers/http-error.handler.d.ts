@@ -1,6 +1,7 @@
 import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { GlobalMessageService } from '../../facade/global-message.service';
 import { Applicable, Priority } from '../../../util/applicable';
+import * as ɵngcc0 from '@angular/core';
 export declare abstract class HttpErrorHandler implements Applicable {
     protected globalMessageService: GlobalMessageService;
     constructor(globalMessageService: GlobalMessageService);
@@ -22,4 +23,7 @@ export declare abstract class HttpErrorHandler implements Applicable {
      */
     hasMatch(errorResponse: HttpErrorResponse): boolean;
     abstract getPriority?(): Priority;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<HttpErrorHandler, never>;
 }
+
+//# sourceMappingURL=http-error.handler.d.ts.map

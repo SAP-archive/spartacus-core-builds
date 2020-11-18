@@ -1,3 +1,4 @@
+import * as ɵngcc0 from '@angular/core';
 export declare enum StorageSyncType {
     NO_STORAGE = "NO_STORAGE",
     LOCAL_STORAGE = "LOCAL_STORAGE",
@@ -44,4 +45,7 @@ export declare abstract class StateConfig {
             };
         };
     };
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<StateConfig, never>;
 }
+
+//# sourceMappingURL=state-config.d.ts.map
