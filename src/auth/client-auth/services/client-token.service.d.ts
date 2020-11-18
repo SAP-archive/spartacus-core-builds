@@ -6,6 +6,7 @@ import { StateWithClientAuth } from '../store/client-auth-state';
 /**
  * Serves a role of a facade on client token store.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ClientTokenService {
     protected store: Store<StateWithClientAuth>;
     constructor(store: Store<StateWithClientAuth>);
@@ -20,4 +21,7 @@ export declare class ClientTokenService {
      */
     refreshClientToken(): Observable<ClientToken>;
     protected isClientTokenLoaded(state: LoaderState<ClientToken>): boolean;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientTokenService, never>;
 }
+
+//# sourceMappingURL=client-token.service.d.ts.map
