@@ -4,7 +4,6 @@ import { CustomerCoupon2Customer, CustomerCouponNotification, CustomerCouponSear
 import { CustomerCouponAdapter } from '../../../user/connectors/customer-coupon/customer-coupon.adapter';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class OccCustomerCouponAdapter implements CustomerCouponAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -15,8 +14,4 @@ export declare class OccCustomerCouponAdapter implements CustomerCouponAdapter {
     turnOnNotification(userId: string, couponCode: string): Observable<CustomerCouponNotification>;
     claimCustomerCoupon(userId: string, couponCode: string): Observable<CustomerCoupon2Customer>;
     private newHttpHeader;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCustomerCouponAdapter, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccCustomerCouponAdapter>;
 }
-
-//# sourceMappingURL=occ-customer-coupon.adapter.d.ts.map
