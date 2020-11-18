@@ -1,7 +1,6 @@
 import { ScheduleReplenishmentForm } from '../../../../model/replenishment-order.model';
 import { Converter } from '../../../../util/converter.service';
 import { Occ } from '../../../occ-models/occ.models';
-import * as ɵngcc0 from '@angular/core';
 export declare class OccReplenishmentOrderFormSerializer implements Converter<Occ.ScheduleReplenishmentForm, ScheduleReplenishmentForm> {
     convert(source: Occ.ScheduleReplenishmentForm, target?: ScheduleReplenishmentForm): ScheduleReplenishmentForm;
     /**
@@ -10,7 +9,4 @@ export declare class OccReplenishmentOrderFormSerializer implements Converter<Oc
      * Converts 2021-10-15 to 2021-10-15T15:38:05-05:00
      */
     private convertDate;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccReplenishmentOrderFormSerializer, never>;
 }
-
-//# sourceMappingURL=occ-replenishment-order-form-serializer.d.ts.map
