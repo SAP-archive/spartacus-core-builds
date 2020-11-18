@@ -5924,6 +5924,7 @@
     }());
 
     var ORDER_NORMALIZER = new i0.InjectionToken('OrderNormalizer');
+    var POINT_OF_SERVICE_NORMALIZER = new i0.InjectionToken('PointOfServiceNormalizer');
 
     var CheckoutCostCenterAdapter = /** @class */ (function () {
         function CheckoutCostCenterAdapter() {
@@ -15440,119 +15441,6 @@
                 },] }
     ];
 
-    var StoreFinderAdapter = /** @class */ (function () {
-        function StoreFinderAdapter() {
-        }
-        return StoreFinderAdapter;
-    }());
-
-    var defaultOccStoreFinderConfig = {
-        backend: {
-            occ: {
-                endpoints: {
-                    store: 'stores/${storeId}?fields=FULL',
-                    stores: 'stores?fields=stores(name,displayName,formattedDistance,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),pagination(DEFAULT),sorts(DEFAULT)',
-                    storescounts: 'stores/storescounts',
-                },
-            },
-        },
-    };
-
-    var StoreFinderConnector = /** @class */ (function () {
-        function StoreFinderConnector(adapter) {
-            this.adapter = adapter;
-        }
-        StoreFinderConnector.prototype.search = function (query, searchConfig, longitudeLatitude, radius) {
-            return this.adapter.search(query, searchConfig, longitudeLatitude, radius);
-        };
-        StoreFinderConnector.prototype.getCounts = function () {
-            return this.adapter.loadCounts();
-        };
-        StoreFinderConnector.prototype.get = function (storeId) {
-            return this.adapter.load(storeId);
-        };
-        return StoreFinderConnector;
-    }());
-    StoreFinderConnector.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(i0.ɵɵinject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
-    StoreFinderConnector.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    StoreFinderConnector.ctorParameters = function () { return [
-        { type: StoreFinderAdapter }
-    ]; };
-
-    var POINT_OF_SERVICE_NORMALIZER = new i0.InjectionToken('PointOfServiceNormalizer');
-    var STORE_FINDER_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('StoreFinderSearchPageNormalizer');
-    var STORE_COUNT_NORMALIZER = new i0.InjectionToken('StoreCountNormalizer');
-
-    var OccStoreFinderAdapter = /** @class */ (function () {
-        function OccStoreFinderAdapter(http, occEndpointsService, converterService) {
-            this.http = http;
-            this.occEndpointsService = occEndpointsService;
-            this.converterService = converterService;
-        }
-        OccStoreFinderAdapter.prototype.search = function (query, searchConfig, longitudeLatitude, radius) {
-            return this.callOccFindStores(query, searchConfig, longitudeLatitude, radius).pipe(this.converterService.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
-        };
-        OccStoreFinderAdapter.prototype.loadCounts = function () {
-            return this.http
-                .get(this.occEndpointsService.getUrl('storescounts'))
-                .pipe(operators.map(function (_a) {
-                var countriesAndRegionsStoreCount = _a.countriesAndRegionsStoreCount;
-                return countriesAndRegionsStoreCount;
-            }), this.converterService.pipeableMany(STORE_COUNT_NORMALIZER));
-        };
-        OccStoreFinderAdapter.prototype.load = function (storeId) {
-            return this.http
-                .get(this.occEndpointsService.getUrl('store', { storeId: storeId }))
-                .pipe(this.converterService.pipeable(POINT_OF_SERVICE_NORMALIZER));
-        };
-        OccStoreFinderAdapter.prototype.callOccFindStores = function (query, searchConfig, longitudeLatitude, radius) {
-            var params = {};
-            if (longitudeLatitude) {
-                params['longitude'] = String(longitudeLatitude.longitude);
-                params['latitude'] = String(longitudeLatitude.latitude);
-                params['radius'] = String(radius);
-            }
-            else {
-                params['query'] = query;
-            }
-            if (searchConfig.pageSize) {
-                params['pageSize'] = String(searchConfig.pageSize);
-            }
-            if (searchConfig.currentPage) {
-                params['currentPage'] = String(searchConfig.currentPage);
-            }
-            if (searchConfig.sort) {
-                params['sort'] = searchConfig.sort;
-            }
-            return this.http.get(this.occEndpointsService.getUrl('stores', undefined, params));
-        };
-        return OccStoreFinderAdapter;
-    }());
-    OccStoreFinderAdapter.decorators = [
-        { type: i0.Injectable }
-    ];
-    OccStoreFinderAdapter.ctorParameters = function () { return [
-        { type: i1$4.HttpClient },
-        { type: OccEndpointsService },
-        { type: ConverterService }
-    ]; };
-
-    var StoreFinderOccModule = /** @class */ (function () {
-        function StoreFinderOccModule() {
-        }
-        return StoreFinderOccModule;
-    }());
-    StoreFinderOccModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    providers: [
-                        provideDefaultConfig(defaultOccStoreFinderConfig),
-                        { provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter },
-                    ],
-                },] }
-    ];
-
     var AnonymousConsentNormalizer = /** @class */ (function () {
         function AnonymousConsentNormalizer(anonymousConsentsService) {
             this.anonymousConsentsService = anonymousConsentsService;
@@ -18146,7 +18034,6 @@
                         CheckoutOccModule,
                         ProductOccModule,
                         SiteContextOccModule,
-                        StoreFinderOccModule,
                         UserOccModule,
                         OccConfigLoaderModule.forRoot(),
                         CostCenterOccModule,
@@ -27038,647 +26925,6 @@
         { type: i0.NgModule, args: [{},] }
     ];
 
-    var StoreFinderConfig = /** @class */ (function () {
-        function StoreFinderConfig() {
-        }
-        return StoreFinderConfig;
-    }());
-    StoreFinderConfig.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreFinderConfig_Factory() { return i0.ɵɵinject(Config); }, token: StoreFinderConfig, providedIn: "root" });
-    StoreFinderConfig.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                    useExisting: Config,
-                },] }
-    ];
-
-    var STORE_FINDER_FEATURE = 'stores';
-    var STORE_FINDER_DATA = '[StoreFinder] Store Finder Data';
-
-    var FIND_STORES_ON_HOLD = '[StoreFinder] On Hold';
-    var FIND_STORES = '[StoreFinder] Find Stores';
-    var FIND_STORES_FAIL = '[StoreFinder] Find Stores Fail';
-    var FIND_STORES_SUCCESS = '[StoreFinder] Find Stores Success';
-    var FIND_STORE_BY_ID = '[StoreFinder] Find a Store by Id';
-    var FIND_STORE_BY_ID_FAIL = '[StoreFinder] Find a Store by Id Fail';
-    var FIND_STORE_BY_ID_SUCCESS = '[StoreFinder] Find a Store by Id Success';
-    var FindStoresOnHold = /** @class */ (function (_super) {
-        __extends(FindStoresOnHold, _super);
-        function FindStoresOnHold() {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.type = FIND_STORES_ON_HOLD;
-            return _this;
-        }
-        return FindStoresOnHold;
-    }(LoaderLoadAction));
-    var FindStores = /** @class */ (function (_super) {
-        __extends(FindStores, _super);
-        function FindStores(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORES;
-            return _this;
-        }
-        return FindStores;
-    }(LoaderLoadAction));
-    var FindStoresFail = /** @class */ (function (_super) {
-        __extends(FindStoresFail, _super);
-        function FindStoresFail(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORES_FAIL;
-            return _this;
-        }
-        return FindStoresFail;
-    }(LoaderFailAction));
-    var FindStoresSuccess = /** @class */ (function (_super) {
-        __extends(FindStoresSuccess, _super);
-        function FindStoresSuccess(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORES_SUCCESS;
-            return _this;
-        }
-        return FindStoresSuccess;
-    }(LoaderSuccessAction));
-    var FindStoreById = /** @class */ (function (_super) {
-        __extends(FindStoreById, _super);
-        function FindStoreById(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORE_BY_ID;
-            return _this;
-        }
-        return FindStoreById;
-    }(LoaderLoadAction));
-    var FindStoreByIdFail = /** @class */ (function (_super) {
-        __extends(FindStoreByIdFail, _super);
-        function FindStoreByIdFail(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORE_BY_ID_FAIL;
-            return _this;
-        }
-        return FindStoreByIdFail;
-    }(LoaderFailAction));
-    var FindStoreByIdSuccess = /** @class */ (function (_super) {
-        __extends(FindStoreByIdSuccess, _super);
-        function FindStoreByIdSuccess(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORE_BY_ID_SUCCESS;
-            return _this;
-        }
-        return FindStoreByIdSuccess;
-    }(LoaderSuccessAction));
-
-    var VIEW_ALL_STORES = '[StoreFinder] View All Stores';
-    var VIEW_ALL_STORES_FAIL = '[StoreFinder] View All Stores Fail';
-    var VIEW_ALL_STORES_SUCCESS = '[StoreFinder] View All Stores Success';
-    var ViewAllStores = /** @class */ (function (_super) {
-        __extends(ViewAllStores, _super);
-        function ViewAllStores() {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.type = VIEW_ALL_STORES;
-            return _this;
-        }
-        return ViewAllStores;
-    }(LoaderLoadAction));
-    var ViewAllStoresFail = /** @class */ (function (_super) {
-        __extends(ViewAllStoresFail, _super);
-        function ViewAllStoresFail(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = VIEW_ALL_STORES_FAIL;
-            return _this;
-        }
-        return ViewAllStoresFail;
-    }(LoaderFailAction));
-    var ViewAllStoresSuccess = /** @class */ (function (_super) {
-        __extends(ViewAllStoresSuccess, _super);
-        function ViewAllStoresSuccess(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = VIEW_ALL_STORES_SUCCESS;
-            return _this;
-        }
-        return ViewAllStoresSuccess;
-    }(LoaderSuccessAction));
-
-    var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        FIND_STORES_ON_HOLD: FIND_STORES_ON_HOLD,
-        FIND_STORES: FIND_STORES,
-        FIND_STORES_FAIL: FIND_STORES_FAIL,
-        FIND_STORES_SUCCESS: FIND_STORES_SUCCESS,
-        FIND_STORE_BY_ID: FIND_STORE_BY_ID,
-        FIND_STORE_BY_ID_FAIL: FIND_STORE_BY_ID_FAIL,
-        FIND_STORE_BY_ID_SUCCESS: FIND_STORE_BY_ID_SUCCESS,
-        FindStoresOnHold: FindStoresOnHold,
-        FindStores: FindStores,
-        FindStoresFail: FindStoresFail,
-        FindStoresSuccess: FindStoresSuccess,
-        FindStoreById: FindStoreById,
-        FindStoreByIdFail: FindStoreByIdFail,
-        FindStoreByIdSuccess: FindStoreByIdSuccess,
-        VIEW_ALL_STORES: VIEW_ALL_STORES,
-        VIEW_ALL_STORES_FAIL: VIEW_ALL_STORES_FAIL,
-        VIEW_ALL_STORES_SUCCESS: VIEW_ALL_STORES_SUCCESS,
-        ViewAllStores: ViewAllStores,
-        ViewAllStoresFail: ViewAllStoresFail,
-        ViewAllStoresSuccess: ViewAllStoresSuccess
-    });
-
-    var getStoreFinderState = i1$2.createFeatureSelector(STORE_FINDER_FEATURE);
-
-    var ɵ0$K = function (storesState) { return storesState.findStores; };
-    var getFindStoresState = i1$2.createSelector(getStoreFinderState, ɵ0$K);
-    var ɵ1$u = function (state) { return loaderValueSelector(state); };
-    var getFindStoresEntities = i1$2.createSelector(getFindStoresState, ɵ1$u);
-    var ɵ2$l = function (state) { return loaderLoadingSelector(state); };
-    var getStoresLoading = i1$2.createSelector(getFindStoresState, ɵ2$l);
-
-    var ɵ0$L = function (storesState) { return storesState.viewAllStores; };
-    var getViewAllStoresState = i1$2.createSelector(getStoreFinderState, ɵ0$L);
-    var ɵ1$v = function (state) { return loaderValueSelector(state); };
-    var getViewAllStoresEntities = i1$2.createSelector(getViewAllStoresState, ɵ1$v);
-    var ɵ2$m = function (state) { return loaderLoadingSelector(state); };
-    var getViewAllStoresLoading = i1$2.createSelector(getViewAllStoresState, ɵ2$m);
-
-    var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getFindStoresState: getFindStoresState,
-        getFindStoresEntities: getFindStoresEntities,
-        getStoresLoading: getStoresLoading,
-        ɵ0: ɵ0$K,
-        ɵ1: ɵ1$u,
-        ɵ2: ɵ2$l,
-        getViewAllStoresState: getViewAllStoresState,
-        getViewAllStoresEntities: getViewAllStoresEntities,
-        getViewAllStoresLoading: getViewAllStoresLoading
-    });
-
-    var StoreFinderService = /** @class */ (function () {
-        function StoreFinderService(store, winRef, globalMessageService, routingService) {
-            this.store = store;
-            this.winRef = winRef;
-            this.globalMessageService = globalMessageService;
-            this.routingService = routingService;
-            this.geolocationWatchId = null;
-        }
-        /**
-         * Returns boolean observable for store's loading state
-         */
-        StoreFinderService.prototype.getStoresLoading = function () {
-            return this.store.pipe(i1$2.select(getStoresLoading));
-        };
-        /**
-         * Returns observable for store's entities
-         */
-        StoreFinderService.prototype.getFindStoresEntities = function () {
-            return this.store.pipe(i1$2.select(getFindStoresEntities));
-        };
-        /**
-         * Returns boolean observable for view all store's loading state
-         */
-        StoreFinderService.prototype.getViewAllStoresLoading = function () {
-            return this.store.pipe(i1$2.select(getViewAllStoresLoading));
-        };
-        /**
-         * Returns observable for view all store's entities
-         */
-        StoreFinderService.prototype.getViewAllStoresEntities = function () {
-            return this.store.pipe(i1$2.select(getViewAllStoresEntities));
-        };
-        /**
-         * Store finding action functionality
-         * @param queryText text query
-         * @param searchConfig search configuration
-         * @param longitudeLatitude longitude and latitude coordinates
-         * @param countryIsoCode country ISO code
-         * @param useMyLocation current location coordinates
-         * @param radius radius of the scope from the center point
-         */
-        StoreFinderService.prototype.findStoresAction = function (queryText, searchConfig, longitudeLatitude, countryIsoCode, useMyLocation, radius) {
-            var _this = this;
-            if (useMyLocation && this.winRef.nativeWindow) {
-                this.clearWatchGeolocation(new FindStoresOnHold());
-                this.geolocationWatchId = this.winRef.nativeWindow.navigator.geolocation.watchPosition(function (pos) {
-                    var position = {
-                        longitude: pos.coords.longitude,
-                        latitude: pos.coords.latitude,
-                    };
-                    _this.clearWatchGeolocation(new FindStores({
-                        queryText: queryText,
-                        searchConfig: searchConfig,
-                        longitudeLatitude: position,
-                        countryIsoCode: countryIsoCode,
-                        radius: radius,
-                    }));
-                }, function () {
-                    _this.globalMessageService.add({ key: 'storeFinder.geolocationNotEnabled' }, exports.GlobalMessageType.MSG_TYPE_ERROR);
-                    _this.routingService.go(['/store-finder']);
-                });
-            }
-            else {
-                this.clearWatchGeolocation(new FindStores({
-                    queryText: queryText,
-                    searchConfig: searchConfig,
-                    longitudeLatitude: longitudeLatitude,
-                    countryIsoCode: countryIsoCode,
-                    radius: radius,
-                }));
-            }
-        };
-        /**
-         * View all stores
-         */
-        StoreFinderService.prototype.viewAllStores = function () {
-            this.clearWatchGeolocation(new ViewAllStores());
-        };
-        /**
-         * View all stores by id
-         * @param storeId store id
-         */
-        StoreFinderService.prototype.viewStoreById = function (storeId) {
-            this.clearWatchGeolocation(new FindStoreById({ storeId: storeId }));
-        };
-        StoreFinderService.prototype.clearWatchGeolocation = function (callbackAction) {
-            if (this.geolocationWatchId !== null) {
-                this.winRef.nativeWindow.navigator.geolocation.clearWatch(this.geolocationWatchId);
-                this.geolocationWatchId = null;
-            }
-            this.store.dispatch(callbackAction);
-        };
-        return StoreFinderService;
-    }());
-    StoreFinderService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreFinderService_Factory() { return new StoreFinderService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(WindowRef), i0.ɵɵinject(GlobalMessageService), i0.ɵɵinject(RoutingService)); }, token: StoreFinderService, providedIn: "root" });
-    StoreFinderService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    StoreFinderService.ctorParameters = function () { return [
-        { type: i1$2.Store },
-        { type: WindowRef },
-        { type: GlobalMessageService },
-        { type: RoutingService }
-    ]; };
-
-    var StoreDataService = /** @class */ (function () {
-        function StoreDataService() {
-            this.weekDays = {
-                0: 'Sun',
-                1: 'Mon',
-                2: 'Tue',
-                3: 'Wed',
-                4: 'Thu',
-                5: 'Fri',
-                6: 'Sat',
-            };
-        }
-        /**
-         * Returns store latitude
-         * @param location store location
-         */
-        StoreDataService.prototype.getStoreLatitude = function (location) {
-            return location.geoPoint.latitude;
-        };
-        /**
-         * Returns store longitude
-         * @param location store location
-         */
-        StoreDataService.prototype.getStoreLongitude = function (location) {
-            return location.geoPoint.longitude;
-        };
-        /**
-         * Returns store closing time
-         * @param location store location
-         * @param date date to compare
-         */
-        StoreDataService.prototype.getStoreClosingTime = function (location, date) {
-            var requestedDaySchedule = this.getSchedule(location, date);
-            if (requestedDaySchedule) {
-                if (requestedDaySchedule.closed && requestedDaySchedule.closed === true) {
-                    return 'closed';
-                }
-                if (requestedDaySchedule.closingTime) {
-                    return requestedDaySchedule.closingTime.formattedHour;
-                }
-            }
-        };
-        /**
-         * Returns store opening time
-         * @param location store location
-         * @param date date to compare
-         */
-        StoreDataService.prototype.getStoreOpeningTime = function (location, date) {
-            var requestedDaySchedule = this.getSchedule(location, date);
-            if (requestedDaySchedule) {
-                if (requestedDaySchedule.closed && requestedDaySchedule.closed === true) {
-                    return 'closed';
-                }
-                if (requestedDaySchedule.openingTime) {
-                    return requestedDaySchedule.openingTime.formattedHour;
-                }
-            }
-        };
-        /**
-         * Extracts schedule from the given location for the given date
-         * @param location location
-         * @param date date
-         *
-         * @returns payload describing the store's schedule for the given day.
-         */
-        StoreDataService.prototype.getSchedule = function (location, date) {
-            var weekday = this.weekDays[date.getDay()];
-            return location.openingHours.weekDayOpeningList.find(function (weekDayOpeningListItem) { return weekDayOpeningListItem.weekDay === weekday; });
-        };
-        return StoreDataService;
-    }());
-    StoreDataService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StoreDataService_Factory() { return new StoreDataService(); }, token: StoreDataService, providedIn: "root" });
-    StoreDataService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-
-    var ExternalJsFileLoader = /** @class */ (function () {
-        function ExternalJsFileLoader(document) {
-            this.document = document;
-        }
-        /**
-         * Loads a javascript from an external URL
-         * @param src URL for the script to be loaded
-         * @param params additional parameters to be attached to the given URL
-         * @param callback a function to be invoked after the script has been loaded
-         * @param errorCallback function to be invoked after error during script loading
-         */
-        ExternalJsFileLoader.prototype.load = function (src, params, callback, errorCallback) {
-            var script = this.document.createElement('script');
-            script.type = 'text/javascript';
-            if (params) {
-                script.src = src + this.parseParams(params);
-            }
-            else {
-                script.src = src;
-            }
-            script.async = true;
-            script.defer = true;
-            if (callback) {
-                script.addEventListener('load', callback);
-            }
-            if (errorCallback) {
-                script.addEventListener('error', errorCallback);
-            }
-            document.head.appendChild(script);
-        };
-        /**
-         * Parses the given object with parameters to a string "param1=value1&param2=value2"
-         * @param params object containing parameters
-         */
-        ExternalJsFileLoader.prototype.parseParams = function (params) {
-            var result = '';
-            var keysArray = Object.keys(params);
-            if (keysArray.length > 0) {
-                result =
-                    '?' +
-                        keysArray
-                            .map(function (key) { return encodeURI(key) + '=' + encodeURI(params[key]); })
-                            .join('&');
-            }
-            return result;
-        };
-        return ExternalJsFileLoader;
-    }());
-    ExternalJsFileLoader.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(i0.ɵɵinject(i1.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
-    ExternalJsFileLoader.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    ExternalJsFileLoader.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
-    ]; };
-
-    /// <reference types="@types/googlemaps" />
-    var GoogleMapRendererService = /** @class */ (function () {
-        function GoogleMapRendererService(config, externalJsFileLoader, storeDataService) {
-            this.config = config;
-            this.externalJsFileLoader = externalJsFileLoader;
-            this.storeDataService = storeDataService;
-            this.googleMap = null;
-        }
-        /**
-         * Renders google map on the given element and draws markers on it.
-         * If map already exists it will use an existing map otherwise it will create one
-         * @param mapElement HTML element inside of which the map will be displayed
-         * @param locations array containign geo data to be displayed on the map
-         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
-         */
-        GoogleMapRendererService.prototype.renderMap = function (mapElement, locations, selectMarkerHandler) {
-            var _this = this;
-            if (this.googleMap === null) {
-                this.externalJsFileLoader.load(this.config.googleMaps.apiUrl, { key: this.config.googleMaps.apiKey }, function () {
-                    _this.drawMap(mapElement, locations, selectMarkerHandler);
-                });
-            }
-            else {
-                this.drawMap(mapElement, locations, selectMarkerHandler);
-            }
-        };
-        /**
-         * Centers the map to the given point
-         * @param latitute latitude of the new center
-         * @param longitude longitude of the new center
-         */
-        GoogleMapRendererService.prototype.centerMap = function (latitute, longitude) {
-            this.googleMap.panTo({ lat: latitute, lng: longitude });
-            this.googleMap.setZoom(this.config.googleMaps.selectedMarkerScale);
-        };
-        /**
-         * Defines and returns {@link google.maps.LatLng} representing a point where the map will be centered
-         * @param locations list of locations
-         */
-        GoogleMapRendererService.prototype.defineMapCenter = function (locations) {
-            return new google.maps.LatLng(this.storeDataService.getStoreLatitude(locations[0]), this.storeDataService.getStoreLongitude(locations[0]));
-        };
-        /**
-         * Creates google map inside if the given HTML element centered to the given point
-         * @param mapElement {@link HTMLElement} inside of which the map will be created
-         * @param mapCenter {@link google.maps.LatLng} the point where the map will be centered
-         */
-        GoogleMapRendererService.prototype.initMap = function (mapElement, mapCenter) {
-            var gestureOption = 'greedy';
-            var mapProp = {
-                center: mapCenter,
-                zoom: this.config.googleMaps.scale,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                gestureHandling: gestureOption,
-            };
-            this.googleMap = new google.maps.Map(mapElement, mapProp);
-        };
-        /**
-         * Erases the current map's markers and create a new one based on the given locations
-         * @param locations array of locations to be displayed on the map
-         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
-         */
-        GoogleMapRendererService.prototype.createMarkers = function (locations, selectMarkerHandler) {
-            var _this = this;
-            this.markers = [];
-            locations.forEach(function (element, index) {
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(_this.storeDataService.getStoreLatitude(element), _this.storeDataService.getStoreLongitude(element)),
-                    label: index + 1 + '',
-                });
-                _this.markers.push(marker);
-                marker.setMap(_this.googleMap);
-                marker.addListener('mouseover', function () {
-                    marker.setAnimation(google.maps.Animation.BOUNCE);
-                });
-                marker.addListener('mouseout', function () {
-                    marker.setAnimation(null);
-                });
-                if (selectMarkerHandler) {
-                    marker.addListener('click', function () {
-                        selectMarkerHandler(index);
-                    });
-                }
-            });
-        };
-        /**
-         * Initialize and draw the map
-         * @param mapElement {@link HTMLElement} inside of which the map will be drawn
-         * @param locations array of locations to be displayed on the map
-         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
-         */
-        GoogleMapRendererService.prototype.drawMap = function (mapElement, locations, selectMarkerHandler) {
-            this.initMap(mapElement, this.defineMapCenter(locations));
-            this.createMarkers(locations, selectMarkerHandler);
-        };
-        return GoogleMapRendererService;
-    }());
-    GoogleMapRendererService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GoogleMapRendererService_Factory() { return new GoogleMapRendererService(i0.ɵɵinject(StoreFinderConfig), i0.ɵɵinject(ExternalJsFileLoader), i0.ɵɵinject(StoreDataService)); }, token: GoogleMapRendererService, providedIn: "root" });
-    GoogleMapRendererService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    GoogleMapRendererService.ctorParameters = function () { return [
-        { type: StoreFinderConfig },
-        { type: ExternalJsFileLoader },
-        { type: StoreDataService }
-    ]; };
-
-    var defaultStoreFinderConfig = {
-        googleMaps: {
-            apiUrl: 'https://maps.googleapis.com/maps/api/js',
-            apiKey: '',
-            scale: 5,
-            selectedMarkerScale: 17,
-            radius: 50000,
-        },
-    };
-
-    function getReducers$a() {
-        return {
-            findStores: loaderReducer(STORE_FINDER_DATA),
-            viewAllStores: loaderReducer(STORE_FINDER_DATA),
-        };
-    }
-    var reducerToken$a = new i0.InjectionToken('StoreFinderReducers');
-    var reducerProvider$a = {
-        provide: reducerToken$a,
-        useFactory: getReducers$a,
-    };
-    var metaReducers$4 = [];
-
-    var FindStoresEffect = /** @class */ (function () {
-        function FindStoresEffect(actions$, storeFinderConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.storeFinderConnector = storeFinderConnector;
-            this.findStores$ = this.actions$.pipe(i3.ofType(FIND_STORES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.storeFinderConnector
-                .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude, payload.radius)
-                .pipe(operators.map(function (data) {
-                if (payload.countryIsoCode) {
-                    data.stores = data.stores.filter(function (store) { return store.address.country.isocode === payload.countryIsoCode; });
-                    data.stores.sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; });
-                }
-                return new FindStoresSuccess(data);
-            }), operators.catchError(function (error) { return rxjs.of(new FindStoresFail(makeErrorSerializable(error))); })); }));
-            this.findStoreById$ = this.actions$.pipe(i3.ofType(FIND_STORE_BY_ID), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.storeFinderConnector.get(payload.storeId).pipe(operators.map(function (data) { return new FindStoreByIdSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new FindStoreByIdFail(makeErrorSerializable(error))); })); }));
-        }
-        return FindStoresEffect;
-    }());
-    FindStoresEffect.decorators = [
-        { type: i0.Injectable }
-    ];
-    FindStoresEffect.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: StoreFinderConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], FindStoresEffect.prototype, "findStores$", void 0);
-    __decorate([
-        i3.Effect()
-    ], FindStoresEffect.prototype, "findStoreById$", void 0);
-
-    var ViewAllStoresEffect = /** @class */ (function () {
-        function ViewAllStoresEffect(actions$, storeFinderConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.storeFinderConnector = storeFinderConnector;
-            this.viewAllStores$ = this.actions$.pipe(i3.ofType(VIEW_ALL_STORES), operators.switchMap(function () {
-                return _this.storeFinderConnector.getCounts().pipe(operators.map(function (data) {
-                    data.sort(function (a, b) { return (a.name < b.name ? -1 : a.name > b.name ? 1 : 0); });
-                    return new ViewAllStoresSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new ViewAllStoresFail(makeErrorSerializable(error))); }));
-            }));
-        }
-        return ViewAllStoresEffect;
-    }());
-    ViewAllStoresEffect.decorators = [
-        { type: i0.Injectable }
-    ];
-    ViewAllStoresEffect.ctorParameters = function () { return [
-        { type: i3.Actions },
-        { type: StoreFinderConnector }
-    ]; };
-    __decorate([
-        i3.Effect()
-    ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
-
-    var effects$9 = [FindStoresEffect, ViewAllStoresEffect];
-
-    var StoreFinderStoreModule = /** @class */ (function () {
-        function StoreFinderStoreModule() {
-        }
-        return StoreFinderStoreModule;
-    }());
-    StoreFinderStoreModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [
-                        i1.CommonModule,
-                        i1$2.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
-                        i3.EffectsModule.forFeature(effects$9),
-                    ],
-                    providers: [reducerProvider$a],
-                },] }
-    ];
-
-    var StoreFinderCoreModule = /** @class */ (function () {
-        function StoreFinderCoreModule() {
-        }
-        return StoreFinderCoreModule;
-    }());
-    StoreFinderCoreModule.decorators = [
-        { type: i0.NgModule, args: [{
-                    imports: [StoreFinderStoreModule],
-                    providers: [provideDefaultConfig(defaultStoreFinderConfig)],
-                },] }
-    ];
-
     var UserConsentConnector = /** @class */ (function () {
         function UserConsentConnector(adapter) {
             this.adapter = adapter;
@@ -29450,7 +28696,7 @@
         return state;
     }
 
-    function getReducers$b() {
+    function getReducers$a() {
         return {
             account: i1$2.combineReducers({
                 details: reducer$B,
@@ -29476,10 +28722,10 @@
             replenishmentOrder: loaderReducer(USER_REPLENISHMENT_ORDER_DETAILS, reducer$v),
         };
     }
-    var reducerToken$b = new i0.InjectionToken('UserReducers');
-    var reducerProvider$b = {
-        provide: reducerToken$b,
-        useFactory: getReducers$b,
+    var reducerToken$a = new i0.InjectionToken('UserReducers');
+    var reducerProvider$a = {
+        provide: reducerToken$a,
+        useFactory: getReducers$a,
     };
     function clearUserState(reducer) {
         return function (state, action) {
@@ -29489,7 +28735,7 @@
             return reducer(state, action);
         };
     }
-    var metaReducers$5 = [clearUserState];
+    var metaReducers$4 = [clearUserState];
 
     var BillingCountriesEffect = /** @class */ (function () {
         function BillingCountriesEffect(actions$, siteConnector) {
@@ -30362,7 +29608,7 @@
         i3.Effect()
     ], UserReplenishmentOrdersEffect.prototype, "loadUserReplenishmentOrders$", void 0);
 
-    var effects$a = [
+    var effects$9 = [
         ClearMiscsDataEffect,
         DeliveryCountriesEffects,
         RegionsEffects,
@@ -30399,11 +29645,11 @@
                     imports: [
                         i1.CommonModule,
                         StateModule,
-                        i1$2.StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$5 }),
-                        i3.EffectsModule.forFeature(effects$a),
+                        i1$2.StoreModule.forFeature(USER_FEATURE, reducerToken$a, { metaReducers: metaReducers$4 }),
+                        i3.EffectsModule.forFeature(effects$9),
                         i1$1.RouterModule,
                     ],
-                    providers: [reducerProvider$b],
+                    providers: [reducerProvider$a],
                 },] }
     ];
 
@@ -30422,6 +29668,64 @@
                     imports: [UserStoreModule],
                 },] }
     ];
+
+    var ExternalJsFileLoader = /** @class */ (function () {
+        function ExternalJsFileLoader(document) {
+            this.document = document;
+        }
+        /**
+         * Loads a javascript from an external URL
+         * @param src URL for the script to be loaded
+         * @param params additional parameters to be attached to the given URL
+         * @param callback a function to be invoked after the script has been loaded
+         * @param errorCallback function to be invoked after error during script loading
+         */
+        ExternalJsFileLoader.prototype.load = function (src, params, callback, errorCallback) {
+            var script = this.document.createElement('script');
+            script.type = 'text/javascript';
+            if (params) {
+                script.src = src + this.parseParams(params);
+            }
+            else {
+                script.src = src;
+            }
+            script.async = true;
+            script.defer = true;
+            if (callback) {
+                script.addEventListener('load', callback);
+            }
+            if (errorCallback) {
+                script.addEventListener('error', errorCallback);
+            }
+            document.head.appendChild(script);
+        };
+        /**
+         * Parses the given object with parameters to a string "param1=value1&param2=value2"
+         * @param params object containing parameters
+         */
+        ExternalJsFileLoader.prototype.parseParams = function (params) {
+            var result = '';
+            var keysArray = Object.keys(params);
+            if (keysArray.length > 0) {
+                result =
+                    '?' +
+                        keysArray
+                            .map(function (key) { return encodeURI(key) + '=' + encodeURI(params[key]); })
+                            .join('&');
+            }
+            return result;
+        };
+        return ExternalJsFileLoader;
+    }());
+    ExternalJsFileLoader.ɵprov = i0.ɵɵdefineInjectable({ factory: function ExternalJsFileLoader_Factory() { return new ExternalJsFileLoader(i0.ɵɵinject(i1.DOCUMENT)); }, token: ExternalJsFileLoader, providedIn: "root" });
+    ExternalJsFileLoader.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    ExternalJsFileLoader.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
+    ]; };
 
     /*
      * Public API Surface of core
@@ -30630,7 +29934,6 @@
     exports.GlobalMessageModule = GlobalMessageModule;
     exports.GlobalMessageSelectors = globalMessageGroup_selectors;
     exports.GlobalMessageService = GlobalMessageService;
-    exports.GoogleMapRendererService = GoogleMapRendererService;
     exports.HttpErrorHandler = HttpErrorHandler;
     exports.HttpParamsURIEncoder = HttpParamsURIEncoder;
     exports.I18nConfig = I18nConfig;
@@ -30712,7 +30015,6 @@
     exports.OccReturnRequestNormalizer = OccReturnRequestNormalizer;
     exports.OccSiteAdapter = OccSiteAdapter;
     exports.OccSitesConfigLoader = OccSitesConfigLoader;
-    exports.OccStoreFinderAdapter = OccStoreFinderAdapter;
     exports.OccUserAdapter = OccUserAdapter;
     exports.OccUserAddressAdapter = OccUserAddressAdapter;
     exports.OccUserConsentAdapter = OccUserConsentAdapter;
@@ -30801,10 +30103,6 @@
     exports.SET_PAYMENT_DETAILS_PROCESS_ID = SET_PAYMENT_DETAILS_PROCESS_ID;
     exports.SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID;
     exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
-    exports.STORE_COUNT_NORMALIZER = STORE_COUNT_NORMALIZER;
-    exports.STORE_FINDER_DATA = STORE_FINDER_DATA;
-    exports.STORE_FINDER_FEATURE = STORE_FINDER_FEATURE;
-    exports.STORE_FINDER_SEARCH_PAGE_NORMALIZER = STORE_FINDER_SEARCH_PAGE_NORMALIZER;
     exports.SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID;
     exports.SearchPageMetaResolver = SearchPageMetaResolver;
     exports.SearchboxService = SearchboxService;
@@ -30825,15 +30123,6 @@
     exports.StateModule = StateModule;
     exports.StatePersistenceService = StatePersistenceService;
     exports.StateUtils = utilsGroup;
-    exports.StoreDataService = StoreDataService;
-    exports.StoreFinderActions = storeFinderGroup_actions;
-    exports.StoreFinderAdapter = StoreFinderAdapter;
-    exports.StoreFinderConfig = StoreFinderConfig;
-    exports.StoreFinderConnector = StoreFinderConnector;
-    exports.StoreFinderCoreModule = StoreFinderCoreModule;
-    exports.StoreFinderOccModule = StoreFinderOccModule;
-    exports.StoreFinderSelectors = storeFinderGroup_selectors;
-    exports.StoreFinderService = StoreFinderService;
     exports.TITLE_NORMALIZER = TITLE_NORMALIZER;
     exports.TestConfigModule = TestConfigModule;
     exports.TimeUtils = TimeUtils;
@@ -31036,133 +30325,124 @@
     exports.ɵer = defaultOccCostCentersConfig;
     exports.ɵes = defaultOccProductConfig;
     exports.ɵet = defaultOccSiteContextConfig;
-    exports.ɵeu = defaultOccStoreFinderConfig;
-    exports.ɵev = defaultOccUserConfig;
-    exports.ɵew = UserNotificationPreferenceAdapter;
-    exports.ɵex = OccUserCostCenterAdapter;
-    exports.ɵey = OccAddressListNormalizer;
-    exports.ɵez = UserReplenishmentOrderAdapter;
+    exports.ɵeu = defaultOccUserConfig;
+    exports.ɵev = UserNotificationPreferenceAdapter;
+    exports.ɵew = OccUserCostCenterAdapter;
+    exports.ɵex = OccAddressListNormalizer;
+    exports.ɵey = UserReplenishmentOrderAdapter;
+    exports.ɵez = defaultPersonalizationConfig;
     exports.ɵf = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵfa = defaultPersonalizationConfig;
-    exports.ɵfb = interceptors$4;
-    exports.ɵfc = OccPersonalizationIdInterceptor;
-    exports.ɵfd = OccPersonalizationTimeInterceptor;
-    exports.ɵfe = ProcessStoreModule;
-    exports.ɵff = getReducers$8;
-    exports.ɵfg = reducerToken$8;
-    exports.ɵfh = reducerProvider$8;
-    exports.ɵfi = productStoreConfigFactory;
-    exports.ɵfj = ProductStoreModule;
-    exports.ɵfk = getReducers$9;
-    exports.ɵfl = reducerToken$9;
-    exports.ɵfm = reducerProvider$9;
-    exports.ɵfn = clearProductsState;
-    exports.ɵfo = metaReducers$3;
-    exports.ɵfp = effects$8;
-    exports.ɵfq = ProductReferencesEffects;
-    exports.ɵfr = ProductReviewsEffects;
-    exports.ɵfs = ProductsSearchEffects;
-    exports.ɵft = ProductEffects;
-    exports.ɵfu = reducer$k;
-    exports.ɵfv = entityScopedLoaderReducer;
-    exports.ɵfw = scopedLoaderReducer;
-    exports.ɵfx = reducer$j;
-    exports.ɵfy = reducer$i;
-    exports.ɵfz = PageMetaResolver;
+    exports.ɵfa = interceptors$4;
+    exports.ɵfb = OccPersonalizationIdInterceptor;
+    exports.ɵfc = OccPersonalizationTimeInterceptor;
+    exports.ɵfd = ProcessStoreModule;
+    exports.ɵfe = getReducers$8;
+    exports.ɵff = reducerToken$8;
+    exports.ɵfg = reducerProvider$8;
+    exports.ɵfh = productStoreConfigFactory;
+    exports.ɵfi = ProductStoreModule;
+    exports.ɵfj = getReducers$9;
+    exports.ɵfk = reducerToken$9;
+    exports.ɵfl = reducerProvider$9;
+    exports.ɵfm = clearProductsState;
+    exports.ɵfn = metaReducers$3;
+    exports.ɵfo = effects$8;
+    exports.ɵfp = ProductReferencesEffects;
+    exports.ɵfq = ProductReviewsEffects;
+    exports.ɵfr = ProductsSearchEffects;
+    exports.ɵfs = ProductEffects;
+    exports.ɵft = reducer$k;
+    exports.ɵfu = entityScopedLoaderReducer;
+    exports.ɵfv = scopedLoaderReducer;
+    exports.ɵfw = reducer$j;
+    exports.ɵfx = reducer$i;
+    exports.ɵfy = PageMetaResolver;
+    exports.ɵfz = CouponSearchPageResolver;
     exports.ɵg = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵga = CouponSearchPageResolver;
-    exports.ɵgb = PageMetaResolver;
-    exports.ɵgc = addExternalRoutesFactory;
-    exports.ɵgd = getReducers$1;
-    exports.ɵge = reducer;
-    exports.ɵgf = reducerToken$1;
-    exports.ɵgg = reducerProvider$1;
-    exports.ɵgh = CustomSerializer;
-    exports.ɵgi = effects$1;
-    exports.ɵgj = RouterEffects;
-    exports.ɵgk = siteContextStoreConfigFactory;
-    exports.ɵgl = SiteContextStoreModule;
-    exports.ɵgm = getReducers$3;
-    exports.ɵgn = reducerToken$3;
-    exports.ɵgo = reducerProvider$3;
-    exports.ɵgp = effects$4;
-    exports.ɵgq = BaseSiteEffects;
-    exports.ɵgr = CurrenciesEffects;
-    exports.ɵgs = LanguagesEffects;
-    exports.ɵgt = reducer$8;
-    exports.ɵgu = reducer$7;
-    exports.ɵgv = reducer$6;
-    exports.ɵgw = defaultSiteContextConfigFactory;
-    exports.ɵgx = initializeContext;
-    exports.ɵgy = contextServiceProviders;
-    exports.ɵgz = SiteContextRoutesHandler;
+    exports.ɵga = PageMetaResolver;
+    exports.ɵgb = addExternalRoutesFactory;
+    exports.ɵgc = getReducers$1;
+    exports.ɵgd = reducer;
+    exports.ɵge = reducerToken$1;
+    exports.ɵgf = reducerProvider$1;
+    exports.ɵgg = CustomSerializer;
+    exports.ɵgh = effects$1;
+    exports.ɵgi = RouterEffects;
+    exports.ɵgj = siteContextStoreConfigFactory;
+    exports.ɵgk = SiteContextStoreModule;
+    exports.ɵgl = getReducers$3;
+    exports.ɵgm = reducerToken$3;
+    exports.ɵgn = reducerProvider$3;
+    exports.ɵgo = effects$4;
+    exports.ɵgp = BaseSiteEffects;
+    exports.ɵgq = CurrenciesEffects;
+    exports.ɵgr = LanguagesEffects;
+    exports.ɵgs = reducer$8;
+    exports.ɵgt = reducer$7;
+    exports.ɵgu = reducer$6;
+    exports.ɵgv = defaultSiteContextConfigFactory;
+    exports.ɵgw = initializeContext;
+    exports.ɵgx = contextServiceProviders;
+    exports.ɵgy = SiteContextRoutesHandler;
+    exports.ɵgz = SiteContextUrlSerializer;
     exports.ɵh = configFromCookieFactory;
-    exports.ɵha = SiteContextUrlSerializer;
-    exports.ɵhb = siteContextParamsProviders;
-    exports.ɵhc = baseSiteConfigValidator;
-    exports.ɵhd = interceptors$5;
-    exports.ɵhe = CmsTicketInterceptor;
-    exports.ɵhf = StoreFinderStoreModule;
-    exports.ɵhg = getReducers$a;
-    exports.ɵhh = reducerToken$a;
-    exports.ɵhi = reducerProvider$a;
-    exports.ɵhj = effects$9;
-    exports.ɵhk = FindStoresEffect;
-    exports.ɵhl = ViewAllStoresEffect;
-    exports.ɵhm = defaultStoreFinderConfig;
-    exports.ɵhn = UserStoreModule;
-    exports.ɵho = getReducers$b;
-    exports.ɵhp = reducerToken$b;
-    exports.ɵhq = reducerProvider$b;
-    exports.ɵhr = clearUserState;
-    exports.ɵhs = metaReducers$5;
-    exports.ɵht = effects$a;
-    exports.ɵhu = BillingCountriesEffect;
-    exports.ɵhv = ClearMiscsDataEffect;
-    exports.ɵhw = ConsignmentTrackingEffects;
-    exports.ɵhx = CustomerCouponEffects;
-    exports.ɵhy = DeliveryCountriesEffects;
-    exports.ɵhz = NotificationPreferenceEffects;
+    exports.ɵha = siteContextParamsProviders;
+    exports.ɵhb = baseSiteConfigValidator;
+    exports.ɵhc = interceptors$5;
+    exports.ɵhd = CmsTicketInterceptor;
+    exports.ɵhe = UserStoreModule;
+    exports.ɵhf = getReducers$a;
+    exports.ɵhg = reducerToken$a;
+    exports.ɵhh = reducerProvider$a;
+    exports.ɵhi = clearUserState;
+    exports.ɵhj = metaReducers$4;
+    exports.ɵhk = effects$9;
+    exports.ɵhl = BillingCountriesEffect;
+    exports.ɵhm = ClearMiscsDataEffect;
+    exports.ɵhn = ConsignmentTrackingEffects;
+    exports.ɵho = CustomerCouponEffects;
+    exports.ɵhp = DeliveryCountriesEffects;
+    exports.ɵhq = NotificationPreferenceEffects;
+    exports.ɵhr = OrderDetailsEffect;
+    exports.ɵhs = OrderReturnRequestEffect;
+    exports.ɵht = UserPaymentMethodsEffects;
+    exports.ɵhu = ProductInterestsEffect;
+    exports.ɵhv = RegionsEffects;
+    exports.ɵhw = ReplenishmentOrderDetailsEffect;
+    exports.ɵhx = ResetPasswordEffects;
+    exports.ɵhy = TitlesEffects;
+    exports.ɵhz = UserAddressesEffects;
     exports.ɵi = initConfig;
-    exports.ɵia = OrderDetailsEffect;
-    exports.ɵib = OrderReturnRequestEffect;
-    exports.ɵic = UserPaymentMethodsEffects;
-    exports.ɵid = ProductInterestsEffect;
-    exports.ɵie = RegionsEffects;
-    exports.ɵif = ReplenishmentOrderDetailsEffect;
-    exports.ɵig = ResetPasswordEffects;
-    exports.ɵih = TitlesEffects;
-    exports.ɵii = UserAddressesEffects;
-    exports.ɵij = UserConsentsEffect;
-    exports.ɵik = UserDetailsEffects;
-    exports.ɵil = UserOrdersEffect;
-    exports.ɵim = UserRegisterEffects;
-    exports.ɵin = UserReplenishmentOrdersEffect;
-    exports.ɵio = ForgotPasswordEffects;
-    exports.ɵip = UpdateEmailEffects;
-    exports.ɵiq = UpdatePasswordEffects;
-    exports.ɵir = UserNotificationPreferenceConnector;
-    exports.ɵis = UserCostCenterEffects;
-    exports.ɵit = reducer$B;
-    exports.ɵiu = reducer$y;
-    exports.ɵiv = reducer$l;
-    exports.ɵiw = reducer$z;
-    exports.ɵix = reducer$s;
-    exports.ɵiy = reducer$C;
-    exports.ɵiz = reducer$q;
+    exports.ɵia = UserConsentsEffect;
+    exports.ɵib = UserDetailsEffects;
+    exports.ɵic = UserOrdersEffect;
+    exports.ɵid = UserRegisterEffects;
+    exports.ɵie = UserReplenishmentOrdersEffect;
+    exports.ɵif = ForgotPasswordEffects;
+    exports.ɵig = UpdateEmailEffects;
+    exports.ɵih = UpdatePasswordEffects;
+    exports.ɵii = UserNotificationPreferenceConnector;
+    exports.ɵij = UserCostCenterEffects;
+    exports.ɵik = reducer$B;
+    exports.ɵil = reducer$y;
+    exports.ɵim = reducer$l;
+    exports.ɵin = reducer$z;
+    exports.ɵio = reducer$s;
+    exports.ɵip = reducer$C;
+    exports.ɵiq = reducer$q;
+    exports.ɵir = reducer$D;
+    exports.ɵis = reducer$r;
+    exports.ɵit = reducer$o;
+    exports.ɵiu = reducer$x;
+    exports.ɵiv = reducer$u;
+    exports.ɵiw = reducer$w;
+    exports.ɵix = reducer$m;
+    exports.ɵiy = reducer$n;
+    exports.ɵiz = reducer$p;
     exports.ɵj = anonymousConsentsStatePersistenceFactory;
-    exports.ɵja = reducer$D;
-    exports.ɵjb = reducer$r;
-    exports.ɵjc = reducer$o;
-    exports.ɵjd = reducer$x;
-    exports.ɵje = reducer$u;
-    exports.ɵjf = reducer$w;
-    exports.ɵjg = reducer$m;
-    exports.ɵjh = reducer$n;
-    exports.ɵji = reducer$p;
-    exports.ɵjj = reducer$t;
-    exports.ɵjk = reducer$A;
-    exports.ɵjl = reducer$v;
+    exports.ɵja = reducer$t;
+    exports.ɵjb = reducer$A;
+    exports.ɵjc = reducer$v;
     exports.ɵk = AnonymousConsentsStoreModule;
     exports.ɵl = TRANSFER_STATE_META_REDUCER;
     exports.ɵm = STORAGE_SYNC_META_REDUCER;
