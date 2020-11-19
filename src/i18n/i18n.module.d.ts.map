@@ -1,0 +1,1 @@
+{"version":3,"file":"i18n.module.d.ts","sources":["i18n.module.d.ts"],"names":[],"mappings":"AAAA;;;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class I18nModule {\n    static forRoot(): ModuleWithProviders<I18nModule>;\n}\n"]}
