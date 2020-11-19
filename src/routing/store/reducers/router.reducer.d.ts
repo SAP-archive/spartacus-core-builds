@@ -4,6 +4,7 @@ import * as fromNgrxRouter from '@ngrx/router-store';
 import { ActionReducerMap } from '@ngrx/store';
 import { RoutingConfigService } from '../../configurable-routes/routing-config.service';
 import { ActivatedRouterStateSnapshot, RouterState, State } from '../routing-state';
+import * as ɵngcc0 from '@angular/core';
 export declare const initialState: RouterState;
 export declare function getReducers(): ActionReducerMap<State>;
 export declare function reducer(state: RouterState, action: any): RouterState;
@@ -25,4 +26,8 @@ export declare class CustomSerializer implements fromNgrxRouter.RouterStateSeria
      */
     private lookupSemanticRoute;
     constructor(routingConfig: RoutingConfigService);
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CustomSerializer, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<CustomSerializer>;
 }
+
+//# sourceMappingURL=router.reducer.d.ts.map
