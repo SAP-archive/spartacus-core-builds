@@ -6,6 +6,7 @@ import { ClientTokenService } from './client-token.service';
  * Service for handling `Authorization` header and errors for requests that
  * require client token (eg. user registration).
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ClientErrorHandlingService {
     protected clientTokenService: ClientTokenService;
     constructor(clientTokenService: ClientTokenService);
@@ -23,4 +24,7 @@ export declare class ClientErrorHandlingService {
      * @param token
      */
     protected createNewRequestWithNewToken(request: HttpRequest<any>, token: ClientToken): HttpRequest<any>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientErrorHandlingService, never>;
 }
+
+//# sourceMappingURL=client-error-handling.service.d.ts.map
