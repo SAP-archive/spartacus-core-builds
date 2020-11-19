@@ -1,5 +1,6 @@
 import { DefaultUrlSerializer, UrlTree } from '@angular/router';
 import { SiteContextParamsService } from './site-context-params.service';
+import * as ɵngcc0 from '@angular/core';
 export interface ParamValuesMap {
     [name: string]: string;
 }
@@ -20,4 +21,8 @@ export declare class SiteContextUrlSerializer extends DefaultUrlSerializer {
     serialize(tree: UrlTreeWithSiteContext): string;
     urlTreeExtractContextParameters(urlTree: UrlTreeWithSiteContext): ParamValuesMap;
     private urlIncludeContextParameters;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SiteContextUrlSerializer, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<SiteContextUrlSerializer>;
 }
+
+//# sourceMappingURL=site-context-url-serializer.d.ts.map
