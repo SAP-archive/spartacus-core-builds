@@ -4563,6 +4563,47 @@ EventService.decorators = [
             },] }
 ];
 
+const NOT_FOUND_SYMBOL = {};
+/**
+ * CombinedInjector is able to combine more than one injector together.
+ *
+ * Can be used to instantiate lazy loaded modules with dependency modules,
+ * so lazy loaded module can use instances provided in all dependency modules.
+ *
+ * Injector tries to resolve token in all Injector, taking into account the order
+ * in which they were provided in complementaryInjectors and fallbacks to the
+ * mainInjector.
+ */
+class CombinedInjector {
+    /**
+     * @param mainInjector Component hierarchical injector
+     * @param complementaryInjectors Additional injector that will be taken into an account when resolving dependencies
+     */
+    constructor(mainInjector, complementaryInjectors) {
+        this.mainInjector = mainInjector;
+        this.complementaryInjectors = complementaryInjectors;
+    }
+    get(token, notFoundValue, flags) {
+        // tslint:disable-next-line:no-bitwise
+        if (flags & InjectFlags.Self) {
+            if (notFoundValue !== undefined) {
+                return notFoundValue;
+            }
+            throw new Error("CombinedInjector should be used as a parent injector / doesn't support self dependencies");
+        }
+        for (const injector of [...this.complementaryInjectors]) {
+            // First we are resolving providers provided at Self level
+            // in all complementary injectors...
+            const service = injector.get(token, NOT_FOUND_SYMBOL, InjectFlags.Self);
+            if (service !== NOT_FOUND_SYMBOL) {
+                return service;
+            }
+        }
+        // ...and then fallback to main injector passing the flag
+        return this.mainInjector.get(token, notFoundValue, flags);
+    }
+}
+
 /**
  * Utility service for managing dynamic imports of Angular services
  */
@@ -4588,8 +4629,11 @@ class LazyModulesService {
      * @param moduleFunc
      * @param feature
      */
-    resolveModuleInstance(moduleFunc, feature) {
-        return this.resolveModuleFactory(moduleFunc).pipe(map(([moduleFactory]) => moduleFactory.create(this.injector)), tap((moduleRef) => this.events.dispatch(createFrom(ModuleInitializedEvent, {
+    resolveModuleInstance(moduleFunc, feature, dependencyModuleRefs = []) {
+        const parentInjector = dependencyModuleRefs.length
+            ? new CombinedInjector(this.injector, dependencyModuleRefs.map((moduleRef) => moduleRef.injector))
+            : this.injector;
+        return this.resolveModuleFactory(moduleFunc).pipe(map(([moduleFactory]) => moduleFactory.create(parentInjector)), tap((moduleRef) => this.events.dispatch(createFrom(ModuleInitializedEvent, {
             feature,
             moduleRef,
         }))));
@@ -4646,7 +4690,7 @@ LazyModulesService.ctorParameters = () => [
     { type: EventService }
 ];
 
-const NOT_FOUND_SYMBOL = {};
+const NOT_FOUND_SYMBOL$1 = {};
 /**
  * UnifiedInjector provides a way to get instances of tokens not only once, from the root injector,
  * but also from lazy loaded module injectors that can be initialized over time.
@@ -4672,10 +4716,10 @@ class UnifiedInjector {
      * @param notFoundValue
      */
     get(token, notFoundValue) {
-        return this.injectors$.pipe(map((injector, index) => injector.get(token, notFoundValue !== null && notFoundValue !== void 0 ? notFoundValue : NOT_FOUND_SYMBOL, 
+        return this.injectors$.pipe(map((injector, index) => injector.get(token, notFoundValue !== null && notFoundValue !== void 0 ? notFoundValue : NOT_FOUND_SYMBOL$1, 
         // we want to get only Self instances from all injectors except the
         // first one, which is a root injector
-        index ? InjectFlags.Self : undefined)), filter((instance) => instance !== NOT_FOUND_SYMBOL));
+        index ? InjectFlags.Self : undefined)), filter((instance) => instance !== NOT_FOUND_SYMBOL$1));
     }
     getMulti(token) {
         return this.get(token, []).pipe(filter((instances) => {

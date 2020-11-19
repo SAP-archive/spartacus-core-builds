@@ -5263,6 +5263,59 @@
                 },] }
     ];
 
+    var NOT_FOUND_SYMBOL = {};
+    /**
+     * CombinedInjector is able to combine more than one injector together.
+     *
+     * Can be used to instantiate lazy loaded modules with dependency modules,
+     * so lazy loaded module can use instances provided in all dependency modules.
+     *
+     * Injector tries to resolve token in all Injector, taking into account the order
+     * in which they were provided in complementaryInjectors and fallbacks to the
+     * mainInjector.
+     */
+    var CombinedInjector = /** @class */ (function () {
+        /**
+         * @param mainInjector Component hierarchical injector
+         * @param complementaryInjectors Additional injector that will be taken into an account when resolving dependencies
+         */
+        function CombinedInjector(mainInjector, complementaryInjectors) {
+            this.mainInjector = mainInjector;
+            this.complementaryInjectors = complementaryInjectors;
+        }
+        CombinedInjector.prototype.get = function (token, notFoundValue, flags) {
+            var e_1, _a;
+            // tslint:disable-next-line:no-bitwise
+            if (flags & i0.InjectFlags.Self) {
+                if (notFoundValue !== undefined) {
+                    return notFoundValue;
+                }
+                throw new Error("CombinedInjector should be used as a parent injector / doesn't support self dependencies");
+            }
+            try {
+                for (var _b = __values(__spread(this.complementaryInjectors)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var injector = _c.value;
+                    // First we are resolving providers provided at Self level
+                    // in all complementary injectors...
+                    var service = injector.get(token, NOT_FOUND_SYMBOL, i0.InjectFlags.Self);
+                    if (service !== NOT_FOUND_SYMBOL) {
+                        return service;
+                    }
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            // ...and then fallback to main injector passing the flag
+            return this.mainInjector.get(token, notFoundValue, flags);
+        };
+        return CombinedInjector;
+    }());
+
     /**
      * Utility service for managing dynamic imports of Angular services
      */
@@ -5288,11 +5341,15 @@
          * @param moduleFunc
          * @param feature
          */
-        LazyModulesService.prototype.resolveModuleInstance = function (moduleFunc, feature) {
+        LazyModulesService.prototype.resolveModuleInstance = function (moduleFunc, feature, dependencyModuleRefs) {
             var _this = this;
+            if (dependencyModuleRefs === void 0) { dependencyModuleRefs = []; }
+            var parentInjector = dependencyModuleRefs.length
+                ? new CombinedInjector(this.injector, dependencyModuleRefs.map(function (moduleRef) { return moduleRef.injector; }))
+                : this.injector;
             return this.resolveModuleFactory(moduleFunc).pipe(operators.map(function (_a) {
                 var _b = __read(_a, 1), moduleFactory = _b[0];
-                return moduleFactory.create(_this.injector);
+                return moduleFactory.create(parentInjector);
             }), operators.tap(function (moduleRef) { return _this.events.dispatch(createFrom(ModuleInitializedEvent, {
                 feature: feature,
                 moduleRef: moduleRef,
@@ -5354,7 +5411,7 @@
         { type: EventService }
     ]; };
 
-    var NOT_FOUND_SYMBOL = {};
+    var NOT_FOUND_SYMBOL$1 = {};
     /**
      * UnifiedInjector provides a way to get instances of tokens not only once, from the root injector,
      * but also from lazy loaded module injectors that can be initialized over time.
@@ -5380,10 +5437,10 @@
          * @param notFoundValue
          */
         UnifiedInjector.prototype.get = function (token, notFoundValue) {
-            return this.injectors$.pipe(operators.map(function (injector, index) { return injector.get(token, notFoundValue !== null && notFoundValue !== void 0 ? notFoundValue : NOT_FOUND_SYMBOL, 
+            return this.injectors$.pipe(operators.map(function (injector, index) { return injector.get(token, notFoundValue !== null && notFoundValue !== void 0 ? notFoundValue : NOT_FOUND_SYMBOL$1, 
             // we want to get only Self instances from all injectors except the
             // first one, which is a root injector
-            index ? i0.InjectFlags.Self : undefined); }), operators.filter(function (instance) { return instance !== NOT_FOUND_SYMBOL; }));
+            index ? i0.InjectFlags.Self : undefined); }), operators.filter(function (instance) { return instance !== NOT_FOUND_SYMBOL$1; }));
         };
         UnifiedInjector.prototype.getMulti = function (token) {
             return this.get(token, []).pipe(operators.filter(function (instances) {
