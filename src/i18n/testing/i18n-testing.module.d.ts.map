@@ -1,1 +1,0 @@
-{"version":3,"file":"i18n-testing.module.d.ts","sources":["i18n-testing.module.d.ts"],"names":[],"mappings":";;;AAAA;;;AACA","sourcesContent":["export declare class I18nTestingModule {\n}\n"]}
