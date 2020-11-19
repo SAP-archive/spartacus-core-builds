@@ -3,7 +3,6 @@ import { PageContext } from '../../../routing/models/page-context.model';
 import { CmsStructureModel } from '../../model/page.model';
 import { CmsStructureConfigService } from '../../services/cms-structure-config.service';
 import { CmsPageAdapter } from './cms-page.adapter';
-import * as ɵngcc0 from '@angular/core';
 export declare class CmsPageConnector {
     protected cmsPageAdapter: CmsPageAdapter;
     protected cmsStructureConfigService: CmsStructureConfigService;
@@ -21,7 +20,4 @@ export declare class CmsPageConnector {
      * fine-grained CMS setup.
      */
     private mergeDefaultPageStructure;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CmsPageConnector, never>;
 }
-
-//# sourceMappingURL=cms-page.connector.d.ts.map
