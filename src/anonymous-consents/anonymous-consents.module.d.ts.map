@@ -1,0 +1,1 @@
+{"version":3,"file":"anonymous-consents.module.d.ts","sources":["anonymous-consents.module.d.ts"],"names":[],"mappings":"AAAA;;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class AnonymousConsentsModule {\n    static forRoot(): ModuleWithProviders<AnonymousConsentsModule>;\n}\n"]}
