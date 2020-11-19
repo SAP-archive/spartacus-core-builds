@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/user-auth/facade/auth.service';
 import { AnonymousConsent, ConsentTemplate } from '../../model/index';
 import { StateWithAnonymousConsents } from '../store/anonymous-consents-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class AnonymousConsentsService {
     protected store: Store<StateWithAnonymousConsents>;
     protected authService: AuthService;
@@ -141,7 +140,4 @@ export declare class AnonymousConsentsService {
      * @param previousConsents old consents to compare
      */
     consentsUpdated(newConsents: AnonymousConsent[], previousConsents: AnonymousConsent[]): boolean;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AnonymousConsentsService, never>;
 }
-
-//# sourceMappingURL=anonymous-consents.service.d.ts.map
