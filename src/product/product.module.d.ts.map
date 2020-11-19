@@ -1,1 +1,0 @@
-{"version":3,"file":"product.module.d.ts","sources":["product.module.d.ts"],"names":[],"mappings":"AAAA;;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class ProductModule {\n    static forRoot(): ModuleWithProviders<ProductModule>;\n}\n"]}
