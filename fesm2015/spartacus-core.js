@@ -11965,15 +11965,6 @@ class OccCmsComponentAdapter {
         })
             .pipe(pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER));
     }
-    findComponentsByIdsLegacy(ids, pageContext, fields = 'DEFAULT', currentPage = 0, pageSize = ids.length, sort) {
-        const idList = { idList: ids };
-        const requestParams = Object.assign(Object.assign({}, this.getContextParams(pageContext)), this.getPaginationParams(currentPage, pageSize, sort));
-        return this.http
-            .post(this.getComponentsEndpoint(requestParams, fields), idList, {
-            headers: this.headers,
-        })
-            .pipe(pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER));
-    }
     getComponentEndPoint(id, pageContext) {
         return this.occEndpoints.getUrl('component', { id }, this.getContextParams(pageContext));
     }

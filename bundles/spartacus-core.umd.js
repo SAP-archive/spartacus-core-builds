@@ -13621,18 +13621,6 @@
             })
                 .pipe(operators.pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER));
         };
-        OccCmsComponentAdapter.prototype.findComponentsByIdsLegacy = function (ids, pageContext, fields, currentPage, pageSize, sort) {
-            if (fields === void 0) { fields = 'DEFAULT'; }
-            if (currentPage === void 0) { currentPage = 0; }
-            if (pageSize === void 0) { pageSize = ids.length; }
-            var idList = { idList: ids };
-            var requestParams = Object.assign(Object.assign({}, this.getContextParams(pageContext)), this.getPaginationParams(currentPage, pageSize, sort));
-            return this.http
-                .post(this.getComponentsEndpoint(requestParams, fields), idList, {
-                headers: this.headers,
-            })
-                .pipe(operators.pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER));
-        };
         OccCmsComponentAdapter.prototype.getComponentEndPoint = function (id, pageContext) {
             return this.occEndpoints.getUrl('component', { id: id }, this.getContextParams(pageContext));
         };
