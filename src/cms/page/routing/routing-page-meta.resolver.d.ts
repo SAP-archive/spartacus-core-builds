@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { ActivatedRoutesService } from '../../../routing/services/activated-routes.service';
 import { BreadcrumbMeta } from '../../model/page.model';
 import { ActivatedRouteSnapshotWithPageMeta, RoutePageMetaConfig } from './route-page-meta.model';
-import * as ɵngcc0 from '@angular/core';
 export interface RouteWithExtras {
     route: ActivatedRouteSnapshotWithPageMeta;
     resolver: any;
@@ -77,7 +76,4 @@ export declare class RoutingPageMetaResolver {
      * Returns the breadcrumb config placed in the route's `data` configuration.
      */
     protected getPageMetaConfig(route: ActivatedRouteSnapshotWithPageMeta): RoutePageMetaConfig;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<RoutingPageMetaResolver, never>;
 }
-
-//# sourceMappingURL=routing-page-meta.resolver.d.ts.map
