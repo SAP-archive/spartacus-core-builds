@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
  * UnifiedInjector provides a way to get instances of tokens not only once, from the root injector,
  * but also from lazy loaded module injectors that can be initialized over time.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class UnifiedInjector {
     protected rootInjector: Injector;
     protected lazyModules: LazyModulesService;
@@ -33,7 +32,4 @@ export declare class UnifiedInjector {
      */
     getMulti<T>(token: Type<T> | InjectionToken<T> | AbstractType<T>): Observable<T[]>;
     getMulti<T>(token: any): Observable<T>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UnifiedInjector, never>;
 }
-
-//# sourceMappingURL=unified-injector.d.ts.map
