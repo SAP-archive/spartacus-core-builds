@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { Country, CountryType, Region } from '../../model/address.model';
 import { BaseSite, Currency, Language } from '../../model/misc.model';
 import { SiteAdapter } from './site.adapter';
+import * as ɵngcc0 from '@angular/core';
 export declare class SiteConnector {
     protected adapter: SiteAdapter;
     constructor(adapter: SiteAdapter);
@@ -11,4 +12,7 @@ export declare class SiteConnector {
     getRegions(countryIsoCode: string): Observable<Region[]>;
     getBaseSite(siteUid?: string): Observable<BaseSite>;
     getBaseSites(): Observable<BaseSite[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SiteConnector, never>;
 }
+
+//# sourceMappingURL=site.connector.d.ts.map
