@@ -6,10 +6,11 @@ import { PageRobotsResolver, PageTitleResolver } from '../../cms/page/page.resol
 /**
  * Resolves the page metadata for the Cart page (Using the `PageType.CONTENT_PAGE`
  * and the `CartPageTemplate`). If the cart page matches this template, the more
- * generic `ContentPageMetaResolver` is overriden by this resolver.
+ * generic `ContentPageMetaResolver` is overridden by this resolver.
  *
  * The page title and robots are resolved in this implementation only.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CartPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageRobotsResolver {
     protected cms: CmsService;
     protected cms$: Observable<Page>;
@@ -22,4 +23,7 @@ export declare class CartPageMetaResolver extends PageMetaResolver implements Pa
      * Returns robots for the cart pages, which default to NOINDEX and NOFOLLOW.
      */
     resolveRobots(): Observable<PageRobotsMeta[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartPageMetaResolver, never>;
 }
+
+//# sourceMappingURL=cart-page-meta.resolver.d.ts.map

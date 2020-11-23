@@ -9,6 +9,7 @@ import { AsmAuthStorageService, TokenTarget } from './asm-auth-storage.service';
 /**
  * ASM state synced to browser storage.
  */
+import * as ɵngcc0 from '@angular/core';
 export interface SyncedAsmState {
     ui?: AsmUi;
     emulatedUserToken?: AuthToken;
@@ -43,4 +44,7 @@ export declare class AsmStatePersistenceService implements OnDestroy {
      */
     protected onRead(state: SyncedAsmState): void;
     ngOnDestroy(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AsmStatePersistenceService, never>;
 }
+
+//# sourceMappingURL=asm-state-persistence.service.d.ts.map
