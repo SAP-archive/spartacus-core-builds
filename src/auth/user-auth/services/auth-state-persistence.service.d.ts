@@ -8,6 +8,7 @@ import { AuthStorageService } from './auth-storage.service';
 /**
  * Auth state synced to browser storage.
  */
+import * as ɵngcc0 from '@angular/core';
 export interface SyncedAuthState {
     userId?: string;
     token?: AuthToken;
@@ -51,4 +52,7 @@ export declare class AuthStatePersistenceService implements OnDestroy {
      */
     isUserLoggedIn(): boolean;
     ngOnDestroy(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthStatePersistenceService, never>;
 }
+
+//# sourceMappingURL=auth-state-persistence.service.d.ts.map
