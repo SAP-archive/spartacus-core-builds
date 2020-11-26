@@ -1,0 +1,1 @@
+{"version":3,"file":"process-store.module.d.ts","sources":["process-store.module.d.ts"],"names":[],"mappings":";;;AAAA;;;AACA","sourcesContent":["export declare class ProcessStoreModule {\n}\n"]}
