@@ -188,35 +188,6 @@ WindowRef.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
 ];
 
-class UrlParsingService {
-    constructor(router) {
-        this.router = router;
-    }
-    getPrimarySegments(url) {
-        const urlTree = this.router.parseUrl(url);
-        return this._getPrimarySegmentsFromUrlTree(urlTree.root);
-    }
-    _getPrimarySegmentsFromUrlTree(tree) {
-        const segments = tree.segments.map((s) => s.path);
-        const childrenSegments = tree.children[PRIMARY_OUTLET]
-            ? this._getPrimarySegmentsFromUrlTree(tree.children[PRIMARY_OUTLET])
-            : [];
-        return segments.concat(childrenSegments);
-    }
-}
-UrlParsingService.ɵprov = ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(ɵɵinject(Router)); }, token: UrlParsingService, providedIn: "root" });
-UrlParsingService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-UrlParsingService.ctorParameters = () => [
-    { type: Router }
-];
-
-const isParam = (segment) => segment.startsWith(':');
-const getParamName = (segment) => segment.slice(1); // it just removes leading ':'
-const ensureLeadingSlash = (path) => path.startsWith('/') ? path : '/' + path;
-const removeLeadingSlash = (path) => path.startsWith('/') ? path.slice(1) : path;
-
 class RoutingConfig {
 }
 RoutingConfig.ɵprov = ɵɵdefineInjectable({ factory: function RoutingConfig_Factory() { return ɵɵinject(Config); }, token: RoutingConfig, providedIn: "root" });
@@ -301,6 +272,35 @@ RoutingConfigService.decorators = [
 ];
 RoutingConfigService.ctorParameters = () => [
     { type: RoutingConfig }
+];
+
+const isParam = (segment) => segment.startsWith(':');
+const getParamName = (segment) => segment.slice(1); // it just removes leading ':'
+const ensureLeadingSlash = (path) => path.startsWith('/') ? path : '/' + path;
+const removeLeadingSlash = (path) => path.startsWith('/') ? path.slice(1) : path;
+
+class UrlParsingService {
+    constructor(router) {
+        this.router = router;
+    }
+    getPrimarySegments(url) {
+        const urlTree = this.router.parseUrl(url);
+        return this._getPrimarySegmentsFromUrlTree(urlTree.root);
+    }
+    _getPrimarySegmentsFromUrlTree(tree) {
+        const segments = tree.segments.map((s) => s.path);
+        const childrenSegments = tree.children[PRIMARY_OUTLET]
+            ? this._getPrimarySegmentsFromUrlTree(tree.children[PRIMARY_OUTLET])
+            : [];
+        return segments.concat(childrenSegments);
+    }
+}
+UrlParsingService.ɵprov = ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(ɵɵinject(Router)); }, token: UrlParsingService, providedIn: "root" });
+UrlParsingService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+UrlParsingService.ctorParameters = () => [
+    { type: Router }
 ];
 
 class SemanticPathService {
@@ -394,7 +394,6 @@ class SemanticPathService {
             return params[mappedParamName] !== undefined;
         }));
         if (foundPath === undefined || foundPath === null) {
-            this.warn(`No configured path matches all its params to given object. `, `Route config: `, routeConfig, `Params object: `, params);
             return null;
         }
         return foundPath;
@@ -410,11 +409,6 @@ class SemanticPathService {
             return paramsMapping[paramName] || paramName;
         }
         return paramName;
-    }
-    warn(...args) {
-        if (isDevMode()) {
-            console.warn(...args);
-        }
     }
 }
 SemanticPathService.ɵprov = ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(ɵɵinject(RoutingConfigService), ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });

@@ -512,36 +512,6 @@
         { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
     ]; };
 
-    var UrlParsingService = /** @class */ (function () {
-        function UrlParsingService(router) {
-            this.router = router;
-        }
-        UrlParsingService.prototype.getPrimarySegments = function (url) {
-            var urlTree = this.router.parseUrl(url);
-            return this._getPrimarySegmentsFromUrlTree(urlTree.root);
-        };
-        UrlParsingService.prototype._getPrimarySegmentsFromUrlTree = function (tree) {
-            var segments = tree.segments.map(function (s) { return s.path; });
-            var childrenSegments = tree.children[i1$1.PRIMARY_OUTLET]
-                ? this._getPrimarySegmentsFromUrlTree(tree.children[i1$1.PRIMARY_OUTLET])
-                : [];
-            return segments.concat(childrenSegments);
-        };
-        return UrlParsingService;
-    }());
-    UrlParsingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.ɵɵinject(i1$1.Router)); }, token: UrlParsingService, providedIn: "root" });
-    UrlParsingService.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    UrlParsingService.ctorParameters = function () { return [
-        { type: i1$1.Router }
-    ]; };
-
-    var isParam = function (segment) { return segment.startsWith(':'); };
-    var getParamName = function (segment) { return segment.slice(1); }; // it just removes leading ':'
-    var ensureLeadingSlash = function (path) { return path.startsWith('/') ? path : '/' + path; };
-    var removeLeadingSlash = function (path) { return path.startsWith('/') ? path.slice(1) : path; };
-
     var RoutingConfig = /** @class */ (function () {
         function RoutingConfig() {
         }
@@ -651,6 +621,36 @@
         { type: RoutingConfig }
     ]; };
 
+    var isParam = function (segment) { return segment.startsWith(':'); };
+    var getParamName = function (segment) { return segment.slice(1); }; // it just removes leading ':'
+    var ensureLeadingSlash = function (path) { return path.startsWith('/') ? path : '/' + path; };
+    var removeLeadingSlash = function (path) { return path.startsWith('/') ? path.slice(1) : path; };
+
+    var UrlParsingService = /** @class */ (function () {
+        function UrlParsingService(router) {
+            this.router = router;
+        }
+        UrlParsingService.prototype.getPrimarySegments = function (url) {
+            var urlTree = this.router.parseUrl(url);
+            return this._getPrimarySegmentsFromUrlTree(urlTree.root);
+        };
+        UrlParsingService.prototype._getPrimarySegmentsFromUrlTree = function (tree) {
+            var segments = tree.segments.map(function (s) { return s.path; });
+            var childrenSegments = tree.children[i1$1.PRIMARY_OUTLET]
+                ? this._getPrimarySegmentsFromUrlTree(tree.children[i1$1.PRIMARY_OUTLET])
+                : [];
+            return segments.concat(childrenSegments);
+        };
+        return UrlParsingService;
+    }());
+    UrlParsingService.ɵprov = i0.ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.ɵɵinject(i1$1.Router)); }, token: UrlParsingService, providedIn: "root" });
+    UrlParsingService.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    UrlParsingService.ctorParameters = function () { return [
+        { type: i1$1.Router }
+    ]; };
+
     var SemanticPathService = /** @class */ (function () {
         function SemanticPathService(routingConfigService, urlParser) {
             this.routingConfigService = routingConfigService;
@@ -755,7 +755,6 @@
                 return params[mappedParamName] !== undefined;
             }); });
             if (foundPath === undefined || foundPath === null) {
-                this.warn("No configured path matches all its params to given object. ", "Route config: ", routeConfig, "Params object: ", params);
                 return null;
             }
             return foundPath;
@@ -771,15 +770,6 @@
                 return paramsMapping[paramName] || paramName;
             }
             return paramName;
-        };
-        SemanticPathService.prototype.warn = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (i0.isDevMode()) {
-                console.warn.apply(console, __spread(args));
-            }
         };
         return SemanticPathService;
     }());
