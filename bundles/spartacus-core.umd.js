@@ -1583,6 +1583,8 @@
             return this._userId;
         };
         /**
+         * @deprecated Use `takeUserId` method instead.
+         *
          * Calls provided callback with current user id.
          *
          * @param cb callback function to invoke
@@ -1591,6 +1593,22 @@
             return this.getUserId()
                 .pipe(operators.take(1))
                 .subscribe(function (id) { return cb(id); });
+        };
+        /**
+         * Utility method if you need userId to perform single action (eg. dispatch call to API).
+         *
+         * @param loggedIn Set to true if you want the observable to emit id only for logged in user. Throws in case of anonymous user.
+         *
+         * @returns Observable that emits once and completes with the last userId value.
+         */
+        UserIdService.prototype.takeUserId = function (loggedIn) {
+            if (loggedIn === void 0) { loggedIn = false; }
+            return this.getUserId().pipe(operators.take(1), operators.map(function (userId) {
+                if (loggedIn && userId === OCC_USER_ID_ANONYMOUS) {
+                    throw new Error('Requested user id for logged user while user is not logged in.');
+                }
+                return userId;
+            }));
         };
         /**
          * Sets user id to the default value for logged out user.

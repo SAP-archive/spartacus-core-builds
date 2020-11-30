@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
  * It might not need user id at all and work based on access_token.
  * To implement custom solution provide your own implementation and customize services that use UserIdService
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class UserIdService {
     private _userId;
     /**
@@ -25,11 +26,21 @@ export declare class UserIdService {
      */
     getUserId(): Observable<string>;
     /**
+     * @deprecated Use `takeUserId` method instead.
+     *
      * Calls provided callback with current user id.
      *
      * @param cb callback function to invoke
      */
     invokeWithUserId(cb: (userId: string) => any): Subscription;
+    /**
+     * Utility method if you need userId to perform single action (eg. dispatch call to API).
+     *
+     * @param loggedIn Set to true if you want the observable to emit id only for logged in user. Throws in case of anonymous user.
+     *
+     * @returns Observable that emits once and completes with the last userId value.
+     */
+    takeUserId(loggedIn?: boolean): Observable<string | never>;
     /**
      * Sets user id to the default value for logged out user.
      */
@@ -38,4 +49,7 @@ export declare class UserIdService {
      * Checks if the userId is of emulated user type.
      */
     isEmulated(): Observable<boolean>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserIdService, never>;
 }
+
+//# sourceMappingURL=user-id.service.d.ts.map
