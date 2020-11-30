@@ -24320,6 +24320,37 @@
                 },] }
     ];
 
+    /**
+     * uniteLatest is an alternative to combineLatest. The first emission is
+     * emitted synchronously (just like combineLatest) and all following emissions
+     * are audited and emitted using asapScheduler.
+     *
+     * It effectively smooths out emissions when multiple sources will emit at the
+     * same time: uniteLatest will have only one emission, where combine latest will
+     * have more than one (one per source changed).
+     *
+     * @param sources
+     */
+    function uniteLatest(sources) {
+        return rxjs.defer(function () {
+            var subNo = 0;
+            var trigger = new rxjs.Observable(function (subscriber) {
+                var action = function () {
+                    subscriber.next();
+                    subscriber.complete();
+                };
+                if (subNo) {
+                    rxjs.asapScheduler.schedule(action);
+                }
+                else {
+                    action();
+                }
+                subNo++;
+            });
+            return rxjs.combineLatest(sources).pipe(operators.audit(function () { return trigger; }));
+        });
+    }
+
     var PageMetaService = /** @class */ (function () {
         function PageMetaService(cms, unifiedInjector) {
             this.cms = cms;
@@ -24362,8 +24393,7 @@
                     _a[key] = data,
                     _a);
             })); });
-            return rxjs.combineLatest(resolveMethods).pipe(operators.debounceTime(0), // avoid partial data emissions when all methods resolve at the same time
-            operators.map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
+            return uniteLatest(resolveMethods).pipe(operators.map(function (data) { return Object.assign.apply(Object, __spread([{}], data)); }));
         };
         /**
          * Return the resolver with the best match, based on a score
@@ -26303,7 +26333,7 @@
                 finally { if (e_1) throw e_1.error; }
             }
             if (scopes.length > 1) {
-                this.products[productCode][this.getScopesIndex(scopes)] = rxjs.combineLatest(scopes.map(function (scope) { return _this.products[productCode][scope]; })).pipe(operators.auditTime(0), operators.map(function (productParts) { return productParts.every(Boolean)
+                this.products[productCode][this.getScopesIndex(scopes)] = uniteLatest(scopes.map(function (scope) { return _this.products[productCode][scope]; })).pipe(operators.map(function (productParts) { return productParts.every(Boolean)
                     ? deepMerge.apply(void 0, __spread([{}], productParts)) : undefined; }), operators.distinctUntilChanged());
             }
         };
@@ -30275,6 +30305,7 @@
     exports.recurrencePeriod = recurrencePeriod;
     exports.resolveApplicable = resolveApplicable;
     exports.serviceMapFactory = serviceMapFactory;
+    exports.uniteLatest = uniteLatest;
     exports.validateConfig = validateConfig;
     exports.withdrawOn = withdrawOn;
     exports.ɵa = asmStatePersistenceFactory;

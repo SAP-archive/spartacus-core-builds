@@ -4,6 +4,7 @@ import { ProductReference } from '../../../model/product.model';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
 import { ConverterService } from '../../../util/converter.service';
 import { ProductReferencesAdapter } from '../../../product/connectors/references/product-references.adapter';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccProductReferencesAdapter implements ProductReferencesAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -11,4 +12,8 @@ export declare class OccProductReferencesAdapter implements ProductReferencesAda
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
     load(productCode: string, referenceType?: string, pageSize?: number): Observable<ProductReference[]>;
     protected getEndpoint(code: string, reference?: string, pageSize?: number): string;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccProductReferencesAdapter, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccProductReferencesAdapter>;
 }
+
+//# sourceMappingURL=occ-product-references.adapter.d.ts.map
