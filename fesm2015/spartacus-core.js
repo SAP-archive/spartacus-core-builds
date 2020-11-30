@@ -12304,8 +12304,11 @@ class OccCostCenterNormalizer {
         return typeof property === 'string' ? property === 'true' : property;
     }
 }
+OccCostCenterNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccCostCenterNormalizer_Factory() { return new OccCostCenterNormalizer(); }, token: OccCostCenterNormalizer, providedIn: "root" });
 OccCostCenterNormalizer.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
 ];
 
 class OccCostCenterSerializer {
@@ -12317,8 +12320,11 @@ class OccCostCenterSerializer {
         return target;
     }
 }
+OccCostCenterSerializer.ɵprov = ɵɵdefineInjectable({ factory: function OccCostCenterSerializer_Factory() { return new OccCostCenterSerializer(); }, token: OccCostCenterSerializer, providedIn: "root" });
 OccCostCenterSerializer.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
 ];
 
 const COST_CENTER_NORMALIZER = new InjectionToken('CostCenterNormalizer');
@@ -12336,8 +12342,11 @@ class OccCostCenterListNormalizer {
         return target;
     }
 }
+OccCostCenterListNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccCostCenterListNormalizer_Factory() { return new OccCostCenterListNormalizer(ɵɵinject(ConverterService)); }, token: OccCostCenterListNormalizer, providedIn: "root" });
 OccCostCenterListNormalizer.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
 ];
 OccCostCenterListNormalizer.ctorParameters = () => [
     { type: ConverterService }
@@ -12624,17 +12633,17 @@ CostCenterOccModule.decorators = [
                 providers: [
                     {
                         provide: COST_CENTERS_NORMALIZER,
-                        useClass: OccCostCenterListNormalizer,
+                        useExisting: OccCostCenterListNormalizer,
                         multi: true,
                     },
                     {
                         provide: COST_CENTER_NORMALIZER,
-                        useClass: OccCostCenterNormalizer,
+                        useExisting: OccCostCenterNormalizer,
                         multi: true,
                     },
                     {
                         provide: COST_CENTER_SERIALIZER,
-                        useClass: OccCostCenterSerializer,
+                        useExisting: OccCostCenterSerializer,
                         multi: true,
                     },
                 ],
@@ -14444,8 +14453,11 @@ class OccAddressListNormalizer {
         return target;
     }
 }
+OccAddressListNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function OccAddressListNormalizer_Factory() { return new OccAddressListNormalizer(ɵɵinject(ConverterService)); }, token: OccAddressListNormalizer, providedIn: "root" });
 OccAddressListNormalizer.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
 ];
 OccAddressListNormalizer.ctorParameters = () => [
     { type: ConverterService }

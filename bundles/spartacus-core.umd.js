@@ -14036,8 +14036,11 @@
         };
         return OccCostCenterNormalizer;
     }());
+    OccCostCenterNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccCostCenterNormalizer_Factory() { return new OccCostCenterNormalizer(); }, token: OccCostCenterNormalizer, providedIn: "root" });
     OccCostCenterNormalizer.decorators = [
-        { type: i0.Injectable }
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
 
     var OccCostCenterSerializer = /** @class */ (function () {
@@ -14052,8 +14055,11 @@
         };
         return OccCostCenterSerializer;
     }());
+    OccCostCenterSerializer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccCostCenterSerializer_Factory() { return new OccCostCenterSerializer(); }, token: OccCostCenterSerializer, providedIn: "root" });
     OccCostCenterSerializer.decorators = [
-        { type: i0.Injectable }
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
 
     var COST_CENTER_NORMALIZER = new i0.InjectionToken('CostCenterNormalizer');
@@ -14073,8 +14079,11 @@
         };
         return OccCostCenterListNormalizer;
     }());
+    OccCostCenterListNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccCostCenterListNormalizer_Factory() { return new OccCostCenterListNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccCostCenterListNormalizer, providedIn: "root" });
     OccCostCenterListNormalizer.decorators = [
-        { type: i0.Injectable }
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
     OccCostCenterListNormalizer.ctorParameters = function () { return [
         { type: ConverterService }
@@ -14389,17 +14398,17 @@
                     providers: [
                         {
                             provide: COST_CENTERS_NORMALIZER,
-                            useClass: OccCostCenterListNormalizer,
+                            useExisting: OccCostCenterListNormalizer,
                             multi: true,
                         },
                         {
                             provide: COST_CENTER_NORMALIZER,
-                            useClass: OccCostCenterNormalizer,
+                            useExisting: OccCostCenterNormalizer,
                             multi: true,
                         },
                         {
                             provide: COST_CENTER_SERIALIZER,
-                            useClass: OccCostCenterSerializer,
+                            useExisting: OccCostCenterSerializer,
                             multi: true,
                         },
                     ],
@@ -16359,8 +16368,11 @@
         };
         return OccAddressListNormalizer;
     }());
+    OccAddressListNormalizer.ɵprov = i0.ɵɵdefineInjectable({ factory: function OccAddressListNormalizer_Factory() { return new OccAddressListNormalizer(i0.ɵɵinject(ConverterService)); }, token: OccAddressListNormalizer, providedIn: "root" });
     OccAddressListNormalizer.decorators = [
-        { type: i0.Injectable }
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
     OccAddressListNormalizer.ctorParameters = function () { return [
         { type: ConverterService }
