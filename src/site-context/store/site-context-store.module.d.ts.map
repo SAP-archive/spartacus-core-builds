@@ -1,0 +1,1 @@
+{"version":3,"file":"site-context-store.module.d.ts","sources":["site-context-store.module.d.ts"],"names":[],"mappings":"AAAA;;;;;AACA;AACA;;;AACA","sourcesContent":["import { StateConfig } from '../../state/config/state-config';\nexport declare function siteContextStoreConfigFactory(): StateConfig;\nexport declare class SiteContextStoreModule {\n}\n"]}
