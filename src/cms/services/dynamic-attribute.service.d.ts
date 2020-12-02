@@ -2,7 +2,6 @@ import { Renderer2 } from '@angular/core';
 import { SmartEditService } from '../../smart-edit/services/smart-edit.service';
 import { ContentSlotComponentData } from '../model/content-slot-component-data.model';
 import { ContentSlotData } from '../model/content-slot-data.model';
-import * as ɵngcc0 from '@angular/core';
 export declare class DynamicAttributeService {
     protected smartEditService: SmartEditService;
     constructor(smartEditService: SmartEditService);
@@ -18,7 +17,4 @@ export declare class DynamicAttributeService {
         componentData?: ContentSlotComponentData;
         slotData?: ContentSlotData;
     }): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<DynamicAttributeService, never>;
 }
-
-//# sourceMappingURL=dynamic-attribute.service.d.ts.map
