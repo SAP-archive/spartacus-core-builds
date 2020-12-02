@@ -1,6 +1,5 @@
 import { RouteLoadStrategy, RoutingConfig } from './config/routing-config';
 import { RouteConfig } from './routes-config';
-import * as ɵngcc0 from '@angular/core';
 export declare class RoutingConfigService {
     protected config: RoutingConfig;
     /**
@@ -42,7 +41,4 @@ export declare class RoutingConfigService {
      * to read quickly the route name by the path.
      */
     protected initRouteNamesByPath(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<RoutingConfigService, never>;
 }
-
-//# sourceMappingURL=routing-config.service.d.ts.map

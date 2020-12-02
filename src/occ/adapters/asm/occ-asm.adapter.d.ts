@@ -6,7 +6,6 @@ import { CustomerSearchOptions, CustomerSearchPage } from '../../../asm/models/a
 import { BaseSiteService } from '../../../site-context/facade/base-site.service';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class OccAsmAdapter implements AsmAdapter {
     protected http: HttpClient;
     protected occEndpointsService: OccEndpointsService;
@@ -16,8 +15,4 @@ export declare class OccAsmAdapter implements AsmAdapter {
     private activeBaseSite;
     constructor(http: HttpClient, occEndpointsService: OccEndpointsService, converterService: ConverterService, config: AsmConfig, baseSiteService: BaseSiteService);
     customerSearch(options: CustomerSearchOptions): Observable<CustomerSearchPage>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccAsmAdapter, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccAsmAdapter>;
 }
-
-//# sourceMappingURL=occ-asm.adapter.d.ts.map
