@@ -424,6 +424,7 @@ const ROUTER_GO = '[Router] Go';
 const ROUTER_GO_BY_URL = '[Router] Go By Url';
 const ROUTER_BACK = '[Router] Back';
 const ROUTER_FORWARD = '[Router] Forward';
+const CHANGE_NEXT_PAGE_CONTEXT = '[Router] Change Next PageContext';
 class RouteGoAction {
     constructor(payload) {
         this.payload = payload;
@@ -446,6 +447,12 @@ class RouteForwardAction {
         this.type = ROUTER_FORWARD;
     }
 }
+class ChangeNextPageContext {
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CHANGE_NEXT_PAGE_CONTEXT;
+    }
+}
 
 var routingGroup_actions = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -453,10 +460,12 @@ var routingGroup_actions = /*#__PURE__*/Object.freeze({
     ROUTER_GO_BY_URL: ROUTER_GO_BY_URL,
     ROUTER_BACK: ROUTER_BACK,
     ROUTER_FORWARD: ROUTER_FORWARD,
+    CHANGE_NEXT_PAGE_CONTEXT: CHANGE_NEXT_PAGE_CONTEXT,
     RouteGoAction: RouteGoAction,
     RouteGoByUrlAction: RouteGoByUrlAction,
     RouteBackAction: RouteBackAction,
-    RouteForwardAction: RouteForwardAction
+    RouteForwardAction: RouteForwardAction,
+    ChangeNextPageContext: ChangeNextPageContext
 });
 
 const ROUTING_FEATURE = 'router';
@@ -582,6 +591,14 @@ class RoutingService {
      */
     getNextPageContext() {
         return this.store.pipe(select(getNextPageContext));
+    }
+    /**
+     * Allow to change next page context for the ongoing navigation
+     *
+     * @param pageContext
+     */
+    changeNextPageContext(pageContext) {
+        this.store.dispatch(new ChangeNextPageContext(pageContext));
     }
     /**
      * Get the `isNavigating` info from the state
@@ -8100,6 +8117,7 @@ function getReducers$1() {
     };
 }
 function reducer(state = initialState, action) {
+    var _a, _b;
     switch (action.type) {
         case ROUTER_NAVIGATION: {
             return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -8108,9 +8126,16 @@ function reducer(state = initialState, action) {
         case ROUTER_CANCEL: {
             return Object.assign(Object.assign({}, state), { nextState: undefined });
         }
+        case CHANGE_NEXT_PAGE_CONTEXT: {
+            return state.nextState
+                ? Object.assign(Object.assign({}, state), { nextState: Object.assign(Object.assign({}, state.nextState), { context: action.payload }) }) : state;
+        }
         case ROUTER_NAVIGATED: {
             return {
-                state: action.payload.routerState,
+                state: Object.assign(Object.assign({}, action.payload.routerState), { context: (_b = (_a = 
+                    // we want to preserve already resolved context,
+                    // in case it was changed while navigating
+                    state.nextState) === null || _a === void 0 ? void 0 : _a.context) !== null && _b !== void 0 ? _b : action.payload.routerState.context }),
                 navigationId: action.payload.event.id,
                 nextState: undefined,
             };

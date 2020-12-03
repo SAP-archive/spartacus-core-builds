@@ -786,6 +786,7 @@
     var ROUTER_GO_BY_URL = '[Router] Go By Url';
     var ROUTER_BACK = '[Router] Back';
     var ROUTER_FORWARD = '[Router] Forward';
+    var CHANGE_NEXT_PAGE_CONTEXT = '[Router] Change Next PageContext';
     var RouteGoAction = /** @class */ (function () {
         function RouteGoAction(payload) {
             this.payload = payload;
@@ -812,6 +813,13 @@
         }
         return RouteForwardAction;
     }());
+    var ChangeNextPageContext = /** @class */ (function () {
+        function ChangeNextPageContext(payload) {
+            this.payload = payload;
+            this.type = CHANGE_NEXT_PAGE_CONTEXT;
+        }
+        return ChangeNextPageContext;
+    }());
 
     var routingGroup_actions = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -819,10 +827,12 @@
         ROUTER_GO_BY_URL: ROUTER_GO_BY_URL,
         ROUTER_BACK: ROUTER_BACK,
         ROUTER_FORWARD: ROUTER_FORWARD,
+        CHANGE_NEXT_PAGE_CONTEXT: CHANGE_NEXT_PAGE_CONTEXT,
         RouteGoAction: RouteGoAction,
         RouteGoByUrlAction: RouteGoByUrlAction,
         RouteBackAction: RouteBackAction,
-        RouteForwardAction: RouteForwardAction
+        RouteForwardAction: RouteForwardAction,
+        ChangeNextPageContext: ChangeNextPageContext
     });
 
     var ROUTING_FEATURE = 'router';
@@ -952,6 +962,14 @@
          */
         RoutingService.prototype.getNextPageContext = function () {
             return this.store.pipe(i1$2.select(getNextPageContext));
+        };
+        /**
+         * Allow to change next page context for the ongoing navigation
+         *
+         * @param pageContext
+         */
+        RoutingService.prototype.changeNextPageContext = function (pageContext) {
+            this.store.dispatch(new ChangeNextPageContext(pageContext));
         };
         /**
          * Get the `isNavigating` info from the state
@@ -9224,6 +9242,7 @@
     }
     function reducer(state, action) {
         if (state === void 0) { state = initialState; }
+        var _a, _b;
         switch (action.type) {
             case fromNgrxRouter.ROUTER_NAVIGATION: {
                 return Object.assign(Object.assign({}, state), { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -9232,9 +9251,16 @@
             case fromNgrxRouter.ROUTER_CANCEL: {
                 return Object.assign(Object.assign({}, state), { nextState: undefined });
             }
+            case CHANGE_NEXT_PAGE_CONTEXT: {
+                return state.nextState
+                    ? Object.assign(Object.assign({}, state), { nextState: Object.assign(Object.assign({}, state.nextState), { context: action.payload }) }) : state;
+            }
             case fromNgrxRouter.ROUTER_NAVIGATED: {
                 return {
-                    state: action.payload.routerState,
+                    state: Object.assign(Object.assign({}, action.payload.routerState), { context: (_b = (_a =
+                            // we want to preserve already resolved context,
+                            // in case it was changed while navigating
+                            state.nextState) === null || _a === void 0 ? void 0 : _a.context) !== null && _b !== void 0 ? _b : action.payload.routerState.context }),
                     navigationId: action.payload.event.id,
                     nextState: undefined,
                 };
