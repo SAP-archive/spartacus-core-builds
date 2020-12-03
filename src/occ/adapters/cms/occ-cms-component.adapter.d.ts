@@ -5,6 +5,7 @@ import { CmsComponent } from '../../../model/cms.model';
 import { PageContext } from '../../../routing';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccCmsComponentAdapter implements CmsComponentAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -21,4 +22,7 @@ export declare class OccCmsComponentAdapter implements CmsComponentAdapter {
     protected getContextParams(pageContext: PageContext): {
         [key: string]: string;
     };
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsComponentAdapter, never>;
 }
+
+//# sourceMappingURL=occ-cms-component.adapter.d.ts.map
