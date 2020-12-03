@@ -1,6 +1,7 @@
 import { Observable, Subscription } from 'rxjs';
 import { StorageSyncType } from '../../state/config/state-config';
 import { WindowRef } from '../../window/window-ref';
+import * as ɵngcc0 from '@angular/core';
 export declare class StatePersistenceService {
     protected winRef: WindowRef;
     constructor(winRef: WindowRef);
@@ -47,4 +48,7 @@ export declare class StatePersistenceService {
         storageType?: StorageSyncType;
     }): T;
     protected generateKeyWithContext(context: string | Array<string>, key: string): string;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<StatePersistenceService, never>;
 }
+
+//# sourceMappingURL=state-persistence.service.d.ts.map
