@@ -1,0 +1,1 @@
+{"version":3,"file":"url.module.d.ts","sources":["url.module.d.ts"],"names":[],"mappings":";;;;AAAA;;;AACA","sourcesContent":["export declare class UrlModule {\n}\n"]}
