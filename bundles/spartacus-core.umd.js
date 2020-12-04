@@ -14944,7 +14944,7 @@
             var _a = __read(urlWithFields.split('?'), 2), url = _a[0], params = _a[1];
             var paramsMap = {};
             if (params) {
-                params.split('&').map(function (param) {
+                params.split('&').forEach(function (param) {
                     var keyValue = param.split('=');
                     paramsMap[keyValue[0]] = keyValue[1];
                 });
