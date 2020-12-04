@@ -9975,58 +9975,12 @@
         { type: UserAddressAdapter }
     ]; };
 
-    /**
-     * @deprecated since 2.1, use normalizeHttpError instead
-     */
-    var UNKNOWN_ERROR = {
-        error: 'unknown error',
-    };
-    var circularReplacer = function () {
-        var seen = new WeakSet();
-        return function (_key, value) {
-            if (typeof value === 'object' && value !== null) {
-                if (seen.has(value)) {
-                    return;
-                }
-                seen.add(value);
-            }
-            return value;
-        };
-    };
-    var ɵ0$b = circularReplacer;
-    /**
-     * @deprecated since 2.1, use normalizeHttpError instead
-     */
-    function makeErrorSerializable(error) {
-        if (error instanceof Error) {
-            return {
-                message: error.message,
-                type: error.name,
-                reason: error.stack,
-            };
-        }
-        if (error instanceof i1$4.HttpErrorResponse) {
-            var serializableError = error.error;
-            if (isObject(error.error)) {
-                serializableError = JSON.stringify(error.error, circularReplacer());
-            }
-            return {
-                message: error.message,
-                error: serializableError,
-                status: error.status,
-                statusText: error.statusText,
-                url: error.url,
-            };
-        }
-        return isObject(error) ? UNKNOWN_ERROR : error;
-    }
-
     var AddressVerificationEffect = /** @class */ (function () {
         function AddressVerificationEffect(actions$, userAddressConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.userAddressConnector = userAddressConnector;
-            this.verifyAddress$ = this.actions$.pipe(i3.ofType(VERIFY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(operators.map(function (data) { return new VerifyAddressSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new VerifyAddressFail(makeErrorSerializable(error))); })); }));
+            this.verifyAddress$ = this.actions$.pipe(i3.ofType(VERIFY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(operators.map(function (data) { return new VerifyAddressSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new VerifyAddressFail(normalizeHttpError(error))); })); }));
         }
         return AddressVerificationEffect;
     }());
@@ -10047,7 +10001,7 @@
             this.actions$ = actions$;
             this.checkoutPaymentConnector = checkoutPaymentConnector;
             this.loadCardTypes$ = this.actions$.pipe(i3.ofType(LOAD_CARD_TYPES), operators.switchMap(function () {
-                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(makeErrorSerializable(error))); }));
+                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(normalizeHttpError(error))); }));
             }));
         }
         return CardTypesEffects;
@@ -12660,7 +12614,7 @@
     ];
 
     var getDeliveryAddressSelector = function (state) { return state.address; };
-    var ɵ0$c = getDeliveryAddressSelector;
+    var ɵ0$b = getDeliveryAddressSelector;
     var getDeliveryModeSelector = function (state) { return state.deliveryMode; };
     var ɵ1$7 = getDeliveryModeSelector;
     var getPaymentDetailsSelector = function (state) { return state.paymentDetails; };
@@ -12702,12 +12656,12 @@
     var ɵ11 = function (state) { return state.poNumber.costCenter; };
     var getCostCenter = i1$2.createSelector(getCheckoutSteps, ɵ11);
 
-    var ɵ0$d = function (state) { return state.addressVerification; };
-    var getAddressVerificationResultsState = i1$2.createSelector(getCheckoutState, ɵ0$d);
+    var ɵ0$c = function (state) { return state.addressVerification; };
+    var getAddressVerificationResultsState = i1$2.createSelector(getCheckoutState, ɵ0$c);
     var getAddressVerificationResults$1 = i1$2.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
-    var ɵ0$e = function (state) { return state.cardTypes; };
-    var getCardTypesState = i1$2.createSelector(getCheckoutState, ɵ0$e);
+    var ɵ0$d = function (state) { return state.cardTypes; };
+    var getCardTypesState = i1$2.createSelector(getCheckoutState, ɵ0$d);
     var getCardTypesEntites$1 = i1$2.createSelector(getCardTypesState, getCardTypesEntites);
     var ɵ1$8 = function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
@@ -12715,12 +12669,12 @@
     var getAllCardTypes = i1$2.createSelector(getCardTypesEntites$1, ɵ1$8);
 
     var getSelectedOrderTypeSelector = function (state) { return state.selected; };
-    var ɵ0$f = function (state) { return state.orderType; };
-    var getOrderTypesState = i1$2.createSelector(getCheckoutState, ɵ0$f);
+    var ɵ0$e = function (state) { return state.orderType; };
+    var getOrderTypesState = i1$2.createSelector(getCheckoutState, ɵ0$e);
     var getSelectedOrderType = i1$2.createSelector(getOrderTypesState, getSelectedOrderTypeSelector);
 
-    var ɵ0$g = function (state) { return state.paymentTypes; };
-    var getPaymentTypesState = i1$2.createSelector(getCheckoutState, ɵ0$g);
+    var ɵ0$f = function (state) { return state.paymentTypes; };
+    var getPaymentTypesState = i1$2.createSelector(getCheckoutState, ɵ0$f);
     var getPaymentTypesEntites$1 = i1$2.createSelector(getPaymentTypesState, getPaymentTypesEntites);
     var ɵ1$9 = function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
@@ -12732,7 +12686,7 @@
         __proto__: null,
         getAddressVerificationResultsState: getAddressVerificationResultsState,
         getAddressVerificationResults: getAddressVerificationResults$1,
-        ɵ0: ɵ0$d,
+        ɵ0: ɵ0$c,
         getCardTypesState: getCardTypesState,
         getCardTypesEntites: getCardTypesEntites$1,
         getAllCardTypes: getAllCardTypes,
@@ -18318,20 +18272,20 @@
 
     var getUserState = i1$2.createFeatureSelector(USER_FEATURE);
 
-    var ɵ0$h = function (state) { return state.billingCountries; };
-    var getBillingCountriesState = i1$2.createSelector(getUserState, ɵ0$h);
+    var ɵ0$g = function (state) { return state.billingCountries; };
+    var getBillingCountriesState = i1$2.createSelector(getUserState, ɵ0$g);
     var ɵ1$a = function (state) { return state.entities; };
     var getBillingCountriesEntites = i1$2.createSelector(getBillingCountriesState, ɵ1$a);
     var ɵ2$6 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
     var getAllBillingCountries = i1$2.createSelector(getBillingCountriesEntites, ɵ2$6);
 
-    var ɵ0$i = function (state) { return state.consignmentTracking; };
-    var getConsignmentTrackingState = i1$2.createSelector(getUserState, ɵ0$i);
+    var ɵ0$h = function (state) { return state.consignmentTracking; };
+    var getConsignmentTrackingState = i1$2.createSelector(getUserState, ɵ0$h);
     var ɵ1$b = function (state) { return state.tracking; };
     var getConsignmentTracking = i1$2.createSelector(getConsignmentTrackingState, ɵ1$b);
 
-    var ɵ0$j = function (state) { return state.customerCoupons; };
-    var getCustomerCouponsState = i1$2.createSelector(getUserState, ɵ0$j);
+    var ɵ0$i = function (state) { return state.customerCoupons; };
+    var getCustomerCouponsState = i1$2.createSelector(getUserState, ɵ0$i);
     var ɵ1$c = function (state) { return loaderSuccessSelector(state); };
     var getCustomerCouponsLoaded = i1$2.createSelector(getCustomerCouponsState, ɵ1$c);
     var ɵ2$7 = function (state) { return loaderLoadingSelector(state); };
@@ -18339,16 +18293,16 @@
     var ɵ3$5 = function (state) { return loaderValueSelector(state); };
     var getCustomerCoupons = i1$2.createSelector(getCustomerCouponsState, ɵ3$5);
 
-    var ɵ0$k = function (state) { return state.countries; };
-    var getDeliveryCountriesState = i1$2.createSelector(getUserState, ɵ0$k);
+    var ɵ0$j = function (state) { return state.countries; };
+    var getDeliveryCountriesState = i1$2.createSelector(getUserState, ɵ0$j);
     var ɵ1$d = function (state) { return state.entities; };
     var getDeliveryCountriesEntites = i1$2.createSelector(getDeliveryCountriesState, ɵ1$d);
     var ɵ2$8 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
     var getAllDeliveryCountries = i1$2.createSelector(getDeliveryCountriesEntites, ɵ2$8);
     var countrySelectorFactory = function (isocode) { return i1$2.createSelector(getDeliveryCountriesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[isocode] : null; }); };
 
-    var ɵ0$l = function (state) { return state.notificationPreferences; };
-    var getPreferencesLoaderState = i1$2.createSelector(getUserState, ɵ0$l);
+    var ɵ0$k = function (state) { return state.notificationPreferences; };
+    var getPreferencesLoaderState = i1$2.createSelector(getUserState, ɵ0$k);
     var ɵ1$e = function (state) { return loaderValueSelector(state); };
     var getPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ1$e);
     var ɵ2$9 = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
@@ -18356,13 +18310,13 @@
     var ɵ3$6 = function (state) { return loaderLoadingSelector(state); };
     var getPreferencesLoading = i1$2.createSelector(getPreferencesLoaderState, ɵ3$6);
 
-    var ɵ0$m = function (state) { return state.order; };
-    var getOrderState = i1$2.createSelector(getUserState, ɵ0$m);
+    var ɵ0$l = function (state) { return state.order; };
+    var getOrderState = i1$2.createSelector(getUserState, ɵ0$l);
     var ɵ1$f = function (state) { return loaderValueSelector(state); };
     var getOrderDetails = i1$2.createSelector(getOrderState, ɵ1$f);
 
-    var ɵ0$n = function (state) { return state.orderReturn; };
-    var getOrderReturnRequestState = i1$2.createSelector(getUserState, ɵ0$n);
+    var ɵ0$m = function (state) { return state.orderReturn; };
+    var getOrderReturnRequestState = i1$2.createSelector(getUserState, ɵ0$m);
     var ɵ1$g = function (state) { return loaderValueSelector(state); };
     var getOrderReturnRequest = i1$2.createSelector(getOrderReturnRequestState, ɵ1$g);
     var ɵ2$a = function (state) { return loaderLoadingSelector(state); };
@@ -18375,8 +18329,8 @@
     var ɵ5$1 = function (state) { return loaderValueSelector(state); };
     var getOrderReturnRequestList = i1$2.createSelector(getOrderReturnRequestListState, ɵ5$1);
 
-    var ɵ0$o = function (state) { return state.payments; };
-    var getPaymentMethodsState = i1$2.createSelector(getUserState, ɵ0$o);
+    var ɵ0$n = function (state) { return state.payments; };
+    var getPaymentMethodsState = i1$2.createSelector(getUserState, ɵ0$n);
     var ɵ1$h = function (state) { return loaderValueSelector(state); };
     var getPaymentMethods = i1$2.createSelector(getPaymentMethodsState, ɵ1$h);
     var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
@@ -18385,15 +18339,15 @@
         !loaderLoadingSelector(state); };
     var getPaymentMethodsLoadedSuccess = i1$2.createSelector(getPaymentMethodsState, ɵ3$8);
 
-    var ɵ0$p = function (state) { return state.productInterests; };
-    var getInterestsState = i1$2.createSelector(getUserState, ɵ0$p);
+    var ɵ0$o = function (state) { return state.productInterests; };
+    var getInterestsState = i1$2.createSelector(getUserState, ɵ0$o);
     var ɵ1$i = function (state) { return loaderValueSelector(state); };
     var getInterests = i1$2.createSelector(getInterestsState, ɵ1$i);
     var ɵ2$c = function (state) { return loaderLoadingSelector(state); };
     var getInterestsLoading = i1$2.createSelector(getInterestsState, ɵ2$c);
 
-    var ɵ0$q = function (state) { return state.regions; };
-    var getRegionsLoaderState = i1$2.createSelector(getUserState, ɵ0$q);
+    var ɵ0$p = function (state) { return state.regions; };
+    var getRegionsLoaderState = i1$2.createSelector(getUserState, ɵ0$p);
     var ɵ1$j = function (state) {
         return loaderValueSelector(state).entities;
     };
@@ -18412,8 +18366,8 @@
     var ɵ5$2 = function (state) { return loaderSuccessSelector(state); };
     var getRegionsLoaded = i1$2.createSelector(getRegionsLoaderState, ɵ5$2);
 
-    var ɵ0$r = function (state) { return state.replenishmentOrder; };
-    var getReplenishmentOrderState = i1$2.createSelector(getUserState, ɵ0$r);
+    var ɵ0$q = function (state) { return state.replenishmentOrder; };
+    var getReplenishmentOrderState = i1$2.createSelector(getUserState, ɵ0$q);
     var ɵ1$k = function (state) { return loaderValueSelector(state); };
     var getReplenishmentOrderDetailsValue = i1$2.createSelector(getReplenishmentOrderState, ɵ1$k);
     var ɵ2$e = function (state) { return loaderLoadingSelector(state); };
@@ -18423,19 +18377,19 @@
     var ɵ4$5 = function (state) { return loaderErrorSelector(state); };
     var getReplenishmentOrderDetailsError = i1$2.createSelector(getReplenishmentOrderState, ɵ4$5);
 
-    var ɵ0$s = function (state) { return state.resetPassword; };
-    var getResetPassword = i1$2.createSelector(getUserState, ɵ0$s);
+    var ɵ0$r = function (state) { return state.resetPassword; };
+    var getResetPassword = i1$2.createSelector(getUserState, ɵ0$r);
 
-    var ɵ0$t = function (state) { return state.titles; };
-    var getTitlesState = i1$2.createSelector(getUserState, ɵ0$t);
+    var ɵ0$s = function (state) { return state.titles; };
+    var getTitlesState = i1$2.createSelector(getUserState, ɵ0$s);
     var ɵ1$l = function (state) { return state.entities; };
     var getTitlesEntites = i1$2.createSelector(getTitlesState, ɵ1$l);
     var ɵ2$f = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
     var getAllTitles = i1$2.createSelector(getTitlesEntites, ɵ2$f);
     var titleSelectorFactory = function (code) { return i1$2.createSelector(getTitlesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[code] : null; }); };
 
-    var ɵ0$u = function (state) { return state.addresses; };
-    var getAddressesLoaderState = i1$2.createSelector(getUserState, ɵ0$u);
+    var ɵ0$t = function (state) { return state.addresses; };
+    var getAddressesLoaderState = i1$2.createSelector(getUserState, ɵ0$t);
     var ɵ1$m = function (state) { return loaderValueSelector(state); };
     var getAddresses = i1$2.createSelector(getAddressesLoaderState, ɵ1$m);
     var ɵ2$g = function (state) { return loaderLoadingSelector(state); };
@@ -18444,33 +18398,33 @@
         !loaderLoadingSelector(state); };
     var getAddressesLoadedSuccess = i1$2.createSelector(getAddressesLoaderState, ɵ3$b);
 
-    var ɵ0$v = function (state) { return state.consents; };
-    var getConsentsState = i1$2.createSelector(getUserState, ɵ0$v);
+    var ɵ0$u = function (state) { return state.consents; };
+    var getConsentsState = i1$2.createSelector(getUserState, ɵ0$u);
     var getConsentsValue = i1$2.createSelector(getConsentsState, loaderValueSelector);
     var getConsentByTemplateId = function (templateId) { return i1$2.createSelector(getConsentsValue, function (templates) { return templates.find(function (template) { return template.id === templateId; }); }); };
     var getConsentsLoading = i1$2.createSelector(getConsentsState, loaderLoadingSelector);
     var getConsentsSuccess = i1$2.createSelector(getConsentsState, loaderSuccessSelector);
     var getConsentsError = i1$2.createSelector(getConsentsState, loaderErrorSelector);
 
-    var ɵ0$w = function (state) { return state.costCenters; };
-    var getCostCentersState = i1$2.createSelector(getUserState, ɵ0$w);
+    var ɵ0$v = function (state) { return state.costCenters; };
+    var getCostCentersState = i1$2.createSelector(getUserState, ɵ0$v);
     var ɵ1$n = function (state) { return loaderValueSelector(state); };
     var getCostCenters = i1$2.createSelector(getCostCentersState, ɵ1$n);
 
-    var ɵ0$x = function (state) { return state.account; };
-    var getDetailsState = i1$2.createSelector(getUserState, ɵ0$x);
+    var ɵ0$w = function (state) { return state.account; };
+    var getDetailsState = i1$2.createSelector(getUserState, ɵ0$w);
     var ɵ1$o = function (state) { return state.details; };
     var getDetails = i1$2.createSelector(getDetailsState, ɵ1$o);
 
-    var ɵ0$y = function (state) { return state.orders; };
-    var getOrdersState = i1$2.createSelector(getUserState, ɵ0$y);
+    var ɵ0$x = function (state) { return state.orders; };
+    var getOrdersState = i1$2.createSelector(getUserState, ɵ0$x);
     var ɵ1$p = function (state) { return loaderSuccessSelector(state); };
     var getOrdersLoaded = i1$2.createSelector(getOrdersState, ɵ1$p);
     var ɵ2$h = function (state) { return loaderValueSelector(state); };
     var getOrders = i1$2.createSelector(getOrdersState, ɵ2$h);
 
-    var ɵ0$z = function (state) { return state.replenishmentOrders; };
-    var getReplenishmentOrdersState = i1$2.createSelector(getUserState, ɵ0$z);
+    var ɵ0$y = function (state) { return state.replenishmentOrders; };
+    var getReplenishmentOrdersState = i1$2.createSelector(getUserState, ɵ0$y);
     var ɵ1$q = function (state) { return loaderValueSelector(state); };
     var getReplenishmentOrders = i1$2.createSelector(getReplenishmentOrdersState, ɵ1$q);
     var ɵ2$i = function (state) { return loaderLoadingSelector(state); };
@@ -18485,7 +18439,7 @@
         getBillingCountriesState: getBillingCountriesState,
         getBillingCountriesEntites: getBillingCountriesEntites,
         getAllBillingCountries: getAllBillingCountries,
-        ɵ0: ɵ0$h,
+        ɵ0: ɵ0$g,
         ɵ1: ɵ1$a,
         ɵ2: ɵ2$6,
         getConsignmentTrackingState: getConsignmentTrackingState,
@@ -19397,10 +19351,10 @@
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.loadBaseSite$ = this.actions$.pipe(i3.ofType(LOAD_BASE_SITE), operators.exhaustMap(function () {
-                return _this.siteConnector.getBaseSite().pipe(operators.map(function (baseSite) { return new LoadBaseSiteSuccess(baseSite); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSiteFail(makeErrorSerializable(error))); }));
+                return _this.siteConnector.getBaseSite().pipe(operators.map(function (baseSite) { return new LoadBaseSiteSuccess(baseSite); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSiteFail(normalizeHttpError(error))); }));
             }));
             this.loadBaseSites$ = this.actions$.pipe(i3.ofType(LOAD_BASE_SITES), operators.exhaustMap(function () {
-                return _this.siteConnector.getBaseSites().pipe(operators.map(function (baseSites) { return new LoadBaseSitesSuccess(baseSites); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSitesFail(makeErrorSerializable(error))); }));
+                return _this.siteConnector.getBaseSites().pipe(operators.map(function (baseSites) { return new LoadBaseSitesSuccess(baseSites); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSitesFail(normalizeHttpError(error))); }));
             }));
         }
         return BaseSiteEffects;
@@ -19427,7 +19381,7 @@
             this.winRef = winRef;
             this.state = state;
             this.loadCurrencies$ = this.actions$.pipe(i3.ofType(LOAD_CURRENCIES), operators.exhaustMap(function () {
-                return _this.siteConnector.getCurrencies().pipe(operators.map(function (currencies) { return new LoadCurrenciesSuccess(currencies); }), operators.catchError(function (error) { return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error))); }));
+                return _this.siteConnector.getCurrencies().pipe(operators.map(function (currencies) { return new LoadCurrenciesSuccess(currencies); }), operators.catchError(function (error) { return rxjs.of(new LoadCurrenciesFail(normalizeHttpError(error))); }));
             }));
             this.persist$ = this.actions$.pipe(i3.ofType(SET_ACTIVE_CURRENCY), operators.tap(function (action) {
                 if (_this.winRef.sessionStorage) {
@@ -19473,7 +19427,7 @@
             this.winRef = winRef;
             this.state = state;
             this.loadLanguages$ = this.actions$.pipe(i3.ofType(LOAD_LANGUAGES), operators.exhaustMap(function () {
-                return _this.siteConnector.getLanguages().pipe(operators.map(function (languages) { return new LoadLanguagesSuccess(languages); }), operators.catchError(function (error) { return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error))); }));
+                return _this.siteConnector.getLanguages().pipe(operators.map(function (languages) { return new LoadLanguagesSuccess(languages); }), operators.catchError(function (error) { return rxjs.of(new LoadLanguagesFail(normalizeHttpError(error))); }));
             }));
             this.persist$ = this.actions$.pipe(i3.ofType(SET_ACTIVE_LANGUAGE), operators.tap(function (action) {
                 if (_this.winRef.sessionStorage) {
@@ -21404,11 +21358,11 @@
 
     var getAsmState = i1$2.createFeatureSelector(ASM_FEATURE);
 
-    var ɵ0$A = function (state) { return state.asmUi; };
-    var getAsmUi = i1$2.createSelector(getAsmState, ɵ0$A);
+    var ɵ0$z = function (state) { return state.asmUi; };
+    var getAsmUi = i1$2.createSelector(getAsmState, ɵ0$z);
 
-    var ɵ0$B = function (state) { return state.customerSearchResult; };
-    var getCustomerSearchResultsLoaderState = i1$2.createSelector(getAsmState, ɵ0$B);
+    var ɵ0$A = function (state) { return state.customerSearchResult; };
+    var getCustomerSearchResultsLoaderState = i1$2.createSelector(getAsmState, ɵ0$A);
     var ɵ1$r = function (state) { return loaderValueSelector(state); };
     var getCustomerSearchResults = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ1$r);
     var ɵ2$j = function (state) { return loaderLoadingSelector(state); };
@@ -21417,7 +21371,7 @@
     var asmGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getAsmUi: getAsmUi,
-        ɵ0: ɵ0$A,
+        ɵ0: ɵ0$z,
         getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
         getCustomerSearchResults: getCustomerSearchResults,
         getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
@@ -21656,7 +21610,7 @@
                 return _this.cartEntryConnector
                     .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
                     .pipe(operators.map(function (cartModification) { return new CartAddEntrySuccess(Object.assign(Object.assign({}, payload), cartModification)); }), operators.catchError(function (error) { return rxjs.from([
-                    new CartAddEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                    new CartAddEntryFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
                     new LoadCart({
                         cartId: payload.cartId,
                         userId: payload.userId,
@@ -21668,7 +21622,7 @@
                 .pipe(operators.map(function () {
                 return new CartRemoveEntrySuccess(Object.assign({}, payload));
             }), operators.catchError(function (error) { return rxjs.from([
-                new CartRemoveEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new CartRemoveEntryFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
                 new LoadCart({
                     cartId: payload.cartId,
                     userId: payload.userId,
@@ -21679,7 +21633,7 @@
                 .pipe(operators.map(function () {
                 return new CartUpdateEntrySuccess(Object.assign({}, payload));
             }), operators.catchError(function (error) { return rxjs.from([
-                new CartUpdateEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new CartUpdateEntryFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
                 new LoadCart({
                     cartId: payload.cartId,
                     userId: payload.userId,
@@ -21740,7 +21694,7 @@
                     _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, exports.GlobalMessageType.MSG_TYPE_CONFIRMATION);
                     return new CartAddVoucherSuccess(Object.assign({}, payload));
                 }), operators.catchError(function (error) { return rxjs.from([
-                    new CartAddVoucherFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                    new CartAddVoucherFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
                     new CartProcessesDecrement(payload.cartId),
                     new LoadCart({
                         userId: payload.userId,
@@ -21760,7 +21714,7 @@
                     });
                 }), operators.catchError(function (error) { return rxjs.from([
                     new CartRemoveVoucherFail({
-                        error: makeErrorSerializable(error),
+                        error: normalizeHttpError(error),
                         cartId: payload.cartId,
                         userId: payload.userId,
                         voucherId: payload.voucherId,
@@ -21870,7 +21824,7 @@
                             return rxjs.of(new RemoveCart({ cartId: payload.cartId }));
                         }
                     }
-                    return rxjs.of(new LoadCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })));
+                    return rxjs.of(new LoadCartFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })));
                 }));
             })); }), withdrawOn(this.contextChange$));
             this.createCart$ = this.actions$.pipe(i3.ofType(CREATE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
@@ -21894,7 +21848,7 @@
                             tempCartId: payload.tempCartId,
                         })
                     ], conditionalActions);
-                }), operators.catchError(function (error) { return rxjs.of(new CreateCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) }))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new CreateCartFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) }))); }));
             }), withdrawOn(this.contextChange$));
             this.mergeCart$ = this.actions$.pipe(i3.ofType(MERGE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(operators.mergeMap(function (currentCart) {
@@ -21936,7 +21890,7 @@
                     }),
                 ];
             }), operators.catchError(function (error) { return rxjs.from([
-                new AddEmailToCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new AddEmailToCartFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
                 new LoadCart({
                     userId: payload.userId,
                     cartId: payload.cartId,
@@ -21945,7 +21899,7 @@
             this.deleteCart$ = this.actions$.pipe(i3.ofType(DELETE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.cartConnector.delete(payload.userId, payload.cartId).pipe(operators.map(function () {
                 return new DeleteCartSuccess(Object.assign({}, payload));
             }), operators.catchError(function (error) { return rxjs.from([
-                new DeleteCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new DeleteCartFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
                 // Error might happen in higher backend layer and cart could still be removed.
                 // When load fail with NotFound error then RemoveCart action will kick in and clear that cart in our state.
                 new LoadCart(Object.assign({}, payload)),
@@ -22025,7 +21979,7 @@
                     ]; }), operators.catchError(function (error) { return rxjs.from([
                         new CreateWishListFail({
                             cartId: cart.code,
-                            error: makeErrorSerializable(error),
+                            error: normalizeHttpError(error),
                         }),
                     ]); }));
                 }));
@@ -22061,7 +22015,7 @@
                         userId: userId,
                         cartId: tempCartId,
                         customerId: customerId,
-                        error: makeErrorSerializable(error),
+                        error: normalizeHttpError(error),
                     }),
                 ]); }));
             }));
@@ -22078,7 +22032,7 @@
                         new LoadWishListFail({
                             userId: userId,
                             cartId: wishListId,
-                            error: makeErrorSerializable(error),
+                            error: normalizeHttpError(error),
                         }),
                     ]); }));
                 }
@@ -22574,8 +22528,8 @@
 
     var getCmsState = i1$2.createFeatureSelector(CMS_FEATURE);
 
-    var ɵ0$C = function (state) { return state.components; };
-    var getComponentsState = i1$2.createSelector(getCmsState, ɵ0$C);
+    var ɵ0$B = function (state) { return state.components; };
+    var getComponentsState = i1$2.createSelector(getCmsState, ɵ0$B);
     var componentsContextSelectorFactory = function (uid) {
         return i1$2.createSelector(getComponentsState, function (componentsState) { return entitySelector(componentsState, uid); });
     };
@@ -22622,8 +22576,8 @@
         });
     };
 
-    var ɵ0$D = function (state) { return state.navigation; };
-    var getNavigationEntryItemState = i1$2.createSelector(getCmsState, ɵ0$D);
+    var ɵ0$C = function (state) { return state.navigation; };
+    var getNavigationEntryItemState = i1$2.createSelector(getCmsState, ɵ0$C);
     var getSelectedNavigationEntryItemState = function (nodeId) {
         return i1$2.createSelector(getNavigationEntryItemState, function (nodes) { return entityLoaderStateSelector(nodes, nodeId); });
     };
@@ -22632,7 +22586,7 @@
     };
 
     var getPageEntitiesSelector = function (state) { return state.pageData.entities; };
-    var ɵ0$E = getPageEntitiesSelector;
+    var ɵ0$D = getPageEntitiesSelector;
     var getIndexByType = function (index, type) {
         switch (type) {
             case exports.PageType.CONTENT_PAGE: {
@@ -22710,7 +22664,7 @@
         componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
         componentsDataSelectorFactory: componentsDataSelectorFactory,
         componentsSelectorFactory: componentsSelectorFactory,
-        ɵ0: ɵ0$C,
+        ɵ0: ɵ0$B,
         getCmsState: getCmsState,
         getNavigationEntryItemState: getNavigationEntryItemState,
         getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
@@ -23993,7 +23947,7 @@
                 return rxjs.from(actions);
             }), operators.catchError(function (error) { return rxjs.from(componentUids.map(function (uid) { return new LoadCmsComponentFail({
                 uid: uid,
-                error: makeErrorSerializable(error),
+                error: normalizeHttpError(error),
                 pageContext: pageContext,
             }); })); }));
         };
@@ -24027,7 +23981,7 @@
                             .pipe(operators.map(function (components) { return new LoadCmsNavigationItemsSuccess({
                             nodeId: data.nodeId,
                             components: components,
-                        }); }), operators.catchError(function (error) { return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error))); }));
+                        }); }), operators.catchError(function (error) { return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, normalizeHttpError(error))); }));
                     }));
                 }
                 else if (data.ids.pageIds.length > 0) {
@@ -24153,7 +24107,7 @@
                     actions.unshift(new CmsSetPageSuccessIndex({ id: pageLabel, type: pageContext.type }, cmsStructure.page));
                 }
                 return actions;
-            }), operators.catchError(function (error) { return rxjs.of(new LoadCmsPageDataFail(pageContext, makeErrorSerializable(error))); })); })); }));
+            }), operators.catchError(function (error) { return rxjs.of(new LoadCmsPageDataFail(pageContext, normalizeHttpError(error))); })); })); }));
         }
         return PageEffects;
     }());
@@ -25047,11 +25001,11 @@
         return path;
     }
 
-    var ɵ0$F = i18nextInit;
+    var ɵ0$E = i18nextInit;
     var i18nextProviders = [
         {
             provide: i0.APP_INITIALIZER,
-            useFactory: ɵ0$F,
+            useFactory: ɵ0$E,
             deps: [
                 ConfigInitializerService,
                 LanguageService,
@@ -25961,7 +25915,7 @@
                     .search(action.payload.queryText, action.payload.searchConfig)
                     .pipe(operators.map(function (data) {
                     return new SearchProductsSuccess(data, action.auxiliary);
-                }), operators.catchError(function (error) { return rxjs.of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary)); }));
+                }), operators.catchError(function (error) { return rxjs.of(new SearchProductsFail(normalizeHttpError(error), action.auxiliary)); }));
             })); }));
             this.getProductSuggestions$ = this.actions$.pipe(i3.ofType(GET_PRODUCT_SUGGESTIONS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.productSearchConnector
@@ -25971,7 +25925,7 @@
                         return new GetProductSuggestionsSuccess([]);
                     }
                     return new GetProductSuggestionsSuccess(suggestions);
-                }), operators.catchError(function (error) { return rxjs.of(new GetProductSuggestionsFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new GetProductSuggestionsFail(normalizeHttpError(error))); }));
             }));
         }
         return ProductsSearchEffects;
@@ -26012,7 +25966,7 @@
         }
         ProductEffects.prototype.productLoadEffect = function (productLoad) {
             return productLoad.data$.pipe(operators.map(function (data) { return new LoadProductSuccess(Object.assign({ code: productLoad.code }, data), productLoad.scope); }), operators.catchError(function (error) {
-                return rxjs.of(new LoadProductFail(productLoad.code, makeErrorSerializable(error), productLoad.scope));
+                return rxjs.of(new LoadProductFail(productLoad.code, normalizeHttpError(error), productLoad.scope));
             }));
         };
         return ProductEffects;
@@ -26163,8 +26117,8 @@
 
     var getProductsState = i1$2.createFeatureSelector(PRODUCT_FEATURE);
 
-    var ɵ0$G = function (state) { return state.references; };
-    var getProductReferencesState = i1$2.createSelector(getProductsState, ɵ0$G);
+    var ɵ0$F = function (state) { return state.references; };
+    var getProductReferencesState = i1$2.createSelector(getProductsState, ɵ0$F);
     var getSelectedProductReferencesFactory = function (productCode, referenceType) {
         return i1$2.createSelector(getProductReferencesState, function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
@@ -26181,8 +26135,8 @@
         });
     };
 
-    var ɵ0$H = function (state) { return state.reviews; };
-    var getProductReviewsState = i1$2.createSelector(getProductsState, ɵ0$H);
+    var ɵ0$G = function (state) { return state.reviews; };
+    var getProductReviewsState = i1$2.createSelector(getProductsState, ɵ0$G);
     var getSelectedProductReviewsFactory = function (productCode) {
         return i1$2.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
@@ -26191,14 +26145,14 @@
         });
     };
 
-    var ɵ0$I = function (state) { return state.search; };
-    var getProductsSearchState = i1$2.createSelector(getProductsState, ɵ0$I);
+    var ɵ0$H = function (state) { return state.search; };
+    var getProductsSearchState = i1$2.createSelector(getProductsState, ɵ0$H);
     var getSearchResults$1 = i1$2.createSelector(getProductsSearchState, getSearchResults);
     var getAuxSearchResults$1 = i1$2.createSelector(getProductsSearchState, getAuxSearchResults);
     var getProductSuggestions$1 = i1$2.createSelector(getProductsSearchState, getProductSuggestions);
 
-    var ɵ0$J = function (state) { return state.details; };
-    var getProductState = i1$2.createSelector(getProductsState, ɵ0$J);
+    var ɵ0$I = function (state) { return state.details; };
+    var getProductState = i1$2.createSelector(getProductsState, ɵ0$I);
     var getSelectedProductStateFactory = function (code, scope) {
         if (scope === void 0) { scope = ''; }
         return i1$2.createSelector(getProductState, function (details) { return entityLoaderStateSelector(details, code)[scope] ||
@@ -26230,7 +26184,7 @@
         getProductsState: getProductsState,
         getProductReferencesState: getProductReferencesState,
         getSelectedProductReferencesFactory: getSelectedProductReferencesFactory,
-        ɵ0: ɵ0$G,
+        ɵ0: ɵ0$F,
         getProductReviewsState: getProductReviewsState,
         getSelectedProductReviewsFactory: getSelectedProductReviewsFactory,
         getProductsSearchState: getProductsSearchState,
@@ -28864,7 +28818,7 @@
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.loadBillingCountries$ = this.actions$.pipe(i3.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap(function () {
-                return _this.siteConnector.getCountries(exports.CountryType.BILLING).pipe(operators.map(function (countries) { return new LoadBillingCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadBillingCountriesFail(makeErrorSerializable(error))); }));
+                return _this.siteConnector.getCountries(exports.CountryType.BILLING).pipe(operators.map(function (countries) { return new LoadBillingCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadBillingCountriesFail(normalizeHttpError(error))); }));
             }));
         }
         return BillingCountriesEffect;
@@ -28907,7 +28861,7 @@
             this.loadConsignmentTracking$ = this.actions$.pipe(i3.ofType(LOAD_CONSIGNMENT_TRACKING), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.userOrderConnector
                     .getConsignmentTracking(payload.orderCode, payload.consignmentCode, payload.userId)
-                    .pipe(operators.map(function (tracking) { return new LoadConsignmentTrackingSuccess(tracking); }), operators.catchError(function (error) { return rxjs.of(new LoadConsignmentTrackingFail(makeErrorSerializable(error))); }));
+                    .pipe(operators.map(function (tracking) { return new LoadConsignmentTrackingSuccess(tracking); }), operators.catchError(function (error) { return rxjs.of(new LoadConsignmentTrackingFail(normalizeHttpError(error))); }));
             }));
         }
         return ConsignmentTrackingEffects;
@@ -28933,28 +28887,28 @@
                     .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
                     .pipe(operators.map(function (coupons) {
                     return new LoadCustomerCouponsSuccess(coupons);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadCustomerCouponsFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadCustomerCouponsFail(normalizeHttpError(error))); }));
             }));
             this.subscribeCustomerCoupon$ = this.actions$.pipe(i3.ofType(SUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.customerCouponConnector
                     .turnOnNotification(payload.userId, payload.couponCode)
                     .pipe(operators.map(function (data) {
                     return new SubscribeCustomerCouponSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new SubscribeCustomerCouponFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new SubscribeCustomerCouponFail(normalizeHttpError(error))); }));
             }));
             this.unsubscribeCustomerCoupon$ = this.actions$.pipe(i3.ofType(UNSUBSCRIBE_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.customerCouponConnector
                     .turnOffNotification(payload.userId, payload.couponCode)
                     .pipe(operators.map(function () {
                     return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
-                }), operators.catchError(function (error) { return rxjs.of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new UnsubscribeCustomerCouponFail(normalizeHttpError(error))); }));
             }));
             this.claimCustomerCoupon$ = this.actions$.pipe(i3.ofType(CLAIM_CUSTOMER_COUPON), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.customerCouponConnector
                     .claimCustomerCoupon(payload.userId, payload.couponCode)
                     .pipe(operators.map(function (data) {
                     return new ClaimCustomerCouponSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new ClaimCustomerCouponFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new ClaimCustomerCouponFail(normalizeHttpError(error))); }));
             }));
         }
         return CustomerCouponEffects;
@@ -28985,7 +28939,7 @@
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.loadDeliveryCountries$ = this.actions$.pipe(i3.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap(function () {
-                return _this.siteConnector.getCountries(exports.CountryType.SHIPPING).pipe(operators.map(function (countries) { return new LoadDeliveryCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadDeliveryCountriesFail(makeErrorSerializable(error))); }));
+                return _this.siteConnector.getCountries(exports.CountryType.SHIPPING).pipe(operators.map(function (countries) { return new LoadDeliveryCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadDeliveryCountriesFail(normalizeHttpError(error))); }));
             }));
         }
         return DeliveryCountriesEffects;
@@ -29017,7 +28971,7 @@
                         text: { key: 'forgottenPassword.passwordResetEmailSent' },
                         type: exports.GlobalMessageType.MSG_TYPE_CONFIRMATION,
                     }),
-                ]; }), operators.catchError(function (error) { return rxjs.of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error))); }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new ForgotPasswordEmailRequestFail(normalizeHttpError(error))); }));
             }));
         }
         return ForgotPasswordEffects;
@@ -29038,8 +28992,8 @@
             var _this = this;
             this.actions$ = actions$;
             this.connector = connector;
-            this.loadPreferences$ = this.actions$.pipe(i3.ofType(LOAD_NOTIFICATION_PREFERENCES), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.connector.loadAll(payload).pipe(operators.map(function (preferences) { return new LoadNotificationPreferencesSuccess(preferences); }), operators.catchError(function (error) { return rxjs.of(new LoadNotificationPreferencesFail(makeErrorSerializable(error))); })); }));
-            this.updatePreferences$ = this.actions$.pipe(i3.ofType(UPDATE_NOTIFICATION_PREFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.connector.update(payload.userId, payload.preferences).pipe(operators.map(function () { return new UpdateNotificationPreferencesSuccess(payload.preferences); }), operators.catchError(function (error) { return rxjs.of(new UpdateNotificationPreferencesFail(makeErrorSerializable(error))); })); }));
+            this.loadPreferences$ = this.actions$.pipe(i3.ofType(LOAD_NOTIFICATION_PREFERENCES), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.connector.loadAll(payload).pipe(operators.map(function (preferences) { return new LoadNotificationPreferencesSuccess(preferences); }), operators.catchError(function (error) { return rxjs.of(new LoadNotificationPreferencesFail(normalizeHttpError(error))); })); }));
+            this.updatePreferences$ = this.actions$.pipe(i3.ofType(UPDATE_NOTIFICATION_PREFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) { return _this.connector.update(payload.userId, payload.preferences).pipe(operators.map(function () { return new UpdateNotificationPreferencesSuccess(payload.preferences); }), operators.catchError(function (error) { return rxjs.of(new UpdateNotificationPreferencesFail(normalizeHttpError(error))); })); }));
         }
         return NotificationPreferenceEffects;
     }());
@@ -29066,7 +29020,7 @@
             this.loadOrderDetails$ = this.actions$.pipe(i3.ofType(LOAD_ORDER_DETAILS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector.get(payload.userId, payload.orderCode).pipe(operators.map(function (order) {
                     return new LoadOrderDetailsSuccess(order);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadOrderDetailsFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadOrderDetailsFail(normalizeHttpError(error))); }));
             }));
             this.cancelOrder$ = this.actions$.pipe(i3.ofType(CANCEL_ORDER), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
@@ -29074,7 +29028,7 @@
                     .pipe(operators.map(function () { return new CancelOrderSuccess(); }), operators.catchError(function (error) {
                     var _a;
                     (_a = error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach(function (err) { return _this.globalMessageService.add(err.message, exports.GlobalMessageType.MSG_TYPE_ERROR); });
-                    return rxjs.of(new CancelOrderFail(makeErrorSerializable(error)));
+                    return rxjs.of(new CancelOrderFail(normalizeHttpError(error)));
                 }));
             }));
         }
@@ -29103,22 +29057,22 @@
             this.createReturnRequest$ = this.actions$.pipe(i3.ofType(CREATE_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .return(payload.userId, payload.returnRequestInput)
-                    .pipe(operators.map(function (returnRequest) { return new CreateOrderReturnRequestSuccess(returnRequest); }), operators.catchError(function (error) { return rxjs.of(new CreateOrderReturnRequestFail(makeErrorSerializable(error))); }));
+                    .pipe(operators.map(function (returnRequest) { return new CreateOrderReturnRequestSuccess(returnRequest); }), operators.catchError(function (error) { return rxjs.of(new CreateOrderReturnRequestFail(normalizeHttpError(error))); }));
             }));
             this.loadReturnRequest$ = this.actions$.pipe(i3.ofType(LOAD_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .getReturnRequestDetail(payload.userId, payload.returnRequestCode)
-                    .pipe(operators.map(function (returnRequest) { return new LoadOrderReturnRequestSuccess(returnRequest); }), operators.catchError(function (error) { return rxjs.of(new LoadOrderReturnRequestFail(makeErrorSerializable(error))); }));
+                    .pipe(operators.map(function (returnRequest) { return new LoadOrderReturnRequestSuccess(returnRequest); }), operators.catchError(function (error) { return rxjs.of(new LoadOrderReturnRequestFail(normalizeHttpError(error))); }));
             }));
             this.cancelReturnRequest$ = this.actions$.pipe(i3.ofType(CANCEL_ORDER_RETURN_REQUEST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .cancelReturnRequest(payload.userId, payload.returnRequestCode, payload.returnRequestModification)
-                    .pipe(operators.map(function () { return new CancelOrderReturnRequestSuccess(); }), operators.catchError(function (error) { return rxjs.of(new CancelOrderReturnRequestFail(makeErrorSerializable(error))); }));
+                    .pipe(operators.map(function () { return new CancelOrderReturnRequestSuccess(); }), operators.catchError(function (error) { return rxjs.of(new CancelOrderReturnRequestFail(normalizeHttpError(error))); }));
             }));
             this.loadReturnRequestList$ = this.actions$.pipe(i3.ofType(LOAD_ORDER_RETURN_REQUEST_LIST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
                 return _this.orderConnector
                     .getReturnRequestList(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
-                    .pipe(operators.map(function (returnRequestList) { return new LoadOrderReturnRequestListSuccess(returnRequestList); }), operators.catchError(function (error) { return rxjs.of(new LoadOrderReturnRequestListFail(makeErrorSerializable(error))); }));
+                    .pipe(operators.map(function (returnRequestList) { return new LoadOrderReturnRequestListSuccess(returnRequestList); }), operators.catchError(function (error) { return rxjs.of(new LoadOrderReturnRequestListFail(normalizeHttpError(error))); }));
             }));
         }
         return OrderReturnRequestEffect;
@@ -29151,7 +29105,7 @@
             this.loadUserPaymentMethods$ = this.actions$.pipe(i3.ofType(LOAD_USER_PAYMENT_METHODS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userPaymentMethodConnector.getAll(payload).pipe(operators.map(function (payments) {
                     return new LoadUserPaymentMethodsSuccess(payments);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserPaymentMethodsFail(normalizeHttpError(error))); }));
             }));
             this.setDefaultUserPaymentMethod$ = this.actions$.pipe(i3.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userPaymentMethodConnector
@@ -29159,7 +29113,7 @@
                     .pipe(operators.switchMap(function (data) { return [
                     new SetDefaultUserPaymentMethodSuccess(data),
                     new LoadUserPaymentMethods(payload.userId),
-                ]; }), operators.catchError(function (error) { return rxjs.of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error))); }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new SetDefaultUserPaymentMethodFail(normalizeHttpError(error))); }));
             }));
             this.deleteUserPaymentMethod$ = this.actions$.pipe(i3.ofType(DELETE_USER_PAYMENT_METHOD), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userPaymentMethodConnector
@@ -29167,7 +29121,7 @@
                     .pipe(operators.switchMap(function (data) { return [
                     new DeleteUserPaymentMethodSuccess(data),
                     new LoadUserPaymentMethods(payload.userId),
-                ]; }), operators.catchError(function (error) { return rxjs.of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error))); }));
+                ]; }), operators.catchError(function (error) { return rxjs.of(new DeleteUserPaymentMethodFail(normalizeHttpError(error))); }));
             }));
         }
         return UserPaymentMethodsEffects;
@@ -29199,7 +29153,7 @@
                     .getInterests(payload.userId, payload.pageSize, payload.currentPage, payload.sort, payload.productCode, payload.notificationType)
                     .pipe(operators.map(function (interests) {
                     return new LoadProductInterestsSuccess(interests);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadProductInterestsFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadProductInterestsFail(normalizeHttpError(error))); }));
             }));
             this.removeProductInterest$ = this.actions$.pipe(i3.ofType(REMOVE_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userInterestsConnector
                 .removeInterest(payload.userId, payload.item)
@@ -29212,7 +29166,7 @@
                     }
                     : { userId: payload.userId }),
                 new RemoveProductInterestSuccess(data),
-            ]; }), operators.catchError(function (error) { return rxjs.of(new RemoveProductInterestFail(makeErrorSerializable(error))); })); }));
+            ]; }), operators.catchError(function (error) { return rxjs.of(new RemoveProductInterestFail(normalizeHttpError(error))); })); }));
             this.addProductInterest$ = this.actions$.pipe(i3.ofType(ADD_PRODUCT_INTEREST), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) { return _this.userInterestsConnector
                 .addInterest(payload.userId, payload.productCode, payload.notificationType)
                 .pipe(operators.switchMap(function (res) { return [
@@ -29222,7 +29176,7 @@
                     notificationType: payload.notificationType,
                 }),
                 new AddProductInterestSuccess(res),
-            ]; }), operators.catchError(function (error) { return rxjs.of(new AddProductInterestFail(makeErrorSerializable(error))); })); }));
+            ]; }), operators.catchError(function (error) { return rxjs.of(new AddProductInterestFail(normalizeHttpError(error))); })); }));
         }
         return ProductInterestsEffect;
     }());
@@ -29254,7 +29208,7 @@
                 return _this.siteConnector.getRegions(countryCode).pipe(operators.map(function (regions) { return new LoadRegionsSuccess({
                     entities: regions,
                     country: countryCode,
-                }); }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error))); }));
+                }); }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(normalizeHttpError(error))); }));
             }));
             this.resetRegions$ = this.actions$.pipe(i3.ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), operators.map(function () {
                 return new LoaderResetAction(REGIONS);
@@ -29331,7 +29285,7 @@
                     }),
                 ]; }), operators.catchError(function (error) {
                     var _a;
-                    var actions = [new ResetPasswordFail(makeErrorSerializable(error))];
+                    var actions = [new ResetPasswordFail(normalizeHttpError(error))];
                     if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                         error.error.errors.forEach(function (err) {
                             if (err.message) {
@@ -29367,7 +29321,7 @@
             this.loadTitles$ = this.actions$.pipe(i3.ofType(LOAD_TITLES), operators.switchMap(function () {
                 return _this.userAccountConnector.getTitles().pipe(operators.map(function (titles) {
                     return new LoadTitlesSuccess(titles);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadTitlesFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadTitlesFail(normalizeHttpError(error))); }));
             }));
         }
         return TitlesEffects;
@@ -29390,7 +29344,7 @@
             this.userAccountConnector = userAccountConnector;
             this.updateEmail$ = this.actions$.pipe(i3.ofType(UPDATE_EMAIL), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.userAccountConnector
                 .updateEmail(payload.uid, payload.password, payload.newUid)
-                .pipe(operators.map(function () { return new UpdateEmailSuccessAction(payload.newUid); }), operators.catchError(function (error) { return rxjs.of(new UpdateEmailErrorAction(makeErrorSerializable(error))); })); }));
+                .pipe(operators.map(function () { return new UpdateEmailSuccessAction(payload.newUid); }), operators.catchError(function (error) { return rxjs.of(new UpdateEmailErrorAction(normalizeHttpError(error))); })); }));
         }
         return UpdateEmailEffects;
     }());
@@ -29412,7 +29366,7 @@
             this.userAccountConnector = userAccountConnector;
             this.updatePassword$ = this.actions$.pipe(i3.ofType(UPDATE_PASSWORD), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.userAccountConnector
                 .updatePassword(payload.userId, payload.oldPassword, payload.newPassword)
-                .pipe(operators.map(function () { return new UpdatePasswordSuccess(); }), operators.catchError(function (error) { return rxjs.of(new UpdatePasswordFail(makeErrorSerializable(error))); })); }));
+                .pipe(operators.map(function () { return new UpdatePasswordSuccess(); }), operators.catchError(function (error) { return rxjs.of(new UpdatePasswordFail(normalizeHttpError(error))); })); }));
         }
         return UpdatePasswordEffects;
     }());
@@ -29437,14 +29391,14 @@
             this.loadUserAddresses$ = this.actions$.pipe(i3.ofType(LOAD_USER_ADDRESSES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userAddressConnector.getAll(payload).pipe(operators.map(function (addresses) {
                     return new LoadUserAddressesSuccess(addresses);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadUserAddressesFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserAddressesFail(normalizeHttpError(error))); }));
             }));
             this.addUserAddress$ = this.actions$.pipe(i3.ofType(ADD_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userAddressConnector
                     .add(payload.userId, payload.address)
                     .pipe(operators.map(function (data) {
                     return new AddUserAddressSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new AddUserAddressFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new AddUserAddressFail(normalizeHttpError(error))); }));
             }));
             this.updateUserAddress$ = this.actions$.pipe(i3.ofType(UPDATE_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userAddressConnector
@@ -29459,14 +29413,14 @@
                     else {
                         return new UpdateUserAddressSuccess(data);
                     }
-                }), operators.catchError(function (error) { return rxjs.of(new UpdateUserAddressFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new UpdateUserAddressFail(normalizeHttpError(error))); }));
             }));
             this.deleteUserAddress$ = this.actions$.pipe(i3.ofType(DELETE_USER_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.userAddressConnector
                     .delete(payload.userId, payload.addressId)
                     .pipe(operators.map(function (data) {
                     return new DeleteUserAddressSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new DeleteUserAddressFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new DeleteUserAddressFail(normalizeHttpError(error))); }));
             }));
             /**
              *  Reload addresses and notify about add success
@@ -29538,12 +29492,12 @@
             this.actions$ = actions$;
             this.userConsentConnector = userConsentConnector;
             this.resetConsents$ = this.actions$.pipe(i3.ofType(LANGUAGE_CHANGE), operators.map(function () { return new ResetLoadUserConsents(); }));
-            this.getConsents$ = this.actions$.pipe(i3.ofType(LOAD_USER_CONSENTS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (userId) { return _this.userConsentConnector.loadConsents(userId).pipe(operators.map(function (consents) { return new LoadUserConsentsSuccess(consents); }), operators.catchError(function (error) { return rxjs.of(new LoadUserConsentsFail(makeErrorSerializable(error))); })); }));
+            this.getConsents$ = this.actions$.pipe(i3.ofType(LOAD_USER_CONSENTS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (userId) { return _this.userConsentConnector.loadConsents(userId).pipe(operators.map(function (consents) { return new LoadUserConsentsSuccess(consents); }), operators.catchError(function (error) { return rxjs.of(new LoadUserConsentsFail(normalizeHttpError(error))); })); }));
             this.giveConsent$ = this.actions$.pipe(i3.ofType(GIVE_USER_CONSENT, TRANSFER_ANONYMOUS_CONSENT), operators.concatMap(function (action) { return _this.userConsentConnector
                 .giveConsent(action.payload.userId, action.payload.consentTemplateId, action.payload.consentTemplateVersion)
                 .pipe(operators.map(function (consent) { return new GiveUserConsentSuccess(consent); }), operators.catchError(function (error) {
                 var errors = [
-                    new GiveUserConsentFail(makeErrorSerializable(error)),
+                    new GiveUserConsentFail(normalizeHttpError(error)),
                 ];
                 if (action.type === TRANSFER_ANONYMOUS_CONSENT &&
                     error.status === 409) {
@@ -29553,7 +29507,7 @@
             })); }));
             this.withdrawConsent$ = this.actions$.pipe(i3.ofType(WITHDRAW_USER_CONSENT), operators.map(function (action) { return action.payload; }), operators.concatMap(function (_a) {
                 var userId = _a.userId, consentCode = _a.consentCode;
-                return _this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(operators.map(function () { return new WithdrawUserConsentSuccess(); }), operators.catchError(function (error) { return rxjs.of(new WithdrawUserConsentFail(makeErrorSerializable(error))); }));
+                return _this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(operators.map(function () { return new WithdrawUserConsentSuccess(); }), operators.catchError(function (error) { return rxjs.of(new WithdrawUserConsentFail(normalizeHttpError(error))); }));
             }));
         }
         return UserConsentsEffect;
@@ -29608,9 +29562,9 @@
             this.loadUserDetails$ = this.actions$.pipe(i3.ofType(LOAD_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
                 return _this.userConnector.get(userId).pipe(operators.map(function (user) {
                     return new LoadUserDetailsSuccess(user);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadUserDetailsFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserDetailsFail(normalizeHttpError(error))); }));
             }));
-            this.updateUserDetails$ = this.actions$.pipe(i3.ofType(UPDATE_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.userConnector.update(payload.username, payload.userDetails).pipe(operators.map(function () { return new UpdateUserDetailsSuccess(payload.userDetails); }), operators.catchError(function (error) { return rxjs.of(new UpdateUserDetailsFail(makeErrorSerializable(error))); })); }));
+            this.updateUserDetails$ = this.actions$.pipe(i3.ofType(UPDATE_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) { return _this.userConnector.update(payload.username, payload.userDetails).pipe(operators.map(function () { return new UpdateUserDetailsSuccess(payload.userDetails); }), operators.catchError(function (error) { return rxjs.of(new UpdateUserDetailsFail(normalizeHttpError(error))); })); }));
         }
         return UserDetailsEffects;
     }());
@@ -29668,19 +29622,19 @@
             this.actions$ = actions$;
             this.userConnector = userConnector;
             this.authService = authService;
-            this.registerUser$ = this.actions$.pipe(i3.ofType(REGISTER_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (user) { return _this.userConnector.register(user).pipe(operators.map(function () { return new RegisterUserSuccess(); }), operators.catchError(function (error) { return rxjs.of(new RegisterUserFail(makeErrorSerializable(error))); })); }));
+            this.registerUser$ = this.actions$.pipe(i3.ofType(REGISTER_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (user) { return _this.userConnector.register(user).pipe(operators.map(function () { return new RegisterUserSuccess(); }), operators.catchError(function (error) { return rxjs.of(new RegisterUserFail(normalizeHttpError(error))); })); }));
             this.registerGuest$ = this.actions$.pipe(i3.ofType(REGISTER_GUEST), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
                 var guid = _a.guid, password = _a.password;
                 return _this.userConnector.registerGuest(guid, password).pipe(operators.switchMap(function (user) {
                     _this.authService.loginWithCredentials(user.uid, password);
                     return [new RegisterGuestSuccess()];
-                }), operators.catchError(function (error) { return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new RegisterGuestFail(normalizeHttpError(error))); }));
             }));
             this.removeUser$ = this.actions$.pipe(i3.ofType(REMOVE_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
                 return _this.userConnector.remove(userId).pipe(operators.switchMap(function () {
                     _this.authService.logout();
                     return [new RemoveUserSuccess()];
-                }), operators.catchError(function (error) { return rxjs.of(new RemoveUserFail(makeErrorSerializable(error))); }));
+                }), operators.catchError(function (error) { return rxjs.of(new RemoveUserFail(normalizeHttpError(error))); }));
             }));
         }
         return UserRegisterEffects;

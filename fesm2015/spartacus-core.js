@@ -8809,57 +8809,11 @@ UserAddressConnector.ctorParameters = () => [
     { type: UserAddressAdapter }
 ];
 
-/**
- * @deprecated since 2.1, use normalizeHttpError instead
- */
-const UNKNOWN_ERROR = {
-    error: 'unknown error',
-};
-const circularReplacer = () => {
-    const seen = new WeakSet();
-    return (_key, value) => {
-        if (typeof value === 'object' && value !== null) {
-            if (seen.has(value)) {
-                return;
-            }
-            seen.add(value);
-        }
-        return value;
-    };
-};
-const ɵ0$b = circularReplacer;
-/**
- * @deprecated since 2.1, use normalizeHttpError instead
- */
-function makeErrorSerializable(error) {
-    if (error instanceof Error) {
-        return {
-            message: error.message,
-            type: error.name,
-            reason: error.stack,
-        };
-    }
-    if (error instanceof HttpErrorResponse) {
-        let serializableError = error.error;
-        if (isObject(error.error)) {
-            serializableError = JSON.stringify(error.error, circularReplacer());
-        }
-        return {
-            message: error.message,
-            error: serializableError,
-            status: error.status,
-            statusText: error.statusText,
-            url: error.url,
-        };
-    }
-    return isObject(error) ? UNKNOWN_ERROR : error;
-}
-
 class AddressVerificationEffect {
     constructor(actions$, userAddressConnector) {
         this.actions$ = actions$;
         this.userAddressConnector = userAddressConnector;
-        this.verifyAddress$ = this.actions$.pipe(ofType(VERIFY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.userAddressConnector.verify(payload.userId, payload.address).pipe(map((data) => new VerifyAddressSuccess(data)), catchError((error) => of(new VerifyAddressFail(makeErrorSerializable(error)))))));
+        this.verifyAddress$ = this.actions$.pipe(ofType(VERIFY_ADDRESS), map((action) => action.payload), mergeMap((payload) => this.userAddressConnector.verify(payload.userId, payload.address).pipe(map((data) => new VerifyAddressSuccess(data)), catchError((error) => of(new VerifyAddressFail(normalizeHttpError(error)))))));
     }
 }
 AddressVerificationEffect.decorators = [
@@ -8878,7 +8832,7 @@ class CardTypesEffects {
         this.actions$ = actions$;
         this.checkoutPaymentConnector = checkoutPaymentConnector;
         this.loadCardTypes$ = this.actions$.pipe(ofType(LOAD_CARD_TYPES), switchMap(() => {
-            return this.checkoutPaymentConnector.getCardTypes().pipe(map((cardTypes) => new LoadCardTypesSuccess(cardTypes)), catchError((error) => of(new LoadCardTypesFail(makeErrorSerializable(error)))));
+            return this.checkoutPaymentConnector.getCardTypes().pipe(map((cardTypes) => new LoadCardTypesSuccess(cardTypes)), catchError((error) => of(new LoadCardTypesFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -11044,7 +10998,7 @@ CheckoutModule.decorators = [
 ];
 
 const getDeliveryAddressSelector = (state) => state.address;
-const ɵ0$c = getDeliveryAddressSelector;
+const ɵ0$b = getDeliveryAddressSelector;
 const getDeliveryModeSelector = (state) => state.deliveryMode;
 const ɵ1$7 = getDeliveryModeSelector;
 const getPaymentDetailsSelector = (state) => state.paymentDetails;
@@ -11086,12 +11040,12 @@ const getPoNumer = createSelector(getCheckoutSteps, ɵ10);
 const ɵ11 = (state) => state.poNumber.costCenter;
 const getCostCenter = createSelector(getCheckoutSteps, ɵ11);
 
-const ɵ0$d = (state) => state.addressVerification;
-const getAddressVerificationResultsState = createSelector(getCheckoutState, ɵ0$d);
+const ɵ0$c = (state) => state.addressVerification;
+const getAddressVerificationResultsState = createSelector(getCheckoutState, ɵ0$c);
 const getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
-const ɵ0$e = (state) => state.cardTypes;
-const getCardTypesState = createSelector(getCheckoutState, ɵ0$e);
+const ɵ0$d = (state) => state.cardTypes;
+const getCardTypesState = createSelector(getCheckoutState, ɵ0$d);
 const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
 const ɵ1$8 = (entites) => {
     return Object.keys(entites).map((code) => entites[code]);
@@ -11099,12 +11053,12 @@ const ɵ1$8 = (entites) => {
 const getAllCardTypes = createSelector(getCardTypesEntites$1, ɵ1$8);
 
 const getSelectedOrderTypeSelector = (state) => state.selected;
-const ɵ0$f = (state) => state.orderType;
-const getOrderTypesState = createSelector(getCheckoutState, ɵ0$f);
+const ɵ0$e = (state) => state.orderType;
+const getOrderTypesState = createSelector(getCheckoutState, ɵ0$e);
 const getSelectedOrderType = createSelector(getOrderTypesState, getSelectedOrderTypeSelector);
 
-const ɵ0$g = (state) => state.paymentTypes;
-const getPaymentTypesState = createSelector(getCheckoutState, ɵ0$g);
+const ɵ0$f = (state) => state.paymentTypes;
+const getPaymentTypesState = createSelector(getCheckoutState, ɵ0$f);
 const getPaymentTypesEntites$1 = createSelector(getPaymentTypesState, getPaymentTypesEntites);
 const ɵ1$9 = (entites) => {
     return Object.keys(entites).map((code) => entites[code]);
@@ -11116,7 +11070,7 @@ var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getAddressVerificationResultsState: getAddressVerificationResultsState,
     getAddressVerificationResults: getAddressVerificationResults$1,
-    ɵ0: ɵ0$d,
+    ɵ0: ɵ0$c,
     getCardTypesState: getCardTypesState,
     getCardTypesEntites: getCardTypesEntites$1,
     getAllCardTypes: getAllCardTypes,
@@ -16318,20 +16272,20 @@ const interceptors$3 = [
 
 const getUserState = createFeatureSelector(USER_FEATURE);
 
-const ɵ0$h = (state) => state.billingCountries;
-const getBillingCountriesState = createSelector(getUserState, ɵ0$h);
+const ɵ0$g = (state) => state.billingCountries;
+const getBillingCountriesState = createSelector(getUserState, ɵ0$g);
 const ɵ1$a = (state) => state.entities;
 const getBillingCountriesEntites = createSelector(getBillingCountriesState, ɵ1$a);
 const ɵ2$6 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
 const getAllBillingCountries = createSelector(getBillingCountriesEntites, ɵ2$6);
 
-const ɵ0$i = (state) => state.consignmentTracking;
-const getConsignmentTrackingState = createSelector(getUserState, ɵ0$i);
+const ɵ0$h = (state) => state.consignmentTracking;
+const getConsignmentTrackingState = createSelector(getUserState, ɵ0$h);
 const ɵ1$b = (state) => state.tracking;
 const getConsignmentTracking = createSelector(getConsignmentTrackingState, ɵ1$b);
 
-const ɵ0$j = (state) => state.customerCoupons;
-const getCustomerCouponsState = createSelector(getUserState, ɵ0$j);
+const ɵ0$i = (state) => state.customerCoupons;
+const getCustomerCouponsState = createSelector(getUserState, ɵ0$i);
 const ɵ1$c = (state) => loaderSuccessSelector(state);
 const getCustomerCouponsLoaded = createSelector(getCustomerCouponsState, ɵ1$c);
 const ɵ2$7 = (state) => loaderLoadingSelector(state);
@@ -16339,16 +16293,16 @@ const getCustomerCouponsLoading = createSelector(getCustomerCouponsState, ɵ2$7)
 const ɵ3$5 = (state) => loaderValueSelector(state);
 const getCustomerCoupons = createSelector(getCustomerCouponsState, ɵ3$5);
 
-const ɵ0$k = (state) => state.countries;
-const getDeliveryCountriesState = createSelector(getUserState, ɵ0$k);
+const ɵ0$j = (state) => state.countries;
+const getDeliveryCountriesState = createSelector(getUserState, ɵ0$j);
 const ɵ1$d = (state) => state.entities;
 const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, ɵ1$d);
 const ɵ2$8 = (entites) => Object.keys(entites).map((isocode) => entites[isocode]);
 const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, ɵ2$8);
 const countrySelectorFactory = (isocode) => createSelector(getDeliveryCountriesEntites, (entities) => Object.keys(entities).length !== 0 ? entities[isocode] : null);
 
-const ɵ0$l = (state) => state.notificationPreferences;
-const getPreferencesLoaderState = createSelector(getUserState, ɵ0$l);
+const ɵ0$k = (state) => state.notificationPreferences;
+const getPreferencesLoaderState = createSelector(getUserState, ɵ0$k);
 const ɵ1$e = (state) => loaderValueSelector(state);
 const getPreferences = createSelector(getPreferencesLoaderState, ɵ1$e);
 const ɵ2$9 = (state) => loaderValueSelector(state).filter((p) => p.enabled);
@@ -16356,13 +16310,13 @@ const getEnabledPreferences = createSelector(getPreferencesLoaderState, ɵ2$9);
 const ɵ3$6 = (state) => loaderLoadingSelector(state);
 const getPreferencesLoading = createSelector(getPreferencesLoaderState, ɵ3$6);
 
-const ɵ0$m = (state) => state.order;
-const getOrderState = createSelector(getUserState, ɵ0$m);
+const ɵ0$l = (state) => state.order;
+const getOrderState = createSelector(getUserState, ɵ0$l);
 const ɵ1$f = (state) => loaderValueSelector(state);
 const getOrderDetails = createSelector(getOrderState, ɵ1$f);
 
-const ɵ0$n = (state) => state.orderReturn;
-const getOrderReturnRequestState = createSelector(getUserState, ɵ0$n);
+const ɵ0$m = (state) => state.orderReturn;
+const getOrderReturnRequestState = createSelector(getUserState, ɵ0$m);
 const ɵ1$g = (state) => loaderValueSelector(state);
 const getOrderReturnRequest = createSelector(getOrderReturnRequestState, ɵ1$g);
 const ɵ2$a = (state) => loaderLoadingSelector(state);
@@ -16375,8 +16329,8 @@ const getOrderReturnRequestListState = createSelector(getUserState, ɵ4$3);
 const ɵ5$1 = (state) => loaderValueSelector(state);
 const getOrderReturnRequestList = createSelector(getOrderReturnRequestListState, ɵ5$1);
 
-const ɵ0$o = (state) => state.payments;
-const getPaymentMethodsState = createSelector(getUserState, ɵ0$o);
+const ɵ0$n = (state) => state.payments;
+const getPaymentMethodsState = createSelector(getUserState, ɵ0$n);
 const ɵ1$h = (state) => loaderValueSelector(state);
 const getPaymentMethods = createSelector(getPaymentMethodsState, ɵ1$h);
 const ɵ2$b = (state) => loaderLoadingSelector(state);
@@ -16385,15 +16339,15 @@ const ɵ3$8 = (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
 const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, ɵ3$8);
 
-const ɵ0$p = (state) => state.productInterests;
-const getInterestsState = createSelector(getUserState, ɵ0$p);
+const ɵ0$o = (state) => state.productInterests;
+const getInterestsState = createSelector(getUserState, ɵ0$o);
 const ɵ1$i = (state) => loaderValueSelector(state);
 const getInterests = createSelector(getInterestsState, ɵ1$i);
 const ɵ2$c = (state) => loaderLoadingSelector(state);
 const getInterestsLoading = createSelector(getInterestsState, ɵ2$c);
 
-const ɵ0$q = (state) => state.regions;
-const getRegionsLoaderState = createSelector(getUserState, ɵ0$q);
+const ɵ0$p = (state) => state.regions;
+const getRegionsLoaderState = createSelector(getUserState, ɵ0$p);
 const ɵ1$j = (state) => {
     return loaderValueSelector(state).entities;
 };
@@ -16412,8 +16366,8 @@ const getRegionsLoading = createSelector(getRegionsLoaderState, ɵ4$4);
 const ɵ5$2 = (state) => loaderSuccessSelector(state);
 const getRegionsLoaded = createSelector(getRegionsLoaderState, ɵ5$2);
 
-const ɵ0$r = (state) => state.replenishmentOrder;
-const getReplenishmentOrderState = createSelector(getUserState, ɵ0$r);
+const ɵ0$q = (state) => state.replenishmentOrder;
+const getReplenishmentOrderState = createSelector(getUserState, ɵ0$q);
 const ɵ1$k = (state) => loaderValueSelector(state);
 const getReplenishmentOrderDetailsValue = createSelector(getReplenishmentOrderState, ɵ1$k);
 const ɵ2$e = (state) => loaderLoadingSelector(state);
@@ -16423,19 +16377,19 @@ const getReplenishmentOrderDetailsSuccess = createSelector(getReplenishmentOrder
 const ɵ4$5 = (state) => loaderErrorSelector(state);
 const getReplenishmentOrderDetailsError = createSelector(getReplenishmentOrderState, ɵ4$5);
 
-const ɵ0$s = (state) => state.resetPassword;
-const getResetPassword = createSelector(getUserState, ɵ0$s);
+const ɵ0$r = (state) => state.resetPassword;
+const getResetPassword = createSelector(getUserState, ɵ0$r);
 
-const ɵ0$t = (state) => state.titles;
-const getTitlesState = createSelector(getUserState, ɵ0$t);
+const ɵ0$s = (state) => state.titles;
+const getTitlesState = createSelector(getUserState, ɵ0$s);
 const ɵ1$l = (state) => state.entities;
 const getTitlesEntites = createSelector(getTitlesState, ɵ1$l);
 const ɵ2$f = (entites) => Object.keys(entites).map((code) => entites[code]);
 const getAllTitles = createSelector(getTitlesEntites, ɵ2$f);
 const titleSelectorFactory = (code) => createSelector(getTitlesEntites, (entities) => Object.keys(entities).length !== 0 ? entities[code] : null);
 
-const ɵ0$u = (state) => state.addresses;
-const getAddressesLoaderState = createSelector(getUserState, ɵ0$u);
+const ɵ0$t = (state) => state.addresses;
+const getAddressesLoaderState = createSelector(getUserState, ɵ0$t);
 const ɵ1$m = (state) => loaderValueSelector(state);
 const getAddresses = createSelector(getAddressesLoaderState, ɵ1$m);
 const ɵ2$g = (state) => loaderLoadingSelector(state);
@@ -16444,33 +16398,33 @@ const ɵ3$b = (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
 const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, ɵ3$b);
 
-const ɵ0$v = (state) => state.consents;
-const getConsentsState = createSelector(getUserState, ɵ0$v);
+const ɵ0$u = (state) => state.consents;
+const getConsentsState = createSelector(getUserState, ɵ0$u);
 const getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
 const getConsentByTemplateId = (templateId) => createSelector(getConsentsValue, (templates) => templates.find((template) => template.id === templateId));
 const getConsentsLoading = createSelector(getConsentsState, loaderLoadingSelector);
 const getConsentsSuccess = createSelector(getConsentsState, loaderSuccessSelector);
 const getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
 
-const ɵ0$w = (state) => state.costCenters;
-const getCostCentersState = createSelector(getUserState, ɵ0$w);
+const ɵ0$v = (state) => state.costCenters;
+const getCostCentersState = createSelector(getUserState, ɵ0$v);
 const ɵ1$n = (state) => loaderValueSelector(state);
 const getCostCenters = createSelector(getCostCentersState, ɵ1$n);
 
-const ɵ0$x = (state) => state.account;
-const getDetailsState = createSelector(getUserState, ɵ0$x);
+const ɵ0$w = (state) => state.account;
+const getDetailsState = createSelector(getUserState, ɵ0$w);
 const ɵ1$o = (state) => state.details;
 const getDetails = createSelector(getDetailsState, ɵ1$o);
 
-const ɵ0$y = (state) => state.orders;
-const getOrdersState = createSelector(getUserState, ɵ0$y);
+const ɵ0$x = (state) => state.orders;
+const getOrdersState = createSelector(getUserState, ɵ0$x);
 const ɵ1$p = (state) => loaderSuccessSelector(state);
 const getOrdersLoaded = createSelector(getOrdersState, ɵ1$p);
 const ɵ2$h = (state) => loaderValueSelector(state);
 const getOrders = createSelector(getOrdersState, ɵ2$h);
 
-const ɵ0$z = (state) => state.replenishmentOrders;
-const getReplenishmentOrdersState = createSelector(getUserState, ɵ0$z);
+const ɵ0$y = (state) => state.replenishmentOrders;
+const getReplenishmentOrdersState = createSelector(getUserState, ɵ0$y);
 const ɵ1$q = (state) => loaderValueSelector(state);
 const getReplenishmentOrders = createSelector(getReplenishmentOrdersState, ɵ1$q);
 const ɵ2$i = (state) => loaderLoadingSelector(state);
@@ -16485,7 +16439,7 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getBillingCountriesState: getBillingCountriesState,
     getBillingCountriesEntites: getBillingCountriesEntites,
     getAllBillingCountries: getAllBillingCountries,
-    ɵ0: ɵ0$h,
+    ɵ0: ɵ0$g,
     ɵ1: ɵ1$a,
     ɵ2: ɵ2$6,
     getConsignmentTrackingState: getConsignmentTrackingState,
@@ -17283,10 +17237,10 @@ class BaseSiteEffects {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
         this.loadBaseSite$ = this.actions$.pipe(ofType(LOAD_BASE_SITE), exhaustMap(() => {
-            return this.siteConnector.getBaseSite().pipe(map((baseSite) => new LoadBaseSiteSuccess(baseSite)), catchError((error) => of(new LoadBaseSiteFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getBaseSite().pipe(map((baseSite) => new LoadBaseSiteSuccess(baseSite)), catchError((error) => of(new LoadBaseSiteFail(normalizeHttpError(error)))));
         }));
         this.loadBaseSites$ = this.actions$.pipe(ofType(LOAD_BASE_SITES), exhaustMap(() => {
-            return this.siteConnector.getBaseSites().pipe(map((baseSites) => new LoadBaseSitesSuccess(baseSites)), catchError((error) => of(new LoadBaseSitesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getBaseSites().pipe(map((baseSites) => new LoadBaseSitesSuccess(baseSites)), catchError((error) => of(new LoadBaseSitesFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -17311,7 +17265,7 @@ class CurrenciesEffects {
         this.winRef = winRef;
         this.state = state;
         this.loadCurrencies$ = this.actions$.pipe(ofType(LOAD_CURRENCIES), exhaustMap(() => {
-            return this.siteConnector.getCurrencies().pipe(map((currencies) => new LoadCurrenciesSuccess(currencies)), catchError((error) => of(new LoadCurrenciesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getCurrencies().pipe(map((currencies) => new LoadCurrenciesSuccess(currencies)), catchError((error) => of(new LoadCurrenciesFail(normalizeHttpError(error)))));
         }));
         this.persist$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((action) => {
             if (this.winRef.sessionStorage) {
@@ -17349,7 +17303,7 @@ class LanguagesEffects {
         this.winRef = winRef;
         this.state = state;
         this.loadLanguages$ = this.actions$.pipe(ofType(LOAD_LANGUAGES), exhaustMap(() => {
-            return this.siteConnector.getLanguages().pipe(map((languages) => new LoadLanguagesSuccess(languages)), catchError((error) => of(new LoadLanguagesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getLanguages().pipe(map((languages) => new LoadLanguagesSuccess(languages)), catchError((error) => of(new LoadLanguagesFail(normalizeHttpError(error)))));
         }));
         this.persist$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((action) => {
             if (this.winRef.sessionStorage) {
@@ -19134,11 +19088,11 @@ const metaReducers$1 = [
 
 const getAsmState = createFeatureSelector(ASM_FEATURE);
 
-const ɵ0$A = (state) => state.asmUi;
-const getAsmUi = createSelector(getAsmState, ɵ0$A);
+const ɵ0$z = (state) => state.asmUi;
+const getAsmUi = createSelector(getAsmState, ɵ0$z);
 
-const ɵ0$B = (state) => state.customerSearchResult;
-const getCustomerSearchResultsLoaderState = createSelector(getAsmState, ɵ0$B);
+const ɵ0$A = (state) => state.customerSearchResult;
+const getCustomerSearchResultsLoaderState = createSelector(getAsmState, ɵ0$A);
 const ɵ1$r = (state) => loaderValueSelector(state);
 const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, ɵ1$r);
 const ɵ2$j = (state) => loaderLoadingSelector(state);
@@ -19147,7 +19101,7 @@ const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsL
 var asmGroup_selectors = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getAsmUi: getAsmUi,
-    ɵ0: ɵ0$A,
+    ɵ0: ɵ0$z,
     getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
     getCustomerSearchResults: getCustomerSearchResults,
     getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
@@ -19374,7 +19328,7 @@ class CartEntryEffects {
             return this.cartEntryConnector
                 .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
                 .pipe(map((cartModification) => new CartAddEntrySuccess(Object.assign(Object.assign({}, payload), cartModification))), catchError((error) => from([
-                new CartAddEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new CartAddEntryFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
                 new LoadCart({
                     cartId: payload.cartId,
                     userId: payload.userId,
@@ -19386,7 +19340,7 @@ class CartEntryEffects {
             .pipe(map(() => {
             return new CartRemoveEntrySuccess(Object.assign({}, payload));
         }), catchError((error) => from([
-            new CartRemoveEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+            new CartRemoveEntryFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
             new LoadCart({
                 cartId: payload.cartId,
                 userId: payload.userId,
@@ -19397,7 +19351,7 @@ class CartEntryEffects {
             .pipe(map(() => {
             return new CartUpdateEntrySuccess(Object.assign({}, payload));
         }), catchError((error) => from([
-            new CartUpdateEntryFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+            new CartUpdateEntryFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
             new LoadCart({
                 cartId: payload.cartId,
                 userId: payload.userId,
@@ -19455,7 +19409,7 @@ class CartVoucherEffects {
                 this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_CONFIRMATION);
                 return new CartAddVoucherSuccess(Object.assign({}, payload));
             }), catchError((error) => from([
-                new CartAddVoucherFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+                new CartAddVoucherFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
                 new CartProcessesDecrement(payload.cartId),
                 new LoadCart({
                     userId: payload.userId,
@@ -19475,7 +19429,7 @@ class CartVoucherEffects {
                 });
             }), catchError((error) => from([
                 new CartRemoveVoucherFail({
-                    error: makeErrorSerializable(error),
+                    error: normalizeHttpError(error),
                     cartId: payload.cartId,
                     userId: payload.userId,
                     voucherId: payload.voucherId,
@@ -19576,7 +19530,7 @@ class CartEffects {
                         return of(new RemoveCart({ cartId: payload.cartId }));
                     }
                 }
-                return of(new LoadCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })));
+                return of(new LoadCartFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })));
             }));
         }))), withdrawOn(this.contextChange$));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((action) => action.payload), mergeMap((payload) => {
@@ -19601,7 +19555,7 @@ class CartEffects {
                     }),
                     ...conditionalActions,
                 ];
-            }), catchError((error) => of(new CreateCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })))));
+            }), catchError((error) => of(new CreateCartFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })))));
         }), withdrawOn(this.contextChange$));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((action) => action.payload), mergeMap((payload) => {
             return this.cartConnector.load(payload.userId, OCC_CART_ID_CURRENT).pipe(mergeMap((currentCart) => {
@@ -19643,7 +19597,7 @@ class CartEffects {
                 }),
             ];
         }), catchError((error) => from([
-            new AddEmailToCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+            new AddEmailToCartFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
             new LoadCart({
                 userId: payload.userId,
                 cartId: payload.cartId,
@@ -19652,7 +19606,7 @@ class CartEffects {
         this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((action) => action.payload), mergeMap((payload) => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map(() => {
             return new DeleteCartSuccess(Object.assign({}, payload));
         }), catchError((error) => from([
-            new DeleteCartFail(Object.assign(Object.assign({}, payload), { error: makeErrorSerializable(error) })),
+            new DeleteCartFail(Object.assign(Object.assign({}, payload), { error: normalizeHttpError(error) })),
             // Error might happen in higher backend layer and cart could still be removed.
             // When load fail with NotFound error then RemoveCart action will kick in and clear that cart in our state.
             new LoadCart(Object.assign({}, payload)),
@@ -19729,7 +19683,7 @@ class WishListEffects {
                 ]), catchError((error) => from([
                     new CreateWishListFail({
                         cartId: cart.code,
-                        error: makeErrorSerializable(error),
+                        error: normalizeHttpError(error),
                     }),
                 ])));
             }));
@@ -19765,7 +19719,7 @@ class WishListEffects {
                     userId,
                     cartId: tempCartId,
                     customerId,
-                    error: makeErrorSerializable(error),
+                    error: normalizeHttpError(error),
                 }),
             ])));
         }));
@@ -19781,7 +19735,7 @@ class WishListEffects {
                     new LoadWishListFail({
                         userId,
                         cartId: wishListId,
-                        error: makeErrorSerializable(error),
+                        error: normalizeHttpError(error),
                     }),
                 ])));
             }
@@ -20208,8 +20162,8 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
 
 const getCmsState = createFeatureSelector(CMS_FEATURE);
 
-const ɵ0$C = (state) => state.components;
-const getComponentsState = createSelector(getCmsState, ɵ0$C);
+const ɵ0$B = (state) => state.components;
+const getComponentsState = createSelector(getCmsState, ɵ0$B);
 const componentsContextSelectorFactory = (uid) => {
     return createSelector(getComponentsState, (componentsState) => entitySelector(componentsState, uid));
 };
@@ -20256,8 +20210,8 @@ const componentsSelectorFactory = (uid, context) => {
     });
 };
 
-const ɵ0$D = (state) => state.navigation;
-const getNavigationEntryItemState = createSelector(getCmsState, ɵ0$D);
+const ɵ0$C = (state) => state.navigation;
+const getNavigationEntryItemState = createSelector(getCmsState, ɵ0$C);
 const getSelectedNavigationEntryItemState = (nodeId) => {
     return createSelector(getNavigationEntryItemState, (nodes) => entityLoaderStateSelector(nodes, nodeId));
 };
@@ -20266,7 +20220,7 @@ const getNavigationEntryItems = (nodeId) => {
 };
 
 const getPageEntitiesSelector = (state) => state.pageData.entities;
-const ɵ0$E = getPageEntitiesSelector;
+const ɵ0$D = getPageEntitiesSelector;
 const getIndexByType = (index, type) => {
     switch (type) {
         case PageType.CONTENT_PAGE: {
@@ -20323,7 +20277,7 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
     componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
     componentsDataSelectorFactory: componentsDataSelectorFactory,
     componentsSelectorFactory: componentsSelectorFactory,
-    ɵ0: ɵ0$C,
+    ɵ0: ɵ0$B,
     getCmsState: getCmsState,
     getNavigationEntryItemState: getNavigationEntryItemState,
     getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
@@ -21466,7 +21420,7 @@ class ComponentsEffects {
             return from(actions);
         }), catchError((error) => from(componentUids.map((uid) => new LoadCmsComponentFail({
             uid,
-            error: makeErrorSerializable(error),
+            error: normalizeHttpError(error),
             pageContext,
         })))));
     }
@@ -21498,7 +21452,7 @@ class NavigationEntryItemEffects {
                     .pipe(map((components) => new LoadCmsNavigationItemsSuccess({
                     nodeId: data.nodeId,
                     components: components,
-                })), catchError((error) => of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)))))));
+                })), catchError((error) => of(new LoadCmsNavigationItemsFail(data.nodeId, normalizeHttpError(error)))))));
             }
             else if (data.ids.pageIds.length > 0) {
                 // TODO: future work
@@ -21619,7 +21573,7 @@ class PageEffects {
                 actions.unshift(new CmsSetPageSuccessIndex({ id: pageLabel, type: pageContext.type }, cmsStructure.page));
             }
             return actions;
-        }), catchError((error) => of(new LoadCmsPageDataFail(pageContext, makeErrorSerializable(error)))))))));
+        }), catchError((error) => of(new LoadCmsPageDataFail(pageContext, normalizeHttpError(error)))))))));
     }
 }
 PageEffects.decorators = [
@@ -22455,11 +22409,11 @@ function getLoadPath(path, serverRequestOrigin) {
     return path;
 }
 
-const ɵ0$F = i18nextInit;
+const ɵ0$E = i18nextInit;
 const i18nextProviders = [
     {
         provide: APP_INITIALIZER,
-        useFactory: ɵ0$F,
+        useFactory: ɵ0$E,
         deps: [
             ConfigInitializerService,
             LanguageService,
@@ -23278,7 +23232,7 @@ class ProductsSearchEffects {
                 .search(action.payload.queryText, action.payload.searchConfig)
                 .pipe(map((data) => {
                 return new SearchProductsSuccess(data, action.auxiliary);
-            }), catchError((error) => of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary))));
+            }), catchError((error) => of(new SearchProductsFail(normalizeHttpError(error), action.auxiliary))));
         }))));
         this.getProductSuggestions$ = this.actions$.pipe(ofType(GET_PRODUCT_SUGGESTIONS), map((action) => action.payload), switchMap((payload) => {
             return this.productSearchConnector
@@ -23288,7 +23242,7 @@ class ProductsSearchEffects {
                     return new GetProductSuggestionsSuccess([]);
                 }
                 return new GetProductSuggestionsSuccess(suggestions);
-            }), catchError((error) => of(new GetProductSuggestionsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new GetProductSuggestionsFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -23324,7 +23278,7 @@ class ProductEffects {
     }
     productLoadEffect(productLoad) {
         return productLoad.data$.pipe(map((data) => new LoadProductSuccess(Object.assign({ code: productLoad.code }, data), productLoad.scope)), catchError((error) => {
-            return of(new LoadProductFail(productLoad.code, makeErrorSerializable(error), productLoad.scope));
+            return of(new LoadProductFail(productLoad.code, normalizeHttpError(error), productLoad.scope));
         }));
     }
 }
@@ -23469,8 +23423,8 @@ const metaReducers$3 = [clearProductsState];
 
 const getProductsState = createFeatureSelector(PRODUCT_FEATURE);
 
-const ɵ0$G = (state) => state.references;
-const getProductReferencesState = createSelector(getProductsState, ɵ0$G);
+const ɵ0$F = (state) => state.references;
+const getProductReferencesState = createSelector(getProductsState, ɵ0$F);
 const getSelectedProductReferencesFactory = (productCode, referenceType) => {
     return createSelector(getProductReferencesState, (referenceTypeData) => {
         if (referenceTypeData.productCode === productCode) {
@@ -23487,8 +23441,8 @@ const getSelectedProductReferencesFactory = (productCode, referenceType) => {
     });
 };
 
-const ɵ0$H = (state) => state.reviews;
-const getProductReviewsState = createSelector(getProductsState, ɵ0$H);
+const ɵ0$G = (state) => state.reviews;
+const getProductReviewsState = createSelector(getProductsState, ɵ0$G);
 const getSelectedProductReviewsFactory = (productCode) => {
     return createSelector(getProductReviewsState, (reviewData) => {
         if (reviewData.productCode === productCode) {
@@ -23497,14 +23451,14 @@ const getSelectedProductReviewsFactory = (productCode) => {
     });
 };
 
-const ɵ0$I = (state) => state.search;
-const getProductsSearchState = createSelector(getProductsState, ɵ0$I);
+const ɵ0$H = (state) => state.search;
+const getProductsSearchState = createSelector(getProductsState, ɵ0$H);
 const getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
 const getAuxSearchResults$1 = createSelector(getProductsSearchState, getAuxSearchResults);
 const getProductSuggestions$1 = createSelector(getProductsSearchState, getProductSuggestions);
 
-const ɵ0$J = (state) => state.details;
-const getProductState = createSelector(getProductsState, ɵ0$J);
+const ɵ0$I = (state) => state.details;
+const getProductState = createSelector(getProductsState, ɵ0$I);
 const getSelectedProductStateFactory = (code, scope = '') => {
     return createSelector(getProductState, (details) => entityLoaderStateSelector(details, code)[scope] ||
         initialLoaderState);
@@ -23531,7 +23485,7 @@ var productGroup_selectors = /*#__PURE__*/Object.freeze({
     getProductsState: getProductsState,
     getProductReferencesState: getProductReferencesState,
     getSelectedProductReferencesFactory: getSelectedProductReferencesFactory,
-    ɵ0: ɵ0$G,
+    ɵ0: ɵ0$F,
     getProductReviewsState: getProductReviewsState,
     getSelectedProductReviewsFactory: getSelectedProductReviewsFactory,
     getProductsSearchState: getProductsSearchState,
@@ -25984,7 +25938,7 @@ class BillingCountriesEffect {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
         this.loadBillingCountries$ = this.actions$.pipe(ofType(LOAD_BILLING_COUNTRIES), switchMap(() => {
-            return this.siteConnector.getCountries(CountryType.BILLING).pipe(map((countries) => new LoadBillingCountriesSuccess(countries)), catchError((error) => of(new LoadBillingCountriesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getCountries(CountryType.BILLING).pipe(map((countries) => new LoadBillingCountriesSuccess(countries)), catchError((error) => of(new LoadBillingCountriesFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -26024,7 +25978,7 @@ class ConsignmentTrackingEffects {
         this.loadConsignmentTracking$ = this.actions$.pipe(ofType(LOAD_CONSIGNMENT_TRACKING), map((action) => action.payload), switchMap((payload) => {
             return this.userOrderConnector
                 .getConsignmentTracking(payload.orderCode, payload.consignmentCode, payload.userId)
-                .pipe(map((tracking) => new LoadConsignmentTrackingSuccess(tracking)), catchError((error) => of(new LoadConsignmentTrackingFail(makeErrorSerializable(error)))));
+                .pipe(map((tracking) => new LoadConsignmentTrackingSuccess(tracking)), catchError((error) => of(new LoadConsignmentTrackingFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -26048,28 +26002,28 @@ class CustomerCouponEffects {
                 .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
                 .pipe(map((coupons) => {
                 return new LoadCustomerCouponsSuccess(coupons);
-            }), catchError((error) => of(new LoadCustomerCouponsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadCustomerCouponsFail(normalizeHttpError(error)))));
         }));
         this.subscribeCustomerCoupon$ = this.actions$.pipe(ofType(SUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
             return this.customerCouponConnector
                 .turnOnNotification(payload.userId, payload.couponCode)
                 .pipe(map((data) => {
                 return new SubscribeCustomerCouponSuccess(data);
-            }), catchError((error) => of(new SubscribeCustomerCouponFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new SubscribeCustomerCouponFail(normalizeHttpError(error)))));
         }));
         this.unsubscribeCustomerCoupon$ = this.actions$.pipe(ofType(UNSUBSCRIBE_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
             return this.customerCouponConnector
                 .turnOffNotification(payload.userId, payload.couponCode)
                 .pipe(map(() => {
                 return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
-            }), catchError((error) => of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new UnsubscribeCustomerCouponFail(normalizeHttpError(error)))));
         }));
         this.claimCustomerCoupon$ = this.actions$.pipe(ofType(CLAIM_CUSTOMER_COUPON), map((action) => action.payload), mergeMap((payload) => {
             return this.customerCouponConnector
                 .claimCustomerCoupon(payload.userId, payload.couponCode)
                 .pipe(map((data) => {
                 return new ClaimCustomerCouponSuccess(data);
-            }), catchError((error) => of(new ClaimCustomerCouponFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new ClaimCustomerCouponFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -26098,7 +26052,7 @@ class DeliveryCountriesEffects {
         this.actions$ = actions$;
         this.siteConnector = siteConnector;
         this.loadDeliveryCountries$ = this.actions$.pipe(ofType(LOAD_DELIVERY_COUNTRIES), switchMap(() => {
-            return this.siteConnector.getCountries(CountryType.SHIPPING).pipe(map((countries) => new LoadDeliveryCountriesSuccess(countries)), catchError((error) => of(new LoadDeliveryCountriesFail(makeErrorSerializable(error)))));
+            return this.siteConnector.getCountries(CountryType.SHIPPING).pipe(map((countries) => new LoadDeliveryCountriesSuccess(countries)), catchError((error) => of(new LoadDeliveryCountriesFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -26128,7 +26082,7 @@ class ForgotPasswordEffects {
                     text: { key: 'forgottenPassword.passwordResetEmailSent' },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
-            ]), catchError((error) => of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new ForgotPasswordEmailRequestFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -26147,8 +26101,8 @@ class NotificationPreferenceEffects {
     constructor(actions$, connector) {
         this.actions$ = actions$;
         this.connector = connector;
-        this.loadPreferences$ = this.actions$.pipe(ofType(LOAD_NOTIFICATION_PREFERENCES), map((action) => action.payload), switchMap((payload) => this.connector.loadAll(payload).pipe(map((preferences) => new LoadNotificationPreferencesSuccess(preferences)), catchError((error) => of(new LoadNotificationPreferencesFail(makeErrorSerializable(error)))))));
-        this.updatePreferences$ = this.actions$.pipe(ofType(UPDATE_NOTIFICATION_PREFERENCES), map((action) => action.payload), mergeMap((payload) => this.connector.update(payload.userId, payload.preferences).pipe(map(() => new UpdateNotificationPreferencesSuccess(payload.preferences)), catchError((error) => of(new UpdateNotificationPreferencesFail(makeErrorSerializable(error)))))));
+        this.loadPreferences$ = this.actions$.pipe(ofType(LOAD_NOTIFICATION_PREFERENCES), map((action) => action.payload), switchMap((payload) => this.connector.loadAll(payload).pipe(map((preferences) => new LoadNotificationPreferencesSuccess(preferences)), catchError((error) => of(new LoadNotificationPreferencesFail(normalizeHttpError(error)))))));
+        this.updatePreferences$ = this.actions$.pipe(ofType(UPDATE_NOTIFICATION_PREFERENCES), map((action) => action.payload), mergeMap((payload) => this.connector.update(payload.userId, payload.preferences).pipe(map(() => new UpdateNotificationPreferencesSuccess(payload.preferences)), catchError((error) => of(new UpdateNotificationPreferencesFail(normalizeHttpError(error)))))));
     }
 }
 NotificationPreferenceEffects.decorators = [
@@ -26173,7 +26127,7 @@ class OrderDetailsEffect {
         this.loadOrderDetails$ = this.actions$.pipe(ofType(LOAD_ORDER_DETAILS), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector.get(payload.userId, payload.orderCode).pipe(map((order) => {
                 return new LoadOrderDetailsSuccess(order);
-            }), catchError((error) => of(new LoadOrderDetailsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadOrderDetailsFail(normalizeHttpError(error)))));
         }));
         this.cancelOrder$ = this.actions$.pipe(ofType(CANCEL_ORDER), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
@@ -26181,7 +26135,7 @@ class OrderDetailsEffect {
                 .pipe(map(() => new CancelOrderSuccess()), catchError((error) => {
                 var _a;
                 (_a = error.error) === null || _a === void 0 ? void 0 : _a.errors.forEach((err) => this.globalMessageService.add(err.message, GlobalMessageType.MSG_TYPE_ERROR));
-                return of(new CancelOrderFail(makeErrorSerializable(error)));
+                return of(new CancelOrderFail(normalizeHttpError(error)));
             }));
         }));
     }
@@ -26208,22 +26162,22 @@ class OrderReturnRequestEffect {
         this.createReturnRequest$ = this.actions$.pipe(ofType(CREATE_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .return(payload.userId, payload.returnRequestInput)
-                .pipe(map((returnRequest) => new CreateOrderReturnRequestSuccess(returnRequest)), catchError((error) => of(new CreateOrderReturnRequestFail(makeErrorSerializable(error)))));
+                .pipe(map((returnRequest) => new CreateOrderReturnRequestSuccess(returnRequest)), catchError((error) => of(new CreateOrderReturnRequestFail(normalizeHttpError(error)))));
         }));
         this.loadReturnRequest$ = this.actions$.pipe(ofType(LOAD_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .getReturnRequestDetail(payload.userId, payload.returnRequestCode)
-                .pipe(map((returnRequest) => new LoadOrderReturnRequestSuccess(returnRequest)), catchError((error) => of(new LoadOrderReturnRequestFail(makeErrorSerializable(error)))));
+                .pipe(map((returnRequest) => new LoadOrderReturnRequestSuccess(returnRequest)), catchError((error) => of(new LoadOrderReturnRequestFail(normalizeHttpError(error)))));
         }));
         this.cancelReturnRequest$ = this.actions$.pipe(ofType(CANCEL_ORDER_RETURN_REQUEST), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .cancelReturnRequest(payload.userId, payload.returnRequestCode, payload.returnRequestModification)
-                .pipe(map(() => new CancelOrderReturnRequestSuccess()), catchError((error) => of(new CancelOrderReturnRequestFail(makeErrorSerializable(error)))));
+                .pipe(map(() => new CancelOrderReturnRequestSuccess()), catchError((error) => of(new CancelOrderReturnRequestFail(normalizeHttpError(error)))));
         }));
         this.loadReturnRequestList$ = this.actions$.pipe(ofType(LOAD_ORDER_RETURN_REQUEST_LIST), map((action) => action.payload), switchMap((payload) => {
             return this.orderConnector
                 .getReturnRequestList(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
-                .pipe(map((returnRequestList) => new LoadOrderReturnRequestListSuccess(returnRequestList)), catchError((error) => of(new LoadOrderReturnRequestListFail(makeErrorSerializable(error)))));
+                .pipe(map((returnRequestList) => new LoadOrderReturnRequestListSuccess(returnRequestList)), catchError((error) => of(new LoadOrderReturnRequestListFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -26254,7 +26208,7 @@ class UserPaymentMethodsEffects {
         this.loadUserPaymentMethods$ = this.actions$.pipe(ofType(LOAD_USER_PAYMENT_METHODS), map((action) => action.payload), mergeMap((payload) => {
             return this.userPaymentMethodConnector.getAll(payload).pipe(map((payments) => {
                 return new LoadUserPaymentMethodsSuccess(payments);
-            }), catchError((error) => of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadUserPaymentMethodsFail(normalizeHttpError(error)))));
         }));
         this.setDefaultUserPaymentMethod$ = this.actions$.pipe(ofType(SET_DEFAULT_USER_PAYMENT_METHOD), map((action) => action.payload), mergeMap((payload) => {
             return this.userPaymentMethodConnector
@@ -26262,7 +26216,7 @@ class UserPaymentMethodsEffects {
                 .pipe(switchMap((data) => [
                 new SetDefaultUserPaymentMethodSuccess(data),
                 new LoadUserPaymentMethods(payload.userId),
-            ]), catchError((error) => of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new SetDefaultUserPaymentMethodFail(normalizeHttpError(error)))));
         }));
         this.deleteUserPaymentMethod$ = this.actions$.pipe(ofType(DELETE_USER_PAYMENT_METHOD), map((action) => action.payload), mergeMap((payload) => {
             return this.userPaymentMethodConnector
@@ -26270,7 +26224,7 @@ class UserPaymentMethodsEffects {
                 .pipe(switchMap((data) => [
                 new DeleteUserPaymentMethodSuccess(data),
                 new LoadUserPaymentMethods(payload.userId),
-            ]), catchError((error) => of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)))));
+            ]), catchError((error) => of(new DeleteUserPaymentMethodFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -26300,7 +26254,7 @@ class ProductInterestsEffect {
                 .getInterests(payload.userId, payload.pageSize, payload.currentPage, payload.sort, payload.productCode, payload.notificationType)
                 .pipe(map((interests) => {
                 return new LoadProductInterestsSuccess(interests);
-            }), catchError((error) => of(new LoadProductInterestsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadProductInterestsFail(normalizeHttpError(error)))));
         }));
         this.removeProductInterest$ = this.actions$.pipe(ofType(REMOVE_PRODUCT_INTEREST), map((action) => action.payload), switchMap((payload) => this.userInterestsConnector
             .removeInterest(payload.userId, payload.item)
@@ -26313,7 +26267,7 @@ class ProductInterestsEffect {
                 }
                 : { userId: payload.userId }),
             new RemoveProductInterestSuccess(data),
-        ]), catchError((error) => of(new RemoveProductInterestFail(makeErrorSerializable(error)))))));
+        ]), catchError((error) => of(new RemoveProductInterestFail(normalizeHttpError(error)))))));
         this.addProductInterest$ = this.actions$.pipe(ofType(ADD_PRODUCT_INTEREST), map((action) => action.payload), switchMap((payload) => this.userInterestsConnector
             .addInterest(payload.userId, payload.productCode, payload.notificationType)
             .pipe(switchMap((res) => [
@@ -26323,7 +26277,7 @@ class ProductInterestsEffect {
                 notificationType: payload.notificationType,
             }),
             new AddProductInterestSuccess(res),
-        ]), catchError((error) => of(new AddProductInterestFail(makeErrorSerializable(error)))))));
+        ]), catchError((error) => of(new AddProductInterestFail(normalizeHttpError(error)))))));
     }
 }
 ProductInterestsEffect.decorators = [
@@ -26353,7 +26307,7 @@ class RegionsEffects {
             return this.siteConnector.getRegions(countryCode).pipe(map((regions) => new LoadRegionsSuccess({
                 entities: regions,
                 country: countryCode,
-            })), catchError((error) => of(new LoadRegionsFail(makeErrorSerializable(error)))));
+            })), catchError((error) => of(new LoadRegionsFail(normalizeHttpError(error)))));
         }));
         this.resetRegions$ = this.actions$.pipe(ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), map(() => {
             return new LoaderResetAction(REGIONS);
@@ -26425,7 +26379,7 @@ class ResetPasswordEffects {
                 }),
             ]), catchError((error) => {
                 var _a;
-                const actions = [new ResetPasswordFail(makeErrorSerializable(error))];
+                const actions = [new ResetPasswordFail(normalizeHttpError(error))];
                 if ((_a = error === null || error === void 0 ? void 0 : error.error) === null || _a === void 0 ? void 0 : _a.errors) {
                     error.error.errors.forEach((err) => {
                         if (err.message) {
@@ -26459,7 +26413,7 @@ class TitlesEffects {
         this.loadTitles$ = this.actions$.pipe(ofType(LOAD_TITLES), switchMap(() => {
             return this.userAccountConnector.getTitles().pipe(map((titles) => {
                 return new LoadTitlesSuccess(titles);
-            }), catchError((error) => of(new LoadTitlesFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadTitlesFail(normalizeHttpError(error)))));
         }));
     }
 }
@@ -26480,7 +26434,7 @@ class UpdateEmailEffects {
         this.userAccountConnector = userAccountConnector;
         this.updateEmail$ = this.actions$.pipe(ofType(UPDATE_EMAIL), map((action) => action.payload), concatMap((payload) => this.userAccountConnector
             .updateEmail(payload.uid, payload.password, payload.newUid)
-            .pipe(map(() => new UpdateEmailSuccessAction(payload.newUid)), catchError((error) => of(new UpdateEmailErrorAction(makeErrorSerializable(error)))))));
+            .pipe(map(() => new UpdateEmailSuccessAction(payload.newUid)), catchError((error) => of(new UpdateEmailErrorAction(normalizeHttpError(error)))))));
     }
 }
 UpdateEmailEffects.decorators = [
@@ -26500,7 +26454,7 @@ class UpdatePasswordEffects {
         this.userAccountConnector = userAccountConnector;
         this.updatePassword$ = this.actions$.pipe(ofType(UPDATE_PASSWORD), map((action) => action.payload), concatMap((payload) => this.userAccountConnector
             .updatePassword(payload.userId, payload.oldPassword, payload.newPassword)
-            .pipe(map(() => new UpdatePasswordSuccess()), catchError((error) => of(new UpdatePasswordFail(makeErrorSerializable(error)))))));
+            .pipe(map(() => new UpdatePasswordSuccess()), catchError((error) => of(new UpdatePasswordFail(normalizeHttpError(error)))))));
     }
 }
 UpdatePasswordEffects.decorators = [
@@ -26523,14 +26477,14 @@ class UserAddressesEffects {
         this.loadUserAddresses$ = this.actions$.pipe(ofType(LOAD_USER_ADDRESSES), map((action) => action.payload), mergeMap((payload) => {
             return this.userAddressConnector.getAll(payload).pipe(map((addresses) => {
                 return new LoadUserAddressesSuccess(addresses);
-            }), catchError((error) => of(new LoadUserAddressesFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadUserAddressesFail(normalizeHttpError(error)))));
         }));
         this.addUserAddress$ = this.actions$.pipe(ofType(ADD_USER_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
             return this.userAddressConnector
                 .add(payload.userId, payload.address)
                 .pipe(map((data) => {
                 return new AddUserAddressSuccess(data);
-            }), catchError((error) => of(new AddUserAddressFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new AddUserAddressFail(normalizeHttpError(error)))));
         }));
         this.updateUserAddress$ = this.actions$.pipe(ofType(UPDATE_USER_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
             return this.userAddressConnector
@@ -26545,14 +26499,14 @@ class UserAddressesEffects {
                 else {
                     return new UpdateUserAddressSuccess(data);
                 }
-            }), catchError((error) => of(new UpdateUserAddressFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new UpdateUserAddressFail(normalizeHttpError(error)))));
         }));
         this.deleteUserAddress$ = this.actions$.pipe(ofType(DELETE_USER_ADDRESS), map((action) => action.payload), mergeMap((payload) => {
             return this.userAddressConnector
                 .delete(payload.userId, payload.addressId)
                 .pipe(map((data) => {
                 return new DeleteUserAddressSuccess(data);
-            }), catchError((error) => of(new DeleteUserAddressFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new DeleteUserAddressFail(normalizeHttpError(error)))));
         }));
         /**
          *  Reload addresses and notify about add success
@@ -26622,12 +26576,12 @@ class UserConsentsEffect {
         this.actions$ = actions$;
         this.userConsentConnector = userConsentConnector;
         this.resetConsents$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map(() => new ResetLoadUserConsents()));
-        this.getConsents$ = this.actions$.pipe(ofType(LOAD_USER_CONSENTS), map((action) => action.payload), concatMap((userId) => this.userConsentConnector.loadConsents(userId).pipe(map((consents) => new LoadUserConsentsSuccess(consents)), catchError((error) => of(new LoadUserConsentsFail(makeErrorSerializable(error)))))));
+        this.getConsents$ = this.actions$.pipe(ofType(LOAD_USER_CONSENTS), map((action) => action.payload), concatMap((userId) => this.userConsentConnector.loadConsents(userId).pipe(map((consents) => new LoadUserConsentsSuccess(consents)), catchError((error) => of(new LoadUserConsentsFail(normalizeHttpError(error)))))));
         this.giveConsent$ = this.actions$.pipe(ofType(GIVE_USER_CONSENT, TRANSFER_ANONYMOUS_CONSENT), concatMap((action) => this.userConsentConnector
             .giveConsent(action.payload.userId, action.payload.consentTemplateId, action.payload.consentTemplateVersion)
             .pipe(map((consent) => new GiveUserConsentSuccess(consent)), catchError((error) => {
             const errors = [
-                new GiveUserConsentFail(makeErrorSerializable(error)),
+                new GiveUserConsentFail(normalizeHttpError(error)),
             ];
             if (action.type === TRANSFER_ANONYMOUS_CONSENT &&
                 error.status === 409) {
@@ -26635,7 +26589,7 @@ class UserConsentsEffect {
             }
             return of(...errors);
         }))));
-        this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map((action) => action.payload), concatMap(({ userId, consentCode }) => this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(map(() => new WithdrawUserConsentSuccess()), catchError((error) => of(new WithdrawUserConsentFail(makeErrorSerializable(error)))))));
+        this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map((action) => action.payload), concatMap(({ userId, consentCode }) => this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(map(() => new WithdrawUserConsentSuccess()), catchError((error) => of(new WithdrawUserConsentFail(normalizeHttpError(error)))))));
     }
 }
 UserConsentsEffect.decorators = [
@@ -26685,9 +26639,9 @@ class UserDetailsEffects {
         this.loadUserDetails$ = this.actions$.pipe(ofType(LOAD_USER_DETAILS), map((action) => action.payload), mergeMap((userId) => {
             return this.userConnector.get(userId).pipe(map((user) => {
                 return new LoadUserDetailsSuccess(user);
-            }), catchError((error) => of(new LoadUserDetailsFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new LoadUserDetailsFail(normalizeHttpError(error)))));
         }));
-        this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map((action) => action.payload), concatMap((payload) => this.userConnector.update(payload.username, payload.userDetails).pipe(map(() => new UpdateUserDetailsSuccess(payload.userDetails)), catchError((error) => of(new UpdateUserDetailsFail(makeErrorSerializable(error)))))));
+        this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map((action) => action.payload), concatMap((payload) => this.userConnector.update(payload.username, payload.userDetails).pipe(map(() => new UpdateUserDetailsSuccess(payload.userDetails)), catchError((error) => of(new UpdateUserDetailsFail(normalizeHttpError(error)))))));
     }
 }
 UserDetailsEffects.decorators = [
@@ -26741,16 +26695,16 @@ class UserRegisterEffects {
         this.actions$ = actions$;
         this.userConnector = userConnector;
         this.authService = authService;
-        this.registerUser$ = this.actions$.pipe(ofType(REGISTER_USER), map((action) => action.payload), mergeMap((user) => this.userConnector.register(user).pipe(map(() => new RegisterUserSuccess()), catchError((error) => of(new RegisterUserFail(makeErrorSerializable(error)))))));
+        this.registerUser$ = this.actions$.pipe(ofType(REGISTER_USER), map((action) => action.payload), mergeMap((user) => this.userConnector.register(user).pipe(map(() => new RegisterUserSuccess()), catchError((error) => of(new RegisterUserFail(normalizeHttpError(error)))))));
         this.registerGuest$ = this.actions$.pipe(ofType(REGISTER_GUEST), map((action) => action.payload), mergeMap(({ guid, password }) => this.userConnector.registerGuest(guid, password).pipe(switchMap((user) => {
             this.authService.loginWithCredentials(user.uid, password);
             return [new RegisterGuestSuccess()];
-        }), catchError((error) => of(new RegisterGuestFail(makeErrorSerializable(error)))))));
+        }), catchError((error) => of(new RegisterGuestFail(normalizeHttpError(error)))))));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((action) => action.payload), mergeMap((userId) => {
             return this.userConnector.remove(userId).pipe(switchMap(() => {
                 this.authService.logout();
                 return [new RemoveUserSuccess()];
-            }), catchError((error) => of(new RemoveUserFail(makeErrorSerializable(error)))));
+            }), catchError((error) => of(new RemoveUserFail(normalizeHttpError(error)))));
         }));
     }
 }
