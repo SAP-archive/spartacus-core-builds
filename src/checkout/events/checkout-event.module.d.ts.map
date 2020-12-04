@@ -1,1 +1,0 @@
-{"version":3,"file":"checkout-event.module.d.ts","sources":["checkout-event.module.d.ts"],"names":[],"mappings":"AAAA;;AACA;AACA;;;AACA","sourcesContent":["import { CheckoutEventBuilder } from './checkout-event.builder';\nexport declare class CheckoutEventModule {\n    constructor(_checkoutEventBuilder: CheckoutEventBuilder);\n}\n"]}
