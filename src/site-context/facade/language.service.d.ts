@@ -8,6 +8,7 @@ import { SiteContext } from './site-context.interface';
 /**
  * Facade that provides easy access to language state, actions and selectors.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class LanguageService implements SiteContext<Language> {
     protected store: Store<StateWithSiteContext>;
     protected config: SiteContextConfig;
@@ -31,4 +32,8 @@ export declare class LanguageService implements SiteContext<Language> {
      * default session language of the store.
      */
     initialize(): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<LanguageService, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<LanguageService>;
 }
+
+//# sourceMappingURL=language.service.d.ts.map
