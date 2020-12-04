@@ -5,6 +5,7 @@ import { UserConsentService } from './user-consent.service';
 /**
  * Unified facade for both anonymous and registered user consents.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ConsentService {
     protected anonymousConsentsService: AnonymousConsentsService;
     protected userConsentService: UserConsentService;
@@ -50,4 +51,7 @@ export declare class ConsentService {
      * Returns `true` if the provided consent is of type `Consent`. Otherwise, `false` is returned.
      */
     isConsentType(consent: AnonymousConsent | Consent): consent is Consent;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ConsentService, never>;
 }
+
+//# sourceMappingURL=consent.service.d.ts.map
