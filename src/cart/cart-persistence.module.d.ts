@@ -2,11 +2,12 @@ import { ModuleWithProviders } from '@angular/core';
 import { MetaReducer } from '@ngrx/store';
 import { ConfigInitializerService } from '../config/config-initializer/config-initializer.service';
 import { MultiCartStatePersistenceService } from './services/multi-cart-state-persistence.service';
+import * as ɵngcc0 from '@angular/core';
 export declare function cartStatePersistenceFactory(cartStatePersistenceService: MultiCartStatePersistenceService, configInit: ConfigInitializerService): () => Promise<void>;
 /**
  * Before `MultiCartStatePersistenceService` restores the active cart id `ActiveCartService`
  * will use `current` cart instead of the one saved in browser. This meta reducer
- * sets the value on store initialization to undefined cart which holds active cart loading
+ * sets the value on store initialization to null cart which holds active cart loading
  * until the data from storage is restored.
  */
 export declare function uninitializeActiveCartMetaReducerFactory(): MetaReducer<any>;
@@ -16,4 +17,8 @@ export declare function uninitializeActiveCartMetaReducerFactory(): MetaReducer<
  */
 export declare class CartPersistenceModule {
     static forRoot(): ModuleWithProviders<CartPersistenceModule>;
+    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<CartPersistenceModule, never, never, never>;
+    static ɵinj: ɵngcc0.ɵɵInjectorDef<CartPersistenceModule>;
 }
+
+//# sourceMappingURL=cart-persistence.module.d.ts.map

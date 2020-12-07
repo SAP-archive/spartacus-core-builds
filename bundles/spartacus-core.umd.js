@@ -1577,7 +1577,7 @@
      */
     var UserIdService = /** @class */ (function () {
         function UserIdService() {
-            this._userId = new rxjs.BehaviorSubject(OCC_USER_ID_ANONYMOUS);
+            this._userId = new rxjs.ReplaySubject(1);
         }
         /**
          * Sets current user id.
@@ -3975,16 +3975,17 @@
          * Used to update state from browser -> state.
          */
         AuthStatePersistenceService.prototype.onRead = function (state) {
-            if (state) {
-                if (state.token) {
-                    this.authStorageService.setToken(state.token);
-                }
-                if (state.userId) {
-                    this.userIdService.setUserId(state.userId);
-                }
-                if (state.redirectUrl) {
-                    this.authRedirectStorageService.setRedirectUrl(state.redirectUrl);
-                }
+            if (state === null || state === void 0 ? void 0 : state.token) {
+                this.authStorageService.setToken(state.token);
+            }
+            if (state === null || state === void 0 ? void 0 : state.redirectUrl) {
+                this.authRedirectStorageService.setRedirectUrl(state.redirectUrl);
+            }
+            if (state === null || state === void 0 ? void 0 : state.userId) {
+                this.userIdService.setUserId(state.userId);
+            }
+            else {
+                this.userIdService.clearUserId();
             }
         };
         /**
@@ -9532,18 +9533,79 @@
     var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // tslint:disable-line
     var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
 
+    var activeCartInitialState = null;
+    var activeCartDefaultState = '';
+    var wishListInitialState = '';
+    function activeCartReducer(state, action) {
+        if (state === void 0) { state = activeCartDefaultState; }
+        var _a, _b, _c;
+        switch (action.type) {
+            case LOAD_CART_SUCCESS:
+            case CREATE_CART_SUCCESS:
+            // point to `temp-${uuid}` cart when we are creating/merging cart
+            case CREATE_CART:
+                if ((_b = (_a = action === null || action === void 0 ? void 0 : action.payload) === null || _a === void 0 ? void 0 : _a.extraData) === null || _b === void 0 ? void 0 : _b.active) {
+                    return action.meta.entityId;
+                }
+                else {
+                    return state;
+                }
+            case SET_ACTIVE_CART_ID:
+                return action.payload;
+            case REMOVE_CART:
+            case DELETE_CART_SUCCESS:
+                if (((_c = action.payload) === null || _c === void 0 ? void 0 : _c.cartId) === state) {
+                    return activeCartDefaultState;
+                }
+                return state;
+            case CLEAR_CART_STATE:
+                return state === activeCartInitialState
+                    ? activeCartInitialState
+                    : activeCartDefaultState;
+        }
+        return state;
+    }
+    var cartEntitiesInitialState = undefined;
+    function cartEntitiesReducer(state, action) {
+        if (state === void 0) { state = cartEntitiesInitialState; }
+        switch (action.type) {
+            case LOAD_CART_SUCCESS:
+            case CREATE_CART_SUCCESS:
+            case CREATE_WISH_LIST_SUCCESS:
+            case LOAD_WISH_LIST_SUCCESS:
+            case SET_TEMP_CART:
+                return action.payload.cart;
+        }
+        return state;
+    }
+    function wishListReducer(state, action) {
+        if (state === void 0) { state = wishListInitialState; }
+        switch (action.type) {
+            case CREATE_WISH_LIST_SUCCESS:
+            case LOAD_WISH_LIST_SUCCESS:
+                return action.meta.entityId;
+            case CLEAR_CART_STATE:
+                return wishListInitialState;
+        }
+        return state;
+    }
+
     var ActiveCartService = /** @class */ (function () {
         function ActiveCartService(store, multiCartService, userIdService) {
             var _this = this;
             this.store = store;
             this.multiCartService = multiCartService;
             this.userIdService = userIdService;
-            this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
-            this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
             this.subscription = new rxjs.Subscription();
-            this.userId = OCC_USER_ID_ANONYMOUS;
-            this.activeCartId$ = this.store.pipe(i1$2.select(getActiveCartId), operators.filter(function (cartId) { return typeof cartId !== 'undefined'; }), operators.map(function (cartId) {
-                if (!cartId) {
+            // This stream is used for referencing carts in API calls.
+            this.activeCartId$ = this.userIdService.getUserId().pipe(
+            // We want to wait with initialization of cartId until we have userId initialized
+            // We have take(1) to not trigger this stream, when userId changes.
+            operators.take(1), operators.switchMapTo(this.store), i1$2.select(getActiveCartId), 
+            // We also wait until we initialize cart from localStorage. Before that happens cartId in store === null
+            operators.filter(function (cartId) { return cartId !== activeCartInitialState; }), operators.map(function (cartId) {
+                if (cartId === '') {
+                    // We fallback to current when we don't have particular cart id -> cartId === '', because that's how you reference latest user cart.
                     return OCC_CART_ID_CURRENT;
                 }
                 return cartId;
@@ -9556,31 +9618,31 @@
         };
         ActiveCartService.prototype.initActiveCart = function () {
             var _this = this;
-            this.subscription.add(rxjs.combineLatest([
-                this.userIdService.getUserId(),
-                this.activeCartId$.pipe(operators.auditTime(0)),
-            ])
-                .pipe(operators.map(function (_a) {
-                var _b = __read(_a, 1), userId = _b[0];
-                return userId;
+            // Any change of user id is also interesting for us, because we have to merge/load/switch cart in those cases.
+            this.subscription.add(this.userIdService
+                .getUserId()
+                .pipe(
+            // We never trigger cart merge/load on app initialization here and that's why we wait with pairwise for a change of userId (not initialization).
+            operators.pairwise(), operators.switchMap(function (_a) {
+                var _b = __read(_a, 2), previousUserId = _b[0], userId = _b[1];
+                // We need cartId once we have the previous and current userId. We don't want to subscribe to cartId stream before.
+                return rxjs.combineLatest([
+                    rxjs.of(previousUserId),
+                    rxjs.of(userId),
+                    _this.activeCartId$,
+                ]).pipe(operators.take(1));
             }))
-                .subscribe(function (userId) {
-                _this.userId = userId;
-                if (_this.userId !== OCC_USER_ID_ANONYMOUS) {
-                    if (_this.isJustLoggedIn(userId)) {
-                        _this.loadOrMerge(_this.cartId);
-                    }
+                .subscribe(function (_a) {
+                var _b = __read(_a, 3), previousUserId = _b[0], userId = _b[1], cartId = _b[2];
+                // Only change of user and not a logout (current user id !== anonymous) should trigger loading mechanism
+                if (_this.isJustLoggedIn(userId, previousUserId)) {
+                    _this.loadOrMerge(cartId, userId, previousUserId);
                 }
-                _this.previousUserId = userId;
             }));
-            this.subscription.add(this.activeCartId$.subscribe(function (cartId) {
-                _this.cartId = cartId;
-            }));
-            this.activeCart$ = this.cartSelector$.pipe(operators.withLatestFrom(this.activeCartId$), operators.map(function (_a) {
-                var _b = __read(_a, 2), cartEntity = _b[0], activeCartId = _b[1];
+            // Stream for getting the cart value
+            var activeCartValue$ = this.cartSelector$.pipe(operators.map(function (cartEntity) {
                 return {
                     cart: cartEntity.value,
-                    cartId: activeCartId,
                     isStable: !cartEntity.loading && cartEntity.processesCount === 0,
                     loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
                 };
@@ -9591,21 +9653,22 @@
             operators.filter(function (_a) {
                 var isStable = _a.isStable, cart = _a.cart;
                 return isStable || _this.isEmpty(cart);
-            }), operators.tap(function (_a) {
-                var cart = _a.cart, cartId = _a.cartId, loaded = _a.loaded, isStable = _a.isStable;
+            }));
+            // Responsible for loading cart when it's not (eg. app initialization when we have only cart id)
+            var activeCartLoading$ = activeCartValue$.pipe(operators.withLatestFrom(this.activeCartId$, this.userIdService.getUserId()), operators.tap(function (_a) {
+                var _b = __read(_a, 3), _c = _b[0], cart = _c.cart, loaded = _c.loaded, isStable = _c.isStable, cartId = _b[1], userId = _b[2];
                 if (isStable &&
                     _this.isEmpty(cart) &&
                     !loaded &&
                     !isTempCartId(cartId)) {
-                    _this.load(cartId);
+                    _this.load(cartId, userId);
                 }
-            }), operators.map(function (_a) {
+            }));
+            this.activeCart$ = rxjs.using(function () { return activeCartLoading$.subscribe(); }, function () { return activeCartValue$; }).pipe(
+            // Normalization for empty cart value. It will always be returned as empty object.
+            operators.map(function (_a) {
                 var cart = _a.cart;
                 return (cart ? cart : {});
-            }), operators.tap(function (cart) {
-                if (cart) {
-                    _this.cartUser = cart.user;
-                }
             }), operators.distinctUntilChanged(), operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
@@ -9618,8 +9681,10 @@
          * Returns active cart id
          */
         ActiveCartService.prototype.getActiveCartId = function () {
-            var _this = this;
-            return this.activeCart$.pipe(operators.map(function (cart) { return getCartIdByUserId(cart, _this.userId); }), operators.distinctUntilChanged());
+            return this.activeCart$.pipe(operators.withLatestFrom(this.userIdService.getUserId()), operators.map(function (_a) {
+                var _b = __read(_a, 2), cart = _b[0], userId = _b[1];
+                return getCartIdByUserId(cart, userId);
+            }), operators.distinctUntilChanged());
         };
         /**
          * Returns cart entries
@@ -9656,12 +9721,13 @@
             // At the end we finally switch to cart `code` for cart id. Between those switches cart `isStable` function should not flicker.
             return this.activeCartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.isStable(cartId); }), operators.debounce(function (state) { return (state ? rxjs.timer(0) : rxjs.EMPTY); }), operators.distinctUntilChanged());
         };
-        ActiveCartService.prototype.loadOrMerge = function (cartId) {
+        ActiveCartService.prototype.loadOrMerge = function (cartId, userId, previousUserId) {
             // for login user, whenever there's an existing cart, we will load the user
             // current cart and merge it into the existing cart
-            if (!cartId || cartId === OCC_CART_ID_CURRENT) {
+            // cartId will be defined (not '', null, undefined)
+            if (cartId === OCC_CART_ID_CURRENT) {
                 this.multiCartService.loadCart({
-                    userId: this.userId,
+                    userId: userId,
                     cartId: OCC_CART_ID_CURRENT,
                     extraData: {
                         active: true,
@@ -9671,13 +9737,13 @@
             else if (this.isGuestCart()) {
                 this.guestCartMerge(cartId);
             }
-            else if (this.userId !== this.previousUserId &&
-                this.userId !== OCC_USER_ID_ANONYMOUS &&
-                this.previousUserId !== OCC_USER_ID_ANONYMOUS) {
+            else if (userId !== previousUserId &&
+                userId !== OCC_USER_ID_ANONYMOUS &&
+                previousUserId !== OCC_USER_ID_ANONYMOUS) {
                 // This case covers the case when you are logged in and then asm user logs in and you don't want to merge, but only load emulated user cart
                 // Similarly when you are logged in as asm user and you logout and want to resume previous user session
                 this.multiCartService.loadCart({
-                    userId: this.userId,
+                    userId: userId,
                     cartId: cartId,
                     extraData: {
                         active: true,
@@ -9685,8 +9751,9 @@
                 });
             }
             else {
+                // We have particular cart locally, but we logged in, so we need to combine this with current cart or make it ours.
                 this.multiCartService.mergeToCurrentCart({
-                    userId: this.userId,
+                    userId: userId,
                     cartId: cartId,
                     extraData: {
                         active: true,
@@ -9694,19 +9761,11 @@
                 });
             }
         };
-        ActiveCartService.prototype.load = function (cartId) {
-            if (this.userId !== OCC_USER_ID_ANONYMOUS) {
+        ActiveCartService.prototype.load = function (cartId, userId) {
+            // We want to load cart in every case apart from anonymous user and current cart combination
+            if (!(userId === OCC_USER_ID_ANONYMOUS && cartId === OCC_CART_ID_CURRENT)) {
                 this.multiCartService.loadCart({
-                    userId: this.userId,
-                    cartId: cartId ? cartId : OCC_CART_ID_CURRENT,
-                    extraData: {
-                        active: true,
-                    },
-                });
-            }
-            else if (cartId && cartId !== OCC_CART_ID_CURRENT) {
-                this.multiCartService.loadCart({
-                    userId: this.userId,
+                    userId: userId,
                     cartId: cartId,
                     extraData: {
                         active: true,
@@ -9720,19 +9779,22 @@
                 productCode: entry.product.code,
                 quantity: entry.quantity,
             }); });
-            this.requireLoadedCartForGuestMerge().subscribe(function (cartState) {
-                _this.multiCartService.addEntries(_this.userId, getCartIdByUserId(cartState.value, _this.userId), entriesToAdd);
+            this.requireLoadedCartForGuestMerge()
+                .pipe(operators.withLatestFrom(this.userIdService.getUserId()))
+                .subscribe(function (_a) {
+                var _b = __read(_a, 2), cartState = _b[0], userId = _b[1];
+                _this.multiCartService.addEntries(userId, getCartIdByUserId(cartState.value, userId), entriesToAdd);
             });
         };
         ActiveCartService.prototype.requireLoadedCartForGuestMerge = function () {
             var _this = this;
             return this.requireLoadedCart(this.cartSelector$.pipe(operators.filter(function () { return !_this.isGuestCart(); })));
         };
-        ActiveCartService.prototype.isCartCreating = function (cartState) {
+        ActiveCartService.prototype.isCartCreating = function (cartState, cartId) {
             // cart creating is always represented with loading flags
             // when all loading flags are false it means that we restored wrong cart id
             // could happen on context change or reload right in the middle on cart create call
-            return (isTempCartId(this.cartId) &&
+            return (isTempCartId(cartId) &&
                 (cartState.loading || cartState.success || cartState.error));
         };
         ActiveCartService.prototype.requireLoadedCart = function (customCartSelector$) {
@@ -9745,30 +9807,48 @@
                 : this.cartSelector$;
             return cartSelector$.pipe(operators.filter(function (cartState) { return !cartState.loading; }), 
             // Avoid load/create call when there are new cart creating at the moment
-            operators.filter(function (cartState) { return !_this.isCartCreating(cartState); }), operators.take(1), operators.switchMap(function (cartState) {
+            operators.withLatestFrom(this.activeCartId$), operators.filter(function (_a) {
+                var _b = __read(_a, 2), cartState = _b[0], cartId = _b[1];
+                return !_this.isCartCreating(cartState, cartId);
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 1), cartState = _b[0];
+                return cartState;
+            }), operators.take(1), operators.withLatestFrom(this.userIdService.getUserId()), operators.tap(function (_a) {
+                var _b = __read(_a, 2), cartState = _b[0], userId = _b[1];
                 // Try to load the cart, because it might have been created on another device between our login and add entry call
-                if (_this.isEmpty(cartState.value) &&
-                    _this.userId !== OCC_USER_ID_ANONYMOUS) {
-                    _this.load(undefined);
+                if (_this.isEmpty(cartState.value) && userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.load(OCC_CART_ID_CURRENT, userId);
                 }
+            }), operators.switchMap(function () {
                 return cartSelector$;
             }), operators.filter(function (cartState) { return !cartState.loading; }), 
             // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
-            operators.filter(function (cartState) { return _this.userId === OCC_USER_ID_ANONYMOUS ||
-                cartState.success ||
-                cartState.error; }), operators.take(1), operators.switchMap(function (cartState) {
+            operators.withLatestFrom(this.userIdService.getUserId()), operators.filter(function (_a) {
+                var _b = __read(_a, 2), cartState = _b[0], userId = _b[1];
+                return userId === OCC_USER_ID_ANONYMOUS ||
+                    cartState.success ||
+                    cartState.error;
+            }), operators.take(1), operators.tap(function (_a) {
+                var _b = __read(_a, 2), cartState = _b[0], userId = _b[1];
                 if (_this.isEmpty(cartState.value)) {
                     _this.multiCartService.createCart({
-                        userId: _this.userId,
+                        userId: userId,
                         extraData: {
                             active: true,
                         },
                     });
                 }
+            }), operators.switchMap(function () {
                 return cartSelector$;
             }), operators.filter(function (cartState) { return !cartState.loading; }), operators.filter(function (cartState) { return cartState.success || cartState.error; }), 
             // wait for active cart id to point to code/guid to avoid some work on temp cart entity
-            operators.filter(function (cartState) { return !_this.isCartCreating(cartState); }), operators.filter(function (cartState) { return !_this.isEmpty(cartState.value); }), operators.take(1));
+            operators.withLatestFrom(this.activeCartId$), operators.filter(function (_a) {
+                var _b = __read(_a, 2), cartState = _b[0], cartId = _b[1];
+                return !_this.isCartCreating(cartState, cartId);
+            }), operators.map(function (_a) {
+                var _b = __read(_a, 1), cartState = _b[0];
+                return cartState;
+            }), operators.filter(function (cartState) { return !_this.isEmpty(cartState.value); }), operators.take(1));
         };
         /**
          * Add entry to active cart
@@ -9778,8 +9858,11 @@
          */
         ActiveCartService.prototype.addEntry = function (productCode, quantity) {
             var _this = this;
-            this.requireLoadedCart().subscribe(function (cartState) {
-                _this.multiCartService.addEntry(_this.userId, getCartIdByUserId(cartState.value, _this.userId), productCode, quantity);
+            this.requireLoadedCart()
+                .pipe(operators.withLatestFrom(this.userIdService.getUserId()))
+                .subscribe(function (_a) {
+                var _b = __read(_a, 2), cartState = _b[0], userId = _b[1];
+                _this.multiCartService.addEntry(userId, getCartIdByUserId(cartState.value, userId), productCode, quantity);
             });
         };
         /**
@@ -9788,7 +9871,13 @@
          * @param entry
          */
         ActiveCartService.prototype.removeEntry = function (entry) {
-            this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
+            var _this = this;
+            this.activeCartId$
+                .pipe(operators.withLatestFrom(this.userIdService.getUserId()), operators.take(1))
+                .subscribe(function (_a) {
+                var _b = __read(_a, 2), cartId = _b[0], userId = _b[1];
+                _this.multiCartService.removeEntry(userId, cartId, entry.entryNumber);
+            });
         };
         /**
          * Update entry
@@ -9797,7 +9886,13 @@
          * @param quantity
          */
         ActiveCartService.prototype.updateEntry = function (entryNumber, quantity) {
-            this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
+            var _this = this;
+            this.activeCartId$
+                .pipe(operators.withLatestFrom(this.userIdService.getUserId()), operators.take(1))
+                .subscribe(function (_a) {
+                var _b = __read(_a, 2), cartId = _b[0], userId = _b[1];
+                _this.multiCartService.updateEntry(userId, cartId, entryNumber, quantity);
+            });
         };
         /**
          * Returns cart entry
@@ -9814,7 +9909,13 @@
          * @param email
          */
         ActiveCartService.prototype.addEmail = function (email) {
-            this.multiCartService.assignEmail(this.cartId, this.userId, email);
+            var _this = this;
+            this.activeCartId$
+                .pipe(operators.withLatestFrom(this.userIdService.getUserId()), operators.take(1))
+                .subscribe(function (_a) {
+                var _b = __read(_a, 2), cartId = _b[0], userId = _b[1];
+                _this.multiCartService.assignEmail(cartId, userId, email);
+            });
         };
         /**
          * Get assigned user to cart
@@ -9822,13 +9923,20 @@
         ActiveCartService.prototype.getAssignedUser = function () {
             return this.getActive().pipe(operators.map(function (cart) { return cart.user; }));
         };
+        // TODO: Make cart required param in 4.0 and drop the subscribe/unsubscribe.
         /**
          * Returns true for guest cart
          */
-        ActiveCartService.prototype.isGuestCart = function () {
-            return (this.cartUser &&
-                (this.cartUser.name === OCC_USER_ID_GUEST ||
-                    this.isEmail(this.cartUser.uid.split('|').slice(1).join('|'))));
+        ActiveCartService.prototype.isGuestCart = function (cart) {
+            if (!cart) {
+                this.activeCart$
+                    .subscribe(function (activeCart) { return (cart = activeCart); })
+                    .unsubscribe();
+            }
+            var cartUser = cart === null || cart === void 0 ? void 0 : cart.user;
+            return (cartUser &&
+                (cartUser.name === OCC_USER_ID_GUEST ||
+                    this.isEmail(cartUser.uid.split('|').slice(1).join('|'))));
         };
         /**
          * Add multiple entries to a cart
@@ -9866,9 +9974,9 @@
         ActiveCartService.prototype.isEmpty = function (cart) {
             return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
         };
-        ActiveCartService.prototype.isJustLoggedIn = function (userId) {
-            return (this.previousUserId !== userId && // *just* logged in
-                this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+        ActiveCartService.prototype.isJustLoggedIn = function (userId, previousUserId) {
+            return (userId !== OCC_USER_ID_ANONYMOUS && // not logged out
+                previousUserId !== userId // *just* logged in / switched to ASM emulation
             );
         };
         return ActiveCartService;
@@ -22061,60 +22169,6 @@
         i3.Effect()
     ], WishListEffects.prototype, "resetWishList$", void 0);
 
-    var activeCartInitialState = '';
-    var wishListInitialState = '';
-    function activeCartReducer(state, action) {
-        if (state === void 0) { state = activeCartInitialState; }
-        var _a, _b, _c;
-        switch (action.type) {
-            case LOAD_CART_SUCCESS:
-            case CREATE_CART_SUCCESS:
-            // point to `temp-${uuid}` cart when we are creating/merging cart
-            case CREATE_CART:
-                if ((_b = (_a = action === null || action === void 0 ? void 0 : action.payload) === null || _a === void 0 ? void 0 : _a.extraData) === null || _b === void 0 ? void 0 : _b.active) {
-                    return action.meta.entityId;
-                }
-                else {
-                    return state;
-                }
-            case SET_ACTIVE_CART_ID:
-                return action.payload;
-            case REMOVE_CART:
-            case DELETE_CART_SUCCESS:
-                if (((_c = action.payload) === null || _c === void 0 ? void 0 : _c.cartId) === state) {
-                    return activeCartInitialState;
-                }
-                return state;
-            case CLEAR_CART_STATE:
-                return activeCartInitialState;
-        }
-        return state;
-    }
-    var cartEntitiesInitialState = undefined;
-    function cartEntitiesReducer(state, action) {
-        if (state === void 0) { state = cartEntitiesInitialState; }
-        switch (action.type) {
-            case LOAD_CART_SUCCESS:
-            case CREATE_CART_SUCCESS:
-            case CREATE_WISH_LIST_SUCCESS:
-            case LOAD_WISH_LIST_SUCCESS:
-            case SET_TEMP_CART:
-                return action.payload.cart;
-        }
-        return state;
-    }
-    function wishListReducer(state, action) {
-        if (state === void 0) { state = wishListInitialState; }
-        switch (action.type) {
-            case CREATE_WISH_LIST_SUCCESS:
-            case LOAD_WISH_LIST_SUCCESS:
-                return action.meta.entityId;
-            case CLEAR_CART_STATE:
-                return wishListInitialState;
-        }
-        return state;
-    }
-
     function clearMultiCartState(reducer) {
         return function (state, action) {
             if (action.type === LOGOUT) {
@@ -22167,6 +22221,9 @@
             if (state) {
                 this.store.dispatch(new SetActiveCartId(state.active));
             }
+            else {
+                this.store.dispatch(new SetActiveCartId(''));
+            }
         };
         MultiCartStatePersistenceService.prototype.ngOnDestroy = function () {
             this.subscription.unsubscribe();
@@ -22194,14 +22251,14 @@
     /**
      * Before `MultiCartStatePersistenceService` restores the active cart id `ActiveCartService`
      * will use `current` cart instead of the one saved in browser. This meta reducer
-     * sets the value on store initialization to undefined cart which holds active cart loading
+     * sets the value on store initialization to null cart which holds active cart loading
      * until the data from storage is restored.
      */
     function uninitializeActiveCartMetaReducerFactory() {
         var metaReducer = function (reducer) { return function (state, action) {
             var newState = Object.assign({}, state);
             if (action.type === '@ngrx/store/init') {
-                newState.cart = Object.assign(Object.assign({}, newState.cart), { active: undefined });
+                newState.cart = Object.assign(Object.assign({}, newState.cart), { active: activeCartInitialState });
             }
             return reducer(newState, action);
         }; };
@@ -22319,7 +22376,13 @@
          *   (an with optional `factory` function - by default `action.payload` will be assigned to the properties of the event instance).
          */
         CartEventBuilder.prototype.registerMapped = function (mapping) {
-            var eventStream$ = this.getAction(mapping.action).pipe(operators.withLatestFrom(this.activeCartService.getActive(), this.activeCartService.getActiveCartId()), operators.filter(function (_a) {
+            var _this = this;
+            var eventStream$ = this.getAction(mapping.action).pipe(operators.switchMap(function (action) {
+                // SwitchMap was used instead of withLatestFrom, because we only want to subscribe to cart stream when action is dispatched.
+                // Using withLatestFrom would trigger subscription to cart observables on event subscription and that causes side effects,
+                // such as loading cart when we don't yet need it.
+                return rxjs.of(action).pipe(operators.withLatestFrom(_this.activeCartService.getActive(), _this.activeCartService.getActiveCartId()));
+            }), operators.filter(function (_a) {
                 var _b = __read(_a, 3), action = _b[0], _activeCart = _b[1], activeCartId = _b[2];
                 return action.payload['cartId'] === activeCartId;
             }), operators.map(function (_a) {
