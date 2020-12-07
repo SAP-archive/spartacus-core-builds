@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 import { Title, User, UserSignUp } from '../../../model/misc.model';
 import { UserAdapter } from './user.adapter';
-import * as ɵngcc0 from '@angular/core';
 export declare class UserConnector {
     protected adapter: UserAdapter;
     constructor(adapter: UserAdapter);
@@ -15,7 +14,4 @@ export declare class UserConnector {
     updatePassword(userId: string, oldPassword: string, newPassword: string): Observable<{}>;
     remove(userId: string): Observable<{}>;
     getTitles(): Observable<Title[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserConnector, never>;
 }
-
-//# sourceMappingURL=user.connector.d.ts.map
