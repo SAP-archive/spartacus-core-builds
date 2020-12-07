@@ -9050,6 +9050,17 @@
         { type: i0.NgModule }
     ];
 
+    /**
+     * The homepage id for the CMS homepage is not required when we query the backend.
+     * CMS business users can have multiple pages, that they might switch quickly without
+     * changing the page id. Therefore, we use a constant to keep track of the page in the
+     * store, but are able to ignore the id while querying the backend.
+     */
+    var HOME_PAGE_CONTEXT = '__HOMEPAGE__';
+    /**
+     * SmartEdit preview page is loaded by previewToken which is added by interceptor
+     */
+    var SMART_EDIT_CONTEXT = 'smartedit-preview';
     var PageContext = /** @class */ (function () {
         function PageContext(id, type) {
             this.id = id;
@@ -9320,7 +9331,7 @@
             // we give smartedit preview page a PageContext
             if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
                 context = {
-                    id: 'smartedit-preview',
+                    id: SMART_EDIT_CONTEXT,
                     type: exports.PageType.CONTENT_PAGE,
                 };
             }
@@ -9347,7 +9358,11 @@
                     }
                     else {
                         context = {
-                            id: 'homepage',
+                            // We like URLs to be driven by the backend, the CMS actually returns the homepage
+                            // if no page label is given. Our logic however requires an id. undefined doesn't work.
+                            id: HOME_PAGE_CONTEXT,
+                            // We currently need to support a hardcoded page type, since the internal store uses the page
+                            // type to store the content.
                             type: exports.PageType.CONTENT_PAGE,
                         };
                     }
@@ -13987,40 +14002,50 @@
             this.converter = converter;
             this.headers = new i1$4.HttpHeaders().set('Content-Type', 'application/json');
         }
-        OccCmsPageAdapter.prototype.load = function (pageContext, fields) {
-            // load page by Id
-            if (pageContext.type === undefined) {
-                return this.http
-                    .get(this.occEndpoints.getUrl('page', {
-                    id: pageContext.id,
-                }, { fields: fields ? fields : 'DEFAULT' }), {
-                    headers: this.headers,
-                })
-                    .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
-            }
-            // load page by PageContext
-            var httpParams = this.getPagesRequestParams(pageContext);
+        /**
+         * @override returns the OCC CMS page data for the given context and converts
+         * the data by any configured `CMS_PAGE_NORMALIZER`.
+         */
+        OccCmsPageAdapter.prototype.load = function (pageContext) {
+            var params = this.getPagesRequestParams(pageContext);
+            var endpoint = !pageContext.type
+                ? this.occEndpoints.getUrl('page', undefined, params)
+                : this.occEndpoints.getUrl('pages', undefined, params);
             return this.http
-                .get(this.getPagesEndpoint(httpParams, fields), {
-                headers: this.headers,
-            })
+                .get(endpoint, { headers: this.headers })
                 .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
         };
-        OccCmsPageAdapter.prototype.getPagesEndpoint = function (params, fields) {
-            fields = fields ? fields : 'DEFAULT';
-            return this.occEndpoints.getUrl('pages', {}, Object.assign({ fields: fields }, params));
-        };
-        OccCmsPageAdapter.prototype.getPagesRequestParams = function (pageContext) {
+        /**
+         * The OCC CMS API allows to query pages by a combination of pageType, label and code.
+         *
+         * When a `ContentPage` is requested, we use the `pageLabelOrId`:
+         *
+         * ```
+         * "/pages?pageLabelOrId=/my-page&pageType=ContentPage"
+         * ```
+         *
+         * Other pages are queried by code:
+         *
+         * ```
+         * "/pages?code=1234&pageType=ProductPage"
+         * ```
+         *
+         * The page context is ignored for a home page request or in case of a
+         * `smartedit-preview` request.
+         */
+        OccCmsPageAdapter.prototype.getPagesRequestParams = function (context) {
+            if (context.id === HOME_PAGE_CONTEXT || context.id === SMART_EDIT_CONTEXT) {
+                return {};
+            }
             var httpParams = {};
-            // smartedit preview page is loaded by previewToken which added by interceptor
-            if (pageContext.id !== 'smartedit-preview') {
-                httpParams = { pageType: pageContext.type };
-                if (pageContext.type === exports.PageType.CONTENT_PAGE) {
-                    httpParams['pageLabelOrId'] = pageContext.id;
-                }
-                else {
-                    httpParams['code'] = pageContext.id;
-                }
+            if (context.type) {
+                httpParams.pageType = context.type;
+            }
+            if (context.type === exports.PageType.CONTENT_PAGE) {
+                httpParams.pageLabelOrId = context.id;
+            }
+            else {
+                httpParams.code = context.id;
             }
             return httpParams;
         };
@@ -30073,6 +30098,7 @@
     exports.GlobalMessageModule = GlobalMessageModule;
     exports.GlobalMessageSelectors = globalMessageGroup_selectors;
     exports.GlobalMessageService = GlobalMessageService;
+    exports.HOME_PAGE_CONTEXT = HOME_PAGE_CONTEXT;
     exports.HttpErrorHandler = HttpErrorHandler;
     exports.HttpParamsURIEncoder = HttpParamsURIEncoder;
     exports.I18nConfig = I18nConfig;
@@ -30243,6 +30269,7 @@
     exports.SET_PAYMENT_DETAILS_PROCESS_ID = SET_PAYMENT_DETAILS_PROCESS_ID;
     exports.SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID;
     exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
+    exports.SMART_EDIT_CONTEXT = SMART_EDIT_CONTEXT;
     exports.SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID;
     exports.SearchPageMetaResolver = SearchPageMetaResolver;
     exports.SearchboxService = SearchboxService;
