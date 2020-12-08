@@ -1,3 +1,4 @@
+import * as ɵngcc0 from '@angular/core';
 export declare class JavaRegExpConverter {
     /**
      * Pattern that extracts modifiers from the Java regexp.
@@ -26,4 +27,7 @@ export declare class JavaRegExpConverter {
      * - https://en.wikipedia.org/wiki/Comparison_of_regular_expression_engines#Language_features
      */
     toJsRegExp(javaSyntax: string): RegExp;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<JavaRegExpConverter, never>;
 }
+
+//# sourceMappingURL=java-reg-exp-converter.d.ts.map
