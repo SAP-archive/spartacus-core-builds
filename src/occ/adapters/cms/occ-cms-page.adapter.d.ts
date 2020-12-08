@@ -6,7 +6,6 @@ import { PageType } from '../../../model/cms.model';
 import { PageContext } from '../../../routing/models/page-context.model';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
-import * as ɵngcc0 from '@angular/core';
 export interface OccCmsPageRequest {
     pageLabelOrId?: string;
     pageType?: PageType;
@@ -43,7 +42,4 @@ export declare class OccCmsPageAdapter implements CmsPageAdapter {
      * `smartedit-preview` request.
      */
     protected getPagesRequestParams(context: PageContext): OccCmsPageRequest;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsPageAdapter, never>;
 }
-
-//# sourceMappingURL=occ-cms-page.adapter.d.ts.map
