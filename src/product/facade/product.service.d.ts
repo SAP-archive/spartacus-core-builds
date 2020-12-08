@@ -4,7 +4,6 @@ import { Product } from '../../model/product.model';
 import { ProductScope } from '../model/product-scope';
 import { ProductLoadingService } from '../services/product-loading.service';
 import { StateWithProduct } from '../store/product-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class ProductService {
     protected store: Store<StateWithProduct>;
     protected productLoading: ProductLoadingService;
@@ -41,7 +40,4 @@ export declare class ProductService {
      * explicit reload might be needed.
      */
     reload(productCode: string, scope?: ProductScope | string): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductService, never>;
 }
-
-//# sourceMappingURL=product.service.d.ts.map
