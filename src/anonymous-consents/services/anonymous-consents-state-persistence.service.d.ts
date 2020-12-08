@@ -7,7 +7,6 @@ import { AnonymousConsentsState, StateWithAnonymousConsents } from '../store/ind
 /**
  * Anonymous consents state synced to browser storage.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare type SyncedAnonymousConsentsState = Partial<AnonymousConsentsState>;
 /**
  * Responsible for saving the anonymous consents data in browser storage.
@@ -37,7 +36,4 @@ export declare class AnonymousConsentsStatePersistenceService implements OnDestr
      */
     protected onRead(state: SyncedAnonymousConsentsState): void;
     ngOnDestroy(): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AnonymousConsentsStatePersistenceService, never>;
 }
-
-//# sourceMappingURL=anonymous-consents-state-persistence.service.d.ts.map
