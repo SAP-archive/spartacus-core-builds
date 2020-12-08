@@ -15620,10 +15620,8 @@
         function AnonymousConsentNormalizer(anonymousConsentsService) {
             this.anonymousConsentsService = anonymousConsentsService;
         }
-        AnonymousConsentNormalizer.prototype.convert = function (source, target) {
-            if (target === void 0) { target = []; }
-            target = this.anonymousConsentsService.decodeAndDeserialize(source);
-            return target;
+        AnonymousConsentNormalizer.prototype.convert = function (source) {
+            return this.anonymousConsentsService.decodeAndDeserialize(source);
         };
         return AnonymousConsentNormalizer;
     }());

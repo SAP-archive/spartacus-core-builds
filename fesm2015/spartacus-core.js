@@ -13727,9 +13727,8 @@ class AnonymousConsentNormalizer {
     constructor(anonymousConsentsService) {
         this.anonymousConsentsService = anonymousConsentsService;
     }
-    convert(source, target = []) {
-        target = this.anonymousConsentsService.decodeAndDeserialize(source);
-        return target;
+    convert(source) {
+        return this.anonymousConsentsService.decodeAndDeserialize(source);
     }
 }
 AnonymousConsentNormalizer.ɵprov = ɵɵdefineInjectable({ factory: function AnonymousConsentNormalizer_Factory() { return new AnonymousConsentNormalizer(ɵɵinject(AnonymousConsentsService)); }, token: AnonymousConsentNormalizer, providedIn: "root" });
