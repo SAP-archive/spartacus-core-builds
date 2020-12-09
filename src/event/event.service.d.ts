@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
  * knowing as multiple decoupled features can attach sources to the same
  * event type.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class EventService {
     /**
      * The various events meta are collected in a map, stored by the event type class
@@ -62,7 +61,4 @@ export declare class EventService {
      * Should be used only in dev mode.
      */
     private getValidatedEventStream;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<EventService, never>;
 }
-
-//# sourceMappingURL=event.service.d.ts.map
