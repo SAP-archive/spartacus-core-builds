@@ -1,1 +1,0 @@
-{"version":3,"file":"features-config.d.ts","sources":["features-config.d.ts"],"names":[],"mappings":";AAAA;AACA;AACA;AACA;;AACA","sourcesContent":["export declare abstract class FeaturesConfig {\n    features?: {\n        [featureToggle: string]: string | boolean;\n    };\n}\n"]}
