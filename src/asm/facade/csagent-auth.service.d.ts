@@ -10,6 +10,7 @@ import { StateWithAsm } from '../store/asm-state';
  * Auth service for CS agent. Useful to login/logout agent, start emulation
  * or get information about the status of emulation.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CsAgentAuthService {
     protected authService: AuthService;
     protected authStorageService: AsmAuthStorageService;
@@ -50,4 +51,7 @@ export declare class CsAgentAuthService {
      * Logout a customer support agent.
      */
     logoutCustomerSupportAgent(): Promise<void>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CsAgentAuthService, never>;
 }
+
+//# sourceMappingURL=csagent-auth.service.d.ts.map
