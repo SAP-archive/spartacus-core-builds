@@ -1,0 +1,1 @@
+{"version":3,"file":"product-store.module.d.ts","sources":["product-store.module.d.ts"],"names":[],"mappings":"AAAA;;;;;AACA;AACA;;;AACA","sourcesContent":["import { StateConfig } from '../../state/config/state-config';\nexport declare function productStoreConfigFactory(): StateConfig;\nexport declare class ProductStoreModule {\n}\n"]}
