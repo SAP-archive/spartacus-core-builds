@@ -1,6 +1,5 @@
 import { ModuleWithProviders } from '@angular/core';
 import { ConfigurationService } from './services/configuration.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class ConfigModule {
     constructor(_configurationService: ConfigurationService);
     /**
@@ -26,8 +25,4 @@ export declare class ConfigModule {
      * @param config
      */
     static forRoot(config?: any): ModuleWithProviders<ConfigModule>;
-    static ɵmod: ɵngcc0.ɵɵNgModuleDefWithMeta<ConfigModule, never, never, never>;
-    static ɵinj: ɵngcc0.ɵɵInjectorDef<ConfigModule>;
 }
-
-//# sourceMappingURL=config.module.d.ts.map
