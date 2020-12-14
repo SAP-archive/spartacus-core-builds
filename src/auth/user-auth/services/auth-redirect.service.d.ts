@@ -4,6 +4,7 @@ import { AuthRedirectStorageService } from './auth-redirect-storage.service';
 /**
  * Responsible for saving last accessed page (or attempted) before login and for redirecting to that page after login.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class AuthRedirectService {
     protected routing: RoutingService;
     protected router: Router;
@@ -36,4 +37,7 @@ export declare class AuthRedirectService {
      */
     reportNotAuthGuard(): void;
     private getCurrentNavigation;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthRedirectService, never>;
 }
+
+//# sourceMappingURL=auth-redirect.service.d.ts.map

@@ -6,6 +6,7 @@ import { ActionToEventMapping } from './action-to-event-mapping';
 /**
  * Registers streams of ngrx actions as events source streams
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class StateEventService {
     protected actionsSubject: ActionsSubject;
     protected eventService: EventService;
@@ -39,4 +40,7 @@ export declare class StateEventService {
         type: string;
         payload?: any;
     }, eventType: Type<T>, factory?: (action: any) => T): T;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<StateEventService, never>;
 }
+
+//# sourceMappingURL=state-event.service.d.ts.map
