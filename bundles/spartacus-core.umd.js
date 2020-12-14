@@ -20640,7 +20640,6 @@
                 },] }
     ];
 
-    var HttpResponseStatus;
     (function (HttpResponseStatus) {
         HttpResponseStatus[HttpResponseStatus["UNKNOWN"] = -1] = "UNKNOWN";
         HttpResponseStatus[HttpResponseStatus["BAD_REQUEST"] = 400] = "BAD_REQUEST";
@@ -20651,7 +20650,7 @@
         HttpResponseStatus[HttpResponseStatus["BAD_GATEWAY"] = 502] = "BAD_GATEWAY";
         HttpResponseStatus[HttpResponseStatus["GATEWAY_TIMEOUT"] = 504] = "GATEWAY_TIMEOUT";
         HttpResponseStatus[HttpResponseStatus["INTERNAL_SERVER_ERROR"] = 500] = "INTERNAL_SERVER_ERROR";
-    })(HttpResponseStatus || (HttpResponseStatus = {}));
+    })(exports.HttpResponseStatus || (exports.HttpResponseStatus = {}));
 
     var HttpErrorHandler = /** @class */ (function () {
         function HttpErrorHandler(globalMessageService) {
@@ -20680,7 +20679,7 @@
         __extends(BadGatewayHandler, _super);
         function BadGatewayHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
+            _this.responseStatus = exports.HttpResponseStatus.BAD_GATEWAY;
             return _this;
         }
         BadGatewayHandler.prototype.handleError = function () {
@@ -20703,7 +20702,7 @@
         __extends(BadRequestHandler, _super);
         function BadRequestHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.BAD_REQUEST;
+            _this.responseStatus = exports.HttpResponseStatus.BAD_REQUEST;
             return _this;
         }
         BadRequestHandler.prototype.handleError = function (request, response) {
@@ -20782,7 +20781,7 @@
         __extends(ConflictHandler, _super);
         function ConflictHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.CONFLICT;
+            _this.responseStatus = exports.HttpResponseStatus.CONFLICT;
             return _this;
         }
         ConflictHandler.prototype.handleError = function () {
@@ -20807,7 +20806,7 @@
             _this.globalMessageService = globalMessageService;
             _this.authService = authService;
             _this.occEndpoints = occEndpoints;
-            _this.responseStatus = HttpResponseStatus.FORBIDDEN;
+            _this.responseStatus = exports.HttpResponseStatus.FORBIDDEN;
             return _this;
         }
         ForbiddenHandler.prototype.handleError = function (request) {
@@ -20837,7 +20836,7 @@
         __extends(GatewayTimeoutHandler, _super);
         function GatewayTimeoutHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
+            _this.responseStatus = exports.HttpResponseStatus.GATEWAY_TIMEOUT;
             return _this;
         }
         GatewayTimeoutHandler.prototype.handleError = function () {
@@ -20859,7 +20858,7 @@
         __extends(InternalServerErrorHandler, _super);
         function InternalServerErrorHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+            _this.responseStatus = exports.HttpResponseStatus.INTERNAL_SERVER_ERROR;
             return _this;
         }
         InternalServerErrorHandler.prototype.handleError = function () {
@@ -20881,7 +20880,7 @@
         __extends(NotFoundHandler, _super);
         function NotFoundHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.NOT_FOUND;
+            _this.responseStatus = exports.HttpResponseStatus.NOT_FOUND;
             return _this;
         }
         // empty error handler to avoid we fallabck to the unknown error handler
@@ -20906,7 +20905,7 @@
         __extends(UnknownErrorHandler, _super);
         function UnknownErrorHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.UNKNOWN;
+            _this.responseStatus = exports.HttpResponseStatus.UNKNOWN;
             return _this;
         }
         /**
