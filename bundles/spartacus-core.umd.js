@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/router'), require('angular-oauth2-oidc'), require('@angular/common/http'), require('@ngrx/effects'), require('@angular/platform-browser'), require('rxjs/internal/observable/of'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/router', 'angular-oauth2-oidc', '@angular/common/http', '@ngrx/effects', '@angular/platform-browser', 'rxjs/internal/observable/of', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.router, global.angularOAuth2Oidc, global.ng.common.http, global.effects, global.ng.platformBrowser, global.rxjs['internal/observable/of'], global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, (function (exports, i0, i1$2, rxjs, operators, i1, i1$1, i1$3, i1$4, i3, i5, of, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/router'), require('angular-oauth2-oidc'), require('@angular/common/http'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/router', 'angular-oauth2-oidc', '@angular/common/http', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.router, global.angularOAuth2Oidc, global.ng.common.http, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, (function (exports, i0, i1$2, rxjs, operators, i1, i1$1, i1$3, i1$4, i3, i5, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -4314,7 +4314,7 @@
                 scopes[_i] = arguments[_i];
             }
             if (this.isStable) {
-                return of.of(this.config);
+                return rxjs.of(this.config);
             }
             return this.ongoingScopes$.pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config));
         };

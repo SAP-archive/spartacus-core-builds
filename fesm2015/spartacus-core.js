@@ -9,7 +9,6 @@ import { OAuthStorage, OAuthService, OAuthModule } from 'angular-oauth2-oidc';
 import { HttpParams, HttpHeaders, HttpErrorResponse, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ofType, Actions, Effect, EffectsModule, createEffect } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
-import { of as of$1 } from 'rxjs/internal/observable/of';
 import { ROUTER_NAVIGATED, ROUTER_CANCEL, ROUTER_ERROR, ROUTER_NAVIGATION, RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import i18next from 'i18next';
 import i18nextXhrBackend from 'i18next-xhr-backend';
@@ -3721,7 +3720,7 @@ class ConfigInitializerService {
      */
     getStable(...scopes) {
         if (this.isStable) {
-            return of$1(this.config);
+            return of(this.config);
         }
         return this.ongoingScopes$.pipe(filter((ongoingScopes) => ongoingScopes && this.areReady(scopes, ongoingScopes)), take(1), mapTo(this.config));
     }
