@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/router'), require('angular-oauth2-oidc'), require('@angular/common/http'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/router', 'angular-oauth2-oidc', '@angular/common/http', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.router, global.angularOAuth2Oidc, global.ng.common.http, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, (function (exports, i0, i1$2, rxjs, operators, i1, i1$1, i1$3, i1$4, i3, i5, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/router'), require('angular-oauth2-oidc'), require('@angular/common/http'), require('@ngrx/effects'), require('@angular/platform-browser'), require('rxjs/internal/observable/of'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/router', 'angular-oauth2-oidc', '@angular/common/http', '@ngrx/effects', '@angular/platform-browser', 'rxjs/internal/observable/of', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.store, global.rxjs, global.rxjs.operators, global.ng.common, global.ng.router, global.angularOAuth2Oidc, global.ng.common.http, global.effects, global.ng.platformBrowser, global.rxjs['internal/observable/of'], global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, (function (exports, i0, i1$2, rxjs, operators, i1, i1$1, i1$3, i1$4, i3, i5, of, fromNgrxRouter, i18next, i18nextXhrBackend) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -4307,20 +4307,28 @@
          *
          * @param scopes String describing parts of the config we want to be sure are stable
          */
+        ConfigInitializerService.prototype.getStable = function () {
+            var _this = this;
+            var scopes = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                scopes[_i] = arguments[_i];
+            }
+            if (this.isStable) {
+                return of.of(this.config);
+            }
+            return this.ongoingScopes$.pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config));
+        };
+        /**
+         * @deprecated since 3.0, use getStable() instead
+         */
         ConfigInitializerService.prototype.getStableConfig = function () {
             var scopes = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 scopes[_i] = arguments[_i];
             }
             return __awaiter(this, void 0, void 0, function () {
-                var _this = this;
                 return __generator(this, function (_a) {
-                    if (this.isStable) {
-                        return [2 /*return*/, this.config];
-                    }
-                    return [2 /*return*/, this.ongoingScopes$
-                            .pipe(operators.filter(function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); }), operators.take(1), operators.mapTo(this.config))
-                            .toPromise()];
+                    return [2 /*return*/, this.getStable.apply(this, __spread(scopes)).toPromise()];
                 });
             });
         };
@@ -20640,7 +20648,6 @@
                 },] }
     ];
 
-    var HttpResponseStatus;
     (function (HttpResponseStatus) {
         HttpResponseStatus[HttpResponseStatus["UNKNOWN"] = -1] = "UNKNOWN";
         HttpResponseStatus[HttpResponseStatus["BAD_REQUEST"] = 400] = "BAD_REQUEST";
@@ -20651,7 +20658,7 @@
         HttpResponseStatus[HttpResponseStatus["BAD_GATEWAY"] = 502] = "BAD_GATEWAY";
         HttpResponseStatus[HttpResponseStatus["GATEWAY_TIMEOUT"] = 504] = "GATEWAY_TIMEOUT";
         HttpResponseStatus[HttpResponseStatus["INTERNAL_SERVER_ERROR"] = 500] = "INTERNAL_SERVER_ERROR";
-    })(HttpResponseStatus || (HttpResponseStatus = {}));
+    })(exports.HttpResponseStatus || (exports.HttpResponseStatus = {}));
 
     var HttpErrorHandler = /** @class */ (function () {
         function HttpErrorHandler(globalMessageService) {
@@ -20680,7 +20687,7 @@
         __extends(BadGatewayHandler, _super);
         function BadGatewayHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
+            _this.responseStatus = exports.HttpResponseStatus.BAD_GATEWAY;
             return _this;
         }
         BadGatewayHandler.prototype.handleError = function () {
@@ -20703,7 +20710,7 @@
         __extends(BadRequestHandler, _super);
         function BadRequestHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.BAD_REQUEST;
+            _this.responseStatus = exports.HttpResponseStatus.BAD_REQUEST;
             return _this;
         }
         BadRequestHandler.prototype.handleError = function (request, response) {
@@ -20782,7 +20789,7 @@
         __extends(ConflictHandler, _super);
         function ConflictHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.CONFLICT;
+            _this.responseStatus = exports.HttpResponseStatus.CONFLICT;
             return _this;
         }
         ConflictHandler.prototype.handleError = function () {
@@ -20807,7 +20814,7 @@
             _this.globalMessageService = globalMessageService;
             _this.authService = authService;
             _this.occEndpoints = occEndpoints;
-            _this.responseStatus = HttpResponseStatus.FORBIDDEN;
+            _this.responseStatus = exports.HttpResponseStatus.FORBIDDEN;
             return _this;
         }
         ForbiddenHandler.prototype.handleError = function (request) {
@@ -20837,7 +20844,7 @@
         __extends(GatewayTimeoutHandler, _super);
         function GatewayTimeoutHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
+            _this.responseStatus = exports.HttpResponseStatus.GATEWAY_TIMEOUT;
             return _this;
         }
         GatewayTimeoutHandler.prototype.handleError = function () {
@@ -20859,7 +20866,7 @@
         __extends(InternalServerErrorHandler, _super);
         function InternalServerErrorHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+            _this.responseStatus = exports.HttpResponseStatus.INTERNAL_SERVER_ERROR;
             return _this;
         }
         InternalServerErrorHandler.prototype.handleError = function () {
@@ -20881,7 +20888,7 @@
         __extends(NotFoundHandler, _super);
         function NotFoundHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.NOT_FOUND;
+            _this.responseStatus = exports.HttpResponseStatus.NOT_FOUND;
             return _this;
         }
         // empty error handler to avoid we fallabck to the unknown error handler
@@ -20906,7 +20913,7 @@
         __extends(UnknownErrorHandler, _super);
         function UnknownErrorHandler() {
             var _this = _super.apply(this, __spread(arguments)) || this;
-            _this.responseStatus = HttpResponseStatus.UNKNOWN;
+            _this.responseStatus = exports.HttpResponseStatus.UNKNOWN;
             return _this;
         }
         /**

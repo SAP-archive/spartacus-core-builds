@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 /**
  * Provides support for CONFIG_INITIALIZERS
  */
@@ -23,6 +23,10 @@ export declare class ConfigInitializerService {
      * 'siteContext', 'siteContext.language', etc.
      *
      * @param scopes String describing parts of the config we want to be sure are stable
+     */
+    getStable(...scopes: string[]): Observable<any>;
+    /**
+     * @deprecated since 3.0, use getStable() instead
      */
     getStableConfig(...scopes: string[]): Promise<any>;
     /**
