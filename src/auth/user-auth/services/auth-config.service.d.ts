@@ -6,7 +6,6 @@ import { OAuthFlow } from '../models/oauth-flow';
  * Provides handy defaults, when not everything is set in the configuration.
  * Use this service instead of direct configuration.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class AuthConfigService {
     protected authConfig: AuthConfig;
     protected occConfig: OccConfig;
@@ -57,7 +56,4 @@ export declare class AuthConfigService {
      * Use when you have to perform particular action only in some of the OAuth flow scenarios.
      */
     getOAuthFlow(): OAuthFlow;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<AuthConfigService, never>;
 }
-
-//# sourceMappingURL=auth-config.service.d.ts.map
