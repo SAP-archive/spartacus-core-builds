@@ -4,7 +4,6 @@ import { GlobalMessageService } from '../../../global-message/index';
 import { UserAddressConnector } from '../../connectors/address/user-address.connector';
 import { UserAddressService } from '../../facade/user-address.service';
 import { UserActions } from '../actions/index';
-import * as ɵngcc0 from '@angular/core';
 export declare class UserAddressesEffects {
     private actions$;
     private userAddressConnector;
@@ -32,8 +31,4 @@ export declare class UserAddressesEffects {
      */
     private showGlobalMessage;
     private loadAddresses;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<UserAddressesEffects, never>;
-    static ɵprov: ɵngcc0.ɵɵInjectableDef<UserAddressesEffects>;
 }
-
-//# sourceMappingURL=user-addresses.effect.d.ts.map
