@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { Product } from '../../model/product.model';
 import { LoadingScopesService } from '../../occ/services/loading-scopes.service';
 import { StateWithProduct } from '../store/product-state';
-import * as ɵngcc0 from '@angular/core';
 export declare class ProductLoadingService {
     protected store: Store<StateWithProduct>;
     protected loadingScopes: LoadingScopesService;
@@ -44,7 +43,4 @@ export declare class ProductLoadingService {
      * @param maxAge max age
      */
     private getMaxAgeTrigger;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductLoadingService, never>;
 }
-
-//# sourceMappingURL=product-loading.service.d.ts.map
