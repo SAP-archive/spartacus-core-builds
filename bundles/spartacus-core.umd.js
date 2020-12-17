@@ -1337,6 +1337,17 @@
             this.authConfig = authConfig;
             this.occConfig = occConfig;
         }
+        Object.defineProperty(AuthConfigService.prototype, "config", {
+            /**
+             * Utility to make access to authentication config easier.
+             */
+            get: function () {
+                var _a, _b;
+                return (_b = (_a = this.authConfig) === null || _a === void 0 ? void 0 : _a.authentication) !== null && _b !== void 0 ? _b : {};
+            },
+            enumerable: false,
+            configurable: true
+        });
         /**
          * Get client_id
          *
@@ -1344,7 +1355,7 @@
          */
         AuthConfigService.prototype.getClientId = function () {
             var _a;
-            return (_a = this.authConfig.authentication.client_id) !== null && _a !== void 0 ? _a : '';
+            return (_a = this.config.client_id) !== null && _a !== void 0 ? _a : '';
         };
         /**
          * Get client_secret. OAuth server shouldn't require it from web apps (but Hybris OAuth server requires).
@@ -1353,21 +1364,21 @@
          */
         AuthConfigService.prototype.getClientSecret = function () {
             var _a;
-            return (_a = this.authConfig.authentication.client_secret) !== null && _a !== void 0 ? _a : '';
+            return (_a = this.config.client_secret) !== null && _a !== void 0 ? _a : '';
         };
         /**
          * Returns base url of the authorization server
          */
         AuthConfigService.prototype.getBaseUrl = function () {
-            var _a;
-            return ((_a = this.authConfig.authentication.baseUrl) !== null && _a !== void 0 ? _a : this.occConfig.backend.occ.baseUrl + '/authorizationserver');
+            var _a, _b, _c, _d, _e;
+            return ((_a = this.config.baseUrl) !== null && _a !== void 0 ? _a : ((_e = (_d = (_c = (_b = this.occConfig) === null || _b === void 0 ? void 0 : _b.backend) === null || _c === void 0 ? void 0 : _c.occ) === null || _d === void 0 ? void 0 : _d.baseUrl) !== null && _e !== void 0 ? _e : '') + '/authorizationserver');
         };
         /**
          * Returns endpoint for getting the auth token
          */
         AuthConfigService.prototype.getTokenEndpoint = function () {
             var _a;
-            var tokenEndpoint = (_a = this.authConfig.authentication.tokenEndpoint) !== null && _a !== void 0 ? _a : '';
+            var tokenEndpoint = (_a = this.config.tokenEndpoint) !== null && _a !== void 0 ? _a : '';
             return this.prefixEndpoint(tokenEndpoint);
         };
         /**
@@ -1375,7 +1386,7 @@
          */
         AuthConfigService.prototype.getLoginUrl = function () {
             var _a;
-            var loginUrl = (_a = this.authConfig.authentication.loginUrl) !== null && _a !== void 0 ? _a : '';
+            var loginUrl = (_a = this.config.loginUrl) !== null && _a !== void 0 ? _a : '';
             return this.prefixEndpoint(loginUrl);
         };
         /**
@@ -1383,7 +1394,7 @@
          */
         AuthConfigService.prototype.getRevokeEndpoint = function () {
             var _a;
-            var revokeEndpoint = (_a = this.authConfig.authentication.revokeEndpoint) !== null && _a !== void 0 ? _a : '';
+            var revokeEndpoint = (_a = this.config.revokeEndpoint) !== null && _a !== void 0 ? _a : '';
             return this.prefixEndpoint(revokeEndpoint);
         };
         /**
@@ -1391,7 +1402,7 @@
          */
         AuthConfigService.prototype.getLogoutUrl = function () {
             var _a;
-            var logoutUrl = (_a = this.authConfig.authentication.logoutUrl) !== null && _a !== void 0 ? _a : '';
+            var logoutUrl = (_a = this.config.logoutUrl) !== null && _a !== void 0 ? _a : '';
             return this.prefixEndpoint(logoutUrl);
         };
         /**
@@ -1399,15 +1410,15 @@
          */
         AuthConfigService.prototype.getUserinfoEndpoint = function () {
             var _a;
-            var userinfoEndpoint = (_a = this.authConfig.authentication.userinfoEndpoint) !== null && _a !== void 0 ? _a : '';
+            var userinfoEndpoint = (_a = this.config.userinfoEndpoint) !== null && _a !== void 0 ? _a : '';
             return this.prefixEndpoint(userinfoEndpoint);
         };
         /**
          * Returns configuration specific for the angular-oauth2-oidc library.
          */
         AuthConfigService.prototype.getOAuthLibConfig = function () {
-            var _a, _b;
-            return (_b = (_a = this.authConfig.authentication) === null || _a === void 0 ? void 0 : _a.OAuthLibConfig) !== null && _b !== void 0 ? _b : {};
+            var _a;
+            return (_a = this.config.OAuthLibConfig) !== null && _a !== void 0 ? _a : {};
         };
         AuthConfigService.prototype.prefixEndpoint = function (endpoint) {
             var url = endpoint;
@@ -1421,8 +1432,8 @@
          * Use when you have to perform particular action only in some of the OAuth flow scenarios.
          */
         AuthConfigService.prototype.getOAuthFlow = function () {
-            var _a, _b;
-            var responseType = (_b = (_a = this.authConfig.authentication) === null || _a === void 0 ? void 0 : _a.OAuthLibConfig) === null || _b === void 0 ? void 0 : _b.responseType;
+            var _a;
+            var responseType = (_a = this.config.OAuthLibConfig) === null || _a === void 0 ? void 0 : _a.responseType;
             if (responseType) {
                 var types = responseType.split(' ');
                 if (types.includes('code')) {
@@ -4501,6 +4512,49 @@
         { type: undefined, decorators: [{ type: i0.Inject, args: [RootConfig,] }] }
     ]; };
 
+    var ConfigValidatorToken = new i0.InjectionToken('ConfigurationValidator');
+    /**
+     * Use to probide config validation at app bootstrap (when all config chunks are merged)
+     *
+     * @param configValidator
+     */
+    function provideConfigValidator(configValidator) {
+        return {
+            provide: ConfigValidatorToken,
+            useValue: configValidator,
+            multi: true,
+        };
+    }
+    function validateConfig(config, configValidators) {
+        var e_1, _a;
+        try {
+            for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
+                var validate = configValidators_1_1.value;
+                var warning = validate(config);
+                if (warning) {
+                    console.warn(warning);
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+    }
+
+    function baseUrlConfigValidator(config) {
+        var _a, _b, _c, _d, _e;
+        if (typeof ((_a = config === null || config === void 0 ? void 0 : config.authentication) === null || _a === void 0 ? void 0 : _a.baseUrl) === 'undefined' &&
+            typeof ((_c = (_b = config === null || config === void 0 ? void 0 : config.backend) === null || _b === void 0 ? void 0 : _b.occ) === null || _c === void 0 ? void 0 : _c.baseUrl) === 'undefined' &&
+            // Don't show warning when user tries to work around the issue.
+            ((_e = (_d = config === null || config === void 0 ? void 0 : config.authentication) === null || _d === void 0 ? void 0 : _d.OAuthLibConfig) === null || _e === void 0 ? void 0 : _e.requireHttps) !== false) {
+            return 'Authentication might not work correctly without setting either authentication.baseUrl or backend.occ.baseUrl configuration option! Workaround: To support relative urls in angular-oauth2-oidc library you can try setting authentication.OAuthLibConfig.requireHttps to false.';
+        }
+    }
+
     var defaultAuthConfig = {
         authentication: {
             client_id: 'mobile_android',
@@ -4880,7 +4934,8 @@
             return {
                 ngModule: UserAuthModule,
                 providers: __spread([
-                    provideDefaultConfig(defaultAuthConfig)
+                    provideDefaultConfig(defaultAuthConfig),
+                    provideConfigValidator(baseUrlConfigValidator)
                 ], interceptors$1, [
                     {
                         provide: i1$3.OAuthStorage,
@@ -18157,39 +18212,6 @@
         })(OrderApprovalDecisionValue = Occ.OrderApprovalDecisionValue || (Occ.OrderApprovalDecisionValue = {}));
     })(exports.Occ || (exports.Occ = {}));
 
-    var ConfigValidatorToken = new i0.InjectionToken('ConfigurationValidator');
-    /**
-     * Use to probide config validation at app bootstrap (when all config chunks are merged)
-     *
-     * @param configValidator
-     */
-    function provideConfigValidator(configValidator) {
-        return {
-            provide: ConfigValidatorToken,
-            useValue: configValidator,
-            multi: true,
-        };
-    }
-    function validateConfig(config, configValidators) {
-        var e_1, _a;
-        try {
-            for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
-                var validate = configValidators_1_1.value;
-                var warning = validate(config);
-                if (warning) {
-                    console.warn(warning);
-                }
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-    }
-
     var OccModule = /** @class */ (function () {
         function OccModule() {
         }
@@ -30420,200 +30442,201 @@
     exports.ɵbu = ClientTokenEffect;
     exports.ɵbv = interceptors;
     exports.ɵbw = defaultAuthConfig;
-    exports.ɵbx = interceptors$1;
-    exports.ɵby = SiteContextParamsService;
-    exports.ɵbz = MultiCartStoreModule;
+    exports.ɵbx = baseUrlConfigValidator;
+    exports.ɵby = interceptors$1;
+    exports.ɵbz = SiteContextParamsService;
     exports.ɵc = authStatePersistenceFactory;
-    exports.ɵca = clearMultiCartState;
-    exports.ɵcb = multiCartMetaReducers;
-    exports.ɵcc = multiCartReducerToken;
-    exports.ɵcd = getMultiCartReducers;
-    exports.ɵce = multiCartReducerProvider;
-    exports.ɵcf = CartEffects;
-    exports.ɵcg = CartEntryEffects;
-    exports.ɵch = CartVoucherEffects;
-    exports.ɵci = WishListEffects;
-    exports.ɵcj = SaveCartConnector;
-    exports.ɵck = SaveCartAdapter;
-    exports.ɵcl = MultiCartEffects;
-    exports.ɵcm = entityProcessesLoaderReducer;
-    exports.ɵcn = entityReducer;
-    exports.ɵco = processesLoaderReducer;
-    exports.ɵcp = activeCartReducer;
-    exports.ɵcq = cartEntitiesReducer;
-    exports.ɵcr = wishListReducer;
-    exports.ɵcs = CheckoutStoreModule;
-    exports.ɵct = getReducers$2;
-    exports.ɵcu = reducerToken$2;
-    exports.ɵcv = reducerProvider$2;
-    exports.ɵcw = effects$2;
-    exports.ɵcx = AddressVerificationEffect;
-    exports.ɵcy = CardTypesEffects;
-    exports.ɵcz = CheckoutEffects;
+    exports.ɵca = MultiCartStoreModule;
+    exports.ɵcb = clearMultiCartState;
+    exports.ɵcc = multiCartMetaReducers;
+    exports.ɵcd = multiCartReducerToken;
+    exports.ɵce = getMultiCartReducers;
+    exports.ɵcf = multiCartReducerProvider;
+    exports.ɵcg = CartEffects;
+    exports.ɵch = CartEntryEffects;
+    exports.ɵci = CartVoucherEffects;
+    exports.ɵcj = WishListEffects;
+    exports.ɵck = SaveCartConnector;
+    exports.ɵcl = SaveCartAdapter;
+    exports.ɵcm = MultiCartEffects;
+    exports.ɵcn = entityProcessesLoaderReducer;
+    exports.ɵco = entityReducer;
+    exports.ɵcp = processesLoaderReducer;
+    exports.ɵcq = activeCartReducer;
+    exports.ɵcr = cartEntitiesReducer;
+    exports.ɵcs = wishListReducer;
+    exports.ɵct = CheckoutStoreModule;
+    exports.ɵcu = getReducers$2;
+    exports.ɵcv = reducerToken$2;
+    exports.ɵcw = reducerProvider$2;
+    exports.ɵcx = effects$2;
+    exports.ɵcy = AddressVerificationEffect;
+    exports.ɵcz = CardTypesEffects;
     exports.ɵd = cartStatePersistenceFactory;
-    exports.ɵda = PaymentTypesEffects;
-    exports.ɵdb = ReplenishmentOrderEffects;
-    exports.ɵdc = reducer$3;
-    exports.ɵdd = reducer$2;
-    exports.ɵde = reducer$1;
-    exports.ɵdf = reducer$5;
-    exports.ɵdg = reducer$4;
-    exports.ɵdh = interceptors$2;
-    exports.ɵdi = CheckoutCartInterceptor;
-    exports.ɵdj = cmsStoreConfigFactory;
-    exports.ɵdk = CmsStoreModule;
-    exports.ɵdl = getReducers$7;
-    exports.ɵdm = reducerToken$7;
-    exports.ɵdn = reducerProvider$7;
-    exports.ɵdo = clearCmsState;
-    exports.ɵdp = metaReducers$2;
-    exports.ɵdq = effects$7;
-    exports.ɵdr = ComponentsEffects;
-    exports.ɵds = NavigationEntryItemEffects;
-    exports.ɵdt = PageEffects;
-    exports.ɵdu = reducer$g;
-    exports.ɵdv = entityLoaderReducer;
-    exports.ɵdw = reducer$h;
-    exports.ɵdx = reducer$e;
-    exports.ɵdy = reducer$f;
-    exports.ɵdz = GlobalMessageStoreModule;
+    exports.ɵda = CheckoutEffects;
+    exports.ɵdb = PaymentTypesEffects;
+    exports.ɵdc = ReplenishmentOrderEffects;
+    exports.ɵdd = reducer$3;
+    exports.ɵde = reducer$2;
+    exports.ɵdf = reducer$1;
+    exports.ɵdg = reducer$5;
+    exports.ɵdh = reducer$4;
+    exports.ɵdi = interceptors$2;
+    exports.ɵdj = CheckoutCartInterceptor;
+    exports.ɵdk = cmsStoreConfigFactory;
+    exports.ɵdl = CmsStoreModule;
+    exports.ɵdm = getReducers$7;
+    exports.ɵdn = reducerToken$7;
+    exports.ɵdo = reducerProvider$7;
+    exports.ɵdp = clearCmsState;
+    exports.ɵdq = metaReducers$2;
+    exports.ɵdr = effects$7;
+    exports.ɵds = ComponentsEffects;
+    exports.ɵdt = NavigationEntryItemEffects;
+    exports.ɵdu = PageEffects;
+    exports.ɵdv = reducer$g;
+    exports.ɵdw = entityLoaderReducer;
+    exports.ɵdx = reducer$h;
+    exports.ɵdy = reducer$e;
+    exports.ɵdz = reducer$f;
     exports.ɵe = uninitializeActiveCartMetaReducerFactory;
-    exports.ɵea = getReducers$5;
-    exports.ɵeb = reducerToken$5;
-    exports.ɵec = reducerProvider$5;
-    exports.ɵed = reducer$c;
-    exports.ɵee = GlobalMessageEffect;
-    exports.ɵef = defaultGlobalMessageConfigFactory;
-    exports.ɵeg = HttpErrorInterceptor;
-    exports.ɵeh = defaultI18nConfig;
-    exports.ɵei = i18nextProviders;
-    exports.ɵej = i18nextInit;
-    exports.ɵek = MockTranslationService;
-    exports.ɵel = defaultOccAsmConfig;
-    exports.ɵem = defaultOccCartConfig;
-    exports.ɵen = OccSaveCartAdapter;
-    exports.ɵeo = defaultOccCheckoutConfig;
-    exports.ɵep = defaultOccCostCentersConfig;
-    exports.ɵeq = defaultOccProductConfig;
-    exports.ɵer = defaultOccSiteContextConfig;
-    exports.ɵes = defaultOccUserConfig;
-    exports.ɵet = UserNotificationPreferenceAdapter;
-    exports.ɵeu = OccUserCostCenterAdapter;
-    exports.ɵev = OccAddressListNormalizer;
-    exports.ɵew = UserReplenishmentOrderAdapter;
-    exports.ɵex = defaultPersonalizationConfig;
-    exports.ɵey = interceptors$4;
-    exports.ɵez = OccPersonalizationIdInterceptor;
+    exports.ɵea = GlobalMessageStoreModule;
+    exports.ɵeb = getReducers$5;
+    exports.ɵec = reducerToken$5;
+    exports.ɵed = reducerProvider$5;
+    exports.ɵee = reducer$c;
+    exports.ɵef = GlobalMessageEffect;
+    exports.ɵeg = defaultGlobalMessageConfigFactory;
+    exports.ɵeh = HttpErrorInterceptor;
+    exports.ɵei = defaultI18nConfig;
+    exports.ɵej = i18nextProviders;
+    exports.ɵek = i18nextInit;
+    exports.ɵel = MockTranslationService;
+    exports.ɵem = defaultOccAsmConfig;
+    exports.ɵen = defaultOccCartConfig;
+    exports.ɵeo = OccSaveCartAdapter;
+    exports.ɵep = defaultOccCheckoutConfig;
+    exports.ɵeq = defaultOccCostCentersConfig;
+    exports.ɵer = defaultOccProductConfig;
+    exports.ɵes = defaultOccSiteContextConfig;
+    exports.ɵet = defaultOccUserConfig;
+    exports.ɵeu = UserNotificationPreferenceAdapter;
+    exports.ɵev = OccUserCostCenterAdapter;
+    exports.ɵew = OccAddressListNormalizer;
+    exports.ɵex = UserReplenishmentOrderAdapter;
+    exports.ɵey = defaultPersonalizationConfig;
+    exports.ɵez = interceptors$4;
     exports.ɵf = CONFIG_INITIALIZER_FORROOT_GUARD;
-    exports.ɵfa = OccPersonalizationTimeInterceptor;
-    exports.ɵfb = ProcessStoreModule;
-    exports.ɵfc = getReducers$8;
-    exports.ɵfd = reducerToken$8;
-    exports.ɵfe = reducerProvider$8;
-    exports.ɵff = productStoreConfigFactory;
-    exports.ɵfg = ProductStoreModule;
-    exports.ɵfh = getReducers$9;
-    exports.ɵfi = reducerToken$9;
-    exports.ɵfj = reducerProvider$9;
-    exports.ɵfk = clearProductsState;
-    exports.ɵfl = metaReducers$3;
-    exports.ɵfm = effects$8;
-    exports.ɵfn = ProductReferencesEffects;
-    exports.ɵfo = ProductReviewsEffects;
-    exports.ɵfp = ProductsSearchEffects;
-    exports.ɵfq = ProductEffects;
-    exports.ɵfr = reducer$k;
-    exports.ɵfs = entityScopedLoaderReducer;
-    exports.ɵft = scopedLoaderReducer;
-    exports.ɵfu = reducer$j;
-    exports.ɵfv = reducer$i;
-    exports.ɵfw = PageMetaResolver;
-    exports.ɵfx = CouponSearchPageResolver;
-    exports.ɵfy = PageMetaResolver;
-    exports.ɵfz = addExternalRoutesFactory;
+    exports.ɵfa = OccPersonalizationIdInterceptor;
+    exports.ɵfb = OccPersonalizationTimeInterceptor;
+    exports.ɵfc = ProcessStoreModule;
+    exports.ɵfd = getReducers$8;
+    exports.ɵfe = reducerToken$8;
+    exports.ɵff = reducerProvider$8;
+    exports.ɵfg = productStoreConfigFactory;
+    exports.ɵfh = ProductStoreModule;
+    exports.ɵfi = getReducers$9;
+    exports.ɵfj = reducerToken$9;
+    exports.ɵfk = reducerProvider$9;
+    exports.ɵfl = clearProductsState;
+    exports.ɵfm = metaReducers$3;
+    exports.ɵfn = effects$8;
+    exports.ɵfo = ProductReferencesEffects;
+    exports.ɵfp = ProductReviewsEffects;
+    exports.ɵfq = ProductsSearchEffects;
+    exports.ɵfr = ProductEffects;
+    exports.ɵfs = reducer$k;
+    exports.ɵft = entityScopedLoaderReducer;
+    exports.ɵfu = scopedLoaderReducer;
+    exports.ɵfv = reducer$j;
+    exports.ɵfw = reducer$i;
+    exports.ɵfx = PageMetaResolver;
+    exports.ɵfy = CouponSearchPageResolver;
+    exports.ɵfz = PageMetaResolver;
     exports.ɵg = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵga = getReducers$1;
-    exports.ɵgb = reducer;
-    exports.ɵgc = reducerToken$1;
-    exports.ɵgd = reducerProvider$1;
-    exports.ɵge = CustomSerializer;
-    exports.ɵgf = effects$1;
-    exports.ɵgg = RouterEffects;
-    exports.ɵgh = siteContextStoreConfigFactory;
-    exports.ɵgi = SiteContextStoreModule;
-    exports.ɵgj = getReducers$3;
-    exports.ɵgk = reducerToken$3;
-    exports.ɵgl = reducerProvider$3;
-    exports.ɵgm = effects$4;
-    exports.ɵgn = BaseSiteEffects;
-    exports.ɵgo = CurrenciesEffects;
-    exports.ɵgp = LanguagesEffects;
-    exports.ɵgq = reducer$8;
-    exports.ɵgr = reducer$7;
-    exports.ɵgs = reducer$6;
-    exports.ɵgt = defaultSiteContextConfigFactory;
-    exports.ɵgu = initializeContext;
-    exports.ɵgv = contextServiceProviders;
-    exports.ɵgw = SiteContextRoutesHandler;
-    exports.ɵgx = SiteContextUrlSerializer;
-    exports.ɵgy = siteContextParamsProviders;
-    exports.ɵgz = baseSiteConfigValidator;
+    exports.ɵga = addExternalRoutesFactory;
+    exports.ɵgb = getReducers$1;
+    exports.ɵgc = reducer;
+    exports.ɵgd = reducerToken$1;
+    exports.ɵge = reducerProvider$1;
+    exports.ɵgf = CustomSerializer;
+    exports.ɵgg = effects$1;
+    exports.ɵgh = RouterEffects;
+    exports.ɵgi = siteContextStoreConfigFactory;
+    exports.ɵgj = SiteContextStoreModule;
+    exports.ɵgk = getReducers$3;
+    exports.ɵgl = reducerToken$3;
+    exports.ɵgm = reducerProvider$3;
+    exports.ɵgn = effects$4;
+    exports.ɵgo = BaseSiteEffects;
+    exports.ɵgp = CurrenciesEffects;
+    exports.ɵgq = LanguagesEffects;
+    exports.ɵgr = reducer$8;
+    exports.ɵgs = reducer$7;
+    exports.ɵgt = reducer$6;
+    exports.ɵgu = defaultSiteContextConfigFactory;
+    exports.ɵgv = initializeContext;
+    exports.ɵgw = contextServiceProviders;
+    exports.ɵgx = SiteContextRoutesHandler;
+    exports.ɵgy = SiteContextUrlSerializer;
+    exports.ɵgz = siteContextParamsProviders;
     exports.ɵh = configFromCookieFactory;
-    exports.ɵha = interceptors$5;
-    exports.ɵhb = CmsTicketInterceptor;
-    exports.ɵhc = UserStoreModule;
-    exports.ɵhd = getReducers$a;
-    exports.ɵhe = reducerToken$a;
-    exports.ɵhf = reducerProvider$a;
-    exports.ɵhg = clearUserState;
-    exports.ɵhh = metaReducers$4;
-    exports.ɵhi = effects$9;
-    exports.ɵhj = BillingCountriesEffect;
-    exports.ɵhk = ClearMiscsDataEffect;
-    exports.ɵhl = ConsignmentTrackingEffects;
-    exports.ɵhm = CustomerCouponEffects;
-    exports.ɵhn = DeliveryCountriesEffects;
-    exports.ɵho = NotificationPreferenceEffects;
-    exports.ɵhp = OrderDetailsEffect;
-    exports.ɵhq = OrderReturnRequestEffect;
-    exports.ɵhr = UserPaymentMethodsEffects;
-    exports.ɵhs = ProductInterestsEffect;
-    exports.ɵht = RegionsEffects;
-    exports.ɵhu = ReplenishmentOrderDetailsEffect;
-    exports.ɵhv = ResetPasswordEffects;
-    exports.ɵhw = TitlesEffects;
-    exports.ɵhx = UserAddressesEffects;
-    exports.ɵhy = UserConsentsEffect;
-    exports.ɵhz = UserDetailsEffects;
+    exports.ɵha = baseSiteConfigValidator;
+    exports.ɵhb = interceptors$5;
+    exports.ɵhc = CmsTicketInterceptor;
+    exports.ɵhd = UserStoreModule;
+    exports.ɵhe = getReducers$a;
+    exports.ɵhf = reducerToken$a;
+    exports.ɵhg = reducerProvider$a;
+    exports.ɵhh = clearUserState;
+    exports.ɵhi = metaReducers$4;
+    exports.ɵhj = effects$9;
+    exports.ɵhk = BillingCountriesEffect;
+    exports.ɵhl = ClearMiscsDataEffect;
+    exports.ɵhm = ConsignmentTrackingEffects;
+    exports.ɵhn = CustomerCouponEffects;
+    exports.ɵho = DeliveryCountriesEffects;
+    exports.ɵhp = NotificationPreferenceEffects;
+    exports.ɵhq = OrderDetailsEffect;
+    exports.ɵhr = OrderReturnRequestEffect;
+    exports.ɵhs = UserPaymentMethodsEffects;
+    exports.ɵht = ProductInterestsEffect;
+    exports.ɵhu = RegionsEffects;
+    exports.ɵhv = ReplenishmentOrderDetailsEffect;
+    exports.ɵhw = ResetPasswordEffects;
+    exports.ɵhx = TitlesEffects;
+    exports.ɵhy = UserAddressesEffects;
+    exports.ɵhz = UserConsentsEffect;
     exports.ɵi = initConfig;
-    exports.ɵia = UserOrdersEffect;
-    exports.ɵib = UserRegisterEffects;
-    exports.ɵic = UserReplenishmentOrdersEffect;
-    exports.ɵid = ForgotPasswordEffects;
-    exports.ɵie = UpdateEmailEffects;
-    exports.ɵif = UpdatePasswordEffects;
-    exports.ɵig = UserNotificationPreferenceConnector;
-    exports.ɵih = UserCostCenterEffects;
-    exports.ɵii = reducer$B;
-    exports.ɵij = reducer$y;
-    exports.ɵik = reducer$l;
-    exports.ɵil = reducer$z;
-    exports.ɵim = reducer$s;
-    exports.ɵin = reducer$C;
-    exports.ɵio = reducer$q;
-    exports.ɵip = reducer$D;
-    exports.ɵiq = reducer$r;
-    exports.ɵir = reducer$o;
-    exports.ɵis = reducer$x;
-    exports.ɵit = reducer$u;
-    exports.ɵiu = reducer$w;
-    exports.ɵiv = reducer$m;
-    exports.ɵiw = reducer$n;
-    exports.ɵix = reducer$p;
-    exports.ɵiy = reducer$t;
-    exports.ɵiz = reducer$A;
+    exports.ɵia = UserDetailsEffects;
+    exports.ɵib = UserOrdersEffect;
+    exports.ɵic = UserRegisterEffects;
+    exports.ɵid = UserReplenishmentOrdersEffect;
+    exports.ɵie = ForgotPasswordEffects;
+    exports.ɵif = UpdateEmailEffects;
+    exports.ɵig = UpdatePasswordEffects;
+    exports.ɵih = UserNotificationPreferenceConnector;
+    exports.ɵii = UserCostCenterEffects;
+    exports.ɵij = reducer$B;
+    exports.ɵik = reducer$y;
+    exports.ɵil = reducer$l;
+    exports.ɵim = reducer$z;
+    exports.ɵin = reducer$s;
+    exports.ɵio = reducer$C;
+    exports.ɵip = reducer$q;
+    exports.ɵiq = reducer$D;
+    exports.ɵir = reducer$r;
+    exports.ɵis = reducer$o;
+    exports.ɵit = reducer$x;
+    exports.ɵiu = reducer$u;
+    exports.ɵiv = reducer$w;
+    exports.ɵiw = reducer$m;
+    exports.ɵix = reducer$n;
+    exports.ɵiy = reducer$p;
+    exports.ɵiz = reducer$t;
     exports.ɵj = anonymousConsentsStatePersistenceFactory;
-    exports.ɵja = reducer$v;
+    exports.ɵja = reducer$A;
+    exports.ɵjb = reducer$v;
     exports.ɵk = AnonymousConsentsStoreModule;
     exports.ɵl = TRANSFER_STATE_META_REDUCER;
     exports.ɵm = STORAGE_SYNC_META_REDUCER;

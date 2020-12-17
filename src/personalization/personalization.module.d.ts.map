@@ -1,0 +1,1 @@
+{"version":3,"file":"personalization.module.d.ts","sources":["personalization.module.d.ts"],"names":[],"mappings":"AAAA;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class PersonalizationModule {\n    static forRoot(): ModuleWithProviders<PersonalizationModule>;\n}\n"]}
