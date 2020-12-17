@@ -5,6 +5,7 @@ import { CancellationRequestEntryInputList, Order, OrderHistoryList, ReturnReque
 import { UserOrderAdapter } from '../../../user/connectors/order/user-order.adapter';
 import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccUserOrderAdapter implements UserOrderAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -18,4 +19,8 @@ export declare class OccUserOrderAdapter implements UserOrderAdapter {
     loadReturnRequestList(userId: string, pageSize?: number, currentPage?: number, sort?: string): Observable<ReturnRequestList>;
     loadReturnRequestDetail(userId: string, returnRequestCode: string): Observable<ReturnRequest>;
     cancelReturnRequest(userId: string, returnRequestCode: string, returnRequestModification: ReturnRequestModification): Observable<{}>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccUserOrderAdapter, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<OccUserOrderAdapter>;
 }
+
+//# sourceMappingURL=occ-user-order.adapter.d.ts.map
