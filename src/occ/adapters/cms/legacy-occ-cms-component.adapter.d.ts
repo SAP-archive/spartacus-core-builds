@@ -12,10 +12,6 @@ import { OccCmsComponentAdapter } from './occ-cms-component.adapter';
  * If you like to connect to a pre 1905 version, you can provide this adapter for the
  * `CmsComponentAdapter` injection token.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class LegacyOccCmsComponentAdapter extends OccCmsComponentAdapter {
     findComponentsByIds(ids: string[], pageContext: PageContext, fields?: string, currentPage?: number, pageSize?: number, sort?: string): Observable<CmsComponent[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<LegacyOccCmsComponentAdapter, never>;
 }
-
-//# sourceMappingURL=legacy-occ-cms-component.adapter.d.ts.map
