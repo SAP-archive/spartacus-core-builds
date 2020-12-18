@@ -1,1 +1,0 @@
-{"version":3,"file":"cms.module.d.ts","sources":["cms.module.d.ts"],"names":[],"mappings":"AAAA;;;;AACA;AACA;;;AACA","sourcesContent":["import { ModuleWithProviders } from '@angular/core';\nexport declare class CmsModule {\n    static forRoot(): ModuleWithProviders<CmsModule>;\n}\n"]}
