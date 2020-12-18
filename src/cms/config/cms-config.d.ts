@@ -1,5 +1,6 @@
 import { StaticProvider } from '@angular/core';
 import { Route } from '@angular/router';
+import { CmsComponent } from '../../model/cms.model';
 import { OccConfig } from '../../occ/config/occ-config';
 export interface StandardCmsComponentConfig {
     CMSSiteContextComponent?: CmsComponentMapping;
@@ -43,13 +44,20 @@ export interface CmsComponentChildRoutesConfig {
      */
     children?: Route[];
 }
-export interface CmsComponentMapping {
+export interface CmsComponentMapping<T = CmsComponent> {
     component?: any;
     providers?: StaticProvider[];
     childRoutes?: Route[] | CmsComponentChildRoutesConfig;
     disableSSR?: boolean;
     i18nKeys?: string[];
     guards?: any[];
+    /**
+     * The component data can be statically configured. The data can be used for various reasons:
+     * - Improve performance with an initial data that doesn't require API response
+     * - Introduce UI properties that are not available on the API
+     * - Build ghost design based on the initial data that is used prior to the backend data is loaded
+     */
+    data?: T;
     /**
      * DeferLoading can be specified globally, but also per component.
      * Some components require direct loading while it's not initially
