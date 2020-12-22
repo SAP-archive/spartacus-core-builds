@@ -1,4 +1,5 @@
 import { TranslationResources } from '../translation-resources';
+import * as ɵngcc0 from '@angular/core';
 export declare abstract class I18nConfig {
     i18n?: {
         /**
@@ -36,4 +37,7 @@ export declare abstract class I18nConfig {
             [chunk: string]: string[];
         };
     };
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<I18nConfig, never>;
 }
+
+//# sourceMappingURL=i18n-config.d.ts.map
