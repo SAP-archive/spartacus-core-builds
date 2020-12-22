@@ -8,7 +8,6 @@ import { RoutingService } from '../../routing/index';
  * When a user doing a checkout has a "Cart not found" error, he is redirected to checkout and the cart is reloaded.
  * If a "Cart not found" error happens and the user is not on checkout, this interceptor does not perform any actions.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutCartInterceptor implements HttpInterceptor {
     protected routingService: RoutingService;
     protected multiCartService: MultiCartService;
@@ -34,7 +33,4 @@ export declare class CheckoutCartInterceptor implements HttpInterceptor {
      */
     protected isCartNotFoundError(response: HttpErrorResponse): boolean;
     protected getCartIdFromError(response: HttpErrorResponse): string;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutCartInterceptor, never>;
 }
-
-//# sourceMappingURL=checkout-cart.interceptor.d.ts.map
