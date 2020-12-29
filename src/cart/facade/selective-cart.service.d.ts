@@ -8,6 +8,7 @@ import { UserService } from '../../user/facade/user.service';
 import { CartConfigService } from '../services/cart-config.service';
 import { StateWithMultiCart } from '../store/multi-cart-state';
 import { MultiCartService } from './multi-cart.service';
+import * as ɵngcc0 from '@angular/core';
 export declare class SelectiveCartService {
     protected store: Store<StateWithMultiCart>;
     protected userService: UserService;
@@ -27,6 +28,10 @@ export declare class SelectiveCartService {
     getCart(): Observable<Cart>;
     getEntries(): Observable<OrderEntry[]>;
     getLoaded(): Observable<boolean>;
+    /**
+     * Returns true when selective cart is stable (not loading and not pending processes on cart)
+     */
+    isStable(): Observable<boolean>;
     private load;
     addEntry(productCode: string, quantity: number): void;
     removeEntry(entry: OrderEntry): void;
@@ -39,4 +44,7 @@ export declare class SelectiveCartService {
     private isEmpty;
     private isJustLoggedIn;
     private isLoggedIn;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<SelectiveCartService, never>;
 }
+
+//# sourceMappingURL=selective-cart.service.d.ts.map

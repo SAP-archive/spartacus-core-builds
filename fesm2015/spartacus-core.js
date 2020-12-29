@@ -20844,6 +20844,12 @@ class SelectiveCartService {
     getLoaded() {
         return this.cartSelector$.pipe(map((cart) => (cart.success || cart.error) && !cart.loading));
     }
+    /**
+     * Returns true when selective cart is stable (not loading and not pending processes on cart)
+     */
+    isStable() {
+        return this.cartId$.pipe(switchMap((cartId) => this.multiCartService.isStable(cartId)));
+    }
     load() {
         if (this.isLoggedIn(this.userId) && this.cartId) {
             this.multiCartService.loadCart({

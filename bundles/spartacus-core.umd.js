@@ -23306,6 +23306,13 @@
         SelectiveCartService.prototype.getLoaded = function () {
             return this.cartSelector$.pipe(operators.map(function (cart) { return (cart.success || cart.error) && !cart.loading; }));
         };
+        /**
+         * Returns true when selective cart is stable (not loading and not pending processes on cart)
+         */
+        SelectiveCartService.prototype.isStable = function () {
+            var _this = this;
+            return this.cartId$.pipe(operators.switchMap(function (cartId) { return _this.multiCartService.isStable(cartId); }));
+        };
         SelectiveCartService.prototype.load = function () {
             if (this.isLoggedIn(this.userId) && this.cartId) {
                 this.multiCartService.loadCart({
