@@ -6,6 +6,7 @@ import { ClientToken } from '../models/client-token.model';
  * Responsible for requesting from OAuth server `ClientToken` for a particular
  * auth client.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ClientAuthenticationTokenService {
     protected http: HttpClient;
     protected authConfigService: AuthConfigService;
@@ -16,4 +17,7 @@ export declare class ClientAuthenticationTokenService {
      * @returns observable with ClientToken
      */
     loadClientAuthenticationToken(): Observable<ClientToken>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ClientAuthenticationTokenService, never>;
 }
+
+//# sourceMappingURL=client-authentication-token.service.d.ts.map
