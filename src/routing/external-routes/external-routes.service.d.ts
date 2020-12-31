@@ -5,6 +5,7 @@ import { ExternalRoutesConfig } from './external-routes-config';
 /**
  * Service that helps redirecting to different storefront systems for configured URLs
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ExternalRoutesService {
     protected config: ExternalRoutesConfig;
     protected urlMatcherService: UrlMatcherService;
@@ -23,4 +24,7 @@ export declare class ExternalRoutesService {
      * Returns the URL matcher for the external route
      */
     protected getUrlMatcher(): UrlMatcher;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ExternalRoutesService, never>;
 }
+
+//# sourceMappingURL=external-routes.service.d.ts.map
