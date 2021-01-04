@@ -5,6 +5,7 @@ import { RouteBreadcrumbConfig, RouteBreadcrumbResolver, RouteBreadcrumbResolver
 /**
  * Resolves the breadcrumb for the Angular ActivatedRouteSnapshot
  */
+import * as ɵngcc0 from '@angular/core';
 export declare abstract class DefaultRoutePageMetaResolver implements RouteBreadcrumbResolver {
     protected translation: TranslationService;
     constructor(translation: TranslationService);
@@ -28,4 +29,7 @@ export declare abstract class DefaultRoutePageMetaResolver implements RouteBread
     protected getParams(): Observable<{
         [_: string]: any;
     }>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<DefaultRoutePageMetaResolver, never>;
 }
+
+//# sourceMappingURL=default-route-page-meta.resolver.d.ts.map
