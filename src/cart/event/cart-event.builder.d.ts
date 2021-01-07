@@ -6,7 +6,6 @@ import { ActiveCartService } from '../facade/active-cart.service';
 /**
  * Registers events for the active cart
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class CartEventBuilder {
     protected actionsSubject: ActionsSubject;
     protected event: EventService;
@@ -38,7 +37,4 @@ export declare class CartEventBuilder {
         type: string;
         payload?: any;
     }>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<CartEventBuilder, never>;
 }
-
-//# sourceMappingURL=cart-event.builder.d.ts.map
