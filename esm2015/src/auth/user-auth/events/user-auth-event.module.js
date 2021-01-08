@@ -1,0 +1,14 @@
+import { NgModule } from '@angular/core';
+import { LoginEventBuilder } from './login-event.builder';
+import { LogoutEventBuilder } from './logout-event.builder';
+export class UserAuthEventModule {
+    constructor(_logoutEventBuilder, _loginEventBuilder) { }
+}
+UserAuthEventModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
+UserAuthEventModule.ctorParameters = () => [
+    { type: LogoutEventBuilder },
+    { type: LoginEventBuilder }
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXNlci1hdXRoLWV2ZW50Lm1vZHVsZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL3Byb2plY3RzL2NvcmUvc3JjL2F1dGgvdXNlci1hdXRoL2V2ZW50cy91c2VyLWF1dGgtZXZlbnQubW9kdWxlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE9BQU8sRUFBRSxRQUFRLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFDekMsT0FBTyxFQUFFLGlCQUFpQixFQUFFLE1BQU0sdUJBQXVCLENBQUM7QUFDMUQsT0FBTyxFQUFFLGtCQUFrQixFQUFFLE1BQU0sd0JBQXdCLENBQUM7QUFHNUQsTUFBTSxPQUFPLG1CQUFtQjtJQUM5QixZQUNFLG1CQUF1QyxFQUN2QyxrQkFBcUMsSUFDcEMsQ0FBQzs7O1lBTEwsUUFBUSxTQUFDLEVBQUU7OztZQUZILGtCQUFrQjtZQURsQixpQkFBaUIiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBOZ01vZHVsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgTG9naW5FdmVudEJ1aWxkZXIgfSBmcm9tICcuL2xvZ2luLWV2ZW50LmJ1aWxkZXInO1xuaW1wb3J0IHsgTG9nb3V0RXZlbnRCdWlsZGVyIH0gZnJvbSAnLi9sb2dvdXQtZXZlbnQuYnVpbGRlcic7XG5cbkBOZ01vZHVsZSh7fSlcbmV4cG9ydCBjbGFzcyBVc2VyQXV0aEV2ZW50TW9kdWxlIHtcbiAgY29uc3RydWN0b3IoXG4gICAgX2xvZ291dEV2ZW50QnVpbGRlcjogTG9nb3V0RXZlbnRCdWlsZGVyLFxuICAgIF9sb2dpbkV2ZW50QnVpbGRlcjogTG9naW5FdmVudEJ1aWxkZXJcbiAgKSB7fVxufVxuIl19

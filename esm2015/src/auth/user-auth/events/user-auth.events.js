@@ -1,0 +1,11 @@
+/**
+ * Indicates that the user has logged out
+ */
+export class LogoutEvent {
+}
+/**
+ * Indicates that the user has logged in
+ */
+export class LoginEvent {
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXNlci1hdXRoLmV2ZW50cy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL3Byb2plY3RzL2NvcmUvc3JjL2F1dGgvdXNlci1hdXRoL2V2ZW50cy91c2VyLWF1dGguZXZlbnRzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBQ0gsTUFBTSxPQUFPLFdBQVc7Q0FBRztBQUMzQjs7R0FFRztBQUNILE1BQU0sT0FBTyxVQUFVO0NBQUciLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEluZGljYXRlcyB0aGF0IHRoZSB1c2VyIGhhcyBsb2dnZWQgb3V0XG4gKi9cbmV4cG9ydCBjbGFzcyBMb2dvdXRFdmVudCB7fVxuLyoqXG4gKiBJbmRpY2F0ZXMgdGhhdCB0aGUgdXNlciBoYXMgbG9nZ2VkIGluXG4gKi9cbmV4cG9ydCBjbGFzcyBMb2dpbkV2ZW50IHt9XG4iXX0=

@@ -4574,6 +4574,414 @@
         },
     };
 
+    // PRIVATE API
+    /**
+     * Allows for dynamic adding and removing source observables
+     * and exposes them as one merged observable at a property `output$`.
+     *
+     * Thanks to the `share()` operator used inside, it subscribes to source observables
+     * only when someone subscribes to it. And it unsubscribes from source observables
+     * when the counter of consumers drops to 0.
+     *
+     * **To avoid memory leaks**, all manually added sources should be manually removed
+     * when not plan to emit values anymore. In particular closed event sources won't be
+     * automatically removed.
+     */
+    var MergingSubject = /** @class */ (function () {
+        function MergingSubject() {
+            var _this = this;
+            /**
+             * List of already added sources (but not removed yet)
+             */
+            this.sources = [];
+            /**
+             * For each source: it stores a subscription responsible for
+             * passing all values from source to the consumer
+             */
+            this.subscriptionsToSources = new Map();
+            /**
+             * Observable with all sources merged.
+             *
+             * Only after subscribing to it, under the hood it subscribes to the source observables.
+             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
+             * But if later on something subscribes to it again, it subscribes to the source observables again.
+             *
+             * It multicasts the emissions for each subscriber.
+             */
+            this.output$ = new rxjs.Observable(function (consumer) {
+                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
+                // that is piped right after this observable.
+                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
+                // from this observable (by the nature `refCount`-nature of the `share()` operator).
+                _this.consumer = consumer;
+                _this.bindAllSourcesToConsumer(consumer);
+                return function () {
+                    _this.consumer = null;
+                    _this.unbindAllSourcesFromConsumer();
+                };
+            }).pipe(operators.share());
+            /**
+             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
+             * For more, see docs of the `output$` observable;
+             */
+            this.consumer = null;
+        }
+        /**
+         * Registers the given source to pass its values to the `output$` observable.
+         *
+         * It does nothing, when the source has been already added (but not removed yet).
+         */
+        MergingSubject.prototype.add = function (source) {
+            if (this.has(source)) {
+                return;
+            }
+            if (this.consumer) {
+                this.bindSourceToConsumer(source, this.consumer);
+            }
+            this.sources.push(source);
+        };
+        /**
+         * Starts passing all values from already added sources to consumer
+         */
+        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
+            var _this = this;
+            this.sources.forEach(function (source) { return _this.bindSourceToConsumer(source, consumer); });
+        };
+        /**
+         * Stops passing all values from already added sources to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
+            var _this = this;
+            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
+        };
+        /**
+         * Starts passing all values from a single source to consumer
+         */
+        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
+            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
+            this.subscriptionsToSources.set(source, subscriptionToSource);
+        };
+        /**
+         * Stops passing all values from a single source to consumer
+         * (if any consumer is active at the moment)
+         */
+        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
+            var subscriptionToSource = this.subscriptionsToSources.get(source);
+            if (subscriptionToSource !== undefined) {
+                subscriptionToSource.unsubscribe();
+                this.subscriptionsToSources.delete(source);
+            }
+        };
+        /**
+         * Unregisters the given source so it stops passing its values to `output$` observable.
+         *
+         * Should be used when a source is no longer maintained **to avoid memory leaks**.
+         */
+        MergingSubject.prototype.remove = function (source) {
+            // clear binding from source to consumer (if any consumer exists at the moment)
+            this.unbindSourceFromConsumer(source);
+            // remove source from array
+            var i;
+            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
+                this.sources.splice(i, 1);
+            }
+        };
+        /**
+         * Returns whether the given source has been already addded
+         */
+        MergingSubject.prototype.has = function (source) {
+            return this.sources.includes(source);
+        };
+        return MergingSubject;
+    }());
+
+    /**
+     * A service to register and observe event sources. Events are driven by event types, which are class signatures
+     * for the given event.
+     *
+     * It is possible to register multiple sources to a single event, even without
+     * knowing as multiple decoupled features can attach sources to the same
+     * event type.
+     */
+    var EventService = /** @class */ (function () {
+        function EventService() {
+            /**
+             * The various events meta are collected in a map, stored by the event type class
+             */
+            this.eventsMeta = new Map();
+        }
+        /**
+         * Register an event source for the given event type.
+         *
+         * CAUTION: To avoid memory leaks, the returned teardown function should be called
+         *  when the event source is no longer maintained by its creator
+         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
+         *
+         * @param eventType the event type
+         * @param source$ an observable that represents the source
+         *
+         * @returns a teardown function which unregisters the given event source
+         */
+        EventService.prototype.register = function (eventType, source$) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (eventMeta.mergingSubject.has(source$)) {
+                if (i0.isDevMode()) {
+                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
+                }
+            }
+            else {
+                eventMeta.mergingSubject.add(source$);
+            }
+            return function () { return eventMeta.mergingSubject.remove(source$); };
+        };
+        /**
+         * Returns a stream of events for the given event type
+         * @param eventTypes event type
+         */
+        EventService.prototype.get = function (eventType) {
+            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
+            if (i0.isDevMode()) {
+                output$ = this.getValidatedEventStream(output$, eventType);
+            }
+            return output$;
+        };
+        /**
+         * Dispatches an instance of an individual event.
+         */
+        EventService.prototype.dispatch = function (event) {
+            var eventType = event.constructor;
+            var inputSubject$ = this.getInputSubject(eventType);
+            inputSubject$.next(event);
+        };
+        /**
+         * Returns the input subject used to dispatch a single event.
+         * The subject is created on demand, when it's needed for the first time.
+         * @param eventType type of event
+         */
+        EventService.prototype.getInputSubject = function (eventType) {
+            var eventMeta = this.getEventMeta(eventType);
+            if (!eventMeta.inputSubject$) {
+                eventMeta.inputSubject$ = new rxjs.Subject();
+                this.register(eventType, eventMeta.inputSubject$);
+            }
+            return eventMeta.inputSubject$;
+        };
+        /**
+         * Returns the event meta object for the given event type
+         */
+        EventService.prototype.getEventMeta = function (eventType) {
+            if (i0.isDevMode()) {
+                this.validateEventType(eventType);
+            }
+            if (!this.eventsMeta.get(eventType)) {
+                this.createEventMeta(eventType);
+            }
+            return this.eventsMeta.get(eventType);
+        };
+        /**
+         * Creates the event meta object for the given event type
+         */
+        EventService.prototype.createEventMeta = function (eventType) {
+            this.eventsMeta.set(eventType, {
+                inputSubject$: null,
+                mergingSubject: new MergingSubject(),
+            });
+        };
+        /**
+         * Checks if the event type is a valid type (is a class with constructor).
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.validateEventType = function (eventType) {
+            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
+                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
+            }
+        };
+        /**
+         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
+         *
+         * Should be used only in dev mode.
+         */
+        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
+            return source$.pipe(operators.tap(function (event) {
+                if (!(event instanceof eventType)) {
+                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
+                }
+            }));
+        };
+        return EventService;
+    }());
+    EventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
+    EventService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+
+    /**
+     * Creates an instance of the given class and fills its properties with the given data.
+     *
+     * @param type reference to the class
+     * @param data object with properties to be copied to the class
+     */
+    function createFrom(type, data) {
+        return Object.assign(new type(), data);
+    }
+
+    /**
+     * Registers streams of ngrx actions as events source streams
+     */
+    var StateEventService = /** @class */ (function () {
+        function StateEventService(actionsSubject, eventService) {
+            this.actionsSubject = actionsSubject;
+            this.eventService = eventService;
+        }
+        /**
+         * Registers an event source stream of specific events
+         * mapped from a given action type.
+         *
+         * @param mapping mapping from action to event
+         *
+         * @returns a teardown function that unregisters the event source
+         */
+        StateEventService.prototype.register = function (mapping) {
+            return this.eventService.register(mapping.event, this.getFromAction(mapping));
+        };
+        /**
+         * Returns a stream of specific events mapped from a specific action.
+         * @param mapping mapping from action to event
+         */
+        StateEventService.prototype.getFromAction = function (mapping) {
+            var _this = this;
+            return this.actionsSubject
+                .pipe(i3.ofType.apply(void 0, __spread([].concat(mapping.action))))
+                .pipe(operators.map(function (action) { return _this.createEvent(action, mapping.event, mapping.factory); }));
+        };
+        /**
+         * Creates an event instance for given class out from the action object.
+         * Unless the `factory` parameter is given, the action's `payload` is used
+         * as the argument for the event's constructor.
+         *
+         * @param action instance of an Action
+         * @param mapping mapping from action to event
+         * @param factory optional function getting an action instance and returning an event instance
+         *
+         * @returns instance of an Event
+         */
+        StateEventService.prototype.createEvent = function (action, eventType, factory) {
+            var _a;
+            return factory
+                ? factory(action)
+                : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
+        };
+        return StateEventService;
+    }());
+    StateEventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(i0.ɵɵinject(i1$2.ActionsSubject), i0.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
+    StateEventService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    StateEventService.ctorParameters = function () { return [
+        { type: i1$2.ActionsSubject },
+        { type: EventService }
+    ]; };
+
+    /**
+     * Indicates that the user has logged out
+     */
+    var LogoutEvent = /** @class */ (function () {
+        function LogoutEvent() {
+        }
+        return LogoutEvent;
+    }());
+    /**
+     * Indicates that the user has logged in
+     */
+    var LoginEvent = /** @class */ (function () {
+        function LoginEvent() {
+        }
+        return LoginEvent;
+    }());
+
+    var LoginEventBuilder = /** @class */ (function () {
+        function LoginEventBuilder(stateEventService) {
+            this.stateEventService = stateEventService;
+            this.register();
+        }
+        /**
+         * Registers logout events
+         */
+        LoginEventBuilder.prototype.register = function () {
+            this.loginEvent();
+        };
+        /**
+         * Register a logout event
+         */
+        LoginEventBuilder.prototype.loginEvent = function () {
+            this.stateEventService.register({
+                action: LOGIN,
+                event: LoginEvent,
+            });
+        };
+        return LoginEventBuilder;
+    }());
+    LoginEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function LoginEventBuilder_Factory() { return new LoginEventBuilder(i0.ɵɵinject(StateEventService)); }, token: LoginEventBuilder, providedIn: "root" });
+    LoginEventBuilder.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    LoginEventBuilder.ctorParameters = function () { return [
+        { type: StateEventService }
+    ]; };
+
+    var LogoutEventBuilder = /** @class */ (function () {
+        function LogoutEventBuilder(stateEventService) {
+            this.stateEventService = stateEventService;
+            this.register();
+        }
+        /**
+         * Registers logout events
+         */
+        LogoutEventBuilder.prototype.register = function () {
+            this.logoutEvent();
+        };
+        /**
+         * Register a logout event
+         */
+        LogoutEventBuilder.prototype.logoutEvent = function () {
+            this.stateEventService.register({
+                action: LOGOUT,
+                event: LogoutEvent,
+            });
+        };
+        return LogoutEventBuilder;
+    }());
+    LogoutEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function LogoutEventBuilder_Factory() { return new LogoutEventBuilder(i0.ɵɵinject(StateEventService)); }, token: LogoutEventBuilder, providedIn: "root" });
+    LogoutEventBuilder.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    LogoutEventBuilder.ctorParameters = function () { return [
+        { type: StateEventService }
+    ]; };
+
+    var UserAuthEventModule = /** @class */ (function () {
+        function UserAuthEventModule(_logoutEventBuilder, _loginEventBuilder) {
+        }
+        return UserAuthEventModule;
+    }());
+    UserAuthEventModule.decorators = [
+        { type: i0.NgModule, args: [{},] }
+    ];
+    UserAuthEventModule.ctorParameters = function () { return [
+        { type: LogoutEventBuilder },
+        { type: LoginEventBuilder }
+    ]; };
+
     var ADD_MESSAGE = '[Global-message] Add a Message';
     var REMOVE_MESSAGE = '[Global-message] Remove a Message';
     var REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
@@ -4960,7 +5368,7 @@
     }());
     UserAuthModule.decorators = [
         { type: i0.NgModule, args: [{
-                    imports: [i1.CommonModule, i1$3.OAuthModule.forRoot()],
+                    imports: [i1.CommonModule, i1$3.OAuthModule.forRoot(), UserAuthEventModule],
                 },] }
     ];
 
@@ -5087,16 +5495,6 @@
     var CUSTOMER_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('CustomerSearchPageNormalizer');
 
     /**
-     * Creates an instance of the given class and fills its properties with the given data.
-     *
-     * @param type reference to the class
-     * @param data object with properties to be copied to the class
-     */
-    function createFrom(type, data) {
-        return Object.assign(new type(), data);
-    }
-
-    /**
      * Will be thrown in case lazy loaded modules are loaded and instantiated.
      *
      * This event is thrown for cms driven lazy loaded feature modules amd it's
@@ -5107,251 +5505,6 @@
         }
         return ModuleInitializedEvent;
     }());
-
-    // PRIVATE API
-    /**
-     * Allows for dynamic adding and removing source observables
-     * and exposes them as one merged observable at a property `output$`.
-     *
-     * Thanks to the `share()` operator used inside, it subscribes to source observables
-     * only when someone subscribes to it. And it unsubscribes from source observables
-     * when the counter of consumers drops to 0.
-     *
-     * **To avoid memory leaks**, all manually added sources should be manually removed
-     * when not plan to emit values anymore. In particular closed event sources won't be
-     * automatically removed.
-     */
-    var MergingSubject = /** @class */ (function () {
-        function MergingSubject() {
-            var _this = this;
-            /**
-             * List of already added sources (but not removed yet)
-             */
-            this.sources = [];
-            /**
-             * For each source: it stores a subscription responsible for
-             * passing all values from source to the consumer
-             */
-            this.subscriptionsToSources = new Map();
-            /**
-             * Observable with all sources merged.
-             *
-             * Only after subscribing to it, under the hood it subscribes to the source observables.
-             * When the number of subscribers drops to 0, it unsubscribes from all source observables.
-             * But if later on something subscribes to it again, it subscribes to the source observables again.
-             *
-             * It multicasts the emissions for each subscriber.
-             */
-            this.output$ = new rxjs.Observable(function (consumer) {
-                // There can be only 0 or 1 consumer of this observable coming from the `share()` operator
-                // that is piped right after this observable.
-                // `share()` not only multicasts the results but also  When all end-subscribers unsubscribe from `share()` operator, it will unsubscribe
-                // from this observable (by the nature `refCount`-nature of the `share()` operator).
-                _this.consumer = consumer;
-                _this.bindAllSourcesToConsumer(consumer);
-                return function () {
-                    _this.consumer = null;
-                    _this.unbindAllSourcesFromConsumer();
-                };
-            }).pipe(operators.share());
-            /**
-             * Reference to the subscriber coming from the `share()` operator piped to the `output$` observable.
-             * For more, see docs of the `output$` observable;
-             */
-            this.consumer = null;
-        }
-        /**
-         * Registers the given source to pass its values to the `output$` observable.
-         *
-         * It does nothing, when the source has been already added (but not removed yet).
-         */
-        MergingSubject.prototype.add = function (source) {
-            if (this.has(source)) {
-                return;
-            }
-            if (this.consumer) {
-                this.bindSourceToConsumer(source, this.consumer);
-            }
-            this.sources.push(source);
-        };
-        /**
-         * Starts passing all values from already added sources to consumer
-         */
-        MergingSubject.prototype.bindAllSourcesToConsumer = function (consumer) {
-            var _this = this;
-            this.sources.forEach(function (source) { return _this.bindSourceToConsumer(source, consumer); });
-        };
-        /**
-         * Stops passing all values from already added sources to consumer
-         * (if any consumer is active at the moment)
-         */
-        MergingSubject.prototype.unbindAllSourcesFromConsumer = function () {
-            var _this = this;
-            this.sources.forEach(function (source) { return _this.unbindSourceFromConsumer(source); });
-        };
-        /**
-         * Starts passing all values from a single source to consumer
-         */
-        MergingSubject.prototype.bindSourceToConsumer = function (source, consumer) {
-            var subscriptionToSource = source.subscribe(function (val) { return consumer.next(val); }); // passes all emissions from source to consumer
-            this.subscriptionsToSources.set(source, subscriptionToSource);
-        };
-        /**
-         * Stops passing all values from a single source to consumer
-         * (if any consumer is active at the moment)
-         */
-        MergingSubject.prototype.unbindSourceFromConsumer = function (source) {
-            var subscriptionToSource = this.subscriptionsToSources.get(source);
-            if (subscriptionToSource !== undefined) {
-                subscriptionToSource.unsubscribe();
-                this.subscriptionsToSources.delete(source);
-            }
-        };
-        /**
-         * Unregisters the given source so it stops passing its values to `output$` observable.
-         *
-         * Should be used when a source is no longer maintained **to avoid memory leaks**.
-         */
-        MergingSubject.prototype.remove = function (source) {
-            // clear binding from source to consumer (if any consumer exists at the moment)
-            this.unbindSourceFromConsumer(source);
-            // remove source from array
-            var i;
-            if ((i = this.sources.findIndex(function (s) { return s === source; })) !== -1) {
-                this.sources.splice(i, 1);
-            }
-        };
-        /**
-         * Returns whether the given source has been already addded
-         */
-        MergingSubject.prototype.has = function (source) {
-            return this.sources.includes(source);
-        };
-        return MergingSubject;
-    }());
-
-    /**
-     * A service to register and observe event sources. Events are driven by event types, which are class signatures
-     * for the given event.
-     *
-     * It is possible to register multiple sources to a single event, even without
-     * knowing as multiple decoupled features can attach sources to the same
-     * event type.
-     */
-    var EventService = /** @class */ (function () {
-        function EventService() {
-            /**
-             * The various events meta are collected in a map, stored by the event type class
-             */
-            this.eventsMeta = new Map();
-        }
-        /**
-         * Register an event source for the given event type.
-         *
-         * CAUTION: To avoid memory leaks, the returned teardown function should be called
-         *  when the event source is no longer maintained by its creator
-         * (i.e. in `ngOnDestroy` if the event source was registered in the component).
-         *
-         * @param eventType the event type
-         * @param source$ an observable that represents the source
-         *
-         * @returns a teardown function which unregisters the given event source
-         */
-        EventService.prototype.register = function (eventType, source$) {
-            var eventMeta = this.getEventMeta(eventType);
-            if (eventMeta.mergingSubject.has(source$)) {
-                if (i0.isDevMode()) {
-                    console.warn("EventService: the event source", source$, "has been already registered for the type", eventType);
-                }
-            }
-            else {
-                eventMeta.mergingSubject.add(source$);
-            }
-            return function () { return eventMeta.mergingSubject.remove(source$); };
-        };
-        /**
-         * Returns a stream of events for the given event type
-         * @param eventTypes event type
-         */
-        EventService.prototype.get = function (eventType) {
-            var output$ = this.getEventMeta(eventType).mergingSubject.output$;
-            if (i0.isDevMode()) {
-                output$ = this.getValidatedEventStream(output$, eventType);
-            }
-            return output$;
-        };
-        /**
-         * Dispatches an instance of an individual event.
-         */
-        EventService.prototype.dispatch = function (event) {
-            var eventType = event.constructor;
-            var inputSubject$ = this.getInputSubject(eventType);
-            inputSubject$.next(event);
-        };
-        /**
-         * Returns the input subject used to dispatch a single event.
-         * The subject is created on demand, when it's needed for the first time.
-         * @param eventType type of event
-         */
-        EventService.prototype.getInputSubject = function (eventType) {
-            var eventMeta = this.getEventMeta(eventType);
-            if (!eventMeta.inputSubject$) {
-                eventMeta.inputSubject$ = new rxjs.Subject();
-                this.register(eventType, eventMeta.inputSubject$);
-            }
-            return eventMeta.inputSubject$;
-        };
-        /**
-         * Returns the event meta object for the given event type
-         */
-        EventService.prototype.getEventMeta = function (eventType) {
-            if (i0.isDevMode()) {
-                this.validateEventType(eventType);
-            }
-            if (!this.eventsMeta.get(eventType)) {
-                this.createEventMeta(eventType);
-            }
-            return this.eventsMeta.get(eventType);
-        };
-        /**
-         * Creates the event meta object for the given event type
-         */
-        EventService.prototype.createEventMeta = function (eventType) {
-            this.eventsMeta.set(eventType, {
-                inputSubject$: null,
-                mergingSubject: new MergingSubject(),
-            });
-        };
-        /**
-         * Checks if the event type is a valid type (is a class with constructor).
-         *
-         * Should be used only in dev mode.
-         */
-        EventService.prototype.validateEventType = function (eventType) {
-            if (!(eventType === null || eventType === void 0 ? void 0 : eventType.constructor)) {
-                throw new Error("EventService:  " + eventType + " is not a valid event type. Please provide a class reference.");
-            }
-        };
-        /**
-         * Returns the given event source with runtime validation whether the emitted values are instances of given event type.
-         *
-         * Should be used only in dev mode.
-         */
-        EventService.prototype.getValidatedEventStream = function (source$, eventType) {
-            return source$.pipe(operators.tap(function (event) {
-                if (!(event instanceof eventType)) {
-                    console.warn("EventService: The stream", source$, "emitted the event", event, "that is not an instance of the declared type", eventType.name);
-                }
-            }));
-        };
-        return EventService;
-    }());
-    EventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function EventService_Factory() { return new EventService(); }, token: EventService, providedIn: "root" });
-    EventService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
 
     var NOT_FOUND_SYMBOL = {};
     /**
@@ -6698,65 +6851,6 @@
         };
         return PageMetaResolver;
     }());
-
-    /**
-     * Registers streams of ngrx actions as events source streams
-     */
-    var StateEventService = /** @class */ (function () {
-        function StateEventService(actionsSubject, eventService) {
-            this.actionsSubject = actionsSubject;
-            this.eventService = eventService;
-        }
-        /**
-         * Registers an event source stream of specific events
-         * mapped from a given action type.
-         *
-         * @param mapping mapping from action to event
-         *
-         * @returns a teardown function that unregisters the event source
-         */
-        StateEventService.prototype.register = function (mapping) {
-            return this.eventService.register(mapping.event, this.getFromAction(mapping));
-        };
-        /**
-         * Returns a stream of specific events mapped from a specific action.
-         * @param mapping mapping from action to event
-         */
-        StateEventService.prototype.getFromAction = function (mapping) {
-            var _this = this;
-            return this.actionsSubject
-                .pipe(i3.ofType.apply(void 0, __spread([].concat(mapping.action))))
-                .pipe(operators.map(function (action) { return _this.createEvent(action, mapping.event, mapping.factory); }));
-        };
-        /**
-         * Creates an event instance for given class out from the action object.
-         * Unless the `factory` parameter is given, the action's `payload` is used
-         * as the argument for the event's constructor.
-         *
-         * @param action instance of an Action
-         * @param mapping mapping from action to event
-         * @param factory optional function getting an action instance and returning an event instance
-         *
-         * @returns instance of an Event
-         */
-        StateEventService.prototype.createEvent = function (action, eventType, factory) {
-            var _a;
-            return factory
-                ? factory(action)
-                : createFrom(eventType, (_a = action.payload) !== null && _a !== void 0 ? _a : {});
-        };
-        return StateEventService;
-    }());
-    StateEventService.ɵprov = i0.ɵɵdefineInjectable({ factory: function StateEventService_Factory() { return new StateEventService(i0.ɵɵinject(i1$2.ActionsSubject), i0.ɵɵinject(EventService)); }, token: StateEventService, providedIn: "root" });
-    StateEventService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    StateEventService.ctorParameters = function () { return [
-        { type: i1$2.ActionsSubject },
-        { type: EventService }
-    ]; };
 
     var VERIFY_ADDRESS = '[Checkout] Verify Address';
     var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
@@ -30149,6 +30243,10 @@
     exports.LazyModulesService = LazyModulesService;
     exports.LegacyOccCmsComponentAdapter = LegacyOccCmsComponentAdapter;
     exports.LoadingScopesService = LoadingScopesService;
+    exports.LoginEvent = LoginEvent;
+    exports.LoginEventBuilder = LoginEventBuilder;
+    exports.LogoutEvent = LogoutEvent;
+    exports.LogoutEventBuilder = LogoutEventBuilder;
     exports.MEDIA_BASE_URL_META_TAG_NAME = MEDIA_BASE_URL_META_TAG_NAME;
     exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;
     exports.MULTI_CART_DATA = MULTI_CART_DATA;
@@ -30362,6 +30460,7 @@
     exports.UserAddressAdapter = UserAddressAdapter;
     exports.UserAddressConnector = UserAddressConnector;
     exports.UserAddressService = UserAddressService;
+    exports.UserAuthEventModule = UserAuthEventModule;
     exports.UserAuthModule = UserAuthModule;
     exports.UserConnector = UserConnector;
     exports.UserConsentAdapter = UserConsentAdapter;
