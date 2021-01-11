@@ -516,6 +516,16 @@ export declare namespace Occ {
          * @member {any} [properties]
          */
         properties?: any;
+        robotTag?: PageRobots;
+    }
+    /**
+     * The page robot information is exposed with 4 string values.
+     */
+    enum PageRobots {
+        INDEX_FOLLOW = "INDEX_FOLLOW",
+        NOINDEX_FOLLOW = "NOINDEX_FOLLOW",
+        INDEX_NOFOLLOW = "INDEX_NOFOLLOW",
+        NOINDEX_NOFOLLOW = "NOINDEX_NOFOLLOW"
     }
     /**
      *

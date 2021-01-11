@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { BreadcrumbMeta, PageRobotsMeta } from '../../cms/model/page.model';
+import { BasePageMetaResolver } from '../../cms/page/base-page-meta.resolver';
 import { PageMetaResolver } from '../../cms/page/page-meta.resolver';
 import { PageBreadcrumbResolver, PageDescriptionResolver, PageHeadingResolver, PageImageResolver, PageRobotsResolver, PageTitleResolver } from '../../cms/page/page.resolvers';
 import { TranslationService } from '../../i18n/translation.service';
@@ -13,12 +14,18 @@ import { ProductService } from '../facade/product.service';
  * The page title, heading, description, breadcrumbs and
  * first GALLERY image are resolved if available in the data.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ProductPageMetaResolver extends PageMetaResolver implements PageHeadingResolver, PageTitleResolver, PageDescriptionResolver, PageBreadcrumbResolver, PageImageResolver, PageRobotsResolver {
     protected routingService: RoutingService;
     protected productService: ProductService;
     protected translation: TranslationService;
+    protected basePageMetaResolver?: BasePageMetaResolver;
     protected product$: Observable<unknown>;
+    /**
+     * @deprecated since 3.1, we'll use the BasePageMetaResolver in future versions
+     */
     constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService);
+    constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService, basePageMetaResolver?: BasePageMetaResolver);
     /**
      * Resolves the page heading for the Product Detail Page.
      * The page heading is used in the UI (`<h1>`), where as the page
@@ -27,7 +34,7 @@ export declare class ProductPageMetaResolver extends PageMetaResolver implements
     resolveHeading(): Observable<string>;
     /**
      * Resolves the page title for the Product Detail Page. The page title
-     * is resolved with the product name, the first category and the manufactorer.
+     * is resolved with the product name, the first category and the manufacturer.
      * The page title used by the browser (history, tabs) and crawlers.
      */
     resolveTitle(): Observable<string>;
@@ -38,7 +45,7 @@ export declare class ProductPageMetaResolver extends PageMetaResolver implements
     resolveDescription(): Observable<string>;
     /**
      * Resolves breadcrumbs for the Product Detail Page. The breadcrumbs are driven by
-     * a static home page crum and a crumb for each category.
+     * a static home page crumb and a crumb for each category.
      */
     resolveBreadcrumbs(): Observable<BreadcrumbMeta[]>;
     /**
@@ -54,4 +61,7 @@ export declare class ProductPageMetaResolver extends PageMetaResolver implements
      * regardless of whether they're purchasable or not.
      */
     resolveRobots(): Observable<PageRobotsMeta[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductPageMetaResolver, [null, null, null, { optional: true; }]>;
 }
+
+//# sourceMappingURL=product-page-meta.resolver.d.ts.map

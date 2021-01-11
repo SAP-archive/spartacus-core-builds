@@ -10178,30 +10178,803 @@
         return TranslationService;
     }());
 
+    var CMS_FEATURE = 'cms';
+    var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
+    var COMPONENT_ENTITY = '[Cms] Component Entity';
+
+    var LOAD_CMS_COMPONENT = '[Cms] Load Component';
+    var LOAD_CMS_COMPONENT_FAIL = '[Cms] Load Component Fail';
+    var LOAD_CMS_COMPONENT_SUCCESS = '[Cms] Load Component Success';
+    var CMS_GET_COMPONENT_FROM_PAGE = '[Cms] Get Component from Page';
+    var LoadCmsComponent = /** @class */ (function (_super) {
+        __extends(LoadCmsComponent, _super);
+        function LoadCmsComponent(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_COMPONENT;
+            return _this;
+        }
+        return LoadCmsComponent;
+    }(EntityLoadAction));
+    var LoadCmsComponentFail = /** @class */ (function (_super) {
+        __extends(LoadCmsComponentFail, _super);
+        function LoadCmsComponentFail(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid, payload.error) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_COMPONENT_FAIL;
+            return _this;
+        }
+        return LoadCmsComponentFail;
+    }(EntityFailAction));
+    var LoadCmsComponentSuccess = /** @class */ (function (_super) {
+        __extends(LoadCmsComponentSuccess, _super);
+        function LoadCmsComponentSuccess(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid || payload.component.uid || '') || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_COMPONENT_SUCCESS;
+            return _this;
+        }
+        return LoadCmsComponentSuccess;
+    }(EntitySuccessAction));
+    var CmsGetComponentFromPage = /** @class */ (function (_super) {
+        __extends(CmsGetComponentFromPage, _super);
+        function CmsGetComponentFromPage(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, [].concat(payload).map(function (cmp) { return cmp.component.uid; })) || this;
+            _this.payload = payload;
+            _this.type = CMS_GET_COMPONENT_FROM_PAGE;
+            return _this;
+        }
+        return CmsGetComponentFromPage;
+    }(EntitySuccessAction));
+
+    var LOAD_CMS_NAVIGATION_ITEMS = '[Cms] Load NavigationEntry items';
+    var LOAD_CMS_NAVIGATION_ITEMS_FAIL = '[Cms] Load NavigationEntry items Fail';
+    var LOAD_CMS_NAVIGATION_ITEMS_SUCCESS = '[Cms] Load NavigationEntry items Success';
+    var LoadCmsNavigationItems = /** @class */ (function (_super) {
+        __extends(LoadCmsNavigationItems, _super);
+        function LoadCmsNavigationItems(payload) {
+            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, payload.nodeId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_NAVIGATION_ITEMS;
+            return _this;
+        }
+        return LoadCmsNavigationItems;
+    }(EntityLoadAction));
+    var LoadCmsNavigationItemsFail = /** @class */ (function (_super) {
+        __extends(LoadCmsNavigationItemsFail, _super);
+        function LoadCmsNavigationItemsFail(nodeId, payload) {
+            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, nodeId, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_NAVIGATION_ITEMS_FAIL;
+            return _this;
+        }
+        return LoadCmsNavigationItemsFail;
+    }(EntityFailAction));
+    var LoadCmsNavigationItemsSuccess = /** @class */ (function (_super) {
+        __extends(LoadCmsNavigationItemsSuccess, _super);
+        function LoadCmsNavigationItemsSuccess(payload) {
+            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, payload.nodeId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_NAVIGATION_ITEMS_SUCCESS;
+            return _this;
+        }
+        return LoadCmsNavigationItemsSuccess;
+    }(EntitySuccessAction));
+
+    var LOAD_CMS_PAGE_DATA = '[Cms] Load Page Data';
+    var LOAD_CMS_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
+    var LOAD_CMS_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
+    var CMS_SET_PAGE_SUCCESS_INDEX = '[Cms] Set Page Success Index';
+    var CMS_SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
+    var LoadCmsPageData = /** @class */ (function (_super) {
+        __extends(LoadCmsPageData, _super);
+        function LoadCmsPageData(payload) {
+            var _this = _super.call(this, payload.type, payload.id) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_PAGE_DATA;
+            return _this;
+        }
+        return LoadCmsPageData;
+    }(EntityLoadAction));
+    var LoadCmsPageDataFail = /** @class */ (function (_super) {
+        __extends(LoadCmsPageDataFail, _super);
+        function LoadCmsPageDataFail(pageContext, error) {
+            var _this = _super.call(this, pageContext.type, pageContext.id, error) || this;
+            _this.type = LOAD_CMS_PAGE_DATA_FAIL;
+            return _this;
+        }
+        return LoadCmsPageDataFail;
+    }(EntityFailAction));
+    var LoadCmsPageDataSuccess = /** @class */ (function (_super) {
+        __extends(LoadCmsPageDataSuccess, _super);
+        function LoadCmsPageDataSuccess(pageContext, payload) {
+            var _this = _super.call(this, pageContext.type, pageContext.id, payload) || this;
+            _this.type = LOAD_CMS_PAGE_DATA_SUCCESS;
+            return _this;
+        }
+        return LoadCmsPageDataSuccess;
+    }(EntitySuccessAction));
+    var CmsSetPageSuccessIndex = /** @class */ (function (_super) {
+        __extends(CmsSetPageSuccessIndex, _super);
+        function CmsSetPageSuccessIndex(pageContext, payload) {
+            var _this = _super.call(this, pageContext.type, pageContext.id, payload) || this;
+            _this.type = CMS_SET_PAGE_SUCCESS_INDEX;
+            return _this;
+        }
+        return CmsSetPageSuccessIndex;
+    }(EntitySuccessAction));
+    var CmsSetPageFailIndex = /** @class */ (function (_super) {
+        __extends(CmsSetPageFailIndex, _super);
+        function CmsSetPageFailIndex(pageContext, payload) {
+            var _this = _super.call(this, pageContext.type, pageContext.id) || this;
+            _this.payload = payload;
+            _this.type = CMS_SET_PAGE_FAIL_INDEX;
+            return _this;
+        }
+        return CmsSetPageFailIndex;
+    }(EntityFailAction));
+
+    var cmsGroup_actions = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        LOAD_CMS_COMPONENT: LOAD_CMS_COMPONENT,
+        LOAD_CMS_COMPONENT_FAIL: LOAD_CMS_COMPONENT_FAIL,
+        LOAD_CMS_COMPONENT_SUCCESS: LOAD_CMS_COMPONENT_SUCCESS,
+        CMS_GET_COMPONENT_FROM_PAGE: CMS_GET_COMPONENT_FROM_PAGE,
+        LoadCmsComponent: LoadCmsComponent,
+        LoadCmsComponentFail: LoadCmsComponentFail,
+        LoadCmsComponentSuccess: LoadCmsComponentSuccess,
+        CmsGetComponentFromPage: CmsGetComponentFromPage,
+        LOAD_CMS_NAVIGATION_ITEMS: LOAD_CMS_NAVIGATION_ITEMS,
+        LOAD_CMS_NAVIGATION_ITEMS_FAIL: LOAD_CMS_NAVIGATION_ITEMS_FAIL,
+        LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: LOAD_CMS_NAVIGATION_ITEMS_SUCCESS,
+        LoadCmsNavigationItems: LoadCmsNavigationItems,
+        LoadCmsNavigationItemsFail: LoadCmsNavigationItemsFail,
+        LoadCmsNavigationItemsSuccess: LoadCmsNavigationItemsSuccess,
+        LOAD_CMS_PAGE_DATA: LOAD_CMS_PAGE_DATA,
+        LOAD_CMS_PAGE_DATA_FAIL: LOAD_CMS_PAGE_DATA_FAIL,
+        LOAD_CMS_PAGE_DATA_SUCCESS: LOAD_CMS_PAGE_DATA_SUCCESS,
+        CMS_SET_PAGE_SUCCESS_INDEX: CMS_SET_PAGE_SUCCESS_INDEX,
+        CMS_SET_PAGE_FAIL_INDEX: CMS_SET_PAGE_FAIL_INDEX,
+        LoadCmsPageData: LoadCmsPageData,
+        LoadCmsPageDataFail: LoadCmsPageDataFail,
+        LoadCmsPageDataSuccess: LoadCmsPageDataSuccess,
+        CmsSetPageSuccessIndex: CmsSetPageSuccessIndex,
+        CmsSetPageFailIndex: CmsSetPageFailIndex
+    });
+
+    var getCmsState = i1$2.createFeatureSelector(CMS_FEATURE);
+
+    var ɵ0$b = function (state) { return state.components; };
+    var getComponentsState = i1$2.createSelector(getCmsState, ɵ0$b);
+    var componentsContextSelectorFactory = function (uid) {
+        return i1$2.createSelector(getComponentsState, function (componentsState) { return entitySelector(componentsState, uid); });
+    };
+    var componentsLoaderStateSelectorFactory = function (uid, context) {
+        return i1$2.createSelector(componentsContextSelectorFactory(uid), function (componentsContext) { return (componentsContext &&
+            componentsContext.pageContext &&
+            componentsContext.pageContext[context]) ||
+            initialLoaderState; });
+    };
+    /**
+     * This selector will return:
+     *   - true: component for this context exists
+     *   - false: component for this context doesn't exist
+     *   - undefined: if the exists status for component is unknown
+     *
+     * @param uid
+     * @param context
+     */
+    var componentsContextExistsSelectorFactory = function (uid, context) {
+        return i1$2.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState); });
+    };
+    var componentsDataSelectorFactory = function (uid) {
+        return i1$2.createSelector(componentsContextSelectorFactory(uid), function (state) { return state ? state.component : undefined; });
+    };
+    /**
+     * This selector will return:
+     *   - CmsComponent instance: if we have component data for specified context
+     *   - null: if there is no component data for specified context
+     *   - undefined: if status of component data for specified context is unknown
+     *
+     * @param uid
+     * @param context
+     */
+    var componentsSelectorFactory = function (uid, context) {
+        return i1$2.createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), function (componentState, exists) {
+            switch (exists) {
+                case true:
+                    return componentState;
+                case false:
+                    return null;
+                case undefined:
+                    return undefined;
+            }
+        });
+    };
+
+    var ɵ0$c = function (state) { return state.navigation; };
+    var getNavigationEntryItemState = i1$2.createSelector(getCmsState, ɵ0$c);
+    var getSelectedNavigationEntryItemState = function (nodeId) {
+        return i1$2.createSelector(getNavigationEntryItemState, function (nodes) { return entityLoaderStateSelector(nodes, nodeId); });
+    };
+    var getNavigationEntryItems = function (nodeId) {
+        return i1$2.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
+    };
+
+    var getPageEntitiesSelector = function (state) { return state.pageData.entities; };
+    var ɵ0$d = getPageEntitiesSelector;
+    var getIndexByType = function (index, type) {
+        switch (type) {
+            case exports.PageType.CONTENT_PAGE: {
+                return index.content;
+            }
+            case exports.PageType.PRODUCT_PAGE: {
+                return index.product;
+            }
+            case exports.PageType.CATEGORY_PAGE: {
+                return index.category;
+            }
+            case exports.PageType.CATALOG_PAGE: {
+                return index.catalog;
+            }
+        }
+        return { entities: {} };
+    };
+    var ɵ1$7 = getIndexByType;
+    var getPageComponentTypesSelector = function (page) {
+        var e_1, _a, e_2, _b;
+        var componentTypes = new Set();
+        if (page && page.slots) {
+            try {
+                for (var _c = __values(Object.keys(page.slots)), _d = _c.next(); !_d.done; _d = _c.next()) {
+                    var slot = _d.value;
+                    try {
+                        for (var _e = (e_2 = void 0, __values(page.slots[slot].components || [])), _f = _e.next(); !_f.done; _f = _e.next()) {
+                            var component = _f.value;
+                            componentTypes.add(component.flexType);
+                        }
+                    }
+                    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                    finally {
+                        try {
+                            if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
+                        }
+                        finally { if (e_2) throw e_2.error; }
+                    }
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+        }
+        return Array.from(componentTypes);
+    };
+    var ɵ2$5 = getPageComponentTypesSelector;
+    var ɵ3$4 = function (state) { return state.page; };
+    var getPageState = i1$2.createSelector(getCmsState, ɵ3$4);
+    var ɵ4$2 = function (page) { return page.index; };
+    var getPageStateIndex = i1$2.createSelector(getPageState, ɵ4$2);
+    var getPageStateIndexEntityLoaderState = function (pageContext) { return i1$2.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); }); };
+    var getPageStateIndexLoaderState = function (pageContext) { return i1$2.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) { return entityLoaderStateSelector(indexState, pageContext.id); }); };
+    var getPageStateIndexValue = function (pageContext) { return i1$2.createSelector(getPageStateIndexLoaderState(pageContext), function (entity) { return loaderValueSelector(entity); }); };
+    var getPageEntities = i1$2.createSelector(getPageState, getPageEntitiesSelector);
+    var getPageData = function (pageContext) { return i1$2.createSelector(getPageEntities, getPageStateIndexValue(pageContext), function (entities, indexValue) { return entities[indexValue]; }); };
+    var getPageComponentTypes = function (pageContext) { return i1$2.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); }); };
+    var getCurrentSlotSelectorFactory = function (pageContext, position) {
+        return i1$2.createSelector(getPageData(pageContext), function (entity) {
+            if (entity) {
+                return entity.slots[position] || { components: [] };
+            }
+        });
+    };
+
+    var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        getComponentsState: getComponentsState,
+        componentsContextSelectorFactory: componentsContextSelectorFactory,
+        componentsLoaderStateSelectorFactory: componentsLoaderStateSelectorFactory,
+        componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
+        componentsDataSelectorFactory: componentsDataSelectorFactory,
+        componentsSelectorFactory: componentsSelectorFactory,
+        ɵ0: ɵ0$b,
+        getCmsState: getCmsState,
+        getNavigationEntryItemState: getNavigationEntryItemState,
+        getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
+        getNavigationEntryItems: getNavigationEntryItems,
+        getPageState: getPageState,
+        getPageStateIndex: getPageStateIndex,
+        getPageStateIndexEntityLoaderState: getPageStateIndexEntityLoaderState,
+        getPageStateIndexLoaderState: getPageStateIndexLoaderState,
+        getPageStateIndexValue: getPageStateIndexValue,
+        getPageEntities: getPageEntities,
+        getPageData: getPageData,
+        getPageComponentTypes: getPageComponentTypes,
+        getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory,
+        ɵ1: ɵ1$7,
+        ɵ2: ɵ2$5,
+        ɵ3: ɵ3$4,
+        ɵ4: ɵ4$2
+    });
+
+    var CURRENT_CONTEXT_KEY = 'current';
+    /**
+     *
+     * Serializes the provided page context.
+     * The pattern used for serialization is: `pageContext.type-pageContext.id`.
+     *
+     * @param pageContext to serialize
+     * @param ignoreContentPageId if set to true, and the PageType is of type ContentPage, then the serialized page context will not contain the ID.
+     * Otherwise, the page context if fully serialized.
+     */
+    function serializePageContext(pageContext, ignoreContentPageId) {
+        if (!pageContext) {
+            return CURRENT_CONTEXT_KEY;
+        }
+        if (ignoreContentPageId && pageContext.type === exports.PageType.CONTENT_PAGE) {
+            return "" + pageContext.type;
+        }
+        return pageContext.type + "-" + pageContext.id;
+    }
+
+    var CmsService = /** @class */ (function () {
+        function CmsService(store, routingService) {
+            this.store = store;
+            this.routingService = routingService;
+            this.components = {};
+        }
+        /**
+         * Get current CMS page data
+         */
+        CmsService.prototype.getCurrentPage = function () {
+            var _this = this;
+            return this.routingService
+                .getPageContext()
+                .pipe(operators.switchMap(function (pageContext) { return _this.store.select(getPageData(pageContext)); }));
+        };
+        /**
+         * Get CMS component data by uid
+         *
+         * This method can be safely and optimally used to load multiple components data at the same time.
+         * Calling getComponentData multiple times for different components will always result in optimized
+         * back-end request: all components requested at the same time (in one event loop) will be loaded in one network call.
+         *
+         * In case the component data is not present, the method will load it.
+         * Otherwise, if the page context is not provided, the current page context from the router state will be used instead.
+         *
+         * @param uid CMS component uid
+         * @param pageContext if provided, it will be used to lookup the component data.
+         */
+        CmsService.prototype.getComponentData = function (uid, pageContext) {
+            var context = serializePageContext(pageContext, true);
+            if (!this.components[uid]) {
+                // create the component data structure, if it doesn't already exist
+                this.components[uid] = {};
+            }
+            var component = this.components[uid];
+            if (!component[context]) {
+                // create the component data and assign it to the component's context
+                component[context] = this.createComponentData(uid, pageContext);
+            }
+            return component[context];
+        };
+        CmsService.prototype.createComponentData = function (uid, pageContext) {
+            var _this = this;
+            if (!pageContext) {
+                return this.routingService.getPageContext().pipe(operators.filter(function (currentContext) { return !!currentContext; }), operators.switchMap(function (currentContext) { return _this.getComponentData(uid, currentContext); }));
+            }
+            var context = serializePageContext(pageContext, true);
+            var loading$ = rxjs.combineLatest([
+                this.routingService.getNextPageContext(),
+                this.store.pipe(i1$2.select(componentsLoaderStateSelectorFactory(uid, context))),
+            ]).pipe(operators.observeOn(rxjs.queueScheduler), operators.tap(function (_a) {
+                var _b = __read(_a, 2), nextContext = _b[0], loadingState = _b[1];
+                var attemptedLoad = loadingState.loading || loadingState.success || loadingState.error;
+                // if the requested context is the same as the one that's currently being navigated to
+                // (as it might already been triggered and might be available shortly from page data)
+                // TODO(issue:3649), TODO(issue:3668) - this optimization could be removed
+                var couldBeLoadedWithPageData = nextContext
+                    ? serializePageContext(nextContext, true) === context
+                    : false;
+                if (!attemptedLoad && !couldBeLoadedWithPageData) {
+                    _this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
+                }
+            }));
+            var component$ = this.store.pipe(i1$2.select(componentsSelectorFactory(uid, context)), operators.filter(function (component) { return component !== undefined; }));
+            return rxjs.using(function () { return loading$.subscribe(); }, function () { return component$; }).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
+        };
+        /**
+         * Given the position, get the content slot data
+         * @param position : content slot position
+         */
+        CmsService.prototype.getContentSlot = function (position) {
+            var _this = this;
+            return this.routingService
+                .getPageContext()
+                .pipe(operators.switchMap(function (pageContext) { return _this.store.pipe(i1$2.select(getCurrentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean)); }));
+        };
+        /**
+         * Given navigation node uid, get items (with id and type) inside the navigation entries
+         * @param navigationNodeUid : uid of the navigation node
+         */
+        CmsService.prototype.getNavigationEntryItems = function (navigationNodeUid) {
+            return this.store.pipe(i1$2.select(getNavigationEntryItems(navigationNodeUid)));
+        };
+        /**
+         * Load navigation items data
+         * @param rootUid : the uid of the root navigation node
+         * @param itemList : list of items (with id and type)
+         */
+        CmsService.prototype.loadNavigationItems = function (rootUid, itemList) {
+            this.store.dispatch(new LoadCmsNavigationItems({
+                nodeId: rootUid,
+                items: itemList,
+            }));
+        };
+        /**
+         * Refresh the content of the latest cms page
+         */
+        CmsService.prototype.refreshLatestPage = function () {
+            var _this = this;
+            this.routingService
+                .getPageContext()
+                .pipe(operators.take(1))
+                .subscribe(function (pageContext) { return _this.store.dispatch(new LoadCmsPageData(pageContext)); });
+        };
+        /**
+         * Refresh the cms page content by page Id
+         * @param pageId
+         */
+        CmsService.prototype.refreshPageById = function (pageId) {
+            var pageContext = { id: pageId };
+            this.store.dispatch(new LoadCmsPageData(pageContext));
+        };
+        /**
+         * Refresh cms component's content
+         * @param uid component uid
+         * @param pageContext an optional parameter that enables the caller to specify for which context the component should be refreshed.
+         * If not specified, 'current' page context is used.
+         */
+        CmsService.prototype.refreshComponent = function (uid, pageContext) {
+            this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
+        };
+        /**
+         * Given pageContext, return the CMS page data
+         * @param pageContext
+         */
+        CmsService.prototype.getPageState = function (pageContext) {
+            return this.store.pipe(i1$2.select(getPageData(pageContext)));
+        };
+        /**
+         * Given pageContext, return the CMS page data
+         * @param pageContext
+         */
+        CmsService.prototype.getPageComponentTypes = function (pageContext) {
+            return this.store.pipe(i1$2.select(getPageComponentTypes(pageContext)));
+        };
+        /**
+         * Given pageContext, return whether the CMS page data exists or not
+         * @param pageContext
+         */
+        CmsService.prototype.hasPage = function (pageContext, forceReload) {
+            var _this = this;
+            if (forceReload === void 0) { forceReload = false; }
+            return this.store.pipe(i1$2.select(getPageStateIndexLoaderState(pageContext)), operators.tap(function (entity) {
+                var attemptedLoad = entity.loading || entity.success || entity.error;
+                var shouldReload = forceReload && !entity.loading;
+                if (!attemptedLoad || shouldReload) {
+                    _this.store.dispatch(new LoadCmsPageData(pageContext));
+                    forceReload = false;
+                }
+            }), operators.filter(function (entity) {
+                if (!entity.hasOwnProperty('value')) {
+                    // if we have incomplete state from SSR failed load transfer state,
+                    // we should wait for reload and actual value
+                    return false;
+                }
+                return entity.success || (entity.error && !entity.loading);
+            }), operators.pluck('success'), operators.catchError(function () { return rxjs.of(false); }));
+        };
+        /**
+         * Given pageContext, return the CMS page data
+         **/
+        CmsService.prototype.getPage = function (pageContext, forceReload) {
+            var _this = this;
+            if (forceReload === void 0) { forceReload = false; }
+            return this.hasPage(pageContext, forceReload).pipe(operators.switchMap(function (hasPage) { return hasPage ? _this.getPageState(pageContext) : rxjs.of(null); }));
+        };
+        CmsService.prototype.getPageIndex = function (pageContext) {
+            return this.store.pipe(i1$2.select(getPageStateIndexValue(pageContext)));
+        };
+        CmsService.prototype.setPageFailIndex = function (pageContext, value) {
+            this.store.dispatch(new CmsSetPageFailIndex(pageContext, value));
+        };
+        return CmsService;
+    }());
+    CmsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
+    CmsService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    CmsService.ctorParameters = function () { return [
+        { type: i1$2.Store },
+        { type: RoutingService }
+    ]; };
+
+    /**
+     * Resolves the breadcrumb for the Angular ActivatedRouteSnapshot
+     */
+    var DefaultRoutePageMetaResolver = /** @class */ (function () {
+        function DefaultRoutePageMetaResolver(translation) {
+            this.translation = translation;
+        }
+        /**
+         * Resolves breadcrumb based on the given url and the breadcrumb config.
+         *
+         * - When breadcrumb config is empty, it returns an empty breadcrumb.
+         * - When breadcrumb config is a string or object with `i18n` property,
+         *    it translates it and use as a label of the returned breadcrumb.
+         * - When breadcrumb config is an object with property `raw`, then
+         *    it's used as a label of the returned breadcrumb.
+         */
+        DefaultRoutePageMetaResolver.prototype.resolveBreadcrumbs = function (_a) {
+            var url = _a.url, pageMetaConfig = _a.pageMetaConfig;
+            var breadcrumbConfig = pageMetaConfig === null || pageMetaConfig === void 0 ? void 0 : pageMetaConfig.breadcrumb;
+            if (!breadcrumbConfig) {
+                return rxjs.of([]);
+            }
+            if (typeof breadcrumbConfig !== 'string' && breadcrumbConfig.raw) {
+                return rxjs.of([{ link: url, label: breadcrumbConfig.raw }]);
+            }
+            return this.translateBreadcrumbLabel(breadcrumbConfig).pipe(operators.map(function (label) { return [{ label: label, link: url }]; }));
+        };
+        /**
+         * Translates the configured breadcrumb label
+         */
+        DefaultRoutePageMetaResolver.prototype.translateBreadcrumbLabel = function (breadcrumbConfig) {
+            var _this = this;
+            var i18nKey = typeof breadcrumbConfig === 'string'
+                ? breadcrumbConfig
+                : breadcrumbConfig.i18n;
+            return this.getParams().pipe(operators.switchMap(function (params) { return _this.translation.translate(i18nKey, params !== null && params !== void 0 ? params : {}); }));
+        };
+        /**
+         * Resolves dynamic data for the whole resolver.
+         */
+        DefaultRoutePageMetaResolver.prototype.getParams = function () {
+            return rxjs.of({});
+        };
+        return DefaultRoutePageMetaResolver;
+    }());
+    DefaultRoutePageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function DefaultRoutePageMetaResolver_Factory() { return new DefaultRoutePageMetaResolver(i0.ɵɵinject(TranslationService)); }, token: DefaultRoutePageMetaResolver, providedIn: "root" });
+    DefaultRoutePageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    DefaultRoutePageMetaResolver.ctorParameters = function () { return [
+        { type: TranslationService }
+    ]; };
+
+    /**
+     * Resolves the page meta based on the Angular Activated Routes
+     */
+    var RoutingPageMetaResolver = /** @class */ (function () {
+        function RoutingPageMetaResolver(activatedRoutesService, injector) {
+            var _this = this;
+            this.activatedRoutesService = activatedRoutesService;
+            this.injector = injector;
+            /**
+             * Array of activated routes, excluding the special Angular `root` route.
+             */
+            this.routes$ = this.activatedRoutesService.routes$.pipe(
+            // drop the first route - the special `root` route:
+            operators.map(function (routes) { return (routes = routes.slice(1, routes.length)); }));
+            /**
+             * Array of activated routes together with precalculated extras:
+             *
+             * - route's page meta resolver
+             * - route's absolute string URL
+             *
+             * In case when there is no page meta resolver configured for a specific route,
+             * it inherits its parent's resolver.
+             *
+             * When there is no page meta resolver configured for the highest parent in the hierarchy,
+             * it uses the `DefaultRoutePageMetaResolver`.
+             */
+            this.routesWithExtras$ = this.routes$.pipe(operators.map(function (routes) { return routes.reduce(function (results, route) {
+                var _a;
+                var parent = results.length
+                    ? results[results.length - 1]
+                    : {
+                        route: null,
+                        resolver: _this.injector.get(DefaultRoutePageMetaResolver),
+                        url: '',
+                    };
+                var resolver = (_a = _this.getResolver(route)) !== null && _a !== void 0 ? _a : parent.resolver; // fallback to parent's resolver
+                var urlPart = _this.getUrlPart(route);
+                var url = parent.url + (urlPart ? "/" + urlPart : ''); // don't add slash for a route with path '', to avoid double slash ...//...
+                return results.concat({ route: route, resolver: resolver, url: url });
+            }, []); }), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        }
+        /**
+         * Array of breadcrumbs defined for all the activated routes (from the root route to the leaf route).
+         * It emits on every completed routing navigation.
+         */
+        RoutingPageMetaResolver.prototype.resolveBreadcrumbs = function (options) {
+            var _this = this;
+            return this.routesWithExtras$.pipe(operators.map(function (routesWithExtras) { return (options === null || options === void 0 ? void 0 : options.includeCurrentRoute) ? routesWithExtras
+                : _this.trimCurrentRoute(routesWithExtras); }), operators.switchMap(function (routesWithExtras) { return routesWithExtras.length
+                ? rxjs.combineLatest(routesWithExtras.map(function (routeWithExtras) { return _this.resolveRouteBreadcrumb(routeWithExtras); }))
+                : rxjs.of([]); }), operators.map(function (breadcrumbArrays) { return breadcrumbArrays.flat(); }));
+        };
+        /**
+         * Returns the instance of the RoutePageMetaResolver configured for the given activated route.
+         * Returns null in case there the resolver can't be injected or is undefined.
+         *
+         * @param route route to resolve
+         */
+        RoutingPageMetaResolver.prototype.getResolver = function (route) {
+            var pageMetaConfig = this.getPageMetaConfig(route);
+            if (typeof pageMetaConfig !== 'string' && (pageMetaConfig === null || pageMetaConfig === void 0 ? void 0 : pageMetaConfig.resolver)) {
+                return this.injector.get(pageMetaConfig.resolver, null);
+            }
+            return null;
+        };
+        /**
+         * Resolvers breadcrumb for a specific route
+         */
+        RoutingPageMetaResolver.prototype.resolveRouteBreadcrumb = function (_c) {
+            var route = _c.route, resolver = _c.resolver, url = _c.url;
+            var breadcrumbResolver = resolver;
+            if (typeof breadcrumbResolver.resolveBreadcrumbs === 'function') {
+                return breadcrumbResolver.resolveBreadcrumbs({
+                    route: route,
+                    url: url,
+                    pageMetaConfig: this.getPageMetaConfig(route),
+                });
+            }
+            return rxjs.of([]);
+        };
+        /**
+         * By default in breadcrumbs list we don't want to show a link to the current page, so this function
+         * trims the last breadcrumb (the breadcrumb of the current route).
+         *
+         * This function also handles special case when the current route has a configured empty path ('' route).
+         * The '' routes are often a _technical_ routes to organize other routes, assign common guards for its children, etc.
+         * It shouldn't happen that '' route has a defined breadcrumb config.
+         *
+         * In that case, we trim not only the last route ('' route), but also its parent route with non-empty path
+         * (which likely defines the breadcrumb config).
+         */
+        RoutingPageMetaResolver.prototype.trimCurrentRoute = function (routesWithExtras) {
+            // If the last route is '', we trim:
+            // - the '' route
+            // - all parent '' routes (until we meet route with non-empty path)
+            var _a, _b;
+            var i = routesWithExtras.length - 1;
+            while (((_b = (_a = routesWithExtras[i]) === null || _a === void 0 ? void 0 : _a.route) === null || _b === void 0 ? void 0 : _b.url.length) === 0 && i >= 0) {
+                i--;
+            }
+            // Finally we trim the last route (the one with non-empty path)
+            return routesWithExtras.slice(0, i);
+        };
+        /**
+         * Returns the URL path for the given activated route in a string format.
+         * (ActivatedRouteSnapshot#url contains an array of `UrlSegment`s, not a string)
+         */
+        RoutingPageMetaResolver.prototype.getUrlPart = function (route) {
+            return route.url.map(function (urlSegment) { return urlSegment.path; }).join('/');
+        };
+        /**
+         * Returns the breadcrumb config placed in the route's `data` configuration.
+         */
+        RoutingPageMetaResolver.prototype.getPageMetaConfig = function (route) {
+            var _a, _b;
+            // Note: we use `route.routeConfig.data` (not `route.data`) to save us from
+            // an edge case bug. In Angular, by design the `data` of ActivatedRoute is inherited
+            // from the parent route, if only the child has an empty path ''.
+            // But in any case we don't want the page meta configs to be inherited, so we
+            // read data from the original `routeConfig` which is static.
+            //
+            // Note: we may inherit the parent's page meta resolver in case we don't define it,
+            // but we don't want to inherit parent's page meta config!
+            return (_b = (_a = route === null || route === void 0 ? void 0 : route.routeConfig) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.cxPageMeta;
+        };
+        return RoutingPageMetaResolver;
+    }());
+    RoutingPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingPageMetaResolver_Factory() { return new RoutingPageMetaResolver(i0.ɵɵinject(ActivatedRoutesService), i0.ɵɵinject(i0.INJECTOR)); }, token: RoutingPageMetaResolver, providedIn: "root" });
+    RoutingPageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    RoutingPageMetaResolver.ctorParameters = function () { return [
+        { type: ActivatedRoutesService },
+        { type: i0.Injector }
+    ]; };
+
+    var BasePageMetaResolver = /** @class */ (function () {
+        function BasePageMetaResolver(cmsService, translation, routingPageMetaResolver) {
+            var _this = this;
+            this.cmsService = cmsService;
+            this.translation = translation;
+            this.routingPageMetaResolver = routingPageMetaResolver;
+            /**
+             * Helper to provide access to the current CMS page
+             */
+            this.page$ = rxjs.defer(function () { return _this.cmsService.getCurrentPage(); }).pipe(operators.filter(function (p) { return Boolean(p); }));
+            this.title$ = this.page$.pipe(operators.map(function (p) { return p.title; }));
+            this.robots$ = this.page$.pipe(operators.map(function (page) { return page.robots; }));
+            /**
+             * Breadcrumb for the home page.
+             */
+            this.homeBreadcrumb$ = this.translation
+                .translate('common.home')
+                .pipe(operators.map(function (label) { return [{ label: label, link: '/' }]; }));
+            /**
+             * All the resolved breadcrumbs (including those from Angular child routes).
+             */
+            this.breadcrumb$ = rxjs.combineLatest([
+                this.homeBreadcrumb$,
+                rxjs.defer(function () { return _this.routingPageMetaResolver.resolveBreadcrumbs(); }),
+            ]).pipe(operators.map(function (breadcrumbs) { return breadcrumbs.flat(); }), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        }
+        BasePageMetaResolver.prototype.resolveTitle = function () {
+            return this.title$;
+        };
+        BasePageMetaResolver.prototype.resolveBreadcrumbs = function () {
+            return this.breadcrumb$;
+        };
+        BasePageMetaResolver.prototype.resolveRobots = function () {
+            return this.robots$;
+        };
+        return BasePageMetaResolver;
+    }());
+    BasePageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function BasePageMetaResolver_Factory() { return new BasePageMetaResolver(i0.ɵɵinject(CmsService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(RoutingPageMetaResolver)); }, token: BasePageMetaResolver, providedIn: "root" });
+    BasePageMetaResolver.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    BasePageMetaResolver.ctorParameters = function () { return [
+        { type: CmsService },
+        { type: TranslationService },
+        { type: RoutingPageMetaResolver }
+    ]; };
+
     /**
      * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
      * and the `MultiStepCheckoutSummaryPageTemplate`. If the checkout page matches this template,
-     * the more generic `ContentPageMetaResolver` is overriden by this resolver.
+     * the more generic `ContentPageMetaResolver` is overridden by this resolver.
      *
      * The page title and robots are resolved in this implementation only.
      */
     var CheckoutPageMetaResolver = /** @class */ (function (_super) {
         __extends(CheckoutPageMetaResolver, _super);
-        function CheckoutPageMetaResolver(translation, activeCartService) {
+        function CheckoutPageMetaResolver(translation, activeCartService, basePageMetaResolver) {
             var _this = _super.call(this) || this;
             _this.translation = translation;
             _this.activeCartService = activeCartService;
+            _this.basePageMetaResolver = basePageMetaResolver;
             _this.cart$ = _this.activeCartService.getActive();
             _this.pageType = exports.PageType.CONTENT_PAGE;
             _this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
             return _this;
         }
+        /**
+         * Resolves the page title from the translation `pageMetaResolver.checkout.title`
+         */
         CheckoutPageMetaResolver.prototype.resolveTitle = function () {
             var _this = this;
             return this.cart$.pipe(operators.switchMap(function (c) { return _this.translation.translate('pageMetaResolver.checkout.title', {
                 count: c.totalItems,
             }); }));
         };
+        /**
+         * @Override Returns robots for the checkout pages, which default to NOINDEX/NOFOLLOW.
+         */
+        // TODO(#10467): resolve robots from `BasePageMetaResolver` instead
         CheckoutPageMetaResolver.prototype.resolveRobots = function () {
             return rxjs.of([exports.PageRobotsMeta.NOFOLLOW, exports.PageRobotsMeta.NOINDEX]);
         };
@@ -10215,7 +10988,8 @@
     ];
     CheckoutPageMetaResolver.ctorParameters = function () { return [
         { type: TranslationService },
-        { type: ActiveCartService }
+        { type: ActiveCartService },
+        { type: BasePageMetaResolver, decorators: [{ type: i0.Optional }] }
     ]; };
 
     var UserAddressAdapter = /** @class */ (function () {
@@ -12894,16 +13668,16 @@
     ];
 
     var getDeliveryAddressSelector = function (state) { return state.address; };
-    var ɵ0$b = getDeliveryAddressSelector;
+    var ɵ0$e = getDeliveryAddressSelector;
     var getDeliveryModeSelector = function (state) { return state.deliveryMode; };
-    var ɵ1$7 = getDeliveryModeSelector;
+    var ɵ1$8 = getDeliveryModeSelector;
     var getPaymentDetailsSelector = function (state) { return state.paymentDetails; };
-    var ɵ2$5 = getPaymentDetailsSelector;
+    var ɵ2$6 = getPaymentDetailsSelector;
     var getOrderDetailsSelector = function (state) { return state.orderDetails; };
-    var ɵ3$4 = getOrderDetailsSelector;
+    var ɵ3$5 = getOrderDetailsSelector;
     var getCheckoutState = i1$2.createFeatureSelector(CHECKOUT_FEATURE);
-    var ɵ4$2 = function (checkoutState) { return checkoutState.steps; };
-    var getCheckoutStepsState = i1$2.createSelector(getCheckoutState, ɵ4$2);
+    var ɵ4$3 = function (checkoutState) { return checkoutState.steps; };
+    var getCheckoutStepsState = i1$2.createSelector(getCheckoutState, ɵ4$3);
     var ɵ5 = function (state) { return loaderValueSelector(state); };
     var getCheckoutSteps = i1$2.createSelector(getCheckoutStepsState, ɵ5);
     var getDeliveryAddress = i1$2.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
@@ -12936,41 +13710,41 @@
     var ɵ11 = function (state) { return state.poNumber.costCenter; };
     var getCostCenter = i1$2.createSelector(getCheckoutSteps, ɵ11);
 
-    var ɵ0$c = function (state) { return state.addressVerification; };
-    var getAddressVerificationResultsState = i1$2.createSelector(getCheckoutState, ɵ0$c);
+    var ɵ0$f = function (state) { return state.addressVerification; };
+    var getAddressVerificationResultsState = i1$2.createSelector(getCheckoutState, ɵ0$f);
     var getAddressVerificationResults$1 = i1$2.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
-    var ɵ0$d = function (state) { return state.cardTypes; };
-    var getCardTypesState = i1$2.createSelector(getCheckoutState, ɵ0$d);
+    var ɵ0$g = function (state) { return state.cardTypes; };
+    var getCardTypesState = i1$2.createSelector(getCheckoutState, ɵ0$g);
     var getCardTypesEntites$1 = i1$2.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$8 = function (entites) {
-        return Object.keys(entites).map(function (code) { return entites[code]; });
-    };
-    var getAllCardTypes = i1$2.createSelector(getCardTypesEntites$1, ɵ1$8);
-
-    var getSelectedOrderTypeSelector = function (state) { return state.selected; };
-    var ɵ0$e = function (state) { return state.orderType; };
-    var getOrderTypesState = i1$2.createSelector(getCheckoutState, ɵ0$e);
-    var getSelectedOrderType = i1$2.createSelector(getOrderTypesState, getSelectedOrderTypeSelector);
-
-    var ɵ0$f = function (state) { return state.paymentTypes; };
-    var getPaymentTypesState = i1$2.createSelector(getCheckoutState, ɵ0$f);
-    var getPaymentTypesEntites$1 = i1$2.createSelector(getPaymentTypesState, getPaymentTypesEntites);
     var ɵ1$9 = function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     };
-    var getAllPaymentTypes = i1$2.createSelector(getPaymentTypesEntites$1, ɵ1$9);
+    var getAllCardTypes = i1$2.createSelector(getCardTypesEntites$1, ɵ1$9);
+
+    var getSelectedOrderTypeSelector = function (state) { return state.selected; };
+    var ɵ0$h = function (state) { return state.orderType; };
+    var getOrderTypesState = i1$2.createSelector(getCheckoutState, ɵ0$h);
+    var getSelectedOrderType = i1$2.createSelector(getOrderTypesState, getSelectedOrderTypeSelector);
+
+    var ɵ0$i = function (state) { return state.paymentTypes; };
+    var getPaymentTypesState = i1$2.createSelector(getCheckoutState, ɵ0$i);
+    var getPaymentTypesEntites$1 = i1$2.createSelector(getPaymentTypesState, getPaymentTypesEntites);
+    var ɵ1$a = function (entites) {
+        return Object.keys(entites).map(function (code) { return entites[code]; });
+    };
+    var getAllPaymentTypes = i1$2.createSelector(getPaymentTypesEntites$1, ɵ1$a);
     var getSelectedPaymentType$1 = i1$2.createSelector(getPaymentTypesState, getSelectedPaymentType);
 
     var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getAddressVerificationResultsState: getAddressVerificationResultsState,
         getAddressVerificationResults: getAddressVerificationResults$1,
-        ɵ0: ɵ0$c,
+        ɵ0: ɵ0$f,
         getCardTypesState: getCardTypesState,
         getCardTypesEntites: getCardTypesEntites$1,
         getAllCardTypes: getAllCardTypes,
-        ɵ1: ɵ1$8,
+        ɵ1: ɵ1$9,
         getCheckoutState: getCheckoutState,
         getCheckoutStepsState: getCheckoutStepsState,
         getCheckoutSteps: getCheckoutSteps,
@@ -12984,9 +13758,9 @@
         getCheckoutDetailsLoaded: getCheckoutDetailsLoaded,
         getPoNumer: getPoNumer,
         getCostCenter: getCostCenter,
-        ɵ2: ɵ2$5,
-        ɵ3: ɵ3$4,
-        ɵ4: ɵ4$2,
+        ɵ2: ɵ2$6,
+        ɵ3: ɵ3$5,
+        ɵ4: ɵ4$3,
         ɵ5: ɵ5,
         ɵ6: ɵ6,
         ɵ7: ɵ7,
@@ -13963,6 +14737,1123 @@
                 },] }
     ];
 
+    (function (Occ) {
+        /**
+         * The page robot information is exposed with 4 string values.
+         */
+        var PageRobots;
+        (function (PageRobots) {
+            PageRobots["INDEX_FOLLOW"] = "INDEX_FOLLOW";
+            PageRobots["NOINDEX_FOLLOW"] = "NOINDEX_FOLLOW";
+            PageRobots["INDEX_NOFOLLOW"] = "INDEX_NOFOLLOW";
+            PageRobots["NOINDEX_NOFOLLOW"] = "NOINDEX_NOFOLLOW";
+        })(PageRobots = Occ.PageRobots || (Occ.PageRobots = {}));
+        /**
+         * Defines values for PriceType.
+         * Possible values include: 'BUY', 'FROM'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: PriceType = <PriceType>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var PriceType;
+        (function (PriceType) {
+            PriceType["BUY"] = "BUY";
+            PriceType["FROM"] = "FROM";
+        })(PriceType = Occ.PriceType || (Occ.PriceType = {}));
+        /**
+         * Defines values for ImageType.
+         * Possible values include: 'PRIMARY', 'GALLERY'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: ImageType = <ImageType>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var ImageType;
+        (function (ImageType) {
+            ImageType["PRIMARY"] = "PRIMARY";
+            ImageType["GALLERY"] = "GALLERY";
+        })(ImageType = Occ.ImageType || (Occ.ImageType = {}));
+        /**
+         * Defines values for Fields.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields = <Fields>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields;
+        (function (Fields) {
+            Fields["BASIC"] = "BASIC";
+            Fields["DEFAULT"] = "DEFAULT";
+            Fields["FULL"] = "FULL";
+        })(Fields = Occ.Fields || (Occ.Fields = {}));
+        /**
+         * Defines values for Fields1.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields1 = <Fields1>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields1;
+        (function (Fields1) {
+            Fields1["BASIC"] = "BASIC";
+            Fields1["DEFAULT"] = "DEFAULT";
+            Fields1["FULL"] = "FULL";
+        })(Fields1 = Occ.Fields1 || (Occ.Fields1 = {}));
+        /**
+         * Defines values for Fields2.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields2 = <Fields2>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields2;
+        (function (Fields2) {
+            Fields2["BASIC"] = "BASIC";
+            Fields2["DEFAULT"] = "DEFAULT";
+            Fields2["FULL"] = "FULL";
+        })(Fields2 = Occ.Fields2 || (Occ.Fields2 = {}));
+        /**
+         * Defines values for Fields3.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields3 = <Fields3>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields3;
+        (function (Fields3) {
+            Fields3["BASIC"] = "BASIC";
+            Fields3["DEFAULT"] = "DEFAULT";
+            Fields3["FULL"] = "FULL";
+        })(Fields3 = Occ.Fields3 || (Occ.Fields3 = {}));
+        /**
+         * Defines values for Fields4.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields4 = <Fields4>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields4;
+        (function (Fields4) {
+            Fields4["BASIC"] = "BASIC";
+            Fields4["DEFAULT"] = "DEFAULT";
+            Fields4["FULL"] = "FULL";
+        })(Fields4 = Occ.Fields4 || (Occ.Fields4 = {}));
+        /**
+         * Defines values for Fields5.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields5 = <Fields5>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields5;
+        (function (Fields5) {
+            Fields5["BASIC"] = "BASIC";
+            Fields5["DEFAULT"] = "DEFAULT";
+            Fields5["FULL"] = "FULL";
+        })(Fields5 = Occ.Fields5 || (Occ.Fields5 = {}));
+        /**
+         * Defines values for Fields6.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields6 = <Fields6>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields6;
+        (function (Fields6) {
+            Fields6["BASIC"] = "BASIC";
+            Fields6["DEFAULT"] = "DEFAULT";
+            Fields6["FULL"] = "FULL";
+        })(Fields6 = Occ.Fields6 || (Occ.Fields6 = {}));
+        /**
+         * Defines values for PageType.
+         * Possible values include: 'ContentPage', 'ProductPage', 'CategoryPage',
+         * 'CatalogPage'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: PageType = <PageType>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var PageType;
+        (function (PageType) {
+            PageType["CONTENT_PAGE"] = "ContentPage";
+            PageType["PRODUCT_PAGE"] = "ProductPage";
+            PageType["CATEGORY_PAGE"] = "CategoryPage";
+            PageType["CATALOG_PAGE"] = "CatalogPage";
+        })(PageType = Occ.PageType || (Occ.PageType = {}));
+        /**
+         * Defines values for Fields7.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields7 = <Fields7>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields7;
+        (function (Fields7) {
+            Fields7["BASIC"] = "BASIC";
+            Fields7["DEFAULT"] = "DEFAULT";
+            Fields7["FULL"] = "FULL";
+        })(Fields7 = Occ.Fields7 || (Occ.Fields7 = {}));
+        /**
+         * Defines values for Fields8.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields8 = <Fields8>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields8;
+        (function (Fields8) {
+            Fields8["BASIC"] = "BASIC";
+            Fields8["DEFAULT"] = "DEFAULT";
+            Fields8["FULL"] = "FULL";
+        })(Fields8 = Occ.Fields8 || (Occ.Fields8 = {}));
+        /**
+         * Defines values for Fields9.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields9 = <Fields9>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields9;
+        (function (Fields9) {
+            Fields9["BASIC"] = "BASIC";
+            Fields9["DEFAULT"] = "DEFAULT";
+            Fields9["FULL"] = "FULL";
+        })(Fields9 = Occ.Fields9 || (Occ.Fields9 = {}));
+        /**
+         * Defines values for Fields10.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields10 = <Fields10>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields10;
+        (function (Fields10) {
+            Fields10["BASIC"] = "BASIC";
+            Fields10["DEFAULT"] = "DEFAULT";
+            Fields10["FULL"] = "FULL";
+        })(Fields10 = Occ.Fields10 || (Occ.Fields10 = {}));
+        /**
+         * Defines values for Fields11.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields11 = <Fields11>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields11;
+        (function (Fields11) {
+            Fields11["BASIC"] = "BASIC";
+            Fields11["DEFAULT"] = "DEFAULT";
+            Fields11["FULL"] = "FULL";
+        })(Fields11 = Occ.Fields11 || (Occ.Fields11 = {}));
+        /**
+         * Defines values for Fields12.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields12 = <Fields12>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields12;
+        (function (Fields12) {
+            Fields12["BASIC"] = "BASIC";
+            Fields12["DEFAULT"] = "DEFAULT";
+            Fields12["FULL"] = "FULL";
+        })(Fields12 = Occ.Fields12 || (Occ.Fields12 = {}));
+        /**
+         * Defines values for Fields13.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields13 = <Fields13>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields13;
+        (function (Fields13) {
+            Fields13["BASIC"] = "BASIC";
+            Fields13["DEFAULT"] = "DEFAULT";
+            Fields13["FULL"] = "FULL";
+        })(Fields13 = Occ.Fields13 || (Occ.Fields13 = {}));
+        /**
+         * Defines values for Fields14.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields14 = <Fields14>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields14;
+        (function (Fields14) {
+            Fields14["BASIC"] = "BASIC";
+            Fields14["DEFAULT"] = "DEFAULT";
+            Fields14["FULL"] = "FULL";
+        })(Fields14 = Occ.Fields14 || (Occ.Fields14 = {}));
+        /**
+         * Defines values for Fields15.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields15 = <Fields15>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields15;
+        (function (Fields15) {
+            Fields15["BASIC"] = "BASIC";
+            Fields15["DEFAULT"] = "DEFAULT";
+            Fields15["FULL"] = "FULL";
+        })(Fields15 = Occ.Fields15 || (Occ.Fields15 = {}));
+        /**
+         * Defines values for Fields16.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields16 = <Fields16>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields16;
+        (function (Fields16) {
+            Fields16["BASIC"] = "BASIC";
+            Fields16["DEFAULT"] = "DEFAULT";
+            Fields16["FULL"] = "FULL";
+        })(Fields16 = Occ.Fields16 || (Occ.Fields16 = {}));
+        /**
+         * Defines values for SortEnum.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: SortEnum = <SortEnum>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var SortEnum;
+        (function (SortEnum) {
+            SortEnum["BASIC"] = "BASIC";
+            SortEnum["DEFAULT"] = "DEFAULT";
+            SortEnum["FULL"] = "FULL";
+        })(SortEnum = Occ.SortEnum || (Occ.SortEnum = {}));
+        /**
+         * Defines values for Fields17.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields17 = <Fields17>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields17;
+        (function (Fields17) {
+            Fields17["BASIC"] = "BASIC";
+            Fields17["DEFAULT"] = "DEFAULT";
+            Fields17["FULL"] = "FULL";
+        })(Fields17 = Occ.Fields17 || (Occ.Fields17 = {}));
+        /**
+         * Defines values for Fields18.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields18 = <Fields18>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields18;
+        (function (Fields18) {
+            Fields18["BASIC"] = "BASIC";
+            Fields18["DEFAULT"] = "DEFAULT";
+            Fields18["FULL"] = "FULL";
+        })(Fields18 = Occ.Fields18 || (Occ.Fields18 = {}));
+        /**
+         * Defines values for Fields19.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields19 = <Fields19>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields19;
+        (function (Fields19) {
+            Fields19["BASIC"] = "BASIC";
+            Fields19["DEFAULT"] = "DEFAULT";
+            Fields19["FULL"] = "FULL";
+        })(Fields19 = Occ.Fields19 || (Occ.Fields19 = {}));
+        /**
+         * Defines values for Fields20.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields20 = <Fields20>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields20;
+        (function (Fields20) {
+            Fields20["BASIC"] = "BASIC";
+            Fields20["DEFAULT"] = "DEFAULT";
+            Fields20["FULL"] = "FULL";
+        })(Fields20 = Occ.Fields20 || (Occ.Fields20 = {}));
+        /**
+         * Defines values for Fields21.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields21 = <Fields21>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields21;
+        (function (Fields21) {
+            Fields21["BASIC"] = "BASIC";
+            Fields21["DEFAULT"] = "DEFAULT";
+            Fields21["FULL"] = "FULL";
+        })(Fields21 = Occ.Fields21 || (Occ.Fields21 = {}));
+        /**
+         * Defines values for Fields22.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields22 = <Fields22>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields22;
+        (function (Fields22) {
+            Fields22["BASIC"] = "BASIC";
+            Fields22["DEFAULT"] = "DEFAULT";
+            Fields22["FULL"] = "FULL";
+        })(Fields22 = Occ.Fields22 || (Occ.Fields22 = {}));
+        /**
+         * Defines values for Fields23.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields23 = <Fields23>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields23;
+        (function (Fields23) {
+            Fields23["BASIC"] = "BASIC";
+            Fields23["DEFAULT"] = "DEFAULT";
+            Fields23["FULL"] = "FULL";
+        })(Fields23 = Occ.Fields23 || (Occ.Fields23 = {}));
+        /**
+         * Defines values for Fields24.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields24 = <Fields24>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields24;
+        (function (Fields24) {
+            Fields24["BASIC"] = "BASIC";
+            Fields24["DEFAULT"] = "DEFAULT";
+            Fields24["FULL"] = "FULL";
+        })(Fields24 = Occ.Fields24 || (Occ.Fields24 = {}));
+        /**
+         * Defines values for Fields25.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields25 = <Fields25>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields25;
+        (function (Fields25) {
+            Fields25["BASIC"] = "BASIC";
+            Fields25["DEFAULT"] = "DEFAULT";
+            Fields25["FULL"] = "FULL";
+        })(Fields25 = Occ.Fields25 || (Occ.Fields25 = {}));
+        /**
+         * Defines values for Fields26.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields26 = <Fields26>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields26;
+        (function (Fields26) {
+            Fields26["BASIC"] = "BASIC";
+            Fields26["DEFAULT"] = "DEFAULT";
+            Fields26["FULL"] = "FULL";
+        })(Fields26 = Occ.Fields26 || (Occ.Fields26 = {}));
+        /**
+         * Defines values for Fields27.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields27 = <Fields27>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields27;
+        (function (Fields27) {
+            Fields27["BASIC"] = "BASIC";
+            Fields27["DEFAULT"] = "DEFAULT";
+            Fields27["FULL"] = "FULL";
+        })(Fields27 = Occ.Fields27 || (Occ.Fields27 = {}));
+        /**
+         * Defines values for Fields28.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields28 = <Fields28>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields28;
+        (function (Fields28) {
+            Fields28["BASIC"] = "BASIC";
+            Fields28["DEFAULT"] = "DEFAULT";
+            Fields28["FULL"] = "FULL";
+        })(Fields28 = Occ.Fields28 || (Occ.Fields28 = {}));
+        /**
+         * Defines values for Fields29.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields29 = <Fields29>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields29;
+        (function (Fields29) {
+            Fields29["BASIC"] = "BASIC";
+            Fields29["DEFAULT"] = "DEFAULT";
+            Fields29["FULL"] = "FULL";
+        })(Fields29 = Occ.Fields29 || (Occ.Fields29 = {}));
+        /**
+         * Defines values for Fields30.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields30 = <Fields30>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields30;
+        (function (Fields30) {
+            Fields30["BASIC"] = "BASIC";
+            Fields30["DEFAULT"] = "DEFAULT";
+            Fields30["FULL"] = "FULL";
+        })(Fields30 = Occ.Fields30 || (Occ.Fields30 = {}));
+        /**
+         * Defines values for Fields31.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields31 = <Fields31>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields31;
+        (function (Fields31) {
+            Fields31["BASIC"] = "BASIC";
+            Fields31["DEFAULT"] = "DEFAULT";
+            Fields31["FULL"] = "FULL";
+        })(Fields31 = Occ.Fields31 || (Occ.Fields31 = {}));
+        /**
+         * Defines values for Fields32.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields32 = <Fields32>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields32;
+        (function (Fields32) {
+            Fields32["BASIC"] = "BASIC";
+            Fields32["DEFAULT"] = "DEFAULT";
+            Fields32["FULL"] = "FULL";
+        })(Fields32 = Occ.Fields32 || (Occ.Fields32 = {}));
+        /**
+         * Defines values for Fields33.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields33 = <Fields33>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields33;
+        (function (Fields33) {
+            Fields33["BASIC"] = "BASIC";
+            Fields33["DEFAULT"] = "DEFAULT";
+            Fields33["FULL"] = "FULL";
+        })(Fields33 = Occ.Fields33 || (Occ.Fields33 = {}));
+        /**
+         * Defines values for Fields34.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields34 = <Fields34>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields34;
+        (function (Fields34) {
+            Fields34["BASIC"] = "BASIC";
+            Fields34["DEFAULT"] = "DEFAULT";
+            Fields34["FULL"] = "FULL";
+        })(Fields34 = Occ.Fields34 || (Occ.Fields34 = {}));
+        /**
+         * Defines values for Fields35.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields35 = <Fields35>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields35;
+        (function (Fields35) {
+            Fields35["BASIC"] = "BASIC";
+            Fields35["DEFAULT"] = "DEFAULT";
+            Fields35["FULL"] = "FULL";
+        })(Fields35 = Occ.Fields35 || (Occ.Fields35 = {}));
+        /**
+         * Defines values for Fields36.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields36 = <Fields36>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields36;
+        (function (Fields36) {
+            Fields36["BASIC"] = "BASIC";
+            Fields36["DEFAULT"] = "DEFAULT";
+            Fields36["FULL"] = "FULL";
+        })(Fields36 = Occ.Fields36 || (Occ.Fields36 = {}));
+        /**
+         * Defines values for Fields37.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields37 = <Fields37>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields37;
+        (function (Fields37) {
+            Fields37["BASIC"] = "BASIC";
+            Fields37["DEFAULT"] = "DEFAULT";
+            Fields37["FULL"] = "FULL";
+        })(Fields37 = Occ.Fields37 || (Occ.Fields37 = {}));
+        /**
+         * Defines values for Fields38.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields38 = <Fields38>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields38;
+        (function (Fields38) {
+            Fields38["BASIC"] = "BASIC";
+            Fields38["DEFAULT"] = "DEFAULT";
+            Fields38["FULL"] = "FULL";
+        })(Fields38 = Occ.Fields38 || (Occ.Fields38 = {}));
+        /**
+         * Defines values for Fields39.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields39 = <Fields39>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields39;
+        (function (Fields39) {
+            Fields39["BASIC"] = "BASIC";
+            Fields39["DEFAULT"] = "DEFAULT";
+            Fields39["FULL"] = "FULL";
+        })(Fields39 = Occ.Fields39 || (Occ.Fields39 = {}));
+        /**
+         * Defines values for Fields40.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields40 = <Fields40>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields40;
+        (function (Fields40) {
+            Fields40["BASIC"] = "BASIC";
+            Fields40["DEFAULT"] = "DEFAULT";
+            Fields40["FULL"] = "FULL";
+        })(Fields40 = Occ.Fields40 || (Occ.Fields40 = {}));
+        /**
+         * Defines values for Fields41.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields41 = <Fields41>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields41;
+        (function (Fields41) {
+            Fields41["BASIC"] = "BASIC";
+            Fields41["DEFAULT"] = "DEFAULT";
+            Fields41["FULL"] = "FULL";
+        })(Fields41 = Occ.Fields41 || (Occ.Fields41 = {}));
+        /**
+         * Defines values for Fields42.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields42 = <Fields42>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields42;
+        (function (Fields42) {
+            Fields42["BASIC"] = "BASIC";
+            Fields42["DEFAULT"] = "DEFAULT";
+            Fields42["FULL"] = "FULL";
+        })(Fields42 = Occ.Fields42 || (Occ.Fields42 = {}));
+        /**
+         * Defines values for Fields43.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields43 = <Fields43>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields43;
+        (function (Fields43) {
+            Fields43["BASIC"] = "BASIC";
+            Fields43["DEFAULT"] = "DEFAULT";
+            Fields43["FULL"] = "FULL";
+        })(Fields43 = Occ.Fields43 || (Occ.Fields43 = {}));
+        /**
+         * Defines values for Fields44.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields44 = <Fields44>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields44;
+        (function (Fields44) {
+            Fields44["BASIC"] = "BASIC";
+            Fields44["DEFAULT"] = "DEFAULT";
+            Fields44["FULL"] = "FULL";
+        })(Fields44 = Occ.Fields44 || (Occ.Fields44 = {}));
+        /**
+         * Defines values for Fields45.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields45 = <Fields45>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields45;
+        (function (Fields45) {
+            Fields45["BASIC"] = "BASIC";
+            Fields45["DEFAULT"] = "DEFAULT";
+            Fields45["FULL"] = "FULL";
+        })(Fields45 = Occ.Fields45 || (Occ.Fields45 = {}));
+        /**
+         * Defines values for Fields46.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields46 = <Fields46>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields46;
+        (function (Fields46) {
+            Fields46["BASIC"] = "BASIC";
+            Fields46["DEFAULT"] = "DEFAULT";
+            Fields46["FULL"] = "FULL";
+        })(Fields46 = Occ.Fields46 || (Occ.Fields46 = {}));
+        /**
+         * Defines values for Fields47.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields47 = <Fields47>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields47;
+        (function (Fields47) {
+            Fields47["BASIC"] = "BASIC";
+            Fields47["DEFAULT"] = "DEFAULT";
+            Fields47["FULL"] = "FULL";
+        })(Fields47 = Occ.Fields47 || (Occ.Fields47 = {}));
+        /**
+         * Defines values for Fields48.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields48 = <Fields48>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields48;
+        (function (Fields48) {
+            Fields48["BASIC"] = "BASIC";
+            Fields48["DEFAULT"] = "DEFAULT";
+            Fields48["FULL"] = "FULL";
+        })(Fields48 = Occ.Fields48 || (Occ.Fields48 = {}));
+        /**
+         * Defines values for Fields49.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields49 = <Fields49>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields49;
+        (function (Fields49) {
+            Fields49["BASIC"] = "BASIC";
+            Fields49["DEFAULT"] = "DEFAULT";
+            Fields49["FULL"] = "FULL";
+        })(Fields49 = Occ.Fields49 || (Occ.Fields49 = {}));
+        /**
+         * Defines values for Fields50.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields50 = <Fields50>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields50;
+        (function (Fields50) {
+            Fields50["BASIC"] = "BASIC";
+            Fields50["DEFAULT"] = "DEFAULT";
+            Fields50["FULL"] = "FULL";
+        })(Fields50 = Occ.Fields50 || (Occ.Fields50 = {}));
+        /**
+         * Defines values for Fields51.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields51 = <Fields51>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields51;
+        (function (Fields51) {
+            Fields51["BASIC"] = "BASIC";
+            Fields51["DEFAULT"] = "DEFAULT";
+            Fields51["FULL"] = "FULL";
+        })(Fields51 = Occ.Fields51 || (Occ.Fields51 = {}));
+        /**
+         * Defines values for Fields52.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields52 = <Fields52>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields52;
+        (function (Fields52) {
+            Fields52["BASIC"] = "BASIC";
+            Fields52["DEFAULT"] = "DEFAULT";
+            Fields52["FULL"] = "FULL";
+        })(Fields52 = Occ.Fields52 || (Occ.Fields52 = {}));
+        /**
+         * Defines values for Fields53.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields53 = <Fields53>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields53;
+        (function (Fields53) {
+            Fields53["BASIC"] = "BASIC";
+            Fields53["DEFAULT"] = "DEFAULT";
+            Fields53["FULL"] = "FULL";
+        })(Fields53 = Occ.Fields53 || (Occ.Fields53 = {}));
+        /**
+         * Defines values for Fields54.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields54 = <Fields54>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields54;
+        (function (Fields54) {
+            Fields54["BASIC"] = "BASIC";
+            Fields54["DEFAULT"] = "DEFAULT";
+            Fields54["FULL"] = "FULL";
+        })(Fields54 = Occ.Fields54 || (Occ.Fields54 = {}));
+        /**
+         * Defines values for Fields55.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields55 = <Fields55>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields55;
+        (function (Fields55) {
+            Fields55["BASIC"] = "BASIC";
+            Fields55["DEFAULT"] = "DEFAULT";
+            Fields55["FULL"] = "FULL";
+        })(Fields55 = Occ.Fields55 || (Occ.Fields55 = {}));
+        /**
+         * Defines values for Fields56.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields56 = <Fields56>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields56;
+        (function (Fields56) {
+            Fields56["BASIC"] = "BASIC";
+            Fields56["DEFAULT"] = "DEFAULT";
+            Fields56["FULL"] = "FULL";
+        })(Fields56 = Occ.Fields56 || (Occ.Fields56 = {}));
+        /**
+         * Defines values for Fields57.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields57 = <Fields57>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields57;
+        (function (Fields57) {
+            Fields57["BASIC"] = "BASIC";
+            Fields57["DEFAULT"] = "DEFAULT";
+            Fields57["FULL"] = "FULL";
+        })(Fields57 = Occ.Fields57 || (Occ.Fields57 = {}));
+        /**
+         * Defines values for Fields58.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields58 = <Fields58>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields58;
+        (function (Fields58) {
+            Fields58["BASIC"] = "BASIC";
+            Fields58["DEFAULT"] = "DEFAULT";
+            Fields58["FULL"] = "FULL";
+        })(Fields58 = Occ.Fields58 || (Occ.Fields58 = {}));
+        /**
+         * Defines values for Fields59.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields59 = <Fields59>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields59;
+        (function (Fields59) {
+            Fields59["BASIC"] = "BASIC";
+            Fields59["DEFAULT"] = "DEFAULT";
+            Fields59["FULL"] = "FULL";
+        })(Fields59 = Occ.Fields59 || (Occ.Fields59 = {}));
+        /**
+         * Defines values for Fields60.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields60 = <Fields60>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields60;
+        (function (Fields60) {
+            Fields60["BASIC"] = "BASIC";
+            Fields60["DEFAULT"] = "DEFAULT";
+            Fields60["FULL"] = "FULL";
+        })(Fields60 = Occ.Fields60 || (Occ.Fields60 = {}));
+        /**
+         * Defines values for Fields61.
+         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Fields61 = <Fields61>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Fields61;
+        (function (Fields61) {
+            Fields61["BASIC"] = "BASIC";
+            Fields61["DEFAULT"] = "DEFAULT";
+            Fields61["FULL"] = "FULL";
+        })(Fields61 = Occ.Fields61 || (Occ.Fields61 = {}));
+        /**
+         * Defines values for Type.
+         * Possible values include: 'all', 'product', 'order'
+         * There could be more values for this enum apart from the ones defined here.If
+         * you want to set a value that is not from the known values then you can do
+         * the following:
+         * let param: Type = <Type>"someUnknownValueThatWillStillBeValid";
+         * @readonly
+         * @enum {string}
+         */
+        var Type;
+        (function (Type) {
+            Type["All"] = "all";
+            Type["Product"] = "product";
+            Type["Order"] = "order";
+        })(Type = Occ.Type || (Occ.Type = {}));
+        var CONSENT_STATUS;
+        (function (CONSENT_STATUS) {
+            CONSENT_STATUS["ANONYMOUS_CONSENT_GIVEN"] = "GIVEN";
+            CONSENT_STATUS["ANONYMOUS_CONSENT_WITHDRAWN"] = "WITHDRAWN";
+        })(CONSENT_STATUS = Occ.CONSENT_STATUS || (Occ.CONSENT_STATUS = {}));
+        var NotificationType;
+        (function (NotificationType) {
+            NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
+        })(NotificationType = Occ.NotificationType || (Occ.NotificationType = {}));
+        var Period;
+        (function (Period) {
+            Period["DAY"] = "DAY";
+            Period["WEEK"] = "WEEK";
+            Period["MONTH"] = "MONTH";
+            Period["QUARTER"] = "QUARTER";
+            Period["YEAR"] = "YEAR";
+        })(Period = Occ.Period || (Occ.Period = {}));
+        var DaysOfWeek;
+        (function (DaysOfWeek) {
+            DaysOfWeek["MONDAY"] = "MONDAY";
+            DaysOfWeek["TUESDAY"] = "TUESDAY";
+            DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
+            DaysOfWeek["THURSDAY"] = "THURSDAY";
+            DaysOfWeek["FRIDAY"] = "FRIDAY";
+            DaysOfWeek["SATURDAY"] = "SATURDAY";
+            DaysOfWeek["SUNDAY"] = "SUNDAY";
+        })(DaysOfWeek = Occ.DaysOfWeek || (Occ.DaysOfWeek = {}));
+        var OrderApprovalDecisionValue;
+        (function (OrderApprovalDecisionValue) {
+            OrderApprovalDecisionValue["APPROVE"] = "APPROVE";
+            OrderApprovalDecisionValue["REJECT"] = "REJECT";
+        })(OrderApprovalDecisionValue = Occ.OrderApprovalDecisionValue || (Occ.OrderApprovalDecisionValue = {}));
+    })(exports.Occ || (exports.Occ = {}));
+
     var OccCmsPageNormalizer = /** @class */ (function () {
         function OccCmsPageNormalizer() {
         }
@@ -14003,6 +15894,7 @@
             if (source.properties) {
                 page.properties = source.properties;
             }
+            this.normalizeRobots(source, page);
             target.page = page;
         };
         /**
@@ -14142,6 +16034,33 @@
                 }
                 finally { if (e_4) throw e_4.error; }
             }
+        };
+        /**
+         * Normalizes the page robot string to an array of `PageRobotsMeta` items.
+         */
+        OccCmsPageNormalizer.prototype.normalizeRobots = function (source, target) {
+            var robots = [];
+            if (source.robotTag) {
+                switch (source.robotTag) {
+                    case exports.Occ.PageRobots.INDEX_FOLLOW:
+                        robots.push(exports.PageRobotsMeta.INDEX);
+                        robots.push(exports.PageRobotsMeta.FOLLOW);
+                        break;
+                    case exports.Occ.PageRobots.NOINDEX_FOLLOW:
+                        robots.push(exports.PageRobotsMeta.NOINDEX);
+                        robots.push(exports.PageRobotsMeta.FOLLOW);
+                        break;
+                    case exports.Occ.PageRobots.INDEX_NOFOLLOW:
+                        robots.push(exports.PageRobotsMeta.INDEX);
+                        robots.push(exports.PageRobotsMeta.NOFOLLOW);
+                        break;
+                    case exports.Occ.PageRobots.NOINDEX_NOFOLLOW:
+                        robots.push(exports.PageRobotsMeta.NOINDEX);
+                        robots.push(exports.PageRobotsMeta.NOFOLLOW);
+                        break;
+                }
+            }
+            target.robots = robots;
         };
         return OccCmsPageNormalizer;
     }());
@@ -17199,1113 +19118,6 @@
         { type: OccConfig }
     ]; };
 
-    (function (Occ) {
-        /**
-         * Defines values for PriceType.
-         * Possible values include: 'BUY', 'FROM'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: PriceType = <PriceType>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var PriceType;
-        (function (PriceType) {
-            PriceType["BUY"] = "BUY";
-            PriceType["FROM"] = "FROM";
-        })(PriceType = Occ.PriceType || (Occ.PriceType = {}));
-        /**
-         * Defines values for ImageType.
-         * Possible values include: 'PRIMARY', 'GALLERY'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: ImageType = <ImageType>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var ImageType;
-        (function (ImageType) {
-            ImageType["PRIMARY"] = "PRIMARY";
-            ImageType["GALLERY"] = "GALLERY";
-        })(ImageType = Occ.ImageType || (Occ.ImageType = {}));
-        /**
-         * Defines values for Fields.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields = <Fields>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields;
-        (function (Fields) {
-            Fields["BASIC"] = "BASIC";
-            Fields["DEFAULT"] = "DEFAULT";
-            Fields["FULL"] = "FULL";
-        })(Fields = Occ.Fields || (Occ.Fields = {}));
-        /**
-         * Defines values for Fields1.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields1 = <Fields1>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields1;
-        (function (Fields1) {
-            Fields1["BASIC"] = "BASIC";
-            Fields1["DEFAULT"] = "DEFAULT";
-            Fields1["FULL"] = "FULL";
-        })(Fields1 = Occ.Fields1 || (Occ.Fields1 = {}));
-        /**
-         * Defines values for Fields2.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields2 = <Fields2>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields2;
-        (function (Fields2) {
-            Fields2["BASIC"] = "BASIC";
-            Fields2["DEFAULT"] = "DEFAULT";
-            Fields2["FULL"] = "FULL";
-        })(Fields2 = Occ.Fields2 || (Occ.Fields2 = {}));
-        /**
-         * Defines values for Fields3.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields3 = <Fields3>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields3;
-        (function (Fields3) {
-            Fields3["BASIC"] = "BASIC";
-            Fields3["DEFAULT"] = "DEFAULT";
-            Fields3["FULL"] = "FULL";
-        })(Fields3 = Occ.Fields3 || (Occ.Fields3 = {}));
-        /**
-         * Defines values for Fields4.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields4 = <Fields4>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields4;
-        (function (Fields4) {
-            Fields4["BASIC"] = "BASIC";
-            Fields4["DEFAULT"] = "DEFAULT";
-            Fields4["FULL"] = "FULL";
-        })(Fields4 = Occ.Fields4 || (Occ.Fields4 = {}));
-        /**
-         * Defines values for Fields5.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields5 = <Fields5>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields5;
-        (function (Fields5) {
-            Fields5["BASIC"] = "BASIC";
-            Fields5["DEFAULT"] = "DEFAULT";
-            Fields5["FULL"] = "FULL";
-        })(Fields5 = Occ.Fields5 || (Occ.Fields5 = {}));
-        /**
-         * Defines values for Fields6.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields6 = <Fields6>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields6;
-        (function (Fields6) {
-            Fields6["BASIC"] = "BASIC";
-            Fields6["DEFAULT"] = "DEFAULT";
-            Fields6["FULL"] = "FULL";
-        })(Fields6 = Occ.Fields6 || (Occ.Fields6 = {}));
-        /**
-         * Defines values for PageType.
-         * Possible values include: 'ContentPage', 'ProductPage', 'CategoryPage',
-         * 'CatalogPage'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: PageType = <PageType>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var PageType;
-        (function (PageType) {
-            PageType["CONTENT_PAGE"] = "ContentPage";
-            PageType["PRODUCT_PAGE"] = "ProductPage";
-            PageType["CATEGORY_PAGE"] = "CategoryPage";
-            PageType["CATALOG_PAGE"] = "CatalogPage";
-        })(PageType = Occ.PageType || (Occ.PageType = {}));
-        /**
-         * Defines values for Fields7.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields7 = <Fields7>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields7;
-        (function (Fields7) {
-            Fields7["BASIC"] = "BASIC";
-            Fields7["DEFAULT"] = "DEFAULT";
-            Fields7["FULL"] = "FULL";
-        })(Fields7 = Occ.Fields7 || (Occ.Fields7 = {}));
-        /**
-         * Defines values for Fields8.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields8 = <Fields8>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields8;
-        (function (Fields8) {
-            Fields8["BASIC"] = "BASIC";
-            Fields8["DEFAULT"] = "DEFAULT";
-            Fields8["FULL"] = "FULL";
-        })(Fields8 = Occ.Fields8 || (Occ.Fields8 = {}));
-        /**
-         * Defines values for Fields9.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields9 = <Fields9>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields9;
-        (function (Fields9) {
-            Fields9["BASIC"] = "BASIC";
-            Fields9["DEFAULT"] = "DEFAULT";
-            Fields9["FULL"] = "FULL";
-        })(Fields9 = Occ.Fields9 || (Occ.Fields9 = {}));
-        /**
-         * Defines values for Fields10.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields10 = <Fields10>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields10;
-        (function (Fields10) {
-            Fields10["BASIC"] = "BASIC";
-            Fields10["DEFAULT"] = "DEFAULT";
-            Fields10["FULL"] = "FULL";
-        })(Fields10 = Occ.Fields10 || (Occ.Fields10 = {}));
-        /**
-         * Defines values for Fields11.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields11 = <Fields11>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields11;
-        (function (Fields11) {
-            Fields11["BASIC"] = "BASIC";
-            Fields11["DEFAULT"] = "DEFAULT";
-            Fields11["FULL"] = "FULL";
-        })(Fields11 = Occ.Fields11 || (Occ.Fields11 = {}));
-        /**
-         * Defines values for Fields12.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields12 = <Fields12>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields12;
-        (function (Fields12) {
-            Fields12["BASIC"] = "BASIC";
-            Fields12["DEFAULT"] = "DEFAULT";
-            Fields12["FULL"] = "FULL";
-        })(Fields12 = Occ.Fields12 || (Occ.Fields12 = {}));
-        /**
-         * Defines values for Fields13.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields13 = <Fields13>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields13;
-        (function (Fields13) {
-            Fields13["BASIC"] = "BASIC";
-            Fields13["DEFAULT"] = "DEFAULT";
-            Fields13["FULL"] = "FULL";
-        })(Fields13 = Occ.Fields13 || (Occ.Fields13 = {}));
-        /**
-         * Defines values for Fields14.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields14 = <Fields14>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields14;
-        (function (Fields14) {
-            Fields14["BASIC"] = "BASIC";
-            Fields14["DEFAULT"] = "DEFAULT";
-            Fields14["FULL"] = "FULL";
-        })(Fields14 = Occ.Fields14 || (Occ.Fields14 = {}));
-        /**
-         * Defines values for Fields15.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields15 = <Fields15>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields15;
-        (function (Fields15) {
-            Fields15["BASIC"] = "BASIC";
-            Fields15["DEFAULT"] = "DEFAULT";
-            Fields15["FULL"] = "FULL";
-        })(Fields15 = Occ.Fields15 || (Occ.Fields15 = {}));
-        /**
-         * Defines values for Fields16.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields16 = <Fields16>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields16;
-        (function (Fields16) {
-            Fields16["BASIC"] = "BASIC";
-            Fields16["DEFAULT"] = "DEFAULT";
-            Fields16["FULL"] = "FULL";
-        })(Fields16 = Occ.Fields16 || (Occ.Fields16 = {}));
-        /**
-         * Defines values for SortEnum.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: SortEnum = <SortEnum>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var SortEnum;
-        (function (SortEnum) {
-            SortEnum["BASIC"] = "BASIC";
-            SortEnum["DEFAULT"] = "DEFAULT";
-            SortEnum["FULL"] = "FULL";
-        })(SortEnum = Occ.SortEnum || (Occ.SortEnum = {}));
-        /**
-         * Defines values for Fields17.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields17 = <Fields17>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields17;
-        (function (Fields17) {
-            Fields17["BASIC"] = "BASIC";
-            Fields17["DEFAULT"] = "DEFAULT";
-            Fields17["FULL"] = "FULL";
-        })(Fields17 = Occ.Fields17 || (Occ.Fields17 = {}));
-        /**
-         * Defines values for Fields18.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields18 = <Fields18>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields18;
-        (function (Fields18) {
-            Fields18["BASIC"] = "BASIC";
-            Fields18["DEFAULT"] = "DEFAULT";
-            Fields18["FULL"] = "FULL";
-        })(Fields18 = Occ.Fields18 || (Occ.Fields18 = {}));
-        /**
-         * Defines values for Fields19.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields19 = <Fields19>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields19;
-        (function (Fields19) {
-            Fields19["BASIC"] = "BASIC";
-            Fields19["DEFAULT"] = "DEFAULT";
-            Fields19["FULL"] = "FULL";
-        })(Fields19 = Occ.Fields19 || (Occ.Fields19 = {}));
-        /**
-         * Defines values for Fields20.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields20 = <Fields20>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields20;
-        (function (Fields20) {
-            Fields20["BASIC"] = "BASIC";
-            Fields20["DEFAULT"] = "DEFAULT";
-            Fields20["FULL"] = "FULL";
-        })(Fields20 = Occ.Fields20 || (Occ.Fields20 = {}));
-        /**
-         * Defines values for Fields21.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields21 = <Fields21>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields21;
-        (function (Fields21) {
-            Fields21["BASIC"] = "BASIC";
-            Fields21["DEFAULT"] = "DEFAULT";
-            Fields21["FULL"] = "FULL";
-        })(Fields21 = Occ.Fields21 || (Occ.Fields21 = {}));
-        /**
-         * Defines values for Fields22.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields22 = <Fields22>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields22;
-        (function (Fields22) {
-            Fields22["BASIC"] = "BASIC";
-            Fields22["DEFAULT"] = "DEFAULT";
-            Fields22["FULL"] = "FULL";
-        })(Fields22 = Occ.Fields22 || (Occ.Fields22 = {}));
-        /**
-         * Defines values for Fields23.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields23 = <Fields23>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields23;
-        (function (Fields23) {
-            Fields23["BASIC"] = "BASIC";
-            Fields23["DEFAULT"] = "DEFAULT";
-            Fields23["FULL"] = "FULL";
-        })(Fields23 = Occ.Fields23 || (Occ.Fields23 = {}));
-        /**
-         * Defines values for Fields24.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields24 = <Fields24>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields24;
-        (function (Fields24) {
-            Fields24["BASIC"] = "BASIC";
-            Fields24["DEFAULT"] = "DEFAULT";
-            Fields24["FULL"] = "FULL";
-        })(Fields24 = Occ.Fields24 || (Occ.Fields24 = {}));
-        /**
-         * Defines values for Fields25.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields25 = <Fields25>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields25;
-        (function (Fields25) {
-            Fields25["BASIC"] = "BASIC";
-            Fields25["DEFAULT"] = "DEFAULT";
-            Fields25["FULL"] = "FULL";
-        })(Fields25 = Occ.Fields25 || (Occ.Fields25 = {}));
-        /**
-         * Defines values for Fields26.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields26 = <Fields26>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields26;
-        (function (Fields26) {
-            Fields26["BASIC"] = "BASIC";
-            Fields26["DEFAULT"] = "DEFAULT";
-            Fields26["FULL"] = "FULL";
-        })(Fields26 = Occ.Fields26 || (Occ.Fields26 = {}));
-        /**
-         * Defines values for Fields27.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields27 = <Fields27>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields27;
-        (function (Fields27) {
-            Fields27["BASIC"] = "BASIC";
-            Fields27["DEFAULT"] = "DEFAULT";
-            Fields27["FULL"] = "FULL";
-        })(Fields27 = Occ.Fields27 || (Occ.Fields27 = {}));
-        /**
-         * Defines values for Fields28.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields28 = <Fields28>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields28;
-        (function (Fields28) {
-            Fields28["BASIC"] = "BASIC";
-            Fields28["DEFAULT"] = "DEFAULT";
-            Fields28["FULL"] = "FULL";
-        })(Fields28 = Occ.Fields28 || (Occ.Fields28 = {}));
-        /**
-         * Defines values for Fields29.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields29 = <Fields29>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields29;
-        (function (Fields29) {
-            Fields29["BASIC"] = "BASIC";
-            Fields29["DEFAULT"] = "DEFAULT";
-            Fields29["FULL"] = "FULL";
-        })(Fields29 = Occ.Fields29 || (Occ.Fields29 = {}));
-        /**
-         * Defines values for Fields30.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields30 = <Fields30>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields30;
-        (function (Fields30) {
-            Fields30["BASIC"] = "BASIC";
-            Fields30["DEFAULT"] = "DEFAULT";
-            Fields30["FULL"] = "FULL";
-        })(Fields30 = Occ.Fields30 || (Occ.Fields30 = {}));
-        /**
-         * Defines values for Fields31.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields31 = <Fields31>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields31;
-        (function (Fields31) {
-            Fields31["BASIC"] = "BASIC";
-            Fields31["DEFAULT"] = "DEFAULT";
-            Fields31["FULL"] = "FULL";
-        })(Fields31 = Occ.Fields31 || (Occ.Fields31 = {}));
-        /**
-         * Defines values for Fields32.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields32 = <Fields32>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields32;
-        (function (Fields32) {
-            Fields32["BASIC"] = "BASIC";
-            Fields32["DEFAULT"] = "DEFAULT";
-            Fields32["FULL"] = "FULL";
-        })(Fields32 = Occ.Fields32 || (Occ.Fields32 = {}));
-        /**
-         * Defines values for Fields33.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields33 = <Fields33>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields33;
-        (function (Fields33) {
-            Fields33["BASIC"] = "BASIC";
-            Fields33["DEFAULT"] = "DEFAULT";
-            Fields33["FULL"] = "FULL";
-        })(Fields33 = Occ.Fields33 || (Occ.Fields33 = {}));
-        /**
-         * Defines values for Fields34.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields34 = <Fields34>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields34;
-        (function (Fields34) {
-            Fields34["BASIC"] = "BASIC";
-            Fields34["DEFAULT"] = "DEFAULT";
-            Fields34["FULL"] = "FULL";
-        })(Fields34 = Occ.Fields34 || (Occ.Fields34 = {}));
-        /**
-         * Defines values for Fields35.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields35 = <Fields35>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields35;
-        (function (Fields35) {
-            Fields35["BASIC"] = "BASIC";
-            Fields35["DEFAULT"] = "DEFAULT";
-            Fields35["FULL"] = "FULL";
-        })(Fields35 = Occ.Fields35 || (Occ.Fields35 = {}));
-        /**
-         * Defines values for Fields36.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields36 = <Fields36>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields36;
-        (function (Fields36) {
-            Fields36["BASIC"] = "BASIC";
-            Fields36["DEFAULT"] = "DEFAULT";
-            Fields36["FULL"] = "FULL";
-        })(Fields36 = Occ.Fields36 || (Occ.Fields36 = {}));
-        /**
-         * Defines values for Fields37.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields37 = <Fields37>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields37;
-        (function (Fields37) {
-            Fields37["BASIC"] = "BASIC";
-            Fields37["DEFAULT"] = "DEFAULT";
-            Fields37["FULL"] = "FULL";
-        })(Fields37 = Occ.Fields37 || (Occ.Fields37 = {}));
-        /**
-         * Defines values for Fields38.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields38 = <Fields38>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields38;
-        (function (Fields38) {
-            Fields38["BASIC"] = "BASIC";
-            Fields38["DEFAULT"] = "DEFAULT";
-            Fields38["FULL"] = "FULL";
-        })(Fields38 = Occ.Fields38 || (Occ.Fields38 = {}));
-        /**
-         * Defines values for Fields39.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields39 = <Fields39>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields39;
-        (function (Fields39) {
-            Fields39["BASIC"] = "BASIC";
-            Fields39["DEFAULT"] = "DEFAULT";
-            Fields39["FULL"] = "FULL";
-        })(Fields39 = Occ.Fields39 || (Occ.Fields39 = {}));
-        /**
-         * Defines values for Fields40.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields40 = <Fields40>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields40;
-        (function (Fields40) {
-            Fields40["BASIC"] = "BASIC";
-            Fields40["DEFAULT"] = "DEFAULT";
-            Fields40["FULL"] = "FULL";
-        })(Fields40 = Occ.Fields40 || (Occ.Fields40 = {}));
-        /**
-         * Defines values for Fields41.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields41 = <Fields41>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields41;
-        (function (Fields41) {
-            Fields41["BASIC"] = "BASIC";
-            Fields41["DEFAULT"] = "DEFAULT";
-            Fields41["FULL"] = "FULL";
-        })(Fields41 = Occ.Fields41 || (Occ.Fields41 = {}));
-        /**
-         * Defines values for Fields42.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields42 = <Fields42>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields42;
-        (function (Fields42) {
-            Fields42["BASIC"] = "BASIC";
-            Fields42["DEFAULT"] = "DEFAULT";
-            Fields42["FULL"] = "FULL";
-        })(Fields42 = Occ.Fields42 || (Occ.Fields42 = {}));
-        /**
-         * Defines values for Fields43.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields43 = <Fields43>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields43;
-        (function (Fields43) {
-            Fields43["BASIC"] = "BASIC";
-            Fields43["DEFAULT"] = "DEFAULT";
-            Fields43["FULL"] = "FULL";
-        })(Fields43 = Occ.Fields43 || (Occ.Fields43 = {}));
-        /**
-         * Defines values for Fields44.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields44 = <Fields44>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields44;
-        (function (Fields44) {
-            Fields44["BASIC"] = "BASIC";
-            Fields44["DEFAULT"] = "DEFAULT";
-            Fields44["FULL"] = "FULL";
-        })(Fields44 = Occ.Fields44 || (Occ.Fields44 = {}));
-        /**
-         * Defines values for Fields45.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields45 = <Fields45>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields45;
-        (function (Fields45) {
-            Fields45["BASIC"] = "BASIC";
-            Fields45["DEFAULT"] = "DEFAULT";
-            Fields45["FULL"] = "FULL";
-        })(Fields45 = Occ.Fields45 || (Occ.Fields45 = {}));
-        /**
-         * Defines values for Fields46.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields46 = <Fields46>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields46;
-        (function (Fields46) {
-            Fields46["BASIC"] = "BASIC";
-            Fields46["DEFAULT"] = "DEFAULT";
-            Fields46["FULL"] = "FULL";
-        })(Fields46 = Occ.Fields46 || (Occ.Fields46 = {}));
-        /**
-         * Defines values for Fields47.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields47 = <Fields47>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields47;
-        (function (Fields47) {
-            Fields47["BASIC"] = "BASIC";
-            Fields47["DEFAULT"] = "DEFAULT";
-            Fields47["FULL"] = "FULL";
-        })(Fields47 = Occ.Fields47 || (Occ.Fields47 = {}));
-        /**
-         * Defines values for Fields48.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields48 = <Fields48>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields48;
-        (function (Fields48) {
-            Fields48["BASIC"] = "BASIC";
-            Fields48["DEFAULT"] = "DEFAULT";
-            Fields48["FULL"] = "FULL";
-        })(Fields48 = Occ.Fields48 || (Occ.Fields48 = {}));
-        /**
-         * Defines values for Fields49.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields49 = <Fields49>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields49;
-        (function (Fields49) {
-            Fields49["BASIC"] = "BASIC";
-            Fields49["DEFAULT"] = "DEFAULT";
-            Fields49["FULL"] = "FULL";
-        })(Fields49 = Occ.Fields49 || (Occ.Fields49 = {}));
-        /**
-         * Defines values for Fields50.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields50 = <Fields50>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields50;
-        (function (Fields50) {
-            Fields50["BASIC"] = "BASIC";
-            Fields50["DEFAULT"] = "DEFAULT";
-            Fields50["FULL"] = "FULL";
-        })(Fields50 = Occ.Fields50 || (Occ.Fields50 = {}));
-        /**
-         * Defines values for Fields51.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields51 = <Fields51>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields51;
-        (function (Fields51) {
-            Fields51["BASIC"] = "BASIC";
-            Fields51["DEFAULT"] = "DEFAULT";
-            Fields51["FULL"] = "FULL";
-        })(Fields51 = Occ.Fields51 || (Occ.Fields51 = {}));
-        /**
-         * Defines values for Fields52.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields52 = <Fields52>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields52;
-        (function (Fields52) {
-            Fields52["BASIC"] = "BASIC";
-            Fields52["DEFAULT"] = "DEFAULT";
-            Fields52["FULL"] = "FULL";
-        })(Fields52 = Occ.Fields52 || (Occ.Fields52 = {}));
-        /**
-         * Defines values for Fields53.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields53 = <Fields53>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields53;
-        (function (Fields53) {
-            Fields53["BASIC"] = "BASIC";
-            Fields53["DEFAULT"] = "DEFAULT";
-            Fields53["FULL"] = "FULL";
-        })(Fields53 = Occ.Fields53 || (Occ.Fields53 = {}));
-        /**
-         * Defines values for Fields54.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields54 = <Fields54>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields54;
-        (function (Fields54) {
-            Fields54["BASIC"] = "BASIC";
-            Fields54["DEFAULT"] = "DEFAULT";
-            Fields54["FULL"] = "FULL";
-        })(Fields54 = Occ.Fields54 || (Occ.Fields54 = {}));
-        /**
-         * Defines values for Fields55.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields55 = <Fields55>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields55;
-        (function (Fields55) {
-            Fields55["BASIC"] = "BASIC";
-            Fields55["DEFAULT"] = "DEFAULT";
-            Fields55["FULL"] = "FULL";
-        })(Fields55 = Occ.Fields55 || (Occ.Fields55 = {}));
-        /**
-         * Defines values for Fields56.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields56 = <Fields56>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields56;
-        (function (Fields56) {
-            Fields56["BASIC"] = "BASIC";
-            Fields56["DEFAULT"] = "DEFAULT";
-            Fields56["FULL"] = "FULL";
-        })(Fields56 = Occ.Fields56 || (Occ.Fields56 = {}));
-        /**
-         * Defines values for Fields57.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields57 = <Fields57>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields57;
-        (function (Fields57) {
-            Fields57["BASIC"] = "BASIC";
-            Fields57["DEFAULT"] = "DEFAULT";
-            Fields57["FULL"] = "FULL";
-        })(Fields57 = Occ.Fields57 || (Occ.Fields57 = {}));
-        /**
-         * Defines values for Fields58.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields58 = <Fields58>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields58;
-        (function (Fields58) {
-            Fields58["BASIC"] = "BASIC";
-            Fields58["DEFAULT"] = "DEFAULT";
-            Fields58["FULL"] = "FULL";
-        })(Fields58 = Occ.Fields58 || (Occ.Fields58 = {}));
-        /**
-         * Defines values for Fields59.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields59 = <Fields59>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields59;
-        (function (Fields59) {
-            Fields59["BASIC"] = "BASIC";
-            Fields59["DEFAULT"] = "DEFAULT";
-            Fields59["FULL"] = "FULL";
-        })(Fields59 = Occ.Fields59 || (Occ.Fields59 = {}));
-        /**
-         * Defines values for Fields60.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields60 = <Fields60>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields60;
-        (function (Fields60) {
-            Fields60["BASIC"] = "BASIC";
-            Fields60["DEFAULT"] = "DEFAULT";
-            Fields60["FULL"] = "FULL";
-        })(Fields60 = Occ.Fields60 || (Occ.Fields60 = {}));
-        /**
-         * Defines values for Fields61.
-         * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Fields61 = <Fields61>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Fields61;
-        (function (Fields61) {
-            Fields61["BASIC"] = "BASIC";
-            Fields61["DEFAULT"] = "DEFAULT";
-            Fields61["FULL"] = "FULL";
-        })(Fields61 = Occ.Fields61 || (Occ.Fields61 = {}));
-        /**
-         * Defines values for Type.
-         * Possible values include: 'all', 'product', 'order'
-         * There could be more values for this enum apart from the ones defined here.If
-         * you want to set a value that is not from the known values then you can do
-         * the following:
-         * let param: Type = <Type>"someUnknownValueThatWillStillBeValid";
-         * @readonly
-         * @enum {string}
-         */
-        var Type;
-        (function (Type) {
-            Type["All"] = "all";
-            Type["Product"] = "product";
-            Type["Order"] = "order";
-        })(Type = Occ.Type || (Occ.Type = {}));
-        var CONSENT_STATUS;
-        (function (CONSENT_STATUS) {
-            CONSENT_STATUS["ANONYMOUS_CONSENT_GIVEN"] = "GIVEN";
-            CONSENT_STATUS["ANONYMOUS_CONSENT_WITHDRAWN"] = "WITHDRAWN";
-        })(CONSENT_STATUS = Occ.CONSENT_STATUS || (Occ.CONSENT_STATUS = {}));
-        var NotificationType;
-        (function (NotificationType) {
-            NotificationType["BACK_IN_STOCK"] = "BACK_IN_STOCK";
-        })(NotificationType = Occ.NotificationType || (Occ.NotificationType = {}));
-        var Period;
-        (function (Period) {
-            Period["DAY"] = "DAY";
-            Period["WEEK"] = "WEEK";
-            Period["MONTH"] = "MONTH";
-            Period["QUARTER"] = "QUARTER";
-            Period["YEAR"] = "YEAR";
-        })(Period = Occ.Period || (Occ.Period = {}));
-        var DaysOfWeek;
-        (function (DaysOfWeek) {
-            DaysOfWeek["MONDAY"] = "MONDAY";
-            DaysOfWeek["TUESDAY"] = "TUESDAY";
-            DaysOfWeek["WEDNESDAY"] = "WEDNESDAY";
-            DaysOfWeek["THURSDAY"] = "THURSDAY";
-            DaysOfWeek["FRIDAY"] = "FRIDAY";
-            DaysOfWeek["SATURDAY"] = "SATURDAY";
-            DaysOfWeek["SUNDAY"] = "SUNDAY";
-        })(DaysOfWeek = Occ.DaysOfWeek || (Occ.DaysOfWeek = {}));
-        var OrderApprovalDecisionValue;
-        (function (OrderApprovalDecisionValue) {
-            OrderApprovalDecisionValue["APPROVE"] = "APPROVE";
-            OrderApprovalDecisionValue["REJECT"] = "REJECT";
-        })(OrderApprovalDecisionValue = Occ.OrderApprovalDecisionValue || (Occ.OrderApprovalDecisionValue = {}));
-    })(exports.Occ || (exports.Occ = {}));
-
     var OccModule = /** @class */ (function () {
         function OccModule() {
         }
@@ -18527,183 +19339,183 @@
 
     var getUserState = i1$2.createFeatureSelector(USER_FEATURE);
 
-    var ɵ0$g = function (state) { return state.billingCountries; };
-    var getBillingCountriesState = i1$2.createSelector(getUserState, ɵ0$g);
-    var ɵ1$a = function (state) { return state.entities; };
-    var getBillingCountriesEntites = i1$2.createSelector(getBillingCountriesState, ɵ1$a);
-    var ɵ2$6 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
-    var getAllBillingCountries = i1$2.createSelector(getBillingCountriesEntites, ɵ2$6);
+    var ɵ0$j = function (state) { return state.billingCountries; };
+    var getBillingCountriesState = i1$2.createSelector(getUserState, ɵ0$j);
+    var ɵ1$b = function (state) { return state.entities; };
+    var getBillingCountriesEntites = i1$2.createSelector(getBillingCountriesState, ɵ1$b);
+    var ɵ2$7 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+    var getAllBillingCountries = i1$2.createSelector(getBillingCountriesEntites, ɵ2$7);
 
-    var ɵ0$h = function (state) { return state.consignmentTracking; };
-    var getConsignmentTrackingState = i1$2.createSelector(getUserState, ɵ0$h);
-    var ɵ1$b = function (state) { return state.tracking; };
-    var getConsignmentTracking = i1$2.createSelector(getConsignmentTrackingState, ɵ1$b);
+    var ɵ0$k = function (state) { return state.consignmentTracking; };
+    var getConsignmentTrackingState = i1$2.createSelector(getUserState, ɵ0$k);
+    var ɵ1$c = function (state) { return state.tracking; };
+    var getConsignmentTracking = i1$2.createSelector(getConsignmentTrackingState, ɵ1$c);
 
-    var ɵ0$i = function (state) { return state.customerCoupons; };
-    var getCustomerCouponsState = i1$2.createSelector(getUserState, ɵ0$i);
-    var ɵ1$c = function (state) { return loaderSuccessSelector(state); };
-    var getCustomerCouponsLoaded = i1$2.createSelector(getCustomerCouponsState, ɵ1$c);
-    var ɵ2$7 = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerCouponsLoading = i1$2.createSelector(getCustomerCouponsState, ɵ2$7);
-    var ɵ3$5 = function (state) { return loaderValueSelector(state); };
-    var getCustomerCoupons = i1$2.createSelector(getCustomerCouponsState, ɵ3$5);
+    var ɵ0$l = function (state) { return state.customerCoupons; };
+    var getCustomerCouponsState = i1$2.createSelector(getUserState, ɵ0$l);
+    var ɵ1$d = function (state) { return loaderSuccessSelector(state); };
+    var getCustomerCouponsLoaded = i1$2.createSelector(getCustomerCouponsState, ɵ1$d);
+    var ɵ2$8 = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerCouponsLoading = i1$2.createSelector(getCustomerCouponsState, ɵ2$8);
+    var ɵ3$6 = function (state) { return loaderValueSelector(state); };
+    var getCustomerCoupons = i1$2.createSelector(getCustomerCouponsState, ɵ3$6);
 
-    var ɵ0$j = function (state) { return state.countries; };
-    var getDeliveryCountriesState = i1$2.createSelector(getUserState, ɵ0$j);
-    var ɵ1$d = function (state) { return state.entities; };
-    var getDeliveryCountriesEntites = i1$2.createSelector(getDeliveryCountriesState, ɵ1$d);
-    var ɵ2$8 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
-    var getAllDeliveryCountries = i1$2.createSelector(getDeliveryCountriesEntites, ɵ2$8);
+    var ɵ0$m = function (state) { return state.countries; };
+    var getDeliveryCountriesState = i1$2.createSelector(getUserState, ɵ0$m);
+    var ɵ1$e = function (state) { return state.entities; };
+    var getDeliveryCountriesEntites = i1$2.createSelector(getDeliveryCountriesState, ɵ1$e);
+    var ɵ2$9 = function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); };
+    var getAllDeliveryCountries = i1$2.createSelector(getDeliveryCountriesEntites, ɵ2$9);
     var countrySelectorFactory = function (isocode) { return i1$2.createSelector(getDeliveryCountriesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[isocode] : null; }); };
 
-    var ɵ0$k = function (state) { return state.notificationPreferences; };
-    var getPreferencesLoaderState = i1$2.createSelector(getUserState, ɵ0$k);
-    var ɵ1$e = function (state) { return loaderValueSelector(state); };
-    var getPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ1$e);
-    var ɵ2$9 = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
-    var getEnabledPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ2$9);
-    var ɵ3$6 = function (state) { return loaderLoadingSelector(state); };
-    var getPreferencesLoading = i1$2.createSelector(getPreferencesLoaderState, ɵ3$6);
-
-    var ɵ0$l = function (state) { return state.order; };
-    var getOrderState = i1$2.createSelector(getUserState, ɵ0$l);
+    var ɵ0$n = function (state) { return state.notificationPreferences; };
+    var getPreferencesLoaderState = i1$2.createSelector(getUserState, ɵ0$n);
     var ɵ1$f = function (state) { return loaderValueSelector(state); };
-    var getOrderDetails = i1$2.createSelector(getOrderState, ɵ1$f);
+    var getPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ1$f);
+    var ɵ2$a = function (state) { return loaderValueSelector(state).filter(function (p) { return p.enabled; }); };
+    var getEnabledPreferences = i1$2.createSelector(getPreferencesLoaderState, ɵ2$a);
+    var ɵ3$7 = function (state) { return loaderLoadingSelector(state); };
+    var getPreferencesLoading = i1$2.createSelector(getPreferencesLoaderState, ɵ3$7);
 
-    var ɵ0$m = function (state) { return state.orderReturn; };
-    var getOrderReturnRequestState = i1$2.createSelector(getUserState, ɵ0$m);
+    var ɵ0$o = function (state) { return state.order; };
+    var getOrderState = i1$2.createSelector(getUserState, ɵ0$o);
     var ɵ1$g = function (state) { return loaderValueSelector(state); };
-    var getOrderReturnRequest = i1$2.createSelector(getOrderReturnRequestState, ɵ1$g);
-    var ɵ2$a = function (state) { return loaderLoadingSelector(state); };
-    var getOrderReturnRequestLoading = i1$2.createSelector(getOrderReturnRequestState, ɵ2$a);
-    var ɵ3$7 = function (state) { return loaderSuccessSelector(state) &&
+    var getOrderDetails = i1$2.createSelector(getOrderState, ɵ1$g);
+
+    var ɵ0$p = function (state) { return state.orderReturn; };
+    var getOrderReturnRequestState = i1$2.createSelector(getUserState, ɵ0$p);
+    var ɵ1$h = function (state) { return loaderValueSelector(state); };
+    var getOrderReturnRequest = i1$2.createSelector(getOrderReturnRequestState, ɵ1$h);
+    var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
+    var getOrderReturnRequestLoading = i1$2.createSelector(getOrderReturnRequestState, ɵ2$b);
+    var ɵ3$8 = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getOrderReturnRequestSuccess = i1$2.createSelector(getOrderReturnRequestState, ɵ3$7);
-    var ɵ4$3 = function (state) { return state.orderReturnList; };
-    var getOrderReturnRequestListState = i1$2.createSelector(getUserState, ɵ4$3);
+    var getOrderReturnRequestSuccess = i1$2.createSelector(getOrderReturnRequestState, ɵ3$8);
+    var ɵ4$4 = function (state) { return state.orderReturnList; };
+    var getOrderReturnRequestListState = i1$2.createSelector(getUserState, ɵ4$4);
     var ɵ5$1 = function (state) { return loaderValueSelector(state); };
     var getOrderReturnRequestList = i1$2.createSelector(getOrderReturnRequestListState, ɵ5$1);
 
-    var ɵ0$n = function (state) { return state.payments; };
-    var getPaymentMethodsState = i1$2.createSelector(getUserState, ɵ0$n);
-    var ɵ1$h = function (state) { return loaderValueSelector(state); };
-    var getPaymentMethods = i1$2.createSelector(getPaymentMethodsState, ɵ1$h);
-    var ɵ2$b = function (state) { return loaderLoadingSelector(state); };
-    var getPaymentMethodsLoading = i1$2.createSelector(getPaymentMethodsState, ɵ2$b);
-    var ɵ3$8 = function (state) { return loaderSuccessSelector(state) &&
-        !loaderLoadingSelector(state); };
-    var getPaymentMethodsLoadedSuccess = i1$2.createSelector(getPaymentMethodsState, ɵ3$8);
-
-    var ɵ0$o = function (state) { return state.productInterests; };
-    var getInterestsState = i1$2.createSelector(getUserState, ɵ0$o);
+    var ɵ0$q = function (state) { return state.payments; };
+    var getPaymentMethodsState = i1$2.createSelector(getUserState, ɵ0$q);
     var ɵ1$i = function (state) { return loaderValueSelector(state); };
-    var getInterests = i1$2.createSelector(getInterestsState, ɵ1$i);
+    var getPaymentMethods = i1$2.createSelector(getPaymentMethodsState, ɵ1$i);
     var ɵ2$c = function (state) { return loaderLoadingSelector(state); };
-    var getInterestsLoading = i1$2.createSelector(getInterestsState, ɵ2$c);
+    var getPaymentMethodsLoading = i1$2.createSelector(getPaymentMethodsState, ɵ2$c);
+    var ɵ3$9 = function (state) { return loaderSuccessSelector(state) &&
+        !loaderLoadingSelector(state); };
+    var getPaymentMethodsLoadedSuccess = i1$2.createSelector(getPaymentMethodsState, ɵ3$9);
 
-    var ɵ0$p = function (state) { return state.regions; };
-    var getRegionsLoaderState = i1$2.createSelector(getUserState, ɵ0$p);
-    var ɵ1$j = function (state) {
+    var ɵ0$r = function (state) { return state.productInterests; };
+    var getInterestsState = i1$2.createSelector(getUserState, ɵ0$r);
+    var ɵ1$j = function (state) { return loaderValueSelector(state); };
+    var getInterests = i1$2.createSelector(getInterestsState, ɵ1$j);
+    var ɵ2$d = function (state) { return loaderLoadingSelector(state); };
+    var getInterestsLoading = i1$2.createSelector(getInterestsState, ɵ2$d);
+
+    var ɵ0$s = function (state) { return state.regions; };
+    var getRegionsLoaderState = i1$2.createSelector(getUserState, ɵ0$s);
+    var ɵ1$k = function (state) {
         return loaderValueSelector(state).entities;
     };
-    var getAllRegions = i1$2.createSelector(getRegionsLoaderState, ɵ1$j);
-    var ɵ2$d = function (state) { return ({
+    var getAllRegions = i1$2.createSelector(getRegionsLoaderState, ɵ1$k);
+    var ɵ2$e = function (state) { return ({
         loaded: loaderSuccessSelector(state),
         loading: loaderLoadingSelector(state),
         regions: loaderValueSelector(state).entities,
         country: loaderValueSelector(state).country,
     }); };
-    var getRegionsDataAndLoading = i1$2.createSelector(getRegionsLoaderState, ɵ2$d);
-    var ɵ3$9 = function (state) { return loaderValueSelector(state).country; };
-    var getRegionsCountry = i1$2.createSelector(getRegionsLoaderState, ɵ3$9);
-    var ɵ4$4 = function (state) { return loaderLoadingSelector(state); };
-    var getRegionsLoading = i1$2.createSelector(getRegionsLoaderState, ɵ4$4);
+    var getRegionsDataAndLoading = i1$2.createSelector(getRegionsLoaderState, ɵ2$e);
+    var ɵ3$a = function (state) { return loaderValueSelector(state).country; };
+    var getRegionsCountry = i1$2.createSelector(getRegionsLoaderState, ɵ3$a);
+    var ɵ4$5 = function (state) { return loaderLoadingSelector(state); };
+    var getRegionsLoading = i1$2.createSelector(getRegionsLoaderState, ɵ4$5);
     var ɵ5$2 = function (state) { return loaderSuccessSelector(state); };
     var getRegionsLoaded = i1$2.createSelector(getRegionsLoaderState, ɵ5$2);
 
-    var ɵ0$q = function (state) { return state.replenishmentOrder; };
-    var getReplenishmentOrderState = i1$2.createSelector(getUserState, ɵ0$q);
-    var ɵ1$k = function (state) { return loaderValueSelector(state); };
-    var getReplenishmentOrderDetailsValue = i1$2.createSelector(getReplenishmentOrderState, ɵ1$k);
-    var ɵ2$e = function (state) { return loaderLoadingSelector(state); };
-    var getReplenishmentOrderDetailsLoading = i1$2.createSelector(getReplenishmentOrderState, ɵ2$e);
-    var ɵ3$a = function (state) { return loaderSuccessSelector(state); };
-    var getReplenishmentOrderDetailsSuccess = i1$2.createSelector(getReplenishmentOrderState, ɵ3$a);
-    var ɵ4$5 = function (state) { return loaderErrorSelector(state); };
-    var getReplenishmentOrderDetailsError = i1$2.createSelector(getReplenishmentOrderState, ɵ4$5);
+    var ɵ0$t = function (state) { return state.replenishmentOrder; };
+    var getReplenishmentOrderState = i1$2.createSelector(getUserState, ɵ0$t);
+    var ɵ1$l = function (state) { return loaderValueSelector(state); };
+    var getReplenishmentOrderDetailsValue = i1$2.createSelector(getReplenishmentOrderState, ɵ1$l);
+    var ɵ2$f = function (state) { return loaderLoadingSelector(state); };
+    var getReplenishmentOrderDetailsLoading = i1$2.createSelector(getReplenishmentOrderState, ɵ2$f);
+    var ɵ3$b = function (state) { return loaderSuccessSelector(state); };
+    var getReplenishmentOrderDetailsSuccess = i1$2.createSelector(getReplenishmentOrderState, ɵ3$b);
+    var ɵ4$6 = function (state) { return loaderErrorSelector(state); };
+    var getReplenishmentOrderDetailsError = i1$2.createSelector(getReplenishmentOrderState, ɵ4$6);
 
-    var ɵ0$r = function (state) { return state.resetPassword; };
-    var getResetPassword = i1$2.createSelector(getUserState, ɵ0$r);
+    var ɵ0$u = function (state) { return state.resetPassword; };
+    var getResetPassword = i1$2.createSelector(getUserState, ɵ0$u);
 
-    var ɵ0$s = function (state) { return state.titles; };
-    var getTitlesState = i1$2.createSelector(getUserState, ɵ0$s);
-    var ɵ1$l = function (state) { return state.entities; };
-    var getTitlesEntites = i1$2.createSelector(getTitlesState, ɵ1$l);
-    var ɵ2$f = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
-    var getAllTitles = i1$2.createSelector(getTitlesEntites, ɵ2$f);
+    var ɵ0$v = function (state) { return state.titles; };
+    var getTitlesState = i1$2.createSelector(getUserState, ɵ0$v);
+    var ɵ1$m = function (state) { return state.entities; };
+    var getTitlesEntites = i1$2.createSelector(getTitlesState, ɵ1$m);
+    var ɵ2$g = function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); };
+    var getAllTitles = i1$2.createSelector(getTitlesEntites, ɵ2$g);
     var titleSelectorFactory = function (code) { return i1$2.createSelector(getTitlesEntites, function (entities) { return Object.keys(entities).length !== 0 ? entities[code] : null; }); };
 
-    var ɵ0$t = function (state) { return state.addresses; };
-    var getAddressesLoaderState = i1$2.createSelector(getUserState, ɵ0$t);
-    var ɵ1$m = function (state) { return loaderValueSelector(state); };
-    var getAddresses = i1$2.createSelector(getAddressesLoaderState, ɵ1$m);
-    var ɵ2$g = function (state) { return loaderLoadingSelector(state); };
-    var getAddressesLoading = i1$2.createSelector(getAddressesLoaderState, ɵ2$g);
-    var ɵ3$b = function (state) { return loaderSuccessSelector(state) &&
+    var ɵ0$w = function (state) { return state.addresses; };
+    var getAddressesLoaderState = i1$2.createSelector(getUserState, ɵ0$w);
+    var ɵ1$n = function (state) { return loaderValueSelector(state); };
+    var getAddresses = i1$2.createSelector(getAddressesLoaderState, ɵ1$n);
+    var ɵ2$h = function (state) { return loaderLoadingSelector(state); };
+    var getAddressesLoading = i1$2.createSelector(getAddressesLoaderState, ɵ2$h);
+    var ɵ3$c = function (state) { return loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state); };
-    var getAddressesLoadedSuccess = i1$2.createSelector(getAddressesLoaderState, ɵ3$b);
+    var getAddressesLoadedSuccess = i1$2.createSelector(getAddressesLoaderState, ɵ3$c);
 
-    var ɵ0$u = function (state) { return state.consents; };
-    var getConsentsState = i1$2.createSelector(getUserState, ɵ0$u);
+    var ɵ0$x = function (state) { return state.consents; };
+    var getConsentsState = i1$2.createSelector(getUserState, ɵ0$x);
     var getConsentsValue = i1$2.createSelector(getConsentsState, loaderValueSelector);
     var getConsentByTemplateId = function (templateId) { return i1$2.createSelector(getConsentsValue, function (templates) { return templates.find(function (template) { return template.id === templateId; }); }); };
     var getConsentsLoading = i1$2.createSelector(getConsentsState, loaderLoadingSelector);
     var getConsentsSuccess = i1$2.createSelector(getConsentsState, loaderSuccessSelector);
     var getConsentsError = i1$2.createSelector(getConsentsState, loaderErrorSelector);
 
-    var ɵ0$v = function (state) { return state.costCenters; };
-    var getCostCentersState = i1$2.createSelector(getUserState, ɵ0$v);
-    var ɵ1$n = function (state) { return loaderValueSelector(state); };
-    var getCostCenters = i1$2.createSelector(getCostCentersState, ɵ1$n);
+    var ɵ0$y = function (state) { return state.costCenters; };
+    var getCostCentersState = i1$2.createSelector(getUserState, ɵ0$y);
+    var ɵ1$o = function (state) { return loaderValueSelector(state); };
+    var getCostCenters = i1$2.createSelector(getCostCentersState, ɵ1$o);
 
-    var ɵ0$w = function (state) { return state.account; };
-    var getDetailsState = i1$2.createSelector(getUserState, ɵ0$w);
-    var ɵ1$o = function (state) { return state.details; };
-    var getDetails = i1$2.createSelector(getDetailsState, ɵ1$o);
+    var ɵ0$z = function (state) { return state.account; };
+    var getDetailsState = i1$2.createSelector(getUserState, ɵ0$z);
+    var ɵ1$p = function (state) { return state.details; };
+    var getDetails = i1$2.createSelector(getDetailsState, ɵ1$p);
 
-    var ɵ0$x = function (state) { return state.orders; };
-    var getOrdersState = i1$2.createSelector(getUserState, ɵ0$x);
-    var ɵ1$p = function (state) { return loaderSuccessSelector(state); };
-    var getOrdersLoaded = i1$2.createSelector(getOrdersState, ɵ1$p);
-    var ɵ2$h = function (state) { return loaderValueSelector(state); };
-    var getOrders = i1$2.createSelector(getOrdersState, ɵ2$h);
+    var ɵ0$A = function (state) { return state.orders; };
+    var getOrdersState = i1$2.createSelector(getUserState, ɵ0$A);
+    var ɵ1$q = function (state) { return loaderSuccessSelector(state); };
+    var getOrdersLoaded = i1$2.createSelector(getOrdersState, ɵ1$q);
+    var ɵ2$i = function (state) { return loaderValueSelector(state); };
+    var getOrders = i1$2.createSelector(getOrdersState, ɵ2$i);
 
-    var ɵ0$y = function (state) { return state.replenishmentOrders; };
-    var getReplenishmentOrdersState = i1$2.createSelector(getUserState, ɵ0$y);
-    var ɵ1$q = function (state) { return loaderValueSelector(state); };
-    var getReplenishmentOrders = i1$2.createSelector(getReplenishmentOrdersState, ɵ1$q);
-    var ɵ2$i = function (state) { return loaderLoadingSelector(state); };
-    var getReplenishmentOrdersLoading = i1$2.createSelector(getReplenishmentOrdersState, ɵ2$i);
-    var ɵ3$c = function (state) { return loaderErrorSelector(state); };
-    var getReplenishmentOrdersError = i1$2.createSelector(getReplenishmentOrdersState, ɵ3$c);
-    var ɵ4$6 = function (state) { return loaderSuccessSelector(state); };
-    var getReplenishmentOrdersSuccess = i1$2.createSelector(getReplenishmentOrdersState, ɵ4$6);
+    var ɵ0$B = function (state) { return state.replenishmentOrders; };
+    var getReplenishmentOrdersState = i1$2.createSelector(getUserState, ɵ0$B);
+    var ɵ1$r = function (state) { return loaderValueSelector(state); };
+    var getReplenishmentOrders = i1$2.createSelector(getReplenishmentOrdersState, ɵ1$r);
+    var ɵ2$j = function (state) { return loaderLoadingSelector(state); };
+    var getReplenishmentOrdersLoading = i1$2.createSelector(getReplenishmentOrdersState, ɵ2$j);
+    var ɵ3$d = function (state) { return loaderErrorSelector(state); };
+    var getReplenishmentOrdersError = i1$2.createSelector(getReplenishmentOrdersState, ɵ3$d);
+    var ɵ4$7 = function (state) { return loaderSuccessSelector(state); };
+    var getReplenishmentOrdersSuccess = i1$2.createSelector(getReplenishmentOrdersState, ɵ4$7);
 
     var usersGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getBillingCountriesState: getBillingCountriesState,
         getBillingCountriesEntites: getBillingCountriesEntites,
         getAllBillingCountries: getAllBillingCountries,
-        ɵ0: ɵ0$g,
-        ɵ1: ɵ1$a,
-        ɵ2: ɵ2$6,
+        ɵ0: ɵ0$j,
+        ɵ1: ɵ1$b,
+        ɵ2: ɵ2$7,
         getConsignmentTrackingState: getConsignmentTrackingState,
         getConsignmentTracking: getConsignmentTracking,
         getCustomerCouponsState: getCustomerCouponsState,
         getCustomerCouponsLoaded: getCustomerCouponsLoaded,
         getCustomerCouponsLoading: getCustomerCouponsLoading,
         getCustomerCoupons: getCustomerCoupons,
-        ɵ3: ɵ3$5,
+        ɵ3: ɵ3$6,
         getDeliveryCountriesState: getDeliveryCountriesState,
         getDeliveryCountriesEntites: getDeliveryCountriesEntites,
         getAllDeliveryCountries: getAllDeliveryCountries,
@@ -18721,7 +19533,7 @@
         getOrderReturnRequestSuccess: getOrderReturnRequestSuccess,
         getOrderReturnRequestListState: getOrderReturnRequestListState,
         getOrderReturnRequestList: getOrderReturnRequestList,
-        ɵ4: ɵ4$3,
+        ɵ4: ɵ4$4,
         ɵ5: ɵ5$1,
         getPaymentMethodsState: getPaymentMethodsState,
         getPaymentMethods: getPaymentMethods,
@@ -21612,25 +22424,25 @@
 
     var getAsmState = i1$2.createFeatureSelector(ASM_FEATURE);
 
-    var ɵ0$z = function (state) { return state.asmUi; };
-    var getAsmUi = i1$2.createSelector(getAsmState, ɵ0$z);
+    var ɵ0$C = function (state) { return state.asmUi; };
+    var getAsmUi = i1$2.createSelector(getAsmState, ɵ0$C);
 
-    var ɵ0$A = function (state) { return state.customerSearchResult; };
-    var getCustomerSearchResultsLoaderState = i1$2.createSelector(getAsmState, ɵ0$A);
-    var ɵ1$r = function (state) { return loaderValueSelector(state); };
-    var getCustomerSearchResults = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ1$r);
-    var ɵ2$j = function (state) { return loaderLoadingSelector(state); };
-    var getCustomerSearchResultsLoading = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ2$j);
+    var ɵ0$D = function (state) { return state.customerSearchResult; };
+    var getCustomerSearchResultsLoaderState = i1$2.createSelector(getAsmState, ɵ0$D);
+    var ɵ1$s = function (state) { return loaderValueSelector(state); };
+    var getCustomerSearchResults = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ1$s);
+    var ɵ2$k = function (state) { return loaderLoadingSelector(state); };
+    var getCustomerSearchResultsLoading = i1$2.createSelector(getCustomerSearchResultsLoaderState, ɵ2$k);
 
     var asmGroup_selectors = /*#__PURE__*/Object.freeze({
         __proto__: null,
         getAsmUi: getAsmUi,
-        ɵ0: ɵ0$z,
+        ɵ0: ɵ0$C,
         getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
         getCustomerSearchResults: getCustomerSearchResults,
         getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
-        ɵ1: ɵ1$r,
-        ɵ2: ɵ2$j,
+        ɵ1: ɵ1$s,
+        ɵ2: ɵ2$k,
         getAsmState: getAsmState
     });
 
@@ -22571,545 +23383,27 @@
         { type: CartEventBuilder }
     ]; };
 
-    var CMS_FEATURE = 'cms';
-    var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
-    var COMPONENT_ENTITY = '[Cms] Component Entity';
-
-    var LOAD_CMS_COMPONENT = '[Cms] Load Component';
-    var LOAD_CMS_COMPONENT_FAIL = '[Cms] Load Component Fail';
-    var LOAD_CMS_COMPONENT_SUCCESS = '[Cms] Load Component Success';
-    var CMS_GET_COMPONENT_FROM_PAGE = '[Cms] Get Component from Page';
-    var LoadCmsComponent = /** @class */ (function (_super) {
-        __extends(LoadCmsComponent, _super);
-        function LoadCmsComponent(payload) {
-            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CMS_COMPONENT;
-            return _this;
-        }
-        return LoadCmsComponent;
-    }(EntityLoadAction));
-    var LoadCmsComponentFail = /** @class */ (function (_super) {
-        __extends(LoadCmsComponentFail, _super);
-        function LoadCmsComponentFail(payload) {
-            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid, payload.error) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CMS_COMPONENT_FAIL;
-            return _this;
-        }
-        return LoadCmsComponentFail;
-    }(EntityFailAction));
-    var LoadCmsComponentSuccess = /** @class */ (function (_super) {
-        __extends(LoadCmsComponentSuccess, _super);
-        function LoadCmsComponentSuccess(payload) {
-            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid || payload.component.uid || '') || this;
-            _this.payload = payload;
-            _this.type = LOAD_CMS_COMPONENT_SUCCESS;
-            return _this;
-        }
-        return LoadCmsComponentSuccess;
-    }(EntitySuccessAction));
-    var CmsGetComponentFromPage = /** @class */ (function (_super) {
-        __extends(CmsGetComponentFromPage, _super);
-        function CmsGetComponentFromPage(payload) {
-            var _this = _super.call(this, COMPONENT_ENTITY, [].concat(payload).map(function (cmp) { return cmp.component.uid; })) || this;
-            _this.payload = payload;
-            _this.type = CMS_GET_COMPONENT_FROM_PAGE;
-            return _this;
-        }
-        return CmsGetComponentFromPage;
-    }(EntitySuccessAction));
-
-    var LOAD_CMS_NAVIGATION_ITEMS = '[Cms] Load NavigationEntry items';
-    var LOAD_CMS_NAVIGATION_ITEMS_FAIL = '[Cms] Load NavigationEntry items Fail';
-    var LOAD_CMS_NAVIGATION_ITEMS_SUCCESS = '[Cms] Load NavigationEntry items Success';
-    var LoadCmsNavigationItems = /** @class */ (function (_super) {
-        __extends(LoadCmsNavigationItems, _super);
-        function LoadCmsNavigationItems(payload) {
-            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, payload.nodeId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CMS_NAVIGATION_ITEMS;
-            return _this;
-        }
-        return LoadCmsNavigationItems;
-    }(EntityLoadAction));
-    var LoadCmsNavigationItemsFail = /** @class */ (function (_super) {
-        __extends(LoadCmsNavigationItemsFail, _super);
-        function LoadCmsNavigationItemsFail(nodeId, payload) {
-            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, nodeId, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CMS_NAVIGATION_ITEMS_FAIL;
-            return _this;
-        }
-        return LoadCmsNavigationItemsFail;
-    }(EntityFailAction));
-    var LoadCmsNavigationItemsSuccess = /** @class */ (function (_super) {
-        __extends(LoadCmsNavigationItemsSuccess, _super);
-        function LoadCmsNavigationItemsSuccess(payload) {
-            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, payload.nodeId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CMS_NAVIGATION_ITEMS_SUCCESS;
-            return _this;
-        }
-        return LoadCmsNavigationItemsSuccess;
-    }(EntitySuccessAction));
-
-    var LOAD_CMS_PAGE_DATA = '[Cms] Load Page Data';
-    var LOAD_CMS_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
-    var LOAD_CMS_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
-    var CMS_SET_PAGE_SUCCESS_INDEX = '[Cms] Set Page Success Index';
-    var CMS_SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
-    var LoadCmsPageData = /** @class */ (function (_super) {
-        __extends(LoadCmsPageData, _super);
-        function LoadCmsPageData(payload) {
-            var _this = _super.call(this, payload.type, payload.id) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CMS_PAGE_DATA;
-            return _this;
-        }
-        return LoadCmsPageData;
-    }(EntityLoadAction));
-    var LoadCmsPageDataFail = /** @class */ (function (_super) {
-        __extends(LoadCmsPageDataFail, _super);
-        function LoadCmsPageDataFail(pageContext, error) {
-            var _this = _super.call(this, pageContext.type, pageContext.id, error) || this;
-            _this.type = LOAD_CMS_PAGE_DATA_FAIL;
-            return _this;
-        }
-        return LoadCmsPageDataFail;
-    }(EntityFailAction));
-    var LoadCmsPageDataSuccess = /** @class */ (function (_super) {
-        __extends(LoadCmsPageDataSuccess, _super);
-        function LoadCmsPageDataSuccess(pageContext, payload) {
-            var _this = _super.call(this, pageContext.type, pageContext.id, payload) || this;
-            _this.type = LOAD_CMS_PAGE_DATA_SUCCESS;
-            return _this;
-        }
-        return LoadCmsPageDataSuccess;
-    }(EntitySuccessAction));
-    var CmsSetPageSuccessIndex = /** @class */ (function (_super) {
-        __extends(CmsSetPageSuccessIndex, _super);
-        function CmsSetPageSuccessIndex(pageContext, payload) {
-            var _this = _super.call(this, pageContext.type, pageContext.id, payload) || this;
-            _this.type = CMS_SET_PAGE_SUCCESS_INDEX;
-            return _this;
-        }
-        return CmsSetPageSuccessIndex;
-    }(EntitySuccessAction));
-    var CmsSetPageFailIndex = /** @class */ (function (_super) {
-        __extends(CmsSetPageFailIndex, _super);
-        function CmsSetPageFailIndex(pageContext, payload) {
-            var _this = _super.call(this, pageContext.type, pageContext.id) || this;
-            _this.payload = payload;
-            _this.type = CMS_SET_PAGE_FAIL_INDEX;
-            return _this;
-        }
-        return CmsSetPageFailIndex;
-    }(EntityFailAction));
-
-    var cmsGroup_actions = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        LOAD_CMS_COMPONENT: LOAD_CMS_COMPONENT,
-        LOAD_CMS_COMPONENT_FAIL: LOAD_CMS_COMPONENT_FAIL,
-        LOAD_CMS_COMPONENT_SUCCESS: LOAD_CMS_COMPONENT_SUCCESS,
-        CMS_GET_COMPONENT_FROM_PAGE: CMS_GET_COMPONENT_FROM_PAGE,
-        LoadCmsComponent: LoadCmsComponent,
-        LoadCmsComponentFail: LoadCmsComponentFail,
-        LoadCmsComponentSuccess: LoadCmsComponentSuccess,
-        CmsGetComponentFromPage: CmsGetComponentFromPage,
-        LOAD_CMS_NAVIGATION_ITEMS: LOAD_CMS_NAVIGATION_ITEMS,
-        LOAD_CMS_NAVIGATION_ITEMS_FAIL: LOAD_CMS_NAVIGATION_ITEMS_FAIL,
-        LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: LOAD_CMS_NAVIGATION_ITEMS_SUCCESS,
-        LoadCmsNavigationItems: LoadCmsNavigationItems,
-        LoadCmsNavigationItemsFail: LoadCmsNavigationItemsFail,
-        LoadCmsNavigationItemsSuccess: LoadCmsNavigationItemsSuccess,
-        LOAD_CMS_PAGE_DATA: LOAD_CMS_PAGE_DATA,
-        LOAD_CMS_PAGE_DATA_FAIL: LOAD_CMS_PAGE_DATA_FAIL,
-        LOAD_CMS_PAGE_DATA_SUCCESS: LOAD_CMS_PAGE_DATA_SUCCESS,
-        CMS_SET_PAGE_SUCCESS_INDEX: CMS_SET_PAGE_SUCCESS_INDEX,
-        CMS_SET_PAGE_FAIL_INDEX: CMS_SET_PAGE_FAIL_INDEX,
-        LoadCmsPageData: LoadCmsPageData,
-        LoadCmsPageDataFail: LoadCmsPageDataFail,
-        LoadCmsPageDataSuccess: LoadCmsPageDataSuccess,
-        CmsSetPageSuccessIndex: CmsSetPageSuccessIndex,
-        CmsSetPageFailIndex: CmsSetPageFailIndex
-    });
-
-    var getCmsState = i1$2.createFeatureSelector(CMS_FEATURE);
-
-    var ɵ0$B = function (state) { return state.components; };
-    var getComponentsState = i1$2.createSelector(getCmsState, ɵ0$B);
-    var componentsContextSelectorFactory = function (uid) {
-        return i1$2.createSelector(getComponentsState, function (componentsState) { return entitySelector(componentsState, uid); });
-    };
-    var componentsLoaderStateSelectorFactory = function (uid, context) {
-        return i1$2.createSelector(componentsContextSelectorFactory(uid), function (componentsContext) { return (componentsContext &&
-            componentsContext.pageContext &&
-            componentsContext.pageContext[context]) ||
-            initialLoaderState; });
-    };
-    /**
-     * This selector will return:
-     *   - true: component for this context exists
-     *   - false: component for this context doesn't exist
-     *   - undefined: if the exists status for component is unknown
-     *
-     * @param uid
-     * @param context
-     */
-    var componentsContextExistsSelectorFactory = function (uid, context) {
-        return i1$2.createSelector(componentsLoaderStateSelectorFactory(uid, context), function (loaderState) { return loaderValueSelector(loaderState); });
-    };
-    var componentsDataSelectorFactory = function (uid) {
-        return i1$2.createSelector(componentsContextSelectorFactory(uid), function (state) { return state ? state.component : undefined; });
-    };
-    /**
-     * This selector will return:
-     *   - CmsComponent instance: if we have component data for specified context
-     *   - null: if there is no component data for specified context
-     *   - undefined: if status of component data for specified context is unknown
-     *
-     * @param uid
-     * @param context
-     */
-    var componentsSelectorFactory = function (uid, context) {
-        return i1$2.createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), function (componentState, exists) {
-            switch (exists) {
-                case true:
-                    return componentState;
-                case false:
-                    return null;
-                case undefined:
-                    return undefined;
-            }
-        });
-    };
-
-    var ɵ0$C = function (state) { return state.navigation; };
-    var getNavigationEntryItemState = i1$2.createSelector(getCmsState, ɵ0$C);
-    var getSelectedNavigationEntryItemState = function (nodeId) {
-        return i1$2.createSelector(getNavigationEntryItemState, function (nodes) { return entityLoaderStateSelector(nodes, nodeId); });
-    };
-    var getNavigationEntryItems = function (nodeId) {
-        return i1$2.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
-    };
-
-    var getPageEntitiesSelector = function (state) { return state.pageData.entities; };
-    var ɵ0$D = getPageEntitiesSelector;
-    var getIndexByType = function (index, type) {
-        switch (type) {
-            case exports.PageType.CONTENT_PAGE: {
-                return index.content;
-            }
-            case exports.PageType.PRODUCT_PAGE: {
-                return index.product;
-            }
-            case exports.PageType.CATEGORY_PAGE: {
-                return index.category;
-            }
-            case exports.PageType.CATALOG_PAGE: {
-                return index.catalog;
-            }
-        }
-        return { entities: {} };
-    };
-    var ɵ1$s = getIndexByType;
-    var getPageComponentTypesSelector = function (page) {
-        var e_1, _a, e_2, _b;
-        var componentTypes = new Set();
-        if (page && page.slots) {
-            try {
-                for (var _c = __values(Object.keys(page.slots)), _d = _c.next(); !_d.done; _d = _c.next()) {
-                    var slot = _d.value;
-                    try {
-                        for (var _e = (e_2 = void 0, __values(page.slots[slot].components || [])), _f = _e.next(); !_f.done; _f = _e.next()) {
-                            var component = _f.value;
-                            componentTypes.add(component.flexType);
-                        }
-                    }
-                    catch (e_2_1) { e_2 = { error: e_2_1 }; }
-                    finally {
-                        try {
-                            if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
-                        }
-                        finally { if (e_2) throw e_2.error; }
-                    }
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
-        }
-        return Array.from(componentTypes);
-    };
-    var ɵ2$k = getPageComponentTypesSelector;
-    var ɵ3$d = function (state) { return state.page; };
-    var getPageState = i1$2.createSelector(getCmsState, ɵ3$d);
-    var ɵ4$7 = function (page) { return page.index; };
-    var getPageStateIndex = i1$2.createSelector(getPageState, ɵ4$7);
-    var getPageStateIndexEntityLoaderState = function (pageContext) { return i1$2.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); }); };
-    var getPageStateIndexLoaderState = function (pageContext) { return i1$2.createSelector(getPageStateIndexEntityLoaderState(pageContext), function (indexState) { return entityLoaderStateSelector(indexState, pageContext.id); }); };
-    var getPageStateIndexValue = function (pageContext) { return i1$2.createSelector(getPageStateIndexLoaderState(pageContext), function (entity) { return loaderValueSelector(entity); }); };
-    var getPageEntities = i1$2.createSelector(getPageState, getPageEntitiesSelector);
-    var getPageData = function (pageContext) { return i1$2.createSelector(getPageEntities, getPageStateIndexValue(pageContext), function (entities, indexValue) { return entities[indexValue]; }); };
-    var getPageComponentTypes = function (pageContext) { return i1$2.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); }); };
-    var getCurrentSlotSelectorFactory = function (pageContext, position) {
-        return i1$2.createSelector(getPageData(pageContext), function (entity) {
-            if (entity) {
-                return entity.slots[position] || { components: [] };
-            }
-        });
-    };
-
-    var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        getComponentsState: getComponentsState,
-        componentsContextSelectorFactory: componentsContextSelectorFactory,
-        componentsLoaderStateSelectorFactory: componentsLoaderStateSelectorFactory,
-        componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
-        componentsDataSelectorFactory: componentsDataSelectorFactory,
-        componentsSelectorFactory: componentsSelectorFactory,
-        ɵ0: ɵ0$B,
-        getCmsState: getCmsState,
-        getNavigationEntryItemState: getNavigationEntryItemState,
-        getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
-        getNavigationEntryItems: getNavigationEntryItems,
-        getPageState: getPageState,
-        getPageStateIndex: getPageStateIndex,
-        getPageStateIndexEntityLoaderState: getPageStateIndexEntityLoaderState,
-        getPageStateIndexLoaderState: getPageStateIndexLoaderState,
-        getPageStateIndexValue: getPageStateIndexValue,
-        getPageEntities: getPageEntities,
-        getPageData: getPageData,
-        getPageComponentTypes: getPageComponentTypes,
-        getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory,
-        ɵ1: ɵ1$s,
-        ɵ2: ɵ2$k,
-        ɵ3: ɵ3$d,
-        ɵ4: ɵ4$7
-    });
-
-    var CURRENT_CONTEXT_KEY = 'current';
-    /**
-     *
-     * Serializes the provided page context.
-     * The pattern used for serialization is: `pageContext.type-pageContext.id`.
-     *
-     * @param pageContext to serialize
-     * @param ignoreContentPageId if set to true, and the PageType is of type ContentPage, then the serialized page context will not contain the ID.
-     * Otherwise, the page context if fully serialized.
-     */
-    function serializePageContext(pageContext, ignoreContentPageId) {
-        if (!pageContext) {
-            return CURRENT_CONTEXT_KEY;
-        }
-        if (ignoreContentPageId && pageContext.type === exports.PageType.CONTENT_PAGE) {
-            return "" + pageContext.type;
-        }
-        return pageContext.type + "-" + pageContext.id;
-    }
-
-    var CmsService = /** @class */ (function () {
-        function CmsService(store, routingService) {
-            this.store = store;
-            this.routingService = routingService;
-            this.components = {};
-        }
-        /**
-         * Get current CMS page data
-         */
-        CmsService.prototype.getCurrentPage = function () {
-            var _this = this;
-            return this.routingService
-                .getPageContext()
-                .pipe(operators.switchMap(function (pageContext) { return _this.store.select(getPageData(pageContext)); }));
-        };
-        /**
-         * Get CMS component data by uid
-         *
-         * This method can be safely and optimally used to load multiple components data at the same time.
-         * Calling getComponentData multiple times for different components will always result in optimized
-         * back-end request: all components requested at the same time (in one event loop) will be loaded in one network call.
-         *
-         * In case the component data is not present, the method will load it.
-         * Otherwise, if the page context is not provided, the current page context from the router state will be used instead.
-         *
-         * @param uid CMS component uid
-         * @param pageContext if provided, it will be used to lookup the component data.
-         */
-        CmsService.prototype.getComponentData = function (uid, pageContext) {
-            var context = serializePageContext(pageContext, true);
-            if (!this.components[uid]) {
-                // create the component data structure, if it doesn't already exist
-                this.components[uid] = {};
-            }
-            var component = this.components[uid];
-            if (!component[context]) {
-                // create the component data and assign it to the component's context
-                component[context] = this.createComponentData(uid, pageContext);
-            }
-            return component[context];
-        };
-        CmsService.prototype.createComponentData = function (uid, pageContext) {
-            var _this = this;
-            if (!pageContext) {
-                return this.routingService.getPageContext().pipe(operators.filter(function (currentContext) { return !!currentContext; }), operators.switchMap(function (currentContext) { return _this.getComponentData(uid, currentContext); }));
-            }
-            var context = serializePageContext(pageContext, true);
-            var loading$ = rxjs.combineLatest([
-                this.routingService.getNextPageContext(),
-                this.store.pipe(i1$2.select(componentsLoaderStateSelectorFactory(uid, context))),
-            ]).pipe(operators.observeOn(rxjs.queueScheduler), operators.tap(function (_a) {
-                var _b = __read(_a, 2), nextContext = _b[0], loadingState = _b[1];
-                var attemptedLoad = loadingState.loading || loadingState.success || loadingState.error;
-                // if the requested context is the same as the one that's currently being navigated to
-                // (as it might already been triggered and might be available shortly from page data)
-                // TODO(issue:3649), TODO(issue:3668) - this optimization could be removed
-                var couldBeLoadedWithPageData = nextContext
-                    ? serializePageContext(nextContext, true) === context
-                    : false;
-                if (!attemptedLoad && !couldBeLoadedWithPageData) {
-                    _this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
-                }
-            }));
-            var component$ = this.store.pipe(i1$2.select(componentsSelectorFactory(uid, context)), operators.filter(function (component) { return component !== undefined; }));
-            return rxjs.using(function () { return loading$.subscribe(); }, function () { return component$; }).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
-        };
-        /**
-         * Given the position, get the content slot data
-         * @param position : content slot position
-         */
-        CmsService.prototype.getContentSlot = function (position) {
-            var _this = this;
-            return this.routingService
-                .getPageContext()
-                .pipe(operators.switchMap(function (pageContext) { return _this.store.pipe(i1$2.select(getCurrentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean)); }));
-        };
-        /**
-         * Given navigation node uid, get items (with id and type) inside the navigation entries
-         * @param navigationNodeUid : uid of the navigation node
-         */
-        CmsService.prototype.getNavigationEntryItems = function (navigationNodeUid) {
-            return this.store.pipe(i1$2.select(getNavigationEntryItems(navigationNodeUid)));
-        };
-        /**
-         * Load navigation items data
-         * @param rootUid : the uid of the root navigation node
-         * @param itemList : list of items (with id and type)
-         */
-        CmsService.prototype.loadNavigationItems = function (rootUid, itemList) {
-            this.store.dispatch(new LoadCmsNavigationItems({
-                nodeId: rootUid,
-                items: itemList,
-            }));
-        };
-        /**
-         * Refresh the content of the latest cms page
-         */
-        CmsService.prototype.refreshLatestPage = function () {
-            var _this = this;
-            this.routingService
-                .getPageContext()
-                .pipe(operators.take(1))
-                .subscribe(function (pageContext) { return _this.store.dispatch(new LoadCmsPageData(pageContext)); });
-        };
-        /**
-         * Refresh the cms page content by page Id
-         * @param pageId
-         */
-        CmsService.prototype.refreshPageById = function (pageId) {
-            var pageContext = { id: pageId };
-            this.store.dispatch(new LoadCmsPageData(pageContext));
-        };
-        /**
-         * Refresh cms component's content
-         * @param uid component uid
-         * @param pageContext an optional parameter that enables the caller to specify for which context the component should be refreshed.
-         * If not specified, 'current' page context is used.
-         */
-        CmsService.prototype.refreshComponent = function (uid, pageContext) {
-            this.store.dispatch(new LoadCmsComponent({ uid: uid, pageContext: pageContext }));
-        };
-        /**
-         * Given pageContext, return the CMS page data
-         * @param pageContext
-         */
-        CmsService.prototype.getPageState = function (pageContext) {
-            return this.store.pipe(i1$2.select(getPageData(pageContext)));
-        };
-        /**
-         * Given pageContext, return the CMS page data
-         * @param pageContext
-         */
-        CmsService.prototype.getPageComponentTypes = function (pageContext) {
-            return this.store.pipe(i1$2.select(getPageComponentTypes(pageContext)));
-        };
-        /**
-         * Given pageContext, return whether the CMS page data exists or not
-         * @param pageContext
-         */
-        CmsService.prototype.hasPage = function (pageContext, forceReload) {
-            var _this = this;
-            if (forceReload === void 0) { forceReload = false; }
-            return this.store.pipe(i1$2.select(getPageStateIndexLoaderState(pageContext)), operators.tap(function (entity) {
-                var attemptedLoad = entity.loading || entity.success || entity.error;
-                var shouldReload = forceReload && !entity.loading;
-                if (!attemptedLoad || shouldReload) {
-                    _this.store.dispatch(new LoadCmsPageData(pageContext));
-                    forceReload = false;
-                }
-            }), operators.filter(function (entity) {
-                if (!entity.hasOwnProperty('value')) {
-                    // if we have incomplete state from SSR failed load transfer state,
-                    // we should wait for reload and actual value
-                    return false;
-                }
-                return entity.success || (entity.error && !entity.loading);
-            }), operators.pluck('success'), operators.catchError(function () { return rxjs.of(false); }));
-        };
-        /**
-         * Given pageContext, return the CMS page data
-         **/
-        CmsService.prototype.getPage = function (pageContext, forceReload) {
-            var _this = this;
-            if (forceReload === void 0) { forceReload = false; }
-            return this.hasPage(pageContext, forceReload).pipe(operators.switchMap(function (hasPage) { return hasPage ? _this.getPageState(pageContext) : rxjs.of(null); }));
-        };
-        CmsService.prototype.getPageIndex = function (pageContext) {
-            return this.store.pipe(i1$2.select(getPageStateIndexValue(pageContext)));
-        };
-        CmsService.prototype.setPageFailIndex = function (pageContext, value) {
-            this.store.dispatch(new CmsSetPageFailIndex(pageContext, value));
-        };
-        return CmsService;
-    }());
-    CmsService.ɵprov = i0.ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.ɵɵinject(i1$2.Store), i0.ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
-    CmsService.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    CmsService.ctorParameters = function () { return [
-        { type: i1$2.Store },
-        { type: RoutingService }
-    ]; };
-
     /**
      * Resolves the page metadata for the Cart page (Using the `PageType.CONTENT_PAGE`
      * and the `CartPageTemplate`). If the cart page matches this template, the more
      * generic `ContentPageMetaResolver` is overridden by this resolver.
      *
      * The page title and robots are resolved in this implementation only.
+     *
+     * @deprecated since 3.1, in future versions we'll drop this service as the logic
+     * is no longer specific since we introduce backend driven robots.
      */
+    // TODO(#10467): Remove implementation
     var CartPageMetaResolver = /** @class */ (function (_super) {
         __extends(CartPageMetaResolver, _super);
-        function CartPageMetaResolver(cms) {
+        function CartPageMetaResolver(cms, basePageMetaResolver) {
             var _this = _super.call(this) || this;
             _this.cms = cms;
+            _this.basePageMetaResolver = basePageMetaResolver;
+            // TODO(#10467): remove the cms property as it's no longer needed when we use the `BasePageMetaResolver`
+            /**
+             * @deprecated since 3.1, we'll use the BasePageMetaResolver to resolve the page title
+             */
             _this.cms$ = _this.cms
                 .getCurrentPage()
                 .pipe(operators.filter(function (page) { return !!page; }));
@@ -23117,15 +23411,16 @@
             _this.pageTemplate = 'CartPageTemplate';
             return _this;
         }
-        /**
-         * Resolves the page title, which is driven by the backend.
-         */
         CartPageMetaResolver.prototype.resolveTitle = function () {
-            return this.cms$.pipe(operators.map(function (p) { return p.title; }));
+            // TODO(#10467): resolve the title from the `BasePageMetaResolver.resolveTitle()` only
+            return this.basePageMetaResolver
+                ? this.basePageMetaResolver.resolveTitle()
+                : this.cms$.pipe(operators.map(function (p) { return p.title; }));
         };
         /**
-         * Returns robots for the cart pages, which default to NOINDEX and NOFOLLOW.
+         * @Override Returns robots for the cart pages, which default to NOINDEX/NOFOLLOW.
          */
+        // TODO(#10467): resolve robots from `BasePageMetaResolver` instead
         CartPageMetaResolver.prototype.resolveRobots = function () {
             return rxjs.of([exports.PageRobotsMeta.NOFOLLOW, exports.PageRobotsMeta.NOINDEX]);
         };
@@ -23138,7 +23433,8 @@
                 },] }
     ];
     CartPageMetaResolver.ctorParameters = function () { return [
-        { type: CmsService }
+        { type: CmsService },
+        { type: BasePageMetaResolver, decorators: [{ type: i0.Optional }] }
     ]; };
 
     var MultiCartEffects = /** @class */ (function () {
@@ -23590,195 +23886,6 @@
     };
 
     /**
-     * Resolves the breadcrumb for the Angular ActivatedRouteSnapshot
-     */
-    var DefaultRoutePageMetaResolver = /** @class */ (function () {
-        function DefaultRoutePageMetaResolver(translation) {
-            this.translation = translation;
-        }
-        /**
-         * Resolves breadcrumb based on the given url and the breadcrumb config.
-         *
-         * - When breadcrumb config is empty, it returns an empty breadcrumb.
-         * - When breadcrumb config is a string or object with `i18n` property,
-         *    it translates it and use as a label of the returned breadcrumb.
-         * - When breadcrumb config is an object with property `raw`, then
-         *    it's used as a label of the returned breadcrumb.
-         */
-        DefaultRoutePageMetaResolver.prototype.resolveBreadcrumbs = function (_a) {
-            var url = _a.url, pageMetaConfig = _a.pageMetaConfig;
-            var breadcrumbConfig = pageMetaConfig === null || pageMetaConfig === void 0 ? void 0 : pageMetaConfig.breadcrumb;
-            if (!breadcrumbConfig) {
-                return rxjs.of([]);
-            }
-            if (typeof breadcrumbConfig !== 'string' && breadcrumbConfig.raw) {
-                return rxjs.of([{ link: url, label: breadcrumbConfig.raw }]);
-            }
-            return this.translateBreadcrumbLabel(breadcrumbConfig).pipe(operators.map(function (label) { return [{ label: label, link: url }]; }));
-        };
-        /**
-         * Translates the configured breadcrumb label
-         */
-        DefaultRoutePageMetaResolver.prototype.translateBreadcrumbLabel = function (breadcrumbConfig) {
-            var _this = this;
-            var i18nKey = typeof breadcrumbConfig === 'string'
-                ? breadcrumbConfig
-                : breadcrumbConfig.i18n;
-            return this.getParams().pipe(operators.switchMap(function (params) { return _this.translation.translate(i18nKey, params !== null && params !== void 0 ? params : {}); }));
-        };
-        /**
-         * Resolves dynamic data for the whole resolver.
-         */
-        DefaultRoutePageMetaResolver.prototype.getParams = function () {
-            return rxjs.of({});
-        };
-        return DefaultRoutePageMetaResolver;
-    }());
-    DefaultRoutePageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function DefaultRoutePageMetaResolver_Factory() { return new DefaultRoutePageMetaResolver(i0.ɵɵinject(TranslationService)); }, token: DefaultRoutePageMetaResolver, providedIn: "root" });
-    DefaultRoutePageMetaResolver.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    DefaultRoutePageMetaResolver.ctorParameters = function () { return [
-        { type: TranslationService }
-    ]; };
-
-    /**
-     * Resolves the page meta based on the Angular Activated Routes
-     */
-    var RoutingPageMetaResolver = /** @class */ (function () {
-        function RoutingPageMetaResolver(activatedRoutesService, injector) {
-            var _this = this;
-            this.activatedRoutesService = activatedRoutesService;
-            this.injector = injector;
-            /**
-             * Array of activated routes, excluding the special Angular `root` route.
-             */
-            this.routes$ = this.activatedRoutesService.routes$.pipe(
-            // drop the first route - the special `root` route:
-            operators.map(function (routes) { return (routes = routes.slice(1, routes.length)); }));
-            /**
-             * Array of activated routes together with precalculated extras:
-             *
-             * - route's page meta resolver
-             * - route's absolute string URL
-             *
-             * In case when there is no page meta resolver configured for a specific route,
-             * it inherits its parent's resolver.
-             *
-             * When there is no page meta resolver configured for the highest parent in the hierarchy,
-             * it uses the `DefaultRoutePageMetaResolver`.
-             */
-            this.routesWithExtras$ = this.routes$.pipe(operators.map(function (routes) { return routes.reduce(function (results, route) {
-                var _a;
-                var parent = results.length
-                    ? results[results.length - 1]
-                    : {
-                        route: null,
-                        resolver: _this.injector.get(DefaultRoutePageMetaResolver),
-                        url: '',
-                    };
-                var resolver = (_a = _this.getResolver(route)) !== null && _a !== void 0 ? _a : parent.resolver; // fallback to parent's resolver
-                var urlPart = _this.getUrlPart(route);
-                var url = parent.url + (urlPart ? "/" + urlPart : ''); // don't add slash for a route with path '', to avoid double slash ...//...
-                return results.concat({ route: route, resolver: resolver, url: url });
-            }, []); }), operators.shareReplay({ bufferSize: 1, refCount: true }));
-        }
-        /**
-         * Array of breadcrumbs defined for all the activated routes (from the root route to the leaf route).
-         * It emits on every completed routing navigation.
-         */
-        RoutingPageMetaResolver.prototype.resolveBreadcrumbs = function (options) {
-            var _this = this;
-            return this.routesWithExtras$.pipe(operators.map(function (routesWithExtras) { return (options === null || options === void 0 ? void 0 : options.includeCurrentRoute) ? routesWithExtras
-                : _this.trimCurrentRoute(routesWithExtras); }), operators.switchMap(function (routesWithExtras) { return routesWithExtras.length
-                ? rxjs.combineLatest(routesWithExtras.map(function (routeWithExtras) { return _this.resolveRouteBreadcrumb(routeWithExtras); }))
-                : rxjs.of([]); }), operators.map(function (breadcrumbArrays) { return breadcrumbArrays.flat(); }));
-        };
-        /**
-         * Returns the instance of the RoutePageMetaResolver configured for the given activated route.
-         * Returns null in case there the resolver can't be injected or is undefined.
-         *
-         * @param route route to resolve
-         */
-        RoutingPageMetaResolver.prototype.getResolver = function (route) {
-            var pageMetaConfig = this.getPageMetaConfig(route);
-            if (typeof pageMetaConfig !== 'string' && (pageMetaConfig === null || pageMetaConfig === void 0 ? void 0 : pageMetaConfig.resolver)) {
-                return this.injector.get(pageMetaConfig.resolver, null);
-            }
-            return null;
-        };
-        /**
-         * Resolvers breadcrumb for a specific route
-         */
-        RoutingPageMetaResolver.prototype.resolveRouteBreadcrumb = function (_c) {
-            var route = _c.route, resolver = _c.resolver, url = _c.url;
-            var breadcrumbResolver = resolver;
-            if (typeof breadcrumbResolver.resolveBreadcrumbs === 'function') {
-                return breadcrumbResolver.resolveBreadcrumbs({
-                    route: route,
-                    url: url,
-                    pageMetaConfig: this.getPageMetaConfig(route),
-                });
-            }
-            return rxjs.of([]);
-        };
-        /**
-         * By default in breadcrumbs list we don't want to show a link to the current page, so this function
-         * trims the last breadcrumb (the breadcrumb of the current route).
-         *
-         * This function also handles special case when the current route has a configured empty path ('' route).
-         * The '' routes are often a _technical_ routes to organize other routes, assign common guards for its children, etc.
-         * It shouldn't happen that '' route has a defined breadcrumb config.
-         *
-         * In that case, we trim not only the last route ('' route), but also its parent route with non-empty path
-         * (which likely defines the breadcrumb config).
-         */
-        RoutingPageMetaResolver.prototype.trimCurrentRoute = function (routesWithExtras) {
-            // If the last route is '', we trim:
-            // - the '' route
-            // - all parent '' routes (until we meet route with non-empty path)
-            var _a, _b;
-            var i = routesWithExtras.length - 1;
-            while (((_b = (_a = routesWithExtras[i]) === null || _a === void 0 ? void 0 : _a.route) === null || _b === void 0 ? void 0 : _b.url.length) === 0 && i >= 0) {
-                i--;
-            }
-            // Finally we trim the last route (the one with non-empty path)
-            return routesWithExtras.slice(0, i);
-        };
-        /**
-         * Returns the URL path for the given activated route in a string format.
-         * (ActivatedRouteSnapshot#url contains an array of `UrlSegment`s, not a string)
-         */
-        RoutingPageMetaResolver.prototype.getUrlPart = function (route) {
-            return route.url.map(function (urlSegment) { return urlSegment.path; }).join('/');
-        };
-        /**
-         * Returns the breadcrumb config placed in the route's `data` configuration.
-         */
-        RoutingPageMetaResolver.prototype.getPageMetaConfig = function (route) {
-            var _a, _b;
-            // Note: we use `route.routeConfig.data` (not `route.data`) to save us from
-            // an edge case bug. In Angular, by design the `data` of ActivatedRoute is inherited
-            // from the parent route, if only the child has an empty path ''.
-            // But in any case we don't want the page meta configs to be inherited, so we
-            // read data from the original `routeConfig` which is static.
-            //
-            // Note: we may inherit the parent's page meta resolver in case we don't define it,
-            // but we don't want to inherit parent's page meta config!
-            return (_b = (_a = route === null || route === void 0 ? void 0 : route.routeConfig) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.cxPageMeta;
-        };
-        return RoutingPageMetaResolver;
-    }());
-    RoutingPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function RoutingPageMetaResolver_Factory() { return new RoutingPageMetaResolver(i0.ɵɵinject(ActivatedRoutesService), i0.ɵɵinject(i0.INJECTOR)); }, token: RoutingPageMetaResolver, providedIn: "root" });
-    RoutingPageMetaResolver.decorators = [
-        { type: i0.Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    RoutingPageMetaResolver.ctorParameters = function () { return [
-        { type: ActivatedRoutesService },
-        { type: i0.Injector }
-    ]; };
-
-    /**
      * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`.
      * More specific resolvers for content pages can be implemented by making them more
      * specific, for example by using the page template (see `CartPageMetaResolver`).
@@ -23787,48 +23894,79 @@
      */
     var ContentPageMetaResolver = /** @class */ (function (_super) {
         __extends(ContentPageMetaResolver, _super);
-        function ContentPageMetaResolver(cms, translation, routingPageMetaResolver) {
+        /**
+         * @deprecated since 3.1, we'll use the BasePageMetaResolver in future versions.
+         */
+        function ContentPageMetaResolver(cmsService, translation, routingPageMetaResolver, basePageMetaResolver) {
             var _this = _super.call(this) || this;
-            _this.cms = cms;
+            _this.cmsService = cmsService;
             _this.translation = translation;
             _this.routingPageMetaResolver = routingPageMetaResolver;
-            /** helper to provide access to the current CMS page */
-            _this.cms$ = _this.cms
-                .getCurrentPage()
-                .pipe(operators.filter(function (p) { return Boolean(p); }));
+            _this.basePageMetaResolver = basePageMetaResolver;
             /**
              * Breadcrumb for the home page.
+             *
+             * @deprecated since 3.1, as we resolve the homeBreadcrumb$ from the `BasePageMetaResolver`
              */
+            // TODO(#10467): drop the homeBreadcrumb$ property
             _this.homeBreadcrumb$ = _this.translation
                 .translate('common.home')
                 .pipe(operators.map(function (label) { return [{ label: label, link: '/' }]; }));
             /**
              * All the resolved breadcrumbs (including those from Angular child routes).
+             *
+             * @deprecated since 3.1, as we resolve the breadcrumbs$ from the `BasePageMetaResolver`
              */
+            // TODO(#10467): drop the breadcrumbs$ property
             _this.breadcrumbs$ = rxjs.combineLatest([
                 _this.homeBreadcrumb$,
                 rxjs.defer(function () { return _this.routingPageMetaResolver.resolveBreadcrumbs(); }),
-            ]).pipe(operators.map(function (breadcrumbs) { return breadcrumbs.flat(); }, operators.shareReplay({ bufferSize: 1, refCount: true })));
+            ]).pipe(operators.map(function (breadcrumbs) { return breadcrumbs.flat(); }), operators.shareReplay({ bufferSize: 1, refCount: true }));
+            /**
+             * Helper to provide access to the current CMS page
+             *
+             * @deprecated since 3.1, as we resolve the cms page data from the `BasePageMetaResolver`
+             */
+            // TODO(#10467): drop the cms$ property
+            _this.cms$ = rxjs.defer(function () { return _this.cmsService.getCurrentPage().pipe(operators.filter(function (p) { return Boolean(p); })); });
+            /**
+             * @deprecated since 3.1, we'll start using the `BasePageMetaResolver` to resolve
+             * the page title
+             */
+            // TODO(#10467): drop the title$ property
+            _this.title$ = _this.cms$.pipe(operators.map(function (p) { return p.title; }));
             _this.pageType = exports.PageType.CONTENT_PAGE;
             return _this;
         }
-        /**
-         * Resolves the page title for the ContentPage by taking the title
-         * from the backend data.
-         */
+        // TODO(#10467): resolve the title from the `BasePageMetaResolver.resolveTitle()` only
         ContentPageMetaResolver.prototype.resolveTitle = function () {
-            return this.cms$.pipe(operators.map(function (p) { return p.title; }));
+            return this.basePageMetaResolver
+                ? this.basePageMetaResolver.resolveTitle()
+                : this.title$;
         };
         /**
+         * @override
          * Resolves a single breadcrumb item to the home page for each `ContentPage`.
          * The home page label is resolved from the translation service.
          */
         ContentPageMetaResolver.prototype.resolveBreadcrumbs = function () {
-            return this.breadcrumbs$;
+            return this.basePageMetaResolver
+                ? this.basePageMetaResolver.resolveBreadcrumbs()
+                : this.breadcrumbs$;
+        };
+        /**
+         * @override
+         * This is added in 3.1 and will be ignored if the `BasePageMetaResolver` is not
+         * available.
+         */
+        // TODO(#10467) drop the 3.1 note.
+        ContentPageMetaResolver.prototype.resolveRobots = function () {
+            var _a;
+            return (_a = this.basePageMetaResolver) === null || _a === void 0 ? void 0 : _a.resolveRobots();
         };
         return ContentPageMetaResolver;
     }(PageMetaResolver));
-    ContentPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(i0.ɵɵinject(CmsService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(RoutingPageMetaResolver)); }, token: ContentPageMetaResolver, providedIn: "root" });
+    ContentPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(i0.ɵɵinject(CmsService), i0.ɵɵinject(TranslationService), i0.ɵɵinject(RoutingPageMetaResolver), i0.ɵɵinject(BasePageMetaResolver, 8)); }, token: ContentPageMetaResolver, providedIn: "root" });
     ContentPageMetaResolver.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
@@ -23837,7 +23975,8 @@
     ContentPageMetaResolver.ctorParameters = function () { return [
         { type: CmsService },
         { type: TranslationService },
-        { type: RoutingPageMetaResolver }
+        { type: RoutingPageMetaResolver },
+        { type: BasePageMetaResolver, decorators: [{ type: i0.Optional }] }
     ]; };
 
     var CmsPageTitleModule = /** @class */ (function () {
@@ -24561,6 +24700,7 @@
 
     var PageMetaService = /** @class */ (function () {
         function PageMetaService(cms, unifiedInjector) {
+            var _this = this;
             this.cms = cms;
             this.unifiedInjector = unifiedInjector;
             this.resolvers$ = this.unifiedInjector
@@ -24569,9 +24709,8 @@
             /**
              * The list of resolver interfaces will be evaluated for the pageResolvers.
              *
-             * TOOD: optimize browser vs SSR resolvers; image, robots and description
+             * TODO: optimize browser vs SSR resolvers; image, robots and description
              *       aren't needed during browsing.
-             * TODO: we can make the list of resolver types configurable
              */
             this.resolverMethods = {
                 title: 'resolveTitle',
@@ -24581,10 +24720,10 @@
                 image: 'resolveImage',
                 robots: 'resolveRobots',
             };
+            this.meta$ = rxjs.defer(function () { return _this.cms.getCurrentPage(); }).pipe(operators.filter(Boolean), operators.switchMap(function (page) { return _this.getMetaResolver(page); }), operators.switchMap(function (metaResolver) { return metaResolver ? _this.resolve(metaResolver) : rxjs.of(null); }), operators.shareReplay({ bufferSize: 1, refCount: true }));
         }
         PageMetaService.prototype.getMeta = function () {
-            var _this = this;
-            return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) { return _this.getMetaResolver(page); }), operators.switchMap(function (metaResolver) { return metaResolver ? _this.resolve(metaResolver) : rxjs.of(null); }));
+            return this.meta$;
         };
         /**
          * If a `PageResolver` has implemented a resolver interface, the resolved data
@@ -26753,11 +26892,12 @@
      */
     var CategoryPageMetaResolver = /** @class */ (function (_super) {
         __extends(CategoryPageMetaResolver, _super);
-        function CategoryPageMetaResolver(productSearchService, cms, translation) {
+        function CategoryPageMetaResolver(productSearchService, cms, translation, basePageMetaResolver) {
             var _this = _super.call(this) || this;
             _this.productSearchService = productSearchService;
             _this.cms = cms;
             _this.translation = translation;
+            _this.basePageMetaResolver = basePageMetaResolver;
             // reusable observable for search page data
             _this.searchPage$ = _this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) {
                 // only the existence of a plp component tells us if products
@@ -26785,20 +26925,20 @@
             return rxjs.combineLatest([
                 this.searchPage$.pipe(),
                 this.translation.translate('common.home'),
-            ]).pipe(operators.map(function (_b) {
-                var _c = __read(_b, 2), p = _c[0], label = _c[1];
+            ]).pipe(operators.map(function (_c) {
+                var _d = __read(_c, 2), p = _d[0], label = _d[1];
                 return p.breadcrumbs
                     ? _this.resolveBreadcrumbData(p, label)
                     : null;
             }));
         };
         CategoryPageMetaResolver.prototype.resolveBreadcrumbData = function (page, label) {
-            var e_1, _b;
+            var e_1, _c;
             var breadcrumbs = [];
             breadcrumbs.push({ label: label, link: '/' });
             try {
-                for (var _c = __values(page.breadcrumbs), _d = _c.next(); !_d.done; _d = _c.next()) {
-                    var br = _d.value;
+                for (var _d = __values(page.breadcrumbs), _e = _d.next(); !_e.done; _e = _d.next()) {
+                    var br = _e.value;
                     if (br.facetCode === 'category' || br.facetCode === 'allCategories') {
                         breadcrumbs.push({
                             label: br.facetValueName,
@@ -26816,7 +26956,7 @@
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_d && !_d.done && (_b = _c.return)) _b.call(_c);
+                    if (_e && !_e.done && (_c = _d.return)) _c.call(_d);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
@@ -26829,6 +26969,16 @@
                     comp.typeCode === 'ProductGridComponent'; }));
             });
         };
+        /**
+         * @override
+         * This is added in 3.1 and will be ignored if the `BasePageMetaResolver` is not
+         * available.
+         */
+        // TODO(#10467) drop the 3.1 note.
+        CategoryPageMetaResolver.prototype.resolveRobots = function () {
+            var _a, _b;
+            return (_b = (_a = this.basePageMetaResolver) === null || _a === void 0 ? void 0 : _a.resolveRobots()) !== null && _b !== void 0 ? _b : rxjs.of([]);
+        };
         return CategoryPageMetaResolver;
     }(PageMetaResolver));
     CategoryPageMetaResolver.ɵprov = i0.ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(i0.ɵɵinject(ProductSearchService), i0.ɵɵinject(CmsService), i0.ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
@@ -26840,7 +26990,8 @@
     CategoryPageMetaResolver.ctorParameters = function () { return [
         { type: ProductSearchService },
         { type: CmsService },
-        { type: TranslationService }
+        { type: TranslationService },
+        { type: BasePageMetaResolver, decorators: [{ type: i0.Optional }] }
     ]; };
 
     /**
@@ -26928,11 +27079,12 @@
      */
     var ProductPageMetaResolver = /** @class */ (function (_super) {
         __extends(ProductPageMetaResolver, _super);
-        function ProductPageMetaResolver(routingService, productService, translation) {
+        function ProductPageMetaResolver(routingService, productService, translation, basePageMetaResolver) {
             var _this = _super.call(this) || this;
             _this.routingService = routingService;
             _this.productService = productService;
             _this.translation = translation;
+            _this.basePageMetaResolver = basePageMetaResolver;
             // reusable observable for product data based on the current page
             _this.product$ = _this.routingService.getRouterState().pipe(operators.map(function (state) { return state.state.params['productCode']; }), operators.filter(function (code) { return !!code; }), operators.switchMap(function (code) { return _this.productService.get(code, exports.ProductScope.DETAILS); }), operators.filter(Boolean));
             _this.pageType = exports.PageType.PRODUCT_PAGE;
@@ -26951,7 +27103,7 @@
         };
         /**
          * Resolves the page title for the Product Detail Page. The page title
-         * is resolved with the product name, the first category and the manufactorer.
+         * is resolved with the product name, the first category and the manufacturer.
          * The page title used by the browser (history, tabs) and crawlers.
          */
         ProductPageMetaResolver.prototype.resolveTitle = function () {
@@ -26977,7 +27129,7 @@
         };
         /**
          * Resolves breadcrumbs for the Product Detail Page. The breadcrumbs are driven by
-         * a static home page crum and a crumb for each category.
+         * a static home page crumb and a crumb for each category.
          */
         ProductPageMetaResolver.prototype.resolveBreadcrumbs = function () {
             return rxjs.combineLatest([
@@ -27036,6 +27188,7 @@
          * robot instruction defaults to FOLLOW and INDEX for all product pages,
          * regardless of whether they're purchasable or not.
          */
+        // TODO(#10467): resolve robots from `BasePageMetaResolver` instead
         ProductPageMetaResolver.prototype.resolveRobots = function () {
             return rxjs.of([exports.PageRobotsMeta.FOLLOW, exports.PageRobotsMeta.INDEX]);
         };
@@ -27050,22 +27203,24 @@
     ProductPageMetaResolver.ctorParameters = function () { return [
         { type: RoutingService },
         { type: ProductService },
-        { type: TranslationService }
+        { type: TranslationService },
+        { type: BasePageMetaResolver, decorators: [{ type: i0.Optional }] }
     ]; };
 
     /**
      * Resolves the page data for the Search Result Page based on the
      * `PageType.CATEGORY_PAGE` and the `SearchResultsListPageTemplate` template.
      *
-     * Only the page title is resolved in the standard implemenation.
+     * Only the page title is resolved in the standard implementation.
      */
     var SearchPageMetaResolver = /** @class */ (function (_super) {
         __extends(SearchPageMetaResolver, _super);
-        function SearchPageMetaResolver(routingService, productSearchService, translation) {
+        function SearchPageMetaResolver(routingService, productSearchService, translation, basePageMetaResolver) {
             var _this = _super.call(this) || this;
             _this.routingService = routingService;
             _this.productSearchService = productSearchService;
             _this.translation = translation;
+            _this.basePageMetaResolver = basePageMetaResolver;
             _this.total$ = _this.productSearchService.getResults().pipe(operators.filter(function (data) { return !!(data === null || data === void 0 ? void 0 : data.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
             _this.query$ = _this.routingService
                 .getRouterState()
@@ -27077,13 +27232,23 @@
         SearchPageMetaResolver.prototype.resolveTitle = function () {
             var _this = this;
             var sources = [this.total$, this.query$];
-            return rxjs.combineLatest(sources).pipe(operators.switchMap(function (_a) {
-                var _b = __read(_a, 2), t = _b[0], q = _b[1];
+            return rxjs.combineLatest(sources).pipe(operators.switchMap(function (_c) {
+                var _d = __read(_c, 2), t = _d[0], q = _d[1];
                 return _this.translation.translate('pageMetaResolver.search.title', {
                     count: t,
                     query: q,
                 });
             }));
+        };
+        /**
+         * @override
+         * This is added in 3.1 and will be ignored if the `BasePageMetaResolver` is not
+         * available.
+         */
+        // TODO(#10467) drop the 3.1 note.
+        SearchPageMetaResolver.prototype.resolveRobots = function () {
+            var _a, _b;
+            return (_b = (_a = this.basePageMetaResolver) === null || _a === void 0 ? void 0 : _a.resolveRobots()) !== null && _b !== void 0 ? _b : rxjs.of([]);
         };
         return SearchPageMetaResolver;
     }(PageMetaResolver));
@@ -27096,7 +27261,8 @@
     SearchPageMetaResolver.ctorParameters = function () { return [
         { type: RoutingService },
         { type: ProductSearchService },
-        { type: TranslationService }
+        { type: TranslationService },
+        { type: BasePageMetaResolver, decorators: [{ type: i0.Optional }] }
     ]; };
 
     function productStoreConfigFactory() {
@@ -30077,6 +30243,7 @@
     exports.BASE_SITE_NORMALIZER = BASE_SITE_NORMALIZER;
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
+    exports.BasePageMetaResolver = BasePageMetaResolver;
     exports.BaseSiteService = BaseSiteService;
     exports.CANCEL_ORDER_PROCESS_ID = CANCEL_ORDER_PROCESS_ID;
     exports.CANCEL_REPLENISHMENT_ORDER_PROCESS_ID = CANCEL_REPLENISHMENT_ORDER_PROCESS_ID;
@@ -30656,93 +30823,92 @@
     exports.ɵfu = scopedLoaderReducer;
     exports.ɵfv = reducer$j;
     exports.ɵfw = reducer$i;
-    exports.ɵfx = PageMetaResolver;
-    exports.ɵfy = CouponSearchPageResolver;
-    exports.ɵfz = PageMetaResolver;
+    exports.ɵfx = CouponSearchPageResolver;
+    exports.ɵfy = PageMetaResolver;
+    exports.ɵfz = addExternalRoutesFactory;
     exports.ɵg = TEST_CONFIG_COOKIE_NAME;
-    exports.ɵga = addExternalRoutesFactory;
-    exports.ɵgb = getReducers$1;
-    exports.ɵgc = reducer;
-    exports.ɵgd = reducerToken$1;
-    exports.ɵge = reducerProvider$1;
-    exports.ɵgf = CustomSerializer;
-    exports.ɵgg = effects$1;
-    exports.ɵgh = RouterEffects;
-    exports.ɵgi = siteContextStoreConfigFactory;
-    exports.ɵgj = SiteContextStoreModule;
-    exports.ɵgk = getReducers$3;
-    exports.ɵgl = reducerToken$3;
-    exports.ɵgm = reducerProvider$3;
-    exports.ɵgn = effects$4;
-    exports.ɵgo = BaseSiteEffects;
-    exports.ɵgp = CurrenciesEffects;
-    exports.ɵgq = LanguagesEffects;
-    exports.ɵgr = reducer$8;
-    exports.ɵgs = reducer$7;
-    exports.ɵgt = reducer$6;
-    exports.ɵgu = defaultSiteContextConfigFactory;
-    exports.ɵgv = initializeContext;
-    exports.ɵgw = contextServiceProviders;
-    exports.ɵgx = SiteContextRoutesHandler;
-    exports.ɵgy = SiteContextUrlSerializer;
-    exports.ɵgz = siteContextParamsProviders;
+    exports.ɵga = getReducers$1;
+    exports.ɵgb = reducer;
+    exports.ɵgc = reducerToken$1;
+    exports.ɵgd = reducerProvider$1;
+    exports.ɵge = CustomSerializer;
+    exports.ɵgf = effects$1;
+    exports.ɵgg = RouterEffects;
+    exports.ɵgh = siteContextStoreConfigFactory;
+    exports.ɵgi = SiteContextStoreModule;
+    exports.ɵgj = getReducers$3;
+    exports.ɵgk = reducerToken$3;
+    exports.ɵgl = reducerProvider$3;
+    exports.ɵgm = effects$4;
+    exports.ɵgn = BaseSiteEffects;
+    exports.ɵgo = CurrenciesEffects;
+    exports.ɵgp = LanguagesEffects;
+    exports.ɵgq = reducer$8;
+    exports.ɵgr = reducer$7;
+    exports.ɵgs = reducer$6;
+    exports.ɵgt = defaultSiteContextConfigFactory;
+    exports.ɵgu = initializeContext;
+    exports.ɵgv = contextServiceProviders;
+    exports.ɵgw = SiteContextRoutesHandler;
+    exports.ɵgx = SiteContextUrlSerializer;
+    exports.ɵgy = siteContextParamsProviders;
+    exports.ɵgz = baseSiteConfigValidator;
     exports.ɵh = configFromCookieFactory;
-    exports.ɵha = baseSiteConfigValidator;
-    exports.ɵhb = interceptors$5;
-    exports.ɵhc = CmsTicketInterceptor;
-    exports.ɵhd = UserStoreModule;
-    exports.ɵhe = getReducers$a;
-    exports.ɵhf = reducerToken$a;
-    exports.ɵhg = reducerProvider$a;
-    exports.ɵhh = clearUserState;
-    exports.ɵhi = metaReducers$4;
-    exports.ɵhj = effects$9;
-    exports.ɵhk = BillingCountriesEffect;
-    exports.ɵhl = ClearMiscsDataEffect;
-    exports.ɵhm = ConsignmentTrackingEffects;
-    exports.ɵhn = CustomerCouponEffects;
-    exports.ɵho = DeliveryCountriesEffects;
-    exports.ɵhp = NotificationPreferenceEffects;
-    exports.ɵhq = OrderDetailsEffect;
-    exports.ɵhr = OrderReturnRequestEffect;
-    exports.ɵhs = UserPaymentMethodsEffects;
-    exports.ɵht = ProductInterestsEffect;
-    exports.ɵhu = RegionsEffects;
-    exports.ɵhv = ReplenishmentOrderDetailsEffect;
-    exports.ɵhw = ResetPasswordEffects;
-    exports.ɵhx = TitlesEffects;
-    exports.ɵhy = UserAddressesEffects;
-    exports.ɵhz = UserConsentsEffect;
+    exports.ɵha = interceptors$5;
+    exports.ɵhb = CmsTicketInterceptor;
+    exports.ɵhc = UserStoreModule;
+    exports.ɵhd = getReducers$a;
+    exports.ɵhe = reducerToken$a;
+    exports.ɵhf = reducerProvider$a;
+    exports.ɵhg = clearUserState;
+    exports.ɵhh = metaReducers$4;
+    exports.ɵhi = effects$9;
+    exports.ɵhj = BillingCountriesEffect;
+    exports.ɵhk = ClearMiscsDataEffect;
+    exports.ɵhl = ConsignmentTrackingEffects;
+    exports.ɵhm = CustomerCouponEffects;
+    exports.ɵhn = DeliveryCountriesEffects;
+    exports.ɵho = NotificationPreferenceEffects;
+    exports.ɵhp = OrderDetailsEffect;
+    exports.ɵhq = OrderReturnRequestEffect;
+    exports.ɵhr = UserPaymentMethodsEffects;
+    exports.ɵhs = ProductInterestsEffect;
+    exports.ɵht = RegionsEffects;
+    exports.ɵhu = ReplenishmentOrderDetailsEffect;
+    exports.ɵhv = ResetPasswordEffects;
+    exports.ɵhw = TitlesEffects;
+    exports.ɵhx = UserAddressesEffects;
+    exports.ɵhy = UserConsentsEffect;
+    exports.ɵhz = UserDetailsEffects;
     exports.ɵi = initConfig;
-    exports.ɵia = UserDetailsEffects;
-    exports.ɵib = UserOrdersEffect;
-    exports.ɵic = UserRegisterEffects;
-    exports.ɵid = UserReplenishmentOrdersEffect;
-    exports.ɵie = ForgotPasswordEffects;
-    exports.ɵif = UpdateEmailEffects;
-    exports.ɵig = UpdatePasswordEffects;
-    exports.ɵih = UserNotificationPreferenceConnector;
-    exports.ɵii = UserCostCenterEffects;
-    exports.ɵij = reducer$B;
-    exports.ɵik = reducer$y;
-    exports.ɵil = reducer$l;
-    exports.ɵim = reducer$z;
-    exports.ɵin = reducer$s;
-    exports.ɵio = reducer$C;
-    exports.ɵip = reducer$q;
-    exports.ɵiq = reducer$D;
-    exports.ɵir = reducer$r;
-    exports.ɵis = reducer$o;
-    exports.ɵit = reducer$x;
-    exports.ɵiu = reducer$u;
-    exports.ɵiv = reducer$w;
-    exports.ɵiw = reducer$m;
-    exports.ɵix = reducer$n;
-    exports.ɵiy = reducer$p;
-    exports.ɵiz = reducer$t;
+    exports.ɵia = UserOrdersEffect;
+    exports.ɵib = UserRegisterEffects;
+    exports.ɵic = UserReplenishmentOrdersEffect;
+    exports.ɵid = ForgotPasswordEffects;
+    exports.ɵie = UpdateEmailEffects;
+    exports.ɵif = UpdatePasswordEffects;
+    exports.ɵig = UserNotificationPreferenceConnector;
+    exports.ɵih = UserCostCenterEffects;
+    exports.ɵii = reducer$B;
+    exports.ɵij = reducer$y;
+    exports.ɵik = reducer$l;
+    exports.ɵil = reducer$z;
+    exports.ɵim = reducer$s;
+    exports.ɵin = reducer$C;
+    exports.ɵio = reducer$q;
+    exports.ɵip = reducer$D;
+    exports.ɵiq = reducer$r;
+    exports.ɵir = reducer$o;
+    exports.ɵis = reducer$x;
+    exports.ɵit = reducer$u;
+    exports.ɵiu = reducer$w;
+    exports.ɵiv = reducer$m;
+    exports.ɵiw = reducer$n;
+    exports.ɵix = reducer$p;
+    exports.ɵiy = reducer$t;
+    exports.ɵiz = reducer$A;
     exports.ɵj = anonymousConsentsStatePersistenceFactory;
-    exports.ɵja = reducer$A;
-    exports.ɵjb = reducer$v;
+    exports.ɵja = reducer$v;
     exports.ɵk = AnonymousConsentsStoreModule;
     exports.ɵl = TRANSFER_STATE_META_REDUCER;
     exports.ɵm = STORAGE_SYNC_META_REDUCER;

@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs';
+import { UnifiedInjector } from '../../lazy-loading/unified-injector';
 import { Page, PageMeta } from '../model/page.model';
 import { PageMetaResolver } from '../page/page-meta.resolver';
 import { CmsService } from './cms.service';
-import { UnifiedInjector } from '../../lazy-loading/unified-injector';
+import * as ɵngcc0 from '@angular/core';
 export declare class PageMetaService {
     protected cms: CmsService;
     protected unifiedInjector?: UnifiedInjector;
@@ -11,13 +12,13 @@ export declare class PageMetaService {
     /**
      * The list of resolver interfaces will be evaluated for the pageResolvers.
      *
-     * TOOD: optimize browser vs SSR resolvers; image, robots and description
+     * TODO: optimize browser vs SSR resolvers; image, robots and description
      *       aren't needed during browsing.
-     * TODO: we can make the list of resolver types configurable
      */
     protected resolverMethods: {
         [key: string]: string;
     };
+    protected meta$: Observable<PageMeta | null>;
     getMeta(): Observable<PageMeta | null>;
     /**
      * If a `PageResolver` has implemented a resolver interface, the resolved data
@@ -32,4 +33,7 @@ export declare class PageMetaService {
      * Resolvers match by default on `PageType` and `page.template`.
      */
     protected getMetaResolver(page: Page): Observable<PageMetaResolver>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<PageMetaService, never>;
 }
+
+//# sourceMappingURL=page-meta.service.d.ts.map

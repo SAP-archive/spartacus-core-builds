@@ -12,6 +12,10 @@ export interface Page {
     };
     properties?: any;
     label?: string;
+    /**
+     * Lists the page robot information for the given page: `INDEX`, `NOINDEX`, `FOLLOW` or `NOFOLLOW`
+     */
+    robots?: PageRobotsMeta[];
 }
 /**
  * Represents the cms structure for pages, slots and components.
