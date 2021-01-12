@@ -13,6 +13,7 @@ import { RoutingPageMetaResolver } from './routing/routing-page-meta.resolver';
  *
  * The page title, and breadcrumbs are resolved in this implementation only.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class ContentPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver, PageRobotsResolver {
     protected cmsService: CmsService;
     protected translation: TranslationService;
@@ -58,4 +59,7 @@ export declare class ContentPageMetaResolver extends PageMetaResolver implements
      * available.
      */
     resolveRobots(): Observable<PageRobotsMeta[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ContentPageMetaResolver, [null, null, null, { optional: true; }]>;
 }
+
+//# sourceMappingURL=content-page-meta.resolver.d.ts.map
