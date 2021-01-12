@@ -2,12 +2,12 @@
  * Generated bundle index. Do not edit.
  */
 /** AUGMENTABLE_TYPES_START */
-export { Product } from './src/model/product.model';
+export { Product, Price, Stock } from './src/model/product.model';
 export { ProductSearchPage, Facet } from './src/model/product-search.model';
 export { Cart } from './src/model/cart.model';
 export { CostCenter, B2BUnit, B2BUser } from './src/model/org-unit.model';
 export { AuthToken } from './src/auth/user-auth/models/auth-token.model';
-export { Order } from './src/model/order.model';
+export { Order, OrderEntry, DeliveryMode } from './src/model/order.model';
 /** AUGMENTABLE_TYPES_END */
 export * from './public_api';
 export { AnonymousConsentsInterceptor as ɵbd } from './src/anonymous-consents/http-interceptors/anonymous-consents-interceptor';
@@ -195,3 +195,5 @@ export { reducer as ɵii } from './src/user/store/reducers/user-details.reducer'
 export { reducer as ɵin } from './src/user/store/reducers/user-orders.reducer';
 export { reducer as ɵip } from './src/user/store/reducers/user-replenishment-orders.reducer';
 export { UserStoreModule as ɵhc } from './src/user/store/user-store.module';
+
+//# sourceMappingURL=spartacus-core.d.ts.map

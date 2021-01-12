@@ -1,6 +1,7 @@
 import { CmsStructureModel, Page } from '../../../../cms/model/page.model';
 import { Converter } from '../../../../util/converter.service';
 import { Occ } from '../../../occ-models/occ.models';
+import * as ɵngcc0 from '@angular/core';
 export declare class OccCmsPageNormalizer implements Converter<Occ.CMSPage, CmsStructureModel> {
     convert(source: Occ.CMSPage, target?: CmsStructureModel): CmsStructureModel;
     /**
@@ -26,4 +27,7 @@ export declare class OccCmsPageNormalizer implements Converter<Occ.CMSPage, CmsS
      * Normalizes the page robot string to an array of `PageRobotsMeta` items.
      */
     protected normalizeRobots(source: Occ.CMSPage, target: Page): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<OccCmsPageNormalizer, never>;
 }
+
+//# sourceMappingURL=occ-cms-page-normalizer.d.ts.map
