@@ -7,7 +7,6 @@ import { UrlCommands } from '../configurable-routes/url-translation/url-command'
 import { PageContext } from '../models/page-context.model';
 import { RouterState } from '../store/routing-state';
 import { RoutingParamsService } from './routing-params.service';
-import * as ɵngcc0 from '@angular/core';
 export declare class RoutingService {
     protected store: Store<RouterState>;
     protected winRef: WindowRef;
@@ -70,7 +69,4 @@ export declare class RoutingService {
      * @param extras: Represents the extra options used during navigation.
      */
     protected navigate(path: any[], query?: object, extras?: NavigationExtras): void;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<RoutingService, never>;
 }
-
-//# sourceMappingURL=routing.service.d.ts.map

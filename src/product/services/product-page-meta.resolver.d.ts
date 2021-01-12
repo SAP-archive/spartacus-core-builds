@@ -14,7 +14,6 @@ import { ProductService } from '../facade/product.service';
  * The page title, heading, description, breadcrumbs and
  * first GALLERY image are resolved if available in the data.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class ProductPageMetaResolver extends PageMetaResolver implements PageHeadingResolver, PageTitleResolver, PageDescriptionResolver, PageBreadcrumbResolver, PageImageResolver, PageRobotsResolver {
     protected routingService: RoutingService;
     protected productService: ProductService;
@@ -61,7 +60,4 @@ export declare class ProductPageMetaResolver extends PageMetaResolver implements
      * regardless of whether they're purchasable or not.
      */
     resolveRobots(): Observable<PageRobotsMeta[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<ProductPageMetaResolver, [null, null, null, { optional: true; }]>;
 }
-
-//# sourceMappingURL=product-page-meta.resolver.d.ts.map
