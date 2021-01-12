@@ -12,7 +12,6 @@ import { ProductSearchService } from '../facade/product-search.service';
  *
  * Only the page title is resolved in the standard implementation.
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class SearchPageMetaResolver extends PageMetaResolver implements PageMetaResolver, PageTitleResolver, PageRobotsResolver {
     protected routingService: RoutingService;
     protected productSearchService: ProductSearchService;
@@ -32,7 +31,4 @@ export declare class SearchPageMetaResolver extends PageMetaResolver implements 
      * available.
      */
     resolveRobots(): Observable<PageRobotsMeta[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<SearchPageMetaResolver, [null, null, null, { optional: true; }]>;
 }
-
-//# sourceMappingURL=search-page-meta.resolver.d.ts.map

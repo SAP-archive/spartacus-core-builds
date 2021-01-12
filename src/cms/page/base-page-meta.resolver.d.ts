@@ -4,7 +4,6 @@ import { CmsService } from '../facade/cms.service';
 import { BreadcrumbMeta, Page, PageRobotsMeta } from '../model/page.model';
 import { PageBreadcrumbResolver, PageRobotsResolver, PageTitleResolver } from './page.resolvers';
 import { RoutingPageMetaResolver } from './routing/routing-page-meta.resolver';
-import * as ɵngcc0 from '@angular/core';
 export declare class BasePageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver, PageRobotsResolver {
     protected cmsService: CmsService;
     protected translation: TranslationService;
@@ -27,7 +26,4 @@ export declare class BasePageMetaResolver implements PageTitleResolver, PageBrea
     resolveTitle(): Observable<string>;
     resolveBreadcrumbs(): Observable<BreadcrumbMeta[]>;
     resolveRobots(): Observable<PageRobotsMeta[]>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<BasePageMetaResolver, never>;
 }
-
-//# sourceMappingURL=base-page-meta.resolver.d.ts.map

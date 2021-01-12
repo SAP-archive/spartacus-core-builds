@@ -4905,72 +4905,50 @@
         return LoginEvent;
     }());
 
-    var LoginEventBuilder = /** @class */ (function () {
-        function LoginEventBuilder(stateEventService) {
+    var UserAuthEventBuilder = /** @class */ (function () {
+        function UserAuthEventBuilder(stateEventService) {
             this.stateEventService = stateEventService;
             this.register();
         }
         /**
-         * Registers logout events
+         * Registers user auth events
          */
-        LoginEventBuilder.prototype.register = function () {
-            this.loginEvent();
+        UserAuthEventBuilder.prototype.register = function () {
+            this.registerLoginEvent();
+            this.registerLogoutEvent();
         };
         /**
-         * Register a logout event
+         * Register a login event
          */
-        LoginEventBuilder.prototype.loginEvent = function () {
+        UserAuthEventBuilder.prototype.registerLoginEvent = function () {
             this.stateEventService.register({
                 action: LOGIN,
                 event: LoginEvent,
             });
         };
-        return LoginEventBuilder;
-    }());
-    LoginEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function LoginEventBuilder_Factory() { return new LoginEventBuilder(i0.ɵɵinject(StateEventService)); }, token: LoginEventBuilder, providedIn: "root" });
-    LoginEventBuilder.decorators = [
-        { type: i0.Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    LoginEventBuilder.ctorParameters = function () { return [
-        { type: StateEventService }
-    ]; };
-
-    var LogoutEventBuilder = /** @class */ (function () {
-        function LogoutEventBuilder(stateEventService) {
-            this.stateEventService = stateEventService;
-            this.register();
-        }
-        /**
-         * Registers logout events
-         */
-        LogoutEventBuilder.prototype.register = function () {
-            this.logoutEvent();
-        };
         /**
          * Register a logout event
          */
-        LogoutEventBuilder.prototype.logoutEvent = function () {
+        UserAuthEventBuilder.prototype.registerLogoutEvent = function () {
             this.stateEventService.register({
                 action: LOGOUT,
                 event: LogoutEvent,
             });
         };
-        return LogoutEventBuilder;
+        return UserAuthEventBuilder;
     }());
-    LogoutEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function LogoutEventBuilder_Factory() { return new LogoutEventBuilder(i0.ɵɵinject(StateEventService)); }, token: LogoutEventBuilder, providedIn: "root" });
-    LogoutEventBuilder.decorators = [
+    UserAuthEventBuilder.ɵprov = i0.ɵɵdefineInjectable({ factory: function UserAuthEventBuilder_Factory() { return new UserAuthEventBuilder(i0.ɵɵinject(StateEventService)); }, token: UserAuthEventBuilder, providedIn: "root" });
+    UserAuthEventBuilder.decorators = [
         { type: i0.Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    LogoutEventBuilder.ctorParameters = function () { return [
+    UserAuthEventBuilder.ctorParameters = function () { return [
         { type: StateEventService }
     ]; };
 
     var UserAuthEventModule = /** @class */ (function () {
-        function UserAuthEventModule(_logoutEventBuilder, _loginEventBuilder) {
+        function UserAuthEventModule(_userAuthEventBuilder) {
         }
         return UserAuthEventModule;
     }());
@@ -4978,8 +4956,7 @@
         { type: i0.NgModule, args: [{},] }
     ];
     UserAuthEventModule.ctorParameters = function () { return [
-        { type: LogoutEventBuilder },
-        { type: LoginEventBuilder }
+        { type: UserAuthEventBuilder }
     ]; };
 
     var ADD_MESSAGE = '[Global-message] Add a Message';
@@ -30411,9 +30388,7 @@
     exports.LegacyOccCmsComponentAdapter = LegacyOccCmsComponentAdapter;
     exports.LoadingScopesService = LoadingScopesService;
     exports.LoginEvent = LoginEvent;
-    exports.LoginEventBuilder = LoginEventBuilder;
     exports.LogoutEvent = LogoutEvent;
-    exports.LogoutEventBuilder = LogoutEventBuilder;
     exports.MEDIA_BASE_URL_META_TAG_NAME = MEDIA_BASE_URL_META_TAG_NAME;
     exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;
     exports.MULTI_CART_DATA = MULTI_CART_DATA;
@@ -30627,6 +30602,7 @@
     exports.UserAddressAdapter = UserAddressAdapter;
     exports.UserAddressConnector = UserAddressConnector;
     exports.UserAddressService = UserAddressService;
+    exports.UserAuthEventBuilder = UserAuthEventBuilder;
     exports.UserAuthEventModule = UserAuthEventModule;
     exports.UserAuthModule = UserAuthModule;
     exports.UserConnector = UserConnector;
