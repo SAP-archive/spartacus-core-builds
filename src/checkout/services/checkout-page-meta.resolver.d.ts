@@ -12,6 +12,7 @@ import { TranslationService } from '../../i18n/translation.service';
  *
  * The page title and robots are resolved in this implementation only.
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class CheckoutPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageRobotsResolver {
     protected translation: TranslationService;
     protected activeCartService: ActiveCartService;
@@ -30,4 +31,7 @@ export declare class CheckoutPageMetaResolver extends PageMetaResolver implement
      * @Override Returns robots for the checkout pages, which default to NOINDEX/NOFOLLOW.
      */
     resolveRobots(): Observable<PageRobotsMeta[]>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<CheckoutPageMetaResolver, [null, null, { optional: true; }]>;
 }
+
+//# sourceMappingURL=checkout-page-meta.resolver.d.ts.map
