@@ -1,0 +1,1 @@
+{"version":3,"file":"user-auth-event.module.d.ts","sources":["user-auth-event.module.d.ts"],"names":[],"mappings":"AAAA;;AACA;AACA;;;AACA","sourcesContent":["import { UserAuthEventBuilder } from './user-auth-event.builder';\nexport declare class UserAuthEventModule {\n    constructor(_userAuthEventBuilder: UserAuthEventBuilder);\n}\n"]}
